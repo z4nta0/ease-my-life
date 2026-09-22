@@ -14,16 +14,16 @@
  * device either way, there is no server component to any of it.
  *
  * The async/sync seam this file maintains: iniStoFun (exposed publicly
- * as STORAGE.init) runs BEFORE React mounts and parks the loaded state
- * in memory, so store.jsx's own loadState() can stay synchronous and no
- * component ever had to become async just to read persisted state.
- * Writes made after that point are fire-and-forget from the caller's own
- * point of view.
+ * as STG_NAM_OBJ.iniStoFun) runs BEFORE React mounts and parks the
+ * loaded state in memory, so store.jsx's own loadState() can stay
+ * synchronous and no component ever had to become async just to read
+ * persisted state. Writes made after that point are fire-and-forget
+ * from the caller's own point of view.
  *
- * The STORAGE object's own exported shape (its method names, LS_KEY,
- * LS_SNAPSHOT) is kept stable here even though this file's internal
- * implementation detail names below were renamed, since that object is
- * imported by name across pwa.js, main.jsx, store.jsx, and
+ * STG_NAM_OBJ is this file's whole public API, the single object every
+ * consuming file imports and calls through, its own external names
+ * swept to match the internal implementation exactly after checking
+ * the blast radius across pwa.js, main.jsx, store.jsx, and
  * tab-settings.jsx.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -32,13 +32,13 @@
 
 
 
-const DAT_NAM_STR = 'easemylife';                          // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
-const DAT_VER_NUM = 1;                                      // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
-const STA_STO_STR = 'state';                                // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
-const PIC_LOG_STR = 'picklog';                              // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
-const LS_KEY       = 'easemylife.v2';                       // What: Ls Key. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STORAGE object below.
-const LS_SNAPSHOT   = 'easemylife.snapshot.pre-idb';        // What: Ls Snapshot. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and re-exported as-is on the STORAGE object below.
-const BOO_KEY_STR = 'easemylife.idbboots';                  // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
+const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
+const DAT_VER_NUM = 1;                             // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
+const STA_STO_STR = 'state';                       // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
+const PIC_LOG_STR = 'picklog';                     // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
+const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
+const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and re-exported as-is on the STG_NAM_OBJ object below.
+const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 
 
 
@@ -46,7 +46,7 @@ const BOO_KEY_STR = 'easemylife.idbboots';                  // What: Boots Key S
  * SNA_KEE_NUM = Snapshot Keep Number
  *
  * @summary
- * The migration snapshot (LS_SNAPSHOT) exists purely to roll back a bad
+ * The migration snapshot (MIG_SNA_STR) exists purely to roll back a bad
  * migration, not to live forever. A permanent plaintext copy of
  * everything would survive "Delete all data" and break the app's own
  * on-device-only promise, so it is dropped once IDB has proven itself
@@ -60,11 +60,11 @@ const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clea
 
 
 
-let datConObj = null;    // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
-let curEngStr = 'memory'; // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
-let cacStaObj = null;     // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STORAGE.cached()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
+let datConObj = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
+let curEngStr = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
+let cacStaObj = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
 let lplRefArr = undefined; // What: Last-Pick-Log Reference Array. Why: wriDatFun must know whether the pick log actually changed since the last write, to avoid re-serializing the largest and fastest-growing piece of state on every save. How: This holds the exact array reference last written, compared with !== inside wriDatFun.
-let mirWriBoo = true;       // What: Mirror Write Boolean. Why: The Settings storage panel needs to know whether the last localStorage mirror write actually succeeded. How: This is flipped by wriLocFun on every call, true on success, false on a quota (or similar) failure.
+let mirWriBoo = true;      // What: Mirror Write Boolean. Why: The Settings storage panel needs to know whether the last localStorage mirror write actually succeeded. How: This is flipped by wriLocFun on every call, true on success, false on a quota (or similar) failure.
 
 
 
@@ -94,7 +94,7 @@ const MIR_TIM_STR = 'easemylife.mirrorat'; // What: Mirror Time String. Why: Mir
 
 
 /**
- * OWNED_KEY_RE = Owned Key Regular Expression
+ * OWN_KEY_REX = Own Key Regexp
  *
  * @summary
  * Matches every localStorage key this app has ever written, across
@@ -109,7 +109,7 @@ const MIR_TIM_STR = 'easemylife.mirrorat'; // What: Mirror Time String. Why: Mir
  *
 */
 
-const OWNED_KEY_RE = /^ease[-]?my[-]?life/i; // What: Owned Key Regular Expression. Why: Every localStorage key this app owns, across every naming generation, must be found by pattern rather than by a fixed list. How: This is tested against each localStorage key inside ownKeyFun below.
+const OWN_KEY_REX = /^ease[-]?my[-]?life/i; // What: Own Key Regexp. Why: Every localStorage key this app owns, across every naming generation, must be found by pattern rather than by a fixed list. How: This is tested against each localStorage key inside ownKeyFun below.
 
 
 
@@ -120,7 +120,7 @@ const OWNED_KEY_RE = /^ease[-]?my[-]?life/i; // What: Owned Key Regular Expressi
  *
  * @summary
  * Enumerates every localStorage key this app currently owns, per
- * OWNED_KEY_RE above. wipDatFun uses this so "Delete all data" really
+ * OWN_KEY_REX above. wipDatFun uses this so "Delete all data" really
  * does, and iniStoFun uses it to sweep dead pre-IDB generations once
  * IDB has proven itself over SNA_KEE_NUM clean boots.
  *
@@ -142,7 +142,7 @@ const OWNED_KEY_RE = /^ease[-]?my[-]?life/i; // What: Owned Key Regular Expressi
 function ownKeyFun() {
 
 
-	try { return Object.keys( localStorage ).filter( ( curKeyStr ) => OWNED_KEY_RE.test( curKeyStr ) ); } // What: Owned Key Filter Try. Why: Every current localStorage key must be checked against OWNED_KEY_RE to find the ones this app has ever written. How: This filters every key currently in localStorage down to the ones OWNED_KEY_RE matches.
+	try { return Object.keys( localStorage ).filter( ( curKeyStr ) => OWN_KEY_REX.test( curKeyStr ) ); } // What: Owned Key Filter Try. Why: Every current localStorage key must be checked against OWN_KEY_REX to find the ones this app has ever written. How: This filters every key currently in localStorage down to the ones OWN_KEY_REX matches.
 
 	catch ( e ) { return []; } // What: Owned Key Read Guard. Why: A private-mode or otherwise inaccessible localStorage must not crash whichever caller invoked this. How: This returns an empty array instead of letting the read throw.
 
@@ -158,7 +158,7 @@ const reqProFun = ( idbReqObj ) => new Promise( ( resValFun, rejErrFun ) => { //
 
 	idbReqObj.onsuccess = () => resValFun( idbReqObj.result ); // What: Success Handler Assignment. Why: A successful IndexedDB request must resolve the wrapping Promise with that request's own result. How: This assigns an onsuccess handler that calls resValFun with idbReqObj.result.
 
-	idbReqObj.onerror   = () => rejErrFun( idbReqObj.error );  // What: Error Handler Assignment. Why: A failed IndexedDB request must reject the wrapping Promise with that request's own error. How: This assigns an onerror handler that calls rejErrFun with idbReqObj.error.
+	idbReqObj.onerror   = () => rejErrFun( idbReqObj.error ); // What: Error Handler Assignment. Why: A failed IndexedDB request must reject the wrapping Promise with that request's own error. How: This assigns an onerror handler that calls rejErrFun with idbReqObj.error.
 
 
 } );
@@ -201,7 +201,9 @@ function opeDatFun() {
 		if ( !window.indexedDB ) return rejErrFun( new Error( 'no indexedDB' ) ); // What: No IndexedDB Guard. Why: Some browsers/modes (very old browsers, some private-mode configurations) expose no indexedDB global at all. How: This rejects immediately rather than calling indexedDB.open on an object that does not exist.
 
 
+
 		let opeReqObj; // What: Open Request Object. Why: The actual open() call can itself throw in some environments rather than returning a request object. How: This is declared here so the try/catch below can assign it without redeclaring it.
+
 
 		try { opeReqObj = indexedDB.open( DAT_NAM_STR, DAT_VER_NUM ); } // What: Database Open Try. Why: This is the actual call that opens (or creates) the database, keyed by DAT_NAM_STR and DAT_VER_NUM. How: This assigns the resulting IDBOpenDBRequest to opeReqObj for the handlers below.
 
@@ -222,8 +224,8 @@ function opeDatFun() {
 		};
 
 
-		opeReqObj.onsuccess = () => resValFun( opeReqObj.result );            // What: Open Success Handler Assignment. Why: A successful open must resolve the wrapping Promise with the now-ready database connection. How: This calls resValFun with opeReqObj's own result.
-		opeReqObj.onerror   = () => rejErrFun( opeReqObj.error );             // What: Open Error Handler Assignment. Why: A failed open must reject the wrapping Promise with that failure's own error. How: This calls rejErrFun with opeReqObj's own error.
+		opeReqObj.onsuccess = () => resValFun( opeReqObj.result );           // What: Open Success Handler Assignment. Why: A successful open must resolve the wrapping Promise with the now-ready database connection. How: This calls resValFun with opeReqObj's own result.
+		opeReqObj.onerror   = () => rejErrFun( opeReqObj.error );            // What: Open Error Handler Assignment. Why: A failed open must reject the wrapping Promise with that failure's own error. How: This calls rejErrFun with opeReqObj's own error.
 		opeReqObj.onblocked = () => rejErrFun( new Error( 'idb blocked' ) ); // What: Open Blocked Handler Assignment. Why: A pending version change blocked by another open tab must not hang the caller forever. How: This rejects with a dedicated error the moment onblocked fires.
 
 
@@ -350,7 +352,8 @@ async function wriDatFun( appStaObj ) {
 
 
 	const { pickLog: picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr, leaving every other field in resStaObj.
-	const cloStaObj = JSON.parse( JSON.stringify( resStaObj ) );          // What: Clone State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
+
+	const cloStaObj = JSON.parse( JSON.stringify( resStaObj ) ); // What: Clone State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
 
 
 	await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).put( cloStaObj, 'main' ) ); // What: State Store Put Call. Why: This is the actual write of the non-pickLog portion of state into its own object store. How: This awaits reqProFun wrapping a put(cloStaObj, 'main') request against the state object store.
@@ -358,6 +361,7 @@ async function wriDatFun( appStaObj ) {
 
 
 	const logEmpBoo = !picLogArr || !picLogArr.length; // What: Log Empty Boolean. Why: Later logic must tell an intentionally-empty pick log apart from one that is empty only because it was never actually read from the mirror. How: This is true whenever picLogArr is missing or has no entries.
+
 
 	if ( logSusBoo && logEmpBoo ) return; // What: Suspect Empty Log Guard. Why: A placeholder empty log adopted from the warm mirror must never overwrite the real pick log history already sitting in IDB. How: This bails out before the pick log store is touched at all, whenever both logSusBoo and logEmpBoo hold.
 
@@ -399,7 +403,7 @@ async function wriDatFun( appStaObj ) {
  * @param void - This function takes no parameters.
  *
  * @returns The parsed localStorage state object, or null when nothing
- * is stored under LS_KEY, or the stored value fails to parse.
+ * is stored under MIR_KEY_STR, or the stored value fails to parse.
  *
  * @example
  * ```ts
@@ -414,9 +418,11 @@ function reaLocFun() {
 	try { // What: Local Read Try. Why: Both localStorage.getItem and JSON.parse can throw (a blocked origin, corrupted data), and either failure should be treated the same way. How: This wraps the whole read-and-parse sequence below so any such error falls through to the catch's own null return.
 
 
-		const rawJsoStr = localStorage.getItem( LS_KEY ); // What: Raw Json String. Why: The mirror's own raw text must be read before it can be parsed. How: This reads whatever is currently stored under LS_KEY.
+		const rawJsoStr = localStorage.getItem( MIR_KEY_STR ); // What: Raw Json String. Why: The mirror's own raw text must be read before it can be parsed. How: This reads whatever is currently stored under MIR_KEY_STR.
 
-		if ( !rawJsoStr ) return null; // What: No Raw Json Guard. Why: A fresh install (or one that has never fallen back to localStorage) has nothing stored under LS_KEY at all. How: This returns null immediately rather than attempting to parse an empty value.
+
+		if ( !rawJsoStr ) return null; // What: No Raw Json Guard. Why: A fresh install (or one that has never fallen back to localStorage) has nothing stored under MIR_KEY_STR at all. How: This returns null immediately rather than attempting to parse an empty value.
+
 
 
 		const parStaObj = JSON.parse( rawJsoStr ); // What: Parsed State Object. Why: The caller needs a real object, not the raw JSON text. How: This parses rawJsoStr into a plain JS object.
@@ -480,6 +486,7 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 
 		let payDatObj = appStaObj; // What: Payload Data Object. Why: The value actually written depends on fulWriBoo, computed just below. How: This starts as appStaObj itself and is only replaced when fulWriBoo is false.
 
+
 		if ( !fulWriBoo ) { // What: Not Full Write Check. Why: A warm-mirror write (as opposed to a fallback-engine write) must exclude pickLog entirely. How: This rebuilds payDatObj without pickLog, flagged with __mirrorNoLog, whenever fulWriBoo is false.
 
 
@@ -491,7 +498,8 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 		}
 
 
-		localStorage.setItem( LS_KEY, JSON.stringify( payDatObj ) ); // What: Local Storage Set Call. Why: This is the actual mirror write every caller of wriLocFun exists to perform. How: This serializes payDatObj to JSON text and writes it under LS_KEY.
+
+		localStorage.setItem( MIR_KEY_STR, JSON.stringify( payDatObj ) ); // What: Local Storage Set Call. Why: This is the actual mirror write every caller of wriLocFun exists to perform. How: This serializes payDatObj to JSON text and writes it under MIR_KEY_STR.
 
 		mirWriBoo = true; // What: Mirror Write Boolean Update. Why: A successful write here means the mirror is now trustworthy again after any earlier failure. How: This sets mirWriBoo true unconditionally, reached only once setItem above has not thrown.
 
@@ -511,6 +519,8 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 
 
 		mirWriBoo = false; // What: Mirror Write Boolean Failure Update. Why: staRepFun's own status report must reflect that the last mirror write did not actually succeed. How: This sets mirWriBoo false.
+
+
 
 		return false; // What: Local Write Failure Return. Why: The caller needs to know the mirror write did not go through. How: This returns false to signal the failure caught above.
 
@@ -562,23 +572,23 @@ async function iniStoFun() {
 
 
 		datConObj = await opeDatFun(); // What: Database Connection Object Assignment. Why: Every later IDB read/write in this boot sequence (and in every other function in this file) needs this same open connection. How: This awaits opeDatFun and stores its resolved IDBDatabase.
-
-		curEngStr = 'idb'; // What: Current Engine String Assignment. Why: A successful open means IndexedDB is now the engine of record for the rest of this session. How: This sets curEngStr to 'idb'.
-
+		curEngStr = 'idb';             // What: Current Engine String Assignment. Why: A successful open means IndexedDB is now the engine of record for the rest of this session. How: This sets curEngStr to 'idb'.
 		cacStaObj = await reaDatFun(); // What: Cached State Object Assignment. Why: An already-migrated install has its real state sitting in IDB already, which must be loaded before any migration logic below even considers running. How: This awaits reaDatFun and stores whatever it resolves, including null for a fresh IDB.
 
 
 		if ( !cacStaObj ) { // What: No Cached State Check. Why: A null cacStaObj means this is either a genuinely fresh install, or one with existing localStorage data still waiting to be migrated into the new IDB store. How: This gates the whole migration block below so it only ever runs once, on that first IDB boot.
 
 
-			const legStaObj = reaLocFun(); // What: Legacy State Object. Why: Any pre-IDB installation would have its real data sitting in localStorage under LS_KEY, which must be found before it can be migrated. How: This calls reaLocFun, resolving to null for a genuinely fresh install.
+			const legStaObj = reaLocFun(); // What: Legacy State Object. Why: Any pre-IDB installation would have its real data sitting in localStorage under MIR_KEY_STR, which must be found before it can be migrated. How: This calls reaLocFun, resolving to null for a genuinely fresh install.
+
 
 			if ( legStaObj ) { // What: Legacy State Check. Why: The migration below must only run when there is actually something in localStorage worth migrating. How: This gates the whole migration attempt on legStaObj being non-null.
 
 
-				try { if ( !localStorage.getItem( LS_SNAPSHOT ) ) localStorage.setItem( LS_SNAPSHOT, localStorage.getItem( LS_KEY ) ); } // What: Snapshot Set Try. Why: A rollback copy must be taken before the migration below touches anything, in case the new IDB store turns out not to read back correctly. How: This writes the current LS_KEY contents under LS_SNAPSHOT, but only if no snapshot already exists there.
+				try { if ( !localStorage.getItem( MIG_SNA_STR ) ) localStorage.setItem( MIG_SNA_STR, localStorage.getItem( MIR_KEY_STR ) ); } // What: Snapshot Set Try. Why: A rollback copy must be taken before the migration below touches anything, in case the new IDB store turns out not to read back correctly. How: This writes the current MIR_KEY_STR contents under MIG_SNA_STR, but only if no snapshot already exists there.
 
 				catch ( e ) {} // What: Snapshot Set Guard. Why: The snapshot is a nicety, not a requirement, so a failure to write it must not abort the migration itself. How: This silently ignores any error from the inner setItem call above.
+
 
 
 				await wriDatFun( legStaObj ); // What: Legacy State Write Call. Why: This is the actual migration write, moving the legacy data into the new IDB stores. How: This awaits wriDatFun with legStaObj as the state to persist.
@@ -588,7 +598,15 @@ async function iniStoFun() {
 
 				if ( verStaObj && Array.isArray( verStaObj.pickers ) ) { cacStaObj = verStaObj; } // What: Verify State Success Check. Why: A readable pickers array is the concrete evidence that the migration actually stuck. How: This adopts verStaObj as the live cacStaObj once that check passes.
 
-				else { curEngStr = 'localStorage'; datConObj = null; cacStaObj = legStaObj; } // What: Verify State Failure Fallback. Why: A migration that did not stick must not be trusted, so this session stays on localStorage rather than risk it. How: This reverts curEngStr/datConObj and adopts the original legStaObj as cacStaObj instead.
+				else { // What: Verify State Failure Fallback. Why: A migration that did not stick must not be trusted, so this session stays on localStorage rather than risk it. How: This reverts curEngStr/datConObj and adopts the original legStaObj as cacStaObj instead.
+
+
+					curEngStr = 'localStorage'; // What: Current Engine String Revert. Why: An unverified migration must not leave this session trusting the new IDB store. How: This demotes curEngStr back to 'localStorage'.
+					datConObj = null;           // What: Database Connection Object Clear. Why: An unverified connection must not be reused by any later read/write in this session. How: This clears datConObj back to null.
+					cacStaObj = legStaObj;      // What: Cached State Object Fallback Adoption. Why: The original, still-intact legacy data is the only trustworthy state left once the migration itself could not be verified. How: This adopts legStaObj as the live cacStaObj instead of the unverified verStaObj.
+
+
+				}
 
 
 			}
@@ -599,7 +617,15 @@ async function iniStoFun() {
 
 	}
 
-	catch ( e ) { datConObj = null; curEngStr = 'localStorage'; cacStaObj = reaLocFun(); } // What: Storage Boot Guard. Why: Private mode, an opaque origin, or a blocked/hanging open must still leave the app able to boot. How: This falls all the way back to the localStorage engine and whatever reaLocFun can read.
+	catch ( e ) { // What: Storage Boot Guard. Why: Private mode, an opaque origin, or a blocked/hanging open must still leave the app able to boot. How: This falls all the way back to the localStorage engine and whatever reaLocFun can read.
+
+
+		datConObj = null;           // What: Database Connection Object Clear. Why: Whatever partial connection state the failed boot sequence above may have left behind must not be reused. How: This clears datConObj back to null.
+		curEngStr = 'localStorage'; // What: Current Engine String Fallback. Why: IndexedDB has failed outright, so this whole session must use localStorage as the engine of record instead. How: This sets curEngStr to 'localStorage'.
+		cacStaObj = reaLocFun();    // What: Cached State Object Fallback Read. Why: The app still needs whatever state it can get, and localStorage is the only remaining place to read it from. How: This calls reaLocFun and adopts its own result (or null) as cacStaObj.
+
+
+	}
 
 
 
@@ -620,7 +646,7 @@ async function iniStoFun() {
 			localStorage.setItem( BOO_KEY_STR, String( booCouNum ) ); // What: Boot Count Set Call. Why: The freshly-incremented count must actually be persisted for the next boot to read. How: This writes booCouNum back under BOO_KEY_STR as a string.
 
 
-			if ( booCouNum >= SNA_KEE_NUM ) localStorage.removeItem( LS_SNAPSHOT ); // What: Snapshot Retirement Check. Why: The migration snapshot only exists to roll back a bad migration, not to live forever as a permanent plaintext copy. How: This removes it once booCouNum reaches SNA_KEE_NUM.
+			if ( booCouNum >= SNA_KEE_NUM ) localStorage.removeItem( MIG_SNA_STR ); // What: Snapshot Retirement Check. Why: The migration snapshot only exists to roll back a bad migration, not to live forever as a permanent plaintext copy. How: This removes it once booCouNum reaches SNA_KEE_NUM.
 
 
 			if ( booCouNum >= SNA_KEE_NUM ) { // What: Dead Generation Sweep Check. Why: Every pre-IDB localStorage generation is a full plaintext copy of user data that the current layer never reads again once IDB is proven. How: This sweeps them, gated on the same booCouNum threshold as the snapshot retirement above.
@@ -629,7 +655,7 @@ async function iniStoFun() {
 				for ( const curKeyStr of ownKeyFun() ) { // What: Owned Key Sweep Loop. Why: Every owned key must be checked individually, since some (the live mirror, the boot counter, the mirror timestamp) must survive this sweep. How: This iterates every key ownKeyFun finds.
 
 
-					if ( curKeyStr !== LS_KEY && curKeyStr !== BOO_KEY_STR && curKeyStr !== MIR_TIM_STR ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never the three keys this layer still actively reads and writes. How: This removes curKeyStr unless it matches one of those three survivors.
+					if ( curKeyStr !== MIR_KEY_STR && curKeyStr !== BOO_KEY_STR && curKeyStr !== MIR_TIM_STR ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never the three keys this layer still actively reads and writes. How: This removes curKeyStr unless it matches one of those three survivors.
 
 
 				}
@@ -690,15 +716,22 @@ function savStaFun( appStaObj ) {
 		wriDatFun( appStaObj ).catch( () => { // What: State Write Catch. Why: A failed IDB write must not silently lose data. How: This falls back to a full localStorage write, and also demotes curEngStr so every later call goes straight to localStorage instead of retrying a broken IDB connection.
 
 
-			curEngStr = 'localStorage'; datConObj = null; wriLocFun( appStaObj, true );
+			curEngStr = 'localStorage'; // What: Current Engine String Demotion. Why: A failed IDB write means this session must stop trusting the broken connection. How: This demotes curEngStr to 'localStorage'.
+			datConObj = null;           // What: Database Connection Object Clear. Why: A connection that just failed to write must not be reused by any later call. How: This clears datConObj back to null.
+
+
+			wriLocFun( appStaObj, true ); // What: Full Local Write Call. Why: A failed IDB write must not silently lose data. How: This calls wriLocFun with fulWriBoo true, writing pickLog along with everything else.
 
 
 		} );
+
+
 
 		return; // What: Idb Path Return. Why: The IDB write above is already in flight (or has already failed and fallen back), so the plain localStorage call below must not also run. How: This exits before reaching wriLocFun's own unconditional call.
 
 
 	}
+
 
 
 	wriLocFun( appStaObj, true ); // What: Full Local Write Call. Why: This is the plain fallback-engine path, reached whenever IDB is not the current engine of record at all. How: This calls wriLocFun with fulWriBoo true, writing pickLog along with everything else.
@@ -794,7 +827,6 @@ async function wipDatFun() {
 
 
 			await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).clear() ); // What: State Store Clear Call. Why: This is the actual clear of the non-pickLog portion of state. How: This awaits reqProFun wrapping a clear() request against the state object store.
-
 			await reqProFun( traStoFun( PIC_LOG_STR, 'readwrite' ).clear() ); // What: Pick Log Store Clear Call. Why: This is the actual clear of the pick log. How: This awaits reqProFun wrapping a clear() request against the pick log object store.
 
 
@@ -807,7 +839,7 @@ async function wipDatFun() {
 
 
 
-	cacStaObj = null; // What: Cached State Object Reset. Why: The next read of STORAGE.cached() must reflect the wipe, not stale pre-wipe state. How: This resets cacStaObj back to null.
+	cacStaObj = null; // What: Cached State Object Reset. Why: The next read of STG_NAM_OBJ.cacStaFun() must reflect the wipe, not stale pre-wipe state. How: This resets cacStaObj back to null.
 
 
 }
@@ -857,15 +889,21 @@ async function datBytFun() {
 
 		const curStaObj = ( await reaPerFun() ) || cacStaObj; // What: Current State Object. Why: The freshest available state must be measured, preferring the authoritative persisted copy over the in-memory one. How: This awaits reaPerFun and falls back to cacStaObj only when that resolves to nothing.
 
+
 		if ( !curStaObj ) return null; // What: No Current State Guard. Why: A genuinely fresh install has nothing to measure at all. How: This returns null immediately when neither reaPerFun nor cacStaObj has anything.
+
 
 
 		const jsoTexStr = JSON.stringify( curStaObj ); // What: Json Text String. Why: The byte-size measurement below needs the exact serialized text that would actually be written to storage. How: This serializes curStaObj to JSON text.
 
 
+
 		if ( typeof Blob === 'function' ) return new Blob( [ jsoTexStr ] ).size; // What: Blob Size Return. Why: Blob gives an exact byte count and is the preferred measurement wherever it is available. How: This wraps jsoTexStr in a Blob and returns its own size.
 
+
+
 		if ( typeof TextEncoder === 'function' ) return new TextEncoder().encode( jsoTexStr ).length; // What: Text Encoder Size Return. Why: Some environments lack Blob but still support TextEncoder, which covers the same measurement. How: This encodes jsoTexStr and returns the resulting byte array's own length.
+
 
 
 		return null; // What: No Measurement Return. Why: An environment with neither Blob nor TextEncoder has no way to measure this at all. How: This returns null as the last resort.
@@ -912,7 +950,10 @@ async function staRepFun() {
 
 	let mirTimStr = null; // What: Mirror Time String. Why: The mirror freshness timestamp is read from localStorage, which can itself throw. How: This starts null and is only assigned inside the try block below.
 
-	try { mirTimStr = localStorage.getItem( MIR_TIM_STR ); } catch ( e ) {} // What: Mirror Time Read Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this status report. How: This assigns mirTimStr when readable, otherwise silently leaves it at its own null default.
+
+	try { mirTimStr = localStorage.getItem( MIR_TIM_STR ); } // What: Mirror Time Read Try. Why: The mirror freshness timestamp must actually be read from localStorage before it can be reported. How: This assigns mirTimStr from whatever is currently stored under MIR_TIM_STR.
+
+	catch ( e ) {} // What: Mirror Time Read Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this status report. How: This silently leaves mirTimStr at its own null default instead of letting the read throw.
 
 
 
@@ -926,12 +967,14 @@ async function staRepFun() {
 
 		if ( navigator.storage && navigator.storage.persisted ) outStaObj.persisted = await navigator.storage.persisted(); // What: Output Persisted Assignment Check. Why: The Settings panel needs to know whether eviction-exempt persistence has already been granted. How: This awaits navigator.storage.persisted() only when that API exists, assigning its result onto outStaObj.
 
+
 		if ( navigator.storage && navigator.storage.estimate ) { // What: Storage Estimate Check. Why: The Settings panel's headroom display needs the browser's own approximate usage/quota figures. How: This gates the estimate call and its two assignments below on that API existing at all.
 
 
 			const estResObj = await navigator.storage.estimate(); // What: Estimate Result Object. Why: Both usage and quota come from the same single estimate() call. How: This awaits navigator.storage.estimate() once and reuses its result for both assignments below.
 
-			outStaObj.usage = estResObj.usage; outStaObj.quota = estResObj.quota; // What: Output Usage And Quota Assignment. Why: Both figures need to reach the final report even though only headroom, not exact size, should ever be read from them. How: This copies estResObj's own usage and quota straight onto outStaObj.
+			outStaObj.usage = estResObj.usage; // What: Output Usage Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own usage straight onto outStaObj.
+			outStaObj.quota = estResObj.quota; // What: Output Quota Assignment. Why: This figure needs to reach the final report even though only headroom, not exact size, should ever be read from it. How: This copies estResObj's own quota straight onto outStaObj.
 
 
 		}
@@ -985,6 +1028,7 @@ async function reqPerFun() {
 		if ( !navigator.storage || !navigator.storage.persist ) return false; // What: No Persist Api Guard. Why: There is nothing to request at all in a browser without this API. How: This returns false immediately when either navigator.storage or its own persist method is missing.
 
 
+
 		if ( await navigator.storage.persisted() ) return true; // What: Already Persisted Guard. Why: A repeat call should not re-prompt when persistence was already granted earlier. How: This returns true immediately without ever calling persist() again.
 
 
@@ -1034,10 +1078,13 @@ async function reaPerFun() {
 	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: IDB is the actual store of record whenever it is the current engine, so it must be read directly rather than relying on any in-memory copy. How: This gates the direct reaDatFun read below on that condition.
 
 
-		try { return await reaDatFun(); } catch ( e ) { return null; } // What: Database Read Guard. Why: A read failure here must resolve to null rather than reject whichever caller (typically an export) invoked this. How: This awaits reaDatFun and falls back to null on any thrown error.
+		try { return await reaDatFun(); } // What: Database Read Try. Why: The actual IDB read must be attempted before any fallback can be considered. How: This awaits reaDatFun and returns its own resolved value directly.
+
+		catch ( e ) { return null; } // What: Database Read Guard. Why: A read failure here must resolve to null rather than reject whichever caller (typically an export) invoked this. How: This returns null instead of letting the error propagate.
 
 
 	}
+
 
 
 	return reaLocFun(); // What: Local Read Return. Why: Whenever IDB is not the engine of record, localStorage itself is the actual store of record. How: This returns reaLocFun's own result directly.
@@ -1079,21 +1126,26 @@ function logAutFun() { logSusBoo = false; } // What: Log Authoritative Body. Why
 
 
 
-export const STORAGE = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports, kept stable in shape even though the implementation names behind each property were renamed. How: This maps each of this file's own internal function/variable names onto the exact public property names pwa.js, main.jsx, store.jsx, and tab-settings.jsx already call.
+const cacStaFun = () => cacStaObj; // What: Cached State Function. Why: store.jsx's own loadState() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
+const curEngFun = () => curEngStr; // What: Current Engine Function. Why: Nothing outside this file currently reads which engine is active, but this stays exported as part of STG_NAM_OBJ's own stable public shape. How: This closes over the module-private curEngStr rather than exposing it directly.
 
 
-	cached           : () => cacStaObj, // What: Cached. Why: store.jsx's own loadState() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
-	engine           : () => curEngStr, // What: Engine. Why: Nothing outside this file currently reads which engine is active, but this stays exported as part of STORAGE's own stable public shape. How: This closes over the module-private curEngStr rather than exposing it directly.
-	flushSync        : fluSynFun,       // What: Flush Sync. Why: store.jsx calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This exposes fluSynFun under the property name every caller already imports.
-	init             : iniStoFun,       // What: Init. Why: main.jsx awaits this before React ever mounts, and store.jsx's own loadState() reads its result back synchronously afterward. How: This exposes iniStoFun under the property name every caller already imports.
-	logAuthoritative : logAutFun,       // What: Log Authoritative. Why: store.jsx calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This exposes logAutFun under the property name every caller already imports.
-	LS_KEY           : LS_KEY,          // What: Ls Key. Why: This stays exported as part of STORAGE's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level LS_KEY constant unchanged.
-	LS_SNAPSHOT      : LS_SNAPSHOT,     // What: Ls Snapshot. Why: This stays exported as part of STORAGE's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level LS_SNAPSHOT constant unchanged.
-	readPersisted    : reaPerFun,       // What: Read Persisted. Why: tab-settings.jsx calls this so an export can never inherit a truncated in-memory pickLog. How: This exposes reaPerFun under the property name every caller already imports.
-	requestPersist   : reqPerFun,       // What: Request Persist. Why: pwa.js calls this after real user engagement to request eviction-exempt storage. How: This exposes reqPerFun under the property name every caller already imports.
-	save             : savStaFun,       // What: Save. Why: store.jsx calls this on every debounced state change. How: This exposes savStaFun under the property name every caller already imports.
-	status           : staRepFun,       // What: Status. Why: tab-settings.jsx polls this to render the storage panel. How: This exposes staRepFun under the property name every caller already imports.
-	wipe             : wipDatFun        // What: Wipe. Why: store.jsx calls this from the Settings "Delete all data" flow. How: This exposes wipDatFun under the property name every caller already imports.
+
+export const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports by name. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
+
+
+	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: store.jsx's own loadState() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
+	curEngFun   : curEngFun,   // What: Current Engine Function. Why: Nothing outside this file currently reads which engine is active, but this stays exported as part of STG_NAM_OBJ's own stable public shape. How: This re-exports curEngFun under its own matching name.
+	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: store.jsx calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
+	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: main.jsx awaits this before React ever mounts, and store.jsx's own loadState() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
+	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: store.jsx calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
+	MIG_SNA_STR : MIG_SNA_STR, // What: Migration Snapshot String. Why: This stays exported as part of STG_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level MIG_SNA_STR constant unchanged.
+	MIR_KEY_STR : MIR_KEY_STR, // What: Mirror Key String. Why: This stays exported as part of STG_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level MIR_KEY_STR constant unchanged.
+	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: tab-settings.jsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
+	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: pwa.js calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
+	savStaFun   : savStaFun,   // What: Save State Function. Why: store.jsx calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
+	staRepFun   : staRepFun,   // What: Status Report Function. Why: tab-settings.jsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
+	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: store.jsx calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
 
 
 };

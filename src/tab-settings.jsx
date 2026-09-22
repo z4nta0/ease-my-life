@@ -25,7 +25,7 @@ import { PWA_NAM_OBJ  } from './pwa.js';                  // What: Progressive W
 import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
 import { SegConCom    } from './reminders.jsx';           // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
 import { SET_HEL_ARR  } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
-import { STORAGE      } from './storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own status()/readPersisted() methods.
+import { STG_NAM_OBJ  } from './storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own staRepFun()/reaPerFun() methods.
 import { useEscCanFun } from './ui.jsx';                  // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
 // #endregion Imports
@@ -1832,17 +1832,17 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	const [ pwaTikNum, setPwaTikNum ] = React.useState( 0 );    // What: Pwa Tick Number And Setter. Why: A PWA-layer change (install, persistence grant) needs to force a re-render even though it doesn't directly change any other piece of state here. How: This is incremented by the effect below whenever PWA_NAM_OBJ.subscribe fires, and is otherwise unread.
 	const [ perMesObj, setPerMesObj ] = React.useState( null ); // What: Persist Message Object And Setter. Why: Both the Install and Protect Data actions need somewhere to report their own outcome. How: This is set by onInsFun/onPerFun and rendered as a status line in the storage row.
 
-	React.useEffect( () => { // What: Storage Status Effect. Why: The storage row needs to read real, live status on mount and stay in sync with any later PWA-layer change. How: This reads STORAGE.status() once immediately, then again every time PWA reports a change, guarding against a result landing after unmount.
+	React.useEffect( () => { // What: Storage Status Effect. Why: The storage row needs to read real, live status on mount and stay in sync with any later PWA-layer change. How: This reads STG_NAM_OBJ.staRepFun() once immediately, then again every time PWA reports a change, guarding against a result landing after unmount.
 
 
-		let mntAliBoo = true; // What: Mount Alive Boolean. Why: An async STORAGE.status() read must not update state after this component has already unmounted. How: This starts true and is flipped false in this effect's own cleanup, checked before every state write below.
+		let mntAliBoo = true; // What: Mount Alive Boolean. Why: An async STG_NAM_OBJ.staRepFun() read must not update state after this component has already unmounted. How: This starts true and is flipped false in this effect's own cleanup, checked before every state write below.
 
-		const rdStaFun = () => { // What: Read Status Function. Why: This centralizes the actual status read so both the immediate call and the PWA-subscribe handler share the same logic. How: This calls STORAGE.status() and writes the result into stoStaObj, but only while still mounted.
+		const rdStaFun = () => { // What: Read Status Function. Why: This centralizes the actual status read so both the immediate call and the PWA-subscribe handler share the same logic. How: This calls STG_NAM_OBJ.staRepFun() and writes the result into stoStaObj, but only while still mounted.
 
 
-			if ( !STORAGE ) return; // What: No Storage Guard. Why: An environment somehow missing the storage layer entirely has nothing to read. How: This bails out early when STORAGE is unavailable.
+			if ( !STG_NAM_OBJ ) return; // What: No Storage Guard. Why: An environment somehow missing the storage layer entirely has nothing to read. How: This bails out early when STG_NAM_OBJ is unavailable.
 
-			STORAGE.status().then( ( staResObj ) => { if ( mntAliBoo ) setStoStaObj( staResObj ); } ); // What: Status Read Call. Why: This is the actual async read of where/how data is currently stored. How: This resolves STORAGE.status() and writes its result into stoStaObj, guarded by mntAliBoo.
+			STG_NAM_OBJ.staRepFun().then( ( staResObj ) => { if ( mntAliBoo ) setStoStaObj( staResObj ); } ); // What: Status Read Call. Why: This is the actual async read of where/how data is currently stored. How: This resolves STG_NAM_OBJ.staRepFun() and writes its result into stoStaObj, guarded by mntAliBoo.
 
 
 		};
@@ -1857,7 +1857,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		return () => { mntAliBoo = false; if ( pwaOffFun ) pwaOffFun(); }; // What: Effect Cleanup Function. Why: Both the alive flag and the PWA subscription must be torn down together on unmount. How: This flips mntAliBoo false and calls pwaOffFun, if one was actually created.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own subscription once, on mount. How: An empty array means it never re-subscribes; STORAGE and PWA_NAM_OBJ are stable module-level imports.
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own subscription once, on mount. How: An empty array means it never re-subscribes; STG_NAM_OBJ and PWA_NAM_OBJ are stable module-level imports.
 
 	const isaStaBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaStaFun() ); // What: Is-A Standalone Boolean. Why: Several install-related rows below need to know whether the app is already running installed/standalone. How: This calls PWA_NAM_OBJ.isaStaFun(), guarded against PWA_NAM_OBJ itself being unavailable.
 	const canInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.canInsFun() );   // What: Can Install Boolean. Why: The Install button itself should only render while an install prompt is actually available. How: This calls PWA_NAM_OBJ.canInsFun(), guarded against PWA_NAM_OBJ itself being unavailable.
@@ -1933,7 +1933,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		);
 
-		if ( STORAGE ) STORAGE.status().then( setStoStaObj ); // What: Storage Status Refresh Call. Why: A persistence grant is itself a change the storage row's own status should immediately reflect. How: This re-reads STORAGE.status() and writes the result straight into stoStaObj.
+		if ( STG_NAM_OBJ ) STG_NAM_OBJ.staRepFun().then( setStoStaObj ); // What: Storage Status Refresh Call. Why: A persistence grant is itself a change the storage row's own status should immediately reflect. How: This re-reads STG_NAM_OBJ.staRepFun() and writes the result straight into stoStaObj.
 
 
 	};
@@ -2020,10 +2020,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		try {
 
 
-			if ( STORAGE && STORAGE.readPersisted ) {
+			if ( STG_NAM_OBJ && STG_NAM_OBJ.reaPerFun ) {
 
 
-				const perStaObj = await STORAGE.readPersisted(); // What: Persisted State Object. Why: The real persisted pick log may be longer than whatever this session's in-memory state currently holds. How: This awaits STORAGE's own readPersisted() call.
+				const perStaObj = await STG_NAM_OBJ.reaPerFun(); // What: Persisted State Object. Why: The real persisted pick log may be longer than whatever this session's in-memory state currently holds. How: This awaits STG_NAM_OBJ's own reaPerFun() call.
 
 				if ( perStaObj && Array.isArray( perStaObj.pickLog ) && perStaObj.pickLog.length > ( state.pickLog || [] ).length ) expPayObj = { ...state, pickLog : perStaObj.pickLog }; // What: Fresher Pick Log Swap. Why: Only an actually-longer persisted pick log is worth swapping in; a shorter or equal one is not. How: This overwrites expPayObj's own pickLog with perStaObj's, keeping every other field from state.
 

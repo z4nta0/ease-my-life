@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { STORAGE } from './storage.js'; // What: Storage. Why: The persistence request below needs to reach the real storage engine to actually call navigator.storage.persist(). How: This is called inside askPerFun via STORAGE.requestPersist().
+import { STG_NAM_OBJ } from './storage.js'; // What: Storage Namespace Object. Why: The persistence request below needs to reach the real storage engine to actually call navigator.storage.persist(). How: This is called inside askPerFun via STG_NAM_OBJ.reqPerFun().
 
 // #endregion Imports
 
@@ -417,17 +417,17 @@ async function askPerFun( forAskBoo ) {
 
 
 
-	if ( !STORAGE ) return false; // What: No Storage Guard. Why: There is no persistence request to make at all without the storage layer this file delegates to. How: This returns false immediately when STORAGE itself is unavailable.
+	if ( !STG_NAM_OBJ ) return false; // What: No Storage Guard. Why: There is no persistence request to make at all without the storage layer this file delegates to. How: This returns false immediately when STG_NAM_OBJ itself is unavailable.
 
 
 
-	const askOkaBoo = await STORAGE.requestPersist(); // What: Ask Okay Boolean. Why: The caller needs to know whether persistence is now actually granted. How: This awaits STORAGE's own requestPersist call.
+	const askOkaBoo = await STG_NAM_OBJ.reqPerFun(); // What: Ask Okay Boolean. Why: The caller needs to know whether persistence is now actually granted. How: This awaits STG_NAM_OBJ's own reqPerFun call.
 
 	notSubFun(); // What: Notify Subscribers Call. Why: The Settings storage panel must re-read the now-possibly-changed persistence grant. How: This calls notSubFun.
 
 
 
-	return askOkaBoo; // What: Ask Persist Return. Why: The caller needs the same grant result STORAGE.requestPersist itself resolved. How: This returns the same askOkaBoo just awaited above.
+	return askOkaBoo; // What: Ask Persist Return. Why: The caller needs the same grant result STG_NAM_OBJ.reqPerFun itself resolved. How: This returns the same askOkaBoo just awaited above.
 
 
 }

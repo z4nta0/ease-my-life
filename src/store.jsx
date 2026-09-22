@@ -17,7 +17,7 @@ import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sam
 import { PIC_NAM_OBJ } from './pickers.js';              // What: Pickers Namespace Object. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (aveEasFun/DEF_EAS_OBJ) from addItem and commitPickerEdit below.
 import { PWA_NAM_OBJ } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicker below.
 import { SED_NAM_OBJ } from './seed.js';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loadState and by the reset action below.
-import { STORAGE     } from './storage.js';              // What: Storage. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loadState, saveState, flushState, and the reset/importData actions below.
+import { STG_NAM_OBJ } from './storage.js';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loadState, saveState, flushState, and the reset/importData actions below.
 import { TASKS       } from './tasks.js';                // What: Tasks. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migrate, reconcileStreak, and the task actions below.
 
 // #endregion Imports
@@ -1053,7 +1053,7 @@ function newEidFun() {
  * loadState = Load State
  *
  * @summary
- * Synchronous by design: STORAGE.init() has already resolved before
+ * Synchronous by design: STG_NAM_OBJ.iniStoFun() has already resolved before
  * React mounts (see the boot gate in the HTML shell), so the loaded
  * state is sitting in memory and no component had to become async. The
  * localStorage read is kept as a fallback for the case where storage.js
@@ -1078,20 +1078,20 @@ function newEidFun() {
 function loadState() {
 
 
-	try { // What: Cached-State Attempt. Why: STORAGE's own warm cache is the fastest, most authoritative source when it's available. How: This returns migrate() of STORAGE's own cached state, when there is one.
+	try { // What: Cached-State Attempt. Why: STG_NAM_OBJ's own warm cache is the fastest, most authoritative source when it's available. How: This returns migrate() of STG_NAM_OBJ's own cached state, when there is one.
 
 
-		const cchStaObj = STORAGE && STORAGE.cached(); // What: Cached State Object And Guard. Why: STORAGE may not exist at all, or may have nothing cached yet. How: This reads STORAGE.cached(), short-circuiting to undefined when STORAGE itself is falsy.
+		const cchStaObj = STG_NAM_OBJ && STG_NAM_OBJ.cacStaFun(); // What: Cached State Object And Guard. Why: STG_NAM_OBJ may not exist at all, or may have nothing cached yet. How: This reads STG_NAM_OBJ.cacStaFun(), short-circuiting to undefined when STG_NAM_OBJ itself is falsy.
 
 		if ( cchStaObj ) return migrate( cchStaObj ); // What: Cached-Hit Return. Why: A cached state is the normal, fast path and needs no further fallback. How: This returns migrate(cchStaObj) as soon as one exists.
 
 
 	}
 
-	catch ( errCauObj ) { /* fall through */ } // What: Cached-State Failure Guard. Why: A broken STORAGE module must not prevent booting from the localStorage fallback below. How: This swallows the error and falls through.
+	catch ( errCauObj ) { /* fall through */ } // What: Cached-State Failure Guard. Why: A broken STG_NAM_OBJ module must not prevent booting from the localStorage fallback below. How: This swallows the error and falls through.
 
 
-	try { // What: Localstorage Fallback Attempt. Why: This is the last-resort source when STORAGE itself failed to load at all. How: This returns migrate() of the parsed localStorage value, when there is one.
+	try { // What: Localstorage Fallback Attempt. Why: This is the last-resort source when STG_NAM_OBJ itself failed to load at all. How: This returns migrate() of the parsed localStorage value, when there is one.
 
 
 		const rawJsnStr = localStorage.getItem( STO_KEY_STR ); // What: Raw Json String And Guard. Why: There may be nothing stored under this key yet. How: This reads STO_KEY_STR from localStorage, null when absent.
@@ -1815,9 +1815,9 @@ function migrate( curStaObj ) {
  * saveState = Save State
  *
  * @summary
- * Persists curStaObj through STORAGE when it's available (the real,
+ * Persists curStaObj through STG_NAM_OBJ when it's available (the real,
  * debounced/idle-safe persistence engine), falling back to a plain
- * synchronous localStorage.setItem only when STORAGE itself is absent.
+ * synchronous localStorage.setItem only when STG_NAM_OBJ itself is absent.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1835,12 +1835,12 @@ function migrate( curStaObj ) {
 function saveState( curStaObj ) {
 
 
-	try { // What: Persist Attempt. Why: A storage failure (quota, disabled storage, ...) must never crash the caller. How: This delegates to STORAGE.save when available, else falls back to a raw localStorage write.
+	try { // What: Persist Attempt. Why: A storage failure (quota, disabled storage, ...) must never crash the caller. How: This delegates to STG_NAM_OBJ.savStaFun when available, else falls back to a raw localStorage write.
 
 
-		if ( STORAGE ) return STORAGE.save( curStaObj ); // What: Storage Delegate Return. Why: STORAGE is the real, debounced/idle-safe persistence engine and should always be preferred. How: This returns STORAGE.save(curStaObj) as soon as STORAGE exists.
+		if ( STG_NAM_OBJ ) return STG_NAM_OBJ.savStaFun( curStaObj ); // What: Storage Delegate Return. Why: STG_NAM_OBJ is the real, debounced/idle-safe persistence engine and should always be preferred. How: This returns STG_NAM_OBJ.savStaFun(curStaObj) as soon as STG_NAM_OBJ exists.
 
-		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STORAGE itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
+		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
 
 
 	}
@@ -1880,12 +1880,12 @@ function saveState( curStaObj ) {
 function flushState( curStaObj ) {
 
 
-	try { // What: Flush Attempt. Why: A storage failure during teardown must never throw while the page is going away. How: This delegates to STORAGE.flushSync when available, else falls back to a raw localStorage write.
+	try { // What: Flush Attempt. Why: A storage failure during teardown must never throw while the page is going away. How: This delegates to STG_NAM_OBJ.fluSynFun when available, else falls back to a raw localStorage write.
 
 
-		if ( STORAGE ) return STORAGE.flushSync( curStaObj ); // What: Storage Delegate Return. Why: STORAGE's own flushSync is the real synchronous-write path. How: This returns STORAGE.flushSync(curStaObj) as soon as STORAGE exists.
+		if ( STG_NAM_OBJ ) return STG_NAM_OBJ.fluSynFun( curStaObj ); // What: Storage Delegate Return. Why: STG_NAM_OBJ's own fluSynFun is the real synchronous-write path. How: This returns STG_NAM_OBJ.fluSynFun(curStaObj) as soon as STG_NAM_OBJ exists.
 
-		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STORAGE itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
+		localStorage.setItem( STO_KEY_STR, JSON.stringify( curStaObj ) ); // What: Localstorage Fallback Write. Why: This only runs when STG_NAM_OBJ itself failed to load at all. How: This writes curStaObj's own JSON string under STO_KEY_STR.
 
 
 	}
@@ -2115,10 +2115,10 @@ function useStore( optArgObj ) {
 		reset : async () => { // What: Reset Async Function. Why: This is the "Delete all data" action, and it must fully clear storage AND reload before anything (including this file's own flush effect) can re-persist stale state. How: See the design-rationale comment directly above.
 
 
-			try { // What: Wipe Attempt. Why: A storage failure here must not prevent the clean reload below from still happening. How: This awaits STORAGE.wipe() then STORAGE.logAuthoritative(), only when STORAGE itself exists.
+			try { // What: Wipe Attempt. Why: A storage failure here must not prevent the clean reload below from still happening. How: This awaits STG_NAM_OBJ.wipDatFun() then STG_NAM_OBJ.logAutFun(), only when STG_NAM_OBJ itself exists.
 
 
-				if ( STORAGE ) { await STORAGE.wipe(); STORAGE.logAuthoritative(); } // What: Storage Wipe And Log. Why: Both the actual IDB/localStorage clear and the authoritative-write marker must happen before anything else below runs. How: This awaits STORAGE.wipe(), then calls STORAGE.logAuthoritative().
+				if ( STG_NAM_OBJ ) { await STG_NAM_OBJ.wipDatFun(); STG_NAM_OBJ.logAutFun(); } // What: Storage Wipe And Log. Why: Both the actual IDB/localStorage clear and the authoritative-write marker must happen before anything else below runs. How: This awaits STG_NAM_OBJ.wipDatFun(), then calls STG_NAM_OBJ.logAutFun().
 
 
 			}
@@ -2217,7 +2217,7 @@ function useStore( optArgObj ) {
 		importData : ( impObjRaw ) => { // What: Import Data Function. Why: This is called with the parsed JSON blob a user just imported. How: This marks the next save authoritative (so an empty imported pickLog isn't treated as "nothing to save yet"), then replaces state wholesale via migrate().
 
 
-			try { if ( STORAGE ) STORAGE.logAuthoritative(); } catch ( errCauObj ) {} // What: Authoritative-Write Marker Guard. Why: STORAGE must treat the very next save as authoritative, not incremental, so an intentionally-empty imported log actually overwrites the old one. How: This calls STORAGE.logAuthoritative(), swallowing any error.
+			try { if ( STG_NAM_OBJ ) STG_NAM_OBJ.logAutFun(); } catch ( errCauObj ) {} // What: Authoritative-Write Marker Guard. Why: STG_NAM_OBJ must treat the very next save as authoritative, not incremental, so an intentionally-empty imported log actually overwrites the old one. How: This calls STG_NAM_OBJ.logAutFun(), swallowing any error.
 			setAppStaObj( migrate( impObjRaw ) ); // What: State Replace. Why: The imported blob becomes the entire new state, once migrated to the current shape. How: This calls setAppStaObj with migrate(impObjRaw).
 
 
