@@ -158,17 +158,17 @@ function PickerStrip ( { candidates, picked, style, onDone, forceMotion } ) {
 
 		let curPosNum = staPosNum; // What: Current Position Number. Why: The schedule loop below needs its own mutable running position, seeded from the same start the initial render used. How: This is incremented by 1 on every step inside schStpFun.
 		let steCouNum = 0;         // What: Step Count Number. Why: The schedule loop needs to know how many steps have elapsed so it can stop at totSteNum and shape the deceleration curve. How: This is incremented by 1 on every step inside schStpFun.
-		let cnlRunBoo = false;     // What: Cancel Run Boolean. Why: A pending setTimeout chain must stop scheduling further steps once this effect is cleaned up. How: This is flipped to true by the cleanup function and checked at the top of every scheduled step.
+		let canRunBoo = false;     // What: Cancel Run Boolean. Why: A pending setTimeout chain must stop scheduling further steps once this effect is cleaned up. How: This is flipped to true by the cleanup function and checked at the top of every scheduled step.
 
 		const schStpFun = ( gapTimNum ) => { // What: Schedule Step Function. Why: Each step's own timing depends on the previous step's computed duration, so the steps must schedule themselves recursively rather than run on one fixed interval. How: This waits gapTimNum ms, advances the position and step count, computes the next gap, updates state, then schedules itself again until totSteNum is reached.
 
 
-			if ( cnlRunBoo ) return; // What: Already Cancelled Guard. Why: A step that fires after cleanup ran must not do anything at all. How: This bails out before even setting the inner setTimeout.
+			if ( canRunBoo ) return; // What: Already Cancelled Guard. Why: A step that fires after cleanup ran must not do anything at all. How: This bails out before even setting the inner setTimeout.
 
 			setTimeout( () => { // What: Step Timeout. Why: This is the actual delay before this step's own state updates apply. How: This waits gapTimNum ms, then runs the step body below.
 
 
-				if ( cnlRunBoo ) return; // What: Cancelled-Mid-Wait Guard. Why: Cleanup may have run while this exact timeout was pending. How: This bails out before applying any state updates for this step.
+				if ( canRunBoo ) return; // What: Cancelled-Mid-Wait Guard. Why: Cleanup may have run while this exact timeout was pending. How: This bails out before applying any state updates for this step.
 
 				steCouNum++; // What: Step Count Increment. Why: This step has now actually happened. How: This advances the running step counter by 1.
 
@@ -205,7 +205,7 @@ function PickerStrip ( { candidates, picked, style, onDone, forceMotion } ) {
 
 		const kicOffTim = setTimeout( () => schStpFun( 40 ), 30 ); // What: Kickoff Timeout. Why: The very first step needs a small initial delay before the recursive chain above takes over. How: This starts the whole schedule loop with an initial 40ms gap, 30ms after this effect runs.
 
-		return () => { cnlRunBoo = true; clearTimeout( kicOffTim ); }; // What: Effect Cleanup Return. Why: A stale schedule chain must stop scheduling and its pending kickoff must not fire after this effect re-runs or unmounts. How: This flips cnlRunBoo so every already-queued step's own guard bails out, and cancels the kickoff timeout directly.
+		return () => { canRunBoo = true; clearTimeout( kicOffTim ); }; // What: Effect Cleanup Return. Why: A stale schedule chain must stop scheduling and its pending kickoff must not fire after this effect re-runs or unmounts. How: This flips canRunBoo so every already-queued step's own guard bails out, and cancels the kickoff timeout directly.
 
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -482,7 +482,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const [ insSavStr, setInsSavStr ] = React.useState( null ); // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtDftFun and cleared once the row's own insert keyframe finishes.
 	const [ cnfDelStr, setCnfDelStr ] = React.useState( null ); // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline, in place of that row's own normal content. How: This holds the id currently showing its own delete-confirm row.
 	const [ cnfLvgStr, setCnfLvgStr ] = React.useState( null ); // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
-	const cnlCnfFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears cnfDelStr immediately, or stages cnfLvgStr for 150ms first.
+	const canCnfFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears cnfDelStr immediately, or stages cnfLvgStr for 150ms first.
 
 
 		if ( redMotFun() ) { setCnfDelStr( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This clears the confirm state immediately and returns.
@@ -806,7 +806,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 				exiGroArr={ ediGroArr }
 				iniFrmObj={ ediIniObj }
 				iniGroStr={ picker.group }
-				onCnlFun={ () => setEdiOpnBoo( false ) }
+				onCanFun={ () => setEdiOpnBoo( false ) }
 				onSavFun={ ( payFrmObj ) => { actions.commitPickerEdit( picker.id, payFrmObj ); setEdiOpnBoo( false ); } }
 			/> // What: Picker Form Component. Why: Editing reuses PicForCom's own Details step instead of a separate edit form. How: This is passed this picker's own current settings as ediIniObj, and routes Save through actions.commitPickerEdit.
 
@@ -1124,7 +1124,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 											<div className='pool-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
-												<ButBasCom kind='ghost' size='sm' onClick={ cnlCnfFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls cnlCnfFun. */ }
+												<ButBasCom kind='ghost' size='sm' onClick={ canCnfFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls canCnfFun. */ }
 
 												<ButBasCom
 													kind='danger'
@@ -1499,7 +1499,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  * @param props.conObjArr - Conditional Object Array: Every existing
  *                          conditional, offered for attachment; defaults to
  *                          an empty array.
- * @param props.onCnlFun  - On Cancel Function: Called when the user backs out
+ * @param props.onCanFun  - On Cancel Function: Called when the user backs out
  *                          without creating/saving anything.
  * @param props.onCreFun  - On Create Function: Called with the finished
  *                          payload when a new picker is submitted (isaEdiBoo
@@ -1523,12 +1523,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  *
  * @example
  * ```tsx
- * PicForCom({ exiGroArr, iniGroStr, conObjArr, onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo }) // => <PicForCom />
+ * PicForCom({ exiGroArr, iniGroStr, conObjArr, onCanFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo }) // => <PicForCom />
  * ```
  *
 */
 
-function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo } ) {
+function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo } ) {
 
 
 	const touBusObj = useEmlTouFun(); // What: Tour Bus Object. Why: advStpFun needs to know whether a guided tour (of any kind) is currently driving the page, so it can skip its own scroll-to-top when a picker mini-tour is mid-flight. How: This subscribes to the shared tour event bus.
@@ -1736,7 +1736,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	const [ insDftStr, setInsDftStr ] = React.useState( null ); // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
 	const [ cnfDelStr, setCnfDelStr ] = React.useState( null ); // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
 	const [ cnfLvgStr, setCnfLvgStr ] = React.useState( null ); // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
-	const cnlCnfFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears cnfDelStr immediately, or stages cnfLvgStr for 150ms first.
+	const canCnfFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears cnfDelStr immediately, or stages cnfLvgStr for 150ms first.
 
 
 		if ( redMotFun() ) { setCnfDelStr( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This clears the confirm state immediately and returns.
@@ -2606,7 +2606,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 				<div className='np-footer-actions'>{ /* What: Footer Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. */ }
 
 
-					<ButBasCom kind='ghost' onClick={ onCnlFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a way to back out of this form entirely. How: This calls onCnlFun. */ }
+					<ButBasCom kind='ghost' onClick={ onCanFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a way to back out of this form entirely. How: This calls onCanFun. */ }
 
 					{ isaEdiBoo
 
@@ -2757,7 +2757,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 												<div className='pool-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
-													<ButBasCom kind='ghost' size='sm' onClick={ cnlCnfFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls cnlCnfFun. */ }
+													<ButBasCom kind='ghost' size='sm' onClick={ canCnfFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls canCnfFun. */ }
 
 													<ButBasCom
 														kind='danger'
@@ -3286,7 +3286,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 	}, [ state.pickers.length, exiGroArr.length, exiModArr.length, groFilStr, typFilStr, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any of these can change whether a rail's own content actually overflows, requiring the fades to be recomputed. How: state.pickers.length/exiGroArr.length/exiModArr.length/visPicArr.length all reflect content-size changes, and groFilStr/typFilStr reflect the Show row's own content changing under a new filter.
 
-	const scrTopFun = () => { // What: Scroll Top Function. Why: Both cnlCreFun below and the successful-create flow need to scroll the shared .main container back to the top. How: This queries for .main directly and scrolls it, if found.
+	const scrTopFun = () => { // What: Scroll Top Function. Why: Both canCreFun below and the successful-create flow need to scroll the shared .main container back to the top. How: This queries for .main directly and scrolls it, if found.
 
 
 		const scrConEle = document.querySelector( '.main' ); // What: Scroll Container Element. Why: The scroll call below needs the actual live DOM node. How: This queries for the .main element directly.
@@ -3296,7 +3296,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 	};
 	// What: Cancel Create Function. Why: Backing out of the create form should scroll up first (while the tall form is still mounted, so there's real distance to glide), then swap back to the picker view. How: This scrolls to top immediately under reduced motion (closing right away), otherwise scrolling first and closing 240ms later once the glide has had time to play.
-	const cnlCreFun = () => {
+	const canCreFun = () => {
 
 
 		if ( redMotFun() ) { setCreOpnBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped scroll animation. How: This closes the form immediately and returns.
@@ -3636,7 +3636,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 							iniFrmObj={ touBusObj.prefill || empIniObj || null }
 							iniGroStr={ groFilStr === 'all' ? '' : groFilStr }
 							opeTouBoo={ opeTouBoo }
-							onCnlFun={ () => { setOpeTouBoo( false ); setEmpIniObj( null ); cnlCreFun(); } }
+							onCanFun={ () => { setOpeTouBoo( false ); setEmpIniObj( null ); canCreFun(); } }
 							onCreFun={ ( payFrmObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This dedupes an onboarding revisit by name, tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
 
 
@@ -3646,7 +3646,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 									setOpeTouBoo( false ); // What: Tour Flag Clear Call. Why: This branch is itself the tour's own completion path, so the flag must not linger. How: This resets opeTouBoo to false.
 
-									cnlCreFun(); // What: Cancel Create Call. Why: The form must close exactly the same way a manual cancel would. How: This calls the shared cnlCreFun.
+									canCreFun(); // What: Cancel Create Call. Why: The form must close exactly the same way a manual cancel would. How: This calls the shared canCreFun.
 
 									if ( window.__emlPickerCreated ) window.__emlPickerCreated(); // What: Tour Advance Guard. Why: The tour still needs to advance past its own "create the picker" step, even though nothing new was actually created this time. How: This calls the global tour hook only if it's actually registered.
 

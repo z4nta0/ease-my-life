@@ -550,7 +550,7 @@ function ConSupCom ( { state, actions } ) {
 	};
 
 
-	const cnlFrmFun = () => { // What: Cancel Form Function. Why: Cancelling the form should discard the draft and fully reset its own transient state. How: This clears both drafts and every transient flag, then closes the form.
+	const canFrmFun = () => { // What: Cancel Form Function. Why: Cancelling the form should discard the draft and fully reset its own transient state. How: This clears both drafts and every transient flag, then closes the form.
 
 
 		setDraSubStr( '' ); setDraMesStr( '' ); setShoErrBoo( false ); // What: Draft And Error Reset. Why: A cancelled form must not leave stale text or a stale validation message behind for next time. How: This clears both drafts and the validation-error flag.
@@ -846,8 +846,8 @@ function ConSupCom ( { state, actions } ) {
 							<ButBasCom
 								kind='ghost'
 								size='sm'
-								onClick={ cnlFrmFun }
-							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit way to back out without sending. How: This calls cnlFrmFun when clicked. */ }
+								onClick={ canFrmFun }
+							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit way to back out without sending. How: This calls canFrmFun when clicked. */ }
 
 							<ButBasCom
 								kind='secondary'
@@ -2170,7 +2170,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 	};
 
-	const cnlImpFun = () => { // What: Cancel Import Function. Why: Explicitly cancelling should discard the staged backup and confirm nothing happened, distinct from a silent Escape dismissal. How: This announces the cancellation, then closes the confirmation the same way a successful import does.
+	const canImpFun = () => { // What: Cancel Import Function. Why: Explicitly cancelling should discard the staged backup and confirm nothing happened, distinct from a silent Escape dismissal. How: This announces the cancellation, then closes the confirmation the same way a successful import does.
 
 
 		if ( !penImpObj ) return; // What: No Pending Import Guard. Why: There is nothing to cancel if no backup is actually staged. How: This bails out early whenever penImpObj is null.
@@ -2184,7 +2184,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 	// Escape backs out of the import confirmation, like every other confirm
 	// here.
-	useEscCanFun( !!penImpObj && !impLeaBoo, cnlImpFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the import confirm is no exception. How: This calls useEscCanFun, active only while a backup is staged and not already leaving, invoking cnlImpFun.
+	useEscCanFun( !!penImpObj && !impLeaBoo, canImpFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the import confirm is no exception. How: This calls useEscCanFun, active only while a backup is staged and not already leaving, invoking canImpFun.
 
 	React.useEffect( () => { // What: Import Focus Effect. Why: Focus must be restored to the real Import button only in the commit where it has actually remounted back into the tree. How: This checks impFocRef, consuming the flag and focusing impButRef only once penImpObj has actually cleared.
 
@@ -3105,8 +3105,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 										<ButBasCom
 											kind='ghost'
 											size='sm'
-											onClick={ cnlImpFun }
-										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without importing. How: This calls cnlImpFun when clicked. */ }
+											onClick={ canImpFun }
+										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without importing. How: This calls canImpFun when clicked. */ }
 
 
 									</div>

@@ -2954,6 +2954,29 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     a straight 1-for-1 substitution with no column-alignment
     recalculation needed anywhere. No collision: none of the corrected
     names were already in use in the same scope anywhere)
+  - `cnl` → `can` (Cancel — swept the OPPOSITE direction from the usual
+    pattern in this list: found the MINORITY form, `cnl` (6 instances:
+    `cnlRunBoo`/`cnlCnfFun` ×2/`cnlCreFun` in `tab-picker.jsx`,
+    `cnlFrmFun`/`cnlImpFun` in `tab-settings.jsx`, plus the prop name
+    `onCnlFun`), while the MAJORITY of this codebase's own
+    "Cancel"-meaning identifiers already used `can` directly (~20
+    instances across `store.js`, `tab-data.jsx`, `tab-today.jsx`,
+    `reminders.jsx`, `onboarding-page-tours.jsx`,
+    `onboarding-tour-runner.jsx`, and `help-mode.jsx`, e.g. `canGroFun`,
+    `canNewFun`, `canRenFun`, `canEdiFun`, `canPenFun`), fixed to
+    `canRunBoo`/`canCnfFun`/`canCreFun`/`canFrmFun`/`canImpFun`/
+    `onCanFun`. `can` was deliberately left unescalated even though it
+    already carries 2 other established meanings (Candidate, e.g.
+    `tarCanNum`/`curCanObj`; the verb "can"/is-able-to, e.g.
+    `canInsFun`): the literal first-3-letters of "Cancel" already IS
+    `can`, and this codebase's own overwhelming real-world usage (~20
+    instances, all predating this fix) had already settled on it long
+    before `cnl` ever appeared anywhere, so `can` now carries a third,
+    easily-disambiguated meaning rather than `cnl` needing its own
+    escalation. Checked for collisions before applying: none of the 6
+    new names were already in use anywhere. Every comment referencing
+    these identifiers already spelled "Cancel" out in full, so none
+    needed text changes, only the identifiers themselves were wrong)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
