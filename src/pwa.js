@@ -205,6 +205,7 @@ function proSupFun() {
 	};
 
 
+
 	try { // What: Probe Support Try. Why: navigator.serviceWorker itself may not exist, and reading a missing property must not crash module load. How: This wraps the whole ready-check-and-race sequence below, falling back to finProFun in its own catch.
 
 
@@ -346,6 +347,7 @@ async function askInsFun() {
 	insCapObj = null; // What: Install Captured Object Reset. Why: A captured prompt can only ever be shown once; leaving insCapObj set would let a later caller try to reuse an already-consumed event. How: This clears insCapObj immediately after curEveObj has captured its own reference.
 
 	notSubFun(); // What: Notify Subscribers Call. Why: canInstall() must now report false, since the captured event is about to be shown (and consumed) below. How: This calls notSubFun so every subscriber re-reads the now-cleared insCapObj.
+
 
 
 	try { // What: Ask Install Try. Why: Both .prompt() and awaiting .userChoice can throw if the browser's own dialog fails to show. How: This wraps the actual prompt-and-await sequence below, falling back to 'unavailable' in its own catch.

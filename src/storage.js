@@ -205,9 +205,11 @@ function opeDatFun() {
 		let opeReqObj; // What: Open Request Object. Why: The actual open() call can itself throw in some environments rather than returning a request object. How: This is declared here so the try/catch below can assign it without redeclaring it.
 
 
+
 		try { opeReqObj = indexedDB.open( DAT_NAM_STR, DAT_VER_NUM ); } // What: Database Open Try. Why: This is the actual call that opens (or creates) the database, keyed by DAT_NAM_STR and DAT_VER_NUM. How: This assigns the resulting IDBOpenDBRequest to opeReqObj for the handlers below.
 
 		catch ( e ) { return rejErrFun( e ); } // What: Database Open Guard. Why: A thrown open() call has nothing further to attach handlers to. How: This rejects immediately with whatever error indexedDB.open itself threw.
+
 
 
 		opeReqObj.onupgradeneeded = () => { // What: Upgrade Needed Handler Assignment. Why: A first run (or a real version bump) needs both of this app's own object stores created before anything else can read or write them. How: This creates STA_STO_STR and PIC_LOG_STR whenever either is missing from the database being opened.
@@ -502,6 +504,7 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 		localStorage.setItem( MIR_KEY_STR, JSON.stringify( payDatObj ) ); // What: Local Storage Set Call. Why: This is the actual mirror write every caller of wriLocFun exists to perform. How: This serializes payDatObj to JSON text and writes it under MIR_KEY_STR.
 
 		mirWriBoo = true; // What: Mirror Write Boolean Update. Why: A successful write here means the mirror is now trustworthy again after any earlier failure. How: This sets mirWriBoo true unconditionally, reached only once setItem above has not thrown.
+
 
 
 		try { localStorage.setItem( MIR_TIM_STR, new Date().toISOString() ); } // What: Mirror Time Set Try. Why: The Settings storage panel reports backup freshness on a cold load, before any tab-hide has happened this session, so this timestamp must be persisted rather than kept only in memory. How: This writes the current time under MIR_TIM_STR.
@@ -814,6 +817,7 @@ async function wipDatFun() {
 	lplRefArr = undefined; // What: Last-Pick-Log Reference Reset. Why: A wiped store has nothing to compare a future write's own pickLog against. How: This resets lplRefArr back to its own initial undefined value.
 
 
+
 	try { for ( const curKeyStr of ownKeyFun() ) localStorage.removeItem( curKeyStr ); } // What: Owned Key Removal Try. Why: Older generations of this app wrote keys like 'easemylife.v1' and 'ease-my-life-v1', which are complete state blobs a fixed list would silently leave behind. How: This removes every key ownKeyFun finds, a prefix sweep rather than a hardcoded list.
 
 	catch ( e ) {} // What: Owned Key Removal Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this teardown. How: This silently ignores any error from the removal loop above.
@@ -951,6 +955,7 @@ async function staRepFun() {
 	let mirTimStr = null; // What: Mirror Time String. Why: The mirror freshness timestamp is read from localStorage, which can itself throw. How: This starts null and is only assigned inside the try block below.
 
 
+
 	try { mirTimStr = localStorage.getItem( MIR_TIM_STR ); } // What: Mirror Time Read Try. Why: The mirror freshness timestamp must actually be read from localStorage before it can be reported. How: This assigns mirTimStr from whatever is currently stored under MIR_TIM_STR.
 
 	catch ( e ) {} // What: Mirror Time Read Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this status report. How: This silently leaves mirTimStr at its own null default instead of letting the read throw.
@@ -960,6 +965,7 @@ async function staRepFun() {
 	const outStaObj = { engine : curEngStr, persisted : false, dataBytes : null, usage : null, quota : null, mirrorOk : mirWriBoo, mirrorAt : mirTimStr }; // What: Output Status Object. Why: This is the full report shape the Settings storage panel expects, seeded with everything already known synchronously. How: This is built once here and then filled in further by the awaited calls below.
 
 	outStaObj.dataBytes = await datBytFun(); // What: Output Data Bytes Assignment. Why: The exact persisted byte size can only be known after an async measurement. How: This awaits datBytFun and assigns its result onto outStaObj.
+
 
 
 	try { // What: Storage Estimate Try. Why: navigator.storage itself, or its persisted/estimate methods, may not exist in every browser. How: This wraps both optional calls below so an unsupported environment simply leaves outStaObj's own defaults in place.
