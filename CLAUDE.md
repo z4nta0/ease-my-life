@@ -2977,6 +2977,21 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     new names were already in use anywhere. Every comment referencing
     these identifiers already spelled "Cancel" out in full, so none
     needed text changes, only the identifiers themselves were wrong)
+  - `clm` → `cla` (Claimed — found in `preClmRef`/`clmNowBoo`
+    (`tab-today.jsx`'s own streak-pulse effect) and `wasClmBoo`/
+    `stkClmBoo` (`store.js`'s own `stkRecFun`), fixed to `preClaRef`/
+    `claNowBoo`/`wasClaBoo`/`stkClaBoo`; `clm` drops the word's own
+    vowel the same way `cnl`/`cln` did elsewhere in this list, rather
+    than taking its literal first 3 letters. Note `cla` already carries
+    3 other meanings in this codebase (Clamp, e.g. `claValFun`; Clause,
+    e.g. `tutClaStr`; Class, e.g. `extClaStr`), making this a fourth; a
+    name's own surrounding context (every one of these sits right next
+    to a `streakClaimed` read) disambiguates which "cla" stands for in
+    practice, the same reasoning already used for `con`/`sta`/`per`/
+    `fre` elsewhere in this list. Every comment referencing these
+    identifiers already spelled "Claimed" out in full, so none needed
+    text changes, only the identifiers themselves were wrong. No
+    collision: none of the corrected names were already in use anywhere)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

@@ -3199,7 +3199,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const strEleRef  = React.useRef( null );                          // What: Streak Element Reference. Why: The streak-pulse effect below needs a direct DOM handle to trigger its own CSS class on. How: This is attached to the .streak div's own ref prop below.
 	const preDonRef  = React.useRef( donCouNum );                     // What: Previous Done Reference. Why: The celebration effect needs last render's own donCouNum to detect a genuine rise. How: This starts at the initial donCouNum and is overwritten at the end of that same effect.
 	const preCplRef  = React.useRef( totCouNum > 0 && donCouNum === totCouNum ); // What: Previous Complete Reference. Why: The celebration effect needs last render's own completion state to detect a genuine 0-to-1 transition into "all done". How: This starts at the initial completion state and is overwritten at the end of that same effect.
-	const preClmRef  = React.useRef( !!state.today.streakClaimed );   // What: Previous Claimed Reference. Why: The streak-pulse effect needs last render's own claimed state to detect a genuine false-to-true transition. How: This starts at the initial claimed state and is overwritten at the end of that same effect.
+	const preClaRef  = React.useRef( !!state.today.streakClaimed );   // What: Previous Claimed Reference. Why: The streak-pulse effect needs last render's own claimed state to detect a genuine false-to-true transition. How: This starts at the initial claimed state and is overwritten at the end of that same effect.
 	const isaCplBoo  = totCouNum > 0 && donCouNum === totCouNum;      // What: Is-A Complete Boolean. Why: Both the header's title swap and the celebration effect need this same live completion check. How: This is true only once totCouNum is positive and donCouNum has reached it exactly.
 
 	const [ cplNonNum, setCplNonNum ] = React.useState( 0 ); // What: Completion Nonce Number And Setter. Why: Bumped every time the day transitions into complete, so the celebratory title re-mounts and replays its per-word reveal. How: This is incremented by the celebration effect below.
@@ -3397,9 +3397,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	React.useEffect( () => { // What: Streak Pulse Effect. Why: The streak badge needs its own brief pulse, firing once when today's first done is checked, i.e. when state.today.streakClaimed transitions false to true. How: This detects that transition and toggles a CSS class accordingly.
 
 
-		const clmNowBoo = !!state.today.streakClaimed; // What: Claimed Now Boolean. Why: This effect's own fresh claimed check must be computed here, not read from a prop, since it needs to compare against preClmRef before that ref is updated. How: This reads state.today.streakClaimed directly.
+		const claNowBoo = !!state.today.streakClaimed; // What: Claimed Now Boolean. Why: This effect's own fresh claimed check must be computed here, not read from a prop, since it needs to compare against preClaRef before that ref is updated. How: This reads state.today.streakClaimed directly.
 
-		if ( clmNowBoo && !preClmRef.current && strEleRef.current ) { // What: Fresh Claim Branch. Why: The pulse only plays on a genuine false-to-true transition, never on a re-render that was already claimed. How: This checks clmNowBoo against preClmRef's own prior value.
+		if ( claNowBoo && !preClaRef.current && strEleRef.current ) { // What: Fresh Claim Branch. Why: The pulse only plays on a genuine false-to-true transition, never on a re-render that was already claimed. How: This checks claNowBoo against preClaRef's own prior value.
 
 
 			const strCurEle = strEleRef.current; // What: Streak Current Element. Why: Every DOM manipulation below targets this same node. How: This reads strEleRef.current once and reuses it below.
@@ -3410,17 +3410,17 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			const bmpEndTim = setTimeout( () => strCurEle.classList.remove( 'is-bumped' ), 900 ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped 900ms later.
 
-			preClmRef.current = clmNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClmRef with clmNowBoo.
+			preClaRef.current = claNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClaRef with claNowBoo.
 
 			return () => clearTimeout( bmpEndTim ); // What: Effect Cleanup Return. Why: A stale bump-end timeout must not fire after a newer effect run has already begun. How: This cancels bmpEndTim.
 
 
 		}
 
-		preClmRef.current = clmNowBoo; // What: Previous Claimed Update. Why: Even a non-transition still needs preClmRef to track the latest value for next time. How: This overwrites preClmRef with the current clmNowBoo.
+		preClaRef.current = claNowBoo; // What: Previous Claimed Update. Why: Even a non-transition still needs preClaRef to track the latest value for next time. How: This overwrites preClaRef with the current claNowBoo.
 
 
-	}, [ state.today.streakClaimed ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when the persisted streakClaimed flag itself changes. How: state.today.streakClaimed is exactly what preClmRef is compared against.
+	}, [ state.today.streakClaimed ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when the persisted streakClaimed flag itself changes. How: state.today.streakClaimed is exactly what preClaRef is compared against.
 
 
 
