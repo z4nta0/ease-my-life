@@ -957,30 +957,30 @@ function LoaCarCom ( { picker : picRecObj, info : infRecObj } ) {
 
 // #region EntryEditor
 
-const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }, forRefObj ) { // What: Entry Editor. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: mirrors the Pickers-tab per-item controls (a weight stepper for weighted/dynamic, cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete). How: This snapshots item on mount so Cancel/an implicit close can revert it, stages every live edit directly onto the real item via actions.updIteFun, and exposes a keep() imperative handle so an external close affordance can mark a save as already-handled.
+const EntryEditor = React.forwardRef( function EntryEditor ( { iteDatObj, picDatObj, actStoObj, onCloEdiFun, onCanEdiFun, onDelIteFun, isaNewBoo, iteCouNum, picIteArr }, forRefObj ) { // What: Entry Editor. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: mirrors the Pickers-tab per-item controls (a weight stepper for weighted/dynamic, cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete). How: This snapshots item on mount so Cancel/an implicit close can revert it, stages every live edit directly onto the real item via actions.updIteFun, and exposes a keep() imperative handle so an external close affordance can mark a save as already-handled.
 
 
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Delete is confirm-gated, morphing the footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt below.
-	const minIteBoo = itemCount != null && itemCount <= 2; // What: Minimum Item Boolean. Why: A picker needs at least 2 items for a pick to be a real choice, so this one must be refused if deleting it would drop below that; itemCount is the picker's CURRENT total including this item, and a caller that never wires it up (undefined) is treated as unrestricted rather than silently blocking. How: This is true only when itemCount is actually known and already at or under 2.
+	const minIteBoo = iteCouNum != null && iteCouNum <= 2; // What: Minimum Item Boolean. Why: A picker needs at least 2 items for a pick to be a real choice, so this one must be refused if deleting it would drop below that; iteCouNum is the picker's CURRENT total including this item, and a caller that never wires it up (undefined) is treated as unrestricted rather than silently blocking. How: This is true only when iteCouNum is actually known and already at or under 2.
 
 
-	const oriIteRef = React.useRef( item ); // What: Original Item Reference. Why: Cancel (or an implicit close) needs to restore the item exactly as it was when this editor opened. How: This snapshots item once, on mount, never updated afterward.
+	const oriIteRef = React.useRef( iteDatObj ); // What: Original Item Reference. Why: Cancel (or an implicit close) needs to restore the item exactly as it was when this editor opened. How: This snapshots item once, on mount, never updated afterward.
 	const cloWayRef = React.useRef( null ); // What: Close Way Reference. Why: A caller with its OWN close affordance outside this component (e.g. the Data tab row's own collapse chevron) can call the exposed keep() first so that affordance reads as "done, keep this" rather than an implicit close; this distinguishes 'saved'/'cancel' (closed explicitly) from null (still open, so an implicit close such as a tab switch or reload should discard the unsaved live edits). How: This is written by every explicit action below and read by the pagehide/unmount effect further down.
 
 	React.useImperativeHandle( forRefObj, () => ( { keep : () => { cloWayRef.current = 'saved'; } } ) ); // What: Imperative Handle Publish. Why: An external close affordance needs a way to mark this editor's own edits as already-handled before it closes. How: This exposes a single keep method that just flips cloWayRef to 'saved'.
 
 
-	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCancel with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actions.revIteFun.
+	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCanEdiFun with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actions.revIteFun.
 
 
-		if ( onCancel ) onCancel( oriIteRef.current );
+		if ( onCanEdiFun ) onCanEdiFun( oriIteRef.current );
 
-		else actions.revIteFun( oriIteRef.current.id, oriIteRef.current );
+		else actStoObj.revIteFun( oriIteRef.current.id, oriIteRef.current );
 
 
 	};
 
-	const canEdiFun = () => { cloWayRef.current = 'cancel'; revStaFun(); if ( !onCancel ) onClose(); }; // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCancel) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onClose.
+	const canEdiFun = () => { cloWayRef.current = 'cancel'; revStaFun(); if ( !onCanEdiFun ) onCloEdiFun(); }; // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCanEdiFun) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onCloEdiFun.
 
 	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
 
@@ -992,7 +992,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	} );
 
-	const savCloFun = () => { cloWayRef.current = 'saved'; onClose(); }; // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips cloWayRef, then calls onClose.
+	const savCloFun = () => { cloWayRef.current = 'saved'; onCloEdiFun(); }; // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips cloWayRef, then calls onCloEdiFun.
 
 
 	/**
@@ -1024,7 +1024,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 			if ( !Array.isArray( rawStaObj.items ) ) return; // What: No Items Array Guard. Why: A malformed or very old mirror shape has nothing safe to patch. How: This bails out unless rawStaObj.items is a real array.
 
 
-			rawStaObj.items = onCancel // What: Items Patch. Why: A brand-new item (onCancel supplied) never belonged in the mirror at all, while an existing one just needs its pre-edit snapshot restored. How: This filters the new item out entirely, or maps the existing one back to oriIteRef's own snapshot.
+			rawStaObj.items = onCanEdiFun // What: Items Patch. Why: A brand-new item (onCanEdiFun supplied) never belonged in the mirror at all, while an existing one just needs its pre-edit snapshot restored. How: This filters the new item out entirely, or maps the existing one back to oriIteRef's own snapshot.
 				? rawStaObj.items.filter( ( curIteObj ) => curIteObj.id !== oriIteRef.current.id )
 				: rawStaObj.items.map( ( curIteObj ) => curIteObj.id === oriIteRef.current.id ? oriIteRef.current : curIteObj );
 
@@ -1064,7 +1064,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	// #region Mode-Derived Display Values
 
-	const picModStr = picker ? picker.mode : 'random';                   // What: Picker Mode String. Why: Nearly every row below renders differently depending on the picker's own mode. How: This reads picker.mode, falling back to 'random' when no picker was passed at all.
+	const picModStr = picDatObj ? picDatObj.mode : 'random';                   // What: Picker Mode String. Why: Nearly every row below renders differently depending on the picker's own mode. How: This reads picker.mode, falling back to 'random' when no picker was passed at all.
 	const isaEasBoo = picModStr === 'ease-up' || picModStr === 'ease-down'; // What: Is-A Ease Boolean. Why: Ease-up/ease-down show a cadence range instead of a weight stepper, since weight is irrelevant to those modes. How: This is true for either ease mode.
 	const hasWeiBoo = picModStr === 'weighted' || picModStr === 'dynamic'; // What: Has Weight Boolean. Why: Weight is only a real lever for weighted/dynamic; random picks uniformly and ease modes ignore it entirely. How: This is true for either of those two modes.
 	const isaDynBoo = picModStr === 'dynamic'; // What: Is-A Dynamic Boolean. Why: Only dynamic mode also shows the Boost row beneath its weight stepper. How: This is true only when picModStr is 'dynamic'.
@@ -1077,22 +1077,22 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	const thrValNum = 100; // What: Threshold Value Number. Why: Every drift/day conversion below shares this same fixed scale. How: This is read by every conversion function in this region.
 
-	const drfSooFun = ( easMaxNum ) => Math.max( 1, Math.round( thrValNum / ( easMaxNum || 1 ) ) ); // What: Drift Soonest Function. Why: A "Soonest" day count is the human face of an item's own ease-max drift value. How: This converts easMaxNum into a day count, matching the exact conversion the new-picker form itself uses.
-	const drfLatFun = ( easMinNum ) => Math.max( 1, Math.round( thrValNum / ( easMinNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts easMinNum into a day count, the same conversion as drfSooFun, mirrored for the opposite bound.
-	const dayDrfFun = ( dayCouNum ) => thrValNum / Math.max( 1, dayCouNum ); // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of drfSooFun/drfLatFun.
+	const driSooFun = ( easMaxNum ) => Math.max( 1, Math.round( thrValNum / ( easMaxNum || 1 ) ) ); // What: Drift Soonest Function. Why: A "Soonest" day count is the human face of an item's own ease-max drift value. How: This converts easMaxNum into a day count, matching the exact conversion the new-picker form itself uses.
+	const driLatFun = ( easMinNum ) => Math.max( 1, Math.round( thrValNum / ( easMinNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts easMinNum into a day count, the same conversion as driSooFun, mirrored for the opposite bound.
+	const dayDriFun = ( dayCouNum ) => thrValNum / Math.max( 1, dayCouNum ); // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of driSooFun/driLatFun.
 
-	const falEasObj = picker ? PIC_NAM_OBJ.aveEasFun( items, picker.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PIC_NAM_OBJ.aveEasFun against this picker's own items.
-	const curEasMinNum = item.easeMin ?? falEasObj?.easeMin ?? 10; // What: Current Ease Min Number. Why: This is the item's own resolved lower drift bound, read once and reused throughout this region. How: This reads item.easeMin, falling back to falEasObj's own easeMin, then a fixed 10.
-	const curEasMaxNum = item.easeMax ?? falEasObj?.easeMax ?? 20; // What: Current Ease Max Number. Why: This is the item's own resolved upper drift bound, read once and reused throughout this region. How: This reads item.easeMax, falling back to falEasObj's own easeMax, then a fixed 20.
-	const sooDayNum = drfSooFun( curEasMaxNum ); // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts curEasMaxNum via drfSooFun.
-	const latDayNum = drfLatFun( curEasMinNum ); // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts curEasMinNum via drfLatFun.
+	const falEasObj = picDatObj ? PIC_NAM_OBJ.aveEasFun( picIteArr, picDatObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PIC_NAM_OBJ.aveEasFun against this picker's own items.
+	const curEasMinNum = iteDatObj.easeMin ?? falEasObj?.easeMin ?? 10; // What: Current Ease Min Number. Why: This is the item's own resolved lower drift bound, read once and reused throughout this region. How: This reads item.easeMin, falling back to falEasObj's own easeMin, then a fixed 10.
+	const curEasMaxNum = iteDatObj.easeMax ?? falEasObj?.easeMax ?? 20; // What: Current Ease Max Number. Why: This is the item's own resolved upper drift bound, read once and reused throughout this region. How: This reads item.easeMax, falling back to falEasObj's own easeMax, then a fixed 20.
+	const sooDayNum = driSooFun( curEasMaxNum ); // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts curEasMaxNum via driSooFun.
+	const latDayNum = driLatFun( curEasMinNum ); // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts curEasMinNum via driLatFun.
 
 	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updIteFun.
 
 
-		const newEasMaxNum = dayDrfFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Ease Max Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDrfFun.
+		const newEasMaxNum = dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Ease Max Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDriFun.
 
-		actions.updIteFun( item.id, { easeMax : newEasMaxNum, easeMin : Math.min( curEasMinNum, newEasMaxNum ) } ); // What: Update Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax, clamping easeMin down to match if it would otherwise exceed the new easeMax.
+		actStoObj.updIteFun( iteDatObj.id, { easeMax : newEasMaxNum, easeMin : Math.min( curEasMinNum, newEasMaxNum ) } ); // What: Update Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax, clamping easeMin down to match if it would otherwise exceed the new easeMax.
 
 
 	};
@@ -1100,9 +1100,9 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updIteFun.
 
 
-		const newEasMinNum = dayDrfFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Ease Min Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDrfFun.
+		const newEasMinNum = dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Ease Min Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDriFun.
 
-		actions.updIteFun( item.id, { easeMin : newEasMinNum, easeMax : Math.max( curEasMaxNum, newEasMinNum ) } ); // What: Update Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin, clamping easeMax up to match if it would otherwise fall under the new easeMin.
+		actStoObj.updIteFun( iteDatObj.id, { easeMin : newEasMinNum, easeMax : Math.max( curEasMaxNum, newEasMinNum ) } ); // What: Update Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin, clamping easeMax up to match if it would otherwise fall under the new easeMin.
 
 
 	};
@@ -1111,7 +1111,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	const sooLabStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 	const latLabStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
 
-	const uniWorFun = ( couNum ) => CAD_NAM_OBJ.uniWorFun( picker && picker.cadence, couNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and couNum.
+	const uniWorFun = ( couNum ) => CAD_NAM_OBJ.uniWorFun( picDatObj && picDatObj.cadence, couNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and couNum.
 
 	const sooSubEle = isaDowBoo // What: Soonest Sub Element. Why: The Soonest/Shortest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days minimum" for ease-down, or "N days until pickable again" otherwise.
 		? <>stays picked <strong>{ sooDayNum } { uniWorFun( sooDayNum ) }</strong> minimum</>
@@ -1199,7 +1199,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									min={ 1 }
 									max={ 60 }
 									onSet={ setSooFun }
-									ariLabStr={ `${ sooLabStr } for ${ item.name }` }
+									ariLabStr={ `${ sooLabStr } for ${ iteDatObj.name }` }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. */ }
@@ -1250,7 +1250,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									min={ 1 }
 									max={ 90 }
 									onSet={ setLatFun }
-									ariLabStr={ `${ latLabStr } for ${ item.name }` }
+									ariLabStr={ `${ latLabStr } for ${ iteDatObj.name }` }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. */ }
@@ -1274,8 +1274,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 									<span
 										className='pie-sub set-sub-fade'
-										key={ ( item.value ?? 0 ) >= thrValNum ? 'full' : 'part' }
-									>{ ( item.value ?? 0 ) >= thrValNum ? <>item is <strong>fully charged</strong> at { Math.round( item.value ?? 0 ) }</> : <>item at <strong>{ Math.round( item.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached thrValNum, keyed by which one is showing. */ }
+										key={ ( iteDatObj.value ?? 0 ) >= thrValNum ? 'full' : 'part' }
+									>{ ( iteDatObj.value ?? 0 ) >= thrValNum ? <>item is <strong>fully charged</strong> at { Math.round( iteDatObj.value ?? 0 ) }</> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached thrValNum, keyed by which one is showing. */ }
 
 
 								</div>
@@ -1283,8 +1283,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 								<FilButCom
 									label='Fill'
-									disabled={ ( item.value ?? 0 ) >= ( picker.threshold ?? 100 ) }
-									onClick={ () => actions.updIteFun( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
+									disabled={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									onClick={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -1305,8 +1305,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 									<span
 										className='pie-sub set-sub-fade'
-										key={ ( item.value ?? 0 ) >= thrValNum ? 'full' : 'part' }
-									>{ ( item.value ?? 0 ) >= thrValNum ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( item.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached thrValNum, keyed by which one is showing. */ }
+										key={ ( iteDatObj.value ?? 0 ) >= thrValNum ? 'full' : 'part' }
+									>{ ( iteDatObj.value ?? 0 ) >= thrValNum ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached thrValNum, keyed by which one is showing. */ }
 
 
 								</div>
@@ -1314,8 +1314,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 								<FilButCom
 									label='Refill'
-									disabled={ ( item.value ?? 0 ) >= ( picker.threshold ?? 100 ) }
-									onClick={ () => actions.updIteFun( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
+									disabled={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									onClick={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -1341,8 +1341,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 							<span
 								className='pie-sub set-sub-fade'
-								key={ item.weight }
-							>{ item.weight === 1 ? <><strong>baseline</strong> pick chance</> : <><strong>{ item.weight }&times;</strong> more likely than w1</> }</span>{ /* What: Subtitle Span Element. Why: The live weight subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.weight is the baseline 1, keyed by weight. */ }
+								key={ iteDatObj.weight }
+							>{ iteDatObj.weight === 1 ? <><strong>baseline</strong> pick chance</> : <><strong>{ iteDatObj.weight }&times;</strong> more likely than w1</> }</span>{ /* What: Subtitle Span Element. Why: The live weight subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.weight is the baseline 1, keyed by weight. */ }
 
 
 						</div>
@@ -1353,16 +1353,16 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 							<button
 								aria-label='Less weight'
-								disabled={ item.weight <= 1 }
-								onClick={ () => actions.setWeiFun( item.id, Math.max( 1, item.weight - 1 ) ) }
+								disabled={ iteDatObj.weight <= 1 }
+								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.max( 1, iteDatObj.weight - 1 ) ) }
 							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps item.weight down to a minimum of 1 via actions.setWeiFun. */ }
 
-							<span className='weight-val'>w{ item.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
+							<span className='weight-val'>w{ iteDatObj.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
 
 							<button
 								aria-label='More weight'
-								disabled={ item.weight >= 9 }
-								onClick={ () => actions.setWeiFun( item.id, Math.min( 9, item.weight + 1 ) ) }
+								disabled={ iteDatObj.weight >= 9 }
+								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.min( 9, iteDatObj.weight + 1 ) ) }
 							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps item.weight up to a maximum of 9 via actions.setWeiFun. */ }
 
 
@@ -1409,8 +1409,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 							<span
 								className='pie-sub set-sub-fade'
-								key={ ( item.value || 0 ) > 0 ? 'boost' : 'none' }
-							>{ ( item.value || 0 ) > 0 ? <><strong>+{ item.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Subtitle Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
+								key={ ( iteDatObj.value || 0 ) > 0 ? 'boost' : 'none' }
+							>{ ( iteDatObj.value || 0 ) > 0 ? <><strong>+{ iteDatObj.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Subtitle Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
 
 
 						</div>
@@ -1420,8 +1420,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 
 							<BooResCom
-								value={ item.value || 0 }
-								onReset={ () => actions.updIteFun( item.id, { value : 0 } ) }
+								value={ iteDatObj.value || 0 }
+								onReset={ () => actStoObj.updIteFun( iteDatObj.id, { value : 0 } ) }
 							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actions.updIteFun on reset. */ }
 
 
@@ -1440,23 +1440,23 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 						<span
 							className='pie-lbl set-sub-fade'
-							key={ `lbl-${ !!item.vacation }` }
-						>{ item.vacation ? 'Inactive' : 'Active' }</span>{ /* What: Label Span Element. Why: The row's own heading text itself flips with the item's own current state. How: This renders "Inactive" or "Active" depending on item.vacation, keyed so the flip fades. */ }
+							key={ `lbl-${ !!iteDatObj.vacation }` }
+						>{ iteDatObj.vacation ? 'Inactive' : 'Active' }</span>{ /* What: Label Span Element. Why: The row's own heading text itself flips with the item's own current state. How: This renders "Inactive" or "Active" depending on item.vacation, keyed so the flip fades. */ }
 
 						<span
 							className='pie-sub set-sub-fade'
-							key={ `sub-${ !!item.vacation }` }
-						>{ item.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</> }</span>{ /* What: Subtitle Span Element. Why: The live eligibility subtitle needs its own fade-replace key so a toggle visibly refreshes it. How: This renders one of two phrasings depending on item.vacation, keyed the same way as the label above. */ }
+							key={ `sub-${ !!iteDatObj.vacation }` }
+						>{ iteDatObj.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</> }</span>{ /* What: Subtitle Span Element. Why: The live eligibility subtitle needs its own fade-replace key so a toggle visibly refreshes it. How: This renders one of two phrasings depending on item.vacation, keyed the same way as the label above. */ }
 
 
 					</div>
 
 
 					<button
-						className={ `switch ${ !item.vacation ? 'is-on' : '' }` }
-						aria-pressed={ !item.vacation }
-						aria-label={ item.vacation ? 'Activate' : 'Deactivate' }
-						onClick={ () => actions.togVacFun( item.id, 'item' ) }
+						className={ `switch ${ !iteDatObj.vacation ? 'is-on' : '' }` }
+						aria-pressed={ !iteDatObj.vacation }
+						aria-label={ iteDatObj.vacation ? 'Activate' : 'Deactivate' }
+						onClick={ () => actStoObj.togVacFun( iteDatObj.id, 'item' ) }
 					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actions.togVacFun, scoped to 'item'. */ }
 
 
@@ -1489,8 +1489,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 						<ButBasCom
 							kind='danger'
 							size='sm'
-							onClick={ () => ( onDelete ? onDelete() : actions.delIteFun( item.id ) ) }
-						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelete when supplied, otherwise removes the item directly via actions.delIteFun. */ }
+							onClick={ () => ( onDelIteFun ? onDelIteFun() : actStoObj.delIteFun( iteDatObj.id ) ) }
+						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun when supplied, otherwise removes the item directly via actions.delIteFun. */ }
 
 
 					</div>
@@ -1505,10 +1505,10 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 				<div
 					className='rem-inline-foot rd-edit-foot'
 					key='foot'
-				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes itemCount here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isNew, then the Cancel/Save pair. */ }
+				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. */ }
 
 
-					{ !isNew && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.
+					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.
 
 
 						<InfTipCom
@@ -5841,13 +5841,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 																	<EntryEditor
-																		item={ curIteObj }
-																		picker={ curPicObj }
-																		actions={ actions }
-																		items={ state.items }
-																		itemCount={ state.items.filter( ( curIteObj ) => curIteObj.pickerId === curPicObj.id ).length }
-																		onClose={ () => setActiveEditor( ( curValStr ) => curValStr === `item:${ curEntObj.eid }` ? null : curValStr ) }
-																		onDelete={ () => hndDelFun( curEntObj.eid, curIteObj.id ) }
+																		iteDatObj={ curIteObj }
+																		picDatObj={ curPicObj }
+																		actStoObj={ actions }
+																		picIteArr={ state.items }
+																		iteCouNum={ state.items.filter( ( curIteObj ) => curIteObj.pickerId === curPicObj.id ).length }
+																		onCloEdiFun={ () => setActiveEditor( ( curValStr ) => curValStr === `item:${ curEntObj.eid }` ? null : curValStr ) }
+																		onDelIteFun={ () => hndDelFun( curEntObj.eid, curIteObj.id ) }
 																	/>{ /* What: Entry Editor. Why: This is the actual shared item editor. How: This is passed curIteObj/curPicObj, this picker's own live item count, and a close/delete handler pair. */ }
 
 

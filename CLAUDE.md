@@ -323,7 +323,7 @@ decision is captured for next time instead of getting re-asked later.
   single line**, unlike the one-binding-per-`import` rule above, with
   one comment generalized to describe everything the statement exports
   (not a separate comment per binding). See `tab-conditional.jsx`'s own
-  `export { CodConCom, conDrfFun };` for the reference example.
+  `export { CodConCom, conDraFun };` for the reference example.
 
 ### Indentation
 - Use tabs for indentation, one tab per nesting level — not spaces.
@@ -419,7 +419,7 @@ decision is captured for next time instead of getting re-asked later.
     stays exactly where it is, since it was never the repeated
     boilerplate this exception targets. See `help-content.jsx`'s own
     header comment for the reference example: it documents its shared
-    `{ bodEle, groStr?, ideStr, labStr?, mulBoo?, padXNum?, padYNum?,
+    `{ bodEle, groStr?, ideStr, labStr?, mulBoo?, padXcoNum?, padYcoNum?,
     scrBoo?, selStr, shaStr?, titStr }` catalog-item shape once (its own
     fields listed alphabetically, per the object-property-ordering rule
     below), and none of its 210 individual items repeat those same 11
@@ -488,7 +488,7 @@ decision is captured for next time instead of getting re-asked later.
     ".ob-spot" box-shadow/is-dragging behavior moved into a second
     `{ /* */ }` block right after the element's own identity comment.
 - **A topic that is specifically about one property's own value or
-  implementation quirk** (e.g. "padXNum: 4 exists because...", "mulBoo
+  implementation quirk** (e.g. "padXcoNum: 4 exists because...", "mulBoo
   is true because...", "titStr/bodEle are functions because...") moves
   out of the leading position entirely and becomes a normal trailing
   comment on that property's own line instead, right after its value —
@@ -501,8 +501,8 @@ decision is captured for next time instead of getting re-asked later.
   BOTH `titStr` and `bodEle` are functions), copy the identical comment
   text onto each of those properties' own lines rather than picking
   just one. See `help-content.jsx`'s own `editMode` item for the
-  reference example: `padXNum`'s own override reasoning sits after
-  `padXNum`'s own value, and the "title/body are functions..."
+  reference example: `padXcoNum`'s own override reasoning sits after
+  `padXcoNum`'s own value, and the "title/body are functions..."
   explanation is copied verbatim after both `titStr` and `bodEle`.
   - **Exception — a property-specific topic that actually explains
     SEVERAL SIBLING ITEMS at once**, not just the one item it happens
@@ -1505,11 +1505,10 @@ don't invent one for anything else yet:
       in order and a shorthand written later would silently wipe out the
       longhand's value. Alphabetize everything else normally around that
       pair.
-    - **Not yet applied**: this rule was written on 2026-09-24 and is
-      deliberately deferred to a single app-wide pass run after every
-      file's own manual review is finished (about 55 `style={{` objects
-      across the JSX files), not applied piecemeal during individual
-      reviews.
+    - **When it's applied**: this rule was written on 2026-09-24. From
+      `tab-data.jsx`'s review onward it's applied as part of each file's
+      own manual review; files reviewed before that get it during the
+      second, file-by-file pass that follows every manual review.
   - **Computed keys (`[ someVar ] : value`) form their own group, placed
     ahead of every normally named property**, so their bracketed keys
     never sit in the same `:`-aligned column as plain names (which would
@@ -1737,6 +1736,12 @@ don't invent one for anything else yet:
     entry's own differently-named 4th field (`daysOfWeek`/`interval`/
     `dayOfMonth`/`month`+`day`) still lines up by position, closing `}`
     included.
+    Aligning the closing `}` this way also lines up every row's own
+    trailing comment for free, since each row's code then ends at the
+    same column; the last row, which has no trailing comma, gets one
+    space in its place (`}  //` instead of `}, //`) so its comment still
+    lands in that same column. See `tab-data.jsx`'s own `SEC_SOR_ARR`/
+    `CIS_OPT_ARR` for further examples.
     - **Exception — stop aligning before a long/paragraph-length
       property.** Once a row's own value for a given property is
       genuinely prose-length (a sentence or more, varying wildly in
@@ -2501,17 +2506,26 @@ attribute) are ordered into these 8 tiers, top to bottom:
   - **Even within the same keyword and the same plain/destructured
     shape, a run further splits by whether each declaration's own
     VALUE is single-line or spans multiple lines** (a function body,
-    an array/object literal, ...). Two adjacent single-line-valued
-    declarations still tightly group at 0-blank as normal, but any
-    transition where EITHER side of a pair is multi-line-valued gets
-    exactly 1 blank line instead — symmetric in both directions
+    an array/object literal, a multi-line `useMemo`/`useCallback`,
+    ...). Two adjacent single-line-valued declarations still tightly
+    group at 0-blank as normal, but any transition where EITHER side of
+    a pair is multi-line-valued breaks out of the run entirely and
+    falls back to relatedness tiering, symmetric in both directions
     (entering a multi-line value, leaving one back to a single-line
-    value, or between two consecutive multi-line values). E.g.
-    `pwa.js`'s own `staGraNum`/`finProFun`: `const staGraNum = 2500;`
-    (single-line) followed immediately by `const finProFun = () => {
-    ... };` (a multi-line arrow function that reads staGraNum in its
-    own body) gets 1 blank line between them, not 0, even though they
-    share keyword, shape, and a tightly-connected purpose.
+    value, or between two consecutive multi-line values): 2 blank
+    lines when the two are genuinely connected (one reads the other,
+    or they're sibling handlers building the same feature, e.g. a
+    Cancel/Save pair), 3 blank lines when they share no real data or
+    purpose. The multi-line value's own body is a separate block of
+    code, so the tighter 0/1-blank declaration-run tiers never apply
+    across it. E.g. `pwa.js`'s own `staGraNum`/`finProFun`: `const
+    staGraNum = 2500;` followed by `const finProFun = () => { ... };`,
+    which reads staGraNum in its own body, gets 2 blank lines; in
+    `tab-data.jsx`, `canNewFun`/`savNewFun` (sibling draft handlers)
+    get 2, while `savNewFun` followed by the unrelated `draCarRef` gets
+    3. (An earlier version of this rule fixed every such transition at
+    1 blank line; files reviewed before 2026-09-25 get corrected in the
+    final file-by-file pass.)
   - **A run also splits when it mixes standard-length (9-char/3-segment)
     names with a non-standard, longer composite name** (e.g. a 4-segment
     Initialism-compression case like `lmsLonPriNum`). Forcing the
@@ -3467,6 +3481,38 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `cusColObj`, `addCusFun`), and `cst` drops the word's own vowel the same
     way `cnl`/`cln`/`clm`/`tdy` did elsewhere in this list. No collision:
     `curCusObj` was not already in use anywhere)
+  - `opn` → `ope` (Open, found across a dozen `tab-data.jsx` names,
+    e.g. `opnIdeStr`/`isaOpnBoo`/`onOpnSecFun`, fixed to `opeIdeStr`/
+    `isaOpeBoo`/`onOpeSecFun`; `ope` was already the established code for
+    Open elsewhere, e.g. `opeIdeStr` in `reminders.jsx`. Instances in
+    `tab-picker.jsx` and `tab-settings.jsx` remain for their own reviews)
+  - `drf` → `dra` (Draft, found across `tab-data.jsx`, e.g. `newDrfStr`/
+    `isaDrfBoo`/`drfCrdRef`, plus the shared `conDrfFun` export from
+    `tab-conditional.jsx` and its `tab-picker.jsx` import, fixed to
+    `conDraFun`. `tab-today.jsx`'s own `drfSooFun`/`drfLatFun`/
+    `dayDrfFun` used `drf` for Drift instead, a different word whose
+    literal first 3 letters are `dri`, fixed to `driSooFun`/`driLatFun`/
+    `dayDriFun`)
+  - A batch of vowel-drop spellings found together in one `tab-data.jsx`
+    pass, each fixed to its word's literal first 3 letters: `ftr` → `foo`
+    (Footer, `fooActFun`/`fooDisBoo`/`fooLabStr`/`fooTipStr`), `flp` →
+    `fli` (Flip, `fliFirRef`/`groFliRef`), `flb` → `fal` (Fallback,
+    `falEasObj`), `frz` → `fro` (Frozen, `froIndRef`, matching
+    `reminders.jsx`'s own), `org` → `ori` (Original, `oriGroRef`), `son` →
+    `soo` (Soonest, `sooValNum`), `rng` → `ran` (Range, `conRanFun`),
+    `str` → `sta` (Start, `staAddFun`/`staNewFun`), `crt` → `cre`
+    (Create, `disCreBoo`), `crd` → `car` (Card, `draCarRef`), `dsp` →
+    `dis` (Display, `disIteArr`, matching `reminders.jsx`'s own
+    `disTasArr`), `rdr` → `sho` (Rendered, `shoSecArr`, following the
+    same "Shown" synonym `tab-today.jsx`'s own `rndOrdRef` resolved to,
+    since `ren` reads first as Rename via `renPicFun`/`renIteFun`), and
+    `blr` →
+    `blu` (Blur, `bluEveObj`). `bst` → `boo` (Boost, `conBooFun`) joins
+    `boo`'s existing Boost meaning (`booRouNum`). `nexIdsArr` also became
+    `nexIdeArr`, since "Ids" is a plural spelling, not the segment `Ide`.
+    `rel` → `rea` (Real, `isaRelBoo` → `isaReaBoo`, originally `realMode`;
+    "Mode" was dropped rather than compressed into `ram`, since the value
+    it's compared against already reads as a mode)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -3711,6 +3757,31 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     already documented for `con`/`sta`/`per`/`fre`/`dow`/`sho` elsewhere
     in this list. No literal identifier collision: `onRelPoiFun` was not
     already in use anywhere in the file or the wider codebase.
+- **An axis letter (X/Y) in a name becomes its own full segment,
+  `Xco`/`Yco` (X-Coordinate/Y-Coordinate)**: a variable or object
+  property holding a position, offset, or amount along one axis uses
+  `Xco` or `Yco` as a normal 3-letter segment, never a bare `X`/`Y`
+  letter, e.g. `preXcoNum` (Previous X-Coordinate Number), `difXcoNum`
+  (Difference X-Coordinate Number), never a bare-letter `preXNum`. The
+  `What:` expansion hyphenates it like an initialism segment:
+  `X-Coordinate`. A variable keeps the usual 9-character shape; an
+  object property follows the "Axis qualifier" bullet under the object
+  property naming rules below (e.g. `padXcoNum`).
+- **No unused positional parameters**: a parameter that exists only to
+  reach a later one (e.g. `Array.from`'s own element argument, always
+  `undefined` when mapping over `{ length : n }`) is never left in
+  place, whether as a bare `_` placeholder or a named-but-unread
+  parameter, since a future TypeScript migration would flag it as
+  unused. Restructure the call so the value actually needed arrives
+  first instead, e.g. `tab-data.jsx`'s own `Array.from( Array( 31
+  ).keys(), ( arrIndNum ) => arrIndNum + 1 )`, where `keys()` yields
+  the indices as the values themselves. Only when no such restructure
+  exists does the parameter stay, named like any other parameter.
+- **Comparator parameters use `One`/`Two`, never `a`/`b` prefixes**: a
+  sort comparator's own two parameters are named like any other pair of
+  same-kind values, with `One`/`Two` as segment 2, e.g. `cadence.js`'s
+  own `dowOneNum`/`dowTwoNum` and `tab-data.jsx`'s own `conOneObj`/
+  `conTwoObj`, not `aConObj`/`bConObj`.
 - **Acronym-reference rule**: when a name describes or refers to another
   named thing (a component, function, etc.), its own first segment is
   built from the first letter of *that* thing's own three segments,
@@ -3779,6 +3850,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     consonant-skeleton technique to reach for on a different project,
     where `rem` would truncate to "Remaining" the normal way with no
     such conflict.
+  - **The same override extended to Remove/Removing, requested by the
+    user**: `rem` = Reminder blocks "Remove" and "Removing" the same way
+    it blocks "Remaining", so both use their consonant skeleton `rmv`
+    instead of the literal `rem` or Phase A's own `reo`, which reads far
+    less clearly. E.g. `tab-data.jsx`'s own `rmvIdeStr` (Remove
+    Identifier String, the id passed to `delIteFun`/`delConFun`) and
+    `rmvPicStr`/`setRmvPicStr` (Removing Picker String, the card playing
+    its removal animation). This is separate from the store actions'
+    own `del` for "remove" (`delIteFun`, `delPicFun`, ...), which was
+    chosen for those action keys specifically. Scoped to ease-my-life
+    ONLY, for the same reason as `rmn`. Other files' own `rem`-as-
+    Remove/Removing names (e.g. `remIdeSet`) get fixed during each
+    file's own review.
   - **A second project-scoped override, requested by the user, this
     time keeping the ORIGINAL unescalated abbreviation rather than
     accepting a genuinely clean escalated candidate**: `reorder.js`'s
@@ -3804,6 +3888,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `cot` (the first genuinely clean Phase A candidate) or its own
     literal first-3-letters form, with no such conflict and no reason
     to keep `cmp` unescalated.
+  - **A third project-scoped override, the same shape as `cmp`**:
+    `tab-data.jsx`'s own `cmtGroFun` (Commit Group Function) keeps `cmt`
+    for "Commit", per the user's own explicit preference. The literal
+    first-3-letters `com` is Component (the same heavy overload as the
+    `cmp` case), and Phase A's own first clean candidate would have been
+    `coi`, which reads far less clearly than `cmt`. Scoped to ease-my-life
+    ONLY, for the same reason as `cmp`.
   - **When even the escalation letters collide, pick a different word
     entirely rather than force one through**: `tab-today.jsx`'s own
     `rndOrdRef`/`rndArr` (holding the group order actually rendered to
@@ -3864,22 +3955,17 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     without resolving the collision, stop and ask the user what to do —
     don't guess a different word unprompted the way the general rule's
     final fallback does.
-  - **Atomic single-letter axis qualifier**: some properties are
-    inherently a base concept PLUS a single-letter axis/index (X vs Y
-    being the common case) that has no "first 3 letters" to take, since
-    it isn't a word being truncated at all. Rather than force it into
-    one 3-letter segment (which would either drop the axis entirely, or
-    produce a non-word like reversing the axis and word together),
-    attach the literal single letter directly after the truncated base
-    word, before the type segment, breaking the strict 6-character
-    count as a deliberate, documented exception — e.g. a catalog item's
-    own horizontal/vertical highlight-padding override in
-    `help-content.jsx` became `padXNum`/`padYNum` (Pad + X/Y + Number),
-    not a compressed `xpaNum`/`ypaNum`. This is the property-name
-    equivalent of the general rule's own Initialism-compression and
-    Under-length-first-word-padding exceptions: a last resort for when
-    the concept genuinely can't survive a clean 2-segment compression,
-    not a shortcut to reach for whenever a name feels like a squeeze.
+  - **Axis qualifier**: some properties are inherently a base concept
+    PLUS an axis (X vs Y being the common case). The axis becomes its own
+    full segment, `Xco`/`Yco` (X-Coordinate/Y-Coordinate), placed after
+    the truncated base word and before the type segment, breaking the
+    strict 6-character count up to the full 9, the same way the
+    Full-word variant below does, e.g. a catalog item's own
+    horizontal/vertical highlight-padding override in `help-content.jsx`
+    is `padXcoNum`/`padYcoNum` (Pad + X-Coordinate/Y-Coordinate +
+    Number). This is the same `Xco`/`Yco` segment variables use (see the
+    axis-letter rule in the general naming rules above); it replaced an
+    earlier single-letter form (`padXNum`/`padYNum`).
   - **Full-word variant of the same exception**: the identical reasoning
     applies when the second concept IS a genuine truncatable word rather
     than a bare axis letter, e.g. a per-side padding amount needing

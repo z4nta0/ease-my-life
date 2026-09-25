@@ -9,7 +9,7 @@ import React from 'react'; // What: React. Why: This file's single component is 
 import { BooResCom   } from './ui.jsx';     // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
 import { ColDisCom   } from './ui.jsx';     // What: Collapse Disclosure Component. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
 import { FilButCom   } from './ui.jsx';     // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
-import { norConFun   } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDrfFun below.
+import { norConFun   } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDraFun below.
 import { NumSteCom   } from './ui.jsx';     // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
 import { SED_NAM_OBJ } from './seed.js';    // What: Seed Namespace Object. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked (MOD_DEF_OBJ) via Object.entries to render one radio option per mode.
 
@@ -699,7 +699,7 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 
 
 /**
- * conDrfFun = Conditional Draft Function
+ * conDraFun = Conditional Draft Function
  *
  * @summary
  * Builds the default draft for a brand-new conditional, named
@@ -721,12 +721,12 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
  *
  * @example
  * ```ts
- * conDrfFun(picNamStr, exiNamArr) // => default draft object
+ * conDraFun(picNamStr, exiNamArr) // => default draft object
  * ```
  *
 */
 
-const conDrfFun = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft Function Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
+const conDraFun = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft Function Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
 
 
 	const norPicStr = ( norConFun( picNamStr ) || '' ).trim();                                               // What: Normalize Picker String. Why: The default name's own picker-name prefix should be tidied the same way a typed name is. How: This calls norConFun against picNamStr, falling back to an empty string when it returns nothing.
@@ -763,6 +763,6 @@ const conDrfFun = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft 
 
 
 
-export { CodConCom, conDrfFun }; // What: Named Exports. Why: tab-picker.jsx and tab-data.jsx both render the shared conditional editor and both need a sensible starting draft for a brand-new conditional. How: This exports CodConCom (the editor component) and conDrfFun (the default-draft builder) by name.
+export { CodConCom, conDraFun }; // What: Named Exports. Why: tab-picker.jsx and tab-data.jsx both render the shared conditional editor and both need a sensible starting draft for a brand-new conditional. How: This exports CodConCom (the editor component) and conDraFun (the default-draft builder) by name.
 
 

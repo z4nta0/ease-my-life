@@ -12,7 +12,7 @@ import { CadConCom    } from './cadence-control.jsx';     // What: Cadence Contr
 import { clePicFun    } from './help-sample-data.js';     // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
 import { CodConCom    } from './tab-conditional.jsx';     // What: Conditional Control Component. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
 import { ColDisCom    } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
-import { conDrfFun    } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
+import { conDraFun    } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
 import { emlTouObj    } from './eml-tour-bus.js';         // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
 import { EntryEditor  } from './tab-today.jsx';           // What: Entry Editor. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { HelButCom    } from './help-mode.jsx';           // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helpOn boolean.
@@ -1353,10 +1353,10 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 										{ /* What: Editor Key Design Note. Why: Without a key keyed to ediLivObj.id, switching ediIteStr straight from one item to another (see strEdiFun) can commit in a single React batch with no intervening null render, so this would stay the SAME EntryEditor instance across the switch: its internal `orig` snapshot ref (captured once, on mount) would keep pointing at the FIRST item, and its unmount effect, which is what discards live edits via window.__editGuard when a close wasn't an explicit Save/Cancel, would never run at all. How: The key below forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
 										<EntryEditor
 											key={ ediLivObj.id }
-											item={ ediLivObj }
-											picker={ picker }
-											actions={ actions }
-											onClose={ () => setEdiCloBoo( true ) }
+											iteDatObj={ ediLivObj }
+											picDatObj={ picker }
+											actStoObj={ actions }
+											onCloEdiFun={ () => setEdiCloBoo( true ) }
 										/>
 
 									</div>
@@ -1434,11 +1434,11 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 								<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntryEditor's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntryEditor instance bound to dftActObj. */ }
 
 									<EntryEditor
-										item={ newIteObj }
-										picker={ picker }
-										actions={ dftActObj }
-										onClose={ () => setNewCloStr( 'save' ) }
-										onCancel={ () => setNewCloStr( 'cancel' ) }
+										iteDatObj={ newIteObj }
+										picDatObj={ picker }
+										actStoObj={ dftActObj }
+										onCloEdiFun={ () => setNewCloStr( 'save' ) }
+										onCanEdiFun={ () => setNewCloStr( 'cancel' ) }
 									/>
 
 								</div>
@@ -1609,7 +1609,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 	// What: Conditional On Boolean And Setter. Why: An optional conditional gate; when on, the user attaches an existing conditional or creates a fresh inline one. How: This starts on only when editing an existing picker that already has one attached.
 	const [ conOnBoo, setConOnBoo ] = React.useState( !!( iniFrmObj && iniFrmObj.conditionalId ) );
 	const [ conSelStr, setConSelStr ] = React.useState( ( iniFrmObj && iniFrmObj.conditionalId ) || null ); // What: Conditional Selected String And Setter. Why: This holds which conditional is chosen: an existing id, the literal 'new', or null. How: This starts from a prefilled conditionalId, or null.
-	const [ conDftObj, setConDftObj ] = React.useState( () => conDrfFun( '' ) ); // What: Conditional Draft Object And Setter. Why: Creating a fresh inline conditional needs its own draft shape to edit. How: This starts from the shared default, seeded with an empty name until the user actually opens the "Add New Conditional" pill.
+	const [ conDftObj, setConDftObj ] = React.useState( () => conDraFun( '' ) ); // What: Conditional Draft Object And Setter. Why: Creating a fresh inline conditional needs its own draft shape to edit. How: This starts from the shared default, seeded with an empty name until the user actually opens the "Add New Conditional" pill.
 	const [ conTouBoo, setConTouBoo ] = React.useState( false ); // What: Conditional Touched Boolean And Setter. Why: A name collision error should only surface once the user has actually tried to submit with one. How: This is flipped true by subFrmFun when a collision blocks submission.
 	// What: Conditional Tidy String. Why: Create-new requires a UNIQUE name; normalizing first, then comparing against existing conditionals (which are stored normalized), is what actually detects a real collision, not just a surface-level text match. How: This runs conDftObj's own name through the shared normalizer.
 	const conTidStr = norConFun( conDftObj.name ) || '';
@@ -2359,7 +2359,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 								<button
 									type='button'
 									className={ ` cnd-pill cnd-pill--new   ${ conSelStr === 'new' ? 'is-on' : '' } ` }
-									onClick={ () => { setConSelStr( 'new' ); setConDftObj( conDrfFun( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
+									onClick={ () => { setConSelStr( 'new' ); setConDftObj( conDraFun( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
 								>
 
 									<IcoSvgCom name='plus' size={ 16 } />
@@ -2911,11 +2911,11 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 											{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntryEditor for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntryEditor's own internal Cancel/Escape handling (revert via dftActObj.revIteFun, then close) is correct as-is with no extra bookkeeping needed here. */ }
 											<EntryEditor
 												key={ ediLivObj.id }
-												item={ ediLivObj }
-												picker={ dftPicObj }
-												actions={ dftActObj }
-												items={ pooIteArr }
-												onClose={ () => setEdiCloBoo( true ) }
+												iteDatObj={ ediLivObj }
+												picDatObj={ dftPicObj }
+												actStoObj={ dftActObj }
+												picIteArr={ pooIteArr }
+												onCloEdiFun={ () => setEdiCloBoo( true ) }
 											/>
 
 										</div>
@@ -2996,12 +2996,12 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 									<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntryEditor's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntryEditor instance bound to dftActObj. */ }
 
 										<EntryEditor
-											item={ newIteObj }
-											picker={ dftPicObj }
-											actions={ dftActObj }
-											items={ pooIteArr }
-											onClose={ () => setActCloStr( 'save' ) }
-											onCancel={ () => setActCloStr( 'cancel' ) }
+											iteDatObj={ newIteObj }
+											picDatObj={ dftPicObj }
+											actStoObj={ dftActObj }
+											picIteArr={ pooIteArr }
+											onCloEdiFun={ () => setActCloStr( 'save' ) }
+											onCanEdiFun={ () => setActCloStr( 'cancel' ) }
 										/>
 
 									</div>
