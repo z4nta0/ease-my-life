@@ -3631,7 +3631,15 @@ function useAppStaFun( optArgObj ) {
 
 
 
-		revOptFun : ( optArgObj ) => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, reminderOpts : { ...optArgObj } } ) ), // What: Revert Options Function. Why: This is the full-replace path used to revert the participation options on Controls Cancel. How: This overwrites reminderOpts entirely with a copy of optArgObj.
+		revOptFun : ( optArgObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Revert Options Function. Why: This is the full-replace path used to revert the participation options on Controls Cancel. How: This overwrites reminderOpts entirely with a copy of optArgObj.
+
+
+			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
+
+			reminderOpts : { ...optArgObj } // What: Reminder Options. Why: Cancel must restore the full snapshot of every participation switch. How: This copies optArgObj so later edits to the snapshot can't leak in.
+
+
+		} ) ),
 
 
 
@@ -3973,7 +3981,22 @@ function useAppStaFun( optArgObj ) {
 
 
 
-		setOnbFun : ( patValObj ) => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), ...patValObj } } ) ), // What: Set Onboarding Function. Why: The welcome modal/mini-tour checklist need to flip individual flags without callers re-specifying the whole onboarding object. How: This merges patValObj onto curStaObj.onboarding, defaulting to {} when onboarding doesn't exist yet.
+		setOnbFun : ( patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Onboarding Function. Why: The welcome modal/mini-tour checklist need to flip individual flags without callers re-specifying the whole onboarding object. How: This merges patValObj onto curStaObj.onboarding, defaulting to {} when onboarding doesn't exist yet.
+
+
+			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
+
+			onboarding : { // What: Onboarding. Why: Only the flags in patValObj change, every other onboarding field must survive. How: This rebuilds onboarding from its own current fields with patValObj merged on top.
+
+
+				...( curStaObj.onboarding || {} ), // What: Current Onboarding Spread. Why: Every onboarding flag the patch doesn't mention must carry over unchanged. How: This spreads curStaObj.onboarding, defaulting to {} for state that predates it.
+				...patValObj                       // What: Patch Spread. Why: The caller's own flags must override the current ones. How: This spreads patValObj last, so its keys win.
+
+
+			}
+
+
+		} ) ),
 
 		// #endregion Onboarding
 
@@ -4673,7 +4696,15 @@ function useAppStaFun( optArgObj ) {
 
 
 
-		cleEntFun : () => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, today : { ...curStaObj.today, entries : [] } } ) ), // What: Clear Entries Function. Why: The Welcome Tour uses this to back up to its own Generate step, showing the same pristine "nothing generated yet" state it did the first time through. How: This empties today.entries without touching generatedAt/streakClaimed/anything else about today.
+		cleEntFun : () => setAppStaObj( ( curStaObj ) => ( { // What: Clear Entries Function. Why: The Welcome Tour uses this to back up to its own Generate step, showing the same pristine "nothing generated yet" state it did the first time through. How: This empties today.entries without touching generatedAt/streakClaimed/anything else about today.
+
+
+			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
+
+			today : { ...curStaObj.today, entries : [] } // What: Today. Why: The Welcome Tour's own back-up step needs Today emptied without touching any other today field. How: This spreads curStaObj.today with entries replaced by an empty array.
+
+
+		} ) ),
 
 
 
