@@ -625,7 +625,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kinValStr, notIdeStr } ) {
  * Live-edits an existing (or in-progress draft) reminder's own
  * schedule. Repeat kind is a segmented control; the detail control
  * below it swaps to match the kind. Every field commits immediately
- * through props.actStoObj's own updateTask, so this component holds no
+ * through props.actStoObj's own updTasFun, so this component holds no
  * schedule state of its own beyond the two inline-date-edit toggles.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -635,7 +635,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kinValStr, notIdeStr } ) {
  * @param props.actStoObj - Action Store Object: The actions bag this editor
  *                          commits through; a caller editing a local draft
  *                          passes a stand-in object exposing its own
- *                          updateTask.
+ *                          updTasFun.
  * @param props.aniExtBoo - Animate Extra Boolean: Whether the extra-fields
  *                          subsection should animate open/closed via ColDisCom,
  *                          defaulting to false for a context that doesn't need
@@ -657,7 +657,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kinValStr, notIdeStr } ) {
 function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
-	const updPatFun = ( patValObj ) => actStoObj.updateTask( tasRecObj.id, patValObj ); // What: Update Patch Function. Why: Every schedule field editor below commits through this single call. How: This calls actStoObj.updateTask with tasRecObj's own id and the given patch.
+	const updPatFun = ( patValObj ) => actStoObj.updTasFun( tasRecObj.id, patValObj ); // What: Update Patch Function. Why: Every schedule field editor below commits through this single call. How: This calls actStoObj.updTasFun with tasRecObj's own id and the given patch.
 
 
 	const lasExtRef = React.useRef( tasRecObj.repeat === 'once' ? 'interval' : tasRecObj.repeat ); // What: Last Extra Reference. Why: While collapsing back to 'once', the extra-fields subsection needs its last non-once schedule kind to keep animating out instead of blanking instantly. How: This starts at 'interval' for a brand-new 'once' task, or the task's own real repeat otherwise.
@@ -1673,7 +1673,7 @@ function InlEdiCom ( { tasRecObj, onCloEdiFun, onDelTasFun, onComTasFun, staAppO
 
 	const [ draTasObj, setDraTasObj ] = React.useState( () => ( { ...tasRecObj } ) ); // What: Draft Task Object And Setter. Why: The schedule editor below must edit a local copy, not the store directly, so a change doesn't immediately filter the row out of the live list. How: This starts as a shallow copy of tasRecObj and is patched by draActObj below.
 
-	const draActObj = { updateTask : ( _tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actions bag exposing updateTask; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (SchEdiCom always passes tasRecObj.id, already known here) and merges patValObj into draTasObj.
+	const draActObj = { updTasFun : ( _tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actions bag exposing updTasFun; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (SchEdiCom always passes tasRecObj.id, already known here) and merges patValObj into draTasObj.
 
 
 
@@ -1730,7 +1730,7 @@ function InlEdiCom ( { tasRecObj, onCloEdiFun, onDelTasFun, onComTasFun, staAppO
  *                             this card renders, real or (while isaTutBoo) a
  *                             still-hidden sample.
  * @param props.actStoObj    - Action Store Object: The actions bag; only its
- *                             own setChecklistItem is used, and only while
+ *                             own setCarFun is used, and only while
  *                             isaTutBoo.
  * @param props.jusCheStr    - Just Check String: The id of whichever reminder
  *                             was just checked, driving the brief "is-fresh"
@@ -1899,8 +1899,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 							className='icon-btn'
 							title='Cancel'
 							aria-label='Cancel tutorial'
-							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setChecklistItem( tasRecObj.id, { status : 'cancelled' } ); } }
-						>{ /* What: Cancel Button Element. Why: This marks the sample's own checklist entry cancelled without touching the sample itself, distinct from actually resolving it. How: This calls actStoObj.setChecklistItem, isolated from the row's own onRowCliFun via stopPropagation. */ }
+							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setCarFun( tasRecObj.id, { status : 'cancelled' } ); } }
+						>{ /* What: Cancel Button Element. Why: This marks the sample's own checklist entry cancelled without touching the sample itself, distinct from actually resolving it. How: This calls actStoObj.setCarFun, isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
 							<IcoSvgCom
@@ -2230,7 +2230,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 	}, [ addOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when addOpeBoo itself changes, since that's the exact transition it's watching for. How: addOpeBoo is compared against wasAddRef's own remembered prior value.
 
 
-	const draActObj = { updateTask : ( _tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actStoObj bag exposing updateTask; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (already known here) and merges patValObj into draTasObj.
+	const draActObj = { updTasFun : ( _tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actStoObj bag exposing updTasFun; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (already known here) and merges patValObj into draTasObj.
 
 	React.useEffect( () => { // What: Draft Repeat Publish Effect. Why: A reminder mini-tour's later steps need to show copy matching whichever schedule type is currently selected in this draft, without lifting this local state anywhere else. How: This republishes draTasObj's own repeat field onto the shared tour bus.
 
@@ -2282,13 +2282,13 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 
-	const onTogDonFun = ( curTasObj ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actStoObj.toggleTaskDone, then stages jusCheStr only when curTasObj wasn't already done.
+	const onTogDonFun = ( curTasObj ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actStoObj.togTasFun, then stages jusCheStr only when curTasObj wasn't already done.
 
 
 		const wasDonBoo = TASKS.isDoneToday( curTasObj, ancDatObj ); // What: Was Done Boolean. Why: The fresh flourish must never replay for a reminder that was already checked before this toggle. How: This reads curTasObj's own done state before the toggle below applies.
 
 
-		actStoObj.toggleTaskDone( curTasObj.id ); // What: Toggle Done Call. Why: This is the actual state change every branch below reacts to. How: This calls actStoObj.toggleTaskDone against curTasObj's own id.
+		actStoObj.togTasFun( curTasObj.id ); // What: Toggle Done Call. Why: This is the actual state change every branch below reacts to. How: This calls actStoObj.togTasFun against curTasObj's own id.
 
 		if ( !wasDonBoo ) { // What: Fresh Flourish Guard. Why: Only a genuine 0-to-1 transition should play the flourish. How: This stages and later clears jusCheStr only while wasDonBoo was false.
 
@@ -2358,10 +2358,10 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 		const newIdeStr = extTasObj ? extTasObj.id : draTasObj.id; // What: New Identifier String. Why: The entrance animation below needs to target whichever id the committed reminder actually ends up at. How: This picks extTasObj's own id when one was found, otherwise draTasObj's own id.
 
-		const finAddFun = () => { // What: Finish Add Function. Why: The actual commit is deferred behind the collapse animation below (or run immediately under reduced motion), so it's centralized here. How: This calls actStoObj.addTask, announces the result, stages the entrance animation, and resets every quick-add staAppObj slot.
+		const finAddFun = () => { // What: Finish Add Function. Why: The actual commit is deferred behind the collapse animation below (or run immediately under reduced motion), so it's centralized here. How: This calls actStoObj.addTasFun, announces the result, stages the entrance animation, and resets every quick-add staAppObj slot.
 
 
-			actStoObj.addTask( { ...draTasObj, name : tasNamStr, ...( extTasObj ? { replaceId : extTasObj.id } : {} ) } ); // What: Add Task Call. Why: This is the actual commit, creating a new reminder or, for a re-run mini-tour, replacing the existing sample-linked one via replaceId. How: This spreads draTasObj with the trimmed name and an optional replaceId.
+			actStoObj.addTasFun( { ...draTasObj, name : tasNamStr, ...( extTasObj ? { replaceId : extTasObj.id } : {} ) } ); // What: Add Task Call. Why: This is the actual commit, creating a new reminder or, for a re-run mini-tour, replacing the existing sample-linked one via replaceId. How: This spreads draTasObj with the trimmed name and an optional replaceId.
 
 			annAddFun( { ...draTasObj, name : tasNamStr } ); // What: Announce Add Call. Why: The user needs to know whether the just-added reminder will actually show up today. How: This calls annAddFun against the same committed shape.
 			setInsIdeStr( newIdeStr );                       // What: Insert Identifier Stage Call. Why: The committed reminder needs to play its own entrance animation exactly once. How: This sets insIdeStr to newIdeStr.
@@ -2694,7 +2694,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 							}
 							cheDatObj={ ancDatObj }
 							onTogTasFun={ onTogDonFun }
-							onRenTasFun={ ( namStr ) => actStoObj.renameTask( curTasObj.id, namStr ) }
+							onRenTasFun={ ( namStr ) => actStoObj.renTasFun( curTasObj.id, namStr ) }
 							onAniEndFun={ ( aniEveObj ) => { // What: Animation End Handler. Why: This card's own collapse-in/out animations must clear their own staged flags exactly once, and only for the card's own outer element, not a bubbled child animation. How: This guards on the real target first, then clears insIdeStr and/or runs the deferred remove/skip action.
 
 
@@ -2706,10 +2706,10 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 
-								if ( remIdeStr === curTasObj.id ) { // What: Removal Finish Guard. Why: The card's own collapse-out animation ending is exactly when the deferred delete/skip action should actually run. How: This invokes remActRef's own thunk (or a plain removeTask fallback), then clears both remActRef and remIdeStr.
+								if ( remIdeStr === curTasObj.id ) { // What: Removal Finish Guard. Why: The card's own collapse-out animation ending is exactly when the deferred delete/skip action should actually run. How: This invokes remActRef's own thunk (or a plain delTasFun fallback), then clears both remActRef and remIdeStr.
 
 
-									( remActRef.current || ( () => actStoObj.removeTask( curTasObj.id ) ) )(); // What: Deferred Action Call. Why: Delete and Skip each stage a different thunk here; a missing thunk still falls back to a plain remove. How: This invokes remActRef's own current thunk, or a plain removeTask call when none was staged.
+									( remActRef.current || ( () => actStoObj.delTasFun( curTasObj.id ) ) )(); // What: Deferred Action Call. Why: Delete and Skip each stage a different thunk here; a missing thunk still falls back to a plain remove. How: This invokes remActRef's own current thunk, or a plain delTasFun call when none was staged.
 									remActRef.current = null; // What: Action Reference Clear. Why: A stale thunk must not accidentally run again on some later animation end. How: This resets remActRef back to null.
 									setRemIdeStr( null ); // What: Removing Flag Clear. Why: The card's own collapse-out animation has now fully finished. How: This clears remIdeStr back to null.
 
@@ -2744,16 +2744,16 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 
-									if ( redMotFun() ) { actStoObj.removeTask( curTasObj.id ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This calls actStoObj.removeTask directly and returns early.
+									if ( redMotFun() ) { actStoObj.delTasFun( curTasObj.id ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This calls actStoObj.delTasFun directly and returns early.
 
 
 
-									remActRef.current = () => actStoObj.removeTask( curTasObj.id ); // What: Remove Action Stage Call. Why: The card's own collapse-out animation must finish before the actual removal runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun.
+									remActRef.current = () => actStoObj.delTasFun( curTasObj.id ); // What: Remove Action Stage Call. Why: The card's own collapse-out animation must finish before the actual removal runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun.
 									setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before remActRef's own thunk actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card.
 
 
 								} }
-								onComTasFun={ ( draSnaObj ) => actStoObj.updateTask( curTasObj.id, draSnaObj ) }
+								onComTasFun={ ( draSnaObj ) => actStoObj.updTasFun( curTasObj.id, draSnaObj ) }
 							/>{ /* What: Inline Edit Component. Why: This is the actual schedule editor for this card, committing straight to the real store. How: This is passed curTasObj directly (not a local draft), closing back via onCloEdiFun. */ }
 
 
@@ -2809,17 +2809,17 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 
-															if ( redMotFun() ) { actStoObj.skipTask( curTasObj.id, nexIsoStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant skip instead of an animated collapse-then-skip. How: This calls actStoObj.skipTask directly and returns early.
+															if ( redMotFun() ) { actStoObj.skiTasFun( curTasObj.id, nexIsoStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant skip instead of an animated collapse-then-skip. How: This calls actStoObj.skiTasFun directly and returns early.
 
 
 
-															remActRef.current = () => actStoObj.skipTask( curTasObj.id, nexIsoStr ); // What: Skip Action Stage Call. Why: The card's own collapse-out animation must finish before the actual skip runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun, reusing the same removal machinery Delete uses.
+															remActRef.current = () => actStoObj.skiTasFun( curTasObj.id, nexIsoStr ); // What: Skip Action Stage Call. Why: The card's own collapse-out animation must finish before the actual skip runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun, reusing the same removal machinery Delete uses.
 
-															setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before the deferred skipTask call actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card, reusing the same removal machinery Delete uses.
+															setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before the deferred skiTasFun call actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card, reusing the same removal machinery Delete uses.
 
 
 														} }
-													>Confirm</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed skip trigger. How: This stages the deferred actStoObj.skipTask call above. */ }
+													>Confirm</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed skip trigger. How: This stages the deferred actStoObj.skiTasFun call above. */ }
 
 
 												</div>
@@ -3073,7 +3073,7 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 
 	const snaOptRef = React.useRef( { once : { ...remOptObj.once }, recurring : { ...remOptObj.recurring } } ); // What: Snapshot Options Reference. Why: Cancel needs to restore every toggle exactly as it was when this component mounted. How: This shallow-copies both classes of remOptObj once, on mount, never updated afterward.
 
-	const canMatFun = () => { actStoObj.setReminderOpts( snaOptRef.current ); onCloConFun(); }; // What: Cancel Matrix Function. Why: An explicit Cancel needs to both restore the snapshot and collapse the body. How: This calls actStoObj.setReminderOpts with snaOptRef's own snapshot, then onCloConFun.
+	const canMatFun = () => { actStoObj.revOptFun( snaOptRef.current ); onCloConFun(); }; // What: Cancel Matrix Function. Why: An explicit Cancel needs to both restore the snapshot and collapse the body. How: This calls actStoObj.revOptFun with snaOptRef's own snapshot, then onCloConFun.
 
 
 
@@ -3132,8 +3132,8 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 									className={ `switch ${ swtEnaBoo ? 'is-on' : '' }` }
 									aria-pressed={ swtEnaBoo }
 									aria-label={ `${ tasClaStr === 'once' ? 'One-time' : 'Recurring' }: ${ optDefObj.labStr }` }
-									onClick={ () => actStoObj.setReminderOpt( tasClaStr, optDefObj.keyStr, !swtEnaBoo ) }
-								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setReminderOpt. */ }
+									onClick={ () => actStoObj.setOptFun( tasClaStr, optDefObj.keyStr, !swtEnaBoo ) }
+								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setOptFun. */ }
 
 
 									<i />{ /* What: Switch Thumb Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
@@ -3392,7 +3392,7 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 	const colMaiMap = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {};            // What: Collapsed Main Map. Why: The main section's own collapse state persists (like the pickers), so it survives tab switches. How: This reads staAppObj's own ui.controlsCollapsed, falling back to an empty object.
 	const secOpeBoo = colMaiMap[ '__reminders_main' ] === false;                           // What: Section Open Boolean. Why: This reserved key defaults COLLAPSED, so absent means collapsed and an explicit false means expanded. How: This checks colMaiMap's own '__reminders_main' entry against exactly false.
-	const togMaiFun = () => actStoObj.toggleControlsCollapsed( '__reminders_main', true ); // What: Toggle Main Function. Why: The header's own clickable area needs a single call to flip the main section's own collapse staAppObj. How: This calls actStoObj.toggleControlsCollapsed against the same reserved key.
+	const togMaiFun = () => actStoObj.togColFun( '__reminders_main', true ); // What: Toggle Main Function. Why: The header's own clickable area needs a single call to flip the main section's own collapse staAppObj. How: This calls actStoObj.togColFun against the same reserved key.
 
 	const colSubMap = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Sub Map. Why: The Controls and Items sub-panels each remember their own collapse state independently of the main section and of each other. How: This reads the same staAppObj's own ui.controlsCollapsed, kept as a separate read for its own 2 sub-keys below.
 	const conColBoo = !!colSubMap[ '__reminders' ];                             // What: Controls Collapsed Boolean. Why: The Controls disclosure defaults OPEN, so absent means open. How: This checks colSubMap's own '__reminders' entry.
@@ -3407,17 +3407,17 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 
-		const newIdeStr = 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The freshly-created reminder needs a real, unique id before actStoObj.addTask is ever called. How: This mints a random 'tk_'-prefixed id, the same scheme TASKS.defaultTask itself uses.
+		const newIdeStr = 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The freshly-created reminder needs a real, unique id before actStoObj.addTasFun is ever called. How: This mints a random 'tk_'-prefixed id, the same scheme TASKS.defaultTask itself uses.
 
 
-		actStoObj.addTask( { id : newIdeStr, name : 'New reminder', repeat : 'once' } ); // What: Add Task Call. Why: This is the actual creation of the new, minimal reminder. How: This calls actStoObj.addTask with newIdeStr, a placeholder name, and a plain 'once' repeat.
+		actStoObj.addTasFun( { id : newIdeStr, name : 'New reminder', repeat : 'once' } ); // What: Add Task Call. Why: This is the actual creation of the new, minimal reminder. How: This calls actStoObj.addTasFun with newIdeStr, a placeholder name, and a plain 'once' repeat.
 
 		newAddRef.current = newIdeStr; // What: New-Item Flag Set. Why: The freshly-created row needs to know it's "new" for its own isaNewBoo prop and for kepCloFun's own guard above. How: This sets newAddRef to newIdeStr.
 
 		setInsIdeStr( newIdeStr ); // What: Insert Identifier Stage Call. Why: The new row needs to play its own entrance animation exactly once. How: This sets insIdeStr to newIdeStr.
 		setOpeIdeStr( newIdeStr ); // What: Open Row Stage Call. Why: The new reminder's own editor should open immediately so the user can fill it in. How: This sets opeIdeStr to newIdeStr.
 
-		if ( !secOpeBoo ) actStoObj.toggleControlsCollapsed( '__reminders_main', true ); // What: Main Section Expand Guard. Why: The newly-open editor must actually be visible, which requires the main section itself to be expanded. How: This expands the main section only while it was collapsed.
+		if ( !secOpeBoo ) actStoObj.togColFun( '__reminders_main', true ); // What: Main Section Expand Guard. Why: The newly-open editor must actually be visible, which requires the main section itself to be expanded. How: This expands the main section only while it was collapsed.
 
 
 	};
@@ -3490,8 +3490,8 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 						className='rd-ctl'
 						type='button'
 						aria-expanded={ !conColBoo }
-						onClick={ () => actStoObj.toggleControlsCollapsed( '__reminders' ) }
-					>{ /* What: Controls Disclosure Button Element. Why: Controls is a nested collapsible, open by default, remembered per section. How: This toggles conColBoo via actStoObj.toggleControlsCollapsed. */ }
+						onClick={ () => actStoObj.togColFun( '__reminders' ) }
+					>{ /* What: Controls Disclosure Button Element. Why: Controls is a nested collapsible, open by default, remembered per section. How: This toggles conColBoo via actStoObj.togColFun. */ }
 
 
 						<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker read together as one unit. How: This wraps both below. */ }
@@ -3526,7 +3526,7 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 						<OptMatCom
 							remOptObj={ norOptObj }
 							actStoObj={ actStoObj }
-							onCloConFun={ () => actStoObj.toggleControlsCollapsed( '__reminders' ) }
+							onCloConFun={ () => actStoObj.togColFun( '__reminders' ) }
 						/>{ /* What: Option Matrix Component. Why: This is the actual once/recurring participation matrix, editing the normalized reminderOpts shape. How: This closes back via onCloConFun, collapsing the Controls disclosure above. */ }
 
 
@@ -3536,8 +3536,8 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 						className='rd-ctl'
 						type='button'
 						aria-expanded={ !iteColBoo }
-						onClick={ () => actStoObj.toggleControlsCollapsed( '__reminders:items' ) }
-					>{ /* What: Items Disclosure Button Element. Why: Items is the same kind of nested collapsible as Controls, independently remembered. How: This toggles iteColBoo via actStoObj.toggleControlsCollapsed. */ }
+						onClick={ () => actStoObj.togColFun( '__reminders:items' ) }
+					>{ /* What: Items Disclosure Button Element. Why: Items is the same kind of nested collapsible as Controls, independently remembered. How: This toggles iteColBoo via actStoObj.togColFun. */ }
 
 
 						<span className='rd-ctl-l'>{ /* What: Items Left Span Element. Why: The chevron and the "Items" kicker read together as one unit. How: This wraps both below. */ }
@@ -3631,8 +3631,8 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 											label='Sort'
 											options={ ITE_SOR_ARR }
 											value={ iteSorStr }
-											onChange={ ( sorKeyStr ) => actStoObj.setDataSort( 'reminders', sorKeyStr ) }
-										/> // What: Sort Select Component. Why: The Items list needs the same sort control every other Data tab list uses. How: This is driven by ITE_SOR_ARR, committing through actStoObj.setDataSort.
+											onChange={ ( sorKeyStr ) => actStoObj.setSorFun( 'reminders', sorKeyStr ) }
+										/> // What: Sort Select Component. Why: The Items list needs the same sort control every other Data tab list uses. How: This is driven by ITE_SOR_ARR, committing through actStoObj.setSorFun.
 
 
 									) }
@@ -3684,8 +3684,8 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 																placeholder='Reminder name'
 																maxLength={ 60 }
 																aria-label='Reminder name'
-																onChange={ ( chaEveObj ) => actStoObj.updateTask( curTasObj.id, { name : chaEveObj.target.value } ) }
-																onBlur={ ( bluEveObj ) => { const namTriStr = bluEveObj.target.value.trim(); if ( namTriStr ) actStoObj.renameTask( curTasObj.id, namTriStr ); } }
+																onChange={ ( chaEveObj ) => actStoObj.updTasFun( curTasObj.id, { name : chaEveObj.target.value } ) }
+																onBlur={ ( bluEveObj ) => { const namTriStr = bluEveObj.target.value.trim(); if ( namTriStr ) actStoObj.renTasFun( curTasObj.id, namTriStr ); } }
 																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This commits every keystroke, re-trims and re-commits (only if non-empty) on blur, and blurs itself on Enter; its own ref callback suppresses the browser's native focus-scroll so it doesn't fight opeRowRef's own smooth scroll. */ }
 
@@ -3792,44 +3792,44 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 
-																	const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred removeTask call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
+																	const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred delTasFun call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
 
 
 																	setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
 
 
 
-																	if ( redMotFun() ) { actStoObj.removeTask( tasIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This calls actStoObj.removeTask directly and returns early.
+																	if ( redMotFun() ) { actStoObj.delTasFun( tasIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This calls actStoObj.delTasFun directly and returns early.
 
 
 
-																	setTimeout( () => actStoObj.removeTask( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits 280ms (matching the editor's own collapse-close animation) before actually removing the task.
+																	setTimeout( () => actStoObj.delTasFun( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits 280ms (matching the editor's own collapse-close animation) before actually removing the task.
 
 
 																} }
 																onCanTasFun={ ( snaTasObj ) => { // What: Cancel Handler. Why: Cancel behaves differently depending on whether this row is a brand-new, not-yet-kept reminder (discard outright) or an already-existing one (revert to its own mount-time snapshot). How: This branches on newAddRef, staging the same collapse-then-remove sequence Delete uses for the new-and-discarded case.
 
 
-																	if ( newAddRef.current === curTasObj.id ) { // What: New-And-Discarded Branch. Why: A brand-new reminder should be discarded outright on Cancel, but still play the collapse-close animation Save uses, rather than vanish instantly. How: This clears newAddRef, snapshots the id, closes this row, then defers the actual removeTask call.
+																	if ( newAddRef.current === curTasObj.id ) { // What: New-And-Discarded Branch. Why: A brand-new reminder should be discarded outright on Cancel, but still play the collapse-close animation Save uses, rather than vanish instantly. How: This clears newAddRef, snapshots the id, closes this row, then defers the actual delTasFun call.
 
 
 																		newAddRef.current = null; // What: New-Item Flag Clear. Why: Cancelling a brand-new reminder discards it outright, so nothing "new" is left pointing at a soon-to-be-removed id. How: This resets newAddRef back to null unconditionally, since this whole branch only runs when it already matched curTasObj's own id.
 
 
-																		const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred removeTask call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
+																		const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred delTasFun call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
 
 
 																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
 
-																		setTimeout( () => actStoObj.removeTask( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits 280ms, then removes tasIdeStr's own snapshot.
+																		setTimeout( () => actStoObj.delTasFun( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits 280ms, then removes tasIdeStr's own snapshot.
 
 
 																	}
 
-																	else { // What: Existing-Reverted Branch. Why: An already-existing reminder should just revert to the snapshot EdiFooCom captured on mount, not be removed at all. How: This calls actStoObj.replaceTask with snaTasObj, then closes this row.
+																	else { // What: Existing-Reverted Branch. Why: An already-existing reminder should just revert to the snapshot EdiFooCom captured on mount, not be removed at all. How: This calls actStoObj.revTasFun with snaTasObj, then closes this row.
 
 
-																		actStoObj.replaceTask( curTasObj.id, snaTasObj ); // What: Replace Task Call. Why: An existing reminder's own Cancel reverts it to the snapshot EdiFooCom captured on mount, discarding any in-progress edits. How: This calls actStoObj.replaceTask with curTasObj's own id and snaTasObj.
+																		actStoObj.revTasFun( curTasObj.id, snaTasObj ); // What: Replace Task Call. Why: An existing reminder's own Cancel reverts it to the snapshot EdiFooCom captured on mount, discarding any in-progress edits. How: This calls actStoObj.revTasFun with curTasObj's own id and snaTasObj.
 																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse once the revert is complete. How: This clears opeIdeStr only while it still matches curTasObj's own id.
 
 
@@ -3838,7 +3838,7 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 																} }
 																onDonTasFun={ () => kepCloFun( curTasObj.id ) }
-															/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Delete and Cancel both defer their own removeTask call by 280ms to let the collapse-close animation finish first (unless reduced motion); Save calls kepCloFun. */ }
+															/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Delete and Cancel both defer their own delTasFun call by 280ms to let the collapse-close animation finish first (unless reduced motion); Save calls kepCloFun. */ }
 
 
 														</div>

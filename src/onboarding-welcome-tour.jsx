@@ -11,11 +11,11 @@ import { GuiTouCom   } from './onboarding-tour-runner.jsx'; // What: Guided Tour
 import { hydStaFun   } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The precomputed sample history stores day-offsets, not real dates. How: This converts those offsets into real ISO dates relative to today inside the seeding effect below.
 import { IntModCom   } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: The Welcome Tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while onbPhaStr is 'welcome', passed this file's own copy and labels.
 import { NAV_TAR_OBJ } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Four of this tour's steps just spotlight a nav button, sharing the same selector/copy as each page's own future mini-tour. How: This is spread into the Pickers/Stats/Data/Settings step objects below.
-import { ONB_ESP_ARR } from './onboarding-seed-data.js';    // What: Onboarding Extra-Sample-Pickers Array. Why: These extra sample pickers make a generated day look like a fuller, more realistic todo list. How: This is spread into actStoObj.addPicker alongside ONB_EXA_OBJ by the seeding effect below.
-import { ONB_EXA_OBJ } from './onboarding-seed-data.js';    // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour. How: This is spread into actStoObj.addPicker by the seeding effect below, exactly like a real, user-created picker.
+import { ONB_ESP_ARR } from './onboarding-seed-data.js';    // What: Onboarding Extra-Sample-Pickers Array. Why: These extra sample pickers make a generated day look like a fuller, more realistic todo list. How: This is spread into actStoObj.addPicFun alongside ONB_EXA_OBJ by the seeding effect below.
+import { ONB_EXA_OBJ } from './onboarding-seed-data.js';    // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour. How: This is spread into actStoObj.addPicFun by the seeding effect below, exactly like a real, user-created picker.
 import { ONB_SPI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's run() and by bacSteFun below.
-import { ONB_STI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTask below.
-import { ONB_TAS_ARR } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTask by the Generate step's own run() and by the intro modal's onSkiTouFun below.
+import { ONB_STI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
+import { ONB_TAS_ARR } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own run() and by the intro modal's onSkiTouFun below.
 import { TodTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
 // #endregion Imports
@@ -122,13 +122,13 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 
-		[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actStoObj.addPicker( curPicObj ) ); // What: Sample Picker Seed Call. Why: Every step of the tour needs a real, generatable picker to point at. How: This adds ONB_EXA_OBJ and every ONB_ESP_ARR entry exactly like a real, user-created picker.
+		[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actStoObj.addPicFun( curPicObj ) ); // What: Sample Picker Seed Call. Why: Every step of the tour needs a real, generatable picker to point at. How: This adds ONB_EXA_OBJ and every ONB_ESP_ARR entry exactly like a real, user-created picker.
 
 
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Stats History Import. Why: The sample reminders themselves are seeded later, at the Generate step's own run() below (unlike picker items, a reminder needs no "generate" to become visible on Today, so seeding it here would show it before the user has generated anything), but this precomputed history is independent of whether the live task exists yet, since log rows are denormalized. How: This dynamic-imports the generated stats-history module once seeding is confirmed necessary.
 
 
-			actStoObj.seedHistory( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONBOARDING_STATS' own day-offsets into real dates and persists them as pick/reminder log rows.
+			actStoObj.sedHisFun( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONBOARDING_STATS' own day-offsets into real dates and persists them as pick/reminder log rows.
 
 
 		} );
@@ -150,7 +150,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 
-	const welDonFun = () => actStoObj.setOnboarding( { welcomed : true } ); // What: Welcome Done Function. Why: Both accepting and skipping the tour are, from the persisted state's own point of view, the same "the welcome modal is done" transition. How: This persists onboarding.welcomed as true.
+	const welDonFun = () => actStoObj.setOnbFun( { welcomed : true } ); // What: Welcome Done Function. Why: Both accepting and skipping the tour are, from the persisted state's own point of view, the same "the welcome modal is done" transition. How: This persists onboarding.welcomed as true.
 
 
 
@@ -215,7 +215,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 					const dowValNum = new Date().getDay(); // What: Day-Of-Week Value Number. Why: A weekly sample reminder needs a real day of the week to be scheduled on. How: This reads the current local day index (0-6) from a fresh Date.
 
 
-					ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.addTask( { // What: Sample Task Add Call. Why: On a true first run these appear alongside the generated picks, not before; on a replay there is no such review moment, so they are seeded straight into hidden instead, same as the intro modal's own onSkiTouFun handling below. How: This adds each ONB_TAS_ARR entry, pinning a weekly one to today and hiding it outright on a replay.
+					ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.addTasFun( { // What: Sample Task Add Call. Why: On a true first run these appear alongside the generated picks, not before; on a replay there is no such review moment, so they are seeded straight into hidden instead, same as the intro modal's own onSkiTouFun handling below. How: This adds each ONB_TAS_ARR entry, pinning a weekly one to today and hiding it outright on a replay.
 
 
 						...curTasObj, // What: Task Spread. Why: Every one of the sample task's own fields is kept as authored. How: This spreads curTasObj's own fields first so the overrides below can still win.
@@ -297,9 +297,9 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 			runFun : () => { // What: Run Function. Why: The sample pickers/reminders are not deleted, since the per-page mini-tours will reuse this exact data (and its precomputed Stats history) later, only tucked out of sight. How: This hides every sample picker and every sample task.
 
 
-				ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updatePicker( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: A hidden sample still exists for a later mini-tour to reuse, it just should not clutter Today anymore. How: This updates every sample picker id to hidden:true.
+				ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: A hidden sample still exists for a later mini-tour to reuse, it just should not clutter Today anymore. How: This updates every sample picker id to hidden:true.
 
-				ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updateTask( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A hidden sample reminder still exists for its own mini-tour launcher card to read later. How: This updates every ONB_TAS_ARR entry's own id to hidden:true.
+				ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updTasFun( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A hidden sample reminder still exists for its own mini-tour launcher card to read later. How: This updates every ONB_TAS_ARR entry's own id to hidden:true.
 
 
 			}
@@ -352,16 +352,16 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 
-		ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updatePicker( picIdeStr, { hidden : false } ) ); // What: Sample Picker Unhide Call. Why: Every earlier step's own review of the sample pickers should look exactly as it did the first time through. How: This updates every sample picker id back to hidden:false.
+		ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : false } ) ); // What: Sample Picker Unhide Call. Why: Every earlier step's own review of the sample pickers should look exactly as it did the first time through. How: This updates every sample picker id back to hidden:false.
 
 
 
 		if ( tarSteNum === 1 ) { // What: Generate Step Target Check. Why: Sample REMINDERS do not exist yet the very first time the Generate step shows, since its own run() only adds them once its Next actually fires. How: This branch fully removes them instead of hiding them, since a hidden sample would keep the shared bus's own phase reading a tutorial checklist as still relevant here.
 
 
-			ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.removeTask( curTasObj.id ) ); // What: Sample Task Remove Call. Why: Safe to fully delete, since the Generate step's own forward run() re-adds them exactly as before the moment Next fires again. How: This removes every ONB_TAS_ARR entry's own id from state.tasks.
+			ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.delTasFun( curTasObj.id ) ); // What: Sample Task Remove Call. Why: Safe to fully delete, since the Generate step's own forward run() re-adds them exactly as before the moment Next fires again. How: This removes every ONB_TAS_ARR entry's own id from state.tasks.
 
-			actStoObj.clearTodayEntries(); // What: Today Entries Clear Call. Why: The picker list should again look like nothing has been generated yet. How: This clears whatever entries currently sit on Today.
+			actStoObj.cleEntFun(); // What: Today Entries Clear Call. Why: The picker list should again look like nothing has been generated yet. How: This clears whatever entries currently sit on Today.
 
 
 		}
@@ -369,7 +369,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 		else { // What: Other Step Target Branch. Why: Every step besides the Generate step only ever needs the sample tasks unhidden, never removed. How: This updates every ONB_TAS_ARR entry's own id back to hidden:false.
 
 
-			ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updateTask( curTasObj.id, { hidden : false } ) ); // What: Sample Task Unhide Call. Why: An earlier step's own review of the sample reminders should look exactly as it did the first time through. How: This updates every ONB_TAS_ARR entry's own id back to hidden:false.
+			ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updTasFun( curTasObj.id, { hidden : false } ) ); // What: Sample Task Unhide Call. Why: An earlier step's own review of the sample reminders should look exactly as it did the first time through. How: This updates every ONB_TAS_ARR entry's own id back to hidden:false.
 
 
 		}
@@ -430,7 +430,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 						const dowValNum = new Date().getDay(); // What: Day-Of-Week Value Number. Why: A weekly sample reminder needs a real day of the week to be scheduled on. How: This reads the current local day index (0-6) from a fresh Date.
 
 
-						ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.addTask( { // What: Sample Task Add Call. Why: There is no in-between review step on this path for these to be visible during, unlike the tour's own Generate step. How: This adds each ONB_TAS_ARR entry, pinning a weekly one to today and hiding it outright.
+						ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.addTasFun( { // What: Sample Task Add Call. Why: There is no in-between review step on this path for these to be visible during, unlike the tour's own Generate step. How: This adds each ONB_TAS_ARR entry, pinning a weekly one to today and hiding it outright.
 
 
 							...curTasObj, // What: Task Spread. Why: Every one of the sample task's own fields is kept as authored. How: This spreads curTasObj's own fields first so the overrides below can still win.
@@ -446,7 +446,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 
-					ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updatePicker( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
+					ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
 
 					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own prefill field.
 

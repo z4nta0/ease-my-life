@@ -240,7 +240,7 @@ function pisOptFun ( picModStr ) {
  *                                    Controls disclosure.
  * @param props.onRequestDelete     - On Request Delete: Deletes this picker,
  *                                    in place of the default
- *                                    actions.removePicker call, when the
+ *                                    actions.delPicFun call, when the
  *                                    caller wants to animate the removal
  *                                    itself.
  * @param props.isNewDraft          - Is New Draft: Whether this is a
@@ -592,7 +592,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 		const tidNamStr = norGroFun( newGroStr, groChoArr ); // What: Tidy Name String. Why: A typed group name needs the same tidy-casing/collision handling every other group name gets. How: This calls the shared norGroFun helper against the current choice list.
 
-		if ( tidNamStr ) actObj.updatePicker( picObj.id, { group : tidNamStr } ); // What: Update Picker Guard. Why: An empty or otherwise invalid typed name should not create a group at all. How: This only commits the picker's own group when tidNamStr is truthy.
+		if ( tidNamStr ) actObj.updPicFun( picObj.id, { group : tidNamStr } ); // What: Update Picker Guard. Why: An empty or otherwise invalid typed name should not create a group at all. How: This only commits the picker's own group when tidNamStr is truthy.
 
 		cloGroFun(); // What: Close Group Call. Why: A commit still needs the same teardown every close does. How: This runs the shared close routine after the update above.
 
@@ -615,16 +615,16 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	const revStaFun = () => { // What: Revert State Function. Why: Cancel must put the picker, every one of its items, and its daily-generator membership back exactly as they were when Controls opened. How: This replaces the picker and every item from snaRef.current, then reconciles daily-generator membership.
 
 
-		actObj.replacePicker( picObj.id, snaRef.current.picker ); // What: Replace Picker Call. Why: Every field edited while Controls was open must be rolled back. How: This overwrites the live picker with the snapshot taken on mount.
+		actObj.revPicFun( picObj.id, snaRef.current.picker ); // What: Replace Picker Call. Why: Every field edited while Controls was open must be rolled back. How: This overwrites the live picker with the snapshot taken on mount.
 
-		snaRef.current.items.forEach( ( iteCurObj ) => actObj.replaceItem( iteCurObj.id, iteCurObj ) ); // What: Replace Items Loop. Why: Every item touched (e.g. by a Refill) while Controls was open must also be rolled back. How: This overwrites each live item with its own snapshot.
+		snaRef.current.items.forEach( ( iteCurObj ) => actObj.revIteFun( iteCurObj.id, iteCurObj ) ); // What: Replace Items Loop. Why: Every item touched (e.g. by a Refill) while Controls was open must also be rolled back. How: This overwrites each live item with its own snapshot.
 
 
 		const hasDaiBoo = daiIdeArr.includes( picObj.id ); // What: Has Daily Boolean. Why: Reconciling membership needs to know the picker's CURRENT daily-generator status before deciding whether to add or remove it. How: This checks whether picObj.id is currently in daiIdeArr.
 
-		if ( snaRef.current.inDaily && !hasDaiBoo ) actObj.setDailyPickers( [ ...daiIdeArr, picObj.id ] ); // What: Re-Add Daily Guard. Why: The picker was in the daily generator when Controls opened but has since been removed. How: This adds picObj.id back into the daily-generator list.
+		if ( snaRef.current.inDaily && !hasDaiBoo ) actObj.daiPicFun( [ ...daiIdeArr, picObj.id ] ); // What: Re-Add Daily Guard. Why: The picker was in the daily generator when Controls opened but has since been removed. How: This adds picObj.id back into the daily-generator list.
 
-		else if ( !snaRef.current.inDaily && hasDaiBoo ) actObj.setDailyPickers( daiIdeArr.filter( ( curIdeStr ) => curIdeStr !== picObj.id ) ); // What: Re-Remove Daily Guard. Why: The picker was NOT in the daily generator when Controls opened but has since been added. How: This filters picObj.id back out of the daily-generator list.
+		else if ( !snaRef.current.inDaily && hasDaiBoo ) actObj.daiPicFun( daiIdeArr.filter( ( curIdeStr ) => curIdeStr !== picObj.id ) ); // What: Re-Remove Daily Guard. Why: The picker was NOT in the daily generator when Controls opened but has since been added. How: This filters picObj.id back out of the daily-generator list.
 
 
 	};
@@ -728,12 +728,12 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 						placeholder='Picker name'
 						maxLength={ 40 }
 						aria-label='Picker name'
-						onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { name : chaEveObj.target.value } ) }
+						onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { name : chaEveObj.target.value } ) }
 						onBlur={ ( blrEveObj ) => {
 
 							const namTriStr = blrEveObj.target.value.trim(); // What: Name Trimmed String. Why: A blur commit should tidy the name, not commit stray whitespace. How: This trims blrEveObj's own current value.
 
-							if ( namTriStr ) actObj.renamePicker( picObj.id, namTriStr ); // What: Rename Picker Guard. Why: Blurring on an emptied field should not commit a blank name. How: This only calls renamePicker when namTriStr is non-empty.
+							if ( namTriStr ) actObj.renPicFun( picObj.id, namTriStr ); // What: Rename Picker Guard. Why: Blurring on an emptied field should not commit a blank name. How: This only calls renPicFun when namTriStr is non-empty.
 
 						} }
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
@@ -765,7 +765,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 								data-g={ groCurStr }
 								className={ ` picker-group-pill   ${ picObj.group === groCurStr ? 'is-on' : '' } ` }
 								aria-checked={ picObj.group === groCurStr }
-								onClick={ () => actObj.updatePicker( picObj.id, { group : groCurStr } ) }
+								onClick={ () => actObj.updPicFun( picObj.id, { group : groCurStr } ) }
 							>{ groCurStr }</button> // What: Group Pill Button Element. Why: Clicking a pill selects that group for this picker. How: This marks itself checked when it matches picObj.group and commits groCurStr on click.
 
 
@@ -868,7 +868,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									type='radio'
 									name={ `mode_${ picObj.id }` }
 									checked={ modOnBoo }
-									onChange={ () => actObj.updatePicker( picObj.id, { mode : modKeyStr } ) }
+									onChange={ () => actObj.updPicFun( picObj.id, { mode : modKeyStr } ) }
 								/>{ /* What: Mode Radio Input Element. Why: This is the actual selectable control for this mode. How: This is checked when modOnBoo is true and commits modKeyStr as the picker's own mode on change. */ }
 
 								<span className='rd-mode-dot' aria-hidden='true'></span>{ /* What: Mode Dot Span Element. Why: The custom radio dot is drawn purely with CSS rather than the native control. How: This is an empty, decorative, screen-reader-hidden span. */ }
@@ -933,7 +933,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 							const nexValBoo = !preValBoo; // What: Next Value Boolean. Why: The toggle's own next state is simply the opposite of its current one. How: This negates preValBoo.
 
-							if ( !nexValBoo && picObj.conditionalId ) actObj.updatePicker( picObj.id, { conditionalId : null } ); // What: Detach Conditional Guard. Why: Turning the toggle off must also actually detach whatever conditional was attached. How: This clears conditionalId only when the toggle is turning off and one was actually set.
+							if ( !nexValBoo && picObj.conditionalId ) actObj.updPicFun( picObj.id, { conditionalId : null } ); // What: Detach Conditional Guard. Why: Turning the toggle off must also actually detach whatever conditional was attached. How: This clears conditionalId only when the toggle is turning off and one was actually set.
 
 							return nexValBoo; // What: Next Value Return. Why: setConOnBoo needs the toggle's own new state back. How: This returns nexValBoo.
 
@@ -973,7 +973,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										type='button'
 										data-cid={ conCurObj.id }
 										className={ ` cnd-pill   ${ picObj.conditionalId === conCurObj.id ? 'is-on' : '' } ` }
-										onClick={ () => actObj.updatePicker( picObj.id, { conditionalId : conCurObj.id } ) }
+										onClick={ () => actObj.updPicFun( picObj.id, { conditionalId : conCurObj.id } ) }
 									>
 										<span className='cnd-pill-name'>{ conCurObj.name }</span>{ /* What: Pill Name Span Element. Why: Every conditional pill needs its own visible name. How: This renders conCurObj's own name. */ }
 
@@ -1027,7 +1027,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 							const nexIdsArr = inDaiBoo ? daiIdeArr.filter( ( curIdeStr ) => curIdeStr !== picObj.id ) : [ ...daiIdeArr, picObj.id ]; // What: Next Ids Array. Why: Toggling membership means either removing or adding this picker's own id. How: This filters picObj.id out when currently a member, or appends it when not.
 
-							actObj.setDailyPickers( nexIdsArr ); // What: Set Daily Pickers Call. Why: The toggle only takes effect once the new membership list is actually committed. How: This writes nexIdsArr as the app's own daily-generator membership.
+							actObj.daiPicFun( nexIdsArr ); // What: Set Daily Pickers Call. Why: The toggle only takes effect once the new membership list is actually committed. How: This writes nexIdsArr as the app's own daily-generator membership.
 
 						} }
 					><i /></button>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This adds or removes picObj.id from daiIdeArr on click. */ }
@@ -1094,7 +1094,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									className='np-input rd-cad-sel'
 									value={ picObj.cadence || 'daily' }
 									aria-label='Cadence'
-									onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { cadence : chaEveObj.target.value } ) }
+									onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { cadence : chaEveObj.target.value } ) }
 								>
 									<option value='daily'>Daily</option>
 									<option value='weekly'>Weekly</option>
@@ -1109,7 +1109,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										className='np-input rd-cad-sel'
 										value={ picObj.anchorDow ?? 0 }
 										aria-label='Anchor weekday'
-										onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorDow : parseInt( chaEveObj.target.value ) } ) }
+										onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { anchorDow : parseInt( chaEveObj.target.value ) } ) }
 									>
 										{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
@@ -1128,7 +1128,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										className='np-input rd-cad-sel'
 										value={ picObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
 										aria-label='Day selection'
-										onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { dateMode : chaEveObj.target.value } ) }
+										onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { dateMode : chaEveObj.target.value } ) }
 									>
 										<option value='date'>Date</option>
 										<option value='nthWeekday'>Weekday</option>
@@ -1147,7 +1147,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthOrdinal ?? 1 }
 											aria-label='Week of the month'
-											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
@@ -1160,7 +1160,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthWeekday ?? 0 }
 											aria-label='Weekday'
-											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
@@ -1180,7 +1180,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										className='np-input rd-cad-sel'
 										value={ picObj.anchorDom ?? 1 }
 										aria-label='Anchor day of month'
-										onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorDom : parseInt( chaEveObj.target.value ) } ) }
+										onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { anchorDom : parseInt( chaEveObj.target.value ) } ) }
 									>
 										{ Array.from( { length : 31 }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
@@ -1202,7 +1202,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthOrdinal ?? 1 }
 											aria-label='Week of the month'
-											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
@@ -1215,7 +1215,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthWeekday ?? 0 }
 											aria-label='Weekday'
-											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
@@ -1228,7 +1228,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.anchorMonth ?? 1 }
 											aria-label='Anchor month'
-											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
 
@@ -1251,7 +1251,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.anchorMonth ?? 1 }
 											aria-label='Anchor month'
-											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
 
@@ -1264,7 +1264,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ Math.min( picObj.anchorDay ?? 1, CAD_NAM_OBJ.dimCouFun( 2024, picObj.anchorMonth ?? 1 ) ) }
 											aria-label='Anchor day'
-											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorDay : parseInt( chaEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updPicFun( picObj.id, { anchorDay : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ Array.from( { length : CAD_NAM_OBJ.dimCouFun( 2024, picObj.anchorMonth ?? 1 ) }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by CAD_NAM_OBJ.dimCouFun to one option per entry, keyed by its own domValNum.
 
@@ -1307,7 +1307,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 								size='sm'
 								lockedDay={ picObj.cadence === 'weekly' ? ( picObj.anchorDow ?? 0 ) : null }
 								lockedTip={ picObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( picObj.anchorDow ?? 0 ) : '' }
-								onChange={ ( dayArrArg ) => actObj.updatePicker( picObj.id, { daysOfWeek : dayArrArg } ) }
+								onChange={ ( dayArrArg ) => actObj.updPicFun( picObj.id, { daysOfWeek : dayArrArg } ) }
 							/>{ /* What: Weekday Chips Component. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when picObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
 
 
@@ -1335,7 +1335,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 								className={ ` switch   ${ picObj.skipHolidays ? 'is-on' : '' } ` }
 								aria-pressed={ !!picObj.skipHolidays }
 								aria-label='Skip on holidays'
-								onClick={ () => actObj.updatePicker( picObj.id, { skipHolidays : !picObj.skipHolidays } ) }
+								onClick={ () => actObj.updPicFun( picObj.id, { skipHolidays : !picObj.skipHolidays } ) }
 							><i /></button>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips picObj.skipHolidays on click. */ }
 
 
@@ -1382,7 +1382,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 						className={ ` switch   ${ picObj.avoidDuplicates ? 'is-on' : '' } ` }
 						aria-pressed={ !!picObj.avoidDuplicates }
 						aria-label='Avoid duplicate items'
-						onClick={ () => actObj.updatePicker( picObj.id, { avoidDuplicates : !picObj.avoidDuplicates } ) }
+						onClick={ () => actObj.updPicFun( picObj.id, { avoidDuplicates : !picObj.avoidDuplicates } ) }
 					><i /></button>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips picObj.avoidDuplicates on click. */ }
 
 
@@ -1410,8 +1410,8 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 								<FilButCom
 									label='Fill all'
 									disabled={ iteArr.length > 0 && iteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picObj.threshold ?? 100 ) ) }
-									onClick={ () => actObj.refillPicker( picObj.id ) }
-								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold, and calls refillPicker on click. */ }
+									onClick={ () => actObj.filPicFun( picObj.id ) }
+								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
 
 
 							</div>
@@ -1436,8 +1436,8 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 								<FilButCom
 									label='Refill all'
 									disabled={ iteArr.length > 0 && iteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picObj.threshold ?? 100 ) ) }
-									onClick={ () => actObj.refillPicker( picObj.id ) }
-								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold, and calls refillPicker on click. */ }
+									onClick={ () => actObj.filPicFun( picObj.id ) }
+								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
 
 
 							</div>
@@ -1468,7 +1468,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 							<ButBasCom kind='ghost' size='sm' onClick={ () => setConDelBoo( false ) }>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
 
-							<ButBasCom kind='danger' size='sm' onClick={ () => ( onReqDelFun ? onReqDelFun() : actObj.removePicker( picObj.id ) ) }>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onReqDelFun when the caller wants to animate the removal itself, otherwise removes the picker directly. */ }
+							<ButBasCom kind='danger' size='sm' onClick={ () => ( onReqDelFun ? onReqDelFun() : actObj.delPicFun( picObj.id ) ) }>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onReqDelFun when the caller wants to animate the removal itself, otherwise removes the picker directly. */ }
 
 						</div>
 
@@ -1609,7 +1609,7 @@ function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, acti
 		if ( onSavNewFun ) { onSavNewFun(); return; } // What: New Save Guard. Why: A brand-new conditional's own commit (including its animated collapse+add) is owned by ConManCom, not this component. How: This delegates to onSavNewFun and returns early when it's set.
 
 
-		actObj.updateConditional( conObj.id, { ...drfObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's edits only take effect once actually committed. How: This writes every draft field, with name replaced by its tidied form.
+		actObj.updConFun( conObj.id, { ...drfObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's edits only take effect once actually committed. How: This writes every draft field, with name replaced by its tidied form.
 
 		onCloFun(); // What: Close Call. Why: A successful save should also close this row. How: This calls onCloFun after the update above.
 
@@ -1721,7 +1721,7 @@ function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, acti
  *
  * @summary
  * Lists every conditional as a collapsible card whose body is ConEdiCom.
- * Edits are live (updateConditional). A brand-new conditional is held
+ * Edits are live (updConFun). A brand-new conditional is held
  * LOCALLY (not written to the store) until Save, so a reload or
  * tab-switch mid-create discards it, mirroring the "nothing committed
  * until Save" contract TabData's own new-picker draft flow uses (that
@@ -1827,7 +1827,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 	const delAniFun = ( cidStr ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by 300ms while the row plays its own collapse.
 
 
-		const donFun = () => { actObj.removeConditional( cidStr ); setCloIdeStr( null ); setDrfObj( null ); setOpnIdeStr( null ); }; // What: Done Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
+		const donFun = () => { actObj.delConFun( cidStr ); setCloIdeStr( null ); setDrfObj( null ); setOpnIdeStr( null ); }; // What: Done Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
 
 		if ( redMotFun() ) { donFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This calls donFun synchronously and returns early.
 
@@ -1845,7 +1845,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 
 		const payObj = { ...drfObj, name : finNamStr }; // What: Payload Object. Why: The committed conditional needs its own name replaced by the freshly-tidied final one. How: This spreads drfObj with name overridden by finNamStr.
-		const cmtFun = () => { actObj.addConditional( payObj ); setDrfObj( null ); setPenObj( null ); }; // What: Commit Function. Why: The actual store write and clearing the local-only draft/pending state need to happen together. How: This is called either immediately or after the deferred timeout below.
+		const cmtFun = () => { actObj.addConFun( payObj ); setDrfObj( null ); setPenObj( null ); }; // What: Commit Function. Why: The actual store write and clearing the local-only draft/pending state need to happen together. How: This is called either immediately or after the deferred timeout below.
 
 
 		if ( redMotFun() ) { setOpnIdeStr( null ); cmtFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This closes the row and commits synchronously, then returns early.
@@ -1874,7 +1874,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 		if ( penObj ) { saveNewAniFun( tidNamStr ); return; } // What: Pending Guard. Why: A brand-new conditional's own "keep" means actually saving it, the animated way. How: This delegates to saveNewAniFun and returns early when penObj is set.
 
 
-		actObj.updateConditional( opnIdeStr, { ...drfObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form.
+		actObj.updConFun( opnIdeStr, { ...drfObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form.
 
 		closEdiFun(); // What: Close Editor Call. Why: A successful keep should also close the row. How: This calls closEdiFun after the update above.
 
@@ -1919,7 +1919,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 					type='button'
 					className='cat-h-l'
 					aria-expanded={ secOpnBoo }
-					onClick={ () => actObj.toggleControlsCollapsed( '__conditionals', true ) }
+					onClick={ () => actObj.togColFun( '__conditionals', true ) }
 				>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. */ }
 
 
@@ -2007,7 +2007,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 							label='Sort'
 							options={ CIS_OPT_ARR }
 							value={ iteSorStr }
-							onChange={ ( keyValStr ) => actObj.setDataSort( 'conditionals', keyValStr ) }
+							onChange={ ( keyValStr ) => actObj.setSorFun( 'conditionals', keyValStr ) }
 						/> // What: Sort Select Component. Why: This is the actual control for reordering the conditional list. How: This commits the chosen key as this section's own persisted conditionals sort.
 
 
@@ -2117,7 +2117,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 											onClose={ closEdiFun }
 											onDelete={ () => delAniFun( conCurObj.id ) }
 											onSaveNew={ isaPenBoo ? ( () => saveNewAniFun( tidNamStr ) ) : undefined }
-											onDiscard={ isaPenBoo ? closNewAniFun : ( () => { const remIdeStr = conCurObj.id; closEdiFun(); actObj.removeConditional( remIdeStr ); } ) }
+											onDiscard={ isaPenBoo ? closNewAniFun : ( () => { const remIdeStr = conCurObj.id; closEdiFun(); actObj.delConFun( remIdeStr ); } ) }
 										/> // What: ConEdiCom. Why: This is the actual editor body for this one conditional. How: This is passed the live conditional, its draft, and every handler this row needs.
 
 
@@ -2275,7 +2275,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const picArr = staAppObj.pickers || []; // What: Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, falling back to an empty array.
 
 	const [ remPicStr, setRemPicStr ] = React.useState( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
-	const delPicFun = ( picIdeStr ) => { if ( redMotFun() ) { actObj.removePicker( picIdeStr ); return; } setRemPicStr( picIdeStr ); }; // What: Delete Picker Function. Why: A user who prefers reduced motion should see the removal happen instantly instead of animating. How: This removes the picker directly under reduced motion, otherwise just flags it for the animated removal (finished by the card's own onAnimationEnd below).
+	const delPicFun = ( picIdeStr ) => { if ( redMotFun() ) { actObj.delPicFun( picIdeStr ); return; } setRemPicStr( picIdeStr ); }; // What: Delete Picker Function. Why: A user who prefers reduced motion should see the removal happen instantly instead of animating. How: This removes the picker directly under reduced motion, otherwise just flags it for the animated removal (finished by the card's own onAnimationEnd below).
 
 
 	const [ newDrfStr, setNewDrfStr ]   = React.useState( null );  // What: New Draft String And Setter. Why: The "Create Picker" trigger creates a REAL (but hidden) picker immediately; only its id is held here, since the card below always reads the LIVE picker from staAppObj.pickers, same as any other card. How: This is set by strNewFun and cleared by canNewFun/savNewFun.
@@ -2295,7 +2295,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		const nexIdeStr = 'it_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: Next Identifier String. Why: The brand-new item needs its own id immediately. How: This generates a short random id with an 'it_' prefix.
 
-		actObj.addItem( newDrfStr, 'New item', nexIdeStr ); // What: Add Item Call. Why: This is the actual creation of the draft's own first item. How: This adds an item named 'New item' under newDrfStr, with the freshly-generated id.
+		actObj.addIteFun( newDrfStr, 'New item', nexIdeStr ); // What: Add Item Call. Why: This is the actual creation of the draft's own first item. How: This adds an item named 'New item' under newDrfStr, with the freshly-generated id.
 
 		newIteRef.current = nexIdeStr; // What: New Item Mark. Why: Cancel must discard this exact item, not revert it to a snapshot. How: This flags nexIdeStr as the brand-new, not-yet-kept item.
 		setInsIteStr( nexIdeStr );      // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to nexIdeStr.
@@ -2304,12 +2304,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 	}, [ penAutBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to run when the one-shot flag itself is set. How: penAutBoo is the single value this effect's own guard is built around.
 
-	const strNewFun = () => { // What: Start New Function. Why: The "Create Picker" button creates a real, hidden picker immediately, pre-filled from whichever Group/Type/Conditional filter is currently active. How: This calls addPicker with those defaults and opens the resulting id as the new draft.
+	const strNewFun = () => { // What: Start New Function. Why: The "Create Picker" button creates a real, hidden picker immediately, pre-filled from whichever Group/Type/Conditional filter is currently active. How: This calls addPicFun with those defaults and opens the resulting id as the new draft.
 
 
 		const isaRelBoo = !!SED_NAM_OBJ.MOD_DEF_OBJ[ filTypStr ]; // What: Is-A Real Mode Boolean. Why: filTypStr can hold a Conditionals/Reminders sentinel value that isn't an actual picker mode. How: This checks whether filTypStr is a genuine key in SED_NAM_OBJ.MOD_DEF_OBJ.
 
-		const newIdeStr = actObj.addPicker( { // What: New Identifier String. Why: The freshly-created picker's own id is needed immediately to become the new draft. How: This calls addPicker, pre-filled per the active filters, and returns its own new id.
+		const newIdeStr = actObj.addPicFun( { // What: New Identifier String. Why: The freshly-created picker's own id is needed immediately to become the new draft. How: This calls addPicFun, pre-filled per the active filters, and returns its own new id.
 
 
 			conditionalId : filConStr !== 'all' ? filConStr : null,
@@ -2329,10 +2329,10 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 	};
 
-	const canNewFun = () => { // What: Cancel New Function. Why: Cancel discards the whole draft; removePicker already cascades to its own items and daily-generator membership, so there's nothing else to clean up. How: This removes the draft picker (if one exists) and clears both draft-tracking states.
+	const canNewFun = () => { // What: Cancel New Function. Why: Cancel discards the whole draft; delPicFun already cascades to its own items and daily-generator membership, so there's nothing else to clean up. How: This removes the draft picker (if one exists) and clears both draft-tracking states.
 
 
-		if ( newDrfStr ) actObj.removePicker( newDrfStr ); // What: Remove Draft Guard. Why: Only an actual draft picker needs removing. How: This only calls removePicker when newDrfStr is set.
+		if ( newDrfStr ) actObj.delPicFun( newDrfStr ); // What: Remove Draft Guard. Why: Only an actual draft picker needs removing. How: This only calls delPicFun when newDrfStr is set.
 
 		setNewDrfStr( null );  // What: New Draft Clear Call. Why: The draft card must disappear once cancelled. How: This resets newDrfStr to null.
 		setDrfIteBoo( false );  // What: Draft Items Reset Call. Why: A future new draft should start fresh, not carry over this one's Items-open state. How: This resets drfIteBoo to false.
@@ -2340,10 +2340,10 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 	};
 
-	const savNewFun = () => { // What: Save New Function. Why: Save reveals the picker everywhere else by clearing its own hidden flag; every other field was already committed live via the same actObj.updatePicker calls a real picker's own Controls uses. How: This clears hidden on the draft picker and clears both draft-tracking states.
+	const savNewFun = () => { // What: Save New Function. Why: Save reveals the picker everywhere else by clearing its own hidden flag; every other field was already committed live via the same actObj.updPicFun calls a real picker's own Controls uses. How: This clears hidden on the draft picker and clears both draft-tracking states.
 
 
-		if ( newDrfStr ) actObj.updatePicker( newDrfStr, { hidden : false } ); // What: Reveal Draft Guard. Why: Only an actual draft picker needs revealing. How: This only calls updatePicker when newDrfStr is set.
+		if ( newDrfStr ) actObj.updPicFun( newDrfStr, { hidden : false } ); // What: Reveal Draft Guard. Why: Only an actual draft picker needs revealing. How: This only calls updPicFun when newDrfStr is set.
 
 		setNewDrfStr( null );  // What: New Draft Clear Call. Why: This is no longer a "draft" once saved; it's just a normal picker now. How: This resets newDrfStr to null.
 		setDrfIteBoo( false );  // What: Draft Items Reset Call. Why: A future new draft should start fresh. How: This resets drfIteBoo to false.
@@ -2498,7 +2498,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	}, [ picArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, conIteArr.length, filConStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.
 
 
-	const togSecFun = ( secIdeStr ) => actObj.toggleControlsCollapsed( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls toggleControlsCollapsed with defaultCollapsed true.
+	const togSecFun = ( secIdeStr ) => actObj.togColFun( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls togColFun with defaultCollapsed true.
 
 
 	const shoRemBoo = ( filTypStr === 'all' || filTypStr === 'reminders' ) && filConStr === 'all' && ( curScoStr === 'all' || curScoStr === 'reminders' ); // What: Show Reminders Boolean. Why: Reminders is its own scope and isn't part of any picker group/mode, so it only appears when the type filter is "All" (or itself), unfiltered by conditional, at the matching scope. How: This combines all 3 conditions with &&.
@@ -2943,7 +2943,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					label='Sort'
 					options={ SEC_SOR_ARR }
 					value={ secSorStr }
-					onChange={ ( keyValStr ) => actObj.setDataSort( 'sections', keyValStr ) }
+					onChange={ ( keyValStr ) => actObj.setSorFun( 'sections', keyValStr ) }
 				/>{ /* What: Sort Select Component. Why: This is the actual control for reordering Conditionals/Reminders/every picker card below. How: This commits the chosen key as this page's own persisted sections sort. */ }
 
 			</div>
@@ -3025,7 +3025,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 						const nexIdeStr = 'it_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: Next Identifier String. Why: The brand-new item needs its own id immediately. How: This generates a short random id with an 'it_' prefix.
 
-						actObj.addItem( picCurObj.id, 'New item', nexIdeStr ); // What: Add Item Call. Why: This is the actual creation of the item. How: This adds an item named 'New item' under picCurObj.id, with the freshly-generated id.
+						actObj.addIteFun( picCurObj.id, 'New item', nexIdeStr ); // What: Add Item Call. Why: This is the actual creation of the item. How: This adds an item named 'New item' under picCurObj.id, with the freshly-generated id.
 
 						newIteRef.current = nexIdeStr; // What: New Item Mark. Why: Cancel must discard this exact item, not revert it to a snapshot. How: This flags nexIdeStr as the brand-new, not-yet-kept item.
 						setInsIteStr( nexIdeStr );      // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to nexIdeStr.
@@ -3066,7 +3066,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 								if ( aniEveObj.target === aniEveObj.currentTarget && remPicStr === picCurObj.id ) { // What: Removal Finished Guard. Why: The card must actually be removed from the store only once its own removal animation (not a child's) has genuinely finished. How: This checks the event's own target/currentTarget match and that this card is still the one marked removing.
 
-									actObj.removePicker( picCurObj.id ); // What: Remove Picker Call. Why: This is the actual, final destructive action, deferred until the animation finished. How: This removes picCurObj.id from the store.
+									actObj.delPicFun( picCurObj.id ); // What: Remove Picker Call. Why: This is the actual, final destructive action, deferred until the animation finished. How: This removes picCurObj.id from the store.
 									setRemPicStr( null ); // What: Removing Clear Call. Why: The removal-animation flag must clear once it's actually done its job. How: This resets remPicStr to null.
 
 								}
@@ -3123,11 +3123,11 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 										aria-pressed={ !!allVacBoo }
 										aria-label={ `${ allVacBoo ? 'Activate' : 'Deactivate' } all items in ${ picCurObj.name }` }
 										title='Active toggle for all items in this picker'
-										onClick={ ( clkEveObj ) => { clkEveObj.stopPropagation(); actObj.toggleVacation( picCurObj.id, 'picker' ); } }
+										onClick={ ( clkEveObj ) => { clkEveObj.stopPropagation(); actObj.togVacFun( picCurObj.id, 'picker' ); } }
 									>
 										<IcoSvgCom name={ allVacBoo ? 'moon' : 'sparkle' } size={ 14 } />{ /* What: Icon Svg Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
 										<span key={ allVacBoo ? 'inactive' : 'active' } className='set-sub-fade'>{ allVacBoo ? 'Inactive' : 'Active' }</span>{ /* What: Toggle Label Span Element. Why: The toggle also needs its own live text, cross-faded via its own key change. How: This renders "Inactive" while allVacBoo, "Active" otherwise. */ }
-									</button>{ /* What: Vacation Toggle Button Element. Why: This is the actual bulk active/inactive control for every item in this picker at once. How: This stops the click from also toggling the card's own collapse, then calls toggleVacation. */ }
+									</button>{ /* What: Vacation Toggle Button Element. Why: This is the actual bulk active/inactive control for every item in this picker at once. How: This stops the click from also toggling the card's own collapse, then calls togVacFun. */ }
 
 
 								</span>
@@ -3145,7 +3145,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 										className={ ` rd-ctl   ${ hetConBoo ? 'ob-tour-pulse' : '' } ` }
 										disabled={ detConBoo }
 										aria-expanded={ !conColBoo }
-										onClick={ () => actObj.toggleControlsCollapsed( picCurObj.id + ':controls' ) }
+										onClick={ () => actObj.togColFun( picCurObj.id + ':controls' ) }
 									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. */ }
 
 
@@ -3169,7 +3169,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 											conditionals={ staAppObj.conditionals || [] }
 											dailyIds={ staAppObj.daily.pickerIds }
 											actions={ actObj }
-											onCollapse={ () => actObj.toggleControlsCollapsed( picCurObj.id + ':controls' ) }
+											onCollapse={ () => actObj.togColFun( picCurObj.id + ':controls' ) }
 											onRequestDelete={ () => delPicFun( picCurObj.id ) }
 											isNewDraft={ isaDrfBoo }
 											itemsSectionOpen={ drfIteBoo }
@@ -3186,7 +3186,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 										className={ ` rd-ctl   ${ hetIteBoo ? 'ob-tour-pulse' : '' } ` }
 										disabled={ detIteBoo }
 										aria-expanded={ !iteColBoo }
-										onClick={ () => isaDrfBoo ? setDrfIteBoo( ( preBoo ) => !preBoo ) : actObj.toggleControlsCollapsed( picCurObj.id + ':items' ) }
+										onClick={ () => isaDrfBoo ? setDrfIteBoo( ( preBoo ) => !preBoo ) : actObj.togColFun( picCurObj.id + ':items' ) }
 									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles drfIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. */ }
 
 
@@ -3235,7 +3235,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 													label='Sort'
 													options={ pisOptFun( picCurObj.mode ) }
 													value={ iteSorStr }
-													onChange={ ( keyValStr ) => actObj.setDataSort( picCurObj.id, keyValStr ) }
+													onChange={ ( keyValStr ) => actObj.setSorFun( picCurObj.id, keyValStr ) }
 												/> // What: Sort Select Component. Why: This is the actual control for reordering this picker's own item list, mode-dependent per pisOptFun. How: This commits the chosen key as this picker's own persisted item sort.
 
 
@@ -3282,12 +3282,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 																		maxLength={ 60 }
 																		aria-label='Item name'
 																		ref={ ( inpCurEle ) => { if ( inpCurEle && focInpRef.current !== inpCurEle ) { inpCurEle.focus( { preventScroll : true } ); focInpRef.current = inpCurEle; } } }
-																		onChange={ ( chaEveObj ) => actObj.updateItem( iteCurObj.id, { name : chaEveObj.target.value } ) }
+																		onChange={ ( chaEveObj ) => actObj.updIteFun( iteCurObj.id, { name : chaEveObj.target.value } ) }
 																		onBlur={ ( blrEveObj ) => {
 
 																			const namTriStr = blrEveObj.target.value.trim(); // What: Name Trimmed String. Why: A blur commit should tidy the name, not commit stray whitespace. How: This trims blrEveObj's own current value.
 
-																			if ( namTriStr ) actObj.renameItem( iteCurObj.id, namTriStr ); // What: Rename Item Guard. Why: Blurring on an emptied field should not commit a blank name. How: This only calls renameItem when namTriStr is non-empty.
+																			if ( namTriStr ) actObj.renIteFun( iteCurObj.id, namTriStr ); // What: Rename Item Guard. Why: Blurring on an emptied field should not commit a blank name. How: This only calls renIteFun when namTriStr is non-empty.
 
 																		} }
 																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
@@ -3358,7 +3358,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 																			setOpnIteStr( ( curStr ) => curStr === iteCurObj.id ? null : curStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opnIteStr only when it currently equals iteCurObj.id.
 
-																			setTimeout( () => actObj.removeItem( remIdeStr ), 280 ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls removeItem 280ms later.
+																			setTimeout( () => actObj.delIteFun( remIdeStr ), 280 ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun 280ms later.
 
 
 																		}
@@ -3366,7 +3366,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 																		else {
 
 
-																			actObj.replaceItem( iteCurObj.id, snaIteObj ); // What: Replace Item Call. Why: An existing item's own Cancel must revert every field back to its pre-edit snapshot. How: This overwrites the live item with snaIteObj.
+																			actObj.revIteFun( iteCurObj.id, snaIteObj ); // What: Replace Item Call. Why: An existing item's own Cancel must revert every field back to its pre-edit snapshot. How: This overwrites the live item with snaIteObj.
 
 																			setOpnIteStr( ( curStr ) => curStr === iteCurObj.id ? null : curStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opnIteStr only when it currently equals iteCurObj.id.
 
@@ -3382,9 +3382,9 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 																		setOpnIteStr( ( curStr ) => curStr === iteCurObj.id ? null : curStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opnIteStr only when it currently equals iteCurObj.id.
 
-																		if ( redMotFun() ) { actObj.removeItem( remIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This removes the item directly and returns early.
+																		if ( redMotFun() ) { actObj.delIteFun( remIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This removes the item directly and returns early.
 
-																		setTimeout( () => actObj.removeItem( remIdeStr ), 280 ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls removeItem 280ms later.
+																		setTimeout( () => actObj.delIteFun( remIdeStr ), 280 ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun 280ms later.
 
 																	} }
 																/>{ /* What: IteEdiCom. Why: This is the shared picker-item editor, reused so Today and Data stay exact copies. How: This is passed the live item/picker/items plus every handler this row's own lifecycle needs. */ }

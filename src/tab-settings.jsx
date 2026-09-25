@@ -109,7 +109,7 @@ function forRunFun ( runTimStr ) {
  * @param props.state   - State: The whole app state, read here for its own
  *                        state.holidays sub-object.
  * @param props.actions - Actions: The store's own action functions; this uses
- *                        addCustomHoliday/removeCustomHoliday/toggleHoliday.
+ *                        addHolFun/delHolFun/togHolFun.
  *
  * @returns The holiday list (computed rows plus custom rows) and the
  * "add a holiday" form beneath it, as a fragment.
@@ -141,7 +141,7 @@ function HolEdiCom ( { state, actions } ) {
 
 		setExiIdeStr( cusIdeStr ); // What: Exiting Id Set. Why: This is what actually triggers the row's own exit class below. How: This writes the removed row's own id into exiIdeStr.
 
-		setTimeout( () => { actions.removeCustomHoliday( cusIdeStr ); setExiIdeStr( null ); }, 300 ); // What: Delayed Removal Call. Why: The store must not drop the row until the fade-up-and-out animation has actually had time to play. How: This waits 300ms, then removes the holiday from the store and clears exiIdeStr.
+		setTimeout( () => { actions.delHolFun( cusIdeStr ); setExiIdeStr( null ); }, 300 ); // What: Delayed Removal Call. Why: The store must not drop the row until the fade-up-and-out animation has actually had time to play. How: This waits 300ms, then removes the holiday from the store and clears exiIdeStr.
 
 
 	};
@@ -161,7 +161,7 @@ function HolEdiCom ( { state, actions } ) {
 		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value And Day Value. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft and discards the year, keeping only the numeric month and day.
 
 
-		actions.addCustomHoliday( { name : draNamStr.trim(), month : monValNum, day : dayValNum } ); // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actions.addCustomHoliday with the trimmed name and the parsed month/day.
+		actions.addHolFun( { name : draNamStr.trim(), month : monValNum, day : dayValNum } ); // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actions.addHolFun with the trimmed name and the parsed month/day.
 
 		setDraNamStr( '' ); setDraDatStr( '' ); // What: Draft Reset Pair. Why: A successfully added holiday should leave the form empty and ready for the next one. How: This clears both draft fields back to their initial empty strings.
 
@@ -223,8 +223,8 @@ function HolEdiCom ( { state, actions } ) {
 								className={ ` switch   ${ holOnBoo ? 'is-on' : '' } ` }
 								aria-pressed={ holOnBoo }
 								aria-label={ `${ holOnBoo ? 'Disable' : 'Enable' } ${ holCurObj.namStr }` }
-								onClick={ () => actions.toggleHoliday( holCurObj.keyStr ) }
-							><i /></button>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actions.toggleHoliday with this row's own key when clicked. */ }
+								onClick={ () => actions.togHolFun( holCurObj.keyStr ) }
+							><i /></button>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actions.togHolFun with this row's own key when clicked. */ }
 
 
 						</li>
@@ -1013,8 +1013,8 @@ function TheRowCom ( { pKey : theKeyStr, palette : thePalObj, active : actThmBoo
  *                          Dark card, for its own styling hook; defaults to
  *                          false.
  * @param props.actions   - Actions: The store's own action functions; this
- *                          uses setCustomTheme/setAppearanceTheme/
- *                          setCustomThemeName.
+ *                          uses setCusFun/setTheFun/
+ *                          renCusFun.
  *
  * @returns One theme-row div holding 3 live color inputs, a name input,
  * and (while active) a checkmark.
@@ -1038,7 +1038,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 
 	);
 
-	const setColFun = ( colKeyStr, colValStr ) => actions.setCustomTheme( theModStr, { ...draColObj, [ colKeyStr ] : colValStr } ); // What: Set Color Function. Why: Changing any one swatch must save the FULL custom color set back to the store, not just the one changed key. How: This spreads draColObj and overwrites just the one changed key before saving.
+	const setColFun = ( colKeyStr, colValStr ) => actions.setCusFun( theModStr, { ...draColObj, [ colKeyStr ] : colValStr } ); // What: Set Color Function. Why: Changing any one swatch must save the FULL custom color set back to the store, not just the one changed key. How: This spreads draColObj and overwrites just the one changed key before saving.
 
 
 
@@ -1055,7 +1055,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				value={ draColObj.bg }
 				title='Background'
 				aria-label='Custom background color'
-				onClick={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+				onClick={ () => actions.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
 				onChange={ ( chaEveObj ) => setColFun( 'bg', chaEveObj.target.value ) }
 			/>{ /* What: Background Swatch Input Element. Why: This is the live control for the custom theme's own background color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
@@ -1066,7 +1066,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				value={ draColObj.accent }
 				title='Accent'
 				aria-label='Custom accent color'
-				onClick={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+				onClick={ () => actions.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
 				onChange={ ( chaEveObj ) => setColFun( 'accent', chaEveObj.target.value ) }
 			/>{ /* What: Accent Swatch Input Element. Why: This is the live control for the custom theme's own accent color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
@@ -1077,7 +1077,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				value={ draColObj.text }
 				title='Text'
 				aria-label='Custom text color'
-				onClick={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+				onClick={ () => actions.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
 				onChange={ ( chaEveObj ) => setColFun( 'text', chaEveObj.target.value ) }
 			/>{ /* What: Text Swatch Input Element. Why: This is the live control for the custom theme's own text color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
@@ -1088,10 +1088,10 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				value={ draColObj.name || '' }
 				maxLength={ 18 }
 				aria-label={ `Name for your custom ${ theModStr === 'dark' ? 'dark' : 'light' } theme` }
-				onFocus={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chaEveObj ) => actions.setCustomThemeName( theModStr, chaEveObj.target.value ) }
+				onFocus={ () => actions.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+				onChange={ ( chaEveObj ) => actions.renCusFun( theModStr, chaEveObj.target.value ) }
 				onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
-			/>{ /* What: Custom Name Input Element. Why: A custom theme can carry its own user-chosen display name instead of a fixed preset name. How: This activates this custom theme on focus and saves the typed name via actions.setCustomThemeName on change, without also re-toggling the theme on every keystroke click. */ }
+			/>{ /* What: Custom Name Input Element. Why: A custom theme can carry its own user-chosen display name instead of a fixed preset name. How: This activates this custom theme on focus and saves the typed name via actions.renCusFun on change, without also re-toggling the theme on every keystroke click. */ }
 
 			{ actThmBoo && ( // What: Active Checkmark Check. Why: A checkmark should only exist while this specific custom theme is the active one. How: This renders the checkmark span only while actThmBoo is true.
 
@@ -1191,7 +1191,7 @@ function TheSecCom ( { state, actions } ) {
 							pKey={ theKeyStr }
 							palette={ APP_NAM_OBJ.PAL_SET_OBJ[ theKeyStr ] }
 							active={ appCurObj.theme === theKeyStr }
-							onClick={ () => actions.setAppearanceTheme( theKeyStr ) }
+							onClick={ () => actions.setTheFun( theKeyStr ) }
 						/> // What: Theme Row Component. Why: This previews and activates one built-in light theme. How: This is passed its own palette, whether it is the active theme, and the activation callback.
 
 
@@ -1246,7 +1246,7 @@ function TheSecCom ( { state, actions } ) {
 							palette={ APP_NAM_OBJ.PAL_SET_OBJ[ theKeyStr ] }
 							dark
 							active={ appCurObj.theme === theKeyStr }
-							onClick={ () => actions.setAppearanceTheme( theKeyStr ) }
+							onClick={ () => actions.setTheFun( theKeyStr ) }
 						/> // What: Theme Row Component. Why: This previews and activates one built-in dark theme. How: This is passed its own palette, whether it is the active theme, and the activation callback.
 
 
@@ -1810,7 +1810,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	const onRunChaFun = ( newTimStr ) => { // What: On Run Change Function. Why: Changing the run-time is the one deliberate gesture this section asks notification permission from. How: This saves the new run time, then (if supported) asks for permission exactly once.
 
 
-		actions.setDailyRunTime( newTimStr ); // What: Run Time Save Call. Why: This is the actual persisted setting the Daily generator reads to know when to run. How: This calls actions.setDailyRunTime with newTimStr.
+		actions.daiTimFun( newTimStr ); // What: Run Time Save Call. Why: This is the actual persisted setting the Daily generator reads to know when to run. How: This calls actions.daiTimFun with newTimStr.
 
 		if ( NOT_NAM_OBJ ) NOT_NAM_OBJ.askOncFun().then( () => setNotPerStr( NOT_NAM_OBJ.perCheFun() ) ); // What: Ask Once Call. Why: This specific gesture is the one moment this app ever asks for notification permission unprompted. How: This calls NOT_NAM_OBJ.askOncFun, refreshing notPerStr once it resolves.
 
@@ -2154,12 +2154,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 	};
 
-	const doImpFun = () => { // What: Do Import Function. Why: Confirming the pending import needs to actually replace all data and report success. How: This calls actions.importData with the staged backup, announces and reports success, then closes the confirmation.
+	const doImpFun = () => { // What: Do Import Function. Why: Confirming the pending import needs to actually replace all data and report success. How: This calls actions.impDatFun with the staged backup, announces and reports success, then closes the confirmation.
 
 
 		if ( !penImpObj ) return; // What: No Pending Import Guard. Why: There is nothing to confirm if the confirmation was somehow triggered without a staged backup. How: This bails out early whenever penImpObj is null.
 
-		actions.importData( penImpObj.data ); // What: Import Data Call. Why: This is the actual store mutation that replaces all data with the staged backup. How: This calls actions.importData with penImpObj's own parsed data.
+		actions.impDatFun( penImpObj.data ); // What: Import Data Call. Why: This is the actual store mutation that replaces all data with the staged backup. How: This calls actions.impDatFun with penImpObj's own parsed data.
 
 		setImpMesObj( { ok : true, text : 'Backup imported.' } ); // What: Import Success Message. Why: A status line should confirm the import once the confirmation row itself is gone. How: This sets impMesObj to a fixed success message.
 
@@ -2455,8 +2455,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 										className={ ` switch   ${ appCurObj.autoSystem ? 'is-on' : '' } ` }
 										aria-pressed={ !!appCurObj.autoSystem }
 										aria-label='System preference'
-										onClick={ () => actions.setAppearanceAutoSystem( !appCurObj.autoSystem ) }
-									><i /></button>{ /* What: System Pref Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actions.setAppearanceAutoSystem with the toggled value when clicked. */ }
+										onClick={ () => actions.setSysFun( !appCurObj.autoSystem ) }
+									><i /></button>{ /* What: System Pref Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actions.setSysFun with the toggled value when clicked. */ }
 
 
 								</div>
@@ -2501,9 +2501,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 									] }
 									previewDisabled={ false }
-									onChange={ actions.setCompletionStyle }
+									onChange={ actions.setCelFun }
 									onPreview={ plyCelFun }
-								/>{ /* What: Style Radio Component. Why: This is the actual celebration-style picker. How: This is bound to the persisted completionStyle, saving via actions.setCompletionStyle and previewing via plyCelFun. */ }
+								/>{ /* What: Style Radio Component. Why: This is the actual celebration-style picker. How: This is bound to the persisted completionStyle, saving via actions.setCelFun and previewing via plyCelFun. */ }
 
 								<CelPreCom
 									styKeyStr={ celStyStr }
@@ -2545,9 +2545,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 									] }
 									previewDisabled={ false }
-									onChange={ ( newValStr ) => { setPicPreStr( null ); actions.setPickAnim( newValStr ); } }
+									onChange={ ( newValStr ) => { setPicPreStr( null ); actions.setAniFun( newValStr ); } }
 									onPreview={ plyPicFun }
-								/>{ /* What: Style Radio Component. Why: This is the actual picker-animation style picker. How: This is bound to the persisted pickAnim, saving via actions.setPickAnim (clearing any stale preview first) and previewing via plyPicFun. */ }
+								/>{ /* What: Style Radio Component. Why: This is the actual picker-animation style picker. How: This is bound to the persisted pickAnim, saving via actions.setAniFun (clearing any stale preview first) and previewing via plyPicFun. */ }
 
 								<PicAniCom
 									styKeyStr={ picPreStr || ( state.appearance && state.appearance.pickAnim ) || 'reel' }
@@ -2611,8 +2611,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 										] }
 										value={ ( state.appearance && state.appearance.tabPlacement ) || 'bottom' }
 										ariLabStr='Tab bar placement'
-										onChange={ actions.setTabPlacement }
-									/>{ /* What: Segment Control Component. Why: This is the actual 3-way exclusive control for the tab-bar placement. How: This is bound to the persisted tabPlacement, saving via actions.setTabPlacement. */ }
+										onChange={ actions.setPlaFun }
+									/>{ /* What: Segment Control Component. Why: This is the actual 3-way exclusive control for the tab-bar placement. How: This is bound to the persisted tabPlacement, saving via actions.setPlaFun. */ }
 
 
 								</div>
@@ -2670,8 +2670,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									className={ ` switch   ${ dlyModStr === 'auto' ? 'is-on' : '' } ` }
 									aria-pressed={ dlyModStr === 'auto' }
 									aria-label='Run the Daily generator automatically'
-									onClick={ () => actions.setDailyMode( dlyModStr === 'auto' ? 'manual' : 'auto' ) }
-								><i /></button>{ /* What: Auto Run Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actions.setDailyMode with the toggled value when clicked. */ }
+									onClick={ () => actions.daiModFun( dlyModStr === 'auto' ? 'manual' : 'auto' ) }
+								><i /></button>{ /* What: Auto Run Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actions.daiModFun with the toggled value when clicked. */ }
 
 
 							</div>
@@ -3178,7 +3178,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 												// coach.
 												if ( onHomFun ) onHomFun(); // What: Navigate Home Call. Why: The post-reset welcome modal's own tour anchors only exist on the Today tab. How: This calls onHomFun, if provided, before the reset itself actually runs.
 
-												actions.reset(); setConResBoo( false ); setResLeaBoo( false ); setResMesStr( 'All data reset.' ); // What: Reset And Close Call. Why: This is the actual store mutation, alongside closing the confirm and reporting the outcome. How: This calls actions.reset(), then clears the confirm/leaving flags and sets resMesStr.
+												actions.wipAppFun(); setConResBoo( false ); setResLeaBoo( false ); setResMesStr( 'All data reset.' ); // What: Reset And Close Call. Why: This is the actual store mutation, alongside closing the confirm and reporting the outcome. How: This calls actions.wipAppFun(), then clears the confirm/leaving flags and sets resMesStr.
 
 												// Nothing here to return focus to (the row's own Reset button
 												// becomes disabled with no data), and the welcome modal takes
@@ -3388,7 +3388,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 										// single replay instead.
 										const hasReaBoo = state.pickers.some( ( picCurObj ) => !ONB_SPI_ARR.includes( picCurObj.id ) ); // What: Has Real Boolean. Why: Only a real, established account (one holding at least 1 non-sample picker) needs this self-healing correction applied. How: This is true whenever any of state.pickers is not one of the seeded sample picker ids.
 
-										actions.setOnboarding( { // What: Set Onboarding Call. Why: This is the actual reset of the tour's own onboarding flags, always clearing the core 4 and conditionally correcting the 2 self-healing ones. How: This spreads in checklistDone/appFeaturesIntroSeen only while hasReaBoo is true.
+										actions.setOnbFun( { // What: Set Onboarding Call. Why: This is the actual reset of the tour's own onboarding flags, always clearing the core 4 and conditionally correcting the 2 self-healing ones. How: This spreads in checklistDone/appFeaturesIntroSeen only while hasReaBoo is true.
 
 
 											welcomed : false, dismissed : true, appFeatures : {}, appFeaturesSectionResolved : false, checklist : {},

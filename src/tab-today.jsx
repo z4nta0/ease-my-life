@@ -33,7 +33,7 @@ import { norGroFun    } from './pickers.js';                    // What: Normali
 import { NOT_NAM_OBJ  } from './notify.js';                     // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
 import { NumSteCom    } from './ui.jsx';                        // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntryEditor's own ease rows.
 import { ONB_CHE_OBJ  } from './onboarding-checklist.js';       // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entLooFun/cheStaFun/reaPicFun/reaGenFun/othRemFun/tutProFun.
-import { ONB_GII_STR  } from './onboarding-checklist.js';       // What: Onboarding Generate-Item-Id String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setChecklistItem wherever that specific card is read or resolved.
+import { ONB_GII_STR  } from './onboarding-checklist.js';       // What: Onboarding Generate-Item-Id String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setCarFun wherever that specific card is read or resolved.
 import { ONB_EPT_ARR  } from './onboarding-checklist.js';       // What: Onboarding Explore-Page-Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
 import { ONB_PCT_OBJ  } from './onboarding-seed-data.js';       // What: Onboarding Picker-Card-Time Object. Why: A still-hidden sample picker's launcher card needs a manually-timed estimate to show next to its own name. How: This is looked up by picker id inside EntCarCom's own tutorial branch.
 import { ONB_SPI_ARR  } from './onboarding-seed-data.js';       // What: Onboarding Sample-Picker-Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout groEntFun and TabToday's own counts.
@@ -297,7 +297,7 @@ function groEntFun ( staAppObj ) {
 		if ( cheDonBoo && isaDonBoo ) continue; // What: Replay Resolved Guard. Why: Post-checklistDone, a resolved card vanishes for good the moment it resolves instead of sticking around with an Undo toggle, since there is no closing Generate card left to synchronize a batch disappearance against. How: This drops curPicObj's own card once it is both post-checklistDone and already resolved.
 
 
-		if ( cheDonBoo ) { // What: Replay Collision Branch. Why: Only matters post-checklistDone; during the ORIGINAL first-time checklist this must stay a no-op, since finishing this exact tutorial deliberately creates a real picker sharing the sample's own name (addPicker's own dedup skips hidden pickers for this reason, see store.js), and running this check then would immediately "collide" with its own result. How: This checks for a same-named real picker and drops the card if one already exists.
+		if ( cheDonBoo ) { // What: Replay Collision Branch. Why: Only matters post-checklistDone; during the ORIGINAL first-time checklist this must stay a no-op, since finishing this exact tutorial deliberately creates a real picker sharing the sample's own name (addPicFun's own dedup skips hidden pickers for this reason, see store.js), and running this check then would immediately "collide" with its own result. How: This checks for a same-named real picker and drops the card if one already exists.
 
 
 			const colBoo = staAppObj.pickers.some( ( othPicObj ) => !ONB_SPI_ARR.includes( othPicObj.id ) && othPicObj.name === curPicObj.name ); // What: Collision Boolean. Why: A real picker sharing this sample's exact name means re-prompting it would be redundant. How: This checks every non-sample picker's own name against curPicObj's own name.
@@ -957,7 +957,7 @@ function LoaCarCom ( { picker : picRecObj, info : infRecObj } ) {
 
 // #region EntryEditor
 
-const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }, forRefObj ) { // What: Entry Editor. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: mirrors the Pickers-tab per-item controls (a weight stepper for weighted/dynamic, cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete). How: This snapshots item on mount so Cancel/an implicit close can revert it, stages every live edit directly onto the real item via actions.updateItem, and exposes a keep() imperative handle so an external close affordance can mark a save as already-handled.
+const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }, forRefObj ) { // What: Entry Editor. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: mirrors the Pickers-tab per-item controls (a weight stepper for weighted/dynamic, cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete). How: This snapshots item on mount so Cancel/an implicit close can revert it, stages every live edit directly onto the real item via actions.updIteFun, and exposes a keep() imperative handle so an external close affordance can mark a save as already-handled.
 
 
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Delete is confirm-gated, morphing the footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt below.
@@ -970,12 +970,12 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	React.useImperativeHandle( forRefObj, () => ( { keep : () => { cloWayRef.current = 'saved'; } } ) ); // What: Imperative Handle Publish. Why: An external close affordance needs a way to mark this editor's own edits as already-handled before it closes. How: This exposes a single keep method that just flips cloWayRef to 'saved'.
 
 
-	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCancel with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actions.replaceItem.
+	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCancel with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actions.revIteFun.
 
 
 		if ( onCancel ) onCancel( oriIteRef.current );
 
-		else actions.replaceItem( oriIteRef.current.id, oriIteRef.current );
+		else actions.revIteFun( oriIteRef.current.id, oriIteRef.current );
 
 
 	};
@@ -1087,22 +1087,22 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	const sooDayNum = drfSooFun( curEasMaxNum ); // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts curEasMaxNum via drfSooFun.
 	const latDayNum = drfLatFun( curEasMinNum ); // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts curEasMinNum via drfLatFun.
 
-	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updateItem.
+	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updIteFun.
 
 
 		const newEasMaxNum = dayDrfFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Ease Max Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDrfFun.
 
-		actions.updateItem( item.id, { easeMax : newEasMaxNum, easeMin : Math.min( curEasMinNum, newEasMaxNum ) } ); // What: Update Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax, clamping easeMin down to match if it would otherwise exceed the new easeMax.
+		actions.updIteFun( item.id, { easeMax : newEasMaxNum, easeMin : Math.min( curEasMinNum, newEasMaxNum ) } ); // What: Update Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax, clamping easeMin down to match if it would otherwise exceed the new easeMax.
 
 
 	};
 
-	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updateItem.
+	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updIteFun.
 
 
 		const newEasMinNum = dayDrfFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Ease Min Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDrfFun.
 
-		actions.updateItem( item.id, { easeMin : newEasMinNum, easeMax : Math.max( curEasMaxNum, newEasMinNum ) } ); // What: Update Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin, clamping easeMax up to match if it would otherwise fall under the new easeMin.
+		actions.updIteFun( item.id, { easeMin : newEasMinNum, easeMax : Math.max( curEasMaxNum, newEasMinNum ) } ); // What: Update Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin, clamping easeMax up to match if it would otherwise fall under the new easeMin.
 
 
 	};
@@ -1284,7 +1284,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 								<FilButCom
 									label='Fill'
 									disabled={ ( item.value ?? 0 ) >= ( picker.threshold ?? 100 ) }
-									onClick={ () => actions.updateItem( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
+									onClick={ () => actions.updIteFun( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -1315,7 +1315,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 								<FilButCom
 									label='Refill'
 									disabled={ ( item.value ?? 0 ) >= ( picker.threshold ?? 100 ) }
-									onClick={ () => actions.updateItem( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
+									onClick={ () => actions.updIteFun( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -1354,16 +1354,16 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 							<button
 								aria-label='Less weight'
 								disabled={ item.weight <= 1 }
-								onClick={ () => actions.setItemWeight( item.id, Math.max( 1, item.weight - 1 ) ) }
-							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps item.weight down to a minimum of 1 via actions.setItemWeight. */ }
+								onClick={ () => actions.setWeiFun( item.id, Math.max( 1, item.weight - 1 ) ) }
+							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps item.weight down to a minimum of 1 via actions.setWeiFun. */ }
 
 							<span className='weight-val'>w{ item.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
 
 							<button
 								aria-label='More weight'
 								disabled={ item.weight >= 9 }
-								onClick={ () => actions.setItemWeight( item.id, Math.min( 9, item.weight + 1 ) ) }
-							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps item.weight up to a maximum of 9 via actions.setItemWeight. */ }
+								onClick={ () => actions.setWeiFun( item.id, Math.min( 9, item.weight + 1 ) ) }
+							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps item.weight up to a maximum of 9 via actions.setWeiFun. */ }
 
 
 						</div>
@@ -1421,8 +1421,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 							<BooResCom
 								value={ item.value || 0 }
-								onReset={ () => actions.updateItem( item.id, { value : 0 } ) }
-							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actions.updateItem on reset. */ }
+								onReset={ () => actions.updIteFun( item.id, { value : 0 } ) }
+							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actions.updIteFun on reset. */ }
 
 
 						</div>
@@ -1456,8 +1456,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 						className={ `switch ${ !item.vacation ? 'is-on' : '' }` }
 						aria-pressed={ !item.vacation }
 						aria-label={ item.vacation ? 'Activate' : 'Deactivate' }
-						onClick={ () => actions.toggleVacation( item.id, 'item' ) }
-					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actions.toggleVacation, scoped to 'item'. */ }
+						onClick={ () => actions.togVacFun( item.id, 'item' ) }
+					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actions.togVacFun, scoped to 'item'. */ }
 
 
 				</div>
@@ -1489,8 +1489,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 						<ButBasCom
 							kind='danger'
 							size='sm'
-							onClick={ () => ( onDelete ? onDelete() : actions.removeItem( item.id ) ) }
-						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelete when supplied, otherwise removes the item directly via actions.removeItem. */ }
+							onClick={ () => ( onDelete ? onDelete() : actions.delIteFun( item.id ) ) }
+						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelete when supplied, otherwise removes the item directly via actions.delIteFun. */ }
 
 
 					</div>
@@ -1761,8 +1761,8 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 							className='icon-btn'
 							aria-label='Cancel tutorial'
 							title='Cancel'
-							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setChecklistItem( picRecObj.id, { status : 'cancelled' } ); } }
-						>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setChecklistItem with a 'cancelled' status. */ }
+							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setCarFun( picRecObj.id, { status : 'cancelled' } ); } }
+						>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setCarFun with a 'cancelled' status. */ }
 
 
 							<IcoSvgCom
@@ -2571,8 +2571,8 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
 						className='icon-btn'
 						aria-label='Cancel tutorial'
 						title='Cancel'
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setChecklistItem( touRecObj.id, { status : 'cancelled' } ); } }
-					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing the tour. How: This calls actStoObj.setChecklistItem with a 'cancelled' status. */ }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setCarFun( touRecObj.id, { status : 'cancelled' } ); } }
+					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing the tour. How: This calls actStoObj.setCarFun with a 'cancelled' status. */ }
 
 
 						<IcoSvgCom
@@ -2771,8 +2771,8 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 						className='icon-btn'
 						aria-label='Cancel tutorial'
 						title='Cancel'
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setAppFeatureItem( feaRecObj.ideStr, { status : 'cancelled' } ); } }
-					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setAppFeatureItem with a 'cancelled' status. */ }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setFeaFun( feaRecObj.ideStr, { status : 'cancelled' } ); } }
+					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setFeaFun with a 'cancelled' status. */ }
 
 
 						<IcoSvgCom
@@ -3094,7 +3094,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * checked first-time card does. Collision filtering only ever applies
 	 * once cheDonBoo; during the first-time phase it must stay a no-op,
 	 * or completing a picker/task tutorial (which deliberately creates a
-	 * same-named real picker/task, see store.js's addPicker/addTask)
+	 * same-named real picker/task, see store.js's addPicFun/addTasFun)
 	 * would immediately "collide" with its own result and undercount the
 	 * very card it just finished.
 	 *
@@ -3488,12 +3488,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 
-	const onCheFun = ( picRecObj, entRecObj ) => { // What: On Check Function. Why: Toggling done also needs to stage the brief "fresh" cue, but only on a genuine not-done-to-done transition, never on an uncheck. How: This calls actions.toggleDone, then stages jusCheStr only when wasDonBoo was false.
+	const onCheFun = ( picRecObj, entRecObj ) => { // What: On Check Function. Why: Toggling done also needs to stage the brief "fresh" cue, but only on a genuine not-done-to-done transition, never on an uncheck. How: This calls actions.togDonFun, then stages jusCheStr only when wasDonBoo was false.
 
 
-		const wasDonBoo = entRecObj.done; // What: Was Done Boolean. Why: The fresh-cue guard below needs to know the PRE-toggle state. How: This reads entRecObj.done before actions.toggleDone below flips it.
+		const wasDonBoo = entRecObj.done; // What: Was Done Boolean. Why: The fresh-cue guard below needs to know the PRE-toggle state. How: This reads entRecObj.done before actions.togDonFun below flips it.
 
-		actions.toggleDone( entRecObj.eid ); // What: Toggle Done Call. Why: This is the actual completion toggle, applying (or reverting) this entry's own pending mutation. How: This calls actions.toggleDone with entRecObj's own eid.
+		actions.togDonFun( entRecObj.eid ); // What: Toggle Done Call. Why: This is the actual completion toggle, applying (or reverting) this entry's own pending mutation. How: This calls actions.togDonFun with entRecObj's own eid.
 
 		if ( !wasDonBoo ) { // What: Fresh Cue Guard. Why: Only a genuine check (not an uncheck) deserves the brief fresh cue. How: This stages jusCheStr only while wasDonBoo was false.
 
@@ -3524,7 +3524,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	const [ remIdeSet, setRemIdeSet ] = React.useState( () => new Set() ); // What: Removing Id Set And Setter. Why: A skipped or deleted row needs to know it is mid-removal so it can play its own collapse animation. How: This is added to right before the animation starts and cleared once the underlying data actually changes.
 
-	const hndSkiFun = ( entIdeStr ) => { // What: Handle Skip Function. Why: This is the actual skip trigger, shared by every EntCarCom's own onSkiFun prop. How: This stages entIdeStr as removing, then calls actions.skipEntry after skiAniMsNum.
+	const hndSkiFun = ( entIdeStr ) => { // What: Handle Skip Function. Why: This is the actual skip trigger, shared by every EntCarCom's own onSkiFun prop. How: This stages entIdeStr as removing, then calls actions.skiEntFun after skiAniMsNum.
 
 
 		if ( remIdeSet.has( entIdeStr ) ) return; // What: Already Removing Guard. Why: A row already mid-removal must not be re-triggered by a second click. How: This bails out early when entIdeStr is already in remIdeSet.
@@ -3535,7 +3535,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		setTimeout( () => { // What: Skip Settle Timeout. Why: The actual data removal must wait for the collapse animation to finish playing. How: This runs after skiAniMsNum, matching the CSS animation's own duration.
 
 
-			actions.skipEntry( entIdeStr ); // What: Skip Entry Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.skipEntry with entIdeStr.
+			actions.skiEntFun( entIdeStr ); // What: Skip Entry Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.skiEntFun with entIdeStr.
 
 			setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.delete( entIdeStr ); return nexSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
 
@@ -3550,7 +3550,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		setActiveEditor( ( curValStr ) => curValStr === `item:${ entIdeStr }` ? null : curValStr ); // What: Editor Close. Why: A deleted item's own editor must not stay open. How: This clears activeEditor only if it currently points at this exact item's own editor slot.
 
-		if ( redMotFun() ) { actions.removeItem( iteIdeStr ); return; } // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the item removed immediately, not wait through an animation they won't see anyway. How: This removes iteIdeStr directly and returns early.
+		if ( redMotFun() ) { actions.delIteFun( iteIdeStr ); return; } // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the item removed immediately, not wait through an animation they won't see anyway. How: This removes iteIdeStr directly and returns early.
 
 
 		if ( remIdeSet.has( entIdeStr ) ) return; // What: Already Removing Guard. Why: A row already mid-removal must not be re-triggered by a second click. How: This bails out early when entIdeStr is already in remIdeSet.
@@ -3561,7 +3561,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		setTimeout( () => { // What: Delete Settle Timeout. Why: The actual item removal must wait for the collapse animation to finish playing. How: This runs after skiAniMsNum, matching the CSS animation's own duration.
 
 
-			actions.removeItem( iteIdeStr ); // What: Remove Item Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.removeItem with iteIdeStr.
+			actions.delIteFun( iteIdeStr ); // What: Remove Item Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.delIteFun with iteIdeStr.
 
 			setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.delete( entIdeStr ); return nexSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
 
@@ -3623,7 +3623,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 					const nexIteObj    = eliArr[ ( curFouIndNum + 1 ) % eliArr.length ];                          // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliArr one past curFouIndNum, modulo its own length.
 					const resObj       = PIC_NAM_OBJ.picIteFun( picRecObj, state.items, { forceItemId : nexIteObj.id } );   // What: Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to nexIteObj's own id.
 
-					actions.setEntryItem( entRecObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus resObj's own updArr/patObj/depBoo.
+					actions.swaIteFun( entRecObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus resObj's own updArr/patObj/depBoo.
 
 
 						bumpPick    : true,
@@ -3649,7 +3649,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				if ( resObj.picObj ) { // What: Picked Guard. Why: A pick can legitimately come back empty (no eligible candidates), in which case there is nothing to stage. How: This only proceeds once resObj.picObj exists.
 
 
-					actions.setEntryItem( entRecObj.eid, resObj.picObj.id, { // What: Set Entry Item Call. Why: Same staging contract as the ease-up branch above: nothing changes until the entry is marked done. How: This writes resObj.picObj's own id plus resObj's own updArr/patObj/depBoo.
+					actions.swaIteFun( entRecObj.eid, resObj.picObj.id, { // What: Set Entry Item Call. Why: Same staging contract as the ease-up branch above: nothing changes until the entry is marked done. How: This writes resObj.picObj's own id plus resObj's own updArr/patObj/depBoo.
 
 
 						bumpPick    : true,
@@ -3943,7 +3943,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const ordSnaRef      = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by enterEdiFun and read/cleared by exitEdiFun.
 	const [ merPmpObj, setMerPmpObj ] = React.useState( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own mergePending prop.
 
-	const reqRenFun = ( oldNamStr, rawNewStr ) => { // What: Request Rename Function. Why: A group header's own rename entry point needs to normalize the typed name and, if it resolves to a DIFFERENT existing group, defer to a merge confirm rather than rename straight away. How: This normalizes rawNewStr, then either stages merPmpObj or calls actions.renameGroup directly.
+	const reqRenFun = ( oldNamStr, rawNewStr ) => { // What: Request Rename Function. Why: A group header's own rename entry point needs to normalize the typed name and, if it resolves to a DIFFERENT existing group, defer to a merge confirm rather than rename straight away. How: This normalizes rawNewStr, then either stages merPmpObj or calls actions.renGroFun directly.
 
 
 		const othGroArr = [ ...new Set( state.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldNamStr ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The collision check below needs every OTHER real group name, excluding the one being renamed. How: This deduplicates every non-matching picker's own group field via a Set.
@@ -3954,7 +3954,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		if ( othGroArr.includes( tarNamStr ) ) setMerPmpObj( { from : oldNamStr, to : tarNamStr } ); // What: Merge Stage Branch. Why: A collision with another real group means this needs confirmation before merging. How: This stages merPmpObj instead of renaming immediately.
 
-		else actions.renameGroup( oldNamStr, tarNamStr ); // What: Direct Rename Branch. Why: No collision means the rename can commit immediately. How: This calls actions.renameGroup with oldNamStr/tarNamStr.
+		else actions.renGroFun( oldNamStr, tarNamStr ); // What: Direct Rename Branch. Why: No collision means the rename can commit immediately. How: This calls actions.renGroFun with oldNamStr/tarNamStr.
 
 
 	};
@@ -3984,7 +3984,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( banCloBoo ) return; // What: Already Closing Guard. Why: A close already in flight must not be re-triggered by a second call. How: This bails out early while banCloBoo is already true.
 
 
-		if ( !comBoo && ordSnaRef.current ) actions.setTodayOrder( ordSnaRef.current.groupOrder, ordSnaRef.current.pickerOrder ); // What: Revert Branch. Why: Cancel/Escape must discard every drag made this session, restoring exactly what was snapshotted on entry. How: This writes ordSnaRef's own snapshot back via actions.setTodayOrder, only when comBoo is false.
+		if ( !comBoo && ordSnaRef.current ) actions.setOrdFun( ordSnaRef.current.groupOrder, ordSnaRef.current.pickerOrder ); // What: Revert Branch. Why: Cancel/Escape must discard every drag made this session, restoring exactly what was snapshotted on entry. How: This writes ordSnaRef's own snapshot back via actions.setOrdFun, only when comBoo is false.
 
 		ordSnaRef.current = null; // What: Snapshot Clear. Why: The snapshot is no longer needed once this session has fully ended. How: This clears ordSnaRef back to null.
 
@@ -4039,7 +4039,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				const shoArr = shoOrdRef.current || [];                          // What: Shown Array. Why: A drop index is a DOM position, which only makes sense against whatever order was actually rendered. How: This reads shoOrdRef.current, falling back to an empty array.
 				const preArr = ordNumArr.map( ( curIndNum ) => shoArr[ curIndNum ] ).filter( Boolean ); // What: Present Array. Why: This translates the drop's own numeric indices back into real block ids. How: This maps each index through shoArr, dropping any that resolve to nothing.
 
-				actions.reorderGroups( merOrdFun( state.groupOrder || [], preArr ) ); // What: Reorder Groups Call. Why: This is the actual persisted write. How: This merges preArr's own new order back into the fuller saved order via merOrdFun.
+				actions.reoGroFun( merOrdFun( state.groupOrder || [], preArr ) ); // What: Reorder Groups Call. Why: This is the actual persisted write. How: This merges preArr's own new order back into the fuller saved order via merOrdFun.
 
 
 			},
@@ -4077,7 +4077,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				const preArr = ordNumArr.map( ( curIndNum ) => curGroObj.entries[ curIndNum ].picker.id ); // What: Present Array. Why: This translates the drop's own numeric indices back into real picker ids. How: This maps each index through curGroObj's own entries array.
 
-				actions.reorderPickersInGroup( curGroObj.name, merOrdFun( ( state.pickerOrder || {} )[ curGroObj.name ] || [], preArr ) ); // What: Reorder Pickers In Group Call. Why: This is the actual persisted write, scoped to this one group. How: This merges preArr's own new order back into this group's own fuller saved order via merOrdFun.
+				actions.reoPicFun( curGroObj.name, merOrdFun( ( state.pickerOrder || {} )[ curGroObj.name ] || [], preArr ) ); // What: Reorder Pickers In Group Call. Why: This is the actual persisted write, scoped to this one group. How: This merges preArr's own new order back into this group's own fuller saved order via merOrdFun.
 
 
 			},
@@ -4095,7 +4095,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const [ genMapObj, setGenMapObj ] = React.useState( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { status, kind, candidates, ... } record to read from. How: This is populated by genFun below and cleared once the cascade finishes.
 
 	const [ lvgEidArr, setLvgEidArr ] = React.useState( () => new Set() ); // What: Leaving Entry Id Array And Setter. Why: A regenerate can drop an entry entirely (its own picker produced no new pick, e.g. its last eligible item just went inactive) without a loader card to cover it, so without this it would sit untouched through the whole generation and then blink out; this flags it to play the normal removal animation instead. How: This is staged by genFun below right before the commit and cleared right after.
-	const [ lvgTasSet, setLvgTasSet ] = React.useState( () => new Set() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actions.replaceTodayEntries actually removes it. How: This is staged by genFun below and cleared right after, and is passed straight through to RemSecCom as its own leavingTaskIds prop.
+	const [ lvgTasSet, setLvgTasSet ] = React.useState( () => new Set() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actions.setEntFun actually removes it. How: This is staged by genFun below and cleared right after, and is passed straight through to RemSecCom as its own leavingTaskIds prop.
 	const [ arvTasSet, setArvTasSet ] = React.useState( () => new Set() ); // What: Arriving Task Set And Setter. Why: A reminder a Generate just made newly visible (its day arrived but the generator hadn't run yet) needs to play an entrance instead of just popping in. How: This is staged by genFun below and cleared shortly after, and is passed straight through to RemSecCom as its own arrivingTaskIds prop.
 	const genBusRef    = React.useRef( false ); // What: Generate Busy Reference. Why: genFun's own re-entrancy guard needs a value that updates synchronously, unlike React state. How: This is set true at genFun's own start and false at its own end.
 	const genMapRef    = React.useRef( null );  // What: Generate Map Reference. Why: The departing-entry computation inside genFun needs to read the live generate map synchronously, without waiting for a state update to land. How: This mirrors genMapObj, written by genFun alongside every setGenMapObj call.
@@ -4113,7 +4113,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * is true only when the scheduled boundary-check effect below
 	 * invokes this (never for the manual Regenerate button or the
 	 * onboarding tour's simulated click); it is threaded straight into
-	 * actions.replaceTodayEntries since only an auto-run resets today's
+	 * actions.setEntFun since only an auto-run resets today's
 	 * own streak claim, see that action's own comment for why.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
@@ -4182,7 +4182,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const dowNum      = genNowDat.getDay();                                     // What: Day Of Week Number. Why: A picker's own daysOfWeek gate is checked against this. How: This reads genNowDat.getDay().
 		const holTodBoo   = HOL_NAM_OBJ.holDatFun( state.holidays, genNowDat );      // What: Holiday Today Boolean. Why: A picker's own skipHolidays gate is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with state.holidays and genNowDat.
 
-		const conArr    = actions.resolveConditionalsForDay() || state.conditionals || []; // What: Conditional Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actions.resolveConditionalsForDay, falling back to state.conditionals or an empty array.
+		const conArr    = actions.resConFun() || state.conditionals || []; // What: Conditional Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actions.resConFun, falling back to state.conditionals or an empty array.
 		const conByIdMap = new Map( conArr.map( ( curConObj ) => [ curConObj.id, curConObj ] ) );   // What: Conditional By Id Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps conArr down to an id-keyed Map.
 
 		const exiByPicMap = new Map(); // What: Existing By Picker Map. Why: Existing live pick/charging entries are the source of truth for cadence carry/suppress decisions, since they persist across days until a regenerate. How: This is populated by the loop just below.
@@ -4463,7 +4463,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		 *
 		 * @summary
 		 * Completed one-time reminders are purged by
-		 * actions.replaceTodayEntries below; playing their exit animation
+		 * actions.setEntFun below; playing their exit animation
 		 * first, rather than letting them vanish instantly, uses the PRE-
 		 * generate anchor (this genFun call hasn't bumped generatedAt
 		 * yet), matching what's actually on screen right now. Reminders
@@ -4496,13 +4496,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		}
 
-		actions.replaceTodayEntries( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new state.today.entries. How: This calls actions.replaceTodayEntries, resetting the streak claim only for an auto-run.
-		actions.markGenerated(); // What: Mark Generated Call. Why: state.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actions.markGenerated.
+		actions.setEntFun( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new state.today.entries. How: This calls actions.setEntFun, resetting the streak claim only for an auto-run.
+		actions.marGenFun(); // What: Mark Generated Call. Why: state.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actions.marGenFun.
 
 		if ( cheDonBoo && APP_FEA_ARR.every( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shoFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
 
 
-			actions.setOnboarding( { appFeaturesSectionResolved : true, appFeaturesEverCompleted : true } ); // What: Set Onboarding Call. Why: fecDonBoo is the permanent half of this pair, see its own doc comment above for why it must never reset alongside fsrFlaBoo on a Replay Tour. How: This writes both flags true.
+			actions.setOnbFun( { appFeaturesSectionResolved : true, appFeaturesEverCompleted : true } ); // What: Set Onboarding Call. Why: fecDonBoo is the permanent half of this pair, see its own doc comment above for why it must never reset alongside fsrFlaBoo on a Replay Tour. How: This writes both flags true.
 
 
 		}
@@ -4806,8 +4806,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	};
 
-	const uncTutFun = ( kinStr, ideStr ) => actions.setChecklistItem( ideStr, null ); // What: Uncheck Tutorial Function. Why: This un-resolves an already-resolved launcher card (skipped/cancelled/finished) back to pending, so its mini-tour can be redone; it never touches the sample itself, see onboarding-checklist.js. How: This calls actions.setChecklistItem with a null patch.
-	const uncFeaFun = ( ideStr ) => actions.setAppFeatureItem( ideStr, null );        // What: Uncheck Feature Function. Why: Same idea as uncTutFun, but for App Features, which live in their own map rather than the checklist, see onboarding-app-features.jsx's own header comment for why. How: This calls actions.setAppFeatureItem with a null patch.
+	const uncTutFun = ( kinStr, ideStr ) => actions.setCarFun( ideStr, null ); // What: Uncheck Tutorial Function. Why: This un-resolves an already-resolved launcher card (skipped/cancelled/finished) back to pending, so its mini-tour can be redone; it never touches the sample itself, see onboarding-checklist.js. How: This calls actions.setCarFun with a null patch.
+	const uncFeaFun = ( ideStr ) => actions.setFeaFun( ideStr, null );        // What: Uncheck Feature Function. Why: Same idea as uncTutFun, but for App Features, which live in their own map rather than the checklist, see onboarding-app-features.jsx's own header comment for why. How: This calls actions.setFeaFun with a null patch.
 
 	/**
 	 * Closing Generate Card = Closing Generate Card Rationale
@@ -4826,7 +4826,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const onbRdyBoo = ONB_CHE_OBJ.reaGenFun( state );                       // What: Onboarding Ready Boolean. Why: See the doc comment just above. How: This calls ONB_CHE_OBJ.reaGenFun.
 	const genResBoo = !!ONB_CHE_OBJ.entLooFun( state, ONB_GII_STR );       // What: Generate Resolved Boolean. Why: Both the card's own visual state and the effect further below need to know whether the Generate item has already resolved. How: This checks ONB_CHE_OBJ for an existing entry against ONB_GII_STR.
 
-	const onGenCarFun = () => { if ( onbRdyBoo ) actions.setChecklistItem( ONB_GII_STR, { status : 'finished' } ); }; // What: On Generate Card Function. Why: This is the actual click handler for the closing Generate card. How: This resolves the Generate item only while onbRdyBoo allows it.
+	const onGenCarFun = () => { if ( onbRdyBoo ) actions.setCarFun( ONB_GII_STR, { status : 'finished' } ); }; // What: On Generate Card Function. Why: This is the actual click handler for the closing Generate card. How: This resolves the Generate item only while onbRdyBoo allows it.
 
 	/**
 	 * genExpStr = Generate Card Explanation String
@@ -4875,7 +4875,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * block:'center' cutting it off behind them.
 	 *
 	 * Driven off state.onboarding.generateScrollPending (set in
-	 * store.js's setChecklistItem the instant onbRdyBoo flips false to
+	 * store.js's setCarFun the instant onbRdyBoo flips false to
 	 * true), NOT a local "did I see it flip" ref: the last checklist item
 	 * is very often resolved from a mini-tour or Page Tour running on a
 	 * DIFFERENT tab, which unmounts this whole component for the tour's
@@ -4944,7 +4944,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				}
 
-				actions.setOnboarding( { generateScrollPending : false } ); // What: Clear Pending Call. Why: This scroll must only ever fire once per pending flag. How: This writes generateScrollPending back to false regardless of whether the scroll itself actually ran.
+				actions.setOnbFun( { generateScrollPending : false } ); // What: Clear Pending Call. Why: This scroll must only ever fire once per pending flag. How: This writes generateScrollPending back to false regardless of whether the scroll itself actually ran.
 
 
 			} );
@@ -5010,11 +5010,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				 *
 				*/
 
-				state.tasks.forEach( ( curTasObj ) => { if ( curTasObj.hidden && !ONB_STI_ARR.includes( curTasObj.id ) ) actions.updateTask( curTasObj.id, { hidden : false } ); } );
+				state.tasks.forEach( ( curTasObj ) => { if ( curTasObj.hidden && !ONB_STI_ARR.includes( curTasObj.id ) ) actions.updTasFun( curTasObj.id, { hidden : false } ); } );
 
-				state.pickers.forEach( ( curPicObj ) => { if ( curPicObj.hidden && !ONB_SPI_ARR.includes( curPicObj.id ) ) actions.updatePicker( curPicObj.id, { hidden : false } ); } );
+				state.pickers.forEach( ( curPicObj ) => { if ( curPicObj.hidden && !ONB_SPI_ARR.includes( curPicObj.id ) ) actions.updPicFun( curPicObj.id, { hidden : false } ); } );
 
-				actions.setChecklistDone( true ); // What: Set Checklist Done Call. Why: This is the actual permanent conclusion flag. How: This calls actions.setChecklistDone with true.
+				actions.finCheFun( true ); // What: Set Checklist Done Call. Why: This is the actual permanent conclusion flag. How: This calls actions.finCheFun with true.
 				setCheExiBoo( false );            // What: Checklist Exiting Clear. Why: The exit animation has now fully played out. How: This flips cheExiBoo back to false.
 
 				/**
@@ -5699,9 +5699,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 												total={ ONB_EPT_ARR.length }
 												editMode={ ediModBoo }
 												onGripDown={ startGroDraFun }
-												onRenameGroup={ ( newNamStr ) => actions.renamePageTours( newNamStr ) }
+												onRenameGroup={ ( newNamStr ) => actions.renTouFun( newNamStr ) }
 												validate={ pagColFun }
-											/>{ /* What: Group Header Component. Why: Page Tours shares the exact same header chrome (name/rename, count, progress dashes) as a real group. How: This is passed pagNamStr as its own editable name, wired to actions.renamePageTours and pagColFun's own collision check. */ }
+											/>{ /* What: Group Header Component. Why: Page Tours shares the exact same header chrome (name/rename, count, progress dashes) as a real group. How: This is passed pagNamStr as its own editable name, wired to actions.renTouFun and pagColFun's own collision check. */ }
 
 
 											<div className='today-list'>{ /* What: Page Tours List Div Element. Why: Every visible tour card shares this one list column. How: This maps visTouArr to one PagTouCom per entry. */ }
@@ -5761,7 +5761,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 											onToggleLog={ () => togLogFun( curGroObj.name ) }
 											onRenameGroup={ ( newNamStr ) => reqRenFun( curGroObj.name, newNamStr ) }
 											mergePending={ merPmpObj && merPmpObj.from === curGroObj.name ? merPmpObj : null }
-											onConfirmMerge={ () => { actions.renameGroup( merPmpObj.from, merPmpObj.to ); setMerPmpObj( null ); } }
+											onConfirmMerge={ () => { actions.renGroFun( merPmpObj.from, merPmpObj.to ); setMerPmpObj( null ); } }
 											onCancelMerge={ () => setMerPmpObj( null ) }
 										/>{ /* What: Group Header Component. Why: Every group needs its own name/rename, count, and progress dashes. How: This is passed curGroObj's own name/counts plus every rename/merge/log handler. */ }
 
@@ -5824,7 +5824,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 															onSkip={ hndSkiFun }
 															onReroll={ hndRerFun }
 															onEdit={ () => setActiveEditor( ( curValStr ) => curValStr === `item:${ curEntObj.eid }` ? null : `item:${ curEntObj.eid }` ) }
-															onRename={ ( curNamStr ) => actions.renameItem( curEntObj.itemId, curNamStr ) }
+															onRename={ ( curNamStr ) => actions.renIteFun( curEntObj.itemId, curNamStr ) }
 															onGripDown={ ( ptdEveObj ) => startIteDraFun( ptdEveObj, curGroObj ) }
 															onPlayTutorial={ strMinFun }
 															onUncheckTutorial={ uncTutFun }

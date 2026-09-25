@@ -271,7 +271,7 @@ const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. W
 
 
 
-		actStoObj.addPicker({ // What: Add Picker Call. Why: This is the real, interactive disposable copy the tour's own steps point at. How: This adds a picker under copIdeStr, copying samPicObj's own name/group/mode/items.
+		actStoObj.addPicFun({ // What: Add Picker Call. Why: This is the real, interactive disposable copy the tour's own steps point at. How: This adds a picker under copIdeStr, copying samPicObj's own name/group/mode/items.
 
 
 			group : samPicObj.group,                                                          // What: Group Field. Why: The disposable copy must sit in the same group as the real sample picker. How: This copies samPicObj's own group verbatim.
@@ -308,7 +308,7 @@ const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. W
 const clePicFun = ( actStoObj ) => { // What: Clear Picker Function. Why: A disposable copy must never linger in the user's real picker list once its own tour ends. How: This removes every PAG_SAM_ARR entry's own copy id, a harmless no-op for one never seeded.
 
 
-	PAG_SAM_ARR.forEach( ( samPicObj ) => actStoObj.removePicker( picCopFun( samPicObj.id ) ) ); // What: Remove Picker Call. Why: Every seeded copy must be discarded, not just some. How: This removes a picker at picCopFun's own derived id for each PAG_SAM_ARR entry.
+	PAG_SAM_ARR.forEach( ( samPicObj ) => actStoObj.delPicFun( picCopFun( samPicObj.id ) ) ); // What: Remove Picker Call. Why: Every seeded copy must be discarded, not just some. How: This removes a picker at picCopFun's own derived id for each PAG_SAM_ARR entry.
 
 
 };
@@ -344,7 +344,7 @@ const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why
 
 
 
-		actStoObj.addTask({ // What: Add Task Call. Why: This is the real, interactive disposable copy the Data tour's own Reminders step points at. How: This adds a task under copIdeStr, copying samTasObj's own name/repeat, and this weekday when it recurs weekly.
+		actStoObj.addTasFun({ // What: Add Task Call. Why: This is the real, interactive disposable copy the Data tour's own Reminders step points at. How: This adds a task under copIdeStr, copying samTasObj's own name/repeat, and this weekday when it recurs weekly.
 
 
 			id     : copIdeStr,        // What: Id Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.
@@ -365,7 +365,7 @@ const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why
 const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every ONB_TAS_ARR entry's own copy id, a harmless no-op for one never seeded.
 
 
-	ONB_TAS_ARR.forEach( ( samTasObj ) => actStoObj.removeTask( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each ONB_TAS_ARR entry.
+	ONB_TAS_ARR.forEach( ( samTasObj ) => actStoObj.delTasFun( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each ONB_TAS_ARR entry.
 
 
 };
@@ -407,7 +407,7 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A dispos
 const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function. Why: The Stats tour's own heatmap/breakdown need real sample history to demonstrate, not an empty disposable copy. How: This unhides every real sample picker, backfilling its own pickLog history if none exists yet.
 
 
-	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every ONB_SPI_ARR entry's own hidden field to false.
+	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updPicFun( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every ONB_SPI_ARR entry's own hidden field to false.
 
 
 	if ( !( staAppObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: Only a genuinely virgin-install user (or a first run of this tour) is missing the precomputed sample history. How: This checks whether any existing pickLog row already belongs to a sample picker.
@@ -416,7 +416,7 @@ const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Stats Data Import. Why: The precomputed sample history template is large enough to warrant a lazy, on-demand import instead of a static one. How: This dynamically imports onboarding-stats-data.js, then seeds its own ONBOARDING_STATS export.
 
 
-			actStoObj.seedHistory( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actStoObj.seedHistory with hydStaFun' own converted result.
+			actStoObj.sedHisFun( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actStoObj.sedHisFun with hydStaFun' own converted result.
 
 
 		});
@@ -432,7 +432,7 @@ const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function
 const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The real sample pickers borrowed by the Stats tour must go back to hidden the moment that tour ends. How: This updates every ONB_SPI_ARR entry's own hidden field back to true.
 
 
-	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : true } ) ); // What: Hide Sample Picker Call. Why: This must run for every sample picker unhHisFun could have unhidden. How: This updates every ONB_SPI_ARR entry's own hidden field to true.
+	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updPicFun( samIdeStr, { hidden : true } ) ); // What: Hide Sample Picker Call. Why: This must run for every sample picker unhHisFun could have unhidden. How: This updates every ONB_SPI_ARR entry's own hidden field to true.
 
 
 };
@@ -1087,10 +1087,10 @@ const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of th
  *
 */
 
-const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click racing an open rename input's own delayed commit must still end with the group's own real name intact. How: This calls actStoObj.renamePageTours with pgtNamStr, 200ms after this fires.
+const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click racing an open rename input's own delayed commit must still end with the group's own real name intact. How: This calls actStoObj.renTouFun with pgtNamStr, 200ms after this fires.
 
 
-	setTimeout( () => actStoObj.renamePageTours( pgtNamStr ), 200 ); // What: Deferred Rename Call. Why: This must fire safely after GroupHeader's own 150ms closing-animation commit, not before it. How: This waits 200ms, then renames the group back to pgtNamStr.
+	setTimeout( () => actStoObj.renTouFun( pgtNamStr ), 200 ); // What: Deferred Rename Call. Why: This must fire safely after GroupHeader's own 150ms closing-animation commit, not before it. How: This waits 200ms, then renames the group back to pgtNamStr.
 
 
 };
@@ -1108,7 +1108,7 @@ const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click 
  * into onSkiTouFun, same as every other mini-tour behaved before its
  * own final Done step existed. A function of `actStoObj` (built fresh per
  * render, like buiTs1Fun), not a static object, the Today
- * branch's own last step needs to call actStoObj.renamePageTours
+ * branch's own last step needs to call actStoObj.renTouFun
  * directly (see forNamFun above).
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1717,7 +1717,7 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 
 
-		actStoObj.setChecklistItem( pagIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: This page's own Today launcher card reads this to know whether to keep showing itself. How: This updates this page's own checklist entry to staValStr.
+		actStoObj.setCarFun( pagIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: This page's own Today launcher card reads this to know whether to keep showing itself. How: This updates this page's own checklist entry to staValStr.
 
 
 		onCloTouFun(); // What: On Close Call. Why: app.jsx's own actPagStr must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from app.jsx.

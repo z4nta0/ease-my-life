@@ -420,7 +420,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actStoObj, onCloForFun, onCloTouFun
 		emlTouObj.set( { prefill : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own prefill field.
 
 
-		actStoObj.setChecklistItem( varCopObj.ideStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this varKeyStr's own sample task's checklist entry to staValStr.
+		actStoObj.setCarFun( varCopObj.ideStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this varKeyStr's own sample task's checklist entry to staValStr.
 
 
 		onCloTouFun(); // What: On Close Call. Why: tab-today.jsx's own activeMiniTour must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from tab-today.jsx.
@@ -445,7 +445,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actStoObj, onCloForFun, onCloTouFun
 				onSkiTouFun={ () => { // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample reminder. How: This never sets the prefill at this point, so there is nothing to clear.
 
 
-					actStoObj.setChecklistItem( varCopObj.ideStr, { status : 'cancelled' } ); // What: Checklist Status Cancel Call. Why: Skipping the intro modal still needs the launcher card to stop showing itself. How: This updates this varKeyStr's own sample task's checklist entry to 'cancelled'.
+					actStoObj.setCarFun( varCopObj.ideStr, { status : 'cancelled' } ); // What: Checklist Status Cancel Call. Why: Skipping the intro modal still needs the launcher card to stop showing itself. How: This updates this varKeyStr's own sample task's checklist entry to 'cancelled'.
 
 
 					onCloTouFun(); // What: On Close Call. Why: tab-today.jsx's own activeMiniTour must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from tab-today.jsx.

@@ -114,8 +114,8 @@ The five tabs (`src/tab-today.jsx`, `tab-picker.jsx`, `tab-stats.jsx`,
 
 `src/store.js`'s `useAppStaFun()` hook is the entire state layer: a single
 `useState` holding the whole app state object, plus a `React.useMemo`'d
-`actions` object of state-transition functions (`toggleDone`, `addPicker`,
-`skipEntry`, `resolveConditionalsForDay`, ...). `AppRooCom` calls
+`actions` object of state-transition functions (`togDonFun`, `addPicFun`,
+`skiEntFun`, `resConFun`, ...). `AppRooCom` calls
 `useAppStaFun()` once and passes the state/actions pair down to every tab as
 props — there is no context provider and no global store singleton
 reachable from arbitrary files. Persistence is debounced via
@@ -170,8 +170,8 @@ Picking/re-rolling/sending an item to Today stages its value/weight
 consequences as `entry.pending` — they are **not** applied to the picker/item
 state until the entry is marked done (`enpAplFun` /
 `enpRevFun` in `store.js`). Unchecking a done entry must exactly
-revert via the `entry.revert` snapshot. If you touch `toggleDone`,
-`setEntryItem`, `addTodayEntry`, or `skipEntry`, preserve this staging —
+revert via the `entry.revert` snapshot. If you touch `togDonFun`,
+`swaIteFun`, `addEntFun`, or `skiEntFun`, preserve this staging —
 directly mutating item state on pick (instead of on completion) breaks the
 "nothing changes until you actually do it" contract the whole ease-up/
 ease-down/dynamic system relies on.
@@ -1498,7 +1498,7 @@ don't invent one for anything else yet:
     (an override relationship) or something reads the object's own key
     order, leave the authored order alone, the same exception every
     other reordering here already has. E.g. `store.js`'s own
-    `setCustomTheme` builds `nexAppObj` as its appearance spread, 1
+    `setCusFun` builds `nexAppObj` as its appearance spread, 1
     blank line, `[ keyNamStr ] : savColObj`, 1 blank line, then
     `theme : keyNamStr` (`keyNamStr` is always `'customLight'` or
     `'customDark'`, so it can never collide with `theme`).
@@ -1616,7 +1616,7 @@ don't invent one for anything else yet:
         overlap, it keeps its authored position but still gets the 1
         blank line separation. 2+ multi-line spreads in the same run
         keep their own original relative order and are each separated
-        by 1 blank line. See `store.js`'s own `replaceTodayEntries` for
+        by 1 blank line. See `store.js`'s own `setEntFun` for
         the reference example: its single-line `periodKey` spread comes
         first, then 1 blank line, then the multi-line day-off-card
         fields spread last (no key overlap between the two).
@@ -1992,10 +1992,10 @@ how short the body is.
   `if ( neeCopFun( pagIdeStr ) ) ... else if ( pagIdeStr ===
   'explore_stats' ) ...` chain is followed by a separate, standalone
   `if ( pagIdeStr === 'explore_data' ) cleTasFun( actStoObj );`, which is
-  in turn followed by `actStoObj.setChecklistItem(...)` — despite every
+  in turn followed by `actStoObj.setCarFun(...)` — despite every
   line here being a single-line statement, not a braced block, both
   transitions (chain → standalone `if`, and standalone `if` → the
-  `setChecklistItem` call after it) get 3 blank lines, not the 1 a quick
+  `setCarFun` call after it) get 3 blank lines, not the 1 a quick
   glance at their shared `pagIdeStr`/cleanup theme might suggest.
 
 ### try/catch statements
@@ -3111,7 +3111,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     needed, this was purely an inconsistent spelling of a word already
     spelled correctly elsewhere; `tab-picker.jsx`'s own `snaIteObj` in
     particular already meant the exact same thing (a snapshot value
-    passed to a replaceItem-style call) as the corrected `snpIteObj`
+    passed to a revIteFun-style call) as the corrected `snpIteObj`
     instances. Every comment referencing these identifiers already
     spelled "Snapshot" out in full, so none needed text changes, only
     the identifiers themselves were wrong. No collision: none of the
@@ -3254,8 +3254,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     literal first 3 letters" class as `boot`→`boo` above, not a
     3-letter-vs-4-letter miscorrection; found in `nowDoneBoo` (`store.js`,
     18 instances across `cotAplFun`/`applyConditionalLog`/
-    `stkRecFun`/the `toggleDone` action) and `wasDoneBoo`
-    (`store.js`, 3 instances in the `skipEntry`-adjacent reminder-toggle
+    `stkRecFun`/the `togDonFun` action) and `wasDoneBoo`
+    (`store.js`, 3 instances in the `skiEntFun`-adjacent reminder-toggle
     action), fixed to `nowDonBoo`/`wasDonBoo`; `doneCouNum`
     (`tab-stats.jsx`'s own `couLevFun` parameter, self-contained, no
     external callers) fixed to `donCouNum`; and `doneCount`
@@ -3352,7 +3352,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     same scope anywhere)
   - `nrm` → `nor` (Normalize/Normalized — found in `nrmGroStr`/
     `nrmNamStr`/`nrmKeyStr`/`nrmOptObj` (`store.js`, 4 instances each in
-    the picker-tidy/group-remap section and `setReminderOpt`), fixed to
+    the picker-tidy/group-remap section and `setOptFun`), fixed to
     `norGroStr`/`norNamStr`/`norKeyStr`/`norOptObj`. `nor` was already
     the established, heavily-used code for this exact word elsewhere in
     this codebase, e.g. `cadence-control.jsx`'s own `norCadFun`/
@@ -3388,7 +3388,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     needed no text changes, only the identifier itself was wrong. No
     collision: `runFluFun` was not already in use anywhere)
   - `frs` → `fre` (Fresh — found in `frsEntArr` (`store.js`'s own
-    `replaceTodayEntries` action), fixed to `freEntArr`; `fre` was
+    `setEntFun` action), fixed to `freEntArr`; `fre` was
     already the established, heavily-used code for Fresh elsewhere in
     this codebase (`isaFreBoo`, `freIndNum`, `freBoo`, ...), so no
     escalation was needed. Found in the same action as a second,
@@ -3400,7 +3400,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     so none needed text changes. No collision: neither corrected name
     was already in use anywhere)
   - `nmd` → `nam` (Named — found in `nmdTasObj` (`store.js`'s own
-    `addTask` action), fixed to `namTasObj`; `nam` was already the
+    `addTasFun` action), fixed to `namTasObj`; `nam` was already the
     established, heavily-used code for Name elsewhere in this codebase
     (`sibNamArr`, `uniNamStr`, `uniNamFun`, `finNamStr`, ...), and
     "Named" shares that same code, so no escalation was needed. The
@@ -3408,13 +3408,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     changes, only the identifier itself was wrong. No collision:
     `namTasObj` was not already in use anywhere)
   - `tdy` → `tid` (Tidied — found in `tdyNamStr` (`store.js`'s own
-    `renamePicker` action), fixed to `tidNamStr`; `tdy` drops the word's
+    `renPicFun` action), fixed to `tidNamStr`; `tdy` drops the word's
     own vowel the same way `cnl`/`cln`/`clm` did elsewhere in this list,
     rather than taking its literal first 3 letters. The comment already
     spelled "Tidied" out in full, so it needed no text changes. No
     collision: `tid` was not already in use anywhere)
   - `cst` → `cus` (Custom — found in `curCstObj` (`store.js`'s own
-    `removeCustomHoliday` action), fixed to `curCusObj`; `cus` was already
+    `delHolFun` action), fixed to `curCusObj`; `cus` was already
     the established code for Custom elsewhere in this codebase (`resCusFun`,
     `cusColObj`, `addCusFun`), and `cst` drops the word's own vowel the same
     way `cnl`/`cln`/`clm`/`tdy` did elsewhere in this list. No collision:
@@ -3937,7 +3937,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
       local (`const newConObj = picArgObj.newConditional;`). A short
       destructuring with only a couple of constrained keys can still
       alias them in place instead, whichever reads more clearly. See
-      `store.js`'s own `addPicker`/`commitPickerEdit` (`picArgObj`) for
+      `store.js`'s own `addPicFun`/`savEdiFun` (`picArgObj`) for
       the reference example.
 - **Exported namespace objects must use explicit `originalName :
   internalName` mapping, never JS shorthand `{ internalName }`.** A

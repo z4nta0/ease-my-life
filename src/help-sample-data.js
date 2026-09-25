@@ -185,7 +185,7 @@ const TAS_SAM_ARR = [ // What: Task Sample Array. Why: This is the sample-remind
 const sedPicFun = ( appStaObj, actShaObj ) => { // What: Seed Pickers Function. Why: Pickers and Data need real, editable copies of every mode plus the conditional-gated example whenever help mode turns on. How: This adds the day-off conditional, then adds each onboarding-sample and help-only picker under its own id, guarded by existence so re-toggling help mode repeatedly can't create duplicates.
 
 
-	actShaObj.addConditional( CON_GAT_OBJ ); // What: Conditional Seed Call. Why: The gated-picker example needs its own day-off conditional to exist before the picker that depends on it is added. How: This adds CON_GAT_OBJ via the shared addConditional action.
+	actShaObj.addConFun( CON_GAT_OBJ ); // What: Conditional Seed Call. Why: The gated-picker example needs its own day-off conditional to exist before the picker that depends on it is added. How: This adds CON_GAT_OBJ via the shared addConFun action.
 
 
 
@@ -199,7 +199,7 @@ const sedPicFun = ( appStaObj, actShaObj ) => { // What: Seed Pickers Function. 
 
 
 
-		actShaObj.addPicker({ // What: Onboarding Sample Copy Add Call. Why: The copy must be a real, editable picker, not a reference to the onboarding sample itself. How: This adds a fresh picker under copIdeStr, carrying curPicObj's own name/group/mode plus its items stripped of their own onboarding-only id field.
+		actShaObj.addPicFun({ // What: Onboarding Sample Copy Add Call. Why: The copy must be a real, editable picker, not a reference to the onboarding sample itself. How: This adds a fresh picker under copIdeStr, carrying curPicObj's own name/group/mode plus its items stripped of their own onboarding-only id field.
 
 
 			group : curPicObj.group,                                              // What: Group Field. Why: The copy should sit in the same group as the onboarding sample it mirrors. How: This carries curPicObj's own group through unchanged.
@@ -223,7 +223,7 @@ const sedPicFun = ( appStaObj, actShaObj ) => { // What: Seed Pickers Function. 
 
 
 
-		actShaObj.addPicker( curPicObj ); // What: Help-Only Picker Add Call. Why: The picker must be a real, editable entry, exactly like any user-created picker. How: This adds curPicObj directly; unlike the onboarding-sample loop above, it needs no id remapping.
+		actShaObj.addPicFun( curPicObj ); // What: Help-Only Picker Add Call. Why: The picker must be a real, editable entry, exactly like any user-created picker. How: This adds curPicObj directly; unlike the onboarding-sample loop above, it needs no id remapping.
 
 
 	} );
@@ -235,12 +235,12 @@ const sedPicFun = ( appStaObj, actShaObj ) => { // What: Seed Pickers Function. 
 const clePicFun = ( actShaObj ) => { // What: Clear Pickers Function. Why: Every picker/conditional seeded by sedPicFun must be torn back down the moment help mode turns off. How: This removes each onboarding-sample copy and help-only picker by id, then removes the day-off conditional.
 
 
-	[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actShaObj.removePicker( helIdeFun( curPicObj.id ) ) ); // What: Onboarding Sample Copy Removal Loop. Why: Every copy seeded by sedPicFun's own onboarding-sample loop must be removed again. How: This maps each entry's own id through helIdeFun to find its copy's id, then removes it.
+	[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actShaObj.delPicFun( helIdeFun( curPicObj.id ) ) ); // What: Onboarding Sample Copy Removal Loop. Why: Every copy seeded by sedPicFun's own onboarding-sample loop must be removed again. How: This maps each entry's own id through helIdeFun to find its copy's id, then removes it.
 
-	[ ...EXT_PIC_ARR, PIC_GAT_OBJ ].forEach( ( curPicObj ) => actShaObj.removePicker( curPicObj.id ) ); // What: Help-Only Picker Removal Loop. Why: Every help-only picker seeded by sedPicFun's own second loop must be removed again. How: This removes each entry directly by its own already-hlp_-prefixed id.
+	[ ...EXT_PIC_ARR, PIC_GAT_OBJ ].forEach( ( curPicObj ) => actShaObj.delPicFun( curPicObj.id ) ); // What: Help-Only Picker Removal Loop. Why: Every help-only picker seeded by sedPicFun's own second loop must be removed again. How: This removes each entry directly by its own already-hlp_-prefixed id.
 
 
-	actShaObj.removeConditional( CON_GAT_STR ); // What: Conditional Removal Call. Why: The day-off conditional seeded alongside the gated picker must be removed once every picker that could depend on it is already gone. How: This removes the conditional by its own CON_GAT_STR id.
+	actShaObj.delConFun( CON_GAT_STR ); // What: Conditional Removal Call. Why: The day-off conditional seeded alongside the gated picker must be removed once every picker that could depend on it is already gone. How: This removes the conditional by its own CON_GAT_STR id.
 
 
 };
@@ -257,7 +257,7 @@ const sedTasFun = ( appStaObj, actShaObj ) => { // What: Seed Tasks Function. Wh
 
 
 
-		actShaObj.addTask( curTasObj ); // What: Task Sample Add Call. Why: The reminder must be a real, editable entry, exactly like any user-created task. How: This adds curTasObj directly.
+		actShaObj.addTasFun( curTasObj ); // What: Task Sample Add Call. Why: The reminder must be a real, editable entry, exactly like any user-created task. How: This adds curTasObj directly.
 
 
 	} );
@@ -269,7 +269,7 @@ const sedTasFun = ( appStaObj, actShaObj ) => { // What: Seed Tasks Function. Wh
 const cleTasFun = ( actShaObj ) => { // What: Clear Tasks Function. Why: Every reminder seeded by sedTasFun must be torn back down the moment help mode turns off. How: This removes each TAS_SAM_ARR entry by id.
 
 
-	TAS_SAM_ARR.forEach( ( curTasObj ) => actShaObj.removeTask( curTasObj.id ) ); // What: Task Sample Removal Loop. Why: Every reminder seeded by sedTasFun must be removed again. How: This removes each TAS_SAM_ARR entry directly by its own id.
+	TAS_SAM_ARR.forEach( ( curTasObj ) => actShaObj.delTasFun( curTasObj.id ) ); // What: Task Sample Removal Loop. Why: Every reminder seeded by sedTasFun must be removed again. How: This removes each TAS_SAM_ARR entry directly by its own id.
 
 
 };
@@ -293,7 +293,7 @@ const cleTasFun = ( actShaObj ) => { // What: Clear Tasks Function. Why: Every r
 const unhHisFun = ( appStaObj, actShaObj ) => { // What: Unhide History Function. Why: The Stats page needs a genuine year of history to show while help mode is on (see the comment above this declaration). How: This unhides every real onboarding sample picker, then lazily seeds their precomputed history the first time it's actually missing.
 
 
-	ONB_SPI_ARR.forEach( ( curIdeStr ) => actShaObj.updatePicker( curIdeStr, { hidden : false } ) ); // What: Onboarding Sample Unhide Loop. Why: Stats can only chart a picker's own history while that picker isn't hidden. How: This unhides every onboarding sample picker by id.
+	ONB_SPI_ARR.forEach( ( curIdeStr ) => actShaObj.updPicFun( curIdeStr, { hidden : false } ) ); // What: Onboarding Sample Unhide Loop. Why: Stats can only chart a picker's own history while that picker isn't hidden. How: This unhides every onboarding sample picker by id.
 
 
 	if ( !( appStaObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: The precomputed history only ever needs seeding once; re-toggling help mode on and off must not seed it again. How: This checks whether any existing pickLog row already belongs to an onboarding sample picker.
@@ -302,7 +302,7 @@ const unhHisFun = ( appStaObj, actShaObj ) => { // What: Unhide History Function
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Onboarding Stats Data Import. Why: The precomputed history is large enough to load lazily rather than bundling it into every page. How: This dynamically imports onboarding-stats-data.js, resolving with its own ONBOARDING_STATS export.
 
 
-			actShaObj.seedHistory( hydStaFun( ONBOARDING_STATS ) ); // What: Stats History Seed Call. Why: The precomputed history must become real, dated pickLog/reminderLog/reminderSkipLog rows before appending. How: This hydrates ONBOARDING_STATS via hydStaFun, then appends the result via seedHistory.
+			actShaObj.sedHisFun( hydStaFun( ONBOARDING_STATS ) ); // What: Stats History Seed Call. Why: The precomputed history must become real, dated pickLog/reminderLog/reminderSkipLog rows before appending. How: This hydrates ONBOARDING_STATS via hydStaFun, then appends the result via sedHisFun.
 
 
 		} );
@@ -318,7 +318,7 @@ const unhHisFun = ( appStaObj, actShaObj ) => { // What: Unhide History Function
 const hidHisFun = ( actShaObj ) => { // What: Hide History Function. Why: The onboarding sample pickers borrowed by unhHisFun must be hidden again the moment help mode turns off. How: This re-hides every onboarding sample picker by id.
 
 
-	ONB_SPI_ARR.forEach( ( curIdeStr ) => actShaObj.updatePicker( curIdeStr, { hidden : true } ) ); // What: Onboarding Sample Hide Loop. Why: A picker borrowed only for help mode's own Stats display shouldn't stay visible once help mode is off. How: This re-hides every onboarding sample picker by id.
+	ONB_SPI_ARR.forEach( ( curIdeStr ) => actShaObj.updPicFun( curIdeStr, { hidden : true } ) ); // What: Onboarding Sample Hide Loop. Why: A picker borrowed only for help mode's own Stats display shouldn't stay visible once help mode is off. How: This re-hides every onboarding sample picker by id.
 
 
 };

@@ -96,7 +96,7 @@
  *
 */
 
-export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicker by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
+export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	group : 'Chores',
@@ -191,7 +191,7 @@ export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is th
  *   threshold) on an ease-up/ease-down item so it is immediately
  *   eligible for the Welcome Tour's first generated list; omitted
  *   entirely on a dynamic-mode item, where it simply defaults to a
- *   fresh, unbiased 0 the moment addPicker creates it.
+ *   fresh, unbiased 0 the moment addPicFun creates it.
  *
  * - `weight` (Number): Weight is this item's own fairness weight; on
  *   the dynamic-mode Coffee Creamer picker it genuinely drives the
@@ -204,7 +204,7 @@ export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is th
  *
 */
 
-export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicker by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
+export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	{ // What: Monthly Chores Entry. Why: This is a second, less-frequent Chores-group picker alongside ONB_EXA_OBJ's own "Daily Chores," rounding out a generated day with deeper, longer-cycle cleaning tasks. How: This is read by the picker engine exactly like any real picker, its own 5 items (oven, whole-house dust, fridge, under-furniture vacuum, mop) themed around chores done far less often than the Daily Chores picker's own pool.
@@ -370,7 +370,7 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
  *
 */
 
-export const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTask by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created task.
+export const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created task.
 
 
 	{ id : 'tk_ob_meds',  name : 'Pick up prescription',      repeat : 'once'                       }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own entry (see the comment above this array for why it stays pending). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task.

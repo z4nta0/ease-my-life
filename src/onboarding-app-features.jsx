@@ -30,7 +30,7 @@ import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intr
  * by the checklist "engine" at all: no donCouNum/total ring or streak
  * participation, no closing Generate-style card, no counting toward anything.
  * Resolved state lives in its own state.onboarding.appFeatures map (see
- * store.js's setAppFeatureItem), reset to {} whenever Replay Tour is clicked
+ * store.js's setFeaFun), reset to {} whenever Replay Tour is clicked
  * in Settings so these reappear alongside it (see tab-settings.jsx's own
  * replay button).
  *
@@ -257,7 +257,7 @@ const APP_FEA_ARR = [
  * own buiTesFun (same reasoning: filled in incrementally as each tutorial gets
  * its own pass, not all at once). Takes actStoObj (built fresh per render,
  * like that file's own buiTesFun) since feat_edit_item's own Step 2 needs to
- * call actStoObj.toggleControlsCollapsed directly, see that step's own
+ * call actStoObj.togColFun directly, see that step's own
  * runFun() comment for why a real click won't do.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -361,7 +361,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 				priStr    : 'Next',           // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
 				pulSelStr : '[data-ob-none]', // What: Pulse Selector String. Why: The default cirBoo pulse must be suppressed in favor of each picker header's own individual pulse. How: This is a selector chosen to never match anything currently on screen. // Suppresses the tour engine's own default cirBoo pulse (one ring around the whole .data-list box), see tab-data.jsx's own highlightEditTourPickerHeaders comment for why: each individual picker header pulses on its own (.ob-tour-pulse) instead of one big ring around the entire list. pulSelStr just needs to never match anything currently on screen.
 
-				runFun : () => { // What: Run Function. Why: A freshly-expanded picker's own Controls/Items must start collapsed, same "clean slate" requirement as the pickers list itself. How: This polls the live DOM (bounded to 20 frames) for the just-expanded picker's own header buttons, then collapses whichever of Controls/Items defaulted open. // Controls/Items default OPEN the first time a picker's own section expands (absent === not-collapsed, see tab-data.jsx's own collapsedMap comment), same "clean, uncluttered" requirement as the pickers themselves, one level deeper. Can't just read state/DOM synchronously here: this runFun() fires from the tour's own CAPTURE-phase click listener, which, being capture, not bubble, always runs BEFORE the header's own React onClick (toggleControlsCollapsed) actually applies (see onClickCapture's own comment in onboarding-tour-runner.jsx), so at this exact instant the clicked picker's section hasn't actually opened yet, in state OR the DOM. Polled via rAF (bounded to ~20 frames), driven off the live DOM (this closure's own `staAppObj` would be just as stale by the time it fires), the picker's OWN outer ColDisCom mounts its .cat-body content (and thus these two buttons) on a SECOND render cycle after `open` first flips true (see ColDisCom's own render/useEffect split in ui.jsx), so a single synchronous check would too often find nothing yet. Scoped to .data-list specifically (NOT Conditionals/Reminders above it, which share this same .rd-ctl class for their own Controls/Items, see help-content.jsx's own scoped selectors for the same distinction). Calls actStoObj.toggleControlsCollapsed directly (using the picker's own data-picker-id, added to .cat in tab-data.jsx for exactly this) rather than a real .click() on the header: Step 3 below now requires clicking that SAME Controls header to finish the tutorial, and a synthetic click fired this late (well after `step` has already advanced past this one, and after suppressGuardRef has already reset) would be indistinguishable from the user's own real click, collapsing Controls here would immediately satisfy Step 3's cirBoo and finish the tour before the user ever saw it. A direct action call carries no such risk; it never touches the click-guard at all.
+				runFun : () => { // What: Run Function. Why: A freshly-expanded picker's own Controls/Items must start collapsed, same "clean slate" requirement as the pickers list itself. How: This polls the live DOM (bounded to 20 frames) for the just-expanded picker's own header buttons, then collapses whichever of Controls/Items defaulted open. // Controls/Items default OPEN the first time a picker's own section expands (absent === not-collapsed, see tab-data.jsx's own collapsedMap comment), same "clean, uncluttered" requirement as the pickers themselves, one level deeper. Can't just read state/DOM synchronously here: this runFun() fires from the tour's own CAPTURE-phase click listener, which, being capture, not bubble, always runs BEFORE the header's own React onClick (togColFun) actually applies (see onClickCapture's own comment in onboarding-tour-runner.jsx), so at this exact instant the clicked picker's section hasn't actually opened yet, in state OR the DOM. Polled via rAF (bounded to ~20 frames), driven off the live DOM (this closure's own `staAppObj` would be just as stale by the time it fires), the picker's OWN outer ColDisCom mounts its .cat-body content (and thus these two buttons) on a SECOND render cycle after `open` first flips true (see ColDisCom's own render/useEffect split in ui.jsx), so a single synchronous check would too often find nothing yet. Scoped to .data-list specifically (NOT Conditionals/Reminders above it, which share this same .rd-ctl class for their own Controls/Items, see help-content.jsx's own scoped selectors for the same distinction). Calls actStoObj.togColFun directly (using the picker's own data-picker-id, added to .cat in tab-data.jsx for exactly this) rather than a real .click() on the header: Step 3 below now requires clicking that SAME Controls header to finish the tutorial, and a synthetic click fired this late (well after `step` has already advanced past this one, and after suppressGuardRef has already reset) would be indistinguishable from the user's own real click, collapsing Controls here would immediately satisfy Step 3's cirBoo and finish the tour before the user ever saw it. A direct action call carries no such risk; it never touches the click-guard at all.
 
 
 					let triCouNum = 0; // What: Try Count Number. Why: The polling loop below must give up eventually if the expected DOM never mounts. How: This counts attempts, capped at 20 frames by the loop itself.
@@ -370,7 +370,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 						const opeHeaEle = document.querySelector( '.data-list .cat-h-l[aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .cat-h-l currently marked expanded.
 						const catSecEle = opeHeaEle && opeHeaEle.closest( '.cat' );                              // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing .cat section. How: This walks up from opeHeaEle to its closest .cat ancestor.
-						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                               // What: Picker Identifier String. Why: actStoObj.toggleControlsCollapsed needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
+						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                               // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
 						const heaButArr = catSecEle ? [ ...catSecEle.querySelectorAll( '.rd-ctl' ) ] : [];       // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .rd-ctl button inside catSecEle into a plain array.
 
 
@@ -380,9 +380,9 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 						if ( !picIdeStr ) return; // What: Missing Picker Guard. Why: A try cap hit with no picker found at all has nothing left to collapse. How: This returns early whenever picIdeStr was never resolved.
 
 
-						if ( heaButArr[ 0 ] && heaButArr[ 0 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.toggleControlsCollapsed( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: Controls must start collapsed if it defaulted open. How: This toggles the picker's own ':controls' section only when it's currently expanded.
+						if ( heaButArr[ 0 ] && heaButArr[ 0 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: Controls must start collapsed if it defaulted open. How: This toggles the picker's own ':controls' section only when it's currently expanded.
 
-						if ( heaButArr[ 1 ] && heaButArr[ 1 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.toggleControlsCollapsed( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items must start collapsed if it defaulted open. How: This toggles the picker's own ':items' section only when it's currently expanded.
+						if ( heaButArr[ 1 ] && heaButArr[ 1 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items must start collapsed if it defaulted open. How: This toggles the picker's own ':items' section only when it's currently expanded.
 
 
 					};
@@ -425,14 +425,14 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 				catBoo : true,   // What: Coach-At-Top Boolean. Why: Controls' real field set is easily taller than a short viewport can fit alongside the coach. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
 
-				runFun : () => { // What: Run Function. Why: The Items Section step's own box must read as uncluttered, with Controls collapsed again. How: This finds the real Controls header, then collapses it only if it's still expanded. // Re-collapses Controls on the way to the Items Section step, same "clean slate" requirement as the previous step's own runFun(), that step highlights this same picker box again and needs Controls collapsed for it to look uncluttered. Controls is already mounted here (unlike the Your Pickers step's own case, which had to poll for it), so no async wait is needed, just a direct actStoObj.toggleControlsCollapsed call, guarded on aria-expanded so this is a no-op if the user already collapsed it themselves while exploring.
+				runFun : () => { // What: Run Function. Why: The Items Section step's own box must read as uncluttered, with Controls collapsed again. How: This finds the real Controls header, then collapses it only if it's still expanded. // Re-collapses Controls on the way to the Items Section step, same "clean slate" requirement as the previous step's own runFun(), that step highlights this same picker box again and needs Controls collapsed for it to look uncluttered. Controls is already mounted here (unlike the Your Pickers step's own case, which had to poll for it), so no async wait is needed, just a direct actStoObj.togColFun call, guarded on aria-expanded so this is a no-op if the user already collapsed it themselves while exploring.
 
 
 					const conHeaEle = document.querySelector( '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)' ); // What: Controls Header Element. Why: This is the real control this step must collapse on the way out. How: This looks it up fresh, since it only exists while a picker is expanded.
 					const catSecEle = conHeaEle && conHeaEle.closest( '.cat' );                                               // What: Category Section Element. Why: The picker's own id lives on its enclosing .cat section. How: This walks up from conHeaEle to its closest .cat ancestor.
-					const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                                // What: Picker Identifier String. Why: actStoObj.toggleControlsCollapsed needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
+					const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                                // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
 
-					if ( picIdeStr && conHeaEle.getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.toggleControlsCollapsed( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: This must only fire when Controls is still actually expanded. How: This toggles the picker's own ':controls' section closed.
+					if ( picIdeStr && conHeaEle.getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: This must only fire when Controls is still actually expanded. How: This toggles the picker's own ':controls' section closed.
 
 
 				},
@@ -865,7 +865,7 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Every path that ends this tour, however it ends, needs the exact same cleanup. How: This resolves this feature's own checklist entry to staValStr, then calls onCloTouFun.
 
 
-		actStoObj.setAppFeatureItem( feaIdeStr, { status : staValStr } ); // What: Set App Feature Item Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this feature's own appFeatures entry to staValStr.
+		actStoObj.setFeaFun( feaIdeStr, { status : staValStr } ); // What: Set App Feature Item Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this feature's own appFeatures entry to staValStr.
 
 
 
@@ -904,13 +904,13 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 	const extSteArr = buiTesFun( feaIdeStr, actStoObj, alrProBoo ); // What: Extra Step Array. Why: GuiTouCom needs this feature's own full step array beyond Step 1. How: This calls buiTesFun with feaIdeStr, actStoObj, and alrProBoo.
 
 
-	const colAllFun = () => { // What: Collapse All Function. Why: Step 2 of the edit-item tour expects every picker to start collapsed. How: This flips only the pickers currently found expanded, leaving already-collapsed ones untouched. // "Edit your first item" wants a clean, all-collapsed Data page the moment it lands there, any picker the user happened to leave expanded from a previous visit would otherwise make the Your Pickers step's "click a header to expand" instruction confusing (that picker's already open). Runs as Step 1's own runFun(), which fires at the exact moment its real nav click transitions into Step 2 (see onPrimary's own comment in onboarding-tour-runner.jsx), toggleControlsCollapsed only ever FLIPS, so this only touches pickers actually found expanded (=== false), rather than blindly toggling every picker and accidentally re-opening ones that were already collapsed.
+	const colAllFun = () => { // What: Collapse All Function. Why: Step 2 of the edit-item tour expects every picker to start collapsed. How: This flips only the pickers currently found expanded, leaving already-collapsed ones untouched. // "Edit your first item" wants a clean, all-collapsed Data page the moment it lands there, any picker the user happened to leave expanded from a previous visit would otherwise make the Your Pickers step's "click a header to expand" instruction confusing (that picker's already open). Runs as Step 1's own runFun(), which fires at the exact moment its real nav click transitions into Step 2 (see onPrimary's own comment in onboarding-tour-runner.jsx), togColFun only ever FLIPS, so this only touches pickers actually found expanded (=== false), rather than blindly toggling every picker and accidentally re-opening ones that were already collapsed.
 
 
 		const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: Only a picker actually found expanded (=== false) should be touched. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
 
 
-		staAppObj.pickers.forEach( ( curPicObj ) => { if ( colMapObj[ curPicObj.id ] === false ) actStoObj.toggleControlsCollapsed( curPicObj.id ); } ); // What: Collapse Forced Call. Why: Every picker actually found expanded must be flipped closed. How: This toggles curPicObj.id only when colMapObj marks it explicitly not collapsed.
+		staAppObj.pickers.forEach( ( curPicObj ) => { if ( colMapObj[ curPicObj.id ] === false ) actStoObj.togColFun( curPicObj.id ); } ); // What: Collapse Forced Call. Why: Every picker actually found expanded must be flipped closed. How: This toggles curPicObj.id only when colMapObj marks it explicitly not collapsed.
 
 
 	};
@@ -968,10 +968,10 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 
 						const catSecEle = document.querySelector( '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])' );  // What: Category Section Element. Why: The picker's own id and Items header both live on its enclosing .cat section. How: This looks up the one currently-expanded picker's own section.
-						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                            // What: Picker Identifier String. Why: actStoObj.toggleControlsCollapsed needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
+						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                            // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
 						const iteHeaEle = catSecEle && catSecEle.querySelector( '.cat-body > button.rd-ctl:nth-of-type(2)' ); // What: Items Header Element. Why: This is the real control whose own aria-expanded state must be read. How: This looks it up fresh, since it only exists while a picker is expanded.
 
-						if ( picIdeStr && iteHeaEle && iteHeaEle.getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.toggleControlsCollapsed( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items is disabled during Picker Items itself, so a native click would silently no-op. How: This toggles the picker's own ':items' section closed directly.
+						if ( picIdeStr && iteHeaEle && iteHeaEle.getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items is disabled during Picker Items itself, so a native click would silently no-op. How: This toggles the picker's own ':items' section closed directly.
 
 
 					}
@@ -1101,8 +1101,8 @@ function FeaTipCom ( { actStoObj } ) {
 			actStoObj={ actStoObj }
 			actIdeStr='today'
 			selTabFun={ () => {} }
-			onFinTouFun={ () => actStoObj.setOnboarding( { appFeaturesIntroSeen : true } ) }
-			onSkiTouFun={ () => actStoObj.setOnboarding( { appFeaturesIntroSeen : true } ) }
+			onFinTouFun={ () => actStoObj.setOnbFun( { appFeaturesIntroSeen : true } ) }
+			onSkiTouFun={ () => actStoObj.setOnbFun( { appFeaturesIntroSeen : true } ) }
 		/> // What: Guided Tour Element. Why: This is the single, solo spotlight step described above. How: This is passed a fixed touIdeStr, the single step above, and the actIdeStr='today'/no-op selTabFun stand-ins described in this function's own doc comment.
 
 

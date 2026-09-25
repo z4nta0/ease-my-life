@@ -269,7 +269,7 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
  * instant prefill appears; without this flag it would wrongly claim
  * credit for the click this step is teaching. existingPickerId/
  * createdFromSample let a finished-before run of this same tour
- * update its own already-created picker in place (via addPicker's own
+ * update its own already-created picker in place (via addPicFun's own
  * replaceId) instead of creating a name-colliding duplicate.
  * createdFromSample is republished regardless (even on a genuine
  * first run) so THIS run's own picker is tagged for any future replay
@@ -731,7 +731,7 @@ const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the i
  * create (see tab-picker.jsx's own np-footer). cirBoo plus
  * priStr:'Done' together mean this is the ONE step where the real
  * target's own native click handler (submit, which actually calls
- * actStoObj.addPicker) has to survive finish()'s own side effects
+ * actStoObj.addPicFun) has to survive finish()'s own side effects
  * (selTabFun away from Pickers, unmounting this whole tour);
  * GuiTouCom's own onPrimary defers the 'Done'/advance half of a
  * cirBoo click by a tick for exactly this reason (see its own
@@ -857,7 +857,7 @@ function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 		});
 
 
-		actStoObj.setChecklistItem( picIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this sample's own checklist entry to staValStr.
+		actStoObj.setCarFun( picIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this sample's own checklist entry to staValStr.
 
 
 		onCloTouFun(); // What: On Close Call. Why: app.jsx's own actPicStr must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from app.jsx.

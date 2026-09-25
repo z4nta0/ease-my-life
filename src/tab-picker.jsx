@@ -432,7 +432,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 	// What: Intercept Send Boolean. Why: The Pickers page tour's own "Add to Todo List" step wants the real Send to Today -> Sent! animation to play, so the user sees what the button actually does, but explicitly does NOT want a real entry landing on Today from it, since this is a tutorial pick on a disposable sample picker, not something the user meant to act on. How: This gates on the exact tourId and step that step is shown at.
 	const itcSenBoo = isaTouBoo && touBusObj.tourId === 'page-explore_pickers' && touBusObj.step === 7;
-	// What: Disable Done Boolean. Why: Done needs the same visual and functional disabling during App Features' own "Make your first manual pick" tour's equivalent step (buildAppFeatureSteps, feat_manual_pick's Step 4, index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection, Step 3 is Manual Generation), since leaving would discard the very pick that tour just walked the user through making, and would also make the step's own target (this whole done/sent view) vanish. How: Re-roll is deliberately NOT included here, unlike itcSenBoo above: App Features wants Re-roll to stay genuinely usable without counting as this step's own advancing click; this is deliberately a SEPARATE flag from itcSenBoo, since that one also skips the real actions.addTodayEntry call in sndTdyFun below, which is correct for the page tour's disposable sample pick but wrong here.
+	// What: Disable Done Boolean. Why: Done needs the same visual and functional disabling during App Features' own "Make your first manual pick" tour's equivalent step (buildAppFeatureSteps, feat_manual_pick's Step 4, index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection, Step 3 is Manual Generation), since leaving would discard the very pick that tour just walked the user through making, and would also make the step's own target (this whole done/sent view) vanish. How: Re-roll is deliberately NOT included here, unlike itcSenBoo above: App Features wants Re-roll to stay genuinely usable without counting as this step's own advancing click; this is deliberately a SEPARATE flag from itcSenBoo, since that one also skips the real actions.addEntFun call in sndTdyFun below, which is correct for the page tour's disposable sample pick but wrong here.
 	const disDonBoo = itcSenBoo || ( isaTouBoo && touBusObj.tourId === 'appfeature-feat_manual_pick' && touBusObj.step === 3 );
 	// What: Disable Item Boolean. Why: Step 9 ("Picker Items") highlights the pool's per-item Send to Today/Edit/Delete buttons but explicitly doesn't want any of them actually usable from there, since narrating what they do is the point, not inviting the user to act on a disposable tutorial picker's real items. How: This gates on the exact tourId and step that step is shown at.
 	const disIteBoo = isaTouBoo && touBusObj.tourId === 'page-explore_pickers' && touBusObj.step === 8;
@@ -493,16 +493,16 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 
 	};
-	const [ remIdeStr, setRemIdeStr ] = React.useState( null ); // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of the store. How: This holds the id currently playing that removal animation; the row's own onAnimationEnd handler below both clears it and calls actions.removeItem.
+	const [ remIdeStr, setRemIdeStr ] = React.useState( null ); // What: Removing Identifier String And Setter. Why: A deleted pool row needs its own removal animation to finish before it's actually taken out of the store. How: This holds the id currently playing that removal animation; the row's own onAnimationEnd handler below both clears it and calls actions.delIteFun.
 	const [ senIdeStr, setSenIdeStr ] = React.useState( null ); // What: Sent Identifier String And Setter. Why: A pool item just sent to Today via its own per-row button needs a brief checkmark confirmation on that exact row. How: This holds the id currently showing that confirmation, cleared 1400ms later by sndIteFun.
-	const sndIteFun = ( iteIdeStr ) => { // What: Send Item Function. Why: This is full parity with "Pick One" -> Send: it runs the engine forcing this exact item, then stages the identical pending mutation (drift/weight plus bumpPick) so marking it done has the same consequence as a natural pick. How: Ease Down replaces the picker's single entry; other modes add one, both handled inside actions.addTodayEntry.
+	const sndIteFun = ( iteIdeStr ) => { // What: Send Item Function. Why: This is full parity with "Pick One" -> Send: it runs the engine forcing this exact item, then stages the identical pending mutation (drift/weight plus bumpPick) so marking it done has the same consequence as a natural pick. How: Ease Down replaces the picker's single entry; other modes add one, both handled inside actions.addEntFun.
 
 
 		const sndResObj = PIC_NAM_OBJ.picIteFun( picker, state.items, { forceItemId : iteIdeStr } ); // What: Send Result Object. Why: Forcing the pick engine onto this exact item still needs to compute the same pending updates a natural pick would. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to the item being sent.
 
 		if ( !sndResObj || !sndResObj.picObj ) return; // What: No Result Guard. Why: An item that's somehow no longer pickable (already removed, say) must not commit a phantom Today entry. How: This bails out before touching the store at all.
 
-		actions.addTodayEntry( picker.id, sndResObj.picObj.id, { updates : sndResObj.updArr, pickerPatch : sndResObj.patObj, depletedEnd : sndResObj.depBoo, pickedId : sndResObj.picObj.id, bumpPick : true } ); // What: Add Today Entry Call. Why: This is the actual commit that lands the forced pick as a real Today entry, staged exactly like a natural pick. How: This passes through every computed update alongside the forced pick's own id.
+		actions.addEntFun( picker.id, sndResObj.picObj.id, { updates : sndResObj.updArr, pickerPatch : sndResObj.patObj, depletedEnd : sndResObj.depBoo, pickedId : sndResObj.picObj.id, bumpPick : true } ); // What: Add Today Entry Call. Why: This is the actual commit that lands the forced pick as a real Today entry, staged exactly like a natural pick. How: This passes through every computed update alongside the forced pick's own id.
 
 		setSenIdeStr( iteIdeStr ); // What: Sent Row Flag Call. Why: The exact row just sent needs its own brief confirmation state. How: This writes iteIdeStr into senIdeStr.
 
@@ -517,29 +517,29 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const dftActObj = { // What: Draft Actions Object. Why: EntryEditor expects a real actions-shaped object to call as the user edits the in-progress new-item draft, but that draft isn't committed to the store yet. How: Every method below mirrors the real store action's own name and signature, but writes into newDftObj instead of dispatching a real store update.
 
 
-		removeItem     : () => setNewDftObj( null ),                                                                                      // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, see the render below) still expects this method to exist. How: This clears newDftObj entirely.
-		renameItem     : ( tarIdeStr, newNamStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, name : newNamStr } : d ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on newDftObj, if the ids still match.
-		replaceItem    : ( tarIdeStr, snaIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? snaIteObj : d ),                    // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces newDftObj wholesale with snaIteObj, if the ids still match.
-		setItemWeight  : ( tarIdeStr, weiValNum ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, weight : weiValNum } : d ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on newDftObj, if the ids still match.
-		toggleVacation : ( tarIdeStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, vacation : !d.vacation } : d ),        // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on newDftObj, if the ids still match.
-		updateItem     : ( tarIdeStr, patIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, ...patIteObj } : d )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into newDftObj only if the ids still match.
+		delIteFun     : () => setNewDftObj( null ),                                                                                      // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, see the render below) still expects this method to exist. How: This clears newDftObj entirely.
+		renIteFun     : ( tarIdeStr, newNamStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, name : newNamStr } : d ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on newDftObj, if the ids still match.
+		revIteFun    : ( tarIdeStr, snaIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? snaIteObj : d ),                    // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces newDftObj wholesale with snaIteObj, if the ids still match.
+		setWeiFun  : ( tarIdeStr, weiValNum ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, weight : weiValNum } : d ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on newDftObj, if the ids still match.
+		togVacFun : ( tarIdeStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, vacation : !d.vacation } : d ),        // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on newDftObj, if the ids still match.
+		updIteFun     : ( tarIdeStr, patIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, ...patIteObj } : d )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into newDftObj only if the ids still match.
 
 
 	};
-	const cmtDftFun = ( dftIteObj ) => { // What: Commit Draft Function. Why: Saving the new-item draft must create the real store item and then carry over every field the draft flow itself edited. How: This calls actions.addItem, then patches in vacation/weight/ease fields, moves the new item to the end of the pool, and flags it for its own insert animation.
+	const cmtDftFun = ( dftIteObj ) => { // What: Commit Draft Function. Why: Saving the new-item draft must create the real store item and then carry over every field the draft flow itself edited. How: This calls actions.addIteFun, then patches in vacation/weight/ease fields, moves the new item to the end of the pool, and flags it for its own insert animation.
 
 
-		actions.addItem( picker.id, dftIteObj.name, dftIteObj.id ); // What: Add Item Call. Why: The draft only exists locally until this point; this is what actually creates it in the store. How: This passes the draft's own id through so the created item keeps the same id the draft UI was already using.
+		actions.addIteFun( picker.id, dftIteObj.name, dftIteObj.id ); // What: Add Item Call. Why: The draft only exists locally until this point; this is what actually creates it in the store. How: This passes the draft's own id through so the created item keeps the same id the draft UI was already using.
 
-		const patIteObj = { vacation : dftIteObj.vacation }; // What: Patch Item Object. Why: actions.addItem always creates the item active, so the draft's own Active toggle must be carried over too, not just weight/ease fields, or turning it off is silently lost. How: This starts from just the vacation field and gains weight/ease fields below when relevant.
+		const patIteObj = { vacation : dftIteObj.vacation }; // What: Patch Item Object. Why: actions.addIteFun always creates the item active, so the draft's own Active toggle must be carried over too, not just weight/ease fields, or turning it off is silently lost. How: This starts from just the vacation field and gains weight/ease fields below when relevant.
 
 		if ( useWeiBoo ) patIteObj.weight = dftIteObj.weight; // What: Weight Patch Guard. Why: Weight only matters for weighted/dynamic modes. How: This adds the draft's own weight into patIteObj only when useWeiBoo is true.
 
 		if ( isaEasBoo ) { patIteObj.easeMin = dftIteObj.easeMin; patIteObj.easeMax = dftIteObj.easeMax; patIteObj.value = dftIteObj.value; } // What: Ease Patch Guard. Why: The drift band and starting charge only matter for ease-up/ease-down modes. How: This adds the draft's own easeMin/easeMax/value into patIteObj only when isaEasBoo is true.
 
-		actions.updateItem( dftIteObj.id, patIteObj ); // What: Update Item Call. Why: actions.addItem alone doesn't accept these extra fields, so a follow-up patch is needed to apply them. How: This applies patIteObj to the freshly-created item.
+		actions.updIteFun( dftIteObj.id, patIteObj ); // What: Update Item Call. Why: actions.addIteFun alone doesn't accept these extra fields, so a follow-up patch is needed to apply them. How: This applies patIteObj to the freshly-created item.
 
-		actions.moveItemToEnd( dftIteObj.id ); // What: Move To End Call. Why: A newly-added item should land at the end of the pool's own display order, not wherever the store happened to insert it. How: This reorders the freshly-created item to the end.
+		actions.movIteFun( dftIteObj.id ); // What: Move To End Call. Why: A newly-added item should land at the end of the pool's own display order, not wherever the store happened to insert it. How: This reorders the freshly-created item to the end.
 
 		setInsSavStr( dftIteObj.id ); // What: Insert Saved Flag Call. Why: The freshly-committed row needs its own insert animation. How: This writes the new item's id into insSavStr, consumed by that row's own onAnimationEnd handler.
 
@@ -552,7 +552,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 		const newIdeStr = 'it_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The new draft item needs a stable, unique-enough id before it's ever committed to the store. How: This builds a short random suffix onto the conventional 'it_' item-id prefix.
 
-		setNewDftObj({ id : newIdeStr, name : 'New item', weight : 1, easeMin : 7, easeMax : 14, value : picker.mode === 'ease-down' ? ( picker.threshold ?? 100 ) : 0, vacation : false }); // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicker's own initialValue) and a zeroed one otherwise.
+		setNewDftObj({ id : newIdeStr, name : 'New item', weight : 1, easeMin : 7, easeMax : 14, value : picker.mode === 'ease-down' ? ( picker.threshold ?? 100 ) : 0, vacation : false }); // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicFun's own initialValue) and a zeroed one otherwise.
 
 		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The just-opened creation slot can be well out of view at the bottom of a long pool. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
 
@@ -630,7 +630,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 		if ( ediIteStr ) { // What: Other Editor Open Branch. Why: Another item's editor is already open and must be closed (with its own explicit revert, see ediSnaRef's own comment above) before this one can open. How: This reverts the currently-open item, stages tarIdeStr, and starts that editor's own closing animation.
 
 
-			if ( ediSnaRef.current ) actions.replaceItem( ediIteStr, ediSnaRef.current ); // What: Revert Call Guard. Why: Only a genuine snapshot can be reverted to. How: This restores the currently-open item back to its pre-edit snapshot.
+			if ( ediSnaRef.current ) actions.revIteFun( ediIteStr, ediSnaRef.current ); // What: Revert Call Guard. Why: Only a genuine snapshot can be reverted to. How: This restores the currently-open item back to its pre-edit snapshot.
 
 			pndEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's own onAnimationEnd handler to pick up.
 
@@ -685,7 +685,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 
 	}, [ state.pickers ] ); // What: Effect Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: state.pickers is what the loop above actually reads.
-	const ediIniObj = { // What: Edit Initial Object. Why: PicForCom's own edit mode needs every one of this picker's current settings prefilled, so Save can round-trip them through commitPickerEdit unchanged unless the user actually edits a field. How: This maps every relevant picker field onto the same shape PicForCom's own initial prop expects.
+	const ediIniObj = { // What: Edit Initial Object. Why: PicForCom's own edit mode needs every one of this picker's current settings prefilled, so Save can round-trip them through savEdiFun unchanged unless the user actually edits a field. How: This maps every relevant picker field onto the same shape PicForCom's own initial prop expects.
 
 
 		anchorDay       : picker.anchorDay,
@@ -736,7 +736,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 		setRunPhaStr( 'done' ); // What: Done Phase Call. Why: The stage must switch to showing the settled pick alongside the Send/Re-roll/Done buttons. How: This writes 'done' into runPhaStr.
 
-		// What: Preview-Only Note. Why: The spin itself is a PREVIEW; it does NOT mutate item state. How: The chosen pick's value/weight changes are staged and applied only when the resulting Today entry is marked done, see sndTdyFun below and store.js's own addTodayEntry pending mechanism.
+		// What: Preview-Only Note. Why: The spin itself is a PREVIEW; it does NOT mutate item state. How: The chosen pick's value/weight changes are staged and applied only when the resulting Today entry is marked done, see sndTdyFun below and store.js's own addEntFun pending mechanism.
 
 
 	};
@@ -778,12 +778,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 	};
 
-	const sndTdyFun = () => { // What: Send To Today Function. Why: Committing the settled pick's staged mutation only happens once the user actually confirms it, and this is deliberately skipped when the Pickers page tour is intercepting this exact step. How: This applies the pending update via actions.addTodayEntry (unless itcSenBoo), then plays the Sent! confirmation before resetting back to idle.
+	const sndTdyFun = () => { // What: Send To Today Function. Why: Committing the settled pick's staged mutation only happens once the user actually confirms it, and this is deliberately skipped when the Pickers page tour is intercepting this exact step. How: This applies the pending update via actions.addEntFun (unless itcSenBoo), then plays the Sent! confirmation before resetting back to idle.
 
 
 		if ( runPhaStr !== 'done' || !picResObj || !picResObj.picObj ) return; // What: Not Ready Guard. Why: There is nothing to send unless the cycle has actually settled on a real pick. How: This bails out unless runPhaStr is 'done' and picResObj holds a real outcome.
 
-		if ( !itcSenBoo ) actions.addTodayEntry( picker.id, picResObj.picObj.id, { updates : picResObj.updArr, pickerPatch : picResObj.patObj, depletedEnd : picResObj.depBoo, pickedId : picResObj.picObj.id, bumpPick : true } ); // What: Real Commit Guard. Why: The Pickers page tour's own "Add to Todo List" step wants the Sent! animation to play without a real entry landing on Today, see itcSenBoo's own comment above. How: This skips the real store commit only during that exact tour step, otherwise landing the settled pick as a real Today entry.
+		if ( !itcSenBoo ) actions.addEntFun( picker.id, picResObj.picObj.id, { updates : picResObj.updArr, pickerPatch : picResObj.patObj, depletedEnd : picResObj.depBoo, pickedId : picResObj.picObj.id, bumpPick : true } ); // What: Real Commit Guard. Why: The Pickers page tour's own "Add to Todo List" step wants the Sent! animation to play without a real entry landing on Today, see itcSenBoo's own comment above. How: This skips the real store commit only during that exact tour step, otherwise landing the settled pick as a real Today entry.
 
 		// What: Confirmation Beat Note. Why: The stage swaps to an "Added to Today" checkmark and the button morphs to "Sent!", then the picker resets to idle so it's ready for the next pick. How: setRunPhaStr('sent') below drives that swap; the timeout resets everything 1500ms later.
 		setRunPhaStr( 'sent' ); // What: Sent Phase Call. Why: The stage and button both need to show their own "sent" confirmation state. How: This writes 'sent' into runPhaStr.
@@ -807,8 +807,8 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 				iniFrmObj={ ediIniObj }
 				iniGroStr={ picker.group }
 				onCanFun={ () => setEdiOpnBoo( false ) }
-				onSavFun={ ( payFrmObj ) => { actions.commitPickerEdit( picker.id, payFrmObj ); setEdiOpnBoo( false ); } }
-			/> // What: Picker Form Component. Why: Editing reuses PicForCom's own Details step instead of a separate edit form. How: This is passed this picker's own current settings as ediIniObj, and routes Save through actions.commitPickerEdit.
+				onSavFun={ ( payFrmObj ) => { actions.savEdiFun( picker.id, payFrmObj ); setEdiOpnBoo( false ); } }
+			/> // What: Picker Form Component. Why: Editing reuses PicForCom's own Details step instead of a separate edit form. How: This is passed this picker's own current settings as ediIniObj, and routes Save through actions.savEdiFun.
 
 
 		);
@@ -950,8 +950,8 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 									kind='primary'
 									size='sm'
 									icon='refresh'
-									onClick={ () => actions.refillPicker( picker.id ) }
-								>Refill</ButBasCom> // What: Button. Why: The user needs a direct way to bring every item back to full charge. How: This calls actions.refillPicker with this picker's own id.
+									onClick={ () => actions.filPicFun( picker.id ) }
+								>Refill</ButBasCom> // What: Button. Why: The user needs a direct way to bring every item back to full charge. How: This calls actions.filPicFun with this picker's own id.
 
 
 							) }
@@ -1107,7 +1107,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 										if ( insSavStr === curIteObj.id ) setInsSavStr( null );
 
-										if ( remIdeStr === curIteObj.id && aniEveObj.target === aniEveObj.currentTarget ) { actions.removeItem( curIteObj.id ); setRemIdeStr( null ); }
+										if ( remIdeStr === curIteObj.id && aniEveObj.target === aniEveObj.currentTarget ) { actions.delIteFun( curIteObj.id ); setRemIdeStr( null ); }
 
 									} }
 								>{ /* What: Row Div Element. Why: Every pool item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries every one of this row's own transient animation classes, and commits the real delete/removal once its own leaving keyframe finishes. */ }
@@ -1302,7 +1302,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 						if ( ediIteStr ) { // What: Existing Item Editor Branch. Why: An existing item's own editor takes priority whenever one is open. How: This looks up the live item (not a snapshot, so EntryEditor's own direct store calls stay reflected immediately) and renders its editor, or nothing if it vanished out from under itself.
 
 
-							const ediLivObj = state.items.find( ( x ) => x.id === ediIteStr ); // What: Editing Live Object. Why: Weight/ease stepper clicks inside EntryEditor call the REAL actions.updateItem/setItemWeight directly, so this must be looked up live, not snapshotted, same as the pool row itself. How: This looks up ediIteStr fresh in state.items on every render.
+							const ediLivObj = state.items.find( ( x ) => x.id === ediIteStr ); // What: Editing Live Object. Why: Weight/ease stepper clicks inside EntryEditor call the REAL actions.updIteFun/setWeiFun directly, so this must be looked up live, not snapshotted, same as the pool row itself. How: This looks up ediIteStr fresh in state.items on every render.
 
 							if ( !ediLivObj ) return null; // What: Vanished Item Guard. Why: The item may have been deleted via the row's own trash icon while this was open; that confirm flow already owns closing this out. How: This renders nothing rather than crashing against a missing item.
 
@@ -1339,9 +1339,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												autoFocus
 												value={ ediNamStr }
 												onChange={ ( chaEveObj ) => setEdiNamStr( chaEveObj.target.value ) }
-												onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) actions.renameItem( ediLivObj.id, newNamStr ); } }
+												onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) actions.renIteFun( ediLivObj.id, newNamStr ); } }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renameItem on blur, and blurs itself on Enter. */ }
+											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renIteFun on blur, and blurs itself on Enter. */ }
 
 										</span>
 
@@ -1422,8 +1422,8 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 											aria-label='Item name'
 											autoFocus
 											value={ newIteObj.name }
-											onChange={ ( chaEveObj ) => dftActObj.updateItem( newIteObj.id, { name : chaEveObj.target.value } ) }
-											onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renameItem( newIteObj.id, newNamStr ); } }
+											onChange={ ( chaEveObj ) => dftActObj.updIteFun( newIteObj.id, { name : chaEveObj.target.value } ) }
+											onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renIteFun( newIteObj.id, newNamStr ); } }
 											onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into dftActObj (not the real store) on every change, and commits the rename on blur. */ }
 
@@ -1486,8 +1486,8 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  * names. Editing only ever shows Step 1, since an existing picker's own
  * items are edited via the Data tab or PicVieCom's own live pool instead.
  * On submit this calls onCreFun (a fresh picker, which store.js's
- * addPicker also spins up a matching Data-tab category for) or onSavFun
- * (an in-place edit via commitPickerEdit), depending on isaEdiBoo.
+ * addPicFun also spins up a matching Data-tab category for) or onSavFun
+ * (an in-place edit via savEdiFun), depending on isaEdiBoo.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1587,7 +1587,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 	const [ skiHolBoo, setSkiHolBoo ] = React.useState( ( iniFrmObj && iniFrmObj.skipHolidays ) || false ); // What: Skip Holidays Boolean And Setter. Why: Whether this picker sits out major U.S. holidays. How: This starts from a prefilled value, or false.
 	// What: Avoid Duplicates Boolean And Setter. Why: Excludes an item from this picker's own pool for the day if its name (case-insensitive) is already present elsewhere on today's list, for pickers that intentionally share items with another picker and don't want the same one to surface twice. How: This defaults off, since most pickers don't share a pool with anything else, so this should stay opt-in.
 	const [ avdDupBoo, setAvdDupBoo ] = React.useState( ( iniFrmObj && iniFrmObj.avoidDuplicates ) || false );
-	// What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CAD_NAM_OBJ.norCadFun's accepted shape matches the same fields addPicker/commitPickerEdit read off iniFrmObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
+	// What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CAD_NAM_OBJ.norCadFun's accepted shape matches the same fields addPicFun/savEdiFun read off iniFrmObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
 	const [ cadCurObj, setCadCurObj ] = React.useState( () => CAD_NAM_OBJ.norCadFun( iniFrmObj || {} ) );
 	const locDowNum = cadCurObj.cadence === 'weekly' ? cadCurObj.anchorDow : null; // What: Locked Dow Number. Why: Weekly cadence pins its anchor day ON in the Days control (and blocks the presets from dropping it), so the two controls can't contradict each other. How: This is the anchor day while weekly, otherwise null.
 	const wthLocFun = ( dayInpArr ) => CAD_NAM_OBJ.enfWeeFun({ ...cadCurObj, daysOfWeek : dayInpArr }); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CAD_NAM_OBJ helper with the candidate days merged into the current cadence.
@@ -1761,12 +1761,12 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 	const dftActObj = { // What: Draft Actions Object. Why: EntryEditor expects a real actions-shaped object to call as the user edits a draft pool item, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
 
 
-		removeItem     : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.filter( ( it ) => it.id !== tarIdeStr ) ),                                              // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
-		renameItem     : ( tarIdeStr, newNamStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, name : newNamStr } : it ) ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
-		replaceItem    : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? snaIteObj : it ) ),                     // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
-		setItemWeight  : ( tarIdeStr, weiValNum ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, weight : weiValNum } : it ) ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
-		toggleVacation : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, vacation : !it.vacation } : it ) ),       // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
-		updateItem     : ( tarIdeStr, patIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, ...patIteObj } : it ) )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
+		delIteFun     : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.filter( ( it ) => it.id !== tarIdeStr ) ),                                              // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
+		renIteFun     : ( tarIdeStr, newNamStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, name : newNamStr } : it ) ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
+		revIteFun    : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? snaIteObj : it ) ),                     // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
+		setWeiFun  : ( tarIdeStr, weiValNum ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, weight : weiValNum } : it ) ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
+		togVacFun : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, vacation : !it.vacation } : it ) ),       // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
+		updIteFun     : ( tarIdeStr, patIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, ...patIteObj } : it ) )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
 
 
 	};
@@ -1811,7 +1811,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 		}
 
-		// What: Full Charge Boolean. Why: Ease Down items start fully charged (mirrors addPicker's own initialValue), otherwise the editor would show a spent item needing a Refill it never needed; the tour's own Ease Up item is also given a full charge (like the rest of the sample pool) so the later generation demo step has something eligible to pick, but this doesn't apply to Weighted/Dynamic/Random tour samples, since those modes have no eligibility gate at all (value there is a weight boost, not a charge), so forcing 100 would just unfairly skew the new item's odds against its siblings for no reason.
+		// What: Full Charge Boolean. Why: Ease Down items start fully charged (mirrors addPicFun's own initialValue), otherwise the editor would show a spent item needing a Refill it never needed; the tour's own Ease Up item is also given a full charge (like the rest of the sample pool) so the later generation demo step has something eligible to pick, but this doesn't apply to Weighted/Dynamic/Random tour samples, since those modes have no eligibility gate at all (value there is a weight boost, not a charge), so forcing 100 would just unfairly skew the new item's odds against its siblings for no reason.
 		const fulChaBoo = selModStr === 'ease-down' || ( curTouBoo && selModStr === 'ease-up' );
 		// What: Ease Band Object. Why: A tour can override the generic 7/14-day defEasObj for its own added item (e.g. a monthly-cadence sample's own item shouldn't look like a daily one). How: This uses the bus's own staged easeMin/easeMax when a tour supplied both, otherwise defEasObj.
 		const easBndObj = ( curTouBoo && curBusObj.itemEaseMin != null && curBusObj.itemEaseMax != null )
@@ -1878,7 +1878,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 		if ( ediIteStr ) { // What: Other Editor Open Branch. Why: Another item's editor is already open and must be closed (with its own explicit revert) before this one can open. How: This reverts the currently-open item, stages tarIdeStr, and starts that editor's own closing animation.
 
 
-			if ( ediSnaRef.current ) dftActObj.replaceItem( ediIteStr, ediSnaRef.current ); // What: Revert Call Guard. Why: Only a genuine snapshot can be reverted to. How: This restores the currently-open item back to its pre-edit snapshot.
+			if ( ediSnaRef.current ) dftActObj.revIteFun( ediIteStr, ediSnaRef.current ); // What: Revert Call Guard. Why: Only a genuine snapshot can be reverted to. How: This restores the currently-open item back to its pre-edit snapshot.
 
 			pndEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's own onAnimationEnd handler to pick up.
 
@@ -1925,7 +1925,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 		window.__editGuard.disarm(); // What: Edit Guard Disarm Call. Why: A deferred revert firing after this navigation would corrupt whatever item gets added next. How: This calls the shared global editor guard's own disarm method.
 
-		if ( actNewStr ) { dftActObj.removeItem( actNewStr ); setActNewStr( null ); } // What: Discard In-Progress Guard. Why: An unsaved in-progress item must not linger once the user navigates away from it. How: This removes it from pooIteArr and clears actNewStr, only if one was actually open.
+		if ( actNewStr ) { dftActObj.delIteFun( actNewStr ); setActNewStr( null ); } // What: Discard In-Progress Guard. Why: An unsaved in-progress item must not linger once the user navigates away from it. How: This removes it from pooIteArr and clears actNewStr, only if one was actually open.
 
 		setActCloStr( false ); // What: Closing Reset Call. Why: A stale closing flag must not carry over into Step 1. How: This resets actCloStr to false.
 
@@ -2040,7 +2040,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 		}
 
-		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Nothing reads picker.easeMin/easeMax anymore (pick(), the Data tab, and the item editor all compute a live per-picker average from the items themselves instead, see PIC_NAM_OBJ.aveEasFun), so this is kept only so store.js's addPicker still has a value to accept; harmless dead data on the created picker otherwise. How: This is skipped for edit, since there's no items array here to compute a fresh average from, and the field is inert anyway.
+		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Nothing reads picker.easeMin/easeMax anymore (pick(), the Data tab, and the item editor all compute a live per-picker average from the items themselves instead, see PIC_NAM_OBJ.aveEasFun), so this is kept only so store.js's addPicFun still has a value to accept; harmless dead data on the created picker otherwise. How: This is skipped for edit, since there's no items array here to compute a fresh average from, and the field is inert anyway.
 
 
 			payFrmObj.easeMin = Math.min( ...pooIteArr.map( ( it ) => it.easeMin ?? defEasObj.easeMin ) ); // What: Legacy Ease Min Attach. Why: A summary value is still expected on the created payload. How: This takes the smallest easeMin across every committed item.
@@ -2740,7 +2740,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 											if ( insDftStr === curIteObj.id ) setInsDftStr( null );
 
-											if ( remIdeStr === curIteObj.id && aniEveObj.target === aniEveObj.currentTarget ) { dftActObj.removeItem( curIteObj.id ); setRemIdeStr( null ); }
+											if ( remIdeStr === curIteObj.id && aniEveObj.target === aniEveObj.currentTarget ) { dftActObj.delIteFun( curIteObj.id ); setRemIdeStr( null ); }
 
 										} }
 									>{ /* What: Row Div Element. Why: Every committed draft item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries this row's own transient animation classes, and commits the real removal once its own leaving keyframe finishes. */ }
@@ -2897,8 +2897,8 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 													aria-label='Item name'
 													autoFocus
 													value={ ediLivObj.name }
-													onChange={ ( chaEveObj ) => dftActObj.updateItem( ediLivObj.id, { name : chaEveObj.target.value } ) }
-													onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renameItem( ediLivObj.id, newNamStr ); } }
+													onChange={ ( chaEveObj ) => dftActObj.updIteFun( ediLivObj.id, { name : chaEveObj.target.value } ) }
+													onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renIteFun( ediLivObj.id, newNamStr ); } }
 													onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 												/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes into dftActObj on every change, and commits the rename on blur. */ }
 
@@ -2908,7 +2908,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 										<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntryEditor's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntryEditor instance bound to dftActObj. */ }
 
-											{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntryEditor for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntryEditor's own internal Cancel/Escape handling (revert via dftActObj.replaceItem, then close) is correct as-is with no extra bookkeeping needed here. */ }
+											{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntryEditor for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntryEditor's own internal Cancel/Escape handling (revert via dftActObj.revIteFun, then close) is correct as-is with no extra bookkeeping needed here. */ }
 											<EntryEditor
 												key={ ediLivObj.id }
 												item={ ediLivObj }
@@ -2960,7 +2960,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 										if ( actCloStr === 'save' ) setInsDftStr( savIdeStr ); // What: Commit Save Branch. Why: A successful save should commit the newly-inserted item's own draft id so later UI can find it. How: This calls setInsDftStr with savIdeStr.
 
-										else dftActObj.removeItem( savIdeStr ); // What: Discard Draft Branch. Why: Any other closing reason (cancel, etc.) should just discard the in-progress draft item entirely. How: This calls dftActObj.removeItem with savIdeStr.
+										else dftActObj.delIteFun( savIdeStr ); // What: Discard Draft Branch. Why: Any other closing reason (cancel, etc.) should just discard the in-progress draft item entirely. How: This calls dftActObj.delIteFun with savIdeStr.
 
 										setActCloStr( false );
 
@@ -2984,8 +2984,8 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 												aria-label='Item name'
 												autoFocus
 												value={ newIteObj.name }
-												onChange={ ( chaEveObj ) => dftActObj.updateItem( newIteObj.id, { name : chaEveObj.target.value } ) }
-												onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renameItem( newIteObj.id, newNamStr ); } }
+												onChange={ ( chaEveObj ) => dftActObj.updIteFun( newIteObj.id, { name : chaEveObj.target.value } ) }
+												onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renIteFun( newIteObj.id, newNamStr ); } }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being newly added. How: This writes into dftActObj on every change, and commits the rename on blur. */ }
 
@@ -3136,7 +3136,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 
 	}, [ hlpOnBoo ] ); // What: Effect Dependency Array. Why: This only needs re-running when help mode itself is toggled. How: hlpOnBoo is the sole trigger.
-	// What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own removePicker/removeConditional calls are no-ops against ids that don't exist.
+	// What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own delPicFun/delConFun calls are no-ops against ids that don't exist.
 	React.useEffect( () => () => clePicFun( actions ), [] );
 	const touBusObj = useEmlTouFun ? useEmlTouFun() : { prefill : null, startCreate : null }; // What: Tour Bus Object. Why: This page needs the shared tour bus to stage a prefilled create form and to gate several buttons during the guided walkthroughs. How: This subscribes via useEmlTouFun, or falls back to an inert stub if that hook somehow isn't available.
 	const isaTouBoo = touBusObj.phase === 'tour'; // What: Is-A Tour Boolean. Why: Every gate below needs to know a tour is actually running before it even checks which one. How: This is reused as the shared first operand of every tour-gating boolean that follows.
@@ -3650,21 +3650,21 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 									if ( window.__emlPickerCreated ) window.__emlPickerCreated(); // What: Tour Advance Guard. Why: The tour still needs to advance past its own "create the picker" step, even though nothing new was actually created this time. How: This calls the global tour hook only if it's actually registered.
 
-									return; // What: Early Return. Why: A genuine duplicate must not fall through into the real actions.addPicker call below. How: This exits the handler immediately.
+									return; // What: Early Return. Why: A genuine duplicate must not fall through into the real actions.addPicFun call below. How: This exits the handler immediately.
 
 
 								}
 
-								// What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.js's own addPicker; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prefill, not opeTouBoo, since this tour walks the form via a real click (opeTouBoo only ever gets set by the OTHER, dormant-auto-open prefill entry point above), so opeTouBoo is always false here.
+								// What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.js's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prefill, not opeTouBoo, since this tour walks the form via a real click (opeTouBoo only ever gets set by the OTHER, dormant-auto-open prefill entry point above), so opeTouBoo is always false here.
 								// What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders.jsx's own startAdd). How: This is driven by touBusObj.showChecklist below.
-								const newPicStr = actions.addPicker({
+								const newPicStr = actions.addPicFun({
 
 									...payFrmObj,
 									hidden : !!touBusObj.showChecklist,
 									...( touBusObj.prefill ? { createdFromSample : touBusObj.createdFromSample } : {} ),
 									...( touBusObj.existingPickerId ? { replaceId : touBusObj.existingPickerId } : {} )
 
-								}); // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicker with the payload plus the tour-driven fields above.
+								}); // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above.
 
 								if ( opeTouBoo ) { setOpeTouBoo( false ); if ( window.__emlPickerCreated ) window.__emlPickerCreated(); } // What: Tour Advance Guard. Why: A genuine tour-driven create (not the dedupe branch above) still needs to advance the tour once it lands. How: This clears opeTouBoo and calls the global tour hook, only while opeTouBoo was actually true.
 

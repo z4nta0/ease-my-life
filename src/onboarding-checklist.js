@@ -167,7 +167,7 @@ function cheStaFun ( appStaObj ) {
  * picker's own checklist entry can go from 'finished' back to
  * unresolved (an uncheck) or to 'cancelled'/'skipped' (an X, or Skip on
  * a replay) without the real picker it already created ever being
- * deleted (see store.js's addPicker replaceId comment), so checking
+ * deleted (see store.js's addPicFun replaceId comment), so checking
  * status here would wrongly re-flag cards as needing attention even
  * though real data already exists.
  *
