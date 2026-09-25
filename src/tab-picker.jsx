@@ -2373,7 +2373,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 							<ColDisCom open={ conSelStr === 'new' }>
 
-								<CodConCom draft={ conDftObj } onChange={ setConDftObj } nameError={ conErrStr } />
+								<CodConCom conDraObj={ conDftObj } onChange={ setConDftObj } namErrStr={ conErrStr } />
 
 							</ColDisCom>{ /* What: Collapse Disclosure Component. Why: The inline new-conditional editor only needs to exist while conSelStr is actually 'new'. How: This animates CodConCom open/closed around that check. */ }
 

@@ -1648,7 +1648,7 @@ function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, acti
 
 				{ namErrStr && <p className='np-error rd-cnd-name-err'>{ namErrStr }</p> }{ /* What: Name Error Check. Why: An invalid/colliding name needs an inline warning right above the fields. How: This renders the message only while namErrStr holds one. */ }
 
-				<CodConCom draft={ drfObj } onChange={ setDrfObj } variant='inline' hideName />{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setDrfObj. */ }
+				<CodConCom conDraObj={ drfObj } onChange={ setDrfObj } layVarStr='inline' hidNamBoo />{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setDrfObj. */ }
 
 				<div className='rd-ctl-group rd-ctl-group--foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. */ }
 

@@ -306,6 +306,25 @@ decision is captured for next time instead of getting re-asked later.
   since an import can go unused as a side effect of any other change to
   the file, not only a change to the imports themselves.
 
+### Exports
+- **Every export goes at the very end of the file**, after every
+  declaration, never inline on the declaration itself (no `export const
+  foo = ...` / `export function Foo`). Declare the binding normally
+  where it belongs, then export it by name at the bottom.
+- **Prefer one exported namespace object** (the `CAD_NAM_OBJ`/
+  `STG_NAM_OBJ` pattern documented under the naming rules below), but
+  only when it genuinely makes sense for what the file exports: a
+  domain module's family of related functions/constants, called as
+  `SomeObj.memFun(...)`. It does NOT make sense for a React component
+  (a JSX tag like `<SomeObj.FooCom />` reads worse than `<FooCom />`),
+  or for a file that exports only a small, unrelated handful of
+  bindings; those use plain named exports instead.
+- **Plain named exports all go in ONE `export { ... };` statement on a
+  single line**, unlike the one-binding-per-`import` rule above, with
+  one comment generalized to describe everything the statement exports
+  (not a separate comment per binding). See `tab-conditional.jsx`'s own
+  `export { CodConCom, conDrfFun };` for the reference example.
+
 ### Indentation
 - Use tabs for indentation, one tab per nesting level — not spaces.
 - Exception: a continuation line that's deliberately visually aligned to a
@@ -805,6 +824,14 @@ decision is captured for next time instead of getting re-asked later.
       (`/`.map((x) => (`/`return (` boundary), the comment is a live bug
       and must be converted.
   - The closing tag itself still gets nothing, same as always.
+  - **Inline phrasing elements inside text need no comment of their
+    own**: a `<strong>`, `<b>`, `<em>`, `<i>`, `<br />`, or similar
+    element that sits inline within a run of text content on the same
+    line (e.g. `conditional is <strong>fully charged</strong>`, or a
+    fragment of such text returned from a ternary) is part of that text,
+    not a structural element, so it's exempt from the one-comment-per-
+    element rule. The exemption ends the moment such an element sits on
+    a line of its own; then it's commented like any other element.
   - **Attribute lines never get their own comment, UNLESS the attribute's
     own value is itself a multi-line construct** (a multi-line arrow
     function body, a multi-line array/object literal, ...), in which
@@ -1997,6 +2024,27 @@ how short the body is.
   transitions (chain → standalone `if`, and standalone `if` → the
   `setCarFun` call after it) get 3 blank lines, not the 1 a quick
   glance at their shared `pagIdeStr`/cleanup theme might suggest.
+
+### Multi-line ternary expressions
+A multi-line ternary expression that isn't a JSX wrapper (the
+`{ cond ? ( ... ) : ( ... ) }` shape keeps its own existing rule under
+"### JSX") has no blank lines anywhere inside it, since it's one
+statement. The condition stays on the opening line with its own
+comment; each branch sits on its own line one tab deeper, starting with
+`?` or `:`, with its own trailing comment. A nested ternary chain
+follows the same shape, every `?`/`:` on its own line. The `?`/`:`
+branch lines are a tightly-grouped run, so their comments are
+column-aligned with each other (the opening line keeps its own single
+space), with the same exception as any other run: skip the alignment
+when the longest branch's code is more than 100 characters longer than
+the shortest's. See
+`tab-conditional.jsx`'s own `sooSubStr`/`latSubStr` for the reference
+example:
+```
+const sooSubStr = isaDowBoo // What: ...
+	? `stays triggered ...` // What: ...
+	: `... until it can trigger`; // What: ...
+```
 
 ### try/catch statements
 Treated the same as an `if`/`else` chain in every respect: `catch` (and

@@ -2162,7 +2162,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// hideName is set on CodConCom here, so the name field lives on the ROW itself (same .rd-name-input shape as a picker item's own row), not inside the shared controls component.
+	// hidNamBoo is set on CodConCom here, so the name field lives on the ROW itself (same .rd-name-input shape as a picker item's own row), not inside the shared controls component.
 	{
 
 
