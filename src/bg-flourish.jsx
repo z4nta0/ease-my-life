@@ -671,12 +671,12 @@ function FloColCom( { side : sidKeyStr, items : floIteArr } ) {
 					key={ floCurObj.ideStr }
 					className={ ` bg-flourish-item   ${ floCurObj.bigBoo ? 'is-big' : '' } ` }
 					style={{
+						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`,
+
 						top       : `${ floCurObj.topNum }px`,
 						fontSize  : `${ floCurObj.sizNum }px`,
 						opacity   : floCurObj.opaNum,
-						transform : `rotate(${ floCurObj.rotNum }deg)`,
-
-						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`
+						transform : `rotate(${ floCurObj.rotNum }deg)`
 					}}
 				>{ /* What: Flourish Item Span Element. Why: This is the actual decorative glyph, absolutely positioned within its own parent gutter. How: This renders floCurObj's own symbol, sized/rotated/positioned entirely via the inline style above. */ }
 
