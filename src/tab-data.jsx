@@ -2507,10 +2507,10 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 
 	const namErrStr = conDraObj && !tidNamStr // What: Name Error String. Why: The open row's own editor needs a specific validation message whenever its name is empty or collides with another conditional. How: This checks emptiness first, then a case-insensitive collision against every OTHER conditional, null when the name is valid.
-		? 'Enter a name for this conditional.' // What: Empty Name Message. Why: A blank name can't be saved. How: This asks for a name.
+		? 'Enter a name for this conditional.'                                            // What: Empty Name Message. Why: A blank name can't be saved. How: This asks for a name.
 		: conDraObj && conIteArr.some( ( conCurObj ) => conCurObj.id !== opeIdeStr && ( conCurObj.name || '' ).toLowerCase() === tidNamStr.toLowerCase() ) // What: Duplicate Name Check. Why: A name matching another conditional (ignoring case) can't be saved either. How: This compares tidNamStr against every other conditional's name.
 		? `A conditional named “${ tidNamStr }” already exists. Choose a different name.` // What: Duplicate Name Message. Why: The user needs to know why the name was rejected. How: This names the colliding value.
-		: null; // What: Valid Name Branch. Why: A unique, non-empty name has no error. How: This returns null.
+		: null;                                                                           // What: Valid Name Branch. Why: A unique, non-empty name has no error. How: This returns null.
 
 
 	const keeCloFun = () => { // What: Keep Close Function. Why: The row's own collapse chevron is a deliberate close, not an accidental one; a plain cloEdiFun there would discard a brand-new conditional or revert an edited existing one back to its pre-edit values. How: This commits the current draft (new or existing) unless the name itself is invalid, in which case it falls back to a plain (discarding) close.
