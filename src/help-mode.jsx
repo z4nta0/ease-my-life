@@ -561,7 +561,7 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
  *
  * @example
  * ```ts
- * claPadFun(tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr) // => padding
+ * claPadFun(tarRecObj, padHorNum, padVerNum, ...) // => padding
  * ```
  *
 */
@@ -595,7 +595,7 @@ function claPadFun ( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr ) {
 
 
 
-const PAD_MAR_NUM = 8;  // What: Pad Margin Number. Why: This is the extra margin drawn around every highlighted target's own rect by default. How: This is read as the fallback whenever a help item does not supply its own padXNum/padYNum override, and is also used directly by shaRadFun's own pill-radius math below.
+const PAD_MAR_NUM = 8;  // What: Pad Margin Number. Why: This is the extra margin drawn around every highlighted target's own rect by default. How: This is read as the fallback whenever a help item does not supply its own padXcoNum/padYcoNum override, and is also used directly by shaRadFun's own pill-radius math below.
 const DEF_RAD_NUM = 12; // What: Default Radius Number. Why: A multi-element union (a clustered group of buttons) has no one shape of its own to read, so it falls back to this plain rounded-rect radius instead of averaging several unrelated corner radii together; this also matches the app's own --r-md CSS token. How: This is returned by shaRadFun whenever no more specific radius can be computed.
 
 
@@ -1058,8 +1058,8 @@ function HelTipCom ( { tipIteObj, tarRecObj } ) {
  *   content grew to several paragraphs and the usual fixed 280px width read
  *   too cramped.
  *
- * - `padYNum` (7): Pad Y Number makes the highlight flush with the tab bar's
- *   own outer edge on 'bottom' placement.
+ * - `padYcoNum` (7): Pad Y-Coordinate Number makes the highlight flush with
+ *   the tab bar's own outer edge on 'bottom' placement.
  *
  * - `scrBoo` (true): Scroll Boolean caps the body to whatever room is found on
  *   'side' placement, where the target can span most of the viewport's own
@@ -1116,12 +1116,12 @@ const NAV_HEL_OBJ = {
 
 	),
 
-	ideStr  : '__nav',
-	mtwBoo  : true,
-	mwsStr  : '.tabbar',
-	padYNum : 7,
-	scrBoo  : true,
-	selStr  : '[data-tab]',
+	ideStr    : '__nav',
+	mtwBoo    : true,
+	mwsStr    : '.tabbar',
+	padYcoNum : 7,
+	scrBoo    : true,
+	selStr    : '[data-tab]',
 
 	shaStr : ( padWidNum, padHeiNum ) => { // What: Shape Function. Why: A multi-element union like the nav bar has no single source element's own border-radius to read. How: This computes a true-pill radius only once the box is meaningfully elongated, matching 'bottom'/'top' placement but not 'side'.
 
@@ -1296,7 +1296,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector( curIteObj.labStr )?.value )
 						: undefined;
 
-					const padSurObj = claPadFun( tarRecObj, curIteObj.padXNum ?? PAD_MAR_NUM, curIteObj.padYNum ?? PAD_MAR_NUM, chrIteArr, [ curTarEle ] ); // What: Padd Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXNum/padYNum override, or the flat default.
+					const padSurObj = claPadFun( tarRecObj, curIteObj.padXcoNum ?? PAD_MAR_NUM, curIteObj.padYcoNum ?? PAD_MAR_NUM, chrIteArr, [ curTarEle ] ); // What: Padd Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXcoNum/padYcoNum override, or the flat default.
 
 
 					nexMapObj[ `${ curIteObj.ideStr }::${ curIndNum }` ] = { ...tarRecObj, width: eleWidNum, height: eleHeiNum, shape: shaRadObj, ...padSurObj, label: curLabStr }; // What: Sub Id Map Write. Why: Each perElement instance is stored under its own synthesized sub-id, all sharing the parent item's own titStr/bodEle when opened. How: This writes the merged rect/shape/pad/label into nexMapObj.
@@ -1334,8 +1334,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 			tarRecObj = { ...cliRecObj, width: cliRecObj.right - cliRecObj.left, height: cliRecObj.bottom - cliRecObj.top }; // What: Finalized Rect Object. Why: Every later step in this branch needs the clipped rect's own derived width/height alongside its edges. How: This spreads cliRecObj and adds width/height back on.
 
 
-			const padHorNum = curIteObj.padXNum ?? PAD_MAR_NUM; // What: Pad Horizontal Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXNum override, or the flat default.
-			const padVerNum = curIteObj.padYNum ?? PAD_MAR_NUM; // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYNum override, or the flat default.
+			const padHorNum = curIteObj.padXcoNum ?? PAD_MAR_NUM; // What: Pad Horizontal Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXcoNum override, or the flat default.
+			const padVerNum = curIteObj.padYcoNum ?? PAD_MAR_NUM; // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYcoNum override, or the flat default.
 
 			const shaRadObj = typeof curIteObj.shaStr === 'function' // What: Shape Radius Object. Why: A multi-element union like the nav bar has no single source element's own border-radius to read, so its own shape function (passed the box's own padded dimensions) computes a radius directly instead. How: This calls curIteObj.shaStr when it is a function; otherwise a single-element union still reads a real border-radius via shaRadFun, and anything wider falls back to no shape at all.
 				? curIteObj.shaStr( tarRecObj.width + padHorNum * 2, tarRecObj.height + padVerNum * 2 )

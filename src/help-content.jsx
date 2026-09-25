@@ -61,11 +61,11 @@ import { IcoSvgCom } from './ui.jsx'; // What: Icon Svg Component. Why: Several 
  *   matched element instead of unioning them into a single highlight, for a
  *   selector that can match more than one element on the page at once.
  *
- * - `padXNum` / `padYNum` (Number, optional): Pad X Number and Pad Y Number
- *   override the default highlight padding on one axis, for a specific target
- *   whose highlight would otherwise overlap a neighboring element (see that
- *   item's own leading comment for the exact reasoning); read by
- *   help-mode.jsx's claPadFun/badRecFun.
+ * - `padXcoNum` / `padYcoNum` (Number, optional): Pad X-Coordinate Number
+ *   and Pad Y-Coordinate Number override the default highlight padding on
+ *   one axis, for a specific target whose highlight would otherwise overlap
+ *   a neighboring element (see that item's own leading comment for the
+ *   exact reasoning); read by help-mode.jsx's claPadFun/badRecFun.
  *
  * - `scrBoo` (Boolean, optional): Scroll Boolean caps the open tip's own
  *   height and scrolls its content internally instead of overflowing past the
@@ -157,9 +157,9 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 			? <>This button saves any edits that you have made and exits Edit Mode.</>
 			: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>), // title/body are functions (see help-mode.jsx's own comment on this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
 
-		ideStr  : 'editMode',
-		padXNum : 4, // padXNum: 4 exists because .foot-editmode sits right next to .ob-generate (Regenerate) with only a 10px gap between them, and the default 8px pad on each side would overlap by 6px.
-		selStr  : '.em-rail-btn, .foot-editmode',
+		ideStr    : 'editMode',
+		padXcoNum : 4, // padXcoNum: 4 exists because .foot-editmode sits right next to .ob-generate (Regenerate) with only a 10px gap between them, and the default 8px pad on each side would overlap by 6px.
+		selStr    : '.em-rail-btn, .foot-editmode',
 
 		titStr : () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on') ? 'Done Button' : 'Edit Mode') // title/body are functions (see help-mode.jsx's own comment on this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
 
@@ -215,12 +215,12 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>While Edit Mode is on, drag this handle to change this group's position in your todo list.</>,
-		ideStr  : 'groupGrip',
-		mulBoo  : true,
-		padXNum : 1, // padXNum: 1 exists because .group-grip and .group-name--editable sit only 4px apart in practice (the negative margin on .group-grip eats into .group-h-l's own 10px gap); the default 8px pad on each side, and even editMode's own padXNum:4 fix above, both still overlap here, so 1px each side leaves 2px of real clearance instead.
-		selStr  : '.group-grip',
-		titStr  : 'Reorder Group'
+		bodEle    : <>While Edit Mode is on, drag this handle to change this group's position in your todo list.</>,
+		ideStr    : 'groupGrip',
+		mulBoo    : true,
+		padXcoNum : 1, // padXcoNum: 1 exists because .group-grip and .group-name--editable sit only 4px apart in practice (the negative margin on .group-grip eats into .group-h-l's own 10px gap); the default 8px pad on each side, and even editMode's own padXcoNum:4 fix above, both still overlap here, so 1px each side leaves 2px of real clearance instead.
+		selStr    : '.group-grip',
+		titStr    : 'Reorder Group'
 
 
 	},
@@ -241,12 +241,12 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>While Edit Mode is on, click a group's name to rename it.</>,
-		ideStr  : 'groupNameEdit',
-		mulBoo  : true,
-		padXNum : 1,
-		selStr  : '.group-name-slot',
-		titStr  : 'Rename Group'
+		bodEle    : <>While Edit Mode is on, click a group's name to rename it.</>,
+		ideStr    : 'groupNameEdit',
+		mulBoo    : true,
+		padXcoNum : 1,
+		selStr    : '.group-name-slot',
+		titStr    : 'Rename Group'
 
 
 	},
@@ -407,10 +407,10 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		},
 
-		ideStr  : 'itemChargeRangeUp',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-ease-up-row',
-		titStr  : 'Item Charge Controls'
+		ideStr    : 'itemChargeRangeUp',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-ease-up-row',
+		titStr    : 'Item Charge Controls'
 
 
 	},
@@ -442,10 +442,10 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		},
 
-		ideStr  : 'itemChargeRangeDown',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-ease-down-row',
-		titStr  : 'Item Charge Controls'
+		ideStr    : 'itemChargeRangeDown',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-ease-down-row',
+		titStr    : 'Item Charge Controls'
 
 
 	},
@@ -453,11 +453,11 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
-		ideStr  : 'itemWeight',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.weight-stepper)',
-		titStr  : 'Item Weight'
+		bodEle    : <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
+		ideStr    : 'itemWeight',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.weight-stepper)',
+		titStr    : 'Item Weight'
 
 
 	},
@@ -465,11 +465,11 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
-		ideStr  : 'itemBoost',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.pie-boost-val)',
-		titStr  : 'Item Boost'
+		bodEle    : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
+		ideStr    : 'itemBoost',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.pie-boost-val)',
+		titStr    : 'Item Boost'
 
 
 	},
@@ -477,11 +477,11 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
-		ideStr  : 'itemActive',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.switch)',
-		titStr  : 'Item Active Toggle'
+		bodEle    : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
+		ideStr    : 'itemActive',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.switch)',
+		titStr    : 'Item Active Toggle'
 
 
 	},
@@ -699,11 +699,11 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This re-runs the daily generator manually, replacing your todo list. Anything already marked complete will be replaced too and won't show up in the Stats tab.</>,
-		ideStr  : 'regenerate',
-		padXNum : 4, // padXNum: 4, see editMode's own comment; same gap, same fix, symmetric.
-		selStr  : '.ob-generate',
-		titStr  : 'Regenerate'
+		bodEle    : <>This re-runs the daily generator manually, replacing your todo list. Anything already marked complete will be replaced too and won't show up in the Stats tab.</>,
+		ideStr    : 'regenerate',
+		padXcoNum : 4, // padXcoNum: 4, see editMode's own comment; same gap, same fix, symmetric.
+		selStr    : '.ob-generate',
+		titStr    : 'Regenerate'
 
 
 	},
@@ -962,11 +962,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This selects a specific picker, in order to initiate a manual picker generation down below as well as edit or delete its items.</>,
-		ideStr  : 'pickerSelection',
-		padXNum : 3, // padXNum: 3, the add button sits right before the first tab in the same 8px-gap scrollable row; the default 8px pad on each side would overlap by 8px otherwise (same bleed as Today's Edit Mode/Regenerate).
-		selStr  : '.picker-tabs .picker-tab:not(.picker-tab--add)',
-		titStr  : 'Picker Selection'
+		bodEle    : <>This selects a specific picker, in order to initiate a manual picker generation down below as well as edit or delete its items.</>,
+		ideStr    : 'pickerSelection',
+		padXcoNum : 3, // padXcoNum: 3, the add button sits right before the first tab in the same 8px-gap scrollable row; the default 8px pad on each side would overlap by 8px otherwise (same bleed as Today's Edit Mode/Regenerate).
+		selStr    : '.picker-tabs .picker-tab:not(.picker-tab--add)',
+		titStr    : 'Picker Selection'
 
 
 	},
@@ -974,11 +974,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This is where you can create new pickers. This button will open up a full page form with 2 parts, picker settings and picker items.</>,
-		ideStr  : 'createNewPickers',
-		padXNum : 3, // padXNum: 3, see pickerSelection's own comment, same gap, same fix.
-		selStr  : '.picker-tab--add',
-		titStr  : 'Create New Pickers'
+		bodEle    : <>This is where you can create new pickers. This button will open up a full page form with 2 parts, picker settings and picker items.</>,
+		ideStr    : 'createNewPickers',
+		padXcoNum : 3, // padXcoNum: 3, see pickerSelection's own comment, same gap, same fix.
+		selStr    : '.picker-tab--add',
+		titStr    : 'Create New Pickers'
 
 
 	},
@@ -987,11 +987,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This is the name of the currently selected picker.</>,
-		ideStr  : 'pickerName',
-		padYNum : 2, // padYNum: 2, the mode pill sits directly below with only a 6px margin-top (see styles2.css's .picker-h > div > .pill rule); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
-		selStr  : '.picker-view:not(.np-form) .picker-title',
-		titStr  : 'Picker Name'
+		bodEle    : <>This is the name of the currently selected picker.</>,
+		ideStr    : 'pickerName',
+		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see styles2.css's .picker-h > div > .pill rule); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
+		selStr    : '.picker-view:not(.np-form) .picker-title',
+		titStr    : 'Picker Name'
 
 
 	},
@@ -999,11 +999,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
-		ideStr  : 'pickerTypePill',
-		padYNum : 2, // padYNum: 2, see pickerName's own comment, same 6px gap, same fix.
-		selStr  : '.picker-view:not(.np-form) .pill--mode',
-		titStr  : 'Picker Type'
+		bodEle    : <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
+		ideStr    : 'pickerTypePill',
+		padYcoNum : 2, // padYcoNum: 2, see pickerName's own comment, same 6px gap, same fix.
+		selStr    : '.picker-view:not(.np-form) .pill--mode',
+		titStr    : 'Picker Type'
 
 
 	},
@@ -1069,10 +1069,10 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		),
 
-		ideStr  : 'pickerItems',
-		padYNum : 4, // padYNum: 4, .picker-pool (the shared flex-column parent) only has a 10px gap to the Add Picker Item button below; the default 8px pad on each side would overlap by 6px otherwise.
-		selStr  : '.pool-items',
-		titStr  : 'Picker Items'
+		ideStr    : 'pickerItems',
+		padYcoNum : 4, // padYcoNum: 4, .picker-pool (the shared flex-column parent) only has a 10px gap to the Add Picker Item button below; the default 8px pad on each side would overlap by 6px otherwise.
+		selStr    : '.pool-items',
+		titStr    : 'Picker Items'
 
 
 	},
@@ -1080,11 +1080,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This button will open a form that allows you to add a new item to the selected picker's pool.</>,
-		ideStr  : 'addPickerItem',
-		padYNum : 4, // padYNum: 4, see pickerItems' own comment, same gap, same fix.
-		selStr  : '.pv-additem-btn',
-		titStr  : 'Add Picker Item'
+		bodEle    : <>This button will open a form that allows you to add a new item to the selected picker's pool.</>,
+		ideStr    : 'addPickerItem',
+		padYcoNum : 4, // padYcoNum: 4, see pickerItems' own comment, same gap, same fix.
+		selStr    : '.pv-additem-btn',
+		titStr    : 'Add Picker Item'
 
 
 	},
@@ -1128,10 +1128,10 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		},
 
-		ideStr  : 'itemChargeRangeUp',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-ease-up-row',
-		titStr  : 'Item Charge Controls'
+		ideStr    : 'itemChargeRangeUp',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-ease-up-row',
+		titStr    : 'Item Charge Controls'
 
 
 	},
@@ -1163,10 +1163,10 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		},
 
-		ideStr  : 'itemChargeRangeDown',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-ease-down-row',
-		titStr  : 'Item Charge Controls'
+		ideStr    : 'itemChargeRangeDown',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-ease-down-row',
+		titStr    : 'Item Charge Controls'
 
 
 	},
@@ -1174,11 +1174,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This adjusts the item's pick chance relative to the picker's other items. For example, an item with a weight of w2 is twice as likely to be picked as an item with a weight of w1.</>,
-		ideStr  : 'itemWeight',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.weight-stepper)',
-		titStr  : 'Item Weight'
+		bodEle    : <>This adjusts the item's pick chance relative to the picker's other items. For example, an item with a weight of w2 is twice as likely to be picked as an item with a weight of w1.</>,
+		ideStr    : 'itemWeight',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.weight-stepper)',
+		titStr    : 'Item Weight'
 
 
 	},
@@ -1186,11 +1186,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
-		ideStr  : 'itemBoost',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.pie-boost-val)',
-		titStr  : 'Item Boost'
+		bodEle    : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
+		ideStr    : 'itemBoost',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.pie-boost-val)',
+		titStr    : 'Item Boost'
 
 
 	},
@@ -1198,11 +1198,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
-		ideStr  : 'itemActive',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.switch)',
-		titStr  : 'Item Active Toggle'
+		bodEle    : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
+		ideStr    : 'itemActive',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.switch)',
+		titStr    : 'Item Active Toggle'
 
 
 	},
@@ -1319,15 +1319,15 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// Deliberately doesn't re-explain each type, every option already has its own ruleset/explanation copy right there on the page, same as newPickerMode's own comment. // padYNum: 0, this whole cluster (Type/Weight/Odds/Boost/Charge Controls/Active) sits close enough together, .cnd-type-group's own gap to a sibling block is only 6px, and Odds-to-Boost specifically share the SAME block with next to no gap at all, that the default 8px pad would overlap somewhere no matter which type is selected. Zero pad on all of them relies on newCondActive's own padYNum to open a gap instead (see its comment), same "let one side of the boundary do the work" approach as EntryEditor's itemWeight/itemBoost.
+	// Deliberately doesn't re-explain each type, every option already has its own ruleset/explanation copy right there on the page, same as newPickerMode's own comment. // padYcoNum: 0, this whole cluster (Type/Weight/Odds/Boost/Charge Controls/Active) sits close enough together, .cnd-type-group's own gap to a sibling block is only 6px, and Odds-to-Boost specifically share the SAME block with next to no gap at all, that the default 8px pad would overlap somewhere no matter which type is selected. Zero pad on all of them relies on newCondActive's own padYcoNum to open a gap instead (see its comment), same "let one side of the boundary do the work" approach as EntryEditor's itemWeight/itemBoost.
 	{
 
 
-		bodEle  : <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
-		ideStr  : 'newCondType',
-		padYNum : 0,
-		selStr  : '.cnd-controls .np-field:has(.rd-mode-radio)',
-		titStr  : 'Conditional Type'
+		bodEle    : <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
+		ideStr    : 'newCondType',
+		padYcoNum : 0,
+		selStr    : '.cnd-controls .np-field:has(.rd-mode-radio)',
+		titStr    : 'Conditional Type'
 
 
 	},
@@ -1335,11 +1335,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
-		ideStr  : 'newCondRandom',
-		padYNum : 0,
-		selStr  : '.cnd-typectl:has(.pie-noweight)',
-		titStr  : 'Conditional Weight'
+		bodEle    : <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+		ideStr    : 'newCondRandom',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl:has(.pie-noweight)',
+		titStr    : 'Conditional Weight'
 
 
 	},
@@ -1347,11 +1347,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
-		ideStr  : 'newCondOdds',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .pie-row:has(.weight-stepper)',
-		titStr  : 'Conditional Trigger Odds'
+		bodEle    : <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
+		ideStr    : 'newCondOdds',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .pie-row:has(.weight-stepper)',
+		titStr    : 'Conditional Trigger Odds'
 
 
 	},
@@ -1359,11 +1359,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
-		ideStr  : 'newCondBoost',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .pie-row:has(.pie-boost-val)',
-		titStr  : 'Conditional Boost'
+		bodEle    : <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
+		ideStr    : 'newCondBoost',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .pie-row:has(.pie-boost-val)',
+		titStr    : 'Conditional Boost'
 
 
 	},
@@ -1386,10 +1386,10 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		),
 
-		ideStr  : 'newCondEaseUp',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .cnd-ease-up-row',
-		titStr  : 'Conditional Charge Controls'
+		ideStr    : 'newCondEaseUp',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .cnd-ease-up-row',
+		titStr    : 'Conditional Charge Controls'
 
 
 	},
@@ -1411,10 +1411,10 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		),
 
-		ideStr  : 'newCondEaseDown',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .cnd-ease-down-row',
-		titStr  : 'Conditional Charge Controls'
+		ideStr    : 'newCondEaseDown',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .cnd-ease-down-row',
+		titStr    : 'Conditional Charge Controls'
 
 
 	},
@@ -1422,11 +1422,11 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{
 
 
-		bodEle  : <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
-		ideStr  : 'newCondActive',
-		padYNum : 3, // padYNum: 3, opens a gap against whichever zero-pad block sits above it (Weight/Odds/Boost/Charge Controls all now padYNum: 0, see their own comment), while staying comfortably under the real 6px gap so it can't reach up into that block's own content.
-		selStr  : '.cnd-controls .pie-row:has(.switch)',
-		titStr  : 'Conditional Active Toggle'
+		bodEle    : <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
+		ideStr    : 'newCondActive',
+		padYcoNum : 3, // padYcoNum: 3, opens a gap against whichever zero-pad block sits above it (Weight/Odds/Boost/Charge Controls all now padYcoNum: 0, see their own comment), while staying comfortably under the real 6px gap so it can't reach up into that block's own content.
+		selStr    : '.cnd-controls .pie-row:has(.switch)',
+		titStr    : 'Conditional Active Toggle'
 
 
 	},
@@ -1652,16 +1652,16 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 	// #region Headline Numbers
 
-	// Three different card sets share the same position (between the Range filter and the heatmap/breakdown below), one per scope: All/a specific picker, Reminders, and Conditionals. Each card needed its own stat-mk-* marker class in tab-stats.jsx first, since they all otherwise share the plain .stat-card class with nothing to distinguish one from another. // padXNum/padYNum: 4, these 4 cards sit in a CSS grid with only a 10px gap (both row-gap and column-gap, since it's a single `gap: 10px` on .stat-row), so the default 8px pad on each side would overlap a neighbor's own pad by 6px, on whichever edge is shared (right/left in the desktop single-row layout, all four edges in the mobile 2x2 grid). 4+4=8 leaves 2px of daylight in the 10px gap instead. // All and a specific picker scope both render these same stat-mk-* cards (see tab-stats.jsx's own comment on stat-mk-scope-*), so each gets its own entry below scoped to stat-mk-scope-all/-picker, with its own title/copy.
+	// Three different card sets share the same position (between the Range filter and the heatmap/breakdown below), one per scope: All/a specific picker, Reminders, and Conditionals. Each card needed its own stat-mk-* marker class in tab-stats.jsx first, since they all otherwise share the plain .stat-card class with nothing to distinguish one from another. // padXcoNum/padYcoNum: 4, these 4 cards sit in a CSS grid with only a 10px gap (both row-gap and column-gap, since it's a single `gap: 10px` on .stat-row), so the default 8px pad on each side would overlap a neighbor's own pad by 6px, on whichever edge is shared (right/left in the desktop single-row layout, all four edges in the mobile 2x2 grid). 4+4=8 leaves 2px of daylight in the 10px gap instead. // All and a specific picker scope both render these same stat-mk-* cards (see tab-stats.jsx's own comment on stat-mk-scope-*), so each gets its own entry below scoped to stat-mk-scope-all/-picker, with its own title/copy.
 	{
 
 
-		bodEle  : <>This shows your current streak of consecutive days where you've completed all items in your todo list.</>,
-		ideStr  : 'statStreak',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-all.stat-mk-streak',
-		titStr  : 'Day Streak'
+		bodEle    : <>This shows your current streak of consecutive days where you've completed all items in your todo list.</>,
+		ideStr    : 'statStreak',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-all.stat-mk-streak',
+		titStr    : 'Day Streak'
 
 
 	},
@@ -1669,12 +1669,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the number of days where you completed everything in your todo list that day, compared to the number of total active days shown next to it.</>,
-		ideStr  : 'statFullDays',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-all.stat-mk-fulldays',
-		titStr  : 'Full Days'
+		bodEle    : <>This shows the number of days where you completed everything in your todo list that day, compared to the number of total active days shown next to it.</>,
+		ideStr    : 'statFullDays',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-all.stat-mk-fulldays',
+		titStr    : 'Full Days'
 
 
 	},
@@ -1682,12 +1682,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the total number of items you've completed in this range.</>,
-		ideStr  : 'statDone',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-all.stat-mk-done',
-		titStr  : 'Items Done'
+		bodEle    : <>This shows the total number of items you've completed in this range.</>,
+		ideStr    : 'statDone',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-all.stat-mk-done',
+		titStr    : 'Items Done'
 
 
 	},
@@ -1695,12 +1695,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the percentage of items you've completed, out of every item that was in your todo list in this range.</>,
-		ideStr  : 'statRate',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-all.stat-mk-rate',
-		titStr  : 'Completion Rate'
+		bodEle    : <>This shows the percentage of items you've completed, out of every item that was in your todo list in this range.</>,
+		ideStr    : 'statRate',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-all.stat-mk-rate',
+		titStr    : 'Completion Rate'
 
 
 	},
@@ -1708,12 +1708,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows your current streak of consecutive days where you've completed all items in your todo list.</>,
-		ideStr  : 'statPickerStreak',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-picker.stat-mk-streak',
-		titStr  : 'Picker Day Streak'
+		bodEle    : <>This shows your current streak of consecutive days where you've completed all items in your todo list.</>,
+		ideStr    : 'statPickerStreak',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-picker.stat-mk-streak',
+		titStr    : 'Picker Day Streak'
 
 
 	},
@@ -1721,12 +1721,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the number of days where you've completed everything in your todo list for that day, compared to the number of total active days shown next to it.</>,
-		ideStr  : 'statPickerFullDays',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-picker.stat-mk-fulldays',
-		titStr  : 'Picker Full Days'
+		bodEle    : <>This shows the number of days where you've completed everything in your todo list for that day, compared to the number of total active days shown next to it.</>,
+		ideStr    : 'statPickerFullDays',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-picker.stat-mk-fulldays',
+		titStr    : 'Picker Full Days'
 
 
 	},
@@ -1734,12 +1734,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the total number of items that you've completed for your selected range.</>,
-		ideStr  : 'statPickerDone',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-picker.stat-mk-done',
-		titStr  : 'Picker Items Done'
+		bodEle    : <>This shows the total number of items that you've completed for your selected range.</>,
+		ideStr    : 'statPickerDone',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-picker.stat-mk-done',
+		titStr    : 'Picker Items Done'
 
 
 	},
@@ -1747,39 +1747,26 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the percentage of items that you've completed, out of every item that was in your todo list.</>,
-		ideStr  : 'statPickerRate',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-scope-picker.stat-mk-rate',
-		titStr  : 'Picker Completion Rate'
+		bodEle    : <>This shows the percentage of items that you've completed, out of every item that was in your todo list.</>,
+		ideStr    : 'statPickerRate',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-scope-picker.stat-mk-rate',
+		titStr    : 'Picker Completion Rate'
 
 
 	},
 
-	// padXNum/padYNum: 4, same .stat-row (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
+	// padXcoNum/padYcoNum: 4, same .stat-row (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
 	{
 
 
-		bodEle  : <>This shows the total number of reminders that you've completed for your selected range.</>,
-		ideStr  : 'statRemDone',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-remdone',
-		titStr  : 'Reminders Completed'
-
-
-	},
-
-	{
-
-
-		bodEle  : <>This shows the number of reminders that you've completed in the last 7 days, regardless of your selected range.</>,
-		ideStr  : 'statRemWeek',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-remweek',
-		titStr  : 'Reminders This Week'
+		bodEle    : <>This shows the total number of reminders that you've completed for your selected range.</>,
+		ideStr    : 'statRemDone',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-remdone',
+		titStr    : 'Reminders Completed'
 
 
 	},
@@ -1787,12 +1774,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the total number of days for your selected range where you've completed at least one reminder.</>,
-		ideStr  : 'statRemActive',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-remactive',
-		titStr  : 'Reminders Active Days'
+		bodEle    : <>This shows the number of reminders that you've completed in the last 7 days, regardless of your selected range.</>,
+		ideStr    : 'statRemWeek',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-remweek',
+		titStr    : 'Reminders This Week'
 
 
 	},
@@ -1800,26 +1787,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the highest number of reminders that you've completed in a single day for your selected range.</>,
-		ideStr  : 'statRemBusiest',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-rembusiest',
-		titStr  : 'Reminders Busiest Day'
-
-
-	},
-
-	// padXNum/padYNum: 4, same .stat-row (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
-	{
-
-
-		bodEle  : <>This shows the total number of times that any conditional has been triggered for your selected range.</>,
-		ideStr  : 'statCondFired',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-condfired',
-		titStr  : 'Conditionals Triggered'
+		bodEle    : <>This shows the total number of days for your selected range where you've completed at least one reminder.</>,
+		ideStr    : 'statRemActive',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-remactive',
+		titStr    : 'Reminders Active Days'
 
 
 	},
@@ -1827,12 +1800,26 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the total number of cycles that any conditional was evaluated over for your selected range, regardless of whether it was triggered or not.</>,
-		ideStr  : 'statCondCycles',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-condcycles',
-		titStr  : 'Conditionals Cycles'
+		bodEle    : <>This shows the highest number of reminders that you've completed in a single day for your selected range.</>,
+		ideStr    : 'statRemBusiest',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-rembusiest',
+		titStr    : 'Reminders Busiest Day'
+
+
+	},
+
+	// padXcoNum/padYcoNum: 4, same .stat-row (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
+	{
+
+
+		bodEle    : <>This shows the total number of times that any conditional has been triggered for your selected range.</>,
+		ideStr    : 'statCondFired',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-condfired',
+		titStr    : 'Conditionals Triggered'
 
 
 	},
@@ -1840,12 +1827,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the percentage of evaluated cycles that resulted in a triggered conditional for your selected range.</>,
-		ideStr  : 'statCondRate',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-condrate',
-		titStr  : 'Conditionals Fire Rate'
+		bodEle    : <>This shows the total number of cycles that any conditional was evaluated over for your selected range, regardless of whether it was triggered or not.</>,
+		ideStr    : 'statCondCycles',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-condcycles',
+		titStr    : 'Conditionals Cycles'
 
 
 	},
@@ -1853,12 +1840,25 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the most recent data that any conditional in your selected range was triggered.</>,
-		ideStr  : 'statCondLast',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-condlast',
-		titStr  : 'Conditionals Last Fired'
+		bodEle    : <>This shows the percentage of evaluated cycles that resulted in a triggered conditional for your selected range.</>,
+		ideStr    : 'statCondRate',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-condrate',
+		titStr    : 'Conditionals Fire Rate'
+
+
+	},
+
+	{
+
+
+		bodEle    : <>This shows the most recent data that any conditional in your selected range was triggered.</>,
+		ideStr    : 'statCondLast',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-condlast',
+		titStr    : 'Conditionals Last Fired'
 
 
 	},
@@ -1916,12 +1916,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This lists the 5 picker items that have been picked the most for your selected range.</>,
-		ideStr  : 'statMostPicked',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-mostpicked',
-		titStr  : 'Picker Items Most Picked'
+		bodEle    : <>This lists the 5 picker items that have been picked the most for your selected range.</>,
+		ideStr    : 'statMostPicked',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-mostpicked',
+		titStr    : 'Picker Items Most Picked'
 
 
 	},
@@ -1929,12 +1929,12 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This lists the 5 picker items that have been picked the least for your selected range. This excludes any picker items that are currently inactive.</>,
-		ideStr  : 'statColdest',
-		padXNum : 4,
-		padYNum : 4,
-		selStr  : '.stat-mk-coldest',
-		titStr  : 'Picker Items Least Picked'
+		bodEle    : <>This lists the 5 picker items that have been picked the least for your selected range. This excludes any picker items that are currently inactive.</>,
+		ideStr    : 'statColdest',
+		padXcoNum : 4,
+		padYcoNum : 4,
+		selStr    : '.stat-mk-coldest',
+		titStr    : 'Picker Items Least Picked'
 
 
 	},
@@ -1994,11 +1994,11 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This is the name of the currently selected picker.</>,
-		ideStr  : 'pickerName',
-		padYNum : 2, // padYNum: 2, same 6px gap to the pill below as the Pickers page (see .stat-picker-id > .pill's own margin-top in styles2.css); the default 8px pad on each side would overlap by 10px otherwise.
-		selStr  : '.stat-picker-id .picker-title',
-		titStr  : 'Picker Name'
+		bodEle    : <>This is the name of the currently selected picker.</>,
+		ideStr    : 'pickerName',
+		padYcoNum : 2, // padYcoNum: 2, same 6px gap to the pill below as the Pickers page (see .stat-picker-id > .pill's own margin-top in styles2.css); the default 8px pad on each side would overlap by 10px otherwise.
+		selStr    : '.stat-picker-id .picker-title',
+		titStr    : 'Picker Name'
 
 
 	},
@@ -2006,11 +2006,11 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 	{
 
 
-		bodEle  : <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
-		ideStr  : 'pickerTypePill',
-		padYNum : 2, // padYNum: 2, see pickerName's own comment, same 6px gap, same fix.
-		selStr  : '.stat-picker-id .pill--mode',
-		titStr  : 'Picker Type'
+		bodEle    : <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
+		ideStr    : 'pickerTypePill',
+		padYcoNum : 2, // padYcoNum: 2, see pickerName's own comment, same 6px gap, same fix.
+		selStr    : '.stat-picker-id .pill--mode',
+		titStr    : 'Picker Type'
 
 
 	},
@@ -2127,11 +2127,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
-		ideStr  : 'conditionalsManager',
-		padYNum : 0, // padYNum:0, .cat-h has no border/gap of its own below it, but .cat-body (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The 20px flex gap above .cnd-manager itself (from .tab--data) easily absorbs losing the default pad on that side too.
-		selStr  : '.cnd-manager .cat-h',
-		titStr  : 'Conditionals'
+		bodEle    : <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
+		ideStr    : 'conditionalsManager',
+		padYcoNum : 0, // padYcoNum:0, .cat-h has no border/gap of its own below it, but .cat-body (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The 20px flex gap above .cnd-manager itself (from .tab--data) easily absorbs losing the default pad on that side too.
+		selStr    : '.cnd-manager .cat-h',
+		titStr    : 'Conditionals'
 
 
 	},
@@ -2139,13 +2139,13 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>You can tap this conditional to expand and collapse this section. Expand it in order to view and edit its settings.</>,
-		ideStr  : 'conditionalRow',
-		labStr  : '.rd-name, .rd-name-input',
-		mulBoo  : true,                                      // mulBoo is true because every conditional gets its own badge, not one for the whole list, since a user could be looking at any of them.
-		padYNum : 0,                                         // padYNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), so the default 8px pad bled a highlight box into both neighboring rows above and below it.
-		selStr  : '.cnd-manager .rd-item > .rd-row',
-		titStr  : (r) => `${r?.label || 'This'} Conditional` // titStr is a function because each row's own heading should read as "{its own name} Conditional" rather than one generic title shared by every conditional, falling back to "This Conditional" while labStr hasn't resolved a live name yet.
+		bodEle    : <>You can tap this conditional to expand and collapse this section. Expand it in order to view and edit its settings.</>,
+		ideStr    : 'conditionalRow',
+		labStr    : '.rd-name, .rd-name-input',
+		mulBoo    : true,                                      // mulBoo is true because every conditional gets its own badge, not one for the whole list, since a user could be looking at any of them.
+		padYcoNum : 0,                                         // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), so the default 8px pad bled a highlight box into both neighboring rows above and below it.
+		selStr    : '.cnd-manager .rd-item > .rd-row',
+		titStr    : (r) => `${r?.label || 'This'} Conditional` // titStr is a function because each row's own heading should read as "{its own name} Conditional" rather than one generic title shared by every conditional, falling back to "This Conditional" while labStr hasn't resolved a live name yet.
 
 
 	},
@@ -2153,11 +2153,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This creates a new conditional, letting you gate a picker behind a rule of your choosing so it only runs on days that rule allows.</>,
-		ideStr  : 'dataCondAdd',
-		padYNum : 0, // padYNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first conditional row below it.
-		selStr  : '.cnd-manager .rd-add',
-		titStr  : 'Create New Conditional'
+		bodEle    : <>This creates a new conditional, letting you gate a picker behind a rule of your choosing so it only runs on days that rule allows.</>,
+		ideStr    : 'dataCondAdd',
+		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first conditional row below it.
+		selStr    : '.cnd-manager .rd-add',
+		titStr    : 'Create New Conditional'
 
 
 	},
@@ -2166,36 +2166,24 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is the name field for this conditional, you can rename it here.</>,
-		ideStr  : 'dataCondName',
-		padYNum : 0, // padYNum:0, the row and whatever's directly below it (the first CodConCom field) stack with zero gap, same as everywhere else on this page.
-		selStr  : '.cnd-manager .rd-item.is-editing .rd-name-input',
-		titStr  : 'Conditional Name'
+		bodEle    : <>This is the name field for this conditional, you can rename it here.</>,
+		ideStr    : 'dataCondName',
+		padYcoNum : 0, // padYcoNum:0, the row and whatever's directly below it (the first CodConCom field) stack with zero gap, same as everywhere else on this page.
+		selStr    : '.cnd-manager .rd-item.is-editing .rd-name-input',
+		titStr    : 'Conditional Name'
 
 
 	},
 
-	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCond* entries were copied over for this pass. // padYNum:0, .cnd-controls--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
+	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCond* entries were copied over for this pass. // padYcoNum:0, .cnd-controls--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
 	{
 
 
-		bodEle  : <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
-		ideStr  : 'dataCondCardText',
-		padYNum : 0,
-		selStr  : '.np-field--cardtext',
-		titStr  : 'Conditional Card Text'
-
-
-	},
-
-	{
-
-
-		bodEle  : <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
-		ideStr  : 'dataCondType',
-		padYNum : 0,
-		selStr  : '.cnd-controls .np-field:has(.rd-mode-radio)',
-		titStr  : 'Conditional Type'
+		bodEle    : <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
+		ideStr    : 'dataCondCardText',
+		padYcoNum : 0,
+		selStr    : '.np-field--cardtext',
+		titStr    : 'Conditional Card Text'
 
 
 	},
@@ -2203,11 +2191,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
-		ideStr  : 'dataCondRandom',
-		padYNum : 0,
-		selStr  : '.cnd-typectl:has(.pie-noweight)',
-		titStr  : 'Conditional Weight'
+		bodEle    : <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
+		ideStr    : 'dataCondType',
+		padYcoNum : 0,
+		selStr    : '.cnd-controls .np-field:has(.rd-mode-radio)',
+		titStr    : 'Conditional Type'
 
 
 	},
@@ -2215,11 +2203,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
-		ideStr  : 'dataCondOdds',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .pie-row:has(.weight-stepper)',
-		titStr  : 'Conditional Trigger Odds'
+		bodEle    : <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+		ideStr    : 'dataCondRandom',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl:has(.pie-noweight)',
+		titStr    : 'Conditional Weight'
 
 
 	},
@@ -2227,11 +2215,23 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
-		ideStr  : 'dataCondBoost',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .pie-row:has(.pie-boost-val)',
-		titStr  : 'Conditional Boost'
+		bodEle    : <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
+		ideStr    : 'dataCondOdds',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .pie-row:has(.weight-stepper)',
+		titStr    : 'Conditional Trigger Odds'
+
+
+	},
+
+	{
+
+
+		bodEle    : <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
+		ideStr    : 'dataCondBoost',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .pie-row:has(.pie-boost-val)',
+		titStr    : 'Conditional Boost'
 
 
 	},
@@ -2253,10 +2253,10 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		),
 
-		ideStr  : 'dataCondEaseUp',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .cnd-ease-up-row',
-		titStr  : 'Conditional Charge Controls'
+		ideStr    : 'dataCondEaseUp',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .cnd-ease-up-row',
+		titStr    : 'Conditional Charge Controls'
 
 
 	},
@@ -2278,10 +2278,10 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		),
 
-		ideStr  : 'dataCondEaseDown',
-		padYNum : 0,
-		selStr  : '.cnd-typectl .cnd-ease-down-row',
-		titStr  : 'Conditional Charge Controls'
+		ideStr    : 'dataCondEaseDown',
+		padYcoNum : 0,
+		selStr    : '.cnd-typectl .cnd-ease-down-row',
+		titStr    : 'Conditional Charge Controls'
 
 
 	},
@@ -2289,11 +2289,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
-		ideStr  : 'dataCondActive',
-		padYNum : 3,
-		selStr  : '.cnd-controls .pie-row:has(.switch)',
-		titStr  : 'Conditional Active Toggle'
+		bodEle    : <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
+		ideStr    : 'dataCondActive',
+		padYcoNum : 3,
+		selStr    : '.cnd-controls .pie-row:has(.switch)',
+		titStr    : 'Conditional Active Toggle'
 
 
 	},
@@ -2323,7 +2323,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// New (unsaved) conditionals never render a Delete button, see ConditionalEditor's `!isNew &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
+	// New (unsaved) conditionals never render a Delete button, see ConditionalEditor's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
 	{
 
 
@@ -2356,24 +2356,24 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
-		ideStr  : 'remindersManager',
-		padYNum : 0, // padYNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager.
-		selStr  : '.cat--reminders .cat-h',
-		titStr  : 'Reminders'
+		bodEle    : <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
+		ideStr    : 'remindersManager',
+		padYcoNum : 0, // padYcoNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager.
+		selStr    : '.cat--reminders .cat-h',
+		titStr    : 'Reminders'
 
 
 	},
 
-	// The Controls/Items disclosures share the .rd-ctl class (see the matching pair on each picker below), so :nth-of-type splits them, Controls always renders first in .cat-body, Items second. // padYNum:0, .rd-ctl touches its neighbor with only a hairline border, same zero-gap stacking as everywhere else on this page.
+	// The Controls/Items disclosures share the .rd-ctl class (see the matching pair on each picker below), so :nth-of-type splits them, Controls always renders first in .cat-body, Items second. // padYcoNum:0, .rd-ctl touches its neighbor with only a hairline border, same zero-gap stacking as everywhere else on this page.
 	{
 
 
-		bodEle  : <>Tap this to expand or collapse the reminders settings below. Collapsed, it shows how many settings there are.</>,
-		ideStr  : 'remindersControlsHeader',
-		padYNum : 0,
-		selStr  : '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(1)',
-		titStr  : 'Reminder Controls'
+		bodEle    : <>Tap this to expand or collapse the reminders settings below. Collapsed, it shows how many settings there are.</>,
+		ideStr    : 'remindersControlsHeader',
+		padYcoNum : 0,
+		selStr    : '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(1)',
+		titStr    : 'Reminder Controls'
 
 
 	},
@@ -2381,11 +2381,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
-		ideStr  : 'remControlsMatrix',
-		padYNum : 0, // padYNum:0, .rd-matrix sits flush against the Controls header above and the Items header below (no .rd-ctl-body padding wrapper here, unlike PickerControls), so the default pad bled 8px into both.
-		selStr  : '.rd-matrix',
-		titStr  : 'Reminders Settings'
+		bodEle    : <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
+		ideStr    : 'remControlsMatrix',
+		padYcoNum : 0, // padYcoNum:0, .rd-matrix sits flush against the Controls header above and the Items header below (no .rd-ctl-body padding wrapper here, unlike PickerControls), so the default pad bled 8px into both.
+		selStr    : '.rd-matrix',
+		titStr    : 'Reminders Settings'
 
 
 	},
@@ -2416,11 +2416,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>Tap this to expand or collapse the list of your reminders below. Collapsed, it shows how many reminders you have.</>,
-		ideStr  : 'remindersItemsHeader',
-		padYNum : 0,
-		selStr  : '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)',
-		titStr  : 'Reminders Items'
+		bodEle    : <>Tap this to expand or collapse the list of your reminders below. Collapsed, it shows how many reminders you have.</>,
+		ideStr    : 'remindersItemsHeader',
+		padYcoNum : 0,
+		selStr    : '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)',
+		titStr    : 'Reminders Items'
 
 
 	},
@@ -2428,25 +2428,25 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
-		ideStr  : 'remAddButton',
-		padYNum : 0, // padYNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first reminder row below it.
-		selStr  : '.cat--reminders .rd-add',
-		titStr  : 'Create New Reminder'
+		bodEle    : <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
+		ideStr    : 'remAddButton',
+		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first reminder row below it.
+		selStr    : '.cat--reminders .rd-add',
+		titStr    : 'Create New Reminder'
 
 
 	},
 
-	// mulBoo is true because every reminder gets its own badge, not one for the whole list. Split by type (rather than by name, like conditionalRow/pickerRow) via the row's own .rd-ico.is-once marker, set per user request instead of the name-based labStr pattern. // padYNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/pickerRow.
+	// mulBoo is true because every reminder gets its own badge, not one for the whole list. Split by type (rather than by name, like conditionalRow/pickerRow) via the row's own .rd-ico.is-once marker, set per user request instead of the name-based labStr pattern. // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/pickerRow.
 	{
 
 
-		bodEle  : <>This is one of your reminders. Tap it to view and edit its settings.</>,
-		ideStr  : 'reminderRowOnce',
-		mulBoo  : true,
-		padYNum : 0,
-		selStr  : '.cat--reminders .rd-item > .rd-row:has(.rd-ico.is-once)',
-		titStr  : 'One-Time Reminder Item'
+		bodEle    : <>This is one of your reminders. Tap it to view and edit its settings.</>,
+		ideStr    : 'reminderRowOnce',
+		mulBoo    : true,
+		padYcoNum : 0,
+		selStr    : '.cat--reminders .rd-item > .rd-row:has(.rd-ico.is-once)',
+		titStr    : 'One-Time Reminder Item'
 
 
 	},
@@ -2454,12 +2454,12 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is one of your reminders. Tap it to view and edit its settings.</>,
-		ideStr  : 'reminderRowRecurring',
-		mulBoo  : true,
-		padYNum : 0,
-		selStr  : '.cat--reminders .rd-item > .rd-row:not(:has(.rd-ico.is-once))',
-		titStr  : 'Recurring Reminder Item'
+		bodEle    : <>This is one of your reminders. Tap it to view and edit its settings.</>,
+		ideStr    : 'reminderRowRecurring',
+		mulBoo    : true,
+		padYcoNum : 0,
+		selStr    : '.cat--reminders .rd-item > .rd-row:not(:has(.rd-ico.is-once))',
+		titStr    : 'Recurring Reminder Item'
 
 
 	},
@@ -2497,11 +2497,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		),
 
-		ideStr  : 'dataReminderRepeat',
-		padYNum : 0,    // padYNum:0, unlike Today's card-based editor, this tab's .rd-edit wrapper overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot in styles2.css), so .rem-editor touches the footer row with zero gap.
-		scrBoo  : true, // scrBoo is true here too, same reasoning as Today's addReminderRepeat.
-		selStr  : '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor',
-		titStr  : 'Reminder Schedule'
+		ideStr    : 'dataReminderRepeat',
+		padYcoNum : 0,    // padYcoNum:0, unlike Today's card-based editor, this tab's .rd-edit wrapper overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot in styles2.css), so .rem-editor touches the footer row with zero gap.
+		scrBoo    : true, // scrBoo is true here too, same reasoning as Today's addReminderRepeat.
+		selStr    : '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor',
+		titStr    : 'Reminder Schedule'
 
 
 	},
@@ -2531,7 +2531,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// New (unsaved) reminders never render a Delete button, see ReminderEditFoot's `!isNew &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
+	// New (unsaved) reminders never render a Delete button, see ReminderEditFoot's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
 	{
 
 
@@ -2564,53 +2564,27 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is one of your pickers. Tap it to view and edit its settings and items.</>,
-		ideStr  : 'pickerRow',
-		labStr  : '.cat-mode-label',                               // labStr reads the visible .cat-mode-label pill (tab-data.jsx) in the header's cat-h-tags cluster.
-		mulBoo  : true,                                            // mulBoo is true because every picker gets its own badge.
-		padYNum : 0,                                               // padYNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager; matters once a picker is expanded and .cat-body renders beneath it.
-		selStr  : '.data-list > .cat > .cat-h',
-		titStr  : (r) => r?.label ? `${r.label} Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
+		bodEle    : <>This is one of your pickers. Tap it to view and edit its settings and items.</>,
+		ideStr    : 'pickerRow',
+		labStr    : '.cat-mode-label',                               // labStr reads the visible .cat-mode-label pill (tab-data.jsx) in the header's cat-h-tags cluster.
+		mulBoo    : true,                                            // mulBoo is true because every picker gets its own badge.
+		padYcoNum : 0,                                               // padYcoNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager; matters once a picker is expanded and .cat-body renders beneath it.
+		selStr    : '.data-list > .cat > .cat-h',
+		titStr    : (r) => r?.label ? `${r.label} Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
 
 
 	},
 
-	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .rd-ctl class and :nth-of-type split as the Reminders manager's own pair above. .cat-body is a descendant, not a direct child, of .cat, it's wrapped in its own <ColDisCom> div (unlike .cat-h, which isn't). // padYNum:0, .rd-ctl touches its neighbor with only a hairline border.
+	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .rd-ctl class and :nth-of-type split as the Reminders manager's own pair above. .cat-body is a descendant, not a direct child, of .cat, it's wrapped in its own <ColDisCom> div (unlike .cat-h, which isn't). // padYcoNum:0, .rd-ctl touches its neighbor with only a hairline border.
 	{
 
 
-		bodEle  : <>Tap this to expand or collapse this picker's settings. This includes its name, its group, how it picks, its conditional gate and when it runs. Collapsed, it shows how many setting options exist.</>,
-		ideStr  : 'dataPickerControlsHeader',
-		mulBoo  : true,
-		padYNum : 0,
-		selStr  : '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)',
-		titStr  : 'Picker Controls'
-
-
-	},
-
-	{
-
-
-		bodEle  : <>Tap this to expand or collapse this picker's list of items below. Collapsed, it shows how many items are in the picker.</>,
-		ideStr  : 'dataPickerItemsHeader',
-		mulBoo  : true,
-		padYNum : 0,
-		selStr  : '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)',
-		titStr  : 'Picker Items'
-
-
-	},
-
-	// padYNum:0, .rd-basics-row has no margin, just its own padding + a border-top, so consecutive rows (this one and Group below) touch with zero gap.
-	{
-
-
-		bodEle  : <>This is the name field for this picker, you can rename it here.</>,
-		ideStr  : 'dataPickerName',
-		padYNum : 0,
-		selStr  : '.rd-basics-row:has(.rd-basics-name)',
-		titStr  : 'Picker Name'
+		bodEle    : <>Tap this to expand or collapse this picker's settings. This includes its name, its group, how it picks, its conditional gate and when it runs. Collapsed, it shows how many setting options exist.</>,
+		ideStr    : 'dataPickerControlsHeader',
+		mulBoo    : true,
+		padYcoNum : 0,
+		selStr    : '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)',
+		titStr    : 'Picker Controls'
 
 
 	},
@@ -2618,11 +2592,37 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This lets you choose which group this picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
-		ideStr  : 'dataPickerGroup',
-		padYNum : 0,
-		selStr  : '.rd-basics-row--group',
-		titStr  : 'Picker Group'
+		bodEle    : <>Tap this to expand or collapse this picker's list of items below. Collapsed, it shows how many items are in the picker.</>,
+		ideStr    : 'dataPickerItemsHeader',
+		mulBoo    : true,
+		padYcoNum : 0,
+		selStr    : '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)',
+		titStr    : 'Picker Items'
+
+
+	},
+
+	// padYcoNum:0, .rd-basics-row has no margin, just its own padding + a border-top, so consecutive rows (this one and Group below) touch with zero gap.
+	{
+
+
+		bodEle    : <>This is the name field for this picker, you can rename it here.</>,
+		ideStr    : 'dataPickerName',
+		padYcoNum : 0,
+		selStr    : '.rd-basics-row:has(.rd-basics-name)',
+		titStr    : 'Picker Name'
+
+
+	},
+
+	{
+
+
+		bodEle    : <>This lets you choose which group this picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
+		ideStr    : 'dataPickerGroup',
+		padYcoNum : 0,
+		selStr    : '.rd-basics-row--group',
+		titStr    : 'Picker Group'
 
 
 	},
@@ -2631,36 +2631,24 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
-		ideStr  : 'dataPickerType',
-		padYNum : 0, // padYNum:0, .rd-ctl-group--picks (this group's own wrapper) touches "When it runs" below with zero gap.
-		selStr  : '.rd-ctl-group--picks .rd-mode-radio',
-		titStr  : 'Picker Type'
+		bodEle    : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
+		ideStr    : 'dataPickerType',
+		padYcoNum : 0, // padYcoNum:0, .rd-ctl-group--picks (this group's own wrapper) touches "When it runs" below with zero gap.
+		selStr    : '.rd-ctl-group--picks .rd-mode-radio',
+		titStr    : 'Picker Type'
 
 
 	},
 
-	// padYNum:0, .sched-line rows stack with zero gap (same pattern as .rd-basics-row above), touching Daily Generator Toggle below.
+	// padYcoNum:0, .sched-line rows stack with zero gap (same pattern as .rd-basics-row above), touching Daily Generator Toggle below.
 	{
 
 
-		bodEle  : <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below, but if you want to create a new one you will need to use the Conditionals section above.</>,
-		ideStr  : 'dataPickerConditionalToggle',
-		padYNum : 0,
-		selStr  : '.sched-line:has(button[aria-label="Attach a conditional"])',
-		titStr  : 'Picker Conditional'
-
-
-	},
-
-	{
-
-
-		bodEle  : <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, create one in the Conditionals section above.</>,
-		ideStr  : 'dataPickerConditionalRail',
-		padYNum : 0,
-		selStr  : '.rd-cnd-rail-row .cnd-rail',
-		titStr  : 'Select a Conditional'
+		bodEle    : <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below, but if you want to create a new one you will need to use the Conditionals section above.</>,
+		ideStr    : 'dataPickerConditionalToggle',
+		padYcoNum : 0,
+		selStr    : '.sched-line:has(button[aria-label="Attach a conditional"])',
+		titStr    : 'Picker Conditional'
 
 
 	},
@@ -2668,11 +2656,23 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
-		ideStr  : 'dataPickerDailyToggle',
-		padYNum : 0, // padYNum:0, same .sched-line zero-gap stacking, touching Picker Cadence below.
-		selStr  : '.sched-line:has(button[aria-label*="daily generator"])',
-		titStr  : 'Daily Generator Toggle'
+		bodEle    : <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, create one in the Conditionals section above.</>,
+		ideStr    : 'dataPickerConditionalRail',
+		padYcoNum : 0,
+		selStr    : '.rd-cnd-rail-row .cnd-rail',
+		titStr    : 'Select a Conditional'
+
+
+	},
+
+	{
+
+
+		bodEle    : <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
+		ideStr    : 'dataPickerDailyToggle',
+		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Cadence below.
+		selStr    : '.sched-line:has(button[aria-label*="daily generator"])',
+		titStr    : 'Daily Generator Toggle'
 
 
 	},
@@ -2696,10 +2696,10 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		),
 
-		ideStr  : 'dataPickerCadence',
-		padYNum : 0, // padYNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection below.
-		selStr  : '.sched-line:has(select[aria-label="Cadence"])',
-		titStr  : 'Picker Cadence'
+		ideStr    : 'dataPickerCadence',
+		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection below.
+		selStr    : '.sched-line:has(select[aria-label="Cadence"])',
+		titStr    : 'Picker Cadence'
 
 
 	},
@@ -2707,11 +2707,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off.</>,
-		ideStr  : 'dataPickerDays',
-		padYNum : 0, // padYNum:0, same .sched-line zero-gap stacking, touching Picker Holidays Toggle below.
-		selStr  : '.sched-line:has(.dow-chips)',
-		titStr  : 'Picker Day Selection'
+		bodEle    : <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off.</>,
+		ideStr    : 'dataPickerDays',
+		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Holidays Toggle below.
+		selStr    : '.sched-line:has(.dow-chips)',
+		titStr    : 'Picker Day Selection'
 
 
 	},
@@ -2720,11 +2720,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
-		ideStr  : 'dataPickerSkipHolidays',
-		padYNum : 0, // padYNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection above.
-		selStr  : '.sched-line:has(button[aria-label="Skip on holidays"])',
-		titStr  : 'Picker Holidays Toggle'
+		bodEle    : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+		ideStr    : 'dataPickerSkipHolidays',
+		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection above.
+		selStr    : '.sched-line:has(button[aria-label="Skip on holidays"])',
+		titStr    : 'Picker Holidays Toggle'
 
 
 	},
@@ -2733,24 +2733,24 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
-		ideStr  : 'dataPickerAvoidDuplicates',
-		padYNum : 0, // padYNum:0, .rd-ctl-group--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
-		selStr  : '.sched-line:has(button[aria-label="Avoid duplicate items"])',
-		titStr  : 'Picker Duplicate Items Toggle'
+		bodEle    : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
+		ideStr    : 'dataPickerAvoidDuplicates',
+		padYcoNum : 0, // padYcoNum:0, .rd-ctl-group--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
+		selStr    : '.sched-line:has(button[aria-label="Avoid duplicate items"])',
+		titStr    : 'Picker Duplicate Items Toggle'
 
 
 	},
 
-	// Fill/Refill acts on every item in this picker at once (actions.filPicFun), not just one. Moved out of "How it picks" into "Item Controls" alongside Avoid Duplicate Items above (see that entry's own comment), filling every item's charge is an items operation, not part of the picker's own ruleset. // padYNum:0, touches Picker Duplicate Items Toggle above with zero gap. // Split by mode (ease-config--up/--down, tab-data.jsx) rather than one combined Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the per-item equivalent, which also covers each item's own Soonest/Latest controls, this picker level no longer has any of its own to prefill new items with; see PIC_NAM_OBJ.aveEasFun in pickers.js).
+	// Fill/Refill acts on every item in this picker at once (actions.filPicFun), not just one. Moved out of "How it picks" into "Item Controls" alongside Avoid Duplicate Items above (see that entry's own comment), filling every item's charge is an items operation, not part of the picker's own ruleset. // padYcoNum:0, touches Picker Duplicate Items Toggle above with zero gap. // Split by mode (ease-config--up/--down, tab-data.jsx) rather than one combined Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the per-item equivalent, which also covers each item's own Soonest/Latest controls, this picker level no longer has any of its own to prefill new items with; see PIC_NAM_OBJ.aveEasFun in pickers.js).
 	{
 
 
-		bodEle  : <>This fills the charge of every item in this picker at once.</>,
-		ideStr  : 'dataPickerFillUp',
-		padYNum : 0,
-		selStr  : '.ease-config.ease-config--up',
-		titStr  : 'Fill All'
+		bodEle    : <>This fills the charge of every item in this picker at once.</>,
+		ideStr    : 'dataPickerFillUp',
+		padYcoNum : 0,
+		selStr    : '.ease-config.ease-config--up',
+		titStr    : 'Fill All'
 
 
 	},
@@ -2758,11 +2758,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This refills the charge of every item in this picker at once.</>,
-		ideStr  : 'dataPickerFillDown',
-		padYNum : 0,
-		selStr  : '.ease-config.ease-config--down',
-		titStr  : 'Refill All'
+		bodEle    : <>This refills the charge of every item in this picker at once.</>,
+		ideStr    : 'dataPickerFillDown',
+		padYcoNum : 0,
+		selStr    : '.ease-config.ease-config--down',
+		titStr    : 'Refill All'
 
 
 	},
@@ -2812,11 +2812,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This adds a new item to this picker's pool.</>,
-		ideStr  : 'dataAddItem',
-		padYNum : 0, // padYNum:0, .rd-add has the same zero-gap stacking as .rd-item, touching the first item row below it.
-		selStr  : '.data-list .rd-add',
-		titStr  : 'Create New Picker Item'
+		bodEle    : <>This adds a new item to this picker's pool.</>,
+		ideStr    : 'dataAddItem',
+		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item, touching the first item row below it.
+		selStr    : '.data-list .rd-add',
+		titStr    : 'Create New Picker Item'
 
 
 	},
@@ -2861,12 +2861,12 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is one of this picker's items. Tap it to view and edit its settings.</>,
-		ideStr  : 'dataItemRow',
-		mulBoo  : true, // mulBoo is true because every item in every expanded picker gets its own badge.
-		padYNum : 0,    // padYNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRow.
-		selStr  : '.data-list .rd-item > .rd-row',
-		titStr  : 'Picker Item'
+		bodEle    : <>This is one of this picker's items. Tap it to view and edit its settings.</>,
+		ideStr    : 'dataItemRow',
+		mulBoo    : true, // mulBoo is true because every item in every expanded picker gets its own badge.
+		padYcoNum : 0,    // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRow.
+		selStr    : '.data-list .rd-item > .rd-row',
+		titStr    : 'Picker Item'
 
 
 	},
@@ -2916,10 +2916,10 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		},
 
-		ideStr  : 'itemChargeRangeUp',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-ease-up-row',
-		titStr  : 'Item Charge Controls'
+		ideStr    : 'itemChargeRangeUp',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-ease-up-row',
+		titStr    : 'Item Charge Controls'
 
 
 	},
@@ -2951,10 +2951,10 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		},
 
-		ideStr  : 'itemChargeRangeDown',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-ease-down-row',
-		titStr  : 'Item Charge Controls'
+		ideStr    : 'itemChargeRangeDown',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-ease-down-row',
+		titStr    : 'Item Charge Controls'
 
 
 	},
@@ -2962,11 +2962,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
-		ideStr  : 'itemWeight',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.weight-stepper)',
-		titStr  : 'Item Weight'
+		bodEle    : <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
+		ideStr    : 'itemWeight',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.weight-stepper)',
+		titStr    : 'Item Weight'
 
 
 	},
@@ -2974,11 +2974,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
-		ideStr  : 'itemBoost',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.pie-boost-val)',
-		titStr  : 'Item Boost'
+		bodEle    : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
+		ideStr    : 'itemBoost',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.pie-boost-val)',
+		titStr    : 'Item Boost'
 
 
 	},
@@ -2986,11 +2986,11 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 	{
 
 
-		bodEle  : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
-		ideStr  : 'itemActive',
-		padYNum : 0,
-		selStr  : '.entry-editor .pie-row:has(.switch)',
-		titStr  : 'Item Active Toggle'
+		bodEle    : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
+		ideStr    : 'itemActive',
+		padYcoNum : 0,
+		selStr    : '.entry-editor .pie-row:has(.switch)',
+		titStr    : 'Item Active Toggle'
 
 
 	},
@@ -3020,7 +3020,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// New (unsaved) items never render a Delete button, see EntryEditor's `!isNew &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
+	// New (unsaved) items never render a Delete button, see EntryEditor's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
 	{
 
 
@@ -3070,11 +3070,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
-		ideStr  : 'settingsRail',
-		padYNum : 0, // padYNum:0, on narrow viewports this is sticky (position:sticky; top:0) with its own opaque background; the default pad extended the mask cutout past the rail's own real bottom edge, revealing whatever page content had scrolled underneath it in that gap (nothing there covers it, the dim overlay sits above the rail's own z-index:18, and the cutout hole doesn't care that the rail's own box doesn't reach that far).
-		selStr  : '.settings-rail',
-		titStr  : 'Sections Navigation'
+		bodEle    : <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
+		ideStr    : 'settingsRail',
+		padYcoNum : 0, // padYcoNum:0, on narrow viewports this is sticky (position:sticky; top:0) with its own opaque background; the default pad extended the mask cutout past the rail's own real bottom edge, revealing whatever page content had scrolled underneath it in that gap (nothing there covers it, the dim overlay sits above the rail's own z-index:18, and the cutout hole doesn't care that the rail's own box doesn't reach that far).
+		selStr    : '.settings-rail',
+		titStr    : 'Sections Navigation'
 
 
 	},
@@ -3107,15 +3107,15 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	},
 
-	// padYNum:4 (not the default 8), consecutive .set-subsection blocks have a real but modest 12px gap (.set-section's own flex gap), and 8+8 exceeds that by 4px; 4+4 stays safely inside it.
+	// padYcoNum:4 (not the default 8), consecutive .set-subsection blocks have a real but modest 12px gap (.set-section's own flex gap), and 8+8 exceeds that by 4px; 4+4 stays safely inside it.
 	{
 
 
-		bodEle  : <>This is where you choose the theme that's used when the app is in dark mode. Pick any of the presets, or use the Custom row to mix your own colors. Custom themes will automatically generate a matching light theme, which you're then free to edit separately.</>,
-		ideStr  : 'appearanceThemeDark',
-		padYNum : 4,
-		selStr  : '.set-subsection--theme-dark',
-		titStr  : 'Dark Theme'
+		bodEle    : <>This is where you choose the theme that's used when the app is in dark mode. Pick any of the presets, or use the Custom row to mix your own colors. Custom themes will automatically generate a matching light theme, which you're then free to edit separately.</>,
+		ideStr    : 'appearanceThemeDark',
+		padYcoNum : 4,
+		selStr    : '.set-subsection--theme-dark',
+		titStr    : 'Dark Theme'
 
 
 	},
@@ -3123,11 +3123,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This is where you choose which animation plays in the Today page when every item in your todo list is marked as done. Use Preview to watch any of them play out before picking one.</>,
-		ideStr  : 'appearanceCelebration',
-		padYNum : 4,
-		selStr  : '.set-subsection--celebration',
-		titStr  : 'Completion Celebration'
+		bodEle    : <>This is where you choose which animation plays in the Today page when every item in your todo list is marked as done. Use Preview to watch any of them play out before picking one.</>,
+		ideStr    : 'appearanceCelebration',
+		padYcoNum : 4,
+		selStr    : '.set-subsection--celebration',
+		titStr    : 'Completion Celebration'
 
 
 	},
@@ -3135,11 +3135,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick One" button. Use Preview to watch any of them play out before picking one.</>,
-		ideStr  : 'appearancePickAnim',
-		padYNum : 4,
-		selStr  : '.set-subsection--pickanim',
-		titStr  : 'Picker Animation'
+		bodEle    : <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick One" button. Use Preview to watch any of them play out before picking one.</>,
+		ideStr    : 'appearancePickAnim',
+		padYcoNum : 4,
+		selStr    : '.set-subsection--pickanim',
+		titStr    : 'Picker Animation'
 
 
 	},
@@ -3147,11 +3147,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This controls where the app's main navigation is positioned on screen: a floating bar at the bottom, a sidebar on the left, or a bar along the top.</>,
-		ideStr  : 'appearanceLayout',
-		padYNum : 4,
-		selStr  : '.set-subsection--layout',
-		titStr  : 'Tab Bar Placement'
+		bodEle    : <>This controls where the app's main navigation is positioned on screen: a floating bar at the bottom, a sidebar on the left, or a bar along the top.</>,
+		ideStr    : 'appearanceLayout',
+		padYcoNum : 4,
+		selStr    : '.set-subsection--layout',
+		titStr    : 'Tab Bar Placement'
 
 
 	},
@@ -3162,15 +3162,15 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Daily Generator
 
-	// padYNum:0 on all three below, .set-data-row rows have no margin between them, just their own padding + a border-bottom (Card is a plain div, not a flex/grid gap container), so they touch with zero gap.
+	// padYcoNum:0 on all three below, .set-data-row rows have no margin between them, just their own padding + a border-bottom (Card is a plain div, not a flex/grid gap container), so they touch with zero gap.
 	{
 
 
-		bodEle  : <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually using the Regenerate button at the bottom of the Today page.</>,
-		ideStr  : 'dailyAutoToggle',
-		padYNum : 0,
-		selStr  : '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])',
-		titStr  : 'Run Generator Automatically'
+		bodEle    : <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually using the Regenerate button at the bottom of the Today page.</>,
+		ideStr    : 'dailyAutoToggle',
+		padYcoNum : 0,
+		selStr    : '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])',
+		titStr    : 'Run Generator Automatically'
 
 
 	},
@@ -3178,11 +3178,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This sets what time of day the Daily generator runs automatically. A quiet, early hour works best so your list is ready first thing in the morning.</>,
-		ideStr  : 'dailyRunTime',
-		padYNum : 0,
-		selStr  : '.set-section--daily .set-data-row--sub',
-		titStr  : 'Run Generator Time'
+		bodEle    : <>This sets what time of day the Daily generator runs automatically. A quiet, early hour works best so your list is ready first thing in the morning.</>,
+		ideStr    : 'dailyRunTime',
+		padYcoNum : 0,
+		selStr    : '.set-section--daily .set-data-row--sub',
+		titStr    : 'Run Generator Time'
 
 
 	},
@@ -3190,11 +3190,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This lets you get a notification once your todo list has been generated for the day. This is the only notification the app will ever send and only once a day. It only works while the app is open in a tab or window, but always push notifications are coming in a future release.</>,
-		ideStr  : 'dailyNotify',
-		padYNum : 0,
-		selStr  : '.set-notify-row',
-		titStr  : 'Run Generator Notification'
+		bodEle    : <>This lets you get a notification once your todo list has been generated for the day. This is the only notification the app will ever send and only once a day. It only works while the app is open in a tab or window, but always push notifications are coming in a future release.</>,
+		ideStr    : 'dailyNotify',
+		padYcoNum : 0,
+		selStr    : '.set-notify-row',
+		titStr    : 'Run Generator Notification'
 
 
 	},
@@ -3205,15 +3205,15 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Holidays
 
-	// padYNum:4, .holiday-add has a real but modest 14px margin-top from .holiday-list above it, and default 8+8 pad exceeds that by 2px.
+	// padYcoNum:4, .holiday-add has a real but modest 14px margin-top from .holiday-list above it, and default 8+8 pad exceeds that by 2px.
 	{
 
 
-		bodEle  : <>This lists every computed holiday for the current year. Toggle any of them off if you don't observe it, any picker set to "Skip on holidays" will respect these settings.</>,
-		ideStr  : 'holidayList',
-		padYNum : 4,
-		selStr  : '.holiday-list',
-		titStr  : 'Edit Observed Holidays'
+		bodEle    : <>This lists every computed holiday for the current year. Toggle any of them off if you don't observe it, any picker set to "Skip on holidays" will respect these settings.</>,
+		ideStr    : 'holidayList',
+		padYcoNum : 4,
+		selStr    : '.holiday-list',
+		titStr    : 'Edit Observed Holidays'
 
 
 	},
@@ -3221,11 +3221,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This lets you add your own custom holiday, like a birthday or anniversary, which pickers will respect if their "Skip on holidays" toggle is turned on.</>,
-		ideStr  : 'holidayAdd',
-		padYNum : 4,
-		selStr  : '.holiday-add',
-		titStr  : 'Add Custom Holiday'
+		bodEle    : <>This lets you add your own custom holiday, like a birthday or anniversary, which pickers will respect if their "Skip on holidays" toggle is turned on.</>,
+		ideStr    : 'holidayAdd',
+		padYcoNum : 4,
+		selStr    : '.holiday-add',
+		titStr    : 'Add Custom Holiday'
 
 
 	},
@@ -3236,15 +3236,15 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Data Control
 
-	// padYNum:0 on the whole group below, same zero-gap .set-data-row stacking as Daily generator above.
+	// padYcoNum:0 on the whole group below, same zero-gap .set-data-row stacking as Daily generator above.
 	{
 
 
-		bodEle  : <>This shows how your data is currently being stored, whether the browser has promised not to clear it, and roughly how much data you are storing in the app. Installing the app or granting persistent storage both help protect it from being cleared automatically.</>,
-		ideStr  : 'dataStorageStatus',
-		padYNum : 0,
-		selStr  : '.set-store-row',
-		titStr  : 'Protect Your Data'
+		bodEle    : <>This shows how your data is currently being stored, whether the browser has promised not to clear it, and roughly how much data you are storing in the app. Installing the app or granting persistent storage both help protect it from being cleared automatically.</>,
+		ideStr    : 'dataStorageStatus',
+		padYcoNum : 0,
+		selStr    : '.set-store-row',
+		titStr    : 'Protect Your Data'
 
 
 	},
@@ -3253,11 +3253,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This shows device and browser specific information about how to install the app. Installing the app has many benefits, but you can always keep using the app as a website if you prefer.</>,
-		ideStr  : 'dataInstallInstructions',
-		padYNum : 0,
-		selStr  : '.set-store-ios',
-		titStr  : 'Install Instructions'
+		bodEle    : <>This shows device and browser specific information about how to install the app. Installing the app has many benefits, but you can always keep using the app as a website if you prefer.</>,
+		ideStr    : 'dataInstallInstructions',
+		padYcoNum : 0,
+		selStr    : '.set-store-ios',
+		titStr    : 'Install Instructions'
 
 
 	},
@@ -3265,11 +3265,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This downloads a file containing all of your data: pickers, items, reminders, history and app settings. Since all app data lives on your device, you alone are responsible for taking care of it. It is also handy for moving your data to a new, or second, device.</>,
-		ideStr  : 'dataExport',
-		padYNum : 0,
-		selStr  : '.set-export-row',
-		titStr  : 'Export Your Data'
+		bodEle    : <>This downloads a file containing all of your data: pickers, items, reminders, history and app settings. Since all app data lives on your device, you alone are responsible for taking care of it. It is also handy for moving your data to a new, or second, device.</>,
+		ideStr    : 'dataExport',
+		padYcoNum : 0,
+		selStr    : '.set-export-row',
+		titStr    : 'Export Your Data'
 
 
 	},
@@ -3277,11 +3277,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This restores your data from a previously exported backup file. Importing a backup <b>replaces all data</b> currently stored in the app, so make sure that's what you want first.</>,
-		ideStr  : 'dataImport',
-		padYNum : 0,
-		selStr  : '.set-import-row',
-		titStr  : 'Import Your Data'
+		bodEle    : <>This restores your data from a previously exported backup file. Importing a backup <b>replaces all data</b> currently stored in the app, so make sure that's what you want first.</>,
+		ideStr    : 'dataImport',
+		padYcoNum : 0,
+		selStr    : '.set-import-row',
+		titStr    : 'Import Your Data'
 
 
 	},
@@ -3289,11 +3289,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This wipes everything and restores the app to a clean, first-run state. <b>This can't be undone</b>, so export a backup first if there's any chance you'll want this data again.</>,
-		ideStr  : 'dataReset',
-		padYNum : 0,
-		selStr  : '.set-reset-row',
-		titStr  : 'Reset All Data'
+		bodEle    : <>This wipes everything and restores the app to a clean, first-run state. <b>This can't be undone</b>, so export a backup first if there's any chance you'll want this data again.</>,
+		ideStr    : 'dataReset',
+		padYcoNum : 0,
+		selStr    : '.set-reset-row',
+		titStr    : 'Reset All Data'
 
 
 	},
@@ -3404,15 +3404,15 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Legal
 
-	// padYNum:0 on both, same zero-gap .set-data-row stacking as above.
+	// padYcoNum:0 on both, same zero-gap .set-data-row stacking as above.
 	{
 
 
-		bodEle  : <>This opens the Privacy Policy, which explains how your data is collected, used, and stored.</>,
-		ideStr  : 'legalPrivacy',
-		padYNum : 0,
-		selStr  : '.set-privacy-row',
-		titStr  : 'Privacy Policy'
+		bodEle    : <>This opens the Privacy Policy, which explains how your data is collected, used, and stored.</>,
+		ideStr    : 'legalPrivacy',
+		padYcoNum : 0,
+		selStr    : '.set-privacy-row',
+		titStr    : 'Privacy Policy'
 
 
 	},
@@ -3420,11 +3420,11 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 	{
 
 
-		bodEle  : <>This opens the Terms of Service, which covers the rules for using Ease My Life, including any paid features.</>,
-		ideStr  : 'legalTerms',
-		padYNum : 0,
-		selStr  : '.set-terms-row',
-		titStr  : 'Terms of Service'
+		bodEle    : <>This opens the Terms of Service, which covers the rules for using Ease My Life, including any paid features.</>,
+		ideStr    : 'legalTerms',
+		padYcoNum : 0,
+		selStr    : '.set-terms-row',
+		titStr    : 'Terms of Service'
 
 
 	},
