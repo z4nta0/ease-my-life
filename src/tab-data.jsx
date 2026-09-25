@@ -334,9 +334,12 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 	const isaDowBoo = picDatObj.mode === 'ease-down';                                                                        // What: Is-A Down Boolean. Why: Ease-up and ease-down share most UI but need opposite Fill/Refill wording. How: This is true only for 'ease-down'.
 	const notFulNum = picIteArr.filter( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) < ( picDatObj.threshold ?? 100 ) ).length; // What: Not Full Number. Why: The Fill/Refill row's own summary needs to know how many items still aren't at full charge. How: This counts every item whose own value falls short of the picker's own threshold.
 
+
 	const filSubEle = notFulNum === 0 // What: Fill Sub Element. Why: The Item Controls' own Fill/Refill row needs a live one-line summary of how many items still need charging. How: This picks a fully-charged message when notFulNum is 0, otherwise pluralizes the remaining count.
 		? <><strong>all items</strong> are fully charged</>                                                                                 // What: All Full Branch. Why: Nothing is left to charge. How: This says every item is fully charged.
 		: <><strong>{ notFulNum } { notFulNum === 1 ? 'item' : 'items' }</strong> { notFulNum === 1 ? 'is' : 'are' } not at full charge</>; // What: Some Short Branch. Why: The user needs to know how many items still fall short. How: This names notFulNum, pluralizing item/is to match.
+
+
 
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting a real picker needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read by the footer to swap in the confirm row.
 
@@ -345,6 +348,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 	const shoSavBoo = isaNewBoo && iteSecBoo && picIteArr.length >= 2 && !hasNewBoo; // What: Show Save Boolean. Why: The footer button only becomes a real "Save" once the Items section is open, holds at least 2 items, and none is still an unsaved brand-new row. How: This combines all 4 conditions with &&.
 	const fooLabStr = shoSavBoo ? 'Save' : 'Add Items';                              // What: Footer Label String. Why: The footer button's own visible text depends on whether it's ready to save yet. How: This picks 'Save' once shoSavBoo is true, 'Add Items' otherwise.
 	const fooDisBoo = shoSavBoo ? false : ( neeNamBoo || neeGroBoo || iteSecBoo );   // What: Footer Disabled Boolean. Why: The footer button stays disabled until every prerequisite for its current label is satisfied. How: This is never disabled once shoSavBoo is true, otherwise disabled while name/group is missing or the Items section is already open.
+
 
 	const fooTipStr = neeNamBoo && neeGroBoo // What: Footer Tip String. Why: The disabled button's own InfTipCom needs a specific reason for whichever prerequisite is still unmet. How: This chains through every prerequisite in the same priority order the footer itself checks them.
 		? 'A picker name and group are both required.'                                                // What: Both Missing Branch. Why: Neither required field has been filled in yet. How: This names both at once.
@@ -359,6 +363,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 		: shoSavBoo                                                                                   // What: Ready To Save Check. Why: Every prerequisite may already be met. How: This tests shoSavBoo.
 		? 'Everything looks good, click Save to create this picker.'                                  // What: Ready To Save Branch. Why: The picker can be created now. How: This points the user at Save.
 		: 'Everything looks good, click Add Items to continue.';                                      // What: Ready For Items Branch. Why: The details are complete and the Items section comes next. How: This points the user at Add Items.
+
 
 	const fooActFun = shoSavBoo ? onSavNewFun : onOpeSecFun; // What: Footer Action Function. Why: The footer button's own click handler depends on whether it currently reads "Save" or "Add Items". How: This picks onSavNewFun once shoSavBoo is true, onOpeSecFun otherwise.
 
@@ -447,6 +452,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 		const raiCurEle = raiNodRef.current; // What: Rail Current Element. Why: There is nothing to animate before the rail itself has mounted. How: This reads the live node raiRefFun last wrote.
 
+
 		if ( !raiCurEle ) return; // What: No Rail Guard. Why: The rail may not be mounted yet, such as while its own ColDisCom is still closed. How: This bails out of the effect early when there is no rail element to measure.
 
 
@@ -532,6 +538,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 		const groCurEle = groPilRef.current; // What: Group Current Element. Why: There is nothing to animate before the group pill row itself has mounted. How: This reads the live node from groPilRef.
+
 
 		if ( !groCurEle || groCurEle.offsetParent === null ) return; // What: Hidden Guard. Why: Measuring a hidden (offsetParent null) row would capture stale, meaningless coordinates. How: This bails out of the effect when the row isn't actually mounted or is currently hidden.
 
@@ -1358,6 +1365,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										const isaNthBoo = picDatObj.dateMode === 'nthWeekday';                     // What: Is-A Nth Boolean. Why: Monthly/yearly cadences can anchor either to a fixed date or to an "nth weekday", which read very differently. How: This checks picDatObj.dateMode.
 										const taiEndStr = ', and the pick will persist until marked as completed'; // What: Tail End String. Why: Every non-daily branch below ends with the same trailing clause. How: This is appended to each branch's own JSX below.
+
 
 
 										if ( curCadStr === 'daily' ) return ( CAD_OPT_ARR.find( ( optCurObj ) => optCurObj.keyStr === 'daily' ) || {} ).subEle; // What: Daily Branch Return. Why: The daily case reuses CadConCom's own canonical sub-explanation rather than duplicating it. How: This looks up the 'daily' entry in CAD_OPT_ARR.
@@ -2320,6 +2328,7 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 		? Math.max( 1, Math.round( ( conCurObj.threshold ?? 100 ) / ( conCurObj.easeMax ?? 14 ) ) ) // What: Ease Range Branch. Why: An ease-mode conditional's range is roughly how many days it takes to fully charge. How: This divides threshold by easeMax, never below 1.
 		: null;                                                                                     // What: No Range Branch. Why: Every other mode has no range to sort by. How: This returns null.
 
+
 	const conOddFun = ( conCurObj ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.
 	const conBooFun = ( conCurObj ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                     // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
 
@@ -2495,6 +2504,7 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 
 	const tidNamStr = ( conDraObj && norConFun( conDraObj.name ) ) || ''; // What: Tidy Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls norConFun on conDraObj.name when a draft exists, empty string otherwise.
+
 
 	const namErrStr = conDraObj && !tidNamStr // What: Name Error String. Why: The open row's own editor needs a specific validation message whenever its name is empty or collides with another conditional. How: This checks emptiness first, then a case-insensitive collision against every OTHER conditional, null when the name is valid.
 		? 'Enter a name for this conditional.' // What: Empty Name Message. Why: A blank name can't be saved. How: This asks for a name.
@@ -3315,6 +3325,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	const preFilRef = React.useRef( { conStr : filConStr, groStr : filGroStr, typStr : filTypStr } ); // What: Previous Filter Reference. Why: Landing on the Show row's own first card needs to detect an ACTUAL filter change, not just any render. How: This starts at the initial filter values and is updated by the effect below.
 
+
 	React.useEffect( () => { // What: Scope Coherence Effect. Why: The active scope must always land on the Show row's own first card whenever any filter changes, not only once the OLD scope happens to fall out of view entirely. How: This detects a filter change (or the current scope no longer being a valid entry) and resets curScoStr to shoEntArr's own first entry.
 
 
@@ -3419,6 +3430,8 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 	const shoPicArr = ( curScoStr === 'reminders' || curScoStr === 'conditionals' ) // What: Shown Picker Array. Why: The rendered picker cards are visPicArr narrowed once more by the active scope. How: This is empty at the Reminders/Conditionals scopes, every visPicArr entry at 'all', or just the one matching picker otherwise.
 		? []                                                                                                     // What: Special Scope Branch. Why: The Reminders or Conditionals scope shows no picker cards. How: This returns an empty array.
 		: ( curScoStr === 'all' ? visPicArr : visPicArr.filter( ( picCurObj ) => picCurObj.id === curScoStr ) ); // What: Picker Scope Branch. Why: The All scope shows every visible picker, a picker scope shows just that one. How: This returns visPicArr or its single matching picker.
+
+
 
 	const remCouNum = ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => !tasCurObj.hidden ).length; // What: Reminders Count Number. Why: The Reminders section entry below needs its own live count, the same as every picker card's own item count. How: This counts every non-hidden task.
 
@@ -4581,6 +4594,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 												const sooValNum = Math.max( 1, Math.round( 100 / ( easMaxNum || 1 ) ) ); // What: Soonest Value Number. Why: The meta text's own day-band needs its own near end. How: This converts easMaxNum into a day count.
 												const latValNum = Math.max( 1, Math.round( 100 / ( easMinNum || 1 ) ) ); // What: Latest Value Number. Why: Same reasoning as sooValNum, for the far end. How: This converts easMinNum into a day count.
 
+
 												const rowSumStr = iteCurObj.vacation // What: Row Summary String. Why: The closed row's own summary line depends entirely on whether the item is on vacation, then on the picker's own mode. How: This picks 'Inactive', an ease-band range, a weight, or "Equal chance".
 													? 'Inactive'                                                                                 // What: Vacation Summary Branch. Why: An item on vacation just says so. How: This returns the literal "Inactive".
 													: isaEasBoo                                                                                  // What: Ease Mode Check. Why: An ease item summarizes its day band instead of a weight. How: This checks isaEasBoo.
@@ -4734,7 +4748,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 																			newIteRef.current = null; // What: New Item Clear. Why: This item is no longer "brand new and undiscarded" once its own discard is underway. How: This clears newIteRef.
 
+
 																			const rmvIdeStr = iteCurObj.id; // What: Remove Identifier String. Why: The deferred removal below needs a stable copy of this item's own id. How: This reads iteCurObj.id once, before the closure captures anything else.
+
 
 																			setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
 
@@ -4763,6 +4779,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 																		const rmvIdeStr = iteCurObj.id; // What: Remove Identifier String. Why: The (possibly deferred) removal below needs a stable copy of this item's own id. How: This reads iteCurObj.id once.
+
 
 																		setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
 
