@@ -235,7 +235,7 @@ function pisOptFun ( picModStr ) {
  *                                    used to populate the attach-a-
  *                                    conditional rail; defaults to an empty
  *                                    array.
- * @param props.actions             - Actions: {@link useStore}
+ * @param props.actions             - Actions: {@link useAppStaFun}
  * @param props.onCollapse          - On ColDisCom: Collapses this picker's own
  *                                    Controls disclosure.
  * @param props.onRequestDelete     - On Request Delete: Deletes this picker,
@@ -1570,7 +1570,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
  *                          values for this conditional.
  * @param props.setDraft  - Setter Draft: Replaces the in-progress draft
  *                          object.
- * @param props.actions   - Actions: {@link useStore}
+ * @param props.actions   - Actions: {@link useAppStaFun}
  * @param props.isNew     - Is New: Whether this conditional is a brand-new,
  *                          not-yet-saved draft.
  * @param props.nameError - Name Error: The current validation message for the
@@ -1732,8 +1732,8 @@ function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, acti
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - State: {@link useStore}
- * @param props.actions - Actions: {@link useStore}
+ * @param props.state   - State: {@link useAppStaFun}
+ * @param props.actions - Actions: {@link useAppStaFun}
  *
  * @returns The Conditionals section: its own header, the "Add a
  * conditional" control, and every conditional's own collapsible row.
@@ -2167,8 +2167,8 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state     - State: {@link useStore}
- * @param props.actions   - Actions: {@link useStore}
+ * @param props.state     - State: {@link useAppStaFun}
+ * @param props.actions   - Actions: {@link useAppStaFun}
  * @param props.onHome    - On Home: Navigates back to the Today tab.
  * @param props.onNavTab  - On Nav Tab: Switches to another tab by id.
  *
@@ -2982,7 +2982,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					const allVacBoo  = iteArr.length > 0 && iteArr.every( ( iteCurObj ) => iteCurObj.vacation );        // What: All Vacation Boolean. Why: A card whose every item is on vacation gets its own visual "inactive" treatment. How: This is true only when there's at least one item and every one of them is on vacation.
 					const secOpnBoo  = isaDrfBoo || colMapObj[ picCurObj.id ] === false;                                // What: Section Open Boolean. Why: A draft is always expanded (no toggle at all, see the header button's disabled prop below); an existing picker reads its own persisted state. How: This is true for a draft, or when the persisted entry is explicitly false.
 					const isaEasBoo  = picCurObj.mode === 'ease-up' || picCurObj.mode === 'ease-down';                   // What: Is-A Ease Boolean. Why: The item sort options and the meta text per item both depend on this. How: This is true whenever picCurObj.mode is 'ease-up' or 'ease-down'.
-					const useWgtBoo  = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                    // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
+					const useWeiBoo  = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                    // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
 					const inDaiBoo   = staAppObj.daily.pickerIds.includes( picCurObj.id );                              // What: In Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This checks staAppObj.daily.pickerIds for picCurObj.id.
 					const conColBoo  = !!colMapObj[ picCurObj.id + ':controls' ];                                        // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
 					const iteColBoo  = isaDrfBoo ? !drfIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                  // What: Items Collapsed Boolean. Why: A draft's own Items section tracks drfIteBoo instead of the normal persisted map. How: This reads drfIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
@@ -2997,11 +2997,11 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 						const easMaxNum = iteCurObj.easeMax ?? flbEasObj?.easeMax ?? 20; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to flbEasObj's own easeMax, then a hardcoded 20.
 
 
-						return { // What: Item Entry Return. Why: sorEntFun needs one comparable shape per item, mode-dependent fields included. How: This builds that entry from iteCurObj plus the resolved isaEasBoo/useWgtBoo/easMaxNum context above.
+						return { // What: Item Entry Return. Why: sorEntFun needs one comparable shape per item, mode-dependent fields included. How: This builds that entry from iteCurObj plus the resolved isaEasBoo/useWeiBoo/easMaxNum context above.
 
 
 							boost    : picCurObj.mode === 'dynamic' ? ( iteCurObj.value ?? 0 ) : null,
-							count    : isaEasBoo ? ( iteCurObj.value ?? 0 ) : ( useWgtBoo ? ( iteCurObj.weight ?? 1 ) : null ),
+							count    : isaEasBoo ? ( iteCurObj.value ?? 0 ) : ( useWeiBoo ? ( iteCurObj.weight ?? 1 ) : null ),
 							group    : null,
 							isActive : !iteCurObj.vacation,
 							name     : iteCurObj.name,
@@ -3252,7 +3252,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 												const metStr     = iteCurObj.vacation // What: Meta String. Why: The closed row's own summary line depends entirely on whether the item is on vacation, then on the picker's own mode. How: This picks 'Inactive', an ease-band range, a weight, or "Equal chance".
 													? 'Inactive'
 													: ( isaEasBoo ? `${ sonValNum }–${ latValNum } ${ CAD_NAM_OBJ.uniWorFun( picCurObj.cadence, latValNum ) }`
-														: ( useWgtBoo ? `Weight w${ iteCurObj.weight }` : 'Equal chance' ) );
+														: ( useWeiBoo ? `Weight w${ iteCurObj.weight }` : 'Equal chance' ) );
 
 
 												return (

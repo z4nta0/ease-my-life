@@ -1657,7 +1657,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
  * Renders whichever piece of one page's own mini-tour is currently
  * relevant: the intro modal, or the running GuiTouCom. Mounted at the
  * app level (see app.jsx's own actPagStr), reads real persisted
- * staAppObj and calls real actStoObj.* methods (see store.jsx), and
+ * staAppObj and calls real actStoObj.* methods (see store.js), and
  * reads/writes emlTouObj's own bus fields for the Pickers tour's own
  * onBacTouFun handling below.
  *

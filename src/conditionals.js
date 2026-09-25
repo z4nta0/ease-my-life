@@ -46,7 +46,7 @@
  * card resets it, same as ease-up.
  *
  * The exported CON_NAM_OBJ namespace object's own property names are a
- * cross-file contract read directly by store.jsx, day-log.jsx, and
+ * cross-file contract read directly by store.js, day-log.jsx, and
  * tab-today.jsx. Its own blast radius (6 external call sites total, all
  * plain JS resolved at call time, never persisted) was checked first,
  * the same way CADENCE's was in cadence.js before that one was renamed,
@@ -462,15 +462,15 @@ function carComFun( conCurObj ) {
 
 
 
-export const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.jsx, day-log.jsx, and tab-today.jsx all import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
+export const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.js, day-log.jsx, and tab-today.jsx all import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	advValFun : advValFun, // What: Advance Value Function. Why: store.jsx calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
-	carComFun : carComFun, // What: Card Complete Function. Why: store.jsx calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
+	advValFun : advValFun, // What: Advance Value Function. Why: store.js calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
+	carComFun : carComFun, // What: Card Complete Function. Why: store.js calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
 	claValFun : claValFun, // What: Clamp Value Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports claValFun under its own matching name.
 	modProFun : modProFun, // What: Mode Probability Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports modProFun under its own matching name.
-	modValFun : modValFun, // What: Mode Value Function. Why: day-log.jsx and store.jsx both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
-	resDayFun : resDayFun, // What: Resolve Day Function. Why: store.jsx calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
+	modValFun : modValFun, // What: Mode Value Function. Why: day-log.jsx and store.js both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
+	resDayFun : resDayFun, // What: Resolve Day Function. Why: store.js calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
 	supGatFun : supGatFun, // What: Suppress Gate Function. Why: tab-today.jsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
 	truOddFun : truOddFun  // What: True Odds Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports truOddFun under its own matching name.
 

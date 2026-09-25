@@ -512,7 +512,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	};
 	const [ newCloStr, setNewCloStr ] = React.useState( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below.
 	const addWraRef = React.useRef( null ); // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the .pv-additem-wrap div's own ref prop, below.
-	const useWgtBoo = picker.mode === 'weighted' || picker.mode === 'dynamic'; // What: Uses Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
+	const useWeiBoo = picker.mode === 'weighted' || picker.mode === 'dynamic'; // What: Uses Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
 	const isaEasBoo = picker.mode === 'ease-up' || picker.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates whether ease fields are carried over/shown throughout this view.
 	const dftActObj = { // What: Draft Actions Object. Why: EntryEditor expects a real actions-shaped object to call as the user edits the in-progress new-item draft, but that draft isn't committed to the store yet. How: Every method below mirrors the real store action's own name and signature, but writes into newDftObj instead of dispatching a real store update.
 
@@ -520,7 +520,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 		removeItem     : () => setNewDftObj( null ),                                                                                      // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, see the render below) still expects this method to exist. How: This clears newDftObj entirely.
 		renameItem     : ( tarIdeStr, newNamStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, name : newNamStr } : d ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on newDftObj, if the ids still match.
 		replaceItem    : ( tarIdeStr, snaIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? snaIteObj : d ),                    // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces newDftObj wholesale with snaIteObj, if the ids still match.
-		setItemWeight  : ( tarIdeStr, wgtValNum ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, weight : wgtValNum } : d ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on newDftObj, if the ids still match.
+		setItemWeight  : ( tarIdeStr, weiValNum ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, weight : weiValNum } : d ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on newDftObj, if the ids still match.
 		toggleVacation : ( tarIdeStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, vacation : !d.vacation } : d ),        // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on newDftObj, if the ids still match.
 		updateItem     : ( tarIdeStr, patIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, ...patIteObj } : d )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into newDftObj only if the ids still match.
 
@@ -533,7 +533,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 		const patIteObj = { vacation : dftIteObj.vacation }; // What: Patch Item Object. Why: actions.addItem always creates the item active, so the draft's own Active toggle must be carried over too, not just weight/ease fields, or turning it off is silently lost. How: This starts from just the vacation field and gains weight/ease fields below when relevant.
 
-		if ( useWgtBoo ) patIteObj.weight = dftIteObj.weight; // What: Weight Patch Guard. Why: Weight only matters for weighted/dynamic modes. How: This adds the draft's own weight into patIteObj only when useWgtBoo is true.
+		if ( useWeiBoo ) patIteObj.weight = dftIteObj.weight; // What: Weight Patch Guard. Why: Weight only matters for weighted/dynamic modes. How: This adds the draft's own weight into patIteObj only when useWeiBoo is true.
 
 		if ( isaEasBoo ) { patIteObj.easeMin = dftIteObj.easeMin; patIteObj.easeMax = dftIteObj.easeMax; patIteObj.value = dftIteObj.value; } // What: Ease Patch Guard. Why: The drift band and starting charge only matter for ease-up/ease-down modes. How: This adds the draft's own easeMin/easeMax/value into patIteObj only when isaEasBoo is true.
 
@@ -736,7 +736,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 		setRunPhaStr( 'done' ); // What: Done Phase Call. Why: The stage must switch to showing the settled pick alongside the Send/Re-roll/Done buttons. How: This writes 'done' into runPhaStr.
 
-		// What: Preview-Only Note. Why: The spin itself is a PREVIEW; it does NOT mutate item state. How: The chosen pick's value/weight changes are staged and applied only when the resulting Today entry is marked done, see sndTdyFun below and store.jsx's own addTodayEntry pending mechanism.
+		// What: Preview-Only Note. Why: The spin itself is a PREVIEW; it does NOT mutate item state. How: The chosen pick's value/weight changes are staged and applied only when the resulting Today entry is marked done, see sndTdyFun below and store.js's own addTodayEntry pending mechanism.
 
 
 	};
@@ -1071,12 +1071,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 							const reaValNum = PIC_NAM_OBJ.reaValFun( curIteObj, picker.mode, picker.threshold ?? 100 ); // What: Readiness Value Number. Why: The drift bar (when shown) needs a normalized 0..1 progress value. How: This calls the shared readiness helper for this exact item/mode/threshold.
 							const eliHerBoo = PIC_NAM_OBJ.modEliFun( curIteObj, picker ); // What: Eligible Here Boolean. Why: The row needs to know whether this item is currently pickable under this picker's own mode rules. How: This calls the shared mode-eligibility helper.
 							// What: Weight Tooltip String. Why: The wN pill (itself fixed, it never drifts) benefits from a plain-language hover explanation of what the number means. How: This is computed from curIteObj's own weight below.
-							const wgtValNum = curIteObj.weight; // What: Weight Value Number. Why: The tooltip text needs the item's own current weight. How: This is read directly off curIteObj.weight.
-							const wgtTipStr = wgtValNum === 1
+							const weiValNum = curIteObj.weight; // What: Weight Value Number. Why: The tooltip text needs the item's own current weight. How: This is read directly off curIteObj.weight.
+							const weiTipStr = weiValNum === 1
 
 								? 'Weight 1, the baseline pick rate.'
 
-								: `Weight ${ wgtValNum }, ${ wgtValNum }× as likely to be picked as a w1 item.`; // What: Weight Tooltip String Value. Why: This is the actual sentence shown on hover. How: This special-cases the baseline weight of 1, otherwise phrasing the multiple directly.
+								: `Weight ${ weiValNum }, ${ weiValNum }× as likely to be picked as a w1 item.`; // What: Weight Tooltip String Value. Why: This is the actual sentence shown on hover. How: This special-cases the baseline weight of 1, otherwise phrasing the multiple directly.
 
 							// What: Value Tooltip String. Why: The drifting `value` shown beside wN changes run-to-run, and what it means depends entirely on the picker's own mode. How: This picks one of three explanations, or an empty string for modes with no such meaning.
 							const thrValNum = picker.threshold ?? 100; // What: Threshold Value Number. Why: Two of the three explanations below need to quote the picker's own threshold. How: This falls back to 100 when the picker has no explicit threshold set.
@@ -1084,7 +1084,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 								picker.mode === 'dynamic'
 
-									? `Drift bonus, climbs by ${ wgtValNum } (the item’s weight) every time it isn’t picked, and resets to 0 when it is.`
+									? `Drift bonus, climbs by ${ weiValNum } (the item’s weight) every time it isn’t picked, and resets to 0 when it is.`
 
 								: picker.mode === 'ease-up'
 
@@ -1176,7 +1176,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												{ ( picker.mode === 'weighted' || picker.mode === 'dynamic' ) && ( // What: Weight Pill Check. Why: Only these two modes treat weight as a real lever worth showing. How: This renders the weight pill only for those modes.
 
 
-													<InfTipCom className='pool-weight' label={ wgtTipStr }>w{ curIteObj.weight }</InfTipCom> // What: Info Tip Component. Why: The weight number benefits from the same hover explanation every other tooltip in this row gets. How: This renders "w" plus the raw weight, tipped with wgtTipStr.
+													<InfTipCom className='pool-weight' label={ weiTipStr }>w{ curIteObj.weight }</InfTipCom> // What: Info Tip Component. Why: The weight number benefits from the same hover explanation every other tooltip in this row gets. How: This renders "w" plus the raw weight, tipped with weiTipStr.
 
 
 												) }
@@ -1485,7 +1485,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  * Daily schedule, Step 2 (Items) builds a fresh pool by typing item
  * names. Editing only ever shows Step 1, since an existing picker's own
  * items are edited via the Data tab or PicVieCom's own live pool instead.
- * On submit this calls onCreFun (a fresh picker, which store.jsx's
+ * On submit this calls onCreFun (a fresh picker, which store.js's
  * addPicker also spins up a matching Data-tab category for) or onSavFun
  * (an in-place edit via commitPickerEdit), depending on isaEdiBoo.
  *
@@ -1716,7 +1716,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 	const effGroStr = addGroBoo ? norGroFun( newGroStr, exiGroArr ) : selGroStr; // What: Effective Group String. Why: The picker's own real group is whichever of the two group controls (existing chip or new-group input) is currently active. How: This normalizes newGroStr when addGroBoo is on, otherwise it's just selGroStr directly.
 	const detRdyBoo = !!( newNamStr.trim() && effGroStr && selModStr ); // What: Details Ready Boolean. Why: Both steps' own footer buttons need to know whether Step 1's own required fields are actually complete. How: This requires a non-blank trimmed name, a real effective group, and a chosen mode.
-	const shoWgtBoo = selModStr === 'weighted' || selModStr === 'dynamic'; // What: Show Weight Boolean. Why: Weight is a lever only for these two modes; random/ease-* ignore it entirely, so the control stays hidden elsewhere to avoid asking for something irrelevant. How: This gates the weight column throughout Step 2.
+	const shoWeiBoo = selModStr === 'weighted' || selModStr === 'dynamic'; // What: Show Weight Boolean. Why: Weight is a lever only for these two modes; random/ease-* ignore it entirely, so the control stays hidden elsewhere to avoid asking for something irrelevant. How: This gates the weight column throughout Step 2.
 	const isaEasBoo = selModStr === 'ease-up' || selModStr === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates the ease controls throughout Step 2.
 
 	// What: Ease Cadence Design Note. Why: Ease cadence is PER-ITEM, since a fridge-clean and a counter-wipe want different rhythms; each item carries its own drift band { easeMin, easeMax }. How: Two human questions are asked per item and converted: soonest days (least time before it CAN come up) -> easeMax = 100/soonest; latest days (most time before it MUST come up) -> easeMin = 100/latest. The engine moves an item across the 0-100 threshold by random(easeMin, easeMax) each daily run, so maturing fastest (every roll = easeMax) takes 100/easeMax days = the soonest, and slowest (every roll = easeMin) takes 100/easeMin days = the latest; the gap between the two answers IS the randomness. One picker-level toggle (easManBoo below) flips ALL rows to raw drift inputs for power users. Drift values are the source of truth on each item.
@@ -1764,7 +1764,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 		removeItem     : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.filter( ( it ) => it.id !== tarIdeStr ) ),                                              // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
 		renameItem     : ( tarIdeStr, newNamStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, name : newNamStr } : it ) ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
 		replaceItem    : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? snaIteObj : it ) ),                     // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
-		setItemWeight  : ( tarIdeStr, wgtValNum ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, weight : wgtValNum } : it ) ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
+		setItemWeight  : ( tarIdeStr, weiValNum ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, weight : weiValNum } : it ) ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
 		toggleVacation : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, vacation : !it.vacation } : it ) ),       // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
 		updateItem     : ( tarIdeStr, patIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, ...patIteObj } : it ) )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
 
@@ -1951,9 +1951,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 	};
 	const remTypFun = ( tarIndNum ) => setPooIteArr( ( xs ) => xs.filter( ( _, ind ) => ind !== tarIndNum ) ); // What: Remove Typed Function. Why: The legacy simple flow's own per-row remove needs a plain index-based filter. How: This drops whichever entry sits at tarIndNum.
-	const setTypWgtFun = ( tarIndNum, newWgtNum ) => setPooIteArr( ( xs ) => // What: Set Typed Weight Function. Why: The legacy simple flow's own per-row weight stepper needs a plain index-based update, clamped to a sane range. How: This overwrites just the weight field on whichever entry sits at tarIndNum.
+	const setTypWeiFun = ( tarIndNum, newWeiNum ) => setPooIteArr( ( xs ) => // What: Set Typed Weight Function. Why: The legacy simple flow's own per-row weight stepper needs a plain index-based update, clamped to a sane range. How: This overwrites just the weight field on whichever entry sits at tarIndNum.
 
-		xs.map( ( it, ind ) => ind === tarIndNum ? { ...it, weight : Math.max( 1, Math.min( 5, newWgtNum ) ) } : it ) );
+		xs.map( ( it, ind ) => ind === tarIndNum ? { ...it, weight : Math.max( 1, Math.min( 5, newWeiNum ) ) } : it ) );
 
 	// What: Simple Mode Ease Setters Design Note. Why: These set an item's own cadence by days, keeping soonest <= latest (i.e. easeMin <= easeMax) after each change. How: setSonTypFun/setLatTypFun below are the legacy simple-mode day inputs; setDrfTypFun is the legacy exact-mode raw drift inputs.
 	const setSonTypFun = ( tarIndNum, dayInpNum ) => setPooIteArr( ( xs ) => xs.map( ( it, ind ) => { // What: Set Soonest Typed Function. Why: The soonest-days input needs to convert its own value back into easeMax, then reconcile easeMin so it never exceeds it. How: This clamps the typed days to [1, 60], converts, and takes the smaller of the existing easeMin or the new easeMax.
@@ -2040,7 +2040,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 		}
 
-		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Nothing reads picker.easeMin/easeMax anymore (pick(), the Data tab, and the item editor all compute a live per-picker average from the items themselves instead, see PIC_NAM_OBJ.aveEasFun), so this is kept only so store.jsx's addPicker still has a value to accept; harmless dead data on the created picker otherwise. How: This is skipped for edit, since there's no items array here to compute a fresh average from, and the field is inert anyway.
+		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Nothing reads picker.easeMin/easeMax anymore (pick(), the Data tab, and the item editor all compute a live per-picker average from the items themselves instead, see PIC_NAM_OBJ.aveEasFun), so this is kept only so store.js's addPicker still has a value to accept; harmless dead data on the created picker otherwise. How: This is skipped for edit, since there's no items array here to compute a fresh average from, and the field is inert anyway.
 
 
 			payFrmObj.easeMin = Math.min( ...pooIteArr.map( ( it ) => it.easeMin ?? defEasObj.easeMin ) ); // What: Legacy Ease Min Attach. Why: A summary value is still expected on the created payload. How: This takes the smallest easeMin across every committed item.
@@ -2784,7 +2784,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 													{ isaEasBoo && <span className='pool-ease-meta'>{ sonDayNum }&ndash;{ latDayNum } { CAD_NAM_OBJ.uniWorFun( cadCurObj.cadence, latDayNum ) }</span> }{ /* What: Ease Meta Span Check. Why: Only ease-up/ease-down items have a cadence summary worth showing. How: This renders the soonest-latest range, unit-worded per the picker's own cadence, only while isaEasBoo is true. */ }
 
-													{ shoWgtBoo && <span className='pool-weight'>w{ curIteObj.weight }</span> }{ /* What: Weight Span Check. Why: Only weighted/dynamic items have a weight worth showing. How: This renders the raw weight only while shoWgtBoo is true. */ }
+													{ shoWeiBoo && <span className='pool-weight'>w{ curIteObj.weight }</span> }{ /* What: Weight Span Check. Why: Only weighted/dynamic items have a weight worth showing. How: This renders the raw weight only while shoWeiBoo is true. */ }
 
 
 												</div>
@@ -3028,7 +3028,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 						{ enoIteBoo
 
-							? ( shoWgtBoo
+							? ( shoWeiBoo
 
 								? 'Looks good, set each item’s weight above, or leave them even.'
 
@@ -3038,7 +3038,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanFun, onCreFun,
 
 						}
 
-					</div>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWgtBoo, otherwise counting toward the 2-item minimum. */ }
+					</div>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise counting toward the 2-item minimum. */ }
 
 					<div className='np-footer-actions'>{ /* What: Footer Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. */ }
 
@@ -3208,7 +3208,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 	}, [ state.pickers ] ); // What: Effect Dependency Array. Why: The mode list only needs recomputing when the pickers list itself changes. How: state.pickers is what the loop above actually reads.
 
-	// What: Visible Picker Array. Why: The picker strip is scoped to the selected group AND type, independent filters ("all" on either leaves that axis unfiltered); hidden pickers (see store.jsx's `hidden` flag) never appear here. How: This filters state.pickers against groFilStr/typFilStr, each independently gated by its own "all" check.
+	// What: Visible Picker Array. Why: The picker strip is scoped to the selected group AND type, independent filters ("all" on either leaves that axis unfiltered); hidden pickers (see store.js's `hidden` flag) never appear here. How: This filters state.pickers against groFilStr/typFilStr, each independently gated by its own "all" check.
 	const visPicArr = React.useMemo( () => (
 
 		state.pickers.filter( ( p ) => !p.hidden
@@ -3655,7 +3655,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 								}
 
-								// What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.jsx's own addPicker; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prefill, not opeTouBoo, since this tour walks the form via a real click (opeTouBoo only ever gets set by the OTHER, dormant-auto-open prefill entry point above), so opeTouBoo is always false here.
+								// What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.js's own addPicker; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prefill, not opeTouBoo, since this tour walks the form via a real click (opeTouBoo only ever gets set by the OTHER, dormant-auto-open prefill entry point above), so opeTouBoo is always false here.
 								// What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders.jsx's own startAdd). How: This is driven by touBusObj.showChecklist below.
 								const newPicStr = actions.addPicker({
 

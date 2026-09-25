@@ -27,10 +27,10 @@ import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intr
  * these operate on the user's own REAL data rather than disposable samples:
  * there is always at least one real picker by this point (see onboarding-
  * checklist.js's reaGenFun gate), and these are deliberately NOT tracked
- * by the checklist "engine" at all: no doneCount/total ring or streak
+ * by the checklist "engine" at all: no donCouNum/total ring or streak
  * participation, no closing Generate-style card, no counting toward anything.
  * Resolved state lives in its own state.onboarding.appFeatures map (see
- * store.jsx's setAppFeatureItem), reset to {} whenever Replay Tour is clicked
+ * store.js's setAppFeatureItem), reset to {} whenever Replay Tour is clicked
  * in Settings so these reappear alongside it (see tab-settings.jsx's own
  * replay button).
  *
@@ -795,7 +795,7 @@ function bloReaFun ( feaIdeStr, staAppObj ) {
  * Renders whichever piece of one feature's own App Feature mini-tour is
  * currently relevant: the intro modal, or the running GuiTouCom. Mounted at
  * the app level (see app.jsx's own actFeaStr), reads real persisted
- * staAppObj and calls real actStoObj.* methods (see store.jsx), same
+ * staAppObj and calls real actStoObj.* methods (see store.js), same
  * overall shape as PagTouCom in onboarding-page-tours.jsx.
  *
  * Unlike PagTouCom, most features here have no extra steps yet beyond the

@@ -52,7 +52,7 @@ import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object.
  * dueToday, defaultOpts, normalizeOpts, isRecurring, optsFor,
  * visibleToday, nextEligible, todayVisibility, isoToday, isoOf,
  * anchorDate, REPEATS) are a cross-file contract read directly by
- * store.jsx, reminders.jsx, day-log.jsx, tab-today.jsx, tab-stats.jsx,
+ * store.js, reminders.jsx, day-log.jsx, tab-today.jsx, tab-stats.jsx,
  * seed.js, onboarding-seed-data.js, onboarding-page-tours.jsx,
  * onboarding-reminder-tours.jsx, and onboarding-welcome-tour.jsx. They are
  * deliberately left unrenamed on this formatting pass, the same way
@@ -462,7 +462,7 @@ function isaDonFun( tasRecObj, cheDatObj = new Date() ) { return !!tasRecObj.las
  *
 */
 
-function isaStaFun( tasRecObj, cheDatObj = new Date() ) { return tasRecObj.repeat === 'once' && tasRecObj.lastDone && tasRecObj.lastDone !== isoDatFun( cheDatObj ); } // What: Is-A Stale Body. Why: store.jsx's own migrate() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRecObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
+function isaStaFun( tasRecObj, cheDatObj = new Date() ) { return tasRecObj.repeat === 'once' && tasRecObj.lastDone && tasRecObj.lastDone !== isoDatFun( cheDatObj ); } // What: Is-A Stale Body. Why: store.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRecObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
 
 // #endregion isaStaFun
 
@@ -492,7 +492,7 @@ function isaStaFun( tasRecObj, cheDatObj = new Date() ) { return tasRecObj.repea
  *
 */
 
-function isaComFun( tasRecObj ) { return tasRecObj.repeat === 'once' && !!tasRecObj.lastDone; } // What: Is-A Completed Body. Why: store.jsx's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRecObj is a 'once' task with any lastDone value at all.
+function isaComFun( tasRecObj ) { return tasRecObj.repeat === 'once' && !!tasRecObj.lastDone; } // What: Is-A Completed Body. Why: store.js's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRecObj is a 'once' task with any lastDone value at all.
 
 // #endregion isaComFun
 
@@ -722,7 +722,7 @@ function sumTasFun( tasRecObj ) {
  *
  * @summary
  * Every task/reminder due on cheDatObj, in a stable order (one-time
- * first, then newest-added). Hidden tasks (see the store.jsx migrate()
+ * first, then newest-added). Hidden tasks (see the store.js migStaFun()
  * comment on the hidden flag) are excluded here so every downstream
  * consumer (Today, Stats, streak reconciliation) never has to filter
  * them out separately.
@@ -1165,7 +1165,7 @@ const TAS_RPT_ARR = [ 'once', 'weekly', 'interval', 'monthly', 'annual' ]; // Wh
 
 
 
-export const TASKS = { // What: Tasks Namespace Object. Why: store.jsx, reminders.jsx, day-log.jsx, tab-today.jsx, tab-stats.jsx, seed.js, and the onboarding modules all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on.
+export const TASKS = { // What: Tasks Namespace Object. Why: store.js, reminders.jsx, day-log.jsx, tab-today.jsx, tab-stats.jsx, seed.js, and the onboarding modules all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on.
 
 
 	anchorDate      : ancDatFun,   // What: Anchor Date. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its original external property name.
@@ -1178,9 +1178,9 @@ export const TASKS = { // What: Tasks Namespace Object. Why: store.jsx, reminder
 	isoOf           : isoDatFun,   // What: Iso Of. Why: Callers need an arbitrary date's own ISO string by this exact name. How: This re-exports isoDatFun under its original external property name.
 	isoToday        : curIsoFun,   // What: Iso Today. Why: Callers need today's own ISO date string by this exact name. How: This re-exports curIsoFun under its original external property name.
 	isRecurring     : isaRecFun,   // What: Is Recurring. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaRecFun under its original external property name.
-	isStaleOnce     : isaStaFun,   // What: Is Stale Once. Why: store.jsx's own migrate() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its original external property name.
+	isStaleOnce     : isaStaFun,   // What: Is Stale Once. Why: store.js's own migStaFun() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its original external property name.
 	nextEligible    : nexEliFun,   // What: Next Eligible. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its original external property name.
-	normalizeOpts   : norOptFun,   // What: Normalize Opts. Why: store.jsx's own migrate() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its original external property name.
+	normalizeOpts   : norOptFun,   // What: Normalize Opts. Why: store.js's own migStaFun() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its original external property name.
 	optsFor         : optForFun,   // What: Opts For. Why: Callers need a specific task's own governing options object by this exact name. How: This re-exports optForFun under its original external property name.
 	REPEATS         : TAS_RPT_ARR, // What: Repeats. Why: Callers (a task's own repeat-kind dropdown) need the fixed list of valid repeat option values. How: This re-exports TAS_RPT_ARR under its original external property name.
 	summary         : sumTasFun,   // What: Summary. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTasFun under its original external property name.

@@ -5,7 +5,7 @@
 
 import { AppRooCom   } from './app.jsx';        // What: App Root Component. Why: This is the single component the whole app renders as, owning every tab and overlay. How: This is rendered into the mounted root inside booAppFun.
 import { createRoot  } from 'react-dom/client'; // What: Create Root. Why: This is the React 18 API for creating a concurrent-mode root to render into. How: This is called once against the #root DOM node inside booAppFun.
-import { STG_NAM_OBJ } from './storage.js';     // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.jsx's own loadState() can stay synchronous. How: This is raced against a fixed timeout below so a slow or hung IndexedDB never blocks the app from booting at all.
+import { STG_NAM_OBJ } from './storage.js';     // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.js's own loaStaFun() can stay synchronous. How: This is raced against a fixed timeout below so a slow or hung IndexedDB never blocks the app from booting at all.
 
 
 import './fonts.css'; // What: Fonts Stylesheet Import. Why: The app's own stylesheets below assume the self-hosted font faces are already registered. How: This is imported first, purely for its side effect, so its @font-face rules register before styles.css/styles2.css are parsed.
@@ -80,10 +80,10 @@ function booAppFun () {
 
 
 
-Promise.race( [ // What: Boot Race Array. Why: Gating the mount on storage init lets store.jsx's own loadState() stay synchronous, but a hung IndexedDB open must never block the app from booting at all. How: This races STG_NAM_OBJ.iniStoFun() against a fixed 3500ms timeout and calls booAppFun either way, once whichever settles first.
+Promise.race( [ // What: Boot Race Array. Why: Gating the mount on storage init lets store.js's own loaStaFun() stay synchronous, but a hung IndexedDB open must never block the app from booting at all. How: This races STG_NAM_OBJ.iniStoFun() against a fixed 3500ms timeout and calls booAppFun either way, once whichever settles first.
 
 
-	STG_NAM_OBJ.iniStoFun(), // What: Storage Init Call. Why: This is the real, awaited condition: persisted state finishing its load. How: This resolves once storage.js has parked the loaded state in memory for store.jsx to read synchronously.
+	STG_NAM_OBJ.iniStoFun(), // What: Storage Init Call. Why: This is the real, awaited condition: persisted state finishing its load. How: This resolves once storage.js has parked the loaded state in memory for store.js to read synchronously.
 
 	new Promise( ( resRacFun ) => setTimeout( resRacFun, 3500 ) ), // What: Storage Timeout Fallback Promise. Why: The mount must never wait forever on a hung IndexedDB open. How: This resolves on its own after 3500ms regardless of whether STG_NAM_OBJ.iniStoFun() has settled.
 

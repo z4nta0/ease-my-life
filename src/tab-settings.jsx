@@ -1447,8 +1447,8 @@ function StyRadCom ( { groupName : groNamStr, groupLabel : groLabStr, options : 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state       - State: {@link useStore}
- * @param props.actions     - Actions: {@link useStore}
+ * @param props.state       - State: {@link useAppStaFun}
+ * @param props.actions     - Actions: {@link useAppStaFun}
  * @param props.onHome      - On Home: Navigates back to the Today tab; renamed
  *                            onHomFun below.
  * @param props.onNavTab    - On Nav Tab: Navigates to an arbitrary tab by id;
@@ -3366,10 +3366,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 										if ( onHomFun ) onHomFun(); // What: Navigate Home Call. Why: The Welcome Tour's own anchors only exist on the Today tab. How: This calls onHomFun, if provided, before touching any onboarding flags below.
 
 										// Self-healing for accounts whose checklistDone got permanently
-										// stuck false by a since-fixed migrate() gap (real, established
+										// stuck false by a since-fixed migStaFun() gap (real, established
 										// accounts that updated through an old version boundary before
-										// that field existed; see migrate()'s own comment on this in
-										// store.jsx). That stale false silently reactivates first-time
+										// that field existed; see migStaFun()'s own comment on this in
+										// store.js). That stale false silently reactivates first-time
 										// checklist mode on replay instead of replay-continuation mode,
 										// defeating name-collision suppression, hiding App Features, and
 										// leaving the closing Generate card stuck permanently visible.

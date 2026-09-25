@@ -16,14 +16,14 @@ import { PicTouCom    } from './onboarding-picker-tours.jsx'; // What: Picker To
 import { redMotFun    } from './ui.jsx';                      // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation. How: This is checked inside the animation effect to bail out early when it reports true.
 import { resCusFun    } from './appearance.js';               // What: Resolve Custom Function. Why: A user-defined custom palette needs resolving into a usable palette object. How: This is called with 'light' or 'dark' and the user's saved custom colors when a custom theme key is active.
 import { resTheFun    } from './appearance.js';               // What: Resolve Theme Function. Why: The palette to apply depends on both the user's theme choice and the current system dark-mode state. How: This resolves both into a single concrete theme key inside the theme-application effect.
-import { SED_NAM_OBJ  } from './seed.js';                     // What: Seed Namespace Object. Why: The onboarding demo needs a fresh, non-persisted state to run against instead of the user's real data. How: This is called (buiCleFun) to seed useStore when the onboarding demo flag is set.
+import { SED_NAM_OBJ  } from './seed.js';                     // What: Seed Namespace Object. Why: The onboarding demo needs a fresh, non-persisted state to run against instead of the user's real data. How: This is called (buiCleFun) to seed useAppStaFun when the onboarding demo flag is set.
 import { TabData      } from './tab-data.jsx';                // What: Tab Data. Why: This is the actual Data tab content. How: This is rendered while actIdeStr is 'data', passed the shared state/actions.
 import { TabPicker    } from './tab-picker.jsx';              // What: Tab Picker. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
 import { TabSettings  } from './tab-settings.jsx';            // What: Tab Settings. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
 import { TabStats     } from './tab-stats.jsx';               // What: Tab Stats. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabToday     } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
+import { useAppStaFun } from './store.js';                    // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { useEmlTouFun } from './eml-tour-bus.js';             // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
-import { useStore     } from './store.jsx';                   // What: Use Store. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { WelTouCom    } from './onboarding-welcome-tour.jsx'; // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 
 // #endregion Imports
@@ -35,12 +35,12 @@ import { WelTouCom    } from './onboarding-welcome-tour.jsx'; // What: Welcome T
  *
  * @summary
  * The app's own root component. AppRooCom owns the single active-tab-id in
- * React state, calls useStore() once for the entire state layer, and renders
- * one of the five tabs directly, there is no router. It also owns theme
- * application (resolving and writing the active palette's own CSS custom
- * properties), the onboarding demo's clean-state seeding, and mounts
- * WelTouCom plus whichever mini-tour overlay (FeaTouCom/PagTouCom/PicTouCom)
- * is currently running.
+ * React state, calls useAppStaFun() once for the entire state layer, and
+ * renders one of the five tabs directly, there is no router. It also owns
+ * theme application (resolving and writing the active palette's own CSS custom
+ * properties), the onboarding demo's clean-state seeding, and mounts WelTouCom
+ * plus whichever mini-tour overlay (FeaTouCom/PagTouCom/PicTouCom) is
+ * currently running.
  *
  * TabBarCom is the shared nav bar rendered by AppRooCom, built from
  * TAB_OBJ_ARR's own fixed tab list; it owns the sliding active-tab indicator's
@@ -502,7 +502,7 @@ function AppRooCom () {
 
 
 	const onbDemBoo                = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1;     // What: Onboard Demo Boolean. Why: This lets #onboard-demo/#onboard run the app against a fresh clean state without touching the user's real saved data. How: This checks the URL hash for the "onboard" substring.
-	const [ staAppObj, actStoObj ] = useStore( onbDemBoo ? { initial : SED_NAM_OBJ.buiCleFun(), persist : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useStore, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
+	const [ staAppObj, actStoObj ] = useAppStaFun( onbDemBoo ? { initial : SED_NAM_OBJ.buiCleFun(), persist : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useAppStaFun, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
 
 
 	const [ actIdeStr, setActIdeStr ] = React.useState( () => ( // What: Active Identifier String And Setter. Why: This tracks which of the five tabs is currently shown. How: This starts on 'settings' when the URL hash is #settings (a deep link), otherwise defaults to 'today'.

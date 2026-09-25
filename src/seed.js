@@ -368,7 +368,7 @@ function buiPicFun() {
  *
  * @summary
  * Produces the same local-timezone-adjusted ISO day string as
- * store.jsx's own isoDay and onboarding-seed-data.js's own isoDayFun,
+ * store.js's own isoDay and onboarding-seed-data.js's own isoDayFun,
  * kept as a local copy since this module has no dependency on either.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1404,14 +1404,14 @@ function buiConFun() {
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
 
 
-	const addConFun = ( bacDayNum, trgValBoo ) => { // What: Add Conditional Function. Why: Every simulated cycle below shares the same row-building logic. How: This resolves bacDayNum into a real ISO date, then pushes one conditionalLog row onto conRowArr.
+	const addConFun = ( bacDayNum, triValBoo ) => { // What: Add Conditional Function. Why: Every simulated cycle below shares the same row-building logic. How: This resolves bacDayNum into a real ISO date, then pushes one conditionalLog row onto conRowArr.
 
 
 		const curDatObj = new Date( todMidObj ); curDatObj.setDate( todMidObj.getDate() - bacDayNum ); // What: Current Date Object. Why: Every row needs its own resolved real date. How: This copies todMidObj, then moves it back bacDayNum days.
 
 
 
-		conRowArr.push({ id : 'clseed_' + ( seqCouNum++ ).toString( 36 ), condId : 'cnd_chorefree', date : seeIsoFun( curDatObj ), triggered : trgValBoo, mode : 'ease-up', name : 'Chore Free Day' }); // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/trgValBoo plus a few fixed fields matching the demo gate's own identity.
+		conRowArr.push({ id : 'clseed_' + ( seqCouNum++ ).toString( 36 ), condId : 'cnd_chorefree', date : seeIsoFun( curDatObj ), triggered : triValBoo, mode : 'ease-up', name : 'Chore Free Day' }); // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/triValBoo plus a few fixed fields matching the demo gate's own identity.
 
 
 	};

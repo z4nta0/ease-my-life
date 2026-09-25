@@ -636,7 +636,7 @@ export const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is th
 
 	actYeaFun : actYeaFun, // What: Active Year Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports actYeaFun under its own matching name.
 	comYeaFun : comYeaFun, // What: Compute Year Function. Why: tab-settings.jsx calls this for a specific year's own active holiday set. How: This re-exports comYeaFun under its own matching name.
-	defStaFun : defStaFun, // What: Default State Function. Why: seed.js, store.jsx, and tab-settings.jsx all call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
+	defStaFun : defStaFun, // What: Default State Function. Why: seed.js, store.js, and tab-settings.jsx all call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
 	gueCouFun : gueCouFun, // What: Guess Country Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports gueCouFun under its own matching name.
 	holDatFun : holDatFun, // What: Holiday On Date Function. Why: tab-today.jsx and tasks.js both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
 	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.js calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.

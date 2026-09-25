@@ -16,7 +16,7 @@ import { STG_NAM_OBJ } from './storage.js'; // What: Storage Namespace Object. W
  * This file is the PWA glue: the install prompt, standalone/installed
  * detection, and the engagement-gated request for persistent storage.
  * None of it is React; it is plain browser-API code imported by
- * store.jsx and tab-settings.jsx.
+ * store.js and tab-settings.jsx.
  *
  * Why the persistence request is engagement-gated: Chromium will not
  * re-prompt for storage persistence for the rest of the session once a
@@ -542,14 +542,14 @@ const canInsFun = () => !!insCapObj; // What: Can Install Function. Why: tab-set
 
 
 
-const askFirFun = () => askPerFun( false ); // What: Ask First Function. Why: store.jsx calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
+const askFirFun = () => askPerFun( false ); // What: Ask First Function. Why: store.js calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
 
 
 
-export const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point store.jsx and tab-settings.jsx both import by name. How: This maps each of this file's own internal function/variable names directly onto matching external property names.
+export const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point store.js and tab-settings.jsx both import by name. How: This maps each of this file's own internal function/variable names directly onto matching external property names.
 
 
-	askFirFun : askFirFun, // What: Ask First Function. Why: store.jsx calls this the moment the user creates their first picker. How: This re-exports askFirFun under its own matching name.
+	askFirFun : askFirFun, // What: Ask First Function. Why: store.js calls this the moment the user creates their first picker. How: This re-exports askFirFun under its own matching name.
 	askInsFun : askInsFun, // What: Ask Install Function. Why: tab-settings.jsx calls this from its own install button's click handler. How: This re-exports askInsFun under its own matching name.
 	askPerFun : askPerFun, // What: Ask Persist Function. Why: tab-settings.jsx calls this directly, forced, from its own Settings action. How: This re-exports askPerFun under its own matching name.
 	canInsFun : canInsFun, // What: Can Install Function. Why: tab-settings.jsx calls this to decide whether to render its own install button at all. How: This re-exports canInsFun under its own matching name.

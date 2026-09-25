@@ -112,30 +112,31 @@ The five tabs (`src/tab-today.jsx`, `tab-picker.jsx`, `tab-stats.jsx`,
 
 ### State: one big object, one hook, no context/redux
 
-`src/store.jsx`'s `useStore()` hook is the entire state layer: a single
+`src/store.js`'s `useAppStaFun()` hook is the entire state layer: a single
 `useState` holding the whole app state object, plus a `React.useMemo`'d
 `actions` object of state-transition functions (`toggleDone`, `addPicker`,
-`skipEntry`, `resolveConditionalsForDay`, ...). `AppRooCom` calls `useStore()`
-once and passes the state/actions pair down to every tab as props — there is no
-context provider and no global store singleton reachable from arbitrary
-files. Persistence is debounced via `requestIdleCallback` and flushed
-synchronously on `pagehide`/tab-hide so nothing is lost.
+`skipEntry`, `resolveConditionalsForDay`, ...). `AppRooCom` calls
+`useAppStaFun()` once and passes the state/actions pair down to every tab as
+props — there is no context provider and no global store singleton
+reachable from arbitrary files. Persistence is debounced via
+`requestIdleCallback` and flushed synchronously on `pagehide`/tab-hide so
+nothing is lost.
 
-`migrate(s)` in `store.jsx` is the schema-evolution point: every persisted
+`migStaFun(s)` in `store.js` is the schema-evolution point: every persisted
 state passes through it on load (and on import), and it backfills missing
 fields for old saves one `if` block at a time. When adding a new persisted
 field, add a backfill here rather than assuming fresh shape.
 
 ### Storage: IndexedDB primary, localStorage fallback + warm mirror
 
-`src/storage.js` is a separate concern from `store.jsx`: it's the actual
+`src/storage.js` is a separate concern from `store.js`: it's the actual
 persistence engine (`STORAGE.init/save/flushSync/wipe/status/...`).
 Highlights worth knowing before touching it:
 - The pick log (large, append-only) lives in its own IDB object store,
   separate from the rest of state, specifically so writing it isn't on the
   hot path of every other save.
 - `STORAGE.init()` runs and resolves *before* React mounts (`main.jsx`), so
-  `store.jsx`'s `loadState()` can stay synchronous.
+  `store.js`'s `loaStaFun()` can stay synchronous.
 - A `localStorage` "warm mirror" (minus the pick log) exists purely as a
   same-tick fallback if IDB fails later; it is not the source of truth.
 - `wipe()` (Settings → "Delete all data") must clear every key this layer has
@@ -144,7 +145,7 @@ Highlights worth knowing before touching it:
 ### Domain modules (pure logic, no React)
 
 These encapsulate specific pieces of the scheduling/picking model and are
-imported by both `store.jsx` and the relevant tabs:
+imported by both `store.js` and the relevant tabs:
 - `src/pickers.js` — picker selection algorithms (random / weighted / dynamic
   / ease-up / ease-down); pure functions over an items snapshot.
 - `src/cadence.js` — per-picker "when do I surface" gating (daily / weekly /
@@ -163,12 +164,12 @@ read it before modifying, since the domain logic (drift/charge values,
 weight semantics, "pending" mutations applied only on completion, etc.) is
 non-obvious from the code alone.
 
-### "Pending" pick mutations — a key invariant in store.jsx
+### "Pending" pick mutations — a key invariant in store.js
 
 Picking/re-rolling/sending an item to Today stages its value/weight
 consequences as `entry.pending` — they are **not** applied to the picker/item
-state until the entry is marked done (`applyEntryPending` /
-`revertEntryPending` in `store.jsx`). Unchecking a done entry must exactly
+state until the entry is marked done (`enpAplFun` /
+`enpRevFun` in `store.js`). Unchecking a done entry must exactly
 revert via the `entry.revert` snapshot. If you touch `toggleDone`,
 `setEntryItem`, `addTodayEntry`, or `skipEntry`, preserve this staging —
 directly mutating item state on pick (instead of on completion) breaks the
@@ -1010,6 +1011,39 @@ comments in `src/bg-flourish.jsx` for the reference examples.
   is genuinely file-level, not attached to any one declaration (e.g.
   explaining the whole file's own purpose/design), use the file's own
   name in place of a function name (`<filename.ext> = <Expanded Name>`).
+  - **Section-intro** (a third case, distinct from both of the above): a
+    design-rationale block that introduces one particular subsystem or
+    theme within a large, multi-concern file (spanning one or more
+    declarations that follow it), rather than describing the file's
+    ENTIRE purpose the way the genuinely-file-level case does. This
+    reuses the SAME `<filename.ext> = <Expanded Name>` naming form as
+    the genuinely-file-level case (both are substantial, header-style
+    blocks, so both look the part), but names the SECTION instead of
+    the file, alongside that same file's own single genuinely-file-level
+    header (`store.js = Store And Persisted-State Layer`) at the very
+    top. A file may have any number of these, one per distinct subsystem
+    it documents this way, on top of its own single mandatory file-level
+    one. This case is ALWAYS wrapped in its own `// #region`/
+    `// #endregion` pair together with everything it introduces (see
+    "### Sectioning / fold regions" below) — that region wrapper is what
+    visually distinguishes it from the one genuine file-level header at
+    a glance, since both otherwise share the same naming form.
+    - **Descriptor suffix**: the section's own name always ends with one
+      extra plain-English word naming WHAT KIND of thing the section is,
+      not just what it's about, so a reader sees at a glance why it was
+      pulled out into its own commented, regioned block rather than
+      inferring that from the prose alone. Pick whichever word actually
+      fits that section's own nature (`Subsystem` for a section built
+      around one specific piece of persisted/managed data, `Mechanism`
+      for a section implementing a specific behavioral pattern or
+      invariant across several functions, or another word entirely when
+      neither fits) — this is a per-section judgment call, not a fixed
+      vocabulary. E.g. `store.js = Pick Log Subsystem` (introduces
+      state.pickLog's own data shape and its row-builder), `store.js =
+      Done-Gated Pick Mutations Mechanism` (introduces the pending/
+      revert staging pattern spanning 5 functions, not any one piece of
+      data). The region markers reuse this same full name, suffix
+      included, e.g. `// #region Pick Log Subsystem`.
 - Hard-wrapped at the same strict 79-character line limit as a function
   comment.
 - Blank ` *` lines are bare, no trailing space, same as a function
@@ -1033,6 +1067,22 @@ comments in `src/bg-flourish.jsx` for the reference examples.
   - **File-level** (nothing to attach to): exactly 3 blank lines after
     the closing `*/` too, same as before it, since the comment block
     itself is the whole unit.
+  - **Section-intro** (wrapped in its own `#region`, per "### Sectioning
+    / fold regions" below): the mandatory 3-blank-before this bullet
+    opens with is superseded, landing before the `// #region` marker
+    instead of before the opening `/**` (the same supersession the
+    Custom-function-declarations region case already uses), with
+    exactly 1 blank line between the marker and `/**`. After the
+    closing `*/`, exactly 3 blank lines before the first declaration the
+    section introduces, the SAME 3-blank count as the File-level case
+    just above rather than the Attached-to-a-declaration case's 1
+    blank; this is deliberately more than a plain attached-declaration
+    comment would get, specifically to keep the section's own summary
+    prose visually distinct from the first block of code it wraps, even
+    though there's no genuinely unrelated top-level gap between them the
+    way the File-level case's own 3-blank count is normally reasoned
+    about. See the Sectioning section below for the close-side spacing
+    and the full worked example.
 - **This does NOT replace the per-line What/Why/How comment still
   required on the actual declaration line itself** (when there is one):
   the two serve different purposes, this block explains the design
@@ -1052,7 +1102,7 @@ comments in `src/bg-flourish.jsx` for the reference examples.
 A collapsible fold region uses the editor-standard `// #region <Name>` /
 `// #endregion <Name>` marker pair (recognized by VS Code and other
 editors for code folding), wrapped tightly around the specific unit it
-covers. Four cases are defined so far; more may be added later, but
+covers. Five cases are defined so far; more may be added later, but
 don't invent one for anything else yet:
 - **Custom function declarations**: the exact same `function Name(...) {}`
   case covered by "### Custom function declaration comments" above always
@@ -1182,6 +1232,85 @@ don't invent one for anything else yet:
   for the reference examples. Not every array needs this: only apply it
   where a file's own catalog genuinely groups into distinct, nameable,
   real sections, the same restraint as the function-body case.
+  - **Object-literal variant, a large action/API object grouped by
+    domain**: the same themed-region treatment also applies to a large
+    object literal whose entries genuinely split into distinct domains,
+    as a deliberate exception to the object-property alphabetization
+    rule under "### Arrays and objects" below. The reference (and so
+    far only) case is `store.js`'s own `actStoObj`, whose ~60 actions
+    group into real domains (Today entries, pickers, items, reminders,
+    appearance, holidays, ...); a flat A to Z list would scatter every
+    domain's actions across the whole object, while grouping them keeps
+    "everything that touches reminders" in one collapsible place.
+    Alphabetization still applies at two levels instead of one: the
+    regions themselves are ordered alphabetically by their own region
+    name, and the entries inside each region are alphabetized among
+    themselves. A domain whose summary comment introduces the whole
+    region follows the Section-intro design-rationale treatment below
+    (its own `store.js = <Name> <Descriptor>` name line, 3 blank lines
+    between its closing `*/` and the region's first entry); an entry
+    carrying its own single-entry design-rationale comment keeps it as
+    an attached comment instead, with its own name line using the
+    entry's own key (`<key> = <Expanded Key> Action`), wrapped in a
+    nested `// #region <key>` of its own once the comment plus the
+    entry reach the usual 25-line threshold.
+    - **Entry spacing**: an object that uses this themed-region variant
+      is, in practice, a module of functions wrapped in an object
+      literal, so its entries follow top-level declaration spacing
+      instead of the object-literal spacing under "### Arrays and
+      objects": 3 blank lines between one entry and the next, whether
+      each entry is multi-line or a one-liner. The markers keep their
+      usual spacing (1 blank line between a `// #region`/`// #endregion`
+      marker and the content it wraps, 3 blank lines between one
+      region's `#endregion` and the next region's `#region`). The
+      object's own opening and closing padding stays at 2 blank lines,
+      like any other block. Smaller objects that merely contain a few
+      methods (e.g. `eml-tour-bus.js`'s own `emlTouObj`) aren't covered
+      and keep the normal object-literal spacing.
+- **A section-intro design-rationale comment and everything it
+  introduces**: the Section-intro variant of "### Large /
+  design-rationale comments" above (a design-rationale block that
+  introduces one particular subsystem within a large, multi-concern
+  file, using the same `<filename.ext> = <Expanded Name>` naming form a
+  genuinely-file-level header uses, but for a named section instead of
+  the whole file) always gets a region, wrapping the comment itself AND
+  every declaration it introduces together as one collapsible unit,
+  mandatory for this shape rather than a judgment call the way the
+  function-body and array-literal cluster cases above are.
+  - `<Name>` on both markers is the SAME short, plain-English, Title
+    Case name already used in the comment's own name line (the part
+    after `<filename.ext> = `, descriptor suffix included), e.g.
+    `// #region Pick Log Subsystem` / `// #endregion Pick Log Subsystem`
+    for a comment whose name line reads `store.js = Pick Log Subsystem`.
+  - **This supersedes the Section-intro comment's own placement rule**:
+    the 3 blank lines that otherwise sit before the opening `/**` now
+    sit before the `// #region` marker instead, the same supersession
+    the Custom-function-declarations case above already uses. Between
+    the marker and the comment's own `/**`, use exactly 1 blank line.
+  - Between the comment's own closing `*/` and the first declaration it
+    introduces, exactly 3 blank lines, matching the File-level case's
+    own count rather than the Attached-to-a-declaration case's 1 blank,
+    specifically so the section's own summary prose reads as visually
+    separate from the first block of code it wraps.
+  - Every declaration the comment introduces keeps its own existing
+    spacing/region treatment untouched (e.g. each one may still be its
+    own `#region <FunctionName>` per the Custom-function-declarations
+    case, nested inside this outer region); this case only adds the
+    OUTER wrapper, it doesn't change anything about what's already
+    inside it.
+  - Symmetrically on the close side: exactly 1 blank line between the
+    LAST declaration's own closing `}` (or its own `// #endregion`
+    marker, if it has one) and this section's own `// #endregion`
+    marker, then the normal 3 blank lines after `// #endregion` before
+    whatever top-level thing comes next.
+  - See `store.js`'s own "Pick Log Subsystem" (wrapping `logRowFun`,
+    itself already its own nested `#region logRowFun`) and "Done-Gated
+    Pick Mutations Mechanism" (wrapping `dropStalePendingUpdates`
+    through `applyConditionalLog`, five nested function regions) for the
+    reference examples; that same file's own genuinely-file-level
+    header at the very top (`store.js = Store And Persisted-State
+    Layer`) is NOT wrapped in a region of its own, since the file
+    itself is already that header's natural boundary.
 
 ### Quotes
 - Use `'single quotes'` for every string literal, including JSX attribute
@@ -1250,6 +1379,11 @@ don't invent one for anything else yet:
     `IntModCom`) for the reference example: its 3 paragraph entries each
     get 1 blank line before and after, despite each being syntactically
     one physical line, not a genuinely multi-line entry.
+- **Exception, a large function-module object**: an object using the
+  themed-region "Object-literal variant" under "### Sectioning / fold
+  regions" above (`store.js`'s own `actStoObj`) spaces its entries 3
+  blank lines apart instead, per that variant's own "Entry spacing"
+  bullet; everything below still applies to every other object.
 - **A multi-line entry inside an array, or a multi-line property inside an
   object, gets exactly 1 blank line before and after it** — UNLESS that
   side is also the container's own first/last position, in which case the
@@ -1330,6 +1464,55 @@ don't invent one for anything else yet:
   array's own entry order is frequently meaningful (a tour's own step
   sequence, a nav bar's own left-to-right order) and stays exactly as
   authored.
+  - **`style={{ ... }}` objects are alphabetized too**, the same as any
+    other multi-line object literal. Their keys are real CSS property
+    names (an external contract, so they're never RENAMED, per the
+    object-property naming exemption), but their ORDER is free, so it
+    follows the same case-insensitive alphabetical rule, with every
+    other ordering rule here (computed/expression-key sections, long
+    outliers, spreads) applying within them as usual.
+    - **Exception, a CSS shorthand next to one of its own longhands**
+      (e.g. `margin` with `marginTop`, `border` with `borderColor`,
+      `background` with `backgroundColor`): the longhand must stay
+      AFTER its shorthand, since React applies inline style properties
+      in order and a shorthand written later would silently wipe out the
+      longhand's value. Alphabetize everything else normally around that
+      pair.
+    - **Not yet applied**: this rule was written on 2026-09-24 and is
+      deliberately deferred to a single app-wide pass run after every
+      file's own manual review is finished (about 55 `style={{` objects
+      across the JSX files), not applied piecemeal during individual
+      reviews.
+  - **Computed keys (`[ someVar ] : value`) form their own group, placed
+    ahead of every normally named property**, so their bracketed keys
+    never sit in the same `:`-aligned column as plain names (which would
+    push the whole column out of line). Within that group, they're
+    alphabetized by the name of the variable inside the brackets, using
+    the same case-insensitive comparison as any other key, and aligned
+    among themselves. Exactly 1 blank line separates the computed-key
+    group from whatever named properties follow it; each group computes
+    its own `:`/comment alignment independently. Any leading spread keeps
+    its own pinned position and spacing ahead of both groups, per the
+    spread rules below. This only applies when property order genuinely
+    doesn't matter: if a computed key could collide with a named key
+    (an override relationship) or something reads the object's own key
+    order, leave the authored order alone, the same exception every
+    other reordering here already has. E.g. `store.js`'s own
+    `setCustomTheme` builds `nexAppObj` as its appearance spread, 1
+    blank line, `[ keyNamStr ] : savColObj`, 1 blank line, then
+    `theme : keyNamStr` (`keyNamStr` is always `'customLight'` or
+    `'customDark'`, so it can never collide with `theme`).
+    - **Expression keys** (a computed key whose brackets hold an
+      expression rather than a bare variable, e.g. `[ 'a' + b ]`,
+      `[ obj.key ]`, `[ fooFun() ]`) get a section of their own, placed
+      right after the bare-variable computed-key group and before the
+      named properties. They follow the exact same rules within their
+      section: alphabetized, aligned among themselves, 1 blank line
+      separating the section from its neighbors on each side, and the
+      same "only when order doesn't matter" condition. Since there's no
+      single variable name to sort by, they're alphabetized by the
+      expression's own source text exactly as written inside the
+      brackets, compared case-insensitively.
   - **Exception — skip when the current order is actually relied on**:
     before reordering a given object, check whether anything reads it
     via `Object.keys()`/`Object.entries()`/`Object.values()`/a
@@ -1339,6 +1522,11 @@ don't invent one for anything else yet:
     If reordering would change real behavior, leave that one object's
     own order exactly as-is and note it rather than guessing; this is
     judged per-object, not assumed from the object's shape alone.
+  - **Exception, a large object deliberately grouped into themed
+    regions**: see the "Object-literal variant" bullet under "###
+    Sectioning / fold regions" above (`store.js`'s own `actStoObj`),
+    where alphabetization applies to the regions and within each region
+    rather than across the whole object at once.
   - **Object literals containing a spread (`...someObj`) are NOT
     entirely skipped, only the spread's own position is protected.**
     A spread carries real override/inheritance semantics based on
@@ -1402,6 +1590,36 @@ don't invent one for anything else yet:
         run's own last spread (unless it's the object's own last
         entry); it just does not apply BETWEEN spreads inside the
         same run. Each spread in the run still gets its own comment.
+    - **A conditional spread whose object literal itself needs to go
+      multi-line** (`...( cond ? { a : x || null, b : y || '' } : {} )`
+      where the object has 2+ properties with non-trivial values, per
+      the multi-line object rule below) is wrapped in place rather than
+      pulled out into a separately named value first: the spread's own
+      opening line ends at the object's opening brace (`...( cond ? {`),
+      carrying the spread's own comment, the object's properties follow
+      one per line (alphabetized, `:`-aligned, each with its own
+      comment, the usual 2-blank open/close padding), and the ternary's
+      own remainder closes on a line of its own (`} : {} ),`, or with no
+      trailing comma when it's the containing object's own last entry),
+      which needs no comment since it's only closing brackets.
+      - **Amends the 0-blank run-of-spreads exception above**: a
+        multi-line spread breaks out of that tight grouping the same way
+        a multi-line property does elsewhere in this doc. It gets exactly
+        1 blank line separating it from the spread before it (and from
+        any spread after it), and it moves to the END of its run of
+        spreads, after every single-line spread, the same "multi-line
+        constructs go last" ordering the long-outlier rule applies to
+        properties. Since a spread's position carries override
+        semantics, moving it is only allowed when its own keys don't
+        overlap with any spread it would move past (the same check the
+        spread-relocation refinement above requires); if they do
+        overlap, it keeps its authored position but still gets the 1
+        blank line separation. 2+ multi-line spreads in the same run
+        keep their own original relative order and are each separated
+        by 1 blank line. See `store.js`'s own `replaceTodayEntries` for
+        the reference example: its single-line `periodKey` spread comes
+        first, then 1 blank line, then the multi-line day-off-card
+        fields spread last (no key overlap between the two).
     - **A spread gets its own comment, same as any other line of
       code**: `...navTarObj, // What: Nav Target Spread. Why: ... How:
       ...`, explaining what it spreads in and why, following the same
@@ -1821,6 +2039,24 @@ block's own body still gets the standard 2-blank-line padding from
   `catch` and the page-level fallback's own `try` get 3 blank lines
   between them, and so do the `window.focus()`/`pagNotObj.close()`
   cleanup pair inside that fallback's own click handler.
+- **A complete `try`/`catch` (or `try`/`catch`/`finally`) statement always
+  gets 3 blank lines before its own `try` AND 3 blank lines after its own
+  final block**, whatever sits on the other side of either gap (a
+  declaration, a call, another `try`, ...), the same "a genuinely
+  separate construct, always 3 apart" treatment a finished
+  if/else-if/else construct gets. The intro's own "treated the same as an
+  if/else chain in every respect" already implied the after-gap, but both
+  gaps are stated explicitly here so neither has to be inferred.
+  - **Exception, the enclosing block's own open/close padding wins**: a
+    `try` that is the very first thing inside its own enclosing `{`/`(`
+    gets that block's normal 2 blank lines before it instead, and a
+    try/catch/finally that is the very last thing before its own
+    enclosing block's closing `}`/`)` gets that block's normal 2 blank
+    lines after it instead, exactly like every other construct in this
+    doc. See `store.js`'s own `reset` action for the reference example:
+    its first `try` opens the action's own body (2 blank lines before
+    it), while its second `try` follows ordinary code (3 blank lines
+    before it), and both get 3 blank lines before whatever follows them.
 ```
 try {
 
@@ -2228,6 +2464,22 @@ attribute) are ordered into these 8 tiers, top to bottom:
     ... };` (a multi-line arrow function that reads staGraNum in its
     own body) gets 1 blank line between them, not 0, even though they
     share keyword, shape, and a tightly-connected purpose.
+  - **A run also splits when it mixes standard-length (9-char/3-segment)
+    names with a non-standard, longer composite name** (e.g. a 4-segment
+    Initialism-compression case like `lmsLonPriNum`). Forcing the
+    shorter, standard names' own `=`/comment columns out to match a much
+    longer non-standard name defeats the whole point of keeping most
+    names at the compact standard length. Split into separate
+    sub-groups the same way as the other splits above: 1 blank line
+    between the sub-groups, 0-blank internally within each, each
+    sub-group's own alignment computed independently. E.g. `store.js`'s
+    own `lmsLonPriNum`/`lmsMedPriNum`/`lmsShoPriNum` (3 non-standard,
+    12-character Initialism-compression names) sit in their own group,
+    followed by a blank line, then `lmsLonNum`/`lmsMedNum`/`lmsShoNum`
+    (3 standard, 9-character names) in their own separately-aligned
+    group, even though all 6 are `const`, plain-shaped, and
+    single-line-valued, and the second group directly consumes values
+    from the first.
   - **This same run gets its `=` signs column-aligned**, the same
     column-alignment mechanism used elsewhere in this doc (named imports,
     object `:` alignment, ...): pad each line's own left-hand side
@@ -2569,7 +2821,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `nxt` → `nex` (Next — a very widely recurring miscorrection, found in
     `nexRecObj` (`help-mode.jsx`), `nexDayArr` (`tab-picker.jsx`),
     `nexSetObj` (`tab-today.jsx`), and dozens of distinct `nexXxxArr`/
-    `nexXxxObj`/`nexXxxStr`/`nexXxxBoo` names throughout `store.jsx`,
+    `nexXxxObj`/`nexXxxStr`/`nexXxxBoo` names throughout `store.js`,
     where it is the file's own dominant convention for "the next state"
     passed to every action's own setter; `nex` was already the
     established correct code elsewhere in this codebase, e.g.
@@ -2578,7 +2830,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `cnd` → `con` (Conditional — another very widely recurring
     miscorrection, touching dozens of distinct `conXxxObj`/`conXxxArr`/
     `conXxxStr`/`conXxxBoo`/`conXxxFun` names plus 2 component aliases
-    across `store.jsx`, `tab-data.jsx`, `tab-picker.jsx`, `tab-today.jsx`,
+    across `store.js`, `tab-data.jsx`, `tab-picker.jsx`, `tab-today.jsx`,
     `seed.js`, and `help-sample-data.js`. **Known blind spot**: a plain
     substring/word-boundary grep for this one is easy to under-scope,
     since a name that begins DIRECTLY with `cnd`/`Cnd` (no other segment
@@ -2613,7 +2865,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     and `cpyAdrFun`/`cpyDonFun` (`tab-settings.jsx`); `cop` was already
     the established, heavily-used code for Copy elsewhere in this
     codebase, e.g. `copIdeStr`/`neeCopFun`/`picCopFun`/`tasCopFun`
-    (`onboarding-page-tours.jsx`), `datCopObj` (`seed.js`/`store.jsx`),
+    (`onboarding-page-tours.jsx`), `datCopObj` (`seed.js`/`store.js`),
     and `PAG_COP_OBJ`/`PIC_COP_OBJ`/`REP_COP_OBJ`/`VAR_COP_OBJ`)
   - `boot` → `boo` (Boot — a 4-letter word left untruncated instead of
     taking its own literal first 3 letters, found in `bootAppFun`
@@ -2658,7 +2910,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `dwnGuaFun` (`onboarding-tour-runner.jsx`), `onPoiDwnFun`/
     `poiDwnObj`/`onKeyDwnFun`/`keyDwnObj` (`ui.jsx`), `dwnLnkEle`
     (`tab-settings.jsx`), `keyDwnFun`/`keyDwnObj` (`help-mode.jsx`), and
-    `easDwnBoo`/`isDwnBoo` (`store.jsx`, 2 separate declarations), fixed
+    `easDwnBoo`/`isDwnBoo` (`store.js`, 2 separate declarations), fixed
     to `dowGuaFun`/`onPoiDowFun`/`poiDowObj`/`onKeyDowFun`/`keyDowObj`/
     `dowLnkEle`/`keyDowFun`/`keyDowObj`/`easDowBoo`/`isDowBoo` across all
     5 files in one sweep; every one of these comments already spelled
@@ -2721,7 +2973,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     established, correct code for this exact word elsewhere in several
     of these same files (`weiPicFun` in `pickers.js` itself, `picResObj`
     in `tab-picker.jsx`, `picCouNum` in `tab-picker.jsx`, `picIdeStr`
-    used pervasively across `day-log.jsx`/`app.jsx`/`store.jsx`/
+    used pervasively across `day-log.jsx`/`app.jsx`/`store.js`/
     `onboarding-picker-tours.jsx`/etc.). Since `pik`→`pic` is a
     straight 1-for-1 letter swap, every renamed identifier stayed
     exactly the same length, so no column-alignment recalculation was
@@ -2764,7 +3016,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     miscorrection surfaced while checking the `chg`→`chr` fix above for
     collisions: `chgEveObj` (~40 instances across `tab-settings.jsx`,
     `tab-picker.jsx`, `tab-data.jsx`, `tab-today.jsx`), `chgIteArr`/
-    `modChgBoo` (`store.jsx`), `chgBoo` (`tab-data.jsx`), and
+    `modChgBoo` (`store.js`), `chgBoo` (`tab-data.jsx`), and
     `filChgBoo` (`tab-stats.jsx`, `tab-picker.jsx`), fixed to
     `chaEveObj`/`chaIteArr`/`modChaBoo`/`chaBoo`/`filChaBoo`. Unlike the
     Charge/Charging case just above, this one uses the literal
@@ -2810,7 +3062,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     itself, not a full-word spelling that just needed the identifier
     fixed underneath it. No collision: `oka` was not already in use
     anywhere. **Not swept**: `Oklab`/`linOklFun`/`okLANum`/`okLBNum`/
-    `okLLitNum`/`oklLinFun` (`store.jsx`) also match a bare `ok`/`Ok`
+    `okLLitNum`/`oklLinFun` (`store.js`) also match a bare `ok`/`Ok`
     substring search, but none of them mean "Okay" at all; they name
     the real OKLab color space, an unrelated technical term that
     happens to share the same 2 letters, left untouched)
@@ -2849,7 +3101,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     in use anywhere)
   - `snp` → `sna` (Snapshot/Snap — found in `draSnpObj`/`snpOptRef`/
     `snpTasObj` (`reminders.jsx`), `curSnpObj`/`preSnpObj`/`snpIteObj`/
-    `snpPicObj`/`snpTasObj` (`store.jsx`), `snpIteObj`/`snpRef`
+    `snpPicObj`/`snpTasObj` (`store.js`), `snpIteObj`/`snpRef`
     (`tab-data.jsx`), and `ordSnpRef` (`tab-today.jsx`), fixed across
     all 4 files in one sweep; `sna` was already the established,
     correct code for this exact word in several OTHER identifiers in
@@ -2927,7 +3179,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     changes, only the identifiers themselves were wrong. No collision:
     seed.js had no pre-existing `wee`-prefixed identifier of its own)
   - `tmo` → `tim` (Timeout — a very widely recurring miscorrection,
-    found across 7 files: `idlTmoRef` (`store.jsx`), `picPreTmo`
+    found across 7 files: `idlTmoRef` (`store.js`), `picPreTmo`
     (`tab-settings.jsx`), `ripCleTmo`/`parCleTmo`
     (`settings-previews.jsx`), `pulEndTmo`/`freTmoNum`/`feaIntTmoNum`/
     `celEndTmo`/`bmpEndTmo`/`purTmoNum`/`celTmoNum`/`alnTmoNum`
@@ -2954,6 +3206,27 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     a straight 1-for-1 substitution with no column-alignment
     recalculation needed anywhere. No collision: none of the corrected
     names were already in use in the same scope anywhere)
+  - `stp` → `sti` (Stripped — found in `stpNamStr` (`store.js`'s own
+    `uniNamFun`), fixed to `stiNamStr`. This did NOT use the literal
+    first-3-letters `str`: that code is the universal String
+    type-segment used throughout this entire codebase, definitionally
+    unusable for anything else, not just a "heavy overload" case.
+    Phase A escalation on "Stripped" (keep `St`, skip the normal 3rd
+    letter, try the word's own 4th letter `i`) landed on `sti` with
+    only one existing use, `ONB_STI_ARR`'s own Initialism-compressed
+    segment (Sample-Task-Identifiers, `onboarding-seed-data.js`), a
+    low-risk multi-meaning case since it's a different KIND of segment
+    (an initialism, not a plain-word-truncation) sitting in a different
+    position (a module-level export, not a local variable). The next 2
+    escalation candidates were both worse: the word's own 5th/6th
+    letters land back on `stp` itself, already this codebase's own
+    established code for Step (`advStpFun`, `bckStpFun`, `schStpFun`,
+    ...); the 7th letter `ste` is even more heavily used for Step
+    elsewhere (30+ hits, `steCouNum`, `NumSteCom`, `curSteNum`, ...);
+    the 8th letter `std` is already an established Known-miscorrections
+    collision (Standard/Standalone) above. Every comment referencing
+    `stpNamStr` already spelled "Stripped" out in full, so it needed no
+    text changes, only the identifier itself was wrong)
   - `cnl` → `can` (Cancel — swept the OPPOSITE direction from the usual
     pattern in this list: found the MINORITY form, `cnl` (6 instances:
     `cnlRunBoo`/`cnlCnfFun` ×2/`cnlCreFun` in `tab-picker.jsx`,
@@ -2977,6 +3250,120 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     new names were already in use anywhere. Every comment referencing
     these identifiers already spelled "Cancel" out in full, so none
     needed text changes, only the identifiers themselves were wrong)
+  - `done` → `don` (Done — the same "word wasn't truncated to its own
+    literal first 3 letters" class as `boot`→`boo` above, not a
+    3-letter-vs-4-letter miscorrection; found in `nowDoneBoo` (`store.js`,
+    18 instances across `cotAplFun`/`applyConditionalLog`/
+    `stkRecFun`/the `toggleDone` action) and `wasDoneBoo`
+    (`store.js`, 3 instances in the `skipEntry`-adjacent reminder-toggle
+    action), fixed to `nowDonBoo`/`wasDonBoo`; `doneCouNum`
+    (`tab-stats.jsx`'s own `couLevFun` parameter, self-contained, no
+    external callers) fixed to `donCouNum`; and `doneCount`
+    (`tab-today.jsx`'s own `GroHeaCom` component prop, whose
+    destructuring already aliased it to the correct `donCouNum`
+    internally, only the outward-facing prop key itself was wrong)
+    fixed to `donCouNum` too, collapsing to shorthand destructuring and
+    rippling into its own 3 call sites plus 2 comment mentions of the
+    old prop name (`store.js`, `onboarding-app-features.jsx`). `don` was
+    already the established, heavily-used code for Done elsewhere in
+    this codebase before this fix (`donCouNum`/`donNum`/`donIteNum`/
+    `donNowFun`/`donValBoo` across `day-log.jsx`, `onboarding-
+    checklist.js`, `reminders.jsx`, and `seed.js`), so no escalation was
+    needed. **Not a collision, deliberately left untouched**:
+    `TASKS.isDoneToday` (`tasks.js`'s own exported namespace-object
+    property, explicitly re-exporting the already-correctly-named
+    `isaDonFun` under its own stable external key, called from `store.js`/
+    `day-log.jsx`/`tab-today.jsx`/`reminders.jsx`) and the bare `done`
+    field itself (the real, persisted property on every Today entry and
+    pickLog row, e.g. `entry.done`/`curEntObj.done`) are both protected
+    external contracts, not local identifiers, the same class of
+    exemption already covering `pickLog`'s own field names elsewhere in
+    this list. Every comment referencing the fixed identifiers already
+    spelled "Done" out in full, so none needed text changes, only the
+    identifiers themselves were wrong)
+  - `trg` → `tri` (Trigger/Triggered — found in `trgValBoo` (`store.js`,
+    9 instances in `cdlAplFun`; `seed.js`, 2 instances), and
+    `trgEleRef`/`trgCurEle`/`trgRecObj` (`ui.jsx`, a tooltip/popover's
+    own trigger-element handling, ~15 instances across a single
+    component), fixed to `triValBoo`/`triEleRef`/`triCurEle`/
+    `triRecObj`. `tri` was already the established, correct code for
+    this exact word elsewhere in this codebase, e.g. `conditionals.js`'s
+    own `triValBoo` (4 uses, the exact same "Trigger Value Boolean"
+    concept `store.js`'s own instance was found right next to), so no
+    escalation was needed, this was purely an inconsistent spelling of a
+    word already spelled correctly elsewhere. Every comment referencing
+    these identifiers already spelled "Trigger"/"Triggered" out in full,
+    so none needed text changes, only the identifiers themselves were
+    wrong. No collision: none of the corrected names were already in use
+    in the same scope anywhere)
+  - `cch` → `cac` (Cached/Cache — found in `cchStaObj` (`store.js`'s own
+    `loaStaFun`, 2 instances), fixed to `cacStaObj`; `cac` was already
+    the established, heavily-used code for this exact word elsewhere in
+    this codebase, e.g. `storage.js`'s own `cacStaObj`/`cacStaFun`
+    (~20 uses, including the very `STG_NAM_OBJ.cacStaFun()` call this
+    fixed variable reads from) and `bg-flourish.jsx`'s own `floCacMap`,
+    so no escalation was needed, this was purely an inconsistent
+    spelling of a word already spelled correctly elsewhere. Every
+    comment referencing this identifier already spelled "Cached" out in
+    full, so it needed no text changes, only the identifier itself was
+    wrong. No collision: `cacStaObj` was not already in use in the same
+    scope)
+  - `Jsn` → `Jso` (Json — found in `rawJsnStr` (`store.js`'s own
+    `loaStaFun`, 2 instances; `tab-today.jsx`, 3 instances), fixed to
+    `rawJsoStr` across both files; `Jso` was already the established,
+    correct code for this exact word elsewhere in this codebase, e.g.
+    `storage.js`'s own `rawJsoStr`/`jsoTexStr`, so no escalation was
+    needed, this was purely an inconsistent spelling of a word already
+    spelled correctly elsewhere. Every comment referencing these
+    identifiers already spelled "Json" out in full, so none needed text
+    changes, only the identifiers themselves were wrong. No collision:
+    `rawJsoStr` was not already in use in either file's own scope)
+  - `rsv` → `res` (Resolve/Resolved — found in `rsvPicIde`
+    (`store.js`'s own `migStaFun`, 2 instances; this instance ALSO had
+    its own type-segment error, see the Two-word-single-segment
+    compression section below for the full fix), fixed to `rspIdeStr`.
+    `res` was already the established, correct code for this exact word
+    elsewhere in this codebase, e.g. `app.jsx`'s own `resCusFun`/
+    `resTheFun`/`palResObj`, so no escalation was needed for the word
+    itself, this was purely an inconsistent spelling of a word already
+    spelled correctly elsewhere. Note `res` already carries a second
+    meaning in this codebase, Resize (`resObsObj` in `app.jsx`, a
+    `ResizeObserver` instance); context disambiguates which of the two
+    "res" stands for in practice, the same reasoning already used for
+    `con`/`sta`/`per`/`fre`/`dow`/`sho` elsewhere in this list.)
+  - `wgt` → `wei` (Weight — found across 4 files: `store.js`'s own
+    `wgtValNum` (8 instances spanning the conditional odds-migration and
+    the ease-down fairness-weight calc), `tab-data.jsx`'s own
+    `useWgtBoo` (4 instances), `tab-picker.jsx`'s own `wgtValNum`/
+    `useWgtBoo`/`wgtTipStr`/`shoWgtBoo`/`setTypWgtFun`/`newWgtNum` (~23
+    instances), and `tab-today.jsx`'s own `hasWgtBoo` (2 instances),
+    fixed to `weiValNum`/`useWeiBoo`/`weiTipStr`/`shoWeiBoo`/
+    `setTypWeiFun`/`newWeiNum`/`hasWeiBoo`. `wei` was already the
+    established, heavily-used code for this exact word elsewhere in
+    this codebase, e.g. `seed.js`'s own `picWeiFun`/`totWeiNum`/
+    `remWeiNum`, `tab-conditional.jsx`'s own `useWeiBoo`, and even
+    `store.js`'s own `perWeiArr`/`curWeiNum` sitting just a few lines
+    from one of the fixed `wgtValNum` instances, so no escalation was
+    needed, this was purely an inconsistent spelling of a word already
+    spelled correctly elsewhere. Every comment referencing these
+    identifiers already spelled "Weight" out in full, so none needed
+    text changes, only the identifiers themselves were wrong. No
+    collision: none of the corrected names were already in use in the
+    same scope anywhere)
+  - `nrm` → `nor` (Normalize/Normalized — found in `nrmGroStr`/
+    `nrmNamStr`/`nrmKeyStr`/`nrmOptObj` (`store.js`, 4 instances each in
+    the picker-tidy/group-remap section and `setReminderOpt`), fixed to
+    `norGroStr`/`norNamStr`/`norKeyStr`/`norOptObj`. `nor` was already
+    the established, heavily-used code for this exact word elsewhere in
+    this codebase, e.g. `cadence-control.jsx`'s own `norCadFun`/
+    `norCadObj`, and `norNamStr`/`norOptObj` in particular already
+    existed with this exact meaning in `tab-conditional.jsx`/
+    `reminders.jsx`, so no escalation was needed, this was purely an
+    inconsistent spelling of a word already spelled correctly
+    elsewhere. Every comment referencing these identifiers already
+    spelled "Normalized" out in full, so none needed text changes, only
+    the identifiers themselves were wrong. No collision: none of the
+    corrected names were already in use in the same scope anywhere)
   - `clm` → `cla` (Claimed — found in `preClmRef`/`clmNowBoo`
     (`tab-today.jsx`'s own streak-pulse effect) and `wasClmBoo`/
     `stkClmBoo` (`store.js`'s own `stkRecFun`), fixed to `preClaRef`/
@@ -2992,6 +3379,46 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     identifiers already spelled "Claimed" out in full, so none needed
     text changes, only the identifiers themselves were wrong. No
     collision: none of the corrected names were already in use anywhere)
+  - `fls` → `flu` (Flush — found in `runFlsFun` (`store.js`'s own
+    persistence-flush effect inside `useAppStaFun`), fixed to
+    `runFluFun`; `flu` was already the established, correct code for
+    this exact word elsewhere in this codebase, e.g. `storage.js`'s own
+    `fluSynFun` and `store.js`'s own `fluStaFun`, so no escalation was
+    needed. The comment already spelled "Flush" out in full, so it
+    needed no text changes, only the identifier itself was wrong. No
+    collision: `runFluFun` was not already in use anywhere)
+  - `frs` → `fre` (Fresh — found in `frsEntArr` (`store.js`'s own
+    `replaceTodayEntries` action), fixed to `freEntArr`; `fre` was
+    already the established, heavily-used code for Fresh elsewhere in
+    this codebase (`isaFreBoo`, `freIndNum`, `freBoo`, ...), so no
+    escalation was needed. Found in the same action as a second,
+    separate miscorrection, `dsc` → `des` (Descriptor — `curDscObj`,
+    fixed to `curDesObj`), whose `des` already appears as Description
+    elsewhere (`desStr`, `desIdeStr`); context disambiguates which of
+    the two "des" stands for in practice. Every comment referencing
+    these identifiers already spelled "Fresh"/"descriptor" out in full,
+    so none needed text changes. No collision: neither corrected name
+    was already in use anywhere)
+  - `nmd` → `nam` (Named — found in `nmdTasObj` (`store.js`'s own
+    `addTask` action), fixed to `namTasObj`; `nam` was already the
+    established, heavily-used code for Name elsewhere in this codebase
+    (`sibNamArr`, `uniNamStr`, `uniNamFun`, `finNamStr`, ...), and
+    "Named" shares that same code, so no escalation was needed. The
+    comment already spelled "Named" out in full, so it needed no text
+    changes, only the identifier itself was wrong. No collision:
+    `namTasObj` was not already in use anywhere)
+  - `tdy` → `tid` (Tidied — found in `tdyNamStr` (`store.js`'s own
+    `renamePicker` action), fixed to `tidNamStr`; `tdy` drops the word's
+    own vowel the same way `cnl`/`cln`/`clm` did elsewhere in this list,
+    rather than taking its literal first 3 letters. The comment already
+    spelled "Tidied" out in full, so it needed no text changes. No
+    collision: `tid` was not already in use anywhere)
+  - `cst` → `cus` (Custom — found in `curCstObj` (`store.js`'s own
+    `removeCustomHoliday` action), fixed to `curCusObj`; `cus` was already
+    the established code for Custom elsewhere in this codebase (`resCusFun`,
+    `cusColObj`, `addCusFun`), and `cst` drops the word's own vowel the same
+    way `cnl`/`cln`/`clm`/`tdy` did elsewhere in this list. No collision:
+    `curCusObj` was not already in use anywhere)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -3084,6 +3511,71 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     less-essential word, keep 2 concepts + a real type" resolution from
     the base rule still applies whenever it doesn't lose something
     genuinely load-bearing.
+- **Two-word single-segment compression**: a genuinely two-word "what"
+  (not 3+, which uses the Initialism-compression rule above) that still
+  needs to collapse into ONE 3-letter segment takes the first 2 letters
+  of the first word plus the first letter of the second word, e.g.
+  "Pick" + "Log" → `pil` (`Pi` from Pick, `l` from Log). This keeps more
+  of the first word's own identity than a pure first-letter-each
+  initialism would, while still fitting the standard 3-letter/
+  9-character budget.
+  - **Escalation**: if the base form collides (or is already heavily
+    overloaded elsewhere), keep the first word's own 1st letter and the
+    second word's own contributed letter both fixed, and escalate the
+    MIDDLE character through the first word's own later letters (its
+    own 2nd, 3rd, 4th, ... letters in turn) before touching the second
+    word at all. Once the first word's own letters are exhausted, move
+    to the second word's own contribution instead: replace its 1st
+    letter with its 2nd, cycling back through every one of the first
+    word's own middle-letter candidates again against that new final
+    letter, then its 3rd letter, and so on. Example (`store.js`'s own
+    `__plSeqNum`, meaning "Pick-Log Sequence Number"): base `pil`
+    (`Pi`+`l`) collides with `ui.jsx`'s own heavily-established `pil` =
+    Pill (`PilTagCom`, `pilIdeStr`, ... 14 uses); escalating the middle
+    letter through "Pick"'s own later letters gives `pcl` (Pick's own
+    3rd letter, `c`) next, which came back clean, so `__plSeqNum` became
+    `__pclSeqNum`. Had `pcl` also collided, the next candidate would
+    have been `pkl` (Pick's own 4th and last letter, `k`), then, once
+    Pick's own letters are exhausted, `pio`/`pco`/`pko` (cycling the
+    middle letter again, now against Log's own 2nd letter, `o`, instead
+    of its 1st, `l`), then `pig`/`pcg`/`pkg` against Log's own 3rd
+    letter `g`, and so on. A second example, this time actually needing
+    2 escalation steps (`store.js`'s own `__clSeqNum`, "Conditional-Log
+    Sequence Number"): base `col` (`Co`+`l`) collides with 3 separate
+    established meanings across this codebase at once (Color, e.g. this
+    same file's own `hexColStr`/`invColFun`; Column, e.g.
+    `bg-flourish.jsx`'s own `colIndNum`/`colCouNum`; Collapse, e.g.
+    `ColDisCom`/`conColBoo`), so escalating the middle letter through
+    "Conditional"'s own later letters was tried first: its own 3rd
+    letter gives `cnl`, which turned out to already mean Cancel
+    (`cnlCnfFun`, `onCnlFun`, ...), so escalation continued to
+    "Conditional"'s own 4th letter, `cdl`, which came back clean, so
+    `__clSeqNum` became `__cdlSeqNum`.
+  - A third example, this time the compressed segment sitting as
+    segment 1 of a genuinely 3-concept name rather than standing alone
+    (`store.js`'s own `rsvPicIde`, meaning "Resolved Picker Identifier",
+    which ALSO had its own type-segment error: `Ide` isn't a real JS
+    type, so it was misplaced as segment 3 instead of the actual type,
+    `Str`, matching the same "an item's pickerId is always a string or
+    null" shape as every other `xxxIdeStr` in this file): 3 real
+    concepts (Resolved, Picker, Identifier) plus a real type (String)
+    is one concept too many for 2 segments + type, so "Resolved" and
+    "Picker" compress together (`Re`+`p` = `rep`), freeing "Identifier"
+    to stay its own normal segment (`Ide`) and `Str` to be the real
+    type. Base `rep` triggers the "heavy pre-existing overload" case
+    from the general Naming-conflict-resolution section below rather
+    than a literal collision: it's already used dozens of times for
+    Repeat (`repTokNum`, `curRepStr`, `repCopObj`, ...) and separately
+    for Report (`staRepFun`), so adding a third meaning was escalated
+    instead of accepted as an ordinary multi-meaning segment. Escalating
+    the middle character through "Resolved"'s own later letters (`e`
+    already used, try its 3rd letter, `s`) gives `rsp`, which came back
+    clean, so `rsvPicIde` became `rspIdeStr`.
+  - **Comment expansion** matches the Initialism-compression segment
+    above: since the segment doesn't correspond to one truncated word,
+    spell out both words it stands for, hyphenated, in place of the
+    normal single-word expansion, then expand the remaining segments
+    normally, e.g. `pclSeqNum` → `What: Pick-Log Sequence Number.`
 - **Dropping a domain-context word an exported function's own import path
   already conveys**: a function that needs 3+ real words (a verb plus a
   multi-word target) can drop a word that names the whole MODULE's own
@@ -3358,8 +3850,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     genuinely ambiguous which of the two a bare `topNum` referred to.
     This full-word variant conveniently often already matches whatever
     a reading local variable independently converged on naming itself
-    (see the "local variable sharing a property's own identity" bullet
-    below) — worth checking for that kind of existing convergence before
+    (see the "Third exemption, an object whose properties get
+    destructured into local variables" bullet below) — worth checking for that kind of existing convergence before
     picking a name, since matching it removes any rename at the read
     site entirely.
   - **Exemption**: this rule only applies to an object whose property
@@ -3389,6 +3881,64 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     standard, default practice for this category of object, not a rare
     exception — apply it to every exported namespace object, not only the
     ones already swept this way.
+    This also covers an object that plays the same role without being
+    exported directly, e.g. a hook's own returned actions object passed
+    down as a prop and called by name across many files (`store.js`'s own
+    `actStoObj`). When its values are inline functions with no internal
+    names to reuse, each key is written as a full 9-character name under
+    the normal naming rules, the same as if it had an internal
+    implementation of its own.
+  - **Third exemption, an object whose properties get destructured into
+    local variables**: when a reader destructures one of our own objects
+    (`const { a, b } = someFun();`), every binding it creates is a real
+    local variable, and local variables always follow the full
+    9-character/3-segment rule. Giving such an object normal 6-character
+    keys would force every reader to alias each one back to a 9-character
+    name (`const { claBoo : stkClaBoo, stkNum : stkValNum } = ...`), a
+    second name for the same value at every read site. Instead, the
+    object's own keys use the full 9-character name the reading local
+    variable would get anyway, so every reader can use plain shorthand
+    destructuring (`const { stkClaBoo, stkValNum } = ...`) with nothing to
+    translate. This applies whenever at least one reader destructures the
+    object; a reader that uses dot access instead (`resObj.stkValNum`)
+    works just as well with the longer key, so a mix of both reader styles
+    still follows this exemption. It only covers objects whose keys are
+    entirely our own invention (the same "do I control every reader of
+    this key" test as the first exemption above); an externally
+    constrained key stays exactly as it is, and a destructuring reader
+    aliases it instead. An object read only through dot access, never
+    destructured, keeps the normal 6-character keys. See `store.js`'s own
+    `stkRecFun` for the reference example: its `{ stkClaBoo, stkValNum }`
+    return shape matches the local variables of the same names inside the
+    function itself, and each of its 4 callers destructures it with
+    shorthand, then writes the persisted `streak`/`streakClaimed` state
+    keys out explicitly (`streak : stkValNum`). Earlier precedents
+    reached the same result before this bullet existed: `tab-today.jsx`'s
+    own `GroHeaCom` prop key `doneCount` became `donCouNum` so its own
+    destructuring could collapse to shorthand, and `help-mode.jsx`'s own
+    `claPadFun` return shape (`padTopNum`/`padBotNum`/...) matched the
+    reading local variables' own names.
+    - **Large, externally constrained argument objects are read, not
+      destructured**: when a function receives an object whose keys it
+      can't rename (most commonly because callers pass real persisted
+      records straight in, e.g. a whole sample picker) and it would
+      otherwise destructure many of those keys, it takes the object as
+      ONE named parameter instead and reads each field by property
+      access (`picArgObj.name`, `picArgObj.mode`, ...), rather than
+      aliasing every key to a 9-character local in the destructuring
+      pattern. This keeps the external key visible at every read, needs
+      only one new name, and can't drift out of sync the way a long
+      alias list can. Default parameter values move to where each field
+      is read, written as an explicit `=== undefined ? <default> :
+      <value>` check so they keep default-parameter semantics exactly
+      (`??` would also replace `null`, which a default parameter never
+      does); a default the callee already applies itself can simply be
+      dropped. A single field read many times may still get one plain
+      local (`const newConObj = picArgObj.newConditional;`). A short
+      destructuring with only a couple of constrained keys can still
+      alias them in place instead, whichever reads more clearly. See
+      `store.js`'s own `addPicker`/`commitPickerEdit` (`picArgObj`) for
+      the reference example.
 - **Exported namespace objects must use explicit `originalName :
   internalName` mapping, never JS shorthand `{ internalName }`.** A
   domain module's public API (`STORAGE`, `PICKERS`, `TASKS`,
@@ -3467,14 +4017,6 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   Lean toward the loud failure for those; a quiet, cosmetic default (e.g. a
   boolean flag's natural resting state, or a string's natural starting
   value) is fine either way.
-
-
-
-## Known repo quirk
-
-There is a stray duplicate `store.jsx` at the repo root (identical to
-`src/store.jsx`). It isn't imported by anything (Vite serves from `src/`) —
-treat `src/store.jsx` as the canonical file if you need to edit store logic.
 
 # Claude Code Rules
 

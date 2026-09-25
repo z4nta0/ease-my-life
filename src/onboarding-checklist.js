@@ -167,7 +167,7 @@ function cheStaFun ( appStaObj ) {
  * picker's own checklist entry can go from 'finished' back to
  * unresolved (an uncheck) or to 'cancelled'/'skipped' (an X, or Skip on
  * a replay) without the real picker it already created ever being
- * deleted (see store.jsx's addPicker replaceId comment), so checking
+ * deleted (see store.js's addPicker replaceId comment), so checking
  * status here would wrongly re-flag cards as needing attention even
  * though real data already exists.
  *
@@ -280,7 +280,7 @@ function reaGenFun ( appStaObj ) { return othRemFun( appStaObj ) === 0 && reaPic
  * never had sample data seeded at all: maiTouBoo requires actual hidden
  * samples to exist, which protects that case independent of
  * checklistDone's own backfilled-false default for legacy saves (see
- * store.jsx's migrate).
+ * store.js's migStaFun).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -327,15 +327,15 @@ function tutProFun ( appStaObj ) {
 
 
 
-export const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.jsx/reminders.jsx/tab-today.jsx/tab-picker.jsx/tab-data.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
+export const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.js/reminders.jsx/tab-today.jsx/tab-picker.jsx/tab-data.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
 
 
 	cheIteArr : CHE_ITE_ARR, // What: Checklist Item Array. Why: Some future caller may need the full flat manifest directly rather than one of the derived helpers below. How: This re-exports CHE_ITE_ARR as cheIteArr, consistent with this object's own other property names.
 	cheStaFun : cheStaFun,   // What: Checklist Status Function. Why: tab-today.jsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete, by this exact name. How: This re-exports cheStaFun under its own matching name.
 	entLooFun : entLooFun,   // What: Entry Lookup Function. Why: Every consuming file needs to check one specific checklist item's own resolution, by this exact name. How: This re-exports entLooFun under its own matching name.
 	othRemFun : othRemFun,   // What: Others Remaining Function. Why: tab-today.jsx reads this for the Generate card's own dynamic explanation text, by this exact name. How: This re-exports othRemFun under its own matching name.
-	reaGenFun : reaGenFun,   // What: Ready Generate Function. Why: store.jsx and tab-today.jsx both gate the Generate card's own actionability on this, by this exact name. How: This re-exports reaGenFun under its own matching name.
-	reaPicFun : reaPicFun,   // What: Real Picker Function. Why: store.jsx and tab-today.jsx both gate real-data-exists checks on this, by this exact name. How: This re-exports reaPicFun under its own matching name.
+	reaGenFun : reaGenFun,   // What: Ready Generate Function. Why: store.js and tab-today.jsx both gate the Generate card's own actionability on this, by this exact name. How: This re-exports reaGenFun under its own matching name.
+	reaPicFun : reaPicFun,   // What: Real Picker Function. Why: store.js and tab-today.jsx both gate real-data-exists checks on this, by this exact name. How: This re-exports reaPicFun under its own matching name.
 	tutProFun : tutProFun    // What: Tutorials Progress Function. Why: reminders.jsx/tab-picker.jsx/tab-data.jsx all gate their own "add new X" controls on this, by this exact name. How: This re-exports tutProFun under its own matching name.
 
 

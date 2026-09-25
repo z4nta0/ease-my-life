@@ -49,7 +49,7 @@ import { useEmlTouFun } from './eml-tour-bus.js';     // What: Use Ease My Life 
  *
  * @summary
  * Converts a Date into the local calendar day it falls on, as a plain
- * 'YYYY-MM-DD' string. Matches store.jsx's own isoDay and seed.js's
+ * 'YYYY-MM-DD' string. Matches store.js's own isoDay and seed.js's
  * seedIsoDay, so a value produced here compares equal against a row's
  * denormalized date field without any timezone drift.
  *
@@ -177,8 +177,8 @@ const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time v
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param doneCouNum - Done Count Number: How many reminders were completed
- *                     that day.
+ * @param donCouNum - Done Count Number: How many reminders were completed
+ *                    that day.
  *
  * @returns A heat level from 0 (none) to 4 (four or more).
  *
@@ -190,10 +190,10 @@ const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time v
  *
 */
 
-function couLevFun ( doneCouNum ) {
+function couLevFun ( donCouNum ) {
 
 
-	return doneCouNum <= 0 ? 0 : doneCouNum >= 4 ? 4 : doneCouNum; // What: Heat Level Return. Why: Zero and negative counts show as empty, four or more caps at the darkest cell, and anything between maps onto itself. How: This is a plain clamp of doneCouNum into the 0-4 range.
+	return donCouNum <= 0 ? 0 : donCouNum >= 4 ? 4 : donCouNum; // What: Heat Level Return. Why: Zero and negative counts show as empty, four or more caps at the darkest cell, and anything between maps onto itself. How: This is a plain clamp of donCouNum into the 0-4 range.
 
 
 }
@@ -632,7 +632,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	const picLogArr = state.pickLog || [];   // What: Pick Log Array. Why: Every pick-related card on this page derives from this one flat, append-only log. How: This falls back to an empty array for a fresh install with no history yet.
 	const picLisArr = state.pickers || [];   // What: Picker List Array. Why: The Show/Group/Type filter rows and every picker lookup below need the live picker list. How: This falls back to an empty array for a fresh install with no pickers yet.
 
-	// Hidden pickers/tasks (see store.jsx's own hidden flag) keep their
+	// Hidden pickers/tasks (see store.js's own hidden flag) keep their
 	// history rows in picLogArr/reminderLog/reminderSkipLog (nothing here
 	// is ever deleted), but every rollup below excludes them by id so the
 	// numbers reflect only what's currently visible, same as Today/Pickers/
@@ -834,7 +834,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 	// staGroStr only scopes which pickers appear in the Show row below; it
 	// never filters the stats themselves. 'all' also lets the All +
-	// Reminders options show. A hidden picker (see store.jsx's own hidden
+	// Reminders options show. A hidden picker (see store.js's own hidden
 	// flag) never appears here at all.
 	const [ staGroStr, setStaGroStr ] = React.useState( 'all' ); // What: Stat Group String And Setter. Why: This is the single source of truth for the active Group filter pill. How: This is read by visPicArr below and written by the Group filter row's own buttons.
 

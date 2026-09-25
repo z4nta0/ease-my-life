@@ -46,7 +46,7 @@
  * exactly as the engine already stores it.
  *
  * The exported CAD_NAM_OBJ namespace object's own property names are a
- * cross-file contract read directly by store.jsx, tab-today.jsx,
+ * cross-file contract read directly by store.js, tab-today.jsx,
  * tab-picker.jsx, tab-data.jsx, tab-stats.jsx, day-log.jsx, and
  * cadence-control.jsx. Same as pickers.js's own PIC_NAM_OBJ, CAD_NAM_OBJ's
  * own external names were swept to match their internal implementation
@@ -736,7 +736,7 @@ function enfWeeFun( picCadObj ) {
 
 
 
-export const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.jsx, tab-today.jsx, tab-picker.jsx, tab-data.jsx, tab-stats.jsx, day-log.jsx, and cadence-control.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
+export const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.js, tab-today.jsx, tab-picker.jsx, tab-data.jsx, tab-stats.jsx, day-log.jsx, and cadence-control.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
 
 
 	CAD_STR_ARR : CAD_STR_ARR, // What: Cadence String Array. Why: Callers (a picker's own cadence dropdown) need the fixed list of valid cadence option values. How: This re-exports CAD_STR_ARR under its own matching name.
@@ -747,7 +747,7 @@ export const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.jsx, 
 	isaAncFun   : isaAncFun,   // What: Is-An Anchor Function. Why: Callers check whether a given weekday is a weekly picker's own locked anchor by this exact name. How: This re-exports isaAncFun under its own matching name.
 	isaCadFun   : isaCadFun,   // What: Is-A Cadence Function. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its own matching name.
 	locTipFun   : locTipFun,   // What: Locked Tip Function. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This re-exports locTipFun under its own matching name.
-	norCadFun   : norCadFun,   // What: Normalize Cadence Function. Why: store.jsx calls this to fill in every cadence-related field a picker needs, defaulted consistently. How: This re-exports norCadFun under its own matching name.
+	norCadFun   : norCadFun,   // What: Normalize Cadence Function. Why: store.js calls this to fill in every cadence-related field a picker needs, defaulted consistently. How: This re-exports norCadFun under its own matching name.
 	perKeyFun   : perKeyFun,   // What: Period Key Function. Why: Callers need a given date's own comparable period key by this exact name. How: This re-exports perKeyFun under its own matching name.
 	perStaFun   : perStaFun,   // What: Period Start Function. Why: Callers need a given date's own period-start date by this exact name. How: This re-exports perStaFun under its own matching name.
 	sumCadFun   : sumCadFun,   // What: Summary Cadence Function. Why: Callers need a picker's own human-readable cadence summary by this exact name. How: This re-exports sumCadFun under its own matching name.

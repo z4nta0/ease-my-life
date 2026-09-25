@@ -15,7 +15,7 @@
  *
  * The async/sync seam this file maintains: iniStoFun (exposed publicly
  * as STG_NAM_OBJ.iniStoFun) runs BEFORE React mounts and parks the
- * loaded state in memory, so store.jsx's own loadState() can stay
+ * loaded state in memory, so store.js's own loaStaFun() can stay
  * synchronous and no component ever had to become async just to read
  * persisted state. Writes made after that point are fire-and-forget
  * from the caller's own point of view.
@@ -23,7 +23,7 @@
  * STG_NAM_OBJ is this file's whole public API, the single object every
  * consuming file imports and calls through, its own external names
  * swept to match the internal implementation exactly after checking
- * the blast radius across pwa.js, main.jsx, store.jsx, and
+ * the blast radius across pwa.js, main.jsx, store.js, and
  * tab-settings.jsx.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -551,7 +551,7 @@ function wriLocFun( appStaObj, fulWriBoo ) {
  * migration snapshot and sweeps dead pre-IDB localStorage generations
  * once IDB has booted cleanly SNA_KEE_NUM times in a row. This is
  * awaited in main.jsx before React ever mounts, which is what lets
- * store.jsx's own loadState() stay synchronous.
+ * store.js's own loaStaFun() stay synchronous.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -676,7 +676,7 @@ async function iniStoFun() {
 
 
 
-	return cacStaObj; // What: Cached State Object Return. Why: main.jsx awaits this before React mounts, and store.jsx's own loadState() reads it back synchronously afterward. How: This returns the same cacStaObj populated throughout this function.
+	return cacStaObj; // What: Cached State Object Return. Why: main.jsx awaits this before React mounts, and store.js's own loaStaFun() reads it back synchronously afterward. How: This returns the same cacStaObj populated throughout this function.
 
 
 }
@@ -1132,7 +1132,7 @@ function logAutFun() { logSusBoo = false; } // What: Log Authoritative Body. Why
 
 
 
-const cacStaFun = () => cacStaObj; // What: Cached State Function. Why: store.jsx's own loadState() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
+const cacStaFun = () => cacStaObj; // What: Cached State Function. Why: store.js's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
 const curEngFun = () => curEngStr; // What: Current Engine Function. Why: Nothing outside this file currently reads which engine is active, but this stays exported as part of STG_NAM_OBJ's own stable public shape. How: This closes over the module-private curEngStr rather than exposing it directly.
 
 
@@ -1140,18 +1140,18 @@ const curEngFun = () => curEngStr; // What: Current Engine Function. Why: Nothin
 export const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports by name. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
 
 
-	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: store.jsx's own loadState() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
+	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: store.js's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
 	curEngFun   : curEngFun,   // What: Current Engine Function. Why: Nothing outside this file currently reads which engine is active, but this stays exported as part of STG_NAM_OBJ's own stable public shape. How: This re-exports curEngFun under its own matching name.
-	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: store.jsx calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
-	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: main.jsx awaits this before React ever mounts, and store.jsx's own loadState() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
-	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: store.jsx calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
+	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: store.js calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
+	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: main.jsx awaits this before React ever mounts, and store.js's own loaStaFun() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
+	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: store.js calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
 	MIG_SNA_STR : MIG_SNA_STR, // What: Migration Snapshot String. Why: This stays exported as part of STG_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level MIG_SNA_STR constant unchanged.
 	MIR_KEY_STR : MIR_KEY_STR, // What: Mirror Key String. Why: This stays exported as part of STG_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level MIR_KEY_STR constant unchanged.
 	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: tab-settings.jsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
 	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: pwa.js calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
-	savStaFun   : savStaFun,   // What: Save State Function. Why: store.jsx calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
+	savStaFun   : savStaFun,   // What: Save State Function. Why: store.js calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
 	staRepFun   : staRepFun,   // What: Status Report Function. Why: tab-settings.jsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
-	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: store.jsx calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
+	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: store.js calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
 
 
 };

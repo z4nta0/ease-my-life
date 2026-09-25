@@ -43,7 +43,7 @@
  *
  * - `id` (String): Id is this sample picker's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mjs baked into
- *   onboarding-stats-data.js and what store.jsx/onboarding-welcome-tour.jsx
+ *   onboarding-stats-data.js and what store.js/onboarding-welcome-tour.jsx
  *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
@@ -148,7 +148,7 @@ export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is th
  *
  * - `id` (String): Id is this sample picker's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mjs baked into
- *   onboarding-stats-data.js and what store.jsx/onboarding-welcome-tour.jsx
+ *   onboarding-stats-data.js and what store.js/onboarding-welcome-tour.jsx
  *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
@@ -354,7 +354,7 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
  *
  * - `id` (String): Id is this sample task's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mjs baked into
- *   onboarding-stats-data.js and what store.jsx/onboarding-welcome-tour.jsx
+ *   onboarding-stats-data.js and what store.js/onboarding-welcome-tour.jsx
  *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
@@ -482,7 +482,7 @@ export const ONB_PCT_OBJ = { // What: Onboarding Picker-Card-Time Object. Why: T
  *
  * @summary
  * Produces the same local-timezone-adjusted ISO day string as
- * store.jsx's own isoDay and seed.js's own seedIsoDay, kept as a local
+ * store.js's own isoDay and seed.js's own seedIsoDay, kept as a local
  * copy since this module has no dependency on either.
  *
  * @author z4nta0 <https://github.com/z4nta0>

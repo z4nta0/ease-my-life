@@ -62,9 +62,9 @@ const curDirStr = path.dirname( fileURLToPath( import.meta.url ) ); // What: Cur
  * Picker Record Array / Item Record Array
  *
  * @summary
- * Reconstructs the pickers/items exactly as store.jsx's own addPicker()
+ * Reconstructs the pickers/items exactly as store.js's own addPicker()
  * would create them live, so the simulated history lines up with what
- * the app actually seeds (see addPicker in src/store.jsx for the
+ * the app actually seeds (see addPicker in src/store.js for the
  * source of truth this mirrors).
  *
  * @author z4nta0 <https://github.com/z4nta0>

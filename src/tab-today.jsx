@@ -297,7 +297,7 @@ function groEntFun ( staAppObj ) {
 		if ( cheDonBoo && isaDonBoo ) continue; // What: Replay Resolved Guard. Why: Post-checklistDone, a resolved card vanishes for good the moment it resolves instead of sticking around with an Undo toggle, since there is no closing Generate card left to synchronize a batch disappearance against. How: This drops curPicObj's own card once it is both post-checklistDone and already resolved.
 
 
-		if ( cheDonBoo ) { // What: Replay Collision Branch. Why: Only matters post-checklistDone; during the ORIGINAL first-time checklist this must stay a no-op, since finishing this exact tutorial deliberately creates a real picker sharing the sample's own name (addPicker's own dedup skips hidden pickers for this reason, see store.jsx), and running this check then would immediately "collide" with its own result. How: This checks for a same-named real picker and drops the card if one already exists.
+		if ( cheDonBoo ) { // What: Replay Collision Branch. Why: Only matters post-checklistDone; during the ORIGINAL first-time checklist this must stay a no-op, since finishing this exact tutorial deliberately creates a real picker sharing the sample's own name (addPicker's own dedup skips hidden pickers for this reason, see store.js), and running this check then would immediately "collide" with its own result. How: This checks for a same-named real picker and drops the card if one already exists.
 
 
 			const colBoo = staAppObj.pickers.some( ( othPicObj ) => !ONB_SPI_ARR.includes( othPicObj.id ) && othPicObj.name === curPicObj.name ); // What: Collision Boolean. Why: A real picker sharing this sample's exact name means re-prompting it would be redundant. How: This checks every non-sample picker's own name against curPicObj's own name.
@@ -432,7 +432,7 @@ function groEntFun ( staAppObj ) {
  *
 */
 
-function GroHeaCom ( { name : groNamStr, doneCount : donCouNum, total : totCouNum, editMode : ediModBoo, onGripDown : onGriDowFun, onRenameGroup : onRenGroFun, mergePending : merPenObj, onConfirmMerge : onConMerFun, onCancelMerge : onCanMerFun, logOpen : logOpeBoo, onToggleLog : onTogLogFun, validate : valNamFun } ) {
+function GroHeaCom ( { name : groNamStr, donCouNum, total : totCouNum, editMode : ediModBoo, onGripDown : onGriDowFun, onRenameGroup : onRenGroFun, mergePending : merPenObj, onConfirmMerge : onConMerFun, onCancelMerge : onCanMerFun, logOpen : logOpeBoo, onToggleLog : onTogLogFun, validate : valNamFun } ) {
 
 
 	// #region Cascade Dash Animation
@@ -1014,12 +1014,12 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 		try {
 
 
-			const rawJsnStr = localStorage.getItem( 'easemylife.v2' ); // What: Raw Json String. Why: The warm mirror's own persisted blob needs to be read before it can be patched. How: This reads the fixed 'easemylife.v2' storage key.
+			const rawJsoStr = localStorage.getItem( 'easemylife.v2' ); // What: Raw Json String. Why: The warm mirror's own persisted blob needs to be read before it can be patched. How: This reads the fixed 'easemylife.v2' storage key.
 
-			if ( !rawJsnStr ) return; // What: No Mirror Guard. Why: A brand-new install (or a cleared mirror) has nothing to patch. How: This bails out early when rawJsnStr is empty.
+			if ( !rawJsoStr ) return; // What: No Mirror Guard. Why: A brand-new install (or a cleared mirror) has nothing to patch. How: This bails out early when rawJsoStr is empty.
 
 
-			const rawStaObj = JSON.parse( rawJsnStr ); // What: Raw State Object. Why: The mirror's own items array needs to be reachable as real data before it can be patched. How: This parses rawJsnStr.
+			const rawStaObj = JSON.parse( rawJsoStr ); // What: Raw State Object. Why: The mirror's own items array needs to be reachable as real data before it can be patched. How: This parses rawJsoStr.
 
 			if ( !Array.isArray( rawStaObj.items ) ) return; // What: No Items Array Guard. Why: A malformed or very old mirror shape has nothing safe to patch. How: This bails out unless rawStaObj.items is a real array.
 
@@ -1066,7 +1066,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	const picModStr = picker ? picker.mode : 'random';                   // What: Picker Mode String. Why: Nearly every row below renders differently depending on the picker's own mode. How: This reads picker.mode, falling back to 'random' when no picker was passed at all.
 	const isaEasBoo = picModStr === 'ease-up' || picModStr === 'ease-down'; // What: Is-A Ease Boolean. Why: Ease-up/ease-down show a cadence range instead of a weight stepper, since weight is irrelevant to those modes. How: This is true for either ease mode.
-	const hasWgtBoo = picModStr === 'weighted' || picModStr === 'dynamic'; // What: Has Weight Boolean. Why: Weight is only a real lever for weighted/dynamic; random picks uniformly and ease modes ignore it entirely. How: This is true for either of those two modes.
+	const hasWeiBoo = picModStr === 'weighted' || picModStr === 'dynamic'; // What: Has Weight Boolean. Why: Weight is only a real lever for weighted/dynamic; random picks uniformly and ease modes ignore it entirely. How: This is true for either of those two modes.
 	const isaDynBoo = picModStr === 'dynamic'; // What: Is-A Dynamic Boolean. Why: Only dynamic mode also shows the Boost row beneath its weight stepper. How: This is true only when picModStr is 'dynamic'.
 
 	// #endregion Mode-Derived Display Values
@@ -1328,7 +1328,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 					</React.Fragment>
 
 
-				) : hasWgtBoo ? ( // What: Weight Row Branch. Why: Weighted/dynamic show an editable weight stepper instead. How: This renders the weight label/subtitle plus a plain plus/minus control.
+				) : hasWeiBoo ? ( // What: Weight Row Branch. Why: Weighted/dynamic show an editable weight stepper instead. How: This renders the weight label/subtitle plus a plain plus/minus control.
 
 
 					<div className='pie-row'>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight-stepper below. */ }
@@ -2909,7 +2909,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		pshFun( '__reminders' ); // What: Reminders Trailing Guard. Why: On the very first render (an empty savOrdArr), the front-guard above never ran, so this second call is what actually seeds Reminders at all; pshFun's own dedupe makes this a no-op on every later render. How: This pushes '__reminders' again, harmlessly, if it somehow still isn't collected.
 
-		if ( !seeNamSet.has( '__pageTours' ) ) ordArr.splice( ordArr.indexOf( '__reminders' ) + 1, 0, '__pageTours' ); // What: Page Tours Default Splice. Why: Page Tours defaults to right after Reminders the first time it shows up (e.g. a saved order predating Page Tours entirely), so it needs no backfill in migrate(); once the user drags it in Edit Mode, its own saved position takes over like any other group. How: This splices '__pageTours' in right after '__reminders' only when it wasn't already collected above.
+		if ( !seeNamSet.has( '__pageTours' ) ) ordArr.splice( ordArr.indexOf( '__reminders' ) + 1, 0, '__pageTours' ); // What: Page Tours Default Splice. Why: Page Tours defaults to right after Reminders the first time it shows up (e.g. a saved order predating Page Tours entirely), so it needs no backfill in migStaFun(); once the user drags it in Edit Mode, its own saved position takes over like any other group. How: This splices '__pageTours' in right after '__reminders' only when it wasn't already collected above.
 
 
 		return ordArr; // What: Block Order Return. Why: The rail and content column both need this final sequence. How: This returns the same array built by the passes above.
@@ -2930,7 +2930,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const entArr = React.useMemo( () => { // What: Entry Array. Why: Every count below needs today's own entries with hidden-picker rows already excluded, matching groEntFun's own exclusion so counts and rendered rows never disagree. How: This filters state.today.entries against the current hidden-picker id set.
 
 
-		const hidPicSet = new Set( state.pickers.filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: An entry belonging to a still-hidden picker (see the hidden flag in store.jsx's migrate()) must be excluded from every count here. How: This collects every currently-hidden picker's own id.
+		const hidPicSet = new Set( state.pickers.filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: An entry belonging to a still-hidden picker (see the hidden flag in store.js's migStaFun()) must be excluded from every count here. How: This collects every currently-hidden picker's own id.
 		return state.today.entries.filter( ( curEntObj ) => !curEntObj.pickerId || !hidPicSet.has( curEntObj.pickerId ) ); // What: Entry Filter Return. Why: This is the actual filtered list every count below reads from. How: This keeps a day-off entry (no pickerId) and any entry whose own pickerId isn't in hidPicSet.
 
 
@@ -2968,7 +2968,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * they're on screen, see groEntFun's own copy of this same gate. Kept
 	 * additive/separate from entArr/dueTasArr (rather than merged in) so
 	 * streak reconciliation and Stats stay untouched by tutorial-card
-	 * completion, see store.jsx's reconcileStreak, which only ever reads
+	 * completion, see store.js's stkRecFun, which only ever reads
 	 * state.today.entries/state.tasks.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
@@ -3094,7 +3094,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * checked first-time card does. Collision filtering only ever applies
 	 * once cheDonBoo; during the first-time phase it must stay a no-op,
 	 * or completing a picker/task tutorial (which deliberately creates a
-	 * same-named real picker/task, see store.jsx's addPicker/addTask)
+	 * same-named real picker/task, see store.js's addPicker/addTask)
 	 * would immediately "collide" with its own result and undercount the
 	 * very card it just finished.
 	 *
@@ -4875,7 +4875,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * block:'center' cutting it off behind them.
 	 *
 	 * Driven off state.onboarding.generateScrollPending (set in
-	 * store.jsx's setChecklistItem the instant onbRdyBoo flips false to
+	 * store.js's setChecklistItem the instant onbRdyBoo flips false to
 	 * true), NOT a local "did I see it flip" ref: the last checklist item
 	 * is very often resolved from a mini-tour or Page Tour running on a
 	 * DIFFERENT tab, which unmounts this whole component for the tour's
@@ -5695,7 +5695,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 											<GroHeaCom
 												name={ pagNamStr }
-												doneCount={ pagDonNum }
+												donCouNum={ pagDonNum }
 												total={ ONB_EPT_ARR.length }
 												editMode={ ediModBoo }
 												onGripDown={ startGroDraFun }
@@ -5753,7 +5753,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 										<GroHeaCom
 											name={ curGroObj.name }
-											doneCount={ curDonNum }
+											donCouNum={ curDonNum }
 											total={ curGroObj.entries.length }
 											editMode={ ediModBoo }
 											onGripDown={ startGroDraFun }
@@ -5905,7 +5905,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 								<GroHeaCom
 									name='App Features'
-									doneCount={ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }
+									donCouNum={ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }
 									total={ APP_FEA_ARR.length }
 									editMode={ false }
 								/>{ /* What: Group Header Component. Why: App Features shares the exact same header chrome as a real group, but is never itself reorderable. How: This is passed a fixed name plus its own live done/total counts. */ }

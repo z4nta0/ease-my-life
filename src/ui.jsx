@@ -611,7 +611,7 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                     // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
 	const [ tipPosObj, setTipPosObj ] = React.useState( { left : 0, top : 0, placement : 'top' } );   // What: Tip Position Object And Setter. Why: The portaled tooltip needs an absolute left/top plus which side it's placed on, recomputed every time it opens or the page scrolls/resizes. How: This is written by plaTipFun below and read directly in the portaled span's own inline style.
 	const [ texTrnBoo, setTexTrnBoo ] = React.useState( false );                                     // What: Text Truncated Boolean And Setter. Why: truncationOnly mode needs to know whether the trigger's own text is actually overflowing before deciding to be interactive at all. How: This is measured by the effect below and read by actTipBoo.
-	const trgEleRef                   = React.useRef( null );                                        // What: Trigger Element Reference. Why: Both the truncation measurement and the positioning math need a handle on the real trigger DOM node. How: This is attached to the trigger span's own ref prop in both the inert and interactive render branches below.
+	const triEleRef                   = React.useRef( null );                                        // What: Trigger Element Reference. Why: Both the truncation measurement and the positioning math need a handle on the real trigger DOM node. How: This is attached to the trigger span's own ref prop in both the inert and interactive render branches below.
 	const tipEleRef                   = React.useRef( null );                                        // What: Tip Element Reference. Why: The positioning math needs to measure the portaled tooltip's own rendered size. How: This is attached to the portaled tooltip span's own ref prop below.
 	const lasPoiStr                   = React.useRef( 'mouse' );                                     // What: Last Pointer String Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
 	const actTipBoo                   = truncationOnly ? texTrnBoo : true;                           // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is texTrnBoo itself under truncationOnly, otherwise always true.
@@ -622,12 +622,12 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 		if ( !truncationOnly ) return; // What: Not Truncation Only Guard. Why: The always-relevant tip variant never needs this measurement at all. How: This skips the rest of the effect entirely when truncationOnly is false.
 
-		const trgCurEle = trgEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from trgEleRef.current and reused for every check below.
+		const triCurEle = triEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from triEleRef.current and reused for every check below.
 
-		if ( !trgCurEle ) return; // What: No Trigger Guard. Why: The ref may not be attached yet. How: This bails out early when there is no trigger element to measure.
+		if ( !triCurEle ) return; // What: No Trigger Guard. Why: The ref may not be attached yet. How: This bails out early when there is no trigger element to measure.
 
 
-		const cheTrnFun = () => setTexTrnBoo( trgCurEle.scrollWidth > trgCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares trgCurEle's own scrollWidth against its clientWidth.
+		const cheTrnFun = () => setTexTrnBoo( triCurEle.scrollWidth > triCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares triCurEle's own scrollWidth against its clientWidth.
 
 		cheTrnFun(); // What: Initial Check Call. Why: The truncation state must be known immediately on mount, not just after a later resize. How: This invokes cheTrnFun once, synchronously.
 
@@ -637,7 +637,7 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 			const resObsObj = new ResizeObserver( cheTrnFun ); // What: Resize Observer Object. Why: The trigger's own box (not just the viewport) needs to be watched. How: This creates an observer that re-runs cheTrnFun on every observed size change.
 
-			resObsObj.observe( trgCurEle ); // What: Resize Observer Start Call. Why: An observer does nothing until it's actually watching something. How: This starts watching trgCurEle for size changes.
+			resObsObj.observe( triCurEle ); // What: Resize Observer Start Call. Why: An observer does nothing until it's actually watching something. How: This starts watching triCurEle for size changes.
 
 
 			return () => resObsObj.disconnect(); // What: Resize Observer Cleanup Return. Why: The observer must not outlive this effect run. How: This disconnects resObsObj on cleanup.
@@ -657,13 +657,13 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 	const plaTipFun = React.useCallback( () => { // What: Place Tip Function. Why: The portaled tooltip needs its own absolute position recomputed from scratch every time it might have moved. How: This measures both the trigger and the tip, prefers placing above, flips below if that would clip, and clamps both axes to the viewport.
 
 
-		const trgCurEle = trgEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from trgEleRef.current and reused below.
+		const triCurEle = triEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from triEleRef.current and reused below.
 		const tipCurEle = tipEleRef.current; // What: Tip Current Element. Why: The measurement below needs a stable local reference to the live tooltip DOM node. How: This is read once from tipEleRef.current and reused below.
 
-		if ( !trgCurEle || !tipCurEle ) return; // What: No Element Guard. Why: Both elements must actually be mounted before there is anything real to measure. How: This bails out early when either ref isn't attached yet.
+		if ( !triCurEle || !tipCurEle ) return; // What: No Element Guard. Why: Both elements must actually be mounted before there is anything real to measure. How: This bails out early when either ref isn't attached yet.
 
 
-		const trgRecObj = trgCurEle.getBoundingClientRect(); // What: Trigger Rect Object. Why: The tooltip's own position is computed relative to the trigger's real on-screen position. How: This reads trgCurEle's own bounding rect.
+		const triRecObj = triCurEle.getBoundingClientRect(); // What: Trigger Rect Object. Why: The tooltip's own position is computed relative to the trigger's real on-screen position. How: This reads triCurEle's own bounding rect.
 		const tipWidNum = tipCurEle.offsetWidth;             // What: Tip Width Number. Why: Centering and clamping the tooltip both need its own real rendered width. How: This reads tipCurEle's own offsetWidth.
 		const tipHeiNum = tipCurEle.offsetHeight;            // What: Tip Height Number. Why: Placing the tooltip above/below the trigger needs its own real rendered height. How: This reads tipCurEle's own offsetHeight.
 		const edgMarNum = 8;                                 // What: Edge Margin Number. Why: The tooltip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear.
@@ -672,14 +672,14 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 
 		let tipPlaStr = 'top';                        // What: Tip Placement String. Why: Above the trigger is the preferred placement, flipped below only if it would clip. How: This starts at 'top' and may be overwritten to 'bottom' just below.
-		let tipTopNum = trgRecObj.top - tipHeiNum - 8; // What: Tip Top Number. Why: This is the candidate vertical position for the preferred above-trigger placement. How: This sits tipHeiNum plus an 8px gap above trgRecObj's own top edge.
+		let tipTopNum = triRecObj.top - tipHeiNum - 8; // What: Tip Top Number. Why: This is the candidate vertical position for the preferred above-trigger placement. How: This sits tipHeiNum plus an 8px gap above triRecObj's own top edge.
 
-		if ( tipTopNum < edgMarNum ) { tipPlaStr = 'bottom'; tipTopNum = trgRecObj.bottom + 8; } // What: Top Clip Guard. Why: A tooltip that would clip the top of the viewport must flip to sit below the trigger instead. How: This overwrites both tipPlaStr and tipTopNum together when the above-placement candidate falls too high.
+		if ( tipTopNum < edgMarNum ) { tipPlaStr = 'bottom'; tipTopNum = triRecObj.bottom + 8; } // What: Top Clip Guard. Why: A tooltip that would clip the top of the viewport must flip to sit below the trigger instead. How: This overwrites both tipPlaStr and tipTopNum together when the above-placement candidate falls too high.
 
 		if ( tipTopNum + tipHeiNum > vieHeiNum - edgMarNum ) tipTopNum = Math.max( edgMarNum, vieHeiNum - tipHeiNum - edgMarNum ); // What: Bottom Clip Guard. Why: A below-placement (or an above one that's still too tall) must not run past the bottom of the viewport either. How: This clamps tipTopNum so the tooltip's own bottom edge never crosses vieHeiNum - edgMarNum.
 
 
-		let tipLefNum = trgRecObj.left + trgRecObj.width / 2 - tipWidNum / 2; // What: Tip Left Number. Why: The tooltip should start centered on the trigger horizontally. How: This computes the centered left offset before the horizontal clamp below.
+		let tipLefNum = triRecObj.left + triRecObj.width / 2 - tipWidNum / 2; // What: Tip Left Number. Why: The tooltip should start centered on the trigger horizontally. How: This computes the centered left offset before the horizontal clamp below.
 
 		tipLefNum = Math.max( edgMarNum, Math.min( tipLefNum, vieWidNum - tipWidNum - edgMarNum ) ); // What: Horizontal Clamp. Why: A centered tooltip can still overflow either side of a narrow viewport. How: This clamps tipLefNum between edgMarNum and the viewport's own right-edge margin.
 
@@ -726,7 +726,7 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 		const onPoiDowFun = ( poiDowObj ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
 
 
-			if ( trgEleRef.current && trgEleRef.current.contains( poiDowObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
+			if ( triEleRef.current && triEleRef.current.contains( poiDowObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
 
 			setTipOpeBoo( false ); // What: Tip Close Call. Why: A pointerdown genuinely outside the trigger should close the tooltip. How: This sets tipOpeBoo false.
 
@@ -760,7 +760,7 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 
 		<span
-			ref={ trgEleRef }
+			ref={ triEleRef }
 			className={ className }
 		>{ children }</span> // What: Inert Trigger Span Element. Why: With nothing to reveal, this must still keep the ref attached so a later resize can re-measure and flip actTipBoo. How: This renders only the ref and the caller's own className, no interactive attributes at all.
 
@@ -773,7 +773,7 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 
 		<span
-			ref={ trgEleRef }
+			ref={ triEleRef }
 			className={ `infotip-trigger ${ className }` }
 			tabIndex={ 0 }
 			role='button'

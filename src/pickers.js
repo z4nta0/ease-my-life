@@ -34,7 +34,7 @@
  * This return shape's own OUTER property names (picObj/updArr/cycArr/
  * depBoo/patObj above) were swept the same way too, across every
  * file that actually reads a PIC_NAM_OBJ.picIteFun() result directly
- * (store.jsx, tab-today.jsx, tab-picker.jsx; tab-data.jsx and
+ * (store.js, tab-today.jsx, tab-picker.jsx; tab-data.jsx and
  * tab-conditional.jsx only ever touch PIC_NAM_OBJ's OTHER properties,
  * never this return shape). This was safe to do without touching
  * persisted data: every consumer that stages a pick result into
@@ -241,7 +241,7 @@ function norConFun( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidi
 
 
 
-export { norConFun, norGroFun, norPicFun }; // What: Named Exports. Why: store.jsx, tab-picker.jsx, tab-conditional.jsx, tab-data.jsx, and tab-today.jsx all import these three normalizers individually, by these exact names. How: This re-exports all three under their own newly-renamed names, already rippled into every one of those files.
+export { norConFun, norGroFun, norPicFun }; // What: Named Exports. Why: store.js, tab-picker.jsx, tab-conditional.jsx, tab-data.jsx, and tab-today.jsx all import these three normalizers individually, by these exact names. How: This re-exports all three under their own newly-renamed names, already rippled into every one of those files.
 
 
 
@@ -1004,11 +1004,11 @@ const modEliFun = ( iteRecObj, picRecObj ) => { // What: Mode Eligible Function.
 
 
 
-export const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations onto matching external property names, the same sweep CAD_NAM_OBJ/CON_NAM_OBJ/NOT_NAM_OBJ/ONB_CHE_OBJ already did (see this file's own header comment).
+export const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: store.js, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations onto matching external property names, the same sweep CAD_NAM_OBJ/CON_NAM_OBJ/NOT_NAM_OBJ/ONB_CHE_OBJ already did (see this file's own header comment).
 
 
-	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
-	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: store.jsx reads this for a fresh item's own starting ease-band shape. How: This re-exports DEF_EAS_OBJ under its own matching name.
+	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: store.js, tab-today.jsx, and tab-picker.jsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
+	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: store.js reads this for a fresh item's own starting ease-band shape. How: This re-exports DEF_EAS_OBJ under its own matching name.
 	easEliFun   : easEliFun,   // What: Ease Eligible Function. Why: tab-today.jsx checks this to decide whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
 	EAS_TOL_NUM : EAS_TOL_NUM, // What: Ease Tolerance Number. Why: Nothing outside this file currently reads this directly, but it stays exported as part of PIC_NAM_OBJ's own stable public shape. How: This re-exports EAS_TOL_NUM under its own matching name.
 	modEliFun   : modEliFun,   // What: Mode Eligible Function. Why: tab-picker.jsx checks this for a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
