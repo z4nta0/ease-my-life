@@ -18,7 +18,7 @@ import { resCusFun    } from './appearance.js';               // What: Resolve C
 import { resTheFun    } from './appearance.js';               // What: Resolve Theme Function. Why: The palette to apply depends on both the user's theme choice and the current system dark-mode state. How: This resolves both into a single concrete theme key inside the theme-application effect.
 import { SED_NAM_OBJ  } from './seed.js';                     // What: Seed Namespace Object. Why: The onboarding demo needs a fresh, non-persisted state to run against instead of the user's real data. How: This is called (buiCleFun) to seed useAppStaFun when the onboarding demo flag is set.
 import { TabDatCom    } from './tab-data.jsx';                // What: Tab Data Component. Why: This is the actual Data tab content. How: This is rendered while actIdeStr is 'data', passed the shared state/actions.
-import { TabPicker    } from './tab-picker.jsx';              // What: Tab Picker. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
+import { TabPicCom    } from './tab-picker.jsx';              // What: Tab Picker Component. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
 import { TabSettings  } from './tab-settings.jsx';            // What: Tab Settings. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
 import { TabStats     } from './tab-stats.jsx';               // What: Tab Stats. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabToday     } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
@@ -820,16 +820,16 @@ function AppRooCom () {
 							tabId={ actIdeStr }
 						/>{ /* What: Background Flourish Component. Why: The decorative background glyphs need to know which tab they're behind and where to measure their bounds. How: This is passed the shared main-inner ref and the current tab id. */ }
 
-						{ actIdeStr === 'picker' && ( // What: Picker Tab Visibility Check. Why: Only one tab's content should render at a time. How: This renders TabPicker only while actIdeStr is 'picker'.
+						{ actIdeStr === 'picker' && ( // What: Picker Tab Visibility Check. Why: Only one tab's content should render at a time. How: This renders TabPicCom only while actIdeStr is 'picker'.
 
 
-							<TabPicker
-								actions={ actStoObj }
-								animStyle={ (staAppObj.appearance && staAppObj.appearance.pickAnim) || 'reel' }
-								state={ staAppObj }
-								onHome={ () => selTabFun( 'today' ) }
-								onNavTab={ selTabFun }
-							/> // What: TabPicker. Why: This is the actual Pickers tab content. How: This is passed the shared state/actions plus the persisted pick-animation style.
+							<TabPicCom
+								actStoObj={ actStoObj }
+								aniStyStr={ (staAppObj.appearance && staAppObj.appearance.pickAnim) || 'reel' }
+								staAppObj={ staAppObj }
+								onNavHomFun={ () => selTabFun( 'today' ) }
+								onNavTabFun={ selTabFun }
+							/> // What: Tab Picker Component. Why: This is the actual Pickers tab content. How: This is passed the shared state/actions plus the persisted pick-animation style.
 
 
 						) }

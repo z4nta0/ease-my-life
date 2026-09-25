@@ -780,7 +780,7 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  * design, `if (tour.prefill && !creating) { setCreating(true);
  * setOpenedByTour(true); }`, that auto-opens the form the instant
  * prefill appears. Publishing any earlier (tour start, or even Step 1)
- * would trigger that the moment TabPicker mounts, skipping Step 2
+ * would trigger that the moment TabPicCom mounts, skipping Step 2
  * entirely (the form would already be open before the user ever sees
  * "+ Add New Picker" highlighted). runFun() fires in the click-guard's own
  * CAPTURE-phase handling of the same click whose native bubble-phase
@@ -839,7 +839,7 @@ function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.jsx's own dormant auto-open effect keys off tour.prefill's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicker mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.jsx's own dormant auto-open effect keys off tour.prefill's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicCom mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
 
 
 		emlTouObj.set({ // What: Prefill Clear Call. Why: A stale prefill left over from this tour must not leak into a future visit to the Pickers tab. How: This resets every field buiNewFun's/buiAddFun's own runFun() published, back to its own idle value.

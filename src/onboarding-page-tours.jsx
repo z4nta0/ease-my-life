@@ -1787,7 +1787,7 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 					else if ( tarSteNum === 5 ) { // What: Manual Generation Reset Check. Why: Back from Manual Generation to Edit Picker (tarSteNum 5 is reached only by backing out of the step whose own target is mpgObj) needs any still-spinning pick animation cancelled, so it doesn't settle into a 'done' result behind the tour's back. How: This bumps the Pickers tour's own reset nonce on the shared bus.
 
 
-						emlTouObj.set({ pickerTourResetNonce : ( emlTouObj.get().pickerTourResetNonce || 0 ) + 1 } ); // What: Reset Nonce Publish. Why: tab-picker.jsx's own PickerStrip only renders while phase is 'running'/'done', so bumping this unmounts it immediately, actually cancelling the in-flight animation instead of leaving it to finish on its own. How: This increments the bus's own current pickerTourResetNonce by 1.
+						emlTouObj.set({ pickerTourResetNonce : ( emlTouObj.get().pickerTourResetNonce || 0 ) + 1 } ); // What: Reset Nonce Publish. Why: tab-picker.jsx's own PicStrCom only renders while phase is 'running'/'done', so bumping this unmounts it immediately, actually cancelling the in-flight animation instead of leaving it to finish on its own. How: This increments the bus's own current pickerTourResetNonce by 1.
 
 
 					}
@@ -1795,7 +1795,7 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 					else if ( tarSteNum === 6 ) { // What: Add To Todo List Reset Check. Why: Back from Add To Todo List to Manual Generation needs PickerView's own local phase reset back to idle, otherwise a leftover 'done'/'sent' phase would let Re-roll/Done show on a step that was never written to expect them. How: This bumps the same reset nonce as the tarSteNum === 5 branch above.
 
 
-						emlTouObj.set({ pickerTourResetNonce : ( emlTouObj.get().pickerTourResetNonce || 0 ) + 1 } ); // What: Reset Nonce Publish. Why: Same reasoning as the tarSteNum === 5 branch above, PickerStrip must unmount so only Pick One shows again. How: This increments the bus's own current pickerTourResetNonce by 1.
+						emlTouObj.set({ pickerTourResetNonce : ( emlTouObj.get().pickerTourResetNonce || 0 ) + 1 } ); // What: Reset Nonce Publish. Why: Same reasoning as the tarSteNum === 5 branch above, PicStrCom must unmount so only Pick One shows again. How: This increments the bus's own current pickerTourResetNonce by 1.
 
 
 					}

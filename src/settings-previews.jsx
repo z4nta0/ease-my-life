@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This is the UI library both of t
 
 
 import { IcoSvgCom   } from './ui.jsx';         // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'check' icon name.
-import { PickerStrip } from './tab-picker.jsx'; // What: Picker Strip. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
+import { PicStrCom } from './tab-picker.jsx'; // What: Picker Strip Component. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
 
 // #endregion Imports
 
@@ -22,7 +22,7 @@ import { PickerStrip } from './tab-picker.jsx'; // What: Picker Strip. Why: The 
  * rather than only read about it. CelPreCom is a dedicated
  * box, sized like the Today cards area, that fires the real ripple/
  * confetti/sparkle celebration over a small set of mock done-cards.
- * PicAniCom reuses the real PickerStrip component (the exact
+ * PicAniCom reuses the real PicStrCom component (the exact
  * reel/spotlight/dissolve cycle the Pickers tab itself renders) over a
  * small set of mock candidates.
  *
@@ -53,19 +53,19 @@ import { PickerStrip } from './tab-picker.jsx'; // What: Picker Strip. Why: The 
  * @summary
  * The picker-animation preview's own small mock item pool to cycle
  * through, since it must work even before the user has created any
- * pickers of their own. This is passed straight through to PickerStrip
- * as its own candidates prop.
+ * pickers of their own. This is passed straight through to PicStrCom
+ * as its own canIteArr prop.
  *
  * Every entry shares this exact shape, and none of them repeat these
  * same fields' own boilerplate comments on their own lines (see the
  * "Repeated-shape object literals" comment exception in CLAUDE.md):
  *
- * - `id` (String): Id is PickerStrip's own required identifier field
+ * - `id` (String): Id is PicStrCom's own required identifier field
  *   for this mock candidate, compared against the picked candidate's
  *   own id to find its row/position.
  *
  * - `name` (String): Name is the mock candidate's own display text,
- *   rendered as this row's visible label inside PickerStrip.
+ *   rendered as this row's visible label inside PicStrCom.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -438,22 +438,22 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
  * PicAniCom = Picker Animation Component
  *
  * @summary
- * Renders a preview box that reuses the real PickerStrip component to
+ * Renders a preview box that reuses the real PicStrCom component to
  * play its reel/spotlight/dissolve cycle over a small, fixed set of mock
  * candidates. Shows a static fallback (the fixed landing candidate's own
  * name) until the repTokNum prop first becomes greater than 0; bumping
- * it again afterward remounts PickerStrip and replays the cycle. The
+ * it again afterward remounts PicStrCom and replays the cycle. The
  * cycle is always forced to play at full motion, since an explicit Play
  * press is itself the user's own consent to see it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.styKeyStr - Style Key String: Which of PickerStrip's own
+ * @param props.styKeyStr - Style Key String: Which of PicStrCom's own
  *                          animation styles to preview: 'reel',
  *                          'spotlight', or 'dissolve'.
  * @param props.repTokNum - Replay Token Number: {@link picTokNum}
  *
- * @returns Either the live PickerStrip cycle (once Play has been pressed
+ * @returns Either the live PicStrCom cycle (once Play has been pressed
  * at least once) or a static preview of the fixed landing candidate's
  * own name beforehand.
  *
@@ -474,19 +474,19 @@ function PicAniCom ( { styKeyStr, repTokNum } ) {
 	return (
 
 
-		<div className='pickanim-preview-stage motion-ok'>{ /* What: Picker Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PickerStrip cycle or a static fallback, based on whether Play has been pressed. */ }
+		<div className='pickanim-preview-stage motion-ok'>{ /* What: Picker Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PicStrCom cycle or a static fallback, based on whether Play has been pressed. */ }
 
 
-			{ repTokNum > 0 ? ( // What: Play Pressed Check. Why: The real cycle animation should only mount once the user has actually pressed Play at least once. How: This renders PickerStrip while repTokNum is greater than 0, a static preview of the landing candidate's own name otherwise.
+			{ repTokNum > 0 ? ( // What: Play Pressed Check. Why: The real cycle animation should only mount once the user has actually pressed Play at least once. How: This renders PicStrCom while repTokNum is greater than 0, a static preview of the landing candidate's own name otherwise.
 
 
-				<PickerStrip
+				<PicStrCom
 					key={ repTokNum }
-					candidates={ PRE_CAN_ARR }
-					picked={ picCanObj }
-					style={ styKeyStr }
-					forceMotion
-				/> // What: Picker Strip. Why: This plays the real reel/spotlight/dissolve cycle so the preview shows the actual animation, not a mockup of it. How: This is remounted (via its own key) on every replay, forced to play even under reduced motion since this is an explicit Play press.
+					canIteArr={ PRE_CAN_ARR }
+					picIteObj={ picCanObj }
+					styKeyStr={ styKeyStr }
+					forMotBoo
+				/> // What: Picker Strip Component. Why: This plays the real reel/spotlight/dissolve cycle so the preview shows the actual animation, not a mockup of it. How: This is remounted (via its own key) on every replay, forced to play even under reduced motion since this is an explicit Play press.
 
 
 			) : ( // What: Static Pick Branch. Why: Before Play is first pressed, the stage still needs something meaningful to show instead of the cycling strip. How: This renders the else branch, taken while repTokNum is still 0.

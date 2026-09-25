@@ -18,10 +18,14 @@ npm run build     # production build to dist/
 npm run preview   # serve the production build locally
 ```
 
-There is no test suite, no lint config, and no type checker wired up
+There is no test suite and no type checker wired up
 (`change-later-tsconfig.json` / `tsconfig.node.json` exist but are not
-referenced by any script — don't assume `tsc` or ESLint gate anything). Verify
-changes by running `npm run dev` and exercising the app in a browser.
+referenced by any script). ESLint is installed and configured
+(`eslint.config.js`, with `eslint-plugin-react-hooks`' recommended rules for
+`.jsx` files), but no npm script runs it, so it only runs when invoked by hand
+(`npx eslint <file>`) or through an editor integration; don't assume `tsc` or
+ESLint gate anything. Verify changes by running `npm run dev` and exercising
+the app in a browser.
 
 `__APP_VERSION__` is injected at build time from `package.json`'s `version`
 field (see `vite.config.js`) and surfaces in Settings → About and in the
@@ -581,13 +585,18 @@ decision is captured for next time instead of getting re-asked later.
   longest line in that run, same mechanism used for colon/import
   alignment elsewhere in this doc.
   - **Exception — length mismatch too wide to align**: skip this
-    alignment for the whole run when the longest line's own code portion
-    (everything before its own `//`) is more than 100 characters longer
-    than the shortest line's own code portion in that same run. Padding
-    across a gap that wide produces a huge empty gulf on the shorter
-    lines that hurts readability more than unaligned comments would;
-    past that point, each line's own comment just sits one space after
-    its own code instead, unaligned with its neighbors. This is most
+    alignment for any line whose own code portion (everything before its
+    own `//`) is more than 100 characters away from the rest of the run.
+    Padding across a gap that wide produces a huge empty gulf on the
+    shorter lines that hurts readability more than unaligned comments
+    would. Only the outlier(s) drop out, though, not the whole run: the
+    largest group of lines whose code portions all fall within 100
+    characters of each other still aligns among itself, and each outlier's
+    own comment just sits one space after its own code instead. When two
+    candidate groups are the same size, the one with the longer lines
+    aligns. E.g. `tab-picker.jsx`'s own draft `draActObj`: its short
+    `delIteFun` line sits unaligned, while the four longer method lines
+    below it still align with each other. This is most
     commonly found among a tightly-grouped run of one-line function
     declarations (see "### Variable declarations" above) whose own
     bodies happen to vary a lot in length, e.g. `padZerFun`/`locDayFun`
@@ -895,6 +904,16 @@ decision is captured for next time instead of getting re-asked later.
   expansion matches whatever segment words that pass actually lands on —
   same spirit as the "revisit once renamed" note already covering JSX
   custom components (`Icon`, `TabToday`, ...) above.
+
+### ESLint directive comments
+An `// eslint-disable-next-line <rule>` directive has to stay on its own line
+directly above the line it covers, since ESLint only reads a directive at the
+very start of a comment and a `//` comment runs to the end of its line. It
+still follows the one-line comment template, through ESLint's own `-- reason`
+suffix: `// eslint-disable-next-line react-hooks/exhaustive-deps -- What:
+Deliberate Dependency Omission. Why: ... How: ...`. A directive ESLint reports
+as unused ("Unused eslint-disable directive") is deleted, not documented.
+Check with `npx eslint <file>` after touching one.
 
 ### Custom function declaration comments
 A bare `function Name(...) {}` declaration that isn't stored in a
@@ -3281,9 +3300,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (an initialism, not a plain-word-truncation) sitting in a different
     position (a module-level export, not a local variable). The next 2
     escalation candidates were both worse: the word's own 5th/6th
-    letters land back on `stp` itself, already this codebase's own
-    established code for Step (`advStpFun`, `bckStpFun`, `schStpFun`,
-    ...); the 7th letter `ste` is even more heavily used for Step
+    letters land back on `stp` itself, then a common vowel-drop spelling
+    of Step (since fixed to `ste`, e.g. `advSteFun`/`bacSteFun`/
+    `schSteFun`); the 7th letter `ste` is even more heavily used for Step
     elsewhere (30+ hits, `steCouNum`, `NumSteCom`, `curSteNum`, ...);
     the 8th letter `std` is already an established Known-miscorrections
     collision (Standard/Standalone) above. Every comment referencing
@@ -3513,6 +3532,21 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `rel` → `rea` (Real, `isaRelBoo` → `isaReaBoo`, originally `realMode`;
     "Mode" was dropped rather than compressed into `ram`, since the value
     it's compared against already reads as a mode)
+  - A second vowel-drop batch, found together in `tab-picker.jsx`'s own
+    review, each fixed to its word's literal first 3 letters: `avd` → `avo`
+    (Avoid), `bck` → `bac` (Back), `blk` → `blo` (Block), `bnd` → `ban`
+    (Band), `cnf` → `con` (Confirm), `dft` → `dra` (Draft), `dly` → `dai`
+    (Daily), `edt` → `edi` (Edit), `hlp` → `hel` (Help), `hlt` → `hig`
+    (Highlight), `itc` → `int` (Intercept), `lev`/`lvg` → `lea` (Leaving),
+    `mch` → `mat` (Match), `pfi` → `pre` (Prefill), `pld` → `pay` (Payload),
+    `pnd` → `pen` (Pending), `ral` → `rai` (Rail), `rdy` → `rea` (Ready),
+    `snd` → `sen` (Send), `srt` → `sor` (Sorted), `stg` → `sta` (Staged),
+    `stp` → `ste` (Step), `vld` → `val` (Valid), `wlk` → `wal` (Walk),
+    `wrp` → `wra` (Wrap), `wth` → `wit` (With), and `tdy` → `tod` where it
+    meant Today (`sndTdyFun` → `senTodFun`; `tdy` meaning Tidy still goes
+    to `tid`, e.g. `tidValStr`). `cnv` (Convert) couldn't take the literal
+    `con`, which already carries 4 meanings, so Phase A escalation gave
+    `cov` (`covDriFun`/`covLatFun`/`covSooFun`)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

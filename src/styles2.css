@@ -399,7 +399,7 @@
 .reel { position: relative; width: 100%; max-width: 420px; overflow: hidden; }
 .reel-track {
   display: flex; flex-direction: column;
-  /* Duration is set inline per step (see PickerStrip) so each move animates
+  /* Duration is set inline per step (see PicStrCom) so each move animates
      over exactly the gap until the next one — continuous, no stutter. */
   transition-property: transform;
   transition-timing-function: linear;
