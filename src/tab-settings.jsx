@@ -1476,6 +1476,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// shared <main className="main">; sections live in the right pane and the
 	// sticky rail on the left tracks / drives position.
 	const [ actSecStr, setActSecStr ] = React.useState( 'daily' ); // What: Active Section String And Setter. Why: Both the rail's own highlighted link and the scroll-spy effect below need one shared source of truth for which section reads as current. How: This is written by the scroll-spy effect during normal scrolling and by jmpSecFun when a rail link is clicked.
+	const [ legMinNum, setLegMinNum ] = React.useState( 0 ); // What: Legal Minimum Number And Setter. Why: Legal is the last section, so without extra room below it the page runs out of scroll before its own top can reach the spy's base line. How: This holds the minimum height the Legal section needs, measured by the Legal spacer effect below and applied as its own minHeight.
 	const [ legDocStr, setLegDocStr ] = React.useState( null ); // What: Legal Document String And Setter. Why: The Legal section's own View buttons need somewhere to record which document ('privacy' | 'terms') to show, or null for neither. How: This gates and selects LegModCom's own content below.
 	// Help mode (see help-mode.jsx); every section here is static UI chrome, no
 	// data-dependent content, so unlike Pickers/Data/Stats no disposable sample
@@ -1514,13 +1515,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// see the fade-edge effect's own comment below for why.
 	const railScrRef = React.useRef( null ); // What: Rail Scroll Reference. Why: The rail-fade effect needs to read scroll position from the actual scrolling element, distinct from the sticky outer rail the fade classes are toggled on. How: This is attached to the rail's own inner scroll wrapper below.
 	const rooEleRef  = React.useRef( null );  // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.main' scroll ancestor. How: This is attached to the tab's own outer div below.
-	// While set, scroll-spy leaves this section active and skips its own
-	// computation, cleared only once the user scrolls back up above it. This is
-	// what makes Account/About "click to highlight": once picked, ordinary
-	// scroll-spy (which drives daily/holidays/data) can't silently override
-	// them.
 	const skiSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jmpSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
-	const pinSecRef = React.useRef( null );  // What: Pinned Section Reference. Why: The trailing sections (currently just Legal) can't scroll their own top past the spy's base line, so scroll position alone can never confirm they are still being viewed. How: This holds whichever section id is currently pinned active, read and cleared by the scroll-spy handler.
 	// Where a jumped-to section should land below the top of the scroll
 	// viewport (the desktop rail sticks at 16px; on mobile the rail is a
 	// sticky bar, so its own height is added too). Measured live so the 2 stay
@@ -1544,7 +1539,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	};
 
 
-	React.useEffect( () => { // What: Scroll Spy Effect. Why: The rail's own active link must track which section is actually in view as the user scrolls, without fighting a section the user just explicitly jumped to. How: This computes, on every scroll, which registered section's own top has crossed the spy's base line, honoring a pinned trailing section until the user scrolls back up past it.
+	React.useEffect( () => { // What: Scroll Spy Effect. Why: The rail's own active link must track which section is actually in view as the user scrolls, without fighting a section the user just explicitly jumped to. How: This computes, on every scroll, which registered section's own top has crossed the spy's base line.
 
 
 		const secEntArr = SET_SEC_ARR.map( ( secConObj ) => [ secConObj.ideStr, secMapRef.current[ secConObj.ideStr ] ] ).filter( ( [ , secCurEle ] ) => secCurEle ); // What: Section Entry Array. Why: Only sections that have actually mounted and registered a ref can be measured. How: This maps SET_SEC_ARR to [id, element] pairs, then drops any pair whose element is still missing.
@@ -1552,55 +1547,15 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		if ( !secEntArr.length ) return; // What: No Sections Guard. Why: There is nothing to spy on before any section has mounted. How: This bails out of the whole effect early when secEntArr came back empty.
 
 		const scrConEle = rooEleRef.current?.closest( '.main' ); // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs to be measured/listened to in the normal case. How: This walks up from this component's own root to the nearest '.main' ancestor.
-		// Account + About are the trailing sections; with nothing after them
-		// there's no scroll room left to carry their header past the spy's
-		// base line, so scroll position can never reliably distinguish
-		// "looking at Account" from "looking at About" (or from the section
-		// before them). Rather than fight that geometry, they're click-only:
-		// scrolling never assigns them active, only clicking their nav link
-		// does (see jmpSecFun).
-		const spyIdeSet = new Set( [ 'daily', 'holidays', 'data', 'account', 'about' ] ); // What: Spy Id Set. Why: Only these sections should ever be assigned active purely from scroll position. How: This is checked inside the loop below, skipping any section whose id is not a member.
+		const spyIdeSet = new Set( [ 'daily', 'holidays', 'data', 'account', 'about', 'legal' ] ); // What: Spy Identifier Set. Why: Every section after the first should be assignable active purely from scroll position. How: This is checked inside the loop below, skipping any section whose id is not a member. // Appearance is left out on purpose: it's the fallback whenever no later section has crossed the base line. Legal can take part like every other section thanks to the Legal spacer effect below, which gives it enough scroll room to reach the base line.
 
 
-		const onScrFun = () => { // What: On Scroll Function. Why: This is the actual scroll-spy computation, re-run on every scroll event. How: This finds the last spy-eligible section whose own top has crossed the base line, honoring a pinned trailing section along the way.
+		const onScrFun = () => { // What: On Scroll Function. Why: This is the actual scroll-spy computation, re-run on every scroll event. How: This finds the last spy-eligible section whose own top has crossed the base line.
 
 
 			if ( skiSpyRef.current ) return; // What: Skip Spy Guard. Why: A section the user just explicitly jumped to must not be immediately overridden mid-animation by this same computation. How: This bails out early while skiSpyRef.current is true.
 
 			const basLinNum = ( scrConEle ? scrConEle.getBoundingClientRect().top : 0 ) + stkOffFun() + 8; // What: Base Line Number. Why: A section only counts as "reached" once its own top has scrolled up past this line. How: This adds the sticky offset plus an 8px margin to the scroll container's own top (or 0 for the window case).
-			// Are we at (or within a hair of) the bottom of the scroll range? The
-			// last sections can't scroll to the top line, so scroll position
-			// alone can't tell them apart; at the bottom, honor whatever section
-			// was pinned/active.
-			const endRchBoo = scrConEle // What: End Reached Boolean. Why: The pinned-section logic below needs to know whether the scroll range has actually bottomed out. How: This compares the container's own (or window's) current scroll position against its own scrollable height, allowing a 2px hair of slack.
-
-
-				? scrConEle.scrollTop + scrConEle.clientHeight >= scrConEle.scrollHeight - 2
-				: window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
-
-
-			if ( pinSecRef.current ) {
-
-
-				const pinCurEle = secMapRef.current[ pinSecRef.current ]; // What: Pinned Current Element. Why: Deciding whether to keep or release the pin requires the pinned section's own live element. How: This looks up pinSecRef's own id in secMapRef.
-				// Bottom-cluster sections (account/about/legal) can't scroll their
-				// own top up to `basLinNum`, since the page runs out of scroll
-				// first, so that can't be used as the "still viewing it" test.
-				// Instead the pin is kept while the section's own top sits above
-				// the viewport's vertical midline, released only once the user
-				// scrolls UP far enough to push it below the midline (back into
-				// earlier sections). It is also always kept while bottomed out.
-				const viwHeiNum = scrConEle ? scrConEle.clientHeight : window.innerHeight;                                      // What: View Height Number. Why: The vertical midline test needs the scroll viewport's own current height. How: This reads the container's own clientHeight, or the window's own innerHeight for the window-scroll case.
-				const midLinNum = ( scrConEle ? scrConEle.getBoundingClientRect().top : 0 ) + viwHeiNum / 2;                    // What: Mid Line Number. Why: This is the actual release threshold for a pinned trailing section. How: This adds half the viewport height to the container's own (or window's) top.
-
-				if ( pinCurEle && ( endRchBoo || pinCurEle.getBoundingClientRect().top <= midLinNum ) ) return; // What: Keep Pin Guard. Why: A pinned section should stay active while still effectively in view or while the scroll range is bottomed out. How: This bails out of the rest of the computation whenever either condition holds.
-
-				// Scrolled back up above it, so release the pin and fall through
-				// to the normal spy computation below.
-				pinSecRef.current = null; // What: Pin Release. Why: The user has scrolled back into earlier sections, so the pin no longer applies. How: This clears pinSecRef back to null.
-
-
-			}
 
 
 			let besIdeStr = secEntArr[ 0 ][ 0 ]; // What: Best Id String. Why: Some section must always end up active, defaulting to the very first one. How: This starts at the first entry's own id and is overwritten below as later, already-reached sections are found.
@@ -1608,7 +1563,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 			for ( const [ secIdeStr, secCurEle ] of secEntArr ) { // What: Section Scan Loop. Why: The last spy-eligible section whose own top has crossed the base line is the one that should read active. How: This iterates every registered section in order, keeping the latest one that qualifies.
 
 
-				if ( !spyIdeSet.has( secIdeStr ) ) continue; // What: Spy Eligibility Guard. Why: Trailing click-only sections must never be assigned active by this scan. How: This skips any section id not present in spyIdeSet.
+				if ( !spyIdeSet.has( secIdeStr ) ) continue; // What: Spy Eligibility Guard. Why: Appearance, the fallback section, must never be assigned active by this scan. How: This skips any section id not present in spyIdeSet.
 
 				if ( secCurEle.getBoundingClientRect().top <= basLinNum ) besIdeStr = secIdeStr; // What: Reached Section Update. Why: A later section whose own top has already crossed the base line should win over an earlier one. How: This overwrites besIdeStr whenever the current section's own top is at or above the base line.
 
@@ -1700,7 +1655,48 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own listener/observer once, on mount. How: An empty array means it never re-subscribes; both refs it reads are stable across renders.
 
 
-	const jmpSecFun = ( secIdeStr ) => { // What: Jump Section Function. Why: Clicking a rail link should scroll straight to that section and mark it active immediately, rather than waiting on the scroll-spy to catch up. How: This marks the target active, pins it if it's the trailing Legal section, then scrolls the right container to the right offset.
+	React.useEffect( () => { // What: Legal Spacer Effect. Why: Legal is the last section, so the page used to run out of scroll before its own top could reach the spy's base line, leaving it impossible to highlight by scrolling (or to stay highlighted after a jump). How: This measures how tall Legal must be for its own top to scroll up to the sticky offset, re-measuring whenever the scroll container resizes, and stores that in legMinNum.
+
+
+		const legCurEle = secMapRef.current[ 'legal' ];          // What: Legal Current Element. Why: The Legal section is the one being sized. How: This looks up its own registered element in secMapRef.
+		const scrConEle = rooEleRef.current?.closest( '.main' ); // What: Scroll Container Element. Why: The shared '.main' scroller's own height and scroll range drive the measurement. How: This walks up from this component's own root to the nearest '.main' ancestor.
+
+
+		if ( !legCurEle || !scrConEle ) return; // What: Missing Element Guard. Why: Nothing can be measured if either element is not actually mounted. How: This bails out early whenever either lookup above failed.
+
+
+
+		const meaSpaFun = () => { // What: Measure Spacer Function. Why: The needed height depends on the live viewport and the sticky rail's own offset, both of which can change. How: This subtracts the content below Legal and the sticky offset from the container's own visible height.
+
+
+			const legRecObj = legCurEle.getBoundingClientRect();                                                   // What: Legal Rect Object. Why: Legal's own bottom edge marks where the content below it starts. How: This reads Legal's own current on-screen rect.
+			const conRecObj = scrConEle.getBoundingClientRect();                                                   // What: Container Rect Object. Why: Legal's own position has to be converted into the container's own content coordinates. How: This reads the container's own current on-screen rect.
+			const belLegNum = scrConEle.scrollHeight - ( legRecObj.bottom - conRecObj.top + scrConEle.scrollTop ); // What: Below Legal Number. Why: Content below Legal (the container's own bottom padding) also counts toward its scroll room. How: This subtracts Legal's own bottom, in content coordinates, from the container's own full scroll height.
+
+
+			setLegMinNum( Math.max( 0, Math.ceil( scrConEle.clientHeight - stkOffFun() - belLegNum ) ) ); // What: Legal Minimum Update Call. Why: Legal's own top can only reach the sticky offset once Legal plus everything below it fills the rest of the visible height. How: This stores the container's own visible height minus the sticky offset and the content below Legal, never below 0.
+
+
+		};
+
+
+		meaSpaFun(); // What: Initial Spacer Measure Call. Why: The spacer should already be correct on mount. How: This invokes meaSpaFun once, synchronously.
+
+
+		const resObsObj = new ResizeObserver( meaSpaFun ); // What: Resize Observer Object. Why: A window resize, rotation, or tab-bar placement change can change the container's own visible height. How: This creates an observer that re-runs meaSpaFun whenever the container resizes.
+
+
+		resObsObj.observe( scrConEle ); // What: Resize Observer Start Call. Why: This is what actually begins watching the container for size changes. How: This starts the observer created just above.
+
+
+
+		return () => resObsObj.disconnect(); // What: Effect Cleanup Function. Why: The observer must not keep watching after this effect run ends. How: This disconnects resObsObj entirely.
+
+
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own observer once, on mount. How: An empty array means it never re-subscribes; every ref and function it reads is stable for the life of this component.
+
+
+	const jmpSecFun = ( secIdeStr ) => { // What: Jump Section Function. Why: Clicking a rail link should scroll straight to that section and mark it active immediately, rather than waiting on the scroll-spy to catch up. How: This marks the target active, then scrolls the right container to the right offset.
 
 
 		const secCurEle = secMapRef.current[ secIdeStr ]; // What: Section Current Element. Why: There is nothing to jump to if this section has not actually registered a ref. How: This looks up secIdeStr in secMapRef.
@@ -1708,12 +1704,6 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		if ( !secCurEle ) return; // What: Missing Section Guard. Why: A stale or unregistered section id must not crash the jump. How: This bails out early when secCurEle came back undefined.
 
 		setActSecStr( secIdeStr ); // What: Active Section Update Call. Why: The rail should highlight the target section immediately, not wait for the scroll to finish. How: This writes secIdeStr into actSecStr.
-
-		// Only Legal (the very last section) still can't scroll its own top to
-		// the line, so it alone needs pinning to stay active; every other
-		// section now has enough scroll room below it for the spy to track it
-		// naturally.
-		pinSecRef.current = secIdeStr === 'legal' ? secIdeStr : null; // What: Pin Assignment. Why: Only the trailing Legal section needs its active state protected from the scroll-spy's own base-line test. How: This pins secIdeStr only when it equals 'legal', clearing the pin otherwise.
 
 		skiSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy handler must not fight this deliberate jump while it is still animating. How: This flags skiSpyRef true, checked as a guard at the top of onScrFun above.
 
@@ -3417,8 +3407,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 					{ /* ── Legal ─────────────────────────────────────────────────────── */ }
 					<section
-						className='set-section set-section--legal'
 						ref={ ( secCurEle ) => { secMapRef.current[ 'legal' ] = secCurEle; } }
+						className='set-section set-section--legal'
+						style={{ minHeight : legMinNum }}
 					>{ /* What: Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the Privacy Policy/Terms of Service rows. */ }
 
 
