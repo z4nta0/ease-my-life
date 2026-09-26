@@ -428,6 +428,17 @@ decision is captured for next time instead of getting re-asked later.
     fields listed alphabetically, per the object-property-ordering rule
     below), and none of its 210 individual items repeat those same 11
     fields' own boilerplate comments.
+    - **A repeated-shape literal declared inside a function** has nowhere
+      to carry that shape documentation, so when it reads nothing from
+      its enclosing scope it's hoisted to a module-level `ALL_CAPS`
+      constant instead, gaining its own JSDoc shape block (and `#region`
+      once it reaches 25 lines), the same treatment as a top-level one.
+      See `tab-settings.jsx`'s own `BRO_PAT_ARR`, moved out of
+      `detBroFun`.
+  - **Purely decorative banner comments** (e.g. `{ /* ── Appearance ──
+    */ }` above a section) are deleted outright when the element they
+    sit above already carries its own identity comment, since they add
+    nothing a What/Why/How comment doesn't already say.
   - **Exception to the closing-bracket exemption**: a React hook call's
     closing line that carries a dependency array (`}, [ a, b, c ] );`)
     DOES get a comment, even though it's otherwise just a closing bracket
@@ -3547,6 +3558,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     to `tid`, e.g. `tidValStr`). `cnv` (Convert) couldn't take the literal
     `con`, which already carries 4 meanings, so Phase A escalation gave
     `cov` (`covDriFun`/`covLatFun`/`covSooFun`)
+  - A third batch, found together in `tab-settings.jsx`'s own review, each
+    fixed to its word's literal first 3 letters: `bra` → `bro` (Browser,
+    `broNamStr`/`BRO_PAT_ARR`), `clk` → `cli` (Click), `cpd` → `cop`
+    (Copied), `drk` → `dar` (Dark), `jmp` → `jum` (Jump), `lnk` → `lin`
+    (Link), `mnt` → `mou` (Mount), `ofs` → `off` (Offset), `ply` → `pla`
+    (Play), `rch` → `rea` (Reached), `rdr` → `rea` (Reader), `sht` → `sho`
+    (Short), `stk` → `sti` (Sticky), `stm` → `sta` (Stamp), `thm` → `the`
+    (Theme), `tik` → `tic` (Tick), `viw` → `vie` (View), `whn` → `whe`
+    (When), and `blb` → `blo` (Blob). Untruncated or too-short words were
+    fixed the same way: `rail` → `rai`, `real` → `rea`, `rd` → `rea`
+    (Read), `ul` → `lis` (List), and `apm` (AM/PM) became `mer`
+    (Meridiem). Address keeps `adr` via Phase A escalation, since its own
+    literal `add` already heavily means Add
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -3811,6 +3835,10 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   ).keys(), ( arrIndNum ) => arrIndNum + 1 )`, where `keys()` yields
   the indices as the values themselves. Only when no such restructure
   exists does the parameter stay, named like any other parameter.
+  The same goes for a `useState` value that is never read (kept only so
+  its setter can force a re-render): bind the setter alone with an
+  elision, `const [ , setPwaTicNum ] = React.useState( 0 );`, rather
+  than naming an unread value (`tab-settings.jsx`).
 - **Comparator parameters use `One`/`Two`, never `a`/`b` prefixes**: a
   sort comparator's own two parameters are named like any other pair of
   same-kind values, with `One`/`Two` as segment 2, e.g. `cadence.js`'s
