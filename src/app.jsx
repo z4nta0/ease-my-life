@@ -20,7 +20,7 @@ import { SED_NAM_OBJ  } from './seed.js';                     // What: Seed Name
 import { TabDatCom    } from './tab-data.jsx';                // What: Tab Data Component. Why: This is the actual Data tab content. How: This is rendered while actIdeStr is 'data', passed the shared state/actions.
 import { TabPicCom    } from './tab-picker.jsx';              // What: Tab Picker Component. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
 import { TabSetCom    } from './tab-settings.jsx';            // What: Tab Settings Component. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
-import { TabStats     } from './tab-stats.jsx';               // What: Tab Stats. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
+import { TabStaCom    } from './tab-stats.jsx';               // What: Tab Stats Component. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabToday     } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
 import { useAppStaFun } from './store.js';                    // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { useEmlTouFun } from './eml-tour-bus.js';             // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
@@ -834,15 +834,15 @@ function AppRooCom () {
 
 						) }
 
-						{ actIdeStr === 'stats' && ( // What: Stats Tab Visibility Check. Why: Only one tab's content should render at a time. How: This renders TabStats only while actIdeStr is 'stats'.
+						{ actIdeStr === 'stats' && ( // What: Stats Tab Visibility Check. Why: Only one tab's content should render at a time. How: This renders TabStaCom only while actIdeStr is 'stats'.
 
 
-							<TabStats
-								actions={ actStoObj }
-								state={ staAppObj }
-								onHome={ () => selTabFun( 'today' ) }
-								onNavTab={ selTabFun }
-							/> // What: TabStats. Why: This is the actual Stats tab content. How: This is passed the shared state/actions.
+							<TabStaCom
+								actStoObj={ actStoObj }
+								staAppObj={ staAppObj }
+								onNavHomFun={ () => selTabFun( 'today' ) }
+								onNavTabFun={ selTabFun }
+							/> // What: Tab Stats Component. Why: This is the actual Stats tab content. How: This is passed the shared state/actions.
 
 
 						) }

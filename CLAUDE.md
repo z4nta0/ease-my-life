@@ -870,6 +870,14 @@ decision is captured for next time instead of getting re-asked later.
     carry their own comment on the attribute's own opening `{`/`[`,
     while `onFinTouFun`/`resSteNum`/`actStoObj` (each a single-line
     value) carry none.
+    - **Exception, `style={{ ... }}` objects**: a multi-line `style`
+      object needs no comment on its `style={{` line or on its own
+      properties, since real CSS property names already say what each
+      line does. Only add one when something tricky or complicated is
+      going on that a reader would genuinely need explained (e.g. a
+      computed value with a non-obvious formula, or a shorthand/longhand
+      ordering that has to stay put). See `app.jsx`'s own uncommented
+      `style={{` blocks for the reference examples.
   - A multi-line JS expression embedded in JSX that ISN'T itself an
     element — a `{condition && (` wrapper, a `{arr.map((x) => (` call —
     still gets a comment (it's still a line of code), but follows the
@@ -1521,6 +1529,26 @@ don't invent one for anything else yet:
   array's own entry order is frequently meaningful (a tour's own step
   sequence, a nav bar's own left-to-right order) and stays exactly as
   authored.
+  - **One-line object literals are alphabetized too**, not just
+    multi-line ones: a config row like `{ colStr : 'var(--warm)', keyStr
+    : 'once', labStr : 'One-Time' }`, an options object like `{ day :
+    'numeric', month : 'short' }`, or a lookup table all follow the same
+    case-insensitive order, unless their order genuinely matters (per the
+    exception below). A stack of one-line rows keeps its position-based
+    column alignment after reordering. See `tab-stats.jsx`'s own
+    `STA_RAN_ARR`/`SOU_MET_ARR`/`TYP_MET_ARR` for the reference examples.
+    The same applies to the field list in a Repeated-shape JSDoc block,
+    which documents the shape's fields alphabetically. Earlier-reviewed
+    files get this in the final file-by-file pass.
+  - **Object destructuring patterns are alphabetized the same way**,
+    most commonly a component's own `function Foo ( { a, b } )` props,
+    unless their order matters (a `...rest` element always stays last).
+    Since a function comment's `@param props.<name>` lines follow the
+    destructuring order and its `@example` shows the real call
+    signature, both end up alphabetized along with it. Array
+    destructuring (`const [ a, b ] = ...`) is positional, so it's never
+    reordered. See `tab-stats.jsx`'s own `BreBarCom`/`PagNavCom`/
+    `TabStaCom` for the reference examples.
   - **`style={{ ... }}` objects are alphabetized too**, the same as any
     other multi-line object literal. Their keys are real CSS property
     names (an external contract, so they're never RENAMED, per the
@@ -1772,6 +1800,20 @@ don't invent one for anything else yet:
     space in its place (`}  //` instead of `}, //`) so its comment still
     lands in that same column. See `tab-data.jsx`'s own `SEC_SOR_ARR`/
     `CIS_OPT_ARR` for further examples.
+    - **An entry of a different shape moves to the start or end of the
+      stack**, whichever reads more naturally, when the array's order
+      doesn't matter: a ternary choosing between two objects, a bare
+      identifier, a function call, or anything else that isn't one of
+      the plain one-line object rows. Left in the middle, it forces every
+      row's comment out to its own width; at either end it sits 1 blank
+      line apart from the rows (the same gap a long outlier property
+      gets), so the plain rows form their own run and line up naturally
+      among themselves, while its own comment sits one space after it.
+      When the order DOES matter (e.g. the entries render left to right),
+      pull the odd entry out into its own named `const` declared just
+      above the array instead, and leave that short identifier in its
+      real position; it no longer widens the comment column. See
+      `tab-stats.jsx`'s own `freSpeObj`/`metPilArr`.
     - **Exception — stop aligning before a long/paragraph-length
       property.** Once a row's own value for a given property is
       genuinely prose-length (a sentence or more, varying wildly in
@@ -2378,7 +2420,15 @@ attribute) are ordered into these 8 tiers, top to bottom:
 8. **Events/callbacks, always last**: native handlers (`onClick`,
    `onChange`, ...) AND custom-component callback props (`onHome`,
    `onNavTab`, `onClose`, ...) — both are the same conceptual category, so
-   they're interleaved by whatever order makes sense, not native-first.
+   they're interleaved alphabetically, not native-first.
+
+Within each tier, attributes are alphabetized by name (case-insensitive),
+the same way object properties are, unless their order genuinely matters,
+e.g. a `{ ...spread }` attribute, whose position decides what it overrides
+and so stays exactly where it was written, or a form control whose prop
+order changes how React applies it. E.g. tier 7's `aria-label` comes before
+`role`, and tier 1's `key` before `ref`. See `tab-stats.jsx`'s own
+`<BreBarCom>`/`<PagNavCom>` call sites for the reference examples.
 
 ### Multi-line attributes
 - Any element (native or custom component) with 2 OR MORE attributes/props
