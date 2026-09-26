@@ -2569,7 +2569,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 				<ColDisCom open={ !!logOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The day-log panel needs to animate open/closed rather than snapping. How: This wraps RemLogCom, open only while logOpeBoo is true. */ }
 
 
-					<RemLogCom staAppObj={ staAppObj } onClose={ onTogLogFun } />{ /* What: Reminders Log Component. Why: This is the actual "what did the generator do today" audit panel for this group. How: This is passed staAppObj and closes back via onTogLogFun. */ }
+					<RemLogCom state={ staAppObj } onClose={ onTogLogFun } />{ /* What: Reminders Log Component. Why: This is the actual "what did the generator do today" audit panel for this group. How: This is passed staAppObj and closes back via onTogLogFun. */ }
 
 
 				</ColDisCom>
