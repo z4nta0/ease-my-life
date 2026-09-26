@@ -4392,7 +4392,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 
 								<clipPath
-									id='brandMarkClipPicker'
+									id='braMarCli--pic'
 									clipPathUnits='userSpaceOnUse'
 								>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region under a fixed id local to this one page's own logo instance. */ }
 
@@ -4450,7 +4450,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 								strokeWidth='8'
 								strokeLinecap='round'
 								strokeLinejoin='round'
-								clipPath='url(#brandMarkClipPicker)'
+								clipPath='url(#braMarCli--pic)'
 							/>{ /* What: Glyph Path Element. Why: This is the actual squiggly "Ease My Life" brand glyph drawn inside the badge. How: This path is clipped to the rounded-square badge so its curves never spill outside it. */ }
 
 

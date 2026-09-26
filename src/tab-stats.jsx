@@ -2116,9 +2116,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 
 								<clipPath
-									id='brandMarkClipStats'
+									id='braMarCli--sta'
 									clipPathUnits='userSpaceOnUse'
-								>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, referenced below via url(#brandMarkClipStats). */ }
+								>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, referenced below via url(#braMarCli--sta). */ }
 
 
 									<rect
@@ -2176,7 +2176,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								strokeWidth='8'
 								strokeLinecap='round'
 								strokeLinejoin='round'
-								clipPath='url(#brandMarkClipStats)'
+								clipPath='url(#braMarCli--sta)'
 								style={{ fill : 'currentColor', stroke : 'currentColor' }}
 							/>{ /* What: Glyph Path Element. Why: This is the actual squiggly "Ease My Life" brand glyph drawn inside the badge. How: This path is clipped to the rounded-square badge so its curves never spill outside it. */ }
 

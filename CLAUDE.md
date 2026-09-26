@@ -3949,8 +3949,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   THING the id labels — the element/role it identifies — rather than the
   JS data type of the string holding it. Example: the SVG `<clipPath>`
   that clips the nav brand-mark's glyph path to its rounded-square badge
-  → `braMarCli` (Brand + Mark + Clippath), referenced via
-  `clipPath={ \`url(#${ braMarCli })\` }` on the path it clips.
+  → `braMarCli` (Brand + Mark + Clippath). This names the id VALUE
+  only; a JS variable holding that value is an ordinary variable and
+  follows the normal rule with a real type segment, e.g. `bmcIdeStr`
+  (Brand-Mark-ClipPath Identifier String, an Initialism-compression
+  case), referenced via `clipPath={ \`url(#${ bmcIdeStr })\` }` on the
+  path it clips.
   - When a component can render more than one live instance of itself at
     once (e.g. `TabBarCom` mounts a second "ghost" copy of itself during
     the nav placement-switch animation, gated by its own `tbcGhoBoo`
@@ -3961,12 +3965,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     segment (same truncation rule as the base name, e.g. `--gho` for
     "ghost") when the condition that causes duplication is true:
     ```
-    const braMarCli = `braMarCli${ tbcGhoBoo ? '--gho' : '' }`;
+    const bmcIdeStr = `braMarCli${ tbcGhoBoo ? '--gho' : '' }`;
     ```
     Reference that variable everywhere the id is needed (both the
     defining element's `id` and every place that reads it back via
     `url(#...)`) rather than recomputing or restating the ternary each
     time, so the definition and every reference can never drift apart.
+  - The same `--` modifier also keeps a repeated element's id unique
+    across DIFFERENT components that render the same markup onto the
+    page together, e.g. every tab header's own copy of the logo, which
+    sits on screen alongside the nav's own unmodified `braMarCli`: each
+    tab uses its own 3-letter modifier (`braMarCli--dat`, `--pic`,
+    `--set`, `--sta`, `--tod`). A literal id is fine when only one
+    instance of that component can ever exist, no variable needed.
 - **Object property names** follow the same naming rule as everything
   above, but are only 6 characters — they drop the middle "descriptor"
   segment and keep just segment 1 (what it is) + segment 3 (type), each

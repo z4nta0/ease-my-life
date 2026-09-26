@@ -2199,7 +2199,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 
-	const braMarCli = 'braMarCliSet'; // What: Brand Mark Clippath Id. Why: This header renders the same logo svg as the Today/Stats/Data headers, and clipPath ids must be document-unique. How: This is a fixed, file-specific id, distinct from the other headers' own "braMarCli".
+	const bmcIdeStr = 'braMarCli--set'; // What: Brand-Mark-ClipPath Identifier String. Why: This header renders the same logo svg as every other tab header, and clipPath ids must be document-unique. How: This appends a "--set" modifier to the shared braMarCli base id, the same per-tab convention as every other header's own logo ("--tod", "--pic", "--sta", "--dat"), keeping it distinct from the nav's own unmodified "braMarCli".
 
 
 
@@ -2257,7 +2257,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 								<clipPath
-									id={ braMarCli }
+									id={ bmcIdeStr }
 									clipPathUnits='userSpaceOnUse'
 								>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, given a unique id so it can be referenced via url(#...). */ }
 
@@ -2314,7 +2314,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								strokeWidth='8'
 								strokeLinecap='round'
 								strokeLinejoin='round'
-								clipPath={ `url(#${ braMarCli })` }
+								clipPath={ `url(#${ bmcIdeStr })` }
 								style={{ fill : 'currentColor', stroke : 'currentColor' }}
 							/>{ /* What: Glyph Path Element. Why: This is the actual squiggly "Ease My Life" brand glyph drawn inside the badge. How: This path is clipped to the rounded-square badge so its curves never spill outside it. */ }
 

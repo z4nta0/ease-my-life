@@ -5149,7 +5149,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 										<clipPath
-											id='braMarCli'
+											id='braMarCli--tod'
 											clipPathUnits='userSpaceOnUse'
 										>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region; TabToday only ever mounts one instance of itself, so no ghost-copy id suffix is needed here, unlike TabBarCom's own equivalent. */ }
 
@@ -5211,7 +5211,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 										strokeWidth='8'
 										strokeLinecap='round'
 										strokeLinejoin='round'
-										clipPath='url(#braMarCli)'
+										clipPath='url(#braMarCli--tod)'
 										style={{ fill : 'currentColor', stroke : 'currentColor' }}
 									/>{ /* What: Glyph Path Element. Why: This is the actual squiggly "Ease My Life" brand glyph drawn inside the badge. How: This path is clipped to the rounded-square badge so its curves never spill outside it. */ }
 

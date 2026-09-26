@@ -194,7 +194,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 
-	const braMarCli = `braMarCli${ tbcGhoBoo ? '--gho' : '' }`; // What: Brand Mark Clippath Id. Why: SVG clipPath references must use a document-unique id, and this component can render two instances at once. How: This appends a "--gho" modifier when tbcGhoBoo is true so the real and ghost instances never collide.
+	const bmcIdeStr = `braMarCli${ tbcGhoBoo ? '--gho' : '' }`; // What: Brand-Mark-ClipPath Identifier String. Why: SVG clipPath references must use a document-unique id, and this component can render two instances at once. How: This appends a "--gho" modifier when tbcGhoBoo is true so the real and ghost instances never collide.
 
 
 
@@ -253,7 +253,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 							<clipPath
-								id={ braMarCli }
+								id={ bmcIdeStr }
 								clipPathUnits='userSpaceOnUse'
 							>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, given a unique id so it can be referenced via url(#...). */ }
 
@@ -325,7 +325,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 								fill   : 'currentColor',
 								stroke : 'currentColor'
 							}}
-							clipPath={ `url(#${ braMarCli })` }
+							clipPath={ `url(#${ bmcIdeStr })` }
 							d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'
 							strokeLinecap='round'
 							strokeLinejoin='round'
