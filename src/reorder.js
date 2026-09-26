@@ -10,7 +10,7 @@
  * entry point, staDraFun (exported as REO_NAM_OBJ.staDraFun), is called from
  * a grip handle's onPointerDown and manages the whole gesture with
  * document-level listeners, committing a new order via the caller's own
- * onDrop callback.
+ * onDroOrdFun callback.
  *
  * Technique: every sibling's rect is snapshotted at gesture start. The
  * grabbed element is translated by the pointer delta, lifted via a CSS
@@ -20,7 +20,7 @@
  * grabbed element's outer height (plus gap) to open a hole at the
  * target, with a smooth CSS transition on transform animating them out
  * of the way. On release, every transform is cleared and the new index
- * order is handed to onDrop; React re-renders the list already in that
+ * order is handed to onDroOrdFun; React re-renders the list already in that
  * order, so the swap is seamless.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -61,16 +61,17 @@ const EDG_SPE_NUM = 14;                                             // What: Edg
  * @param dowEveObj - Down Event Object: The pointerdown event that started the
  *                    gesture, read for its button, pointerId, and clientY.
  * @param draConObj - Drag Configuration Object: The caller's own drag
- *                    configuration: container (the element whose direct
- *                    children matching itemSelector are the reorderable list),
- *                    itemSelector (a CSS selector identifying those siblings),
- *                    handleEl (the grabbed row/section being dragged), gripEl
- *                    (the specific element that received the pointerdown,
- *                    defaulting to handleEl when absent), scroller (an
- *                    optional scroll container for edge auto-scroll), onDrop
- *                    (called with an array of original indices in their new
- *                    order, only when the order actually changed), and
- *                    onStart/onEnd (optional lifecycle hooks).
+ *                    configuration: conLisEle (the element whose direct
+ *                    children matching iteSelStr are the reorderable list),
+ *                    iteSelStr (a CSS selector identifying those siblings),
+ *                    hanDraEle (the grabbed row/section being dragged),
+ *                    griIcoEle (the specific element that received the
+ *                    pointerdown, defaulting to hanDraEle when absent),
+ *                    scrConEle (an optional scroll container for edge
+ *                    auto-scroll), onDroOrdFun (called with an array of
+ *                    original indices in their new order, only when the
+ *                    order actually changed), and onStaDraFun/onEndDraFun
+ *                    (optional lifecycle hooks).
  *
  * @returns This function does not return anything.
  *
@@ -84,15 +85,23 @@ const EDG_SPE_NUM = 14;                                             // What: Edg
 function staDraFun ( dowEveObj, draConObj ) {
 
 
-	const conLisEle   = draConObj.container;    // What: Container List Element. Why: This is the reorderable list's own container, whose direct children matching iteSelStr are the draggable siblings. How: This is read once from draConObj and reused for the child query and the parent-match filter below.
-	const iteSelStr   = draConObj.itemSelector; // What: Item Selector String. Why: Not every child of conLisEle is necessarily a draggable sibling. How: This is used as the CSS selector for the initial querySelectorAll below.
-	const hanDraEle   = draConObj.handleEl;     // What: Handle Drag Element. Why: This is the specific row/section actually being dragged. How: This is looked up in iteEleArr to find oriIndNum, and its own transform is set directly inside appShiFun.
-	const griIcoEle   = draConObj.gripEl;       // What: Grip Icon Element. Why: The grip (often a small icon) is the element that actually receives the pointerdown and should own the pointer capture and move/up listeners. How: This is combined with hanDraEle below to resolve capTarEle.
-	const scrConEle   = draConObj.scroller;     // What: Scroll Container Element. Why: Edge auto-scroll is optional and needs its own scrollable ancestor to act on. How: This is read by onMovPoiFun and edgLooFun, both of which no-op when it is absent.
-	const onDroOrdFun = draConObj.onDrop;       // What: On Drop Order Function. Why: The caller needs to be notified of the final reordering, but only once it actually changed. How: This is called from onRelPoiFun with the freshly-built index order.
-	const onStaDraFun = draConObj.onStart;      // What: On Start Drag Function. Why: The caller may want to react to the gesture beginning, e.g. toggling a body class. How: This is called once, near the end of staDraFun's own setup.
-	const onEndDraFun = draConObj.onEnd;        // What: On End Drag Function. Why: The caller may want to react to the gesture finishing, symmetrically with onStaDraFun above. How: This is called once, at the end of cleDraFun.
-	const capTarEle   = griIcoEle || hanDraEle; // What: Capture Target Element. Why: The pointer capture and every move/up listener must attach to whichever element actually received the pointerdown. How: This prefers griIcoEle, falling back to hanDraEle when no separate grip was given.
+	const { // What: Drag Configuration Destructure. Why: Every option the caller passed is read once, up front, under its own name. How: This destructures draConObj into one local per option, each key already matching its local's own name.
+
+
+		conLisEle,   // What: Container List Element. Why: This is the reorderable list's own container, whose direct children matching iteSelStr are the draggable siblings. How: This is read once from draConObj and reused for the child query and the parent-match filter below.
+		griIcoEle,   // What: Grip Icon Element. Why: The grip (often a small icon) is the element that actually receives the pointerdown and should own the pointer capture and move/up listeners. How: This is combined with hanDraEle below to resolve capTarEle.
+		hanDraEle,   // What: Handle Drag Element. Why: This is the specific row/section actually being dragged. How: This is looked up in iteEleArr to find oriIndNum, and its own transform is set directly inside appShiFun.
+		iteSelStr,   // What: Item Selector String. Why: Not every child of conLisEle is necessarily a draggable sibling. How: This is used as the CSS selector for the initial querySelectorAll below.
+		onDroOrdFun, // What: On Drop Order Function. Why: The caller needs to be notified of the final reordering, but only once it actually changed. How: This is called from onRelPoiFun with the freshly-built index order.
+		onEndDraFun, // What: On End Drag Function. Why: The caller may want to react to the gesture finishing, symmetrically with onStaDraFun above. How: This is called once, at the end of cleDraFun.
+		onStaDraFun, // What: On Start Drag Function. Why: The caller may want to react to the gesture beginning, e.g. toggling a body class. How: This is called once, near the end of staDraFun's own setup.
+		scrConEle    // What: Scroll Container Element. Why: Edge auto-scroll is optional and needs its own scrollable ancestor to act on. How: This is read by onMovPoiFun and edgLooFun, both of which no-op when it is absent.
+
+
+	} = draConObj;
+
+
+	const capTarEle = griIcoEle || hanDraEle; // What: Capture Target Element. Why: The pointer capture and every move/up listener must attach to whichever element actually received the pointerdown. How: This prefers griIcoEle, falling back to hanDraEle when no separate grip was given.
 
 
 
@@ -487,10 +496,10 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 
 
-		capTarEle.removeEventListener( 'pointermove', onMovPoiFun );       // What: Grip Pointermove Unsubscribe. Why: This is one of the two listener paths staDraFun bound for reliability, and both must be undone. How: This removes onMovPoiFun from capTarEle's own pointermove.
+		capTarEle.removeEventListener( 'pointermove', onMovPoiFun );        // What: Grip Pointermove Unsubscribe. Why: This is one of the two listener paths staDraFun bound for reliability, and both must be undone. How: This removes onMovPoiFun from capTarEle's own pointermove.
 		capTarEle.removeEventListener( 'pointerup', onRelPoiFun );          // What: Grip Pointerup Unsubscribe. Why: Same reasoning as the pointermove removal above, for the up path instead. How: This removes onRelPoiFun from capTarEle's own pointerup.
 		capTarEle.removeEventListener( 'pointercancel', onRelPoiFun );      // What: Grip Pointercancel Unsubscribe. Why: A cancelled gesture must clean up exactly like a completed one. How: This removes onRelPoiFun from capTarEle's own pointercancel.
-		document.removeEventListener( 'pointermove', onMovPoiFun, true );  // What: Document Pointermove Unsubscribe. Why: This is the capture-phase fallback path bound alongside the grip's own listeners above. How: This removes onMovPoiFun from the document's own capture-phase pointermove.
+		document.removeEventListener( 'pointermove', onMovPoiFun, true );   // What: Document Pointermove Unsubscribe. Why: This is the capture-phase fallback path bound alongside the grip's own listeners above. How: This removes onMovPoiFun from the document's own capture-phase pointermove.
 		document.removeEventListener( 'pointerup', onRelPoiFun, true );     // What: Document Pointerup Unsubscribe. Why: Same reasoning as the document pointermove removal above, for the up path instead. How: This removes onRelPoiFun from the document's own capture-phase pointerup.
 		document.removeEventListener( 'pointercancel', onRelPoiFun, true ); // What: Document Pointercancel Unsubscribe. Why: A cancelled gesture must clean up exactly like a completed one. How: This removes onRelPoiFun from the document's own capture-phase pointercancel.
 
@@ -528,7 +537,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 * The pointerup/pointercancel handler that ends the gesture. Snapshots
 	 * the final target before tearing anything down, then, only if the
 	 * index actually changed, builds the new index order and hands it to
-	 * the caller's own onDrop.
+	 * the caller's own onDroOrdFun.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -560,7 +569,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 			ordIndArr.splice( finTarNum, 0, movIndNum ); // What: Moved Index Reinsert. Why: This is what actually produces the final reordered index array. How: This reinserts movIndNum at finTarNum without removing anything else.
 
-			if ( onDroOrdFun ) onDroOrdFun( ordIndArr ); // What: On Drop Callback Guard. Why: The caller's own onDrop is optional, same as onStaDraFun/onEndDraFun. How: This calls onDroOrdFun only when the caller actually provided one, passing the freshly-built order.
+			if ( onDroOrdFun ) onDroOrdFun( ordIndArr ); // What: On Drop Callback Guard. Why: The caller's own onDroOrdFun is optional, same as onStaDraFun/onEndDraFun. How: This calls onDroOrdFun only when the caller actually provided one, passing the freshly-built order.
 
 
 		}

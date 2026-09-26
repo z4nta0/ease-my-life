@@ -364,8 +364,8 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 				runFun : () => { // What: Run Function. Why: A freshly-expanded picker's own Controls/Items must start collapsed, same "clean slate" requirement as the pickers list itself. How: This polls the live DOM (bounded to 20 frames) for the just-expanded picker's own header buttons, then collapses whichever of Controls/Items defaulted open. // Controls/Items default OPEN the first time a picker's own section expands (absent === not-collapsed, see tab-data.jsx's own collapsedMap comment), same "clean, uncluttered" requirement as the pickers themselves, one level deeper. Can't just read state/DOM synchronously here: this runFun() fires from the tour's own CAPTURE-phase click listener, which, being capture, not bubble, always runs BEFORE the header's own React onClick (togColFun) actually applies (see onClickCapture's own comment in onboarding-tour-runner.jsx), so at this exact instant the clicked picker's section hasn't actually opened yet, in state OR the DOM. Polled via rAF (bounded to ~20 frames), driven off the live DOM (this closure's own `staAppObj` would be just as stale by the time it fires), the picker's OWN outer ColDisCom mounts its .cat-body content (and thus these two buttons) on a SECOND render cycle after `open` first flips true (see ColDisCom's own render/useEffect split in ui.jsx), so a single synchronous check would too often find nothing yet. Scoped to .data-list specifically (NOT Conditionals/Reminders above it, which share this same .rd-ctl class for their own Controls/Items, see help-content.jsx's own scoped selectors for the same distinction). Calls actStoObj.togColFun directly (using the picker's own data-picker-id, added to .cat in tab-data.jsx for exactly this) rather than a real .click() on the header: Step 3 below now requires clicking that SAME Controls header to finish the tutorial, and a synthetic click fired this late (well after `step` has already advanced past this one, and after suppressGuardRef has already reset) would be indistinguishable from the user's own real click, collapsing Controls here would immediately satisfy Step 3's cirBoo and finish the tour before the user ever saw it. A direct action call carries no such risk; it never touches the click-guard at all.
 
 
-					let triCouNum = 0; // What: Try Count Number. Why: The polling loop below must give up eventually if the expected DOM never mounts. How: This counts attempts, capped at 20 frames by the loop itself.
-					const triColFun = () => { // What: Try Collapse Function. Why: The just-expanded picker's own header buttons may not have mounted yet, so this must re-poll a frame at a time. How: This looks up the open picker's own header/buttons, retrying via requestAnimationFrame until they exist or the try cap is hit.
+					let tryCouNum = 0; // What: Try Count Number. Why: The polling loop below must give up eventually if the expected DOM never mounts. How: This counts attempts, capped at 20 frames by the loop itself.
+					const tryColFun = () => { // What: Try Collapse Function. Why: The just-expanded picker's own header buttons may not have mounted yet, so this must re-poll a frame at a time. How: This looks up the open picker's own header/buttons, retrying via requestAnimationFrame until they exist or the try cap is hit.
 
 
 						const opeHeaEle = document.querySelector( '.data-list .cat-h-l[aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .cat-h-l currently marked expanded.
@@ -374,7 +374,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 						const heaButArr = catSecEle ? [ ...catSecEle.querySelectorAll( '.rd-ctl' ) ] : [];       // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .rd-ctl button inside catSecEle into a plain array.
 
 
-						if ( ( !picIdeStr || heaButArr.length < 2 ) && triCouNum++ < 20 ) { requestAnimationFrame( triColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules triColFun a frame later, up to 20 tries, whenever picIdeStr or both buttons are still missing. // Re-polls a frame later whenever the expected DOM hasn't mounted yet and the try cap hasn't been hit. Left inline rather than extracted into named consts: triCouNum++ is a side effect that must stay inside this short-circuited check, extracting it would change how often it increments.
+						if ( ( !picIdeStr || heaButArr.length < 2 ) && tryCouNum++ < 20 ) { requestAnimationFrame( tryColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules tryColFun a frame later, up to 20 tries, whenever picIdeStr or both buttons are still missing. // Re-polls a frame later whenever the expected DOM hasn't mounted yet and the try cap hasn't been hit. Left inline rather than extracted into named consts: tryCouNum++ is a side effect that must stay inside this short-circuited check, extracting it would change how often it increments.
 
 
 						if ( !picIdeStr ) return; // What: Missing Picker Guard. Why: A try cap hit with no picker found at all has nothing left to collapse. How: This returns early whenever picIdeStr was never resolved.
@@ -387,7 +387,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 					};
 
-					requestAnimationFrame( triColFun ); // What: Initial Poll Call. Why: The first check must also wait a frame, same as every retry. How: This schedules the first call to triColFun.
+					requestAnimationFrame( tryColFun ); // What: Initial Poll Call. Why: The first check must also wait a frame, same as every retry. How: This schedules the first call to tryColFun.
 
 
 				},
@@ -1008,7 +1008,7 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 			} }
 			onFinTouFun={ () => cloTouFun( 'finished' ) }
-			onSkiTouFun={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabToday, unreachable from here, only reachable via the highlights tour's own 2nd step cirBoo target (.help-btn). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
+			onSkiTouFun={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabTodCom, unreachable from here, only reachable via the highlights tour's own 2nd step cirBoo target (.help-btn). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
 
 
 				if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Feature Check. Why: Only this feature can leave help mode turned on mid-Step-2 for Skip to undo. How: This branches on feaIdeStr matching 'feat_highlights'.
@@ -1052,7 +1052,7 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
  * single `solBoo` GuiTouCom step (see that flag's own doc comment in
  * onboarding-tour-runner.jsx), which hides the step counter and Skip/Back,
  * showing one full-width "Dismiss" button instead. Mounted directly from
- * TabToday rather than lifted to app.jsx like
+ * TabTodCom rather than lifted to app.jsx like
  * FeaTouCom/PagTouCom/PicTouCom are: unlike those, this never navigates to
  * another tab (the whole point is the section already on screen), so it
  * doesn't need real cross-tab selTabFun/actIdeStr plumbing,

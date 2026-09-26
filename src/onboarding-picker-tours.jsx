@@ -38,8 +38,8 @@ import { SED_NAM_OBJ } from './seed.js';                    // What: Seed Namesp
  * isaDynBoo below for that gating.
  *
  * Mounted at the app level (see app.jsx's own actPicStr), not inside
- * TabToday the way the reminder mini-tours are: Step 1 navigates to
- * the Pickers tab, which would unmount TabToday (and this tour along
+ * TabTodCom the way the reminder mini-tours are: Step 1 navigates to
+ * the Pickers tab, which would unmount TabTodCom (and this tour along
  * with it) if it lived there instead. actIdeStr/selTabFun passed into
  * PicTouCom below are therefore the real app-wide ones, not stubs.
  *
@@ -697,7 +697,7 @@ const BOO_STE_OBJ = { // What: Boost Step Object. Why: This step highlights the 
  *
  * @summary
  * Highlights the item editor's own Save button, .ob-item-save (tagged
- * alongside .ob-item-cancel, see EntryEditor in tab-today.jsx).
+ * alongside .ob-item-cancel, see EntEdiCom in tab-today.jsx).
  * cirBoo since this closes the editor for good, the same real-
  * interface-teaching pattern as buiNewFun/ITE_STE_OBJ/buiAddFun above.
  *
@@ -769,8 +769,8 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  * Renders whichever piece of one sample picker's own mini-tour is
  * currently relevant: the intro modal, or the running GuiTouCom.
  * Mounted at the app level (see app.jsx's own actPicStr), not inside
- * TabToday the way the reminder mini-tours are: Step 1 navigates to
- * the Pickers tab, which would unmount TabToday (and this along with
+ * TabTodCom the way the reminder mini-tours are: Step 1 navigates to
+ * the Pickers tab, which would unmount TabTodCom (and this along with
  * it) if it lived there instead. actIdeStr/selTabFun are therefore the
  * real app-wide ones, not stubs.
  *

@@ -892,7 +892,7 @@ const forTimFun = ( isoDatStr ) => {
  * The dynamic-mode "+N" Boost value plus its Reset lever. Clicking
  * Reset commits the value to 0 (via onReset) AND animates the shown
  * number ticking down to zero. Used by picker items (tab-today's
- * EntryEditor) and conditionals.
+ * EntEdiCom) and conditionals.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

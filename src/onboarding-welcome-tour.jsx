@@ -41,7 +41,7 @@ import { TodTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top F
  * observable bus publishing prefill data for the picker form plus a live
  * phase/step so other tabs can react to the tour without a context
  * provider (e.g. Today's own empty states gate on its phase field);
- * window.__emlGenerate(), registered by TabToday so the tour can run the
+ * window.__emlGenerate(), registered by TabTodCom so the tour can run the
  * real generator without reaching into the footer's own confirm dialog;
  * and a set of data-tour / .ob-* / data-tab selectors on real target
  * elements.
@@ -202,7 +202,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 				if ( !onbStaObj.dismissed ) { // What: Not Dismissed Guard. Why: Only a true first run should actually regenerate the list; a replay's own review moment is the user's real, current list, not sample data. How: This calls the registered generator only when onbStaObj.dismissed is falsy.
 
 
-					if ( window.__emlGenerate ) window.__emlGenerate(); // What: Generate Call. Why: The next step's own highlight covers the whole list, group sections included, so it already has a real target to point at while the list is still filling in. How: This calls the generator TabToday registered on window.__emlGenerate, if it has registered one yet.
+					if ( window.__emlGenerate ) window.__emlGenerate(); // What: Generate Call. Why: The next step's own highlight covers the whole list, group sections included, so it already has a real target to point at while the list is still filling in. How: This calls the generator TabTodCom registered on window.__emlGenerate, if it has registered one yet.
 
 
 				}

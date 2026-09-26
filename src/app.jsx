@@ -21,7 +21,7 @@ import { TabDatCom    } from './tab-data.jsx';                // What: Tab Data 
 import { TabPicCom    } from './tab-picker.jsx';              // What: Tab Picker Component. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
 import { TabSetCom    } from './tab-settings.jsx';            // What: Tab Settings Component. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
 import { TabStaCom    } from './tab-stats.jsx';               // What: Tab Stats Component. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
-import { TabToday     } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
+import { TabTodCom     } from './tab-today.jsx';               // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
 import { useAppStaFun } from './store.js';                    // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 import { useEmlTouFun } from './eml-tour-bus.js';             // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
 import { WelTouCom    } from './onboarding-welcome-tour.jsx'; // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
@@ -525,7 +525,7 @@ function AppRooCom () {
 
 	// #region Tour Resume State
 
-	const [ actPicStr, setActPicStr ] = React.useState( () => { // What: Active Picker String And Setter. Why: Tracks which sample picker's mini-tour is running, kept here (not in TabToday) since Step 1 navigates away to the Pickers tab and would unmount TabToday. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
+	const [ actPicStr, setActPicStr ] = React.useState( () => { // What: Active Picker String And Setter. Why: Tracks which sample picker's mini-tour is running, kept here (not in TabTodCom) since Step 1 navigates away to the Pickers tab and would unmount TabTodCom. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
 
 
 		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for a "picker-" prefixed id.
@@ -779,24 +779,24 @@ function AppRooCom () {
 			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active. How: This renders the Today tab directly, or wraps every other tab in a shared main-inner div, based on actIdeStr. */ }
 
 
-				{ actIdeStr === 'today' && ( // What: Today Tab Visibility Check. Why: The Today tab is rendered directly, not through the shared main-inner wrapper other tabs use. How: This renders TabToday, wrapped in its own fade/key transition div, only while actIdeStr is 'today'.
+				{ actIdeStr === 'today' && ( // What: Today Tab Visibility Check. Why: The Today tab is rendered directly, not through the shared main-inner wrapper other tabs use. How: This renders TabTodCom, wrapped in its own fade/key transition div, only while actIdeStr is 'today'.
 
 
 					<div
 						key='today'
 						className='tab-fade'
-					>{ /* What: Today Fade Div Element. Why: Switching tabs should play a fade transition, and React needs a stable key to treat each tab as a distinct mounted instance. How: This wraps TabToday and remounts (replaying the fade) whenever the active tab changes back to 'today'. */ }
+					>{ /* What: Today Fade Div Element. Why: Switching tabs should play a fade transition, and React needs a stable key to treat each tab as a distinct mounted instance. How: This wraps TabTodCom and remounts (replaying the fade) whenever the active tab changes back to 'today'. */ }
 
 
-						<TabToday
-							actions={ actStoObj }
-							state={ staAppObj }
-							onHome={ () => selTabFun( 'today' ) }
-							onNavTab={ selTabFun }
-							onStartAppFeatureTour={ setActFeaStr }
-							onStartPageTour={ setActPagStr }
-							onStartPickerTour={ setActPicStr }
-						/>{ /* What: TabToday. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is passed the shared state/actions and the tour-starting setters so it can kick off the picker, page, or app-feature tours. */ }
+						<TabTodCom
+							actStoObj={ actStoObj }
+							staAppObj={ staAppObj }
+							onNavHomFun={ () => selTabFun( 'today' ) }
+							onNavTabFun={ selTabFun }
+							onStaFeaFun={ setActFeaStr }
+							onStaPagFun={ setActPagStr }
+							onStaPicFun={ setActPicStr }
+						/>{ /* What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is passed the shared state/actions and the tour-starting setters so it can kick off the picker, page, or app-feature tours. */ }
 
 
 					</div>

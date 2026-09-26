@@ -464,7 +464,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 	const [ curSteNum, setCurSteNum ] = React.useState( resSteNum || 0 ); // What: Current Step Number And Setter. Why: This is the tour's own live position in `steObjArr`. How: This starts at resSteNum (or 0), then only setCurSteNum ever advances/rewinds it.
 	const [ curRecObj, setCurRecObj ] = React.useState( null );           // What: Current Rect Object And Setter. Why: The render function needs the current step's own clamped highlight rect to position the spotlight and coach. How: This starts null (nothing to show yet) and is written by the position-tracking effect below.
-	const [ resTopNum, setResTopNum ] = React.useState( 0 );              // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so TabToday can push its list content down by this amount instead of the coach card overlaying part of what is highlighted; driven by rect/viewport math, not any specific step, so any future tour step with a too-tall highlight gets this automatically.
+	const [ resTopNum, setResTopNum ] = React.useState( 0 );              // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so TabTodCom can push its list content down by this amount instead of the coach card overlaying part of what is highlighted; driven by rect/viewport math, not any specific step, so any future tour step with a too-tall highlight gets this automatically.
 
 	const hadRecRef  = React.useRef( false ); // What: Had Rect Reference. Why: This suppresses the spot's own slide-in animation on its first paint. How: This starts false and is flipped true the first time the render function actually draws a spot.
 	const spoEleRef  = React.useRef( null );  // What: Spotlight Element Reference. Why: The spotlight is positioned imperatively every frame (no React lag) rather than through React state alone. How: This is attached to the rendered .ob-spot div below.
@@ -1233,7 +1233,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 					resDecBoo = true;           // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
 					resAmoNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed 40px.
 
-					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the effect below forwards onto the bus.
+					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the effect below forwards onto the bus.
 
 
 					requestAnimationFrame( () => briTarFun() ); // What: Reserve Retry. Why: The padding has not rendered yet (React has not re-committed), so the retry must wait a real frame to measure the actual, already-reserved layout instead of guessing at it. How: This re-calls briTarFun on the next animation frame.
@@ -1392,7 +1392,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 
 			resAmoNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed 40px.
-			setResTopNum( resAmoNum );  // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state.
+			setResTopNum( resAmoNum );  // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state.
 
 
 

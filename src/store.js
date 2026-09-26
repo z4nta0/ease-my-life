@@ -508,7 +508,7 @@ function logRowFun( curStaObj, { eid: entIdeStr = null, pickerId: picIdeStr, ite
  *               depletedEnd?, pickedId?, bumpPick? }
  *
  * A direct edit to an item's own value (Fill/Refill/Reset, all three
- * living on tab-today.jsx's EntryEditor, patched via updIteFun below)
+ * living on tab-today.jsx's EntEdiCom, patched via updIteFun below)
  * is meant to win immediately, so it deliberately bypasses this
  * staging. But ease-up/dynamic pick()s stash an updates row for EVERY
  * pool item on each not-yet-done entry's own pending, not just the one
@@ -1653,11 +1653,11 @@ function migStaFun( curStaObj ) {
 	 * A one-shot signal (added later) for tab-today.jsx's own auto-
 	 * scroll to the Generate card: set the instant every OTHER
 	 * checklist item becomes resolved (see setCarFun below),
-	 * consumed (and cleared back to false) the next time TabToday
+	 * consumed (and cleared back to false) the next time TabTodCom
 	 * renders with it true. Persisted state rather than a local ref/
 	 * effect, deliberately: the LAST checklist item to resolve is very
 	 * often finished from a mini-tour or Page Tour running on a
-	 * DIFFERENT tab, which unmounts TabToday for the whole tour, so a
+	 * DIFFERENT tab, which unmounts TabTodCom for the whole tour, so a
 	 * plain "did I see false-then-true" ref would miss the transition
 	 * entirely (it only resets, matching whatever the value already
 	 * is, on each fresh mount). This flag survives that gap by living
@@ -3892,7 +3892,7 @@ function useAppStaFun( optArgObj ) {
 		 * auto-scroll (see generateScrollPending's own migStaFun() comment
 		 * for why this has to be captured HERE, the actual mutation
 		 * point, rather than as a derived-value comparison inside
-		 * TabToday itself, which may not even be mounted right now).
+		 * TabTodCom itself, which may not even be mounted right now).
 		 *
 		*/
 
@@ -3930,7 +3930,7 @@ function useAppStaFun( optArgObj ) {
 			if ( !ONB_CHE_OBJ.reaGenFun( curStaObj ) && ONB_CHE_OBJ.reaGenFun( nexStaObj ) ) { // What: Ready-To-Generate Edge Guard. Why: tab-today.jsx's own auto-scroll needs to know the EXACT moment readiness just flipped on, not merely that it's on now. How: This flags generateScrollPending only when curStaObj was not-yet-ready and nexStaObj now is.
 
 
-				nexStaObj.onboarding.generateScrollPending = true; // What: Generate-Scroll-Pending Flag Set. Why: TabToday consumes (and clears) this the next time it renders with it true, per its own migStaFun() comment. How: This flips nexStaObj.onboarding.generateScrollPending to true.
+				nexStaObj.onboarding.generateScrollPending = true; // What: Generate-Scroll-Pending Flag Set. Why: TabTodCom consumes (and clears) this the next time it renders with it true, per its own migStaFun() comment. How: This flips nexStaObj.onboarding.generateScrollPending to true.
 
 
 			}

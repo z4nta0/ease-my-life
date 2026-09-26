@@ -3357,7 +3357,7 @@ button.rd-chev {
 @media (prefers-reduced-motion: reduce) { .heat-slide-next, .heat-slide-prev { animation: none; } }
 
 .rd-edit-foot { justify-content: space-between; }
-/* InfoTip wraps the disabled Delete button in a plain span (see EntryEditor's
+/* InfoTip wraps the disabled Delete button in a plain span (see EntEdiCom's
    atMinItems branch, tab-today.jsx) — match the Btn it replaces so the footer's
    space-between layout doesn't shift. */
 .rd-del-disabled-tip { display: inline-flex; }

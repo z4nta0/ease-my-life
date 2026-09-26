@@ -852,6 +852,12 @@ decision is captured for next time instead of getting re-asked later.
     not a structural element, so it's exempt from the one-comment-per-
     element rule. The exemption ends the moment such an element sits on
     a line of its own; then it's commented like any other element.
+  - **A bare-variable text child on its own line needs no comment**
+    (e.g. `{ groNamStr }` inside a button), since it just prints that
+    value. Anything more than a bare variable (a ternary, a fallback like
+    `a?.name || ' '`, a call) does get one, as a `{ /* */ }` block right
+    after it on the same line. See `tab-today.jsx`'s own Edit Mode rail
+    button label.
   - **Attribute lines never get their own comment, UNLESS the attribute's
     own value is itself a multi-line construct** (a multi-line arrow
     function body, a multi-line array/object literal, ...), in which
@@ -938,7 +944,13 @@ Check with `npx eslint <file>` after touching one.
 A bare `function Name(...) {}` declaration that isn't stored in a
 `const`/`let` (e.g. `function TabBarCom(...)`, `function AppRooCom()`)
 gets a JSDoc-style block comment instead of the usual one-line What/Why/How
-treatment. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the reference
+treatment. So does a component wrapped in `React.forwardRef( function
+Name ( ... ) { ... } )`, even though the wrapper is stored in a `const`:
+it's still a component, so it gets the same block (between its own
+`// #region` marker and the `const` line), and its forwarded ref is
+documented as a bare `@param` after the `props.` lines, since it's a
+positional parameter. It keeps its own one-line comment on the `const`
+line as well. See `tab-today.jsx`'s own `EntEdiCom`. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the reference
 implementation of every rule below.
 - **Placement**: exactly 1 blank line before the opening `/**` (see
   "### Sectioning / fold regions" below for what comes before that blank
@@ -1167,7 +1179,7 @@ comments in `src/bg-flourish.jsx` for the reference examples.
 A collapsible fold region uses the editor-standard `// #region <Name>` /
 `// #endregion <Name>` marker pair (recognized by VS Code and other
 editors for code folding), wrapped tightly around the specific unit it
-covers. Five cases are defined so far; more may be added later, but
+covers. Six cases are defined so far; more may be added later, but
 don't invent one for anything else yet:
 - **Custom function declarations**: the exact same `function Name(...) {}`
   case covered by "### Custom function declaration comments" above always
@@ -1376,6 +1388,33 @@ don't invent one for anything else yet:
     header at the very top (`store.js = Store And Persisted-State
     Layer`) is NOT wrapped in a region of its own, since the file
     itself is already that header's natural boundary.
+- **A design-rationale comment inside a function body, and everything it
+  describes**: whenever a `/** ... */` summary is used to explain code
+  inside a function (or inside a plain JS expression within JSX, such as
+  a ternary branch or a `createPortal( ... )` argument), it always gets
+  a region wrapping the comment AND the code it describes, even when
+  that code is a single line, and regardless of the 25-line threshold,
+  so it's always obvious exactly what the summary covers.
+  - **Name line and region name**: a summary about exactly one
+    declaration keeps that declaration's own `<Name> = <Expanded Name>`
+    line, and its region uses the declaration's literal name (like a
+    function's own region, e.g. `// #region finCloFun`). A summary about
+    anything else (a run of statements, one effect, a mechanism, a JSX
+    element) uses `<filename.ext> = <Descriptive Name>`, naming whatever
+    it describes as a whole (its concept or purpose), and its region
+    reuses that same descriptive name (e.g. `// #region Skip
+    Animation`).
+  - **Spacing**: the gap before the `// #region` marker is whatever the
+    comment itself would have had (3 blank lines, or 2 as the first
+    thing inside its enclosing block), then 1 blank line to the `/**`,
+    1 blank line after the `*/`, the described code, 1 blank line, and
+    the `// #endregion` marker, followed by the same gap the described
+    code originally had after it.
+  - Regions nest normally: a summary describing a whole effect can wrap
+    another summary's region inside that effect. See `tab-today.jsx`'s
+    own `Completion Celebration` region (wrapping `Celebration
+    Particles`, `Celebration Overlay Rect`, and the effect holding
+    `Celebration Fire Sequence`) for the reference example.
 
 ### Quotes
 - Use `'single quotes'` for every string literal, including JSX attribute
@@ -2430,6 +2469,36 @@ order changes how React applies it. E.g. tier 7's `aria-label` comes before
 `role`, and tier 1's `key` before `ref`. See `tab-stats.jsx`'s own
 `<BreBarCom>`/`<PagNavCom>` call sites for the reference examples.
 
+On a multi-line attribute list, exactly 1 blank line separates each tier
+from the next, so the tiers read as visible groups; attributes within the
+same tier stay flush together, and an element whose attributes all fall in
+one tier has no blank lines at all. (This is whitespace inside the opening
+tag, so it has no effect on rendering.) A multi-line attribute value keeps
+its own internal spacing untouched, e.g. an arrow function body's usual
+2-blank padding. The tier a prop lands in is judged by role on a custom
+component, so `name` is tier 5 only on a native element (where it's the
+real HTML `name` attribute); a custom component's `name` prop, like
+`IcoSvgCom`'s own icon name, is core data in tier 6. See `tab-today.jsx`'s
+own GroHeaCom name `<input>` for the reference example:
+
+```
+<input
+	ref={ namInpRef }
+
+	className={ ... }
+
+	maxLength={ 30 }
+	type='text'
+	value={ draNamStr }
+
+	aria-label='Group name'
+
+	onBlur={ comEdiFun }
+	onChange={ ... }
+	onKeyDown={ ... }
+/>
+```
+
 ### Multi-line attributes
 - Any element (native or custom component) with 2 OR MORE attributes/props
   always goes multi-line — never all on one line, no matter how short the
@@ -3423,21 +3492,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     this list. Every comment referencing the fixed identifiers already
     spelled "Done" out in full, so none needed text changes, only the
     identifiers themselves were wrong)
-  - `trg` → `tri` (Trigger/Triggered — found in `trgValBoo` (`store.js`,
-    9 instances in `cdlAplFun`; `seed.js`, 2 instances), and
-    `trgEleRef`/`trgCurEle`/`trgRecObj` (`ui.jsx`, a tooltip/popover's
-    own trigger-element handling, ~15 instances across a single
-    component), fixed to `triValBoo`/`triEleRef`/`triCurEle`/
-    `triRecObj`. `tri` was already the established, correct code for
-    this exact word elsewhere in this codebase, e.g. `conditionals.js`'s
-    own `triValBoo` (4 uses, the exact same "Trigger Value Boolean"
-    concept `store.js`'s own instance was found right next to), so no
-    escalation was needed, this was purely an inconsistent spelling of a
-    word already spelled correctly elsewhere. Every comment referencing
-    these identifiers already spelled "Trigger"/"Triggered" out in full,
-    so none needed text changes, only the identifiers themselves were
-    wrong. No collision: none of the corrected names were already in use
-    in the same scope anywhere)
+  - **Trigger/Triggered uses `trg`, not `tri`** (a project-scoped
+    decision, reversing an earlier sweep that had moved `trgValBoo`/
+    `trgEleRef`/`trgCurEle`/`trgRecObj` to `tri`). `tri` had become
+    overloaded with three unrelated words at once: Trigger (the tooltip's
+    own `triEleRef`/`triCurEle`/`triRecObj` in `ui.jsx`, `triValBoo` in
+    `store.js`/`seed.js`/`conditionals.js`, `triFlaBoo`), Trimmed
+    (`namTriStr`), and Try. Per the user's own choice, Trigger takes its
+    consonant skeleton `trg` (the same style as `rcd`/`rmn`/`rmv`),
+    Trimmed keeps the literal `tri` (e.g. `tab-today.jsx`'s own
+    `triValStr`), and Try uses its own complete 3-letter word `try` (e.g.
+    `onboarding-app-features.jsx`'s own `tryCouNum`/`tryColFun`). Being
+    applied file by file as each file is next reviewed, not in one sweep.
+    Scoped to ease-my-life ONLY, for the same reason as `rmn`/`rmv`.
   - `cch` → `cac` (Cached/Cache — found in `cchStaObj` (`store.js`'s own
     `loaStaFun`, 2 instances), fixed to `cacStaObj`; `cac` was already
     the established, heavily-used code for this exact word elsewhere in
@@ -3621,6 +3688,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (Read), `ul` → `lis` (List), and `apm` (AM/PM) became `mer`
     (Meridiem). Address keeps `adr` via Phase A escalation, since its own
     literal `add` already heavily means Add
+  - A fourth batch, found together in `tab-today.jsx`'s own review, each
+    fixed to its word's literal first 3 letters: `rng` → `rin` (Ring),
+    `slt` → `slo` (Slot), `shn` → `sho` (Shown), `bst` → `bes` (Best),
+    `hnd` → `han` (Handle), `tmr` → `tim` (Timer), `rdc` → `red`
+    (Reduced), `bnd` → `bou` (Boundary), `rsn` → `rea` (Reason), `pmp` →
+    `pro` (Prompt), `cfm` → `con` (Confirm), `psh` → `pus` (Push), `ext` →
+    `exi` (Exit), `mn` → `mai` (Main), `Ns` → `Nam` (Namespace), and `eid`
+    → `ide` (an entry's own Identifier). Arriving can't take its literal
+    `arr` (Array/Arrow), so Phase A gave `ari`. Complete can't take
+    `com`, and its Phase A candidates `cop`/`col` are equally loaded, so
+    its synonym Full was used instead (`isaFulBoo`, `preFulRef`). Day-Off
+    is a two-word "what", so it follows Two-word single-segment
+    compression: `dao` (`daoCarArr`, `daoTitStr`), not the old `dof`
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -4007,6 +4087,21 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `cmp` case), and Phase A's own first clean candidate would have been
     `coi`, which reads far less clearly than `cmt`. Scoped to ease-my-life
     ONLY, for the same reason as `cmp`.
+  - **A fourth project-scoped override, splitting `rec` between Record
+    and Rect**: `rec` had grown into two heavy meanings at once, Record
+    (`tasRecObj`, `picRecObj`, `entRecObj`, ...) and Rect, a bounding box
+    (`scrRecObj`, `cliRecObj`, `butRecObj`, ...), so a name like
+    `curRecObj` couldn't be read without checking what it held. `rec` now
+    means Rect only, and Record uses its consonant skeleton `rcd`
+    (`tasRcdObj`, `picRcdObj`, ...), per the user's own explicit choice;
+    Phase A's own Rect candidate `ret` was rejected since it reads as
+    Return. Being applied file by file, as each file is next reviewed,
+    not in one sweep: `curRecObj` and `tarRecObj` hold a record in some
+    files and a rect in others, so every instance is checked by hand.
+    Where a better word than Record exists, use it instead (e.g.
+    `tab-today.jsx`'s own `groBucObj`, a bucket pulled from
+    `groBucMap`). Scoped to ease-my-life ONLY, for the same reason as
+    `rmn`/`rmv`.
   - **When even the escalation letters collide, pick a different word
     entirely rather than force one through**: `tab-today.jsx`'s own
     `rndOrdRef`/`rndArr` (holding the group order actually rendered to

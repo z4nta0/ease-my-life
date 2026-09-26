@@ -368,7 +368,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	// #region Editing A Picker Item
 
-	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 6 items, scoped identically via .entry-editor, that class is shared verbatim by both tabs since it's literally the same EntryEditor component either way). // Item Name is the one exception: Today's own name field lives right on the card (.entry-card-name-input, EntryCard's own markup), not inside .entry-editor like Data's .rd-name-input does.
+	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 6 items, scoped identically via .entry-editor, that class is shared verbatim by both tabs since it's literally the same EntEdiCom component either way). // Item Name is the one exception: Today's own name field lives right on the card (.entry-card-name-input, EntryCard's own markup), not inside .entry-editor like Data's .rd-name-input does.
 	{
 
 
@@ -611,7 +611,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	// .rem-inline-editor is shared markup used by THREE different editors: the Add Reminder quick-add form, an existing reminder's own editor (this item), AND a picker item's EntryEditor (tab-today.jsx). The picker-item case is excluded via :not(.entry-editor) (its root carries that extra class), but :not(.rem-quickadd-wrap *) is ALSO required: .rem-quickadd-wrap merely WRAPS its own .rem-inline-editor, it doesn't stop the bare :not(.entry-editor) check from still matching that inner element too, which produced two overlapping "Reminder Schedule" badges at once whenever the Add Reminder form was open (found via live testing, addReminderRepeat's own comment above claiming this was "already covered, doesn't conflict" was wrong).
+	// .rem-inline-editor is shared markup used by THREE different editors: the Add Reminder quick-add form, an existing reminder's own editor (this item), AND a picker item's EntEdiCom (tab-today.jsx). The picker-item case is excluded via :not(.entry-editor) (its root carries that extra class), but :not(.rem-quickadd-wrap *) is ALSO required: .rem-quickadd-wrap merely WRAPS its own .rem-inline-editor, it doesn't stop the bare :not(.entry-editor) check from still matching that inner element too, which produced two overlapping "Reminder Schedule" badges at once whenever the Add Reminder form was open (found via live testing, addReminderRepeat's own comment above claiming this was "already covered, doesn't conflict" was wrong).
 	{
 
 
@@ -641,7 +641,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	// BUG FIXED HERE: this used to be the unscoped '.rd-edit-foot .btn', which, since .rd-edit-foot is the SAME class a picker item's own EntryEditor footer uses, was ALSO matching that footer on the Today tab, showing this reminder-specific copy ("this reminder...") on a picker item's Delete/Cancel/Save instead of itemFoot's own "this item..." copy just below. .rem-inline-editor:not(.entry-editor) (see editReminderRepeat's own comment) properly scopes this to an actual reminder's editor. selStr targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot specifically, Delete's own confirm prompt swaps in a DIFFERENT sibling class (.rem-foot-confirm), which a selector scoped to .rd-edit-foot would miss entirely: no dim-mask hole, AND the click-guard would treat its Cancel/Delete buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on, this was wrongly assumed harmless ("gracefully has nothing to highlight") until the user found it actually blocks the click too, not just the highlight. // :not(.rem-quickadd-wrap *) is also needed since the Add Reminder quickadd form (Today only) uses this exact same .rem-inline-editor > .rem-inline-foot structure for its own Cancel/Add buttons (no rd-edit-foot/rem-foot-confirm distinction there, since a brand-new draft has nothing to delete yet); widening from .rd-edit-foot to the shared .rem-inline-foot wrapper (see the comment above) would otherwise ALSO match those, duplicating this badge the same way editReminderRepeat's own selector once did.
+	// BUG FIXED HERE: this used to be the unscoped '.rd-edit-foot .btn', which, since .rd-edit-foot is the SAME class a picker item's own EntEdiCom footer uses, was ALSO matching that footer on the Today tab, showing this reminder-specific copy ("this reminder...") on a picker item's Delete/Cancel/Save instead of itemFoot's own "this item..." copy just below. .rem-inline-editor:not(.entry-editor) (see editReminderRepeat's own comment) properly scopes this to an actual reminder's editor. selStr targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot specifically, Delete's own confirm prompt swaps in a DIFFERENT sibling class (.rem-foot-confirm), which a selector scoped to .rd-edit-foot would miss entirely: no dim-mask hole, AND the click-guard would treat its Cancel/Delete buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on, this was wrongly assumed harmless ("gracefully has nothing to highlight") until the user found it actually blocks the click too, not just the highlight. // :not(.rem-quickadd-wrap *) is also needed since the Add Reminder quickadd form (Today only) uses this exact same .rem-inline-editor > .rem-inline-foot structure for its own Cancel/Add buttons (no rd-edit-foot/rem-foot-confirm distinction there, since a brand-new draft has nothing to delete yet); widening from .rd-edit-foot to the shared .rem-inline-foot wrapper (see the comment above) would otherwise ALSO match those, duplicating this badge the same way editReminderRepeat's own selector once did.
 	{
 
 
@@ -1089,7 +1089,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// Clicking Edit on a pool item opens the shared EntryEditor (same component/markup as Today's and Data's item-editor coverage, see those catalogs' own comments), but it renders inside .pv-additem-wrap, BELOW the pool list, not inline where the item's own row is. No scroll-into-view step exists in help mode (unlike the guided tour), so these badges simply appear wherever that section currently sits once an edit is open; the user scrolls to find them like anything else below the fold. This same markup/selector set is ALSO what Step 2 of the Create a Picker form uses for each new item's editor (identical .pv-newitem/.rd-item/.entry-editor structure), one shared set of entries covers editing an existing pool item, adding one from an existing picker's own pool, and building a brand new picker's pool. .rd-name-input is also used by the Conditionals section elsewhere in the app (same .rd-item wrapper shape), :has(.entry-editor) picks out only a .rd-item that's actually an ITEM editor.
+	// Clicking Edit on a pool item opens the shared EntEdiCom (same component/markup as Today's and Data's item-editor coverage, see those catalogs' own comments), but it renders inside .pv-additem-wrap, BELOW the pool list, not inline where the item's own row is. No scroll-into-view step exists in help mode (unlike the guided tour), so these badges simply appear wherever that section currently sits once an edit is open; the user scrolls to find them like anything else below the fold. This same markup/selector set is ALSO what Step 2 of the Create a Picker form uses for each new item's editor (identical .pv-newitem/.rd-item/.entry-editor structure), one shared set of entries covers editing an existing pool item, adding one from an existing picker's own pool, and building a brand new picker's pool. .rd-name-input is also used by the Conditionals section elsewhere in the app (same .rd-item wrapper shape), :has(.entry-editor) picks out only a .rd-item that's actually an ITEM editor.
 	{
 
 
@@ -1319,7 +1319,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// Deliberately doesn't re-explain each type, every option already has its own ruleset/explanation copy right there on the page, same as newPickerMode's own comment. // padYcoNum: 0, this whole cluster (Type/Weight/Odds/Boost/Charge Controls/Active) sits close enough together, .cnd-type-group's own gap to a sibling block is only 6px, and Odds-to-Boost specifically share the SAME block with next to no gap at all, that the default 8px pad would overlap somewhere no matter which type is selected. Zero pad on all of them relies on newCondActive's own padYcoNum to open a gap instead (see its comment), same "let one side of the boundary do the work" approach as EntryEditor's itemWeight/itemBoost.
+	// Deliberately doesn't re-explain each type, every option already has its own ruleset/explanation copy right there on the page, same as newPickerMode's own comment. // padYcoNum: 0, this whole cluster (Type/Weight/Odds/Boost/Charge Controls/Active) sits close enough together, .cnd-type-group's own gap to a sibling block is only 6px, and Odds-to-Boost specifically share the SAME block with next to no gap at all, that the default 8px pad would overlap somewhere no matter which type is selected. Zero pad on all of them relies on newCondActive's own padYcoNum to open a gap instead (see its comment), same "let one side of the boundary do the work" approach as EntEdiCom's itemWeight/itemBoost.
 	{
 
 
@@ -1368,7 +1368,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// cnd-ease-up-row / cnd-ease-down-row, see tab-conditional.jsx's own comment; same split-by-direction pattern as EntryEditor's itemChargeRangeUp/Down.
+	// cnd-ease-up-row / cnd-ease-down-row, see tab-conditional.jsx's own comment; same split-by-direction pattern as EntEdiCom's itemChargeRangeUp/Down.
 	{
 
 
@@ -2877,7 +2877,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Editing A Picker Item
 
-	// EntryEditor, defined in tab-today.jsx but reused here, see .entry-editor's own doc comment there. Which of these actually renders depends on the OWNING PICKER's mode, so most items below only ever show up for some modes: Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic Weighted), Boost (Dynamic Weighted only). Active and the footer always render regardless of mode. // .rd-name-input is also used by the Conditionals section's own name field (same .rd-item wrapper shape), :has(.entry-editor) picks out only a .rd-item that's actually an ITEM editor, since .entry-editor is unique to EntryEditor and never rendered for a conditional.
+	// EntEdiCom, defined in tab-today.jsx but reused here, see .entry-editor's own doc comment there. Which of these actually renders depends on the OWNING PICKER's mode, so most items below only ever show up for some modes: Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic Weighted), Boost (Dynamic Weighted only). Active and the footer always render regardless of mode. // .rd-name-input is also used by the Conditionals section's own name field (same .rd-item wrapper shape), :has(.entry-editor) picks out only a .rd-item that's actually an ITEM editor, since .entry-editor is unique to EntEdiCom and never rendered for a conditional.
 	{
 
 
@@ -2995,7 +2995,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// selStr targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot specifically, Delete swaps that sibling out for .rem-foot-confirm (its own Cancel/Delete pair), which a selector scoped to .rd-edit-foot would miss entirely once that swap happens: no dim-mask hole, AND the click-guard would treat its buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on. // Delete is only rendered when !isNew (see EntryEditor in tab-today.jsx), :has(.btn--danger) splits this from itemFootNew below rather than always mentioning Delete, same fix as dataCondFoot/dataReminderFoot.
+	// selStr targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot specifically, Delete swaps that sibling out for .rem-foot-confirm (its own Cancel/Delete pair), which a selector scoped to .rd-edit-foot would miss entirely once that swap happens: no dim-mask hole, AND the click-guard would treat its buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on. // Delete is only rendered when !isNew (see EntEdiCom in tab-today.jsx), :has(.btn--danger) splits this from itemFootNew below rather than always mentioning Delete, same fix as dataCondFoot/dataReminderFoot.
 	{
 
 
@@ -3020,7 +3020,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// New (unsaved) items never render a Delete button, see EntryEditor's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
+	// New (unsaved) items never render a Delete button, see EntEdiCom's `!isaNewBoo &&` guard, so this covers that footer state with its own Cancel/Save-only copy.
 	{
 
 

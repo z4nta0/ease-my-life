@@ -15,7 +15,7 @@ import { CodConCom    } from './tab-conditional.jsx';     // What: Conditional C
 import { ColDisCom    } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
 import { conDraFun    } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { DAT_HEL_ARR  } from './help-content.jsx';        // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
-import { EntryEditor  } from './tab-today.jsx';           // What: Entry Editor. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
+import { EntEdiCom  } from './tab-today.jsx';           // What: Entry Editor Component. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
 import { FilButCom    } from './ui.jsx';                  // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
 import { freEdiFun    } from './ui.jsx';                  // What: Freeze Edited Function. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
 import { HelButCom    } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
@@ -3024,7 +3024,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 	const [ insIteStr, setInsIteStr ] = React.useState( null ); // What: Insert Item String And Setter. Why: A just-inserted row needs to play its own slide-in entrance exactly once. How: This holds whichever item's own id should currently play that entrance.
 
 	const newIteRef = React.useRef( null ); // What: New Item Reference. Why: A brand-new, not-yet-kept item needs to be tracked so Cancel can discard the whole add instead of reverting to an empty snapshot. How: This holds whichever item's own id was just created, cleared once it's kept.
-	const opeEdiRef = React.useRef( null ); // What: Open Editor Reference. Why: The open item's own row header (outside IteEdiCom) needs to call its own .keep() before closing, so an explicit close never gets treated as an implicit revert. How: This holds whichever IteEdiCom instance is currently open.
+	const opeEdiRef = React.useRef( null ); // What: Open Editor Reference. Why: The open item's own row header (outside IteEdiCom) needs to call its own .keeSavFun() before closing, so an explicit close never gets treated as an implicit revert. How: This holds whichever IteEdiCom instance is currently open.
 	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freEdiFun below.
 
 
@@ -3222,7 +3222,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 	}, [ newDraStr ] ); // What: Effect Dependency Array. Why: This only ever needs to run when a brand-new draft actually appears. How: newDraStr is the single value this effect's own guard is built around.
 
 
-	const IteEdiCom = EntryEditor; // What: Item Editor Component. Why: This scopes EntryEditor under a name matching this file's own component-naming convention, without renaming the actual import. How: This is reused so Today and Data stay exact copies, same pattern as the Reminders editor.
+	const IteEdiCom = EntEdiCom; // What: Item Editor Component. Why: This scopes EntEdiCom under a name matching this file's own component-naming convention, without renaming the actual import. How: This is reused so Today and Data stay exact copies, same pattern as the Reminders editor.
 
 	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: Every picker card's own open/closed state, plus its nested Controls/Items disclosures, are all persisted through this one map. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
 
@@ -4255,7 +4255,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 					const keeCloFun = ( iteIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron and IteEdiCom's own Save both mean "keep this, I'm done", so both need the exact same cleanup, kept in one place so neither can drift out of sync with the other. How: This calls the open editor's own keep(), clears the new-item flag, and closes only if this item is still the open one.
 
 
-						opeEdiRef.current?.keep(); // What: Keep Call Guard. Why: The currently-open IteEdiCom instance needs to mark itself already-handled before this closes it, so its own implicit-close guard doesn't ALSO try to revert/discard it. How: This calls .keep() on whatever opeEdiRef currently points at, if anything.
+						opeEdiRef.current?.keeSavFun(); // What: Keep Call Guard. Why: The currently-open IteEdiCom instance needs to mark itself already-handled before this closes it, so its own implicit-close guard doesn't ALSO try to revert/discard it. How: This calls .keep() on whatever opeEdiRef currently points at, if anything.
 
 						if ( newIteRef.current === iteIdeStr ) newIteRef.current = null; // What: New Item Clear Guard. Why: A kept item is no longer "brand new and undiscarded". How: This clears newIteRef only when it currently points at this exact item.
 

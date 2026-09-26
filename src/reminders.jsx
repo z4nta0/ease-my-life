@@ -1792,7 +1792,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 
-			if ( tutDonBoo ) onUncTutFun( 'reminder', tasRecObj.id ); // What: Done Dispatch Branch. Why: A sample whose mini-tour already finished should un-resolve it back to not-done on click. How: This calls onUncTutFun when tutDonBoo is true.
+			if ( tutDonBoo ) onUncTutFun( tasRecObj.id ); // What: Done Dispatch Branch. Why: A sample whose mini-tour already finished should un-resolve it back to not-done on click. How: This calls onUncTutFun when tutDonBoo is true.
 
 			else onPlaTutFun( 'reminder', tasRecObj.id ); // What: Not-Done Dispatch Branch. Why: A sample whose mini-tour hasn't finished yet should start playing it on click. How: This calls onPlaTutFun otherwise.
 
@@ -1818,7 +1818,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 						type='button'
 						aria-pressed='true'
 						aria-label={ `Undo ${ texDisObj.namStr } tutorial` }
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onUncTutFun( 'reminder', tasRecObj.id ); } }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onUncTutFun( tasRecObj.id ); } }
 					>{ /* What: Undo Check Button Element. Why: A resolved sample can be un-resolved directly from its own checkbox, same as a normal completed card toggling back off. How: This calls onUncTutFun, isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 

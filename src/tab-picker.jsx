@@ -14,7 +14,7 @@ import { CodConCom    } from './tab-conditional.jsx';     // What: Conditional C
 import { ColDisCom    } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
 import { conDraFun    } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
 import { emlTouObj    } from './eml-tour-bus.js';         // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
-import { EntryEditor  } from './tab-today.jsx';           // What: Entry Editor. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
+import { EntEdiCom  } from './tab-today.jsx';           // What: Entry Editor Component. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { HelButCom    } from './help-mode.jsx';           // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helpOn boolean.
 import { HelOveCom    } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
 import { IcoSvgCom    } from './ui.jsx';                  // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
@@ -515,7 +515,7 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 	const [ conLeaStr, setConLeaStr ] = React.useState( null );                                                         // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
 	const penEdiRef = React.useRef( null ); // What: Pending Edit Reference. Why: Set by staEdiFun when it has to close an in-progress new-item draft OR another item's open editor out of the way first, this is picked back up once that draft's/editor's own closing animation ends, so the edit opens right after instead of being silently dropped. How: This holds the target item id to reopen, consumed by the relevant onAnimationEnd handler below.
-	const ediSnaRef = React.useRef( null ); // What: Editing Snapshot Reference. Why: A snapshot of whatever item opeEdiFun last opened, taken at that exact moment, used ONLY by staEdiFun to explicitly revert live edits when jumping straight from one item's editor to a different item's, bypassing EntryEditor's own internal revert-on-unmount. How: That mechanism alone isn't enough here: it arms window.__editGuard's revert via a 0ms setTimeout on unmount, but the very next EntryEditor's mount effect unconditionally disarms it (so a stale pending revert can't clobber an unrelated fresh edit session), and both the unmount and the next mount happen in the same synchronous effect-flush, well before that timeout would ever fire, so the disarm always wins unless this reverts directly instead.
+	const ediSnaRef = React.useRef( null ); // What: Editing Snapshot Reference. Why: A snapshot of whatever item opeEdiFun last opened, taken at that exact moment, used ONLY by staEdiFun to explicitly revert live edits when jumping straight from one item's editor to a different item's, bypassing EntEdiCom's own internal revert-on-unmount. How: That mechanism alone isn't enough here: it arms window.__editGuard's revert via a 0ms setTimeout on unmount, but the very next EntEdiCom's mount effect unconditionally disarms it (so a stale pending revert can't clobber an unrelated fresh edit session), and both the unmount and the next mount happen in the same synchronous effect-flush, well before that timeout would ever fire, so the disarm always wins unless this reverts directly instead.
 
 
 	const canConFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears conDelStr immediately, or stages conLeaStr for 150ms first.
@@ -581,16 +581,16 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 	const isaEasBoo = picDatObj.mode === 'ease-up' || picDatObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates whether ease fields are carried over/shown throughout this view.
 
 
-	const draActObj = { // What: Draft Actions Object. Why: EntryEditor expects a real actions-shaped object to call as the user edits the in-progress new-item draft, but that draft isn't committed to the store yet. How: Every method below mirrors the real store action's own name and signature, but writes into newDraObj instead of dispatching a real store update.
+	const draActObj = { // What: Draft Actions Object. Why: EntEdiCom expects a real actions-shaped object to call as the user edits the in-progress new-item draft, but that draft isn't committed to the store yet. How: Every method below mirrors the real store action's own name and signature, but writes into newDraObj instead of dispatching a real store update.
 
 
-		delIteFun : () => setNewDraObj( null ), // What: Delete Item Function. Why: EntryEditor's own footer Delete button (hidden here via CSS, see the render below) still expects this method to exist. How: This clears newDraObj entirely.
+		delIteFun : () => setNewDraObj( null ), // What: Delete Item Function. Why: EntEdiCom's own footer Delete button (hidden here via CSS, see the render below) still expects this method to exist. How: This clears newDraObj entirely.
 		renIteFun : ( tarIdeStr, newNamStr ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? { ...preDraObj, name : newNamStr } : preDraObj ),   // What: Rename Item Function. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on newDraObj, if the ids still match.
-		revIteFun : ( tarIdeStr, snaIteObj ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? snaIteObj : preDraObj ),                            // What: Revert Item Function. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces newDraObj wholesale with snaIteObj, if the ids still match.
-		setWeiFun : ( tarIdeStr, weiValNum ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? { ...preDraObj, weight : weiValNum } : preDraObj ), // What: Set Weight Function. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on newDraObj, if the ids still match.
-		updIteFun : ( tarIdeStr, patIteObj ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? { ...preDraObj, ...patIteObj } : preDraObj ),       // What: Update Item Function. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into newDraObj only if the ids still match.
+		revIteFun : ( tarIdeStr, snaIteObj ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? snaIteObj : preDraObj ),                            // What: Revert Item Function. Why: EntEdiCom's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces newDraObj wholesale with snaIteObj, if the ids still match.
+		setWeiFun : ( tarIdeStr, weiValNum ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? { ...preDraObj, weight : weiValNum } : preDraObj ), // What: Set Weight Function. Why: EntEdiCom's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on newDraObj, if the ids still match.
+		updIteFun : ( tarIdeStr, patIteObj ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? { ...preDraObj, ...patIteObj } : preDraObj ),       // What: Update Item Function. Why: EntEdiCom calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into newDraObj only if the ids still match.
 
-		togVacFun : ( tarIdeStr ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? { // What: Toggle Vacation Function. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on newDraObj, if the ids still match.
+		togVacFun : ( tarIdeStr ) => setNewDraObj( ( preDraObj ) => preDraObj && preDraObj.id === tarIdeStr ? { // What: Toggle Vacation Function. Why: EntEdiCom's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on newDraObj, if the ids still match.
 
 
 			...preDraObj, // What: Previous Draft Spread. Why: Every other field stays as it was. How: This copies preDraObj.
@@ -1651,10 +1651,10 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 					{ ( () => { // What: Additem Slot Render. Why: Exactly one of three things belongs in this slot at a time (an open existing-item editor, an open new-item draft editor, or the plain add button), and that choice is easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then newDraObj, falling back to the plain button.
 
 
-						if ( ediIteStr ) { // What: Existing Item Editor Branch. Why: An existing item's own editor takes priority whenever one is open. How: This looks up the live item (not a snapshot, so EntryEditor's own direct store calls stay reflected immediately) and renders its editor, or nothing if it vanished out from under itself.
+						if ( ediIteStr ) { // What: Existing Item Editor Branch. Why: An existing item's own editor takes priority whenever one is open. How: This looks up the live item (not a snapshot, so EntEdiCom's own direct store calls stay reflected immediately) and renders its editor, or nothing if it vanished out from under itself.
 
 
-							const ediLivObj = staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ); // What: Editing Live Object. Why: Weight/ease stepper clicks inside EntryEditor call the REAL actions.updIteFun/setWeiFun directly, so this must be looked up live, not snapshotted, same as the pool row itself. How: This looks up ediIteStr fresh in staAppObj.items on every render.
+							const ediLivObj = staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ); // What: Editing Live Object. Why: Weight/ease stepper clicks inside EntEdiCom call the REAL actions.updIteFun/setWeiFun directly, so this must be looked up live, not snapshotted, same as the pool row itself. How: This looks up ediIteStr fresh in staAppObj.items on every render.
 
 
 							if ( !ediLivObj ) return null; // What: Vanished Item Guard. Why: The item may have been deleted via the row's own trash icon while this was open; that confirm flow already owns closing this out. How: This renders nothing rather than crashing against a missing item.
@@ -1733,16 +1733,16 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 									</div>
 
-									<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntryEditor's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntryEditor instance. */ }
+									<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance. */ }
 
 
-										<EntryEditor
+										<EntEdiCom
 											key={ ediLivObj.id }
 											iteDatObj={ ediLivObj }
 											picDatObj={ picDatObj }
 											actStoObj={ actStoObj }
 											onCloEdiFun={ () => setEdiCloBoo( true ) }
-										/>{ /* What: Entry Editor. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the live item, the picker, and the actions it edits through. */ }{ /* What: No-Ondelete Design Note. Why: EntryEditor's own footer Delete button is already hidden by the existing .pv-newitem CSS rule (".rd-edit-foot > .btn--danger { display: none }"), same as the new-item flow below. How: Deleting an existing item stays solely the row's own trash icon + confirm flow, one delete affordance per item instead of two that could disagree with each other, so no onDelete prop is passed below. */ }{ /* What: Editor Key Design Note. Why: Without a key keyed to ediLivObj.id, switching ediIteStr straight from one item to another (see staEdiFun) can commit in a single React batch with no intervening null render, so this would stay the SAME EntryEditor instance across the switch: its internal `orig` snapshot ref (captured once, on mount) would keep pointing at the FIRST item, and its unmount effect, which is what discards live edits via window.__editGuard when a close wasn't an explicit Save/Cancel, would never run at all. How: The key below forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
+										/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the live item, the picker, and the actions it edits through. */ }{ /* What: No-Ondelete Design Note. Why: EntEdiCom's own footer Delete button is already hidden by the existing .pv-newitem CSS rule (".rd-edit-foot > .btn--danger { display: none }"), same as the new-item flow below. How: Deleting an existing item stays solely the row's own trash icon + confirm flow, one delete affordance per item instead of two that could disagree with each other, so no onDelete prop is passed below. */ }{ /* What: Editor Key Design Note. Why: Without a key keyed to ediLivObj.id, switching ediIteStr straight from one item to another (see staEdiFun) can commit in a single React batch with no intervening null render, so this would stay the SAME EntEdiCom instance across the switch: its internal `orig` snapshot ref (captured once, on mount) would keep pointing at the FIRST item, and its unmount effect, which is what discards live edits via window.__editGuard when a close wasn't an explicit Save/Cancel, would never run at all. How: The key below forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
 
 
 									</div>
@@ -1861,16 +1861,16 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 								</div>
 
-								<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntryEditor's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntryEditor instance bound to draActObj. */ }
+								<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
 
 
-									<EntryEditor
+									<EntEdiCom
 										iteDatObj={ newIteObj }
 										picDatObj={ picDatObj }
 										actStoObj={ draActObj }
 										onCloEdiFun={ () => setNewCloStr( 'save' ) }
 										onCanEdiFun={ () => setNewCloStr( 'cancel' ) }
-									/>{ /* What: Entry Editor. Why: The new-item draft reuses the exact item editor Today and Data use. How: This is passed the draft item, the picker, and the draft actions. */ }
+									/>{ /* What: Entry Editor Component. Why: The new-item draft reuses the exact item editor Today and Data use. How: This is passed the draft item, the picker, and the draft actions. */ }
 
 
 								</div>
@@ -2268,7 +2268,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 	const capStrFun = ( souTexStr ) => souTexStr.length ? souTexStr[ 0 ].toUpperCase() + souTexStr.slice( 1 ) : souTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
 
-	const [ actNewStr, setActNewStr ] = React.useState( null );  // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntryEditor plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
+	const [ actNewStr, setActNewStr ] = React.useState( null );  // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntEdiCom plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
 	const [ actCloStr, setActCloStr ] = React.useState( false ); // What: Active Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below. // What: Closing Values Note. Why: The close reason decides whether the draft is kept. How: It is false while open, otherwise 'save' or 'cancel'.
 	const [ insDraStr, setInsDraStr ] = React.useState( null );  // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
 	const [ conDelStr, setConDelStr ] = React.useState( null );  // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
@@ -2305,21 +2305,21 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
 
 	const penEdiRef = React.useRef( null );                                                   // What: Pending Edit Reference. Why: Switching straight from the new-item form (or a different item's editor) into this one must not silently drop the request. How: This holds the target id to reopen once whatever's currently closing finishes.
-	const ediSnaRef = React.useRef( null );                                                   // What: Editing Snapshot Reference. Why: Switching directly between two draft items' editors needs an explicit revert, for the exact same reason PicVieCom's own ediSnaRef does (EntryEditor's own unmount-triggered revert would be disarmed by the very next EntryEditor's mount effect before it ever fires). How: This holds a snapshot of whichever draft item opeDraFun last opened.
+	const ediSnaRef = React.useRef( null );                                                   // What: Editing Snapshot Reference. Why: Switching directly between two draft items' editors needs an explicit revert, for the exact same reason PicVieCom's own ediSnaRef does (EntEdiCom's own unmount-triggered revert would be disarmed by the very next EntEdiCom's mount effect before it ever fires). How: This holds a snapshot of whichever draft item opeDraFun last opened.
 	const comCouNum = pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length; // What: Committed Count Number. Why: The count and the Create button must not react early to a row still being edited, so its own Save hasn't landed yet. How: This is deliberately computed AFTER actNewStr's own declaration above; referencing it earlier in the body would (since this project targets Vite, not a var-hoisting build) read as undefined and this filter would exclude nothing.
 	const enoIteBoo = comCouNum >= 2;                                                         // What: Enough Item Boolean. Why: A picker must have at least 2 real, committed items before it can be created. How: This is true once comCouNum reaches 2.
 
 
-	const draActObj = { // What: Draft Actions Object. Why: EntryEditor expects a real actions-shaped object to call as the user edits a draft pool item, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
+	const draActObj = { // What: Draft Actions Object. Why: EntEdiCom expects a real actions-shaped object to call as the user edits a draft pool item, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
 
 
-		delIteFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.filter( ( iteCurObj ) => iteCurObj.id !== tarIdeStr ) ),                                                            // What: Delete Item Function. Why: EntryEditor's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
+		delIteFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.filter( ( iteCurObj ) => iteCurObj.id !== tarIdeStr ) ),                                                            // What: Delete Item Function. Why: EntEdiCom's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
 		renIteFun : ( tarIdeStr, newNamStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, name : newNamStr } : iteCurObj ) ),   // What: Rename Item Function. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
-		revIteFun : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? snaIteObj : iteCurObj ) ),                            // What: Revert Item Function. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
-		setWeiFun : ( tarIdeStr, weiValNum ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, weight : weiValNum } : iteCurObj ) ), // What: Set Weight Function. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
-		updIteFun : ( tarIdeStr, patIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, ...patIteObj } : iteCurObj ) ),       // What: Update Item Function. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
+		revIteFun : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? snaIteObj : iteCurObj ) ),                            // What: Revert Item Function. Why: EntEdiCom's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
+		setWeiFun : ( tarIdeStr, weiValNum ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, weight : weiValNum } : iteCurObj ) ), // What: Set Weight Function. Why: EntEdiCom's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
+		updIteFun : ( tarIdeStr, patIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, ...patIteObj } : iteCurObj ) ),       // What: Update Item Function. Why: EntEdiCom calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
 
-		togVacFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { // What: Toggle Vacation Function. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
+		togVacFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { // What: Toggle Vacation Function. Why: EntEdiCom's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
 
 
 			...iteCurObj, // What: Current Item Spread. Why: Every other field stays as it was. How: This copies iteCurObj.
@@ -2333,7 +2333,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 	};
 
 
-	const draPicObj = { mode : selModStr, threshold : easThrNum, cadence : cadCurObj.cadence }; // What: Draft Picker Object. Why: EntryEditor still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntryEditor's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntryEditor no longer reads those off the picker directly.
+	const draPicObj = { mode : selModStr, threshold : easThrNum, cadence : cadCurObj.cadence }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntEdiCom's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntEdiCom no longer reads those off the picker directly.
 
 
 	const addDraFun = () => { // What: Add Draft Function. Why: Starting a brand-new draft item opens the same slot the edit flow uses, seeded with sensible defaults (including any staged tour prefill), then scrolls it into view. How: This bails out if another editor is already open, otherwise generates a fresh id, resolves the tour's own staged name/ease if one applies, then seeds and scrolls the new slot into view.
@@ -2560,7 +2560,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 	}, [ touBusObj.pickerTourReopenItemNonce ] ); // What: Effect Dependency Array. Why: Only a genuine bump of this exact nonce should re-run this reopen. How: touBusObj.pickerTourReopenItemNonce is the sole trigger; pooIteArr/touBusObj.itemPrefill are read fresh from the closure each time it fires.
 
 
-	const bacSteFun = () => { // What: Back Step Function. Why: Returning to Step 1 must not leave Step 2 stuck with a stale actNewStr (which would make + Add Item a no-op), so any in-progress item is discarded first. How: This disarms EntryEditor's own deferred revert (else it would fire on the next macrotask and re-set actCloStr='cancel', auto-closing whatever gets added next), removes an in-progress item if there is one, then steps back.
+	const bacSteFun = () => { // What: Back Step Function. Why: Returning to Step 1 must not leave Step 2 stuck with a stale actNewStr (which would make + Add Item a no-op), so any in-progress item is discarded first. How: This disarms EntEdiCom's own deferred revert (else it would fire on the next macrotask and re-set actCloStr='cancel', auto-closing whatever gets added next), removes an in-progress item if there is one, then steps back.
 
 
 		window.__editGuard.disarm(); // What: Edit Guard Disarm Call. Why: A deferred revert firing after this navigation would corrupt whatever item gets added next. How: This calls the shared global editor guard's own disarm method.
@@ -3802,17 +3802,17 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 											</div>
 
-											<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntryEditor's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntryEditor instance bound to draActObj. */ }
+											<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
 
 
-												<EntryEditor
+												<EntEdiCom
 													key={ ediLivObj.id }
 													iteDatObj={ ediLivObj }
 													picDatObj={ draPicObj }
 													actStoObj={ draActObj }
 													picIteArr={ pooIteArr }
 													onCloEdiFun={ () => setEdiCloBoo( true ) }
-												/>{ /* What: Entry Editor. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the live item, the picker, and the actions it edits through. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntryEditor for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntryEditor's own internal Cancel/Escape handling (revert via draActObj.revIteFun, then close) is correct as-is with no extra bookkeeping needed here. */ }
+												/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the live item, the picker, and the actions it edits through. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntEdiCom for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntEdiCom's own internal Cancel/Escape handling (revert via draActObj.revIteFun, then close) is correct as-is with no extra bookkeeping needed here. */ }
 
 
 											</div>
@@ -3935,17 +3935,17 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 										</div>
 
-										<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntryEditor's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntryEditor instance bound to draActObj. */ }
+										<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
 
 
-											<EntryEditor
+											<EntEdiCom
 												iteDatObj={ newIteObj }
 												picDatObj={ draPicObj }
 												actStoObj={ draActObj }
 												picIteArr={ pooIteArr }
 												onCloEdiFun={ () => setActCloStr( 'save' ) }
 												onCanEdiFun={ () => setActCloStr( 'cancel' ) }
-											/>{ /* What: Entry Editor. Why: The new-item draft reuses the exact item editor Today and Data use. How: This is passed the draft item, the picker, and the draft actions. */ }
+											/>{ /* What: Entry Editor Component. Why: The new-item draft reuses the exact item editor Today and Data use. How: This is passed the draft item, the picker, and the draft actions. */ }
 
 
 										</div>

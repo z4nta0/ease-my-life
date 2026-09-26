@@ -368,7 +368,7 @@ const buiSubFun = ( varKeyStr ) => ({
  * Repeat schedule.
  *
  * Every step stays on Today, and this component is only ever mounted from
- * within TabToday (see tab-today.jsx's own startMiniTour), so
+ * within TabTodCom (see tab-today.jsx's own startMiniTour), so
  * actIdeStr/selTabFun are hardcoded/stubbed below rather than threaded all
  * the way up; a future step needing another tab would need this lifted the
  * way WelTouCom (onboarding-welcome-tour.jsx) is.

@@ -498,7 +498,7 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 				<ColDisCom open={ isaEasBoo }>{ /* What: Collapse Disclosure Component. Why: Only the ease-up and ease-down modes have a Soonest/Latest drift range and a Fill/Refill control. How: This animates the whole ease-mode settings block open only while isaEasBoo is true. */ }
 
 
-					<div className='cnd-typectl pie-rows'>{ /* What: Ease Type Control Div Element. Why: cnd-ease-up-row/cnd-ease-down-row (in addition to the shared pie-row) are pure selector hooks for help mode, see help-content.jsx's newCondEaseUp/newCondEaseDown, split by direction the same way EntryEditor's own pie-ease-up-row/pie-ease-down-row are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. */ }
+					<div className='cnd-typectl pie-rows'>{ /* What: Ease Type Control Div Element. Why: cnd-ease-up-row/cnd-ease-down-row (in addition to the shared pie-row) are pure selector hooks for help mode, see help-content.jsx's newCondEaseUp/newCondEaseDown, split by direction the same way EntEdiCom's own pie-ease-up-row/pie-ease-down-row are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. */ }
 
 
 						<div className={ ` pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' } ` }>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumSteCom control below. */ }
