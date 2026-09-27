@@ -1922,6 +1922,11 @@ later, but don't invent one for anything else yet:
     The same applies to the field list in a Repeated-shape JSDoc block,
     which documents the shape's fields alphabetically. Earlier-reviewed
     files get this in the final file-by-file pass.
+    - **Rows that don't all share the same keys** (decided 2026-09-27):
+      keys every row carries come first, alphabetized, then each row's
+      own optional keys, alphabetized, so an optional key never shifts
+      the shared columns out of line. The same order generated data rows
+      use. See `help-sample-data.js`'s own `TAS_SAM_ARR`.
   - **Object destructuring patterns are alphabetized the same way**,
     most commonly a component's own `function Foo ( { a, b } )` props,
     unless their order matters (a `...rest` element always stays last).
@@ -2174,7 +2179,7 @@ later, but don't invent one for anything else yet:
     `help-sample-data.js`'s own `TAS_SAM_ARR` for the reference example,
     where `id`/`name`/`repeat` line up across all 5 entries and each
     entry's own differently-named 4th field (`daysOfWeek`/`interval`/
-    `dayOfMonth`/`month`+`day`) still lines up by position, closing `}`
+    `dayOfMonth`/`day`+`month`) still lines up by position, closing `}`
     included.
     Aligning the closing `}` this way also lines up every row's own
     trailing comment for free, since each row's code then ends at the
