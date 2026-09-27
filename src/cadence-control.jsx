@@ -424,10 +424,10 @@ function CadConCom ( { value, onChange } ) {
 
 
 							) }
-							{ norCadObj.dateMode === 'nthWeekday'
-
+							{ norCadObj.dateMode === 'nthWeekday' // What: Clamp Hint Mode Check. Why: Each date mode has its own clamp edge case to warn about. How: This picks the nth-weekday hint while norCadObj.dateMode is 'nthWeekday', the plain-date hint otherwise.
 								? norCadObj.nthOrdinal === 5 && <p className='rem-hint'>In months without a 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
-								: norCadObj.anchorDom > 28 && <p className='rem-hint'>In shorter months this falls on the last day.</p> } // What: Plain-Date Clamp Hint Paragraph Element. Why: A day past 28 can silently clamp in a shorter month, which the user needs to know about. How: This renders only while norCadObj.anchorDom is past 28.
+								: norCadObj.anchorDom > 28 && <p className='rem-hint'>In shorter months this falls on the last day.</p>             // What: Plain-Date Clamp Hint Paragraph Element. Why: A day past 28 can silently clamp in a shorter month, which the user needs to know about. How: This renders only while norCadObj.anchorDom is past 28.
+							}
 
 
 						</div>
@@ -607,10 +607,10 @@ function CadConCom ( { value, onChange } ) {
 
 
 							) }
-							{ norCadObj.dateMode === 'nthWeekday'
-
-								? norCadObj.nthOrdinal === 5 && <p className='rem-hint'>In years where that month has no 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
-								: norCadObj.anchorMonth === 2 && norCadObj.anchorDay === 29 && <p className='rem-hint'>In common (non-leap) years this falls on Feb 28.</p> } // What: Leap-Day Clamp Hint Paragraph Element. Why: Feb 29 silently clamps to Feb 28 in a common year, which the user needs to know about. How: This renders only while the anchor month and day are exactly Feb 29.
+							{ norCadObj.dateMode === 'nthWeekday' // What: Clamp Hint Mode Check. Why: Each date mode has its own clamp edge case to warn about. How: This picks the nth-weekday hint while norCadObj.dateMode is 'nthWeekday', the leap-day hint otherwise.
+								? norCadObj.nthOrdinal === 5 && <p className='rem-hint'>In years where that month has no 5th, this falls on the 4th instead.</p>            // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
+								: norCadObj.anchorMonth === 2 && norCadObj.anchorDay === 29 && <p className='rem-hint'>In common (non-leap) years this falls on Feb 28.</p> // What: Leap-Day Clamp Hint Paragraph Element. Why: Feb 29 silently clamps to Feb 28 in a common year, which the user needs to know about. How: This renders only while the anchor month and day are exactly Feb 29.
+							}
 
 
 						</div>
