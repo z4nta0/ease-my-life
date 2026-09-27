@@ -652,8 +652,16 @@ src/
     What/Why/How is always the exact same boilerplate text (or one of
     a small, fixed set of variants, e.g. "String" vs "Function") no
     matter which specific object it sits on, document that shape and
-    its variants ONCE in the file's own top-level comment instead of
-    repeating the identical text on every single instance. Verify this
+    its variants ONCE in a JSDoc shape block attached to the
+    declaration that holds the literals, instead of repeating the
+    identical text on every single instance. Amended 2026-09-27: the
+    file-level header is for the file's own summary only, so shape
+    documentation never goes there. The shape block follows the
+    attached-declaration form under "### Large / design-rationale
+    comments" (`<Name> = <Expanded Name>` name line, `@summary` listing
+    each field alphabetically, `@author`), and its `#region` rule
+    applies too. Files documented the older way (in the header) move
+    their shape blocks during the final file-by-file pass. Verify this
     condition actually holds first (grep every instance of the property
     across the file and confirm they really do collapse to a small,
     genuinely fixed set of texts) rather than assuming it from a few
@@ -663,8 +671,10 @@ src/
     explains something genuinely unique to that instance (e.g., why
     one particular item needs a specific pad-override amount) — that
     stays exactly where it is, since it was never the repeated
-    boilerplate this exception targets. See `help-content.jsx`'s own
-    header comment for the reference example: it documents its shared
+    boilerplate this exception targets. See `appearance.js`'s own
+    `PAL_SET_OBJ` and `THE_PAI_OBJ` for the reference examples, and
+    `help-content.jsx`, whose header comment (until its own final pass
+    moves the block) documents its shared
     `{ bodEle, groStr?, ideStr, labStr?, mulBoo?, padXcoNum?, padYcoNum?,
     scrBoo?, selStr, shaStr?, titStr }` catalog-item shape once (its own
     fields listed alphabetically, per the object-property-ordering rule
@@ -674,7 +684,7 @@ src/
       to carry that shape documentation, so when it reads nothing from
       its enclosing scope it's hoisted to a module-level `ALL_CAPS`
       constant instead, gaining its own JSDoc shape block (and `#region`
-      once it reaches 25 lines), the same treatment as a top-level one.
+      once it reaches 25 lines), the same treatment as any other one.
       See `tab-settings.jsx`'s own `BRO_PAT_ARR`, moved out of
       `detBroFun`.
   - **Purely decorative banner comments** (e.g. `{ /* ── Appearance ──
