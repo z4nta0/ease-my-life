@@ -731,7 +731,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 									isaDisBoo={ ( conDraObj.value ?? 0 ) >= thrValNum }
 									labTexStr='Fill'
 
-									onFilActFun={ () => patSetFun( { value : thrValNum, triggered : true } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
+									onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
 								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-up. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
 
 
@@ -767,7 +767,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 									isaDisBoo={ ( conDraObj.value ?? 0 ) >= thrValNum }
 									labTexStr='Refill'
 
-									onFilActFun={ () => patSetFun( { value : thrValNum, triggered : true } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
+									onFilActFun={ () => patSetFun( { triggered : true, value : thrValNum } ) } // What: Full Charge Patch. Why: A fully charged conditional is triggered in both ease directions, so filling must set both fields together. How: This sets value to thrValNum and triggered to true.
 								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-down. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
 
 
