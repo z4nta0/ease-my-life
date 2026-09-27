@@ -11,11 +11,17 @@
  * so that catalog has one home neither onboarding-welcome-tour.jsx nor
  * onboarding-page-tours.jsx needs to own on the other's behalf.
  *
+ * Sections:
+ *  - Constants
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
+
+// #region Constants
 
 // #region NAV_TAR_OBJ
 
@@ -31,7 +37,7 @@
  * truth instead of being duplicated per consumer, keyed by the same page ids
  * as ONB_EPT_ARR's own pagStr field.
  *
- * Each entry holds content only (selStr/place/titStr/bodEle), no navigation
+ * Each entry holds content only (selStr/titStr/bodEle), no navigation
  * (priStr/bacBoo/runFun), since a guided tour needs Back/Next/Skip and a
  * future on-demand help mode won't. Consumers that need tour-flow-specific
  * framing (e.g. "let's explore this page now") append that themselves rather
@@ -48,10 +54,6 @@
  *   every consumer renders this directly as the step's own descriptive
  *   paragraph, written as JSX so specific phrases can be bolded.
  *
- * - `place` (String): Place is which side of the spotlighted element the
- *   overlay's own callout should render on; every consumer reads this
- *   directly as the step's own placement value.
- *
  * - `selStr` (String): Selector String is the actual DOM selector the
  *   overlay spotlights, matching the nav bar's own data-tab attribute
  *   for this page; every consumer (the Welcome Tour and each page's own
@@ -65,13 +67,12 @@
  *
 */
 
-const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/placement/title/body per consumer. How: This is read by the Welcome Tour, the page-tour system, and the picker-tour system, each spreading or looking up one entry by its own page id.
+const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/title/body per consumer. How: This is read by the Welcome Tour, the page-tour system, and the picker-tour system, each spreading or looking up one entry by its own page id.
 
 
 	data : { // What: Data Nav Target Object. Why: This is the nav-target descriptor for the Data page's own tab button. How: This is spread into the Welcome Tour's Data step and read by the page-tour system's opening step for the 'data' page id.
 
 
-		place  : 'below',
 		selStr : '[data-tab="data"]',
 		titStr : 'The Data Page',
 
@@ -83,7 +84,6 @@ const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboar
 	picker : { // What: Picker Nav Target Object. Why: This is the nav-target descriptor for the Pickers page's own tab button. How: This is spread into the Welcome Tour's Pickers step and read by the page-tour system's opening step for the 'picker' page id.
 
 
-		place  : 'below',
 		selStr : '[data-tab="picker"]',
 		titStr : 'The Pickers Page',
 
@@ -95,7 +95,6 @@ const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboar
 	settings : { // What: Settings Nav Target Object. Why: This is the nav-target descriptor for the Settings page's own tab button. How: This is spread into the Welcome Tour's Settings step and read by the page-tour system's opening step for the 'settings' page id.
 
 
-		place  : 'below',
 		selStr : '[data-tab="settings"]',
 		titStr : 'The Settings Page',
 
@@ -107,7 +106,6 @@ const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboar
 	stats : { // What: Stats Nav Target Object. Why: This is the nav-target descriptor for the Stats page's own tab button. How: This is spread into the Welcome Tour's Stats step and read by the page-tour system's opening step for the 'stats' page id.
 
 
-		place  : 'below',
 		selStr : '[data-tab="stats"]',
 		titStr : 'The Stats Page',
 
@@ -119,7 +117,6 @@ const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboar
 	today : { // What: Today Nav Target Object. Why: This is the nav-target descriptor for the Today page's own tab button. How: This is spread into the Welcome Tour's Today step and read by the page-tour system's opening step for the 'today' page id.
 
 
-		place  : 'below',
 		selStr : '[data-tab="today"]',
 		titStr : 'The Today Page',
 
@@ -133,8 +130,14 @@ const NAV_TAR_OBJ = { // What: Nav Target Object. Why: This is the shared onboar
 
 // #endregion NAV_TAR_OBJ
 
+// #endregion Constants
 
+
+
+// #region Exports
 
 export { NAV_TAR_OBJ }; // What: Named Export. Why: Every consumer imports this catalog by name. How: This re-exports NAV_TAR_OBJ, the sole binding this file defines.
+
+// #endregion Exports
 
 
