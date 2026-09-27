@@ -459,7 +459,19 @@ can move code between files rather than just within one.
   wherever the section order puts it; it never stays behind as a
   free-standing block. A file with section regions also lists its
   sections, in order, in its own file-level header comment, as a table of
-  contents.
+  contents: a `Sections:` line after the `@summary` prose, then one ` *  -
+  <Section>` line per section, then a bare ` *` line before `@author`. It
+  lists only the file-level category sections above (Constants, Helpers,
+  Components, ...), never the purpose-based sub-sections inside them or
+  the sections inside a function. See `constants.js` for the reference
+  example:
+  ```
+   * Sections:
+   *  - Constants
+   *  - Exports
+   *
+   * @author z4nta0 <https://github.com/z4nta0>
+  ```
 - **Extension and naming.** A file uses `.jsx` only when it actually
   contains JSX, and `.js` otherwise. Every filename is kebab-case
   (`tab-today.jsx`, `onboarding-seed-data.js`). Renaming a file means
