@@ -125,10 +125,10 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 		[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actStoObj.addPicFun( curPicObj ) ); // What: Sample Picker Seed Call. Why: Every step of the tour needs a real, generatable picker to point at. How: This adds ONB_EXA_OBJ and every ONB_ESP_ARR entry exactly like a real, user-created picker.
 
 
-		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Stats History Import. Why: The sample reminders themselves are seeded later, at the Generate step's own run() below (unlike picker items, a reminder needs no "generate" to become visible on Today, so seeding it here would show it before the user has generated anything), but this precomputed history is independent of whether the live task exists yet, since log rows are denormalized. How: This dynamic-imports the generated stats-history module once seeding is confirmed necessary.
+		import( './onboarding-stats-data.js' ).then( ( { ONB_STA_OBJ } ) => { // What: Stats History Import. Why: The sample reminders themselves are seeded later, at the Generate step's own run() below (unlike picker items, a reminder needs no "generate" to become visible on Today, so seeding it here would show it before the user has generated anything), but this precomputed history is independent of whether the live task exists yet, since log rows are denormalized. How: This dynamic-imports the generated stats-history module once seeding is confirmed necessary.
 
 
-			actStoObj.sedHisFun( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONBOARDING_STATS' own day-offsets into real dates and persists them as pick/reminder log rows.
+			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONB_STA_OBJ' own day-offsets into real dates and persists them as pick/reminder log rows.
 
 
 		} );

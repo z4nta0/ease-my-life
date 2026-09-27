@@ -299,10 +299,10 @@ const unhHisFun = ( appStaObj, actShaObj ) => { // What: Unhide History Function
 	if ( !( appStaObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: The precomputed history only ever needs seeding once; re-toggling help mode on and off must not seed it again. How: This checks whether any existing pickLog row already belongs to an onboarding sample picker.
 
 
-		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Onboarding Stats Data Import. Why: The precomputed history is large enough to load lazily rather than bundling it into every page. How: This dynamically imports onboarding-stats-data.js, resolving with its own ONBOARDING_STATS export.
+		import( './onboarding-stats-data.js' ).then( ( { ONB_STA_OBJ } ) => { // What: Onboarding Stats Data Import. Why: The precomputed history is large enough to load lazily rather than bundling it into every page. How: This dynamically imports onboarding-stats-data.js, resolving with its own ONB_STA_OBJ export.
 
 
-			actShaObj.sedHisFun( hydStaFun( ONBOARDING_STATS ) ); // What: Stats History Seed Call. Why: The precomputed history must become real, dated pickLog/reminderLog/reminderSkipLog rows before appending. How: This hydrates ONBOARDING_STATS via hydStaFun, then appends the result via sedHisFun.
+			actShaObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Stats History Seed Call. Why: The precomputed history must become real, dated pickLog/reminderLog/reminderSkipLog rows before appending. How: This hydrates ONB_STA_OBJ via hydStaFun, then appends the result via sedHisFun.
 
 
 		} );

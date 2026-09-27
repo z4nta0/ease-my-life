@@ -24,10 +24,11 @@
  * seed time, a trivial, instant per-row map, not a regeneration.
  *
  * The generated file's own JS source is hand-formatted here (tabs,
- * single quotes, space-colon-space) via forRowFun/forArrFun below,
+ * single quotes, space-colon-space) via forValFun/forArrFun below,
  * rather than a plain JSON.stringify dump, so onboarding-stats-data.js
  * itself matches this repo's own formatting conventions even though
- * nothing ever hand-edits it. Individual data rows are NOT given their
+ * nothing ever hand-edits it. Run with `--reformat` to rewrite the
+ * existing data in a changed template without re-simulating it. Individual data rows are NOT given their
  * own What/Why/How comments (unlike, say, seed.js's ITE_DEF_ARR) since
  * this file holds thousands of them and is never read row-by-row.
  *
@@ -206,7 +207,7 @@ for ( const dayAgoNum of monBacArr ) { // What: Reminder History Populate Loop. 
 
 
 const forStrFun = ( rawValStr ) => `'${ String( rawValStr ).replace( /'/g, '\\\'' ) }'`; // What: Format String Function. Why: Every string value in the generated file must use single quotes, per this repo's own quote convention, with any embedded single quote escaped. How: This wraps rawValStr in single quotes, backslash-escaping any of its own.
-const forValFun = ( rawValAny ) => { // What: Format Value Function. Why: forRowFun below needs one shared place that knows how to render any of the plain scalar types a row's own fields ever hold. How: This dispatches on rawValAny's own type/nullness.
+const forValFun = ( rawValAny ) => { // What: Format Value Function. Why: forArrFun below needs one shared place that knows how to render any of the plain scalar types a row's own fields ever hold. How: This dispatches on rawValAny's own type/nullness.
 
 
 	if ( rawValAny === null ) return 'null'; // What: Null Guard. Why: A null field (an incomplete row's own h/m) must render as the bare literal null, not a quoted string. How: This returns the literal text 'null' whenever rawValAny is exactly null.
@@ -217,54 +218,136 @@ const forValFun = ( rawValAny ) => { // What: Format Value Function. Why: forRow
 
 
 };
-const forRowFun = ( rowValObj ) => `{ ${ Object.keys( rowValObj ).map( ( curKeyStr ) => `${ curKeyStr } : ${ forValFun( rowValObj[ curKeyStr ] ) }` ).join( ', ' ) } }`; // What: Format Row Function. Why: Every row is a simple, literal-only object, so per this repo's own object-literal rule it stays on one line, space-colon-space, rather than forced multi-line. How: This joins every own key's own "key : value" pair with ', ', wrapped in braces.
-const forArrFun = ( rowArrAny ) => rowArrAny.length ? `[\n\n\n${ rowArrAny.map( ( curRowAny ) => `\t\t${ forRowFun( curRowAny ) }` ).join( ',\n' ) }\n\n\n\t]` : '[]'; // What: Format Array Function. Why: A non-empty array of rows gets this repo's own 2-blank-line open/close padding with tight, tab-indented one-line entries; an empty array stays tight per the same rule's own exemption. How: This joins every row's own forRowFun output, tab-indented one level deeper than the enclosing object's own property line.
+const forKeyFun = ( keyOneStr, keyTwoStr ) => keyOneStr.toLowerCase().localeCompare( keyTwoStr.toLowerCase() ); // What: Format Key Function. Why: Every row's own keys are written alphabetically, compared case-insensitively. How: This is the comparator both key groups below sort with.
+const forArrFun = ( rowArrAny, trlStr, cmtStr ) => { // What: Format Array Function. Why: A non-empty array of rows is written as one column-aligned table, its opening bracket carrying its own comment; an empty array stays tight. How: This orders each row's keys (always-present keys alphabetically, then optional ones), pads every position's cells to a shared width, pads every closing brace to a shared column, and joins the rows.
+
+
+	if ( !rowArrAny.length ) return `[]${ trlStr } ${ cmtStr }`; // What: Empty Array Guard. Why: An empty array needs no padding at all. How: This returns the tight brackets, the trailing text, and the comment.
 
 
 
-const outConStr = `
+	const allKeyArr = [ ...new Set( rowArrAny.flatMap( ( curRowAny ) => Object.keys( curRowAny ) ) ) ];               // What: All Key Array. Why: Both key groups are drawn from every key any row carries. How: This collects each distinct key once.
+	const reqKeyArr = allKeyArr.filter( ( curKeyStr ) => rowArrAny.every( ( curRowAny ) => curKeyStr in curRowAny ) ).sort( forKeyFun ); // What: Required Key Array. Why: Keys every row carries form the aligned columns at the front. How: This keeps keys present in every row, sorted.
+	const optKeyArr = allKeyArr.filter( ( curKeyStr ) => !reqKeyArr.includes( curKeyStr ) ).sort( forKeyFun );          // What: Optional Key Array. Why: A key only some rows carry goes after the aligned columns, so it never shifts them. How: This keeps every other key, sorted.
+	const celArrArr = rowArrAny.map( ( curRowAny ) => [ ...reqKeyArr, ...optKeyArr ].filter( ( curKeyStr ) => curKeyStr in curRowAny ).map( ( curKeyStr ) => `${ curKeyStr } : ${ forValFun( curRowAny[ curKeyStr ] ) }` ) ); // What: Cell Array Array. Why: Each row needs its own "key : value" cells in the shared key order. How: This maps every row to its cells, skipping keys it lacks.
+	const colCouNum = Math.max( ...celArrArr.map( ( curCelArr ) => curCelArr.length ) );                               // What: Column Count Number. Why: The widest row decides how many positions get padded. How: This is the largest cell count.
 
 
 
-/**
- * ONBOARDING_STATS = Onboarding Stats
- *
- * @summary
- * AUTO-GENERATED by scripts/build-onboarding-stats.mjs, do not
- * hand-edit. Regenerate with \`node scripts/build-onboarding-stats.mjs\`
- * whenever src/onboarding-seed-data.js changes; see that script for why
- * this data is precomputed and stored as day-offsets rather than
- * absolute dates.
- *
- * pickLog rows mirror state.pickLog (minus id/eid/completedAt, which
- * onboarding.jsx's own seeding effect fills in at hydration time from
- * daysAgo/h/m). reminderLog/reminderSkipLog rows mirror
- * state.reminderLog/.reminderSkipLog the same way (minus rowId/
- * completedAt or skippedAt).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-export const ONBOARDING_STATS = {
+	for ( let colIndNum = 0; colIndNum < colCouNum; colIndNum++ ) { // What: Column Pad Loop. Why: Every position's cells must end at one shared column so the next position lines up. How: This pads each position's cells, a comma included when another cell follows.
 
 
-	pickLog         : ${ forArrFun( finLogArr ) },
+		const celWidNum = Math.max( ...celArrArr.filter( ( curCelArr ) => colIndNum < curCelArr.length ).map( ( curCelArr ) => curCelArr[ colIndNum ].length + ( colIndNum < curCelArr.length - 1 ? 1 : 0 ) ) ); // What: Cell Width Number. Why: The widest cell at this position sets its column. How: This measures each row's cell here, counting its comma.
 
-	reminderLog     : ${ forArrFun( remLogArr ) },
 
-	reminderSkipLog : ${ forArrFun( remSkiArr ) }
+		celArrArr.forEach( ( curCelArr ) => { if ( colIndNum < curCelArr.length ) curCelArr[ colIndNum ] = ( curCelArr[ colIndNum ] + ( colIndNum < curCelArr.length - 1 ? ',' : '' ) ).padEnd( celWidNum ); } ); // What: Cell Pad Call. Why: Each cell at this position must reach the shared width. How: This appends the comma where needed, then pads.
+
+
+	}
+
+
+
+	const rowTexArr = celArrArr.map( ( curCelArr ) => curCelArr.join( ' ' ).trimEnd() );  // What: Row Text Array. Why: Each row's padded cells join into its inner text. How: This joins them with single spaces, trimming the last cell's padding.
+	const rowWidNum = Math.max( ...rowTexArr.map( ( curTexStr ) => curTexStr.length ) ); // What: Row Width Number. Why: Every closing brace lines up at one shared column. How: This is the longest row's inner text.
+
+
+
+	return `[ ${ cmtStr }\n\n\n${ rowTexArr.map( ( curTexStr ) => `\t\t{ ${ curTexStr.padEnd( rowWidNum ) } }` ).join( ',\n' ) }\n\n\n\t]${ trlStr }`; // What: Array Text Return. Why: The caller splices the finished table into the template. How: This wraps every padded row in braces, joins them, and adds the 2-blank padding, the trailing text and the comment.
 
 
 };
 
 
 
+const refModBoo = process.argv.includes( '--reformat' ); // What: Reformat Mode Boolean. Why: A template change should be applied to the existing data without replacing its randomly simulated history. How: This is true when the script is run with --reformat.
+const exiDatObj = refModBoo ? ( await import( '../src/onboarding-stats-data.js' ) ).ONB_STA_OBJ : null; // What: Existing Data Object. Why: Reformat mode rewrites the data already on disk instead of the fresh simulation above. How: This imports the current ONB_STA_OBJ only in reformat mode.
+const outPicArr = exiDatObj ? exiDatObj.pickLog : finLogArr;         // What: Output Pick Array. Why: The written pickLog comes from whichever source this run uses. How: This picks the existing rows in reformat mode, else the simulated ones.
+const outRemArr = exiDatObj ? exiDatObj.reminderLog : remLogArr;     // What: Output Reminder Array. Why: The written reminderLog comes from whichever source this run uses. How: This picks the existing rows in reformat mode, else the simulated ones.
+const outSkiArr = exiDatObj ? exiDatObj.reminderSkipLog : remSkiArr; // What: Output Skip Array. Why: The written reminderSkipLog comes from whichever source this run uses. How: This picks the existing rows in reformat mode, else the simulated ones.
+const outConStr = `
 
-`; // What: Output Content String. Why: This is the complete, ready-to-write source text of the generated onboarding-stats-data.js file. How: This is a template literal wrapping ONBOARDING_STATS around the 3 forArrFun-formatted logs above.
+
+/**
+ * onboarding-stats-data.js = Onboarding Stats Data
+ *
+ * @summary
+ * AUTO-GENERATED by scripts/build-onboarding-stats.mjs, do not
+ * hand-edit. Regenerate with \`node scripts/build-onboarding-stats.mjs\`
+ * whenever src/onboarding-seed-data.js changes, or rewrite the existing
+ * data in the script's current template with \`--reformat\`; see that
+ * script for why this data is precomputed and stored as day-offsets
+ * rather than absolute dates.
+ *
+ * Sections:
+ *  - Constants
+ *  - Exports
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+// #region Constants
+
+// #region ONB_STA_OBJ
+
+/**
+ * ONB_STA_OBJ = Onboarding Stats Object
+ *
+ * @summary
+ * Every row below is a one-line, literal-only object sharing its log's own
+ * shape, so no row carries its own comment (see the "Generated files" rule in
+ * CLAUDE.md). Keys every row carries come first, alphabetized and
+ * column-aligned, then any optional ones. The rows mirror
+ * state.pickLog/.reminderLog/.reminderSkipLog, minus the fields hydStaFun in
+ * onboarding-seed-data.js fills in at hydration time (id/eid/completedAt for a
+ * pick row, rowId plus completedAt or skippedAt for a reminder row) from each
+ * row's own daysAgo/h/m:
+ *
+ * - \`pickLog\` rows: \`daysAgo\` (Number), \`depletedEnd\` (Boolean,
+ *   optional), \`done\` (Boolean), \`group\` (String), \`h\`/\`m\` (Number or
+ *   null, the completion time), \`itemId\`/\`itemName\` (String),
+ *   \`outcome\` (String, optional), \`pickerId\`/\`pickerName\` (String),
+ *   \`source\` (String).
+ *
+ * - \`reminderLog\`/\`reminderSkipLog\` rows: \`daysAgo\` (Number), \`h\`/\`m\`
+ *   (Number, the time of day), \`name\` (String), \`taskId\` (String),
+ *   \`type\` (String).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const ONB_STA_OBJ = { // What: Onboarding Stats Object. Why: The Welcome Tour and help mode seed a year of realistic history into Stats. How: This holds the 3 precomputed logs, turned into real dated rows by hydStaFun.
+
+
+	pickLog : ${ forArrFun( outPicArr, ',', '// What: Pick Log. Why: Stats needs a year of sample picks. How: This lists every simulated pick as a daysAgo-based row.' ) }
+
+	reminderLog : ${ forArrFun( outRemArr, ',', '// What: Reminder Log. Why: Stats needs a year of sample reminder completions. How: This lists every completed weekly trash reminder.' ) }
+
+	reminderSkipLog : ${ forArrFun( outSkiArr, '', '// What: Reminder Skip Log. Why: Stats needs the occasional skipped reminder too. How: This lists every skipped weekly trash reminder.' ) }
+
+
+};
+
+// #endregion ONB_STA_OBJ
+
+// #endregion Constants
+
+
+
+// #region Exports
+
+export { ONB_STA_OBJ }; // What: Named Exports. Why: The Welcome Tour, the Stats page tour and help mode each import this data lazily by name. How: This exports ONB_STA_OBJ.
+
+// #endregion Exports
+
+
+`; // What: Output Content String. Why: This is the complete, ready-to-write source text of the generated onboarding-stats-data.js file. How: This is a template literal wrapping ONB_STA_OBJ, its shape block and its sections around the 3 forArrFun-formatted logs above.
 const outPatStr = path.join( curDirStr, '..', 'src', 'onboarding-stats-data.js' ); // What: Output Path String. Why: writeFileSync below needs the exact absolute destination path. How: This joins curDirStr with the fixed src/onboarding-stats-data.js relative path.
 writeFileSync( outPatStr, outConStr ); // What: Write File Call. Why: This is the actual act of regenerating onboarding-stats-data.js on disk. How: This writes outConStr to outPatStr, overwriting whatever was there before.
-console.log( `Wrote ${ finLogArr.length } pickLog rows, ${ remLogArr.length } reminderLog rows, ${ remSkiArr.length } reminderSkipLog rows to ${ outPatStr }` ); // What: Write Report Log. Why: Running this script manually needs some confirmation of what it actually did. How: This logs the 3 row counts plus outPatStr.
+console.log( `Wrote ${ outPicArr.length } pickLog rows, ${ outRemArr.length } reminderLog rows, ${ outSkiArr.length } reminderSkipLog rows to ${ outPatStr }` ); // What: Write Report Log. Why: Running this script manually needs some confirmation of what it actually did. How: This logs the 3 row counts plus outPatStr.
 
 
 

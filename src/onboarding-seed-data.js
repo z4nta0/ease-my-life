@@ -556,7 +556,7 @@ function isoDayFun ( datRawObj ) {
  * hydStaFun = Hydrate Stats Function
  *
  * @summary
- * Converts the precomputed, day-offset-based ONBOARDING_STATS (see
+ * Converts the precomputed, day-offset-based ONB_STA_OBJ (see
  * src/onboarding-stats-data.js and scripts/build-onboarding-stats.mjs)
  * into real pickLog / reminderLog / reminderSkipLog rows, dated
  * relative to the ACTUAL current date rather than whenever that file
