@@ -22,19 +22,38 @@
  * denial is effectively permanent, so this module never asks for it on
  * load.
  *
+ * Sections:
+ *  - Constants
+ *  - Module State
+ *  - Helpers
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
-const DAY_KEY_STR = 'easemylife.notifiedday'; // What: Day Key String. Why: This is the localStorage key that tracks the last local day this module already notified on. How: This is read/written by stoGetFun/stoSetFun inside genNotFun's own once-per-day guard below.
+// #region Constants
+
 const ASK_KEY_STR = 'easemylife.notifyasked'; // What: Ask Key String. Why: This is the localStorage key that tracks whether permission has already been requested once. How: This is read by askCheFun and written by askOncFun/reqPerFun below.
+const DAY_KEY_STR = 'easemylife.notifiedday'; // What: Day Key String. Why: This is the localStorage key that tracks the last local day this module already notified on. How: This is read/written by stoGetFun/stoSetFun inside genNotFun's own once-per-day guard below.
+
+// #endregion Constants
 
 
+
+// #region Module State
 
 const subLisSet = new Set(); // What: Subscriber Listener Set. Why: This holds every callback that wants to hear about a permission change, most notably the Settings page's own permission-state display. How: This is added to by subAddFun and iterated by broSubFun below.
 
+// #endregion Module State
+
+
+
+// #region Helpers
+
+// #region Permission Subscribers
 
 const broSubFun = () => { // What: Broadcast Subscriber Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every function currently in subLisSet, swallowing any individual subscriber's own error so one bad listener can't block the rest.
 
@@ -53,6 +72,33 @@ const broSubFun = () => { // What: Broadcast Subscriber Function. Why: Every sub
 };
 
 
+
+// #region subAddFun
+
+/**
+ * subAddFun = Subscribe Add Function
+ *
+ * @summary
+ * Registers a callback to hear about every permission change this module
+ * makes (an ask, a request, or a grant), so a display like the Settings
+ * page's notify-me row can re-read perCheFun and re-render. A callback
+ * that throws is swallowed by broSubFun, so one broken listener never
+ * stops the others.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param lisCalFun - Listener Callback Function: The callback to call, with no
+ *                     arguments, after each permission change.
+ *
+ * @returns A cleanup function that unsubscribes lisCalFun again.
+ *
+ * @example
+ * ```ts
+ * subAddFun(lisCalFun) // => unsubscribe function
+ * ```
+ *
+*/
+
 const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A caller (the Settings page) needs a way to register for permission-change broadcasts and later unregister again. How: This adds the given callback to subLisSet and hands back its own removal function.
 
 
@@ -65,17 +111,13 @@ const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A cal
 
 };
 
+// #endregion subAddFun
+
+// #endregion Permission Subscribers
 
 
-const notSupFun = () => typeof window.Notification === 'function';                 // What: Notification Support Function. Why: Every other function below needs to know whether the browser has the Notification API at all before doing anything else with it. How: This checks that window.Notification exists and is itself a function.
-const perCheFun = () => ( notSupFun() ? Notification.permission : 'unsupported' ); // What: Permission Check Function. Why: Callers (the Settings page's own display) need the current permission state without caring whether the API even exists. How: This reports Notification.permission when supported, or the literal string 'unsupported' otherwise.
 
-
-
-const padZerFun = ( rawValNum ) => String( rawValNum ).padStart( 2, '0' );                                                                          // What: Pad Zero Function. Why: A local-day string needs its month/day components zero-padded to 2 digits each. How: This stringifies the given number and left-pads it with '0' to a length of 2.
-const locDayFun = ( dayDatObj ) => `${ dayDatObj.getFullYear() }-${ padZerFun( dayDatObj.getMonth() + 1 ) }-${ padZerFun( dayDatObj.getDate() ) }`; // What: Local Day Function. Why: The once-per-day guard needs a stable, comparable string for "today" in the user's own local time zone. How: This builds a YYYY-MM-DD string from the given Date's own local year/month/day, zero-padding month and day via padZerFun.
-
-
+// #region Storage Access
 
 const stoGetFun = ( stoKeyStr ) => { // What: Storage Get Function. Why: localStorage can throw in some contexts (private browsing, a full quota), and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
 
@@ -87,6 +129,8 @@ const stoGetFun = ( stoKeyStr ) => { // What: Storage Get Function. Why: localSt
 
 };
 
+
+
 const stoSetFun = ( stoKeyStr, stoValStr ) => { // What: Storage Set Function. Why: Same reasoning as stoGetFun above, for writes: a failed write should never crash the caller. How: This wraps setItem in a try/catch, silently doing nothing on any failure.
 
 
@@ -97,8 +141,52 @@ const stoSetFun = ( stoKeyStr, stoValStr ) => { // What: Storage Set Function. W
 
 };
 
+// #endregion Storage Access
 
-const askCheFun = () => !!stoGetFun( ASK_KEY_STR ); // What: Ask Check Function. Why: askOncFun below must only ever prompt once, ever, regardless of how the previous prompt was answered. How: This reports whether the one-time "asked" flag has already been written.
+
+
+// #region Local Day
+
+const padZerFun = ( rawValNum ) => String( rawValNum ).padStart( 2, '0' );                                                                          // What: Pad Zero Function. Why: A local-day string needs its month/day components zero-padded to 2 digits each. How: This stringifies the given number and left-pads it with '0' to a length of 2.
+const locDayFun = ( dayDatObj ) => `${ dayDatObj.getFullYear() }-${ padZerFun( dayDatObj.getMonth() + 1 ) }-${ padZerFun( dayDatObj.getDate() ) }`; // What: Local Day Function. Why: The once-per-day guard needs a stable, comparable string for "today" in the user's own local time zone. How: This builds a YYYY-MM-DD string from the given Date's own local year/month/day, zero-padding month and day via padZerFun.
+
+// #endregion Local Day
+
+
+
+// #region Permission Requests
+
+const askCheFun = () => !!stoGetFun( ASK_KEY_STR );                // What: Ask Check Function. Why: askOncFun below must only ever prompt once, ever, regardless of how the previous prompt was answered. How: This reports whether the one-time "asked" flag has already been written.
+const notSupFun = () => typeof window.Notification === 'function'; // What: Notification Support Function. Why: Every other function below needs to know whether the browser has the Notification API at all before doing anything else with it. How: This checks that window.Notification exists and is itself a function.
+
+
+
+// #region perCheFun
+
+/**
+ * perCheFun = Permission Check Function
+ *
+ * @summary
+ * The browser's current notification permission, read live every call.
+ * A browser without the Notification API reports 'unsupported' instead
+ * of throwing, so callers can treat it as one more display state.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns 'default', 'granted', 'denied', or 'unsupported'.
+ *
+ * @example
+ * ```ts
+ * perCheFun() // => 'granted'
+ * ```
+ *
+*/
+
+const perCheFun = () => ( notSupFun() ? Notification.permission : 'unsupported' ); // What: Permission Check Function. Why: Callers (the Settings page's own display) need the current permission state without caring whether the API even exists. How: This reports Notification.permission when supported, or the literal string 'unsupported' otherwise.
+
+// #endregion perCheFun
 
 
 
@@ -229,6 +317,8 @@ async function reqPerFun() {
 }
 
 // #endregion reqPerFun
+
+// #endregion Permission Requests
 
 
 
@@ -385,20 +475,28 @@ async function genNotFun() {
 
 // #endregion genNotFun
 
+// #endregion Helpers
 
 
-export const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
+
+// #region Exports
+
+const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	askCheFun : askCheFun, // What: Ask Check Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of NOT_NAM_OBJ's own stable public shape. How: This re-exports askCheFun under its own matching name.
 	askOncFun : askOncFun, // What: Ask Once Function. Why: tab-settings.jsx calls this from the run-time input's own onChange handler, the one moment this app ever asks for notification permission unprompted. How: This re-exports askOncFun under its own matching name.
 	genNotFun : genNotFun, // What: Generated Notification Function. Why: tab-today.jsx calls this right after an automatic daily-list generation completes. How: This re-exports genNotFun under its own matching name.
-	notSupFun : notSupFun, // What: Notification Support Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of NOT_NAM_OBJ's own stable public shape. How: This re-exports notSupFun under its own matching name.
 	perCheFun : perCheFun, // What: Permission Check Function. Why: tab-settings.jsx's own notify-me row reads this to decide which of its 3 states to show. How: This re-exports perCheFun under its own matching name.
 	reqPerFun : reqPerFun, // What: Request Permission Function. Why: tab-settings.jsx's own explicit Enable button calls this to (re-)request permission. How: This re-exports reqPerFun under its own matching name.
 	subAddFun : subAddFun  // What: Subscribe Add Function. Why: tab-settings.jsx's own permission-state display needs to hear about live permission changes. How: This re-exports subAddFun under its own matching name.
 
 
 };
+
+
+
+export { NOT_NAM_OBJ }; // What: Notification Namespace Object Export. Why: tab-settings.jsx and tab-today.jsx reach every notification operation through the one namespace object. How: This exports NOT_NAM_OBJ by name at the very end of the file.
+
+// #endregion Exports
 
 
