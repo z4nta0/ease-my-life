@@ -26,19 +26,48 @@
  * the blast radius across pwa.js, main.jsx, store.js, and
  * tab-settings.jsx.
  *
+ * Sections:
+ *  - Constants
+ *  - Module State
+ *  - Helpers
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
+// #region Constants
+
+const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
 const DAT_VER_NUM = 1;                             // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
-const STA_STO_STR = 'state';                       // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
-const PIC_LOG_STR = 'picklog';                     // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
-const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
 const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and re-exported as-is on the STG_NAM_OBJ object below.
-const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
+const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
+const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
+const PIC_LOG_STR = 'picklog';                     // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
+const STA_STO_STR = 'state';                       // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
+
+
+
+/**
+ * OWN_KEY_REG = Own Key Regexp
+ *
+ * @summary
+ * Matches every localStorage key this app has ever written, across
+ * every past naming generation ('ease-my-life-v1', 'easemylife.v1',
+ * 'easemylife.v2', ...). This is a prefix match rather than a fixed
+ * list precisely so wipDatFun's "Delete all data" and iniStoFun's
+ * dead-generation sweep both catch whatever future key generation
+ * this app ever writes next, not just the ones already known about
+ * today.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const OWN_KEY_REG = /^ease[-]?my[-]?life/i; // What: Own Key Regexp. Why: Every localStorage key this app owns, across every naming generation, must be found by pattern rather than by a fixed list. How: This is tested against each localStorage key inside ownKeyFun below.
 
 
 
@@ -58,11 +87,15 @@ const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Wh
 
 const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clean IDB boots in a row are required before the migration snapshot and every dead pre-IDB localStorage generation get swept. How: This is compared against BOO_KEY_STR's own stored count inside iniStoFun.
 
+// #endregion Constants
 
 
-let datConObj = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
-let curEngStr = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
+
+// #region Module State
+
 let cacStaObj = null;      // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
+let curEngStr = 'memory';  // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
+let datConObj = null;      // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
 let lplRefArr = undefined; // What: Last-Pick-Log Reference Array. Why: wriDatFun must know whether the pick log actually changed since the last write, to avoid re-serializing the largest and fastest-growing piece of state on every save. How: This holds the exact array reference last written, compared with !== inside wriDatFun.
 let mirWriBoo = true;      // What: Mirror Write Boolean. Why: The Settings storage panel needs to know whether the last localStorage mirror write actually succeeded. How: This is flipped by wriLocFun on every call, true on success, false on a quota (or similar) failure.
 
@@ -87,83 +120,13 @@ let mirWriBoo = true;      // What: Mirror Write Boolean. Why: The Settings stor
 
 let logSusBoo = false; // What: Log Suspect Boolean. Why: wriDatFun must refuse to let a suspect empty pickLog overwrite real history in IDB. How: This is computed in iniStoFun from the loaded state's own __mirrorNoLog marker, checked in wriDatFun, and cleared by logAutFun.
 
-
-
-const MIR_TIM_STR = 'easemylife.mirrorat'; // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
-
-
-
-/**
- * OWN_KEY_REX = Own Key Regexp
- *
- * @summary
- * Matches every localStorage key this app has ever written, across
- * every past naming generation ('ease-my-life-v1', 'easemylife.v1',
- * 'easemylife.v2', ...). This is a prefix match rather than a fixed
- * list precisely so wipeDatFun's "Delete all data" and iniStoFun's
- * dead-generation sweep both catch whatever future key generation
- * this app ever writes next, not just the ones already known about
- * today.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-const OWN_KEY_REX = /^ease[-]?my[-]?life/i; // What: Own Key Regexp. Why: Every localStorage key this app owns, across every naming generation, must be found by pattern rather than by a fixed list. How: This is tested against each localStorage key inside ownKeyFun below.
+// #endregion Module State
 
 
 
-// #region ownKeyFun
+// #region Helpers
 
-/**
- * ownKeyFun = Own Key Function
- *
- * @summary
- * Enumerates every localStorage key this app currently owns, per
- * OWN_KEY_REX above. wipDatFun uses this so "Delete all data" really
- * does, and iniStoFun uses it to sweep dead pre-IDB generations once
- * IDB has proven itself over SNA_KEE_NUM clean boots.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns Every localStorage key this app currently owns, or an empty
- * array if localStorage itself cannot be read at all (private mode, a
- * blocked/opaque origin, ...).
- *
- * @example
- * ```ts
- * ownKeyFun() // => array of owned localStorage keys
- * ```
- *
-*/
-
-function ownKeyFun() {
-
-
-	try { return Object.keys( localStorage ).filter( ( curKeyStr ) => OWN_KEY_REX.test( curKeyStr ) ); } // What: Owned Key Filter Try. Why: Every current localStorage key must be checked against OWN_KEY_REX to find the ones this app has ever written. How: This filters every key currently in localStorage down to the ones OWN_KEY_REX matches.
-
-	catch ( e ) { return []; } // What: Owned Key Read Guard. Why: A private-mode or otherwise inaccessible localStorage must not crash whichever caller invoked this. How: This returns an empty array instead of letting the read throw.
-
-
-}
-
-// #endregion ownKeyFun
-
-
-
-const reqProFun = ( idbReqObj ) => new Promise( ( resValFun, rejErrFun ) => { // What: Request Promise Function. Why: Every IndexedDB request needs to be awaited like a normal Promise rather than driven through its own onsuccess/onerror callbacks by hand at every call site. How: This wraps the given IDBRequest in a new Promise, resolving with its own result on success and rejecting with its own error on failure.
-
-
-	idbReqObj.onsuccess = () => resValFun( idbReqObj.result ); // What: Success Handler Assignment. Why: A successful IndexedDB request must resolve the wrapping Promise with that request's own result. How: This assigns an onsuccess handler that calls resValFun with idbReqObj.result.
-
-	idbReqObj.onerror   = () => rejErrFun( idbReqObj.error ); // What: Error Handler Assignment. Why: A failed IndexedDB request must reject the wrapping Promise with that request's own error. How: This assigns an onerror handler that calls rejErrFun with idbReqObj.error.
-
-
-} );
-
-
+// #region IndexedDB Access
 
 // #region opeDatFun
 
@@ -240,6 +203,18 @@ function opeDatFun() {
 }
 
 // #endregion opeDatFun
+
+
+
+const reqProFun = ( idbReqObj ) => new Promise( ( resValFun, rejErrFun ) => { // What: Request Promise Function. Why: Every IndexedDB request needs to be awaited like a normal Promise rather than driven through its own onsuccess/onerror callbacks by hand at every call site. How: This wraps the given IDBRequest in a new Promise, resolving with its own result on success and rejecting with its own error on failure.
+
+
+	idbReqObj.onsuccess = () => resValFun( idbReqObj.result ); // What: Success Handler Assignment. Why: A successful IndexedDB request must resolve the wrapping Promise with that request's own result. How: This assigns an onsuccess handler that calls resValFun with idbReqObj.result.
+
+	idbReqObj.onerror   = () => rejErrFun( idbReqObj.error ); // What: Error Handler Assignment. Why: A failed IndexedDB request must reject the wrapping Promise with that request's own error. How: This assigns an onerror handler that calls rejErrFun with idbReqObj.error.
+
+
+} );
 
 
 
@@ -385,6 +360,50 @@ async function wriDatFun( appStaObj ) {
 }
 
 // #endregion wriDatFun
+
+// #endregion IndexedDB Access
+
+
+
+// #region Local Mirror
+
+// #region ownKeyFun
+
+/**
+ * ownKeyFun = Own Key Function
+ *
+ * @summary
+ * Enumerates every localStorage key this app currently owns, per
+ * OWN_KEY_REG above. wipDatFun uses this so "Delete all data" really
+ * does, and iniStoFun uses it to sweep dead pre-IDB generations once
+ * IDB has proven itself over SNA_KEE_NUM clean boots.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns Every localStorage key this app currently owns, or an empty
+ * array if localStorage itself cannot be read at all (private mode, a
+ * blocked/opaque origin, ...).
+ *
+ * @example
+ * ```ts
+ * ownKeyFun() // => array of owned localStorage keys
+ * ```
+ *
+*/
+
+function ownKeyFun() {
+
+
+	try { return Object.keys( localStorage ).filter( ( curKeyStr ) => OWN_KEY_REG.test( curKeyStr ) ); } // What: Owned Key Filter Try. Why: Every current localStorage key must be checked against OWN_KEY_REG to find the ones this app has ever written. How: This filters every key currently in localStorage down to the ones OWN_KEY_REG matches.
+
+	catch ( e ) { return []; } // What: Owned Key Read Guard. Why: A private-mode or otherwise inaccessible localStorage must not crash whichever caller invoked this. How: This returns an empty array instead of letting the read throw.
+
+
+}
+
+// #endregion ownKeyFun
 
 
 
@@ -534,6 +553,79 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 }
 
 // #endregion wriLocFun
+
+// #endregion Local Mirror
+
+
+
+// #region Lifecycle
+
+// #region cacStaFun
+
+/**
+ * cacStaFun = Cached State Function
+ *
+ * @summary
+ * The state iniStoFun loaded before React mounted, handed back
+ * synchronously so store.js's own loaStaFun never has to await. It is
+ * null until iniStoFun has run, and after that it is the same object
+ * reference, not a copy.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns The loaded state object, or null before iniStoFun has run.
+ *
+ * @example
+ * ```ts
+ * cacStaFun() // => loaded state object
+ * ```
+ *
+*/
+
+const cacStaFun = () => cacStaObj; // What: Cached State Function. Why: store.js's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
+
+// #endregion cacStaFun
+
+
+
+// #region fluSynFun
+
+/**
+ * fluSynFun = Flush Sync Function
+ *
+ * @summary
+ * Called on pagehide/tab-hide. Mirrors synchronously to localStorage
+ * first, so a later IDB failure on the very next boot still falls back
+ * to warm data instead of a seed, then kicks the async IDB write too
+ * for good measure.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param appStaObj - App State Object: The full app state object to persist.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * fluSynFun(appStaObj) // => void
+ * ```
+ *
+*/
+
+function fluSynFun( appStaObj ) {
+
+
+	wriLocFun( appStaObj, curEngStr !== 'idb' ); // What: Sync Local Write Call. Why: A tab about to be hidden or torn down needs a synchronous mirror write it cannot risk missing. How: This calls wriLocFun immediately, writing pickLog too whenever IDB is not the current engine of record.
+
+
+	if ( curEngStr === 'idb' && datConObj ) wriDatFun( appStaObj ).catch( () => {} ); // What: Async Database Write Call. Why: The real IDB write should still be attempted alongside the synchronous mirror above, for good measure. How: This fires wriDatFun without awaiting it, swallowing any failure since the sync mirror above is already the safety net.
+
+
+}
+
+// #endregion fluSynFun
 
 
 
@@ -685,6 +777,36 @@ async function iniStoFun() {
 
 
 
+// #region logAutFun
+
+/**
+ * logAutFun = Log Authoritative Function
+ *
+ * @summary
+ * Declares that the caller's own pickLog is intentional, whether empty
+ * or not (an import, or a reset). Clears the mirror-artefact suspicion
+ * so the very next wriDatFun call is allowed to actually write it,
+ * even if it happens to be empty.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * logAutFun() // => void
+ * ```
+ *
+*/
+
+function logAutFun() { logSusBoo = false; } // What: Log Authoritative Body. Why: A caller that just imported or reset the pick log knows its own emptiness (or non-emptiness) is real, not a mirror artefact. How: This clears logSusBoo unconditionally.
+
+// #endregion logAutFun
+
+
+
 // #region savStaFun
 
 /**
@@ -743,45 +865,6 @@ function savStaFun( appStaObj ) {
 }
 
 // #endregion savStaFun
-
-
-
-// #region fluSynFun
-
-/**
- * fluSynFun = Flush Sync Function
- *
- * @summary
- * Called on pagehide/tab-hide. Mirrors synchronously to localStorage
- * first, so a later IDB failure on the very next boot still falls back
- * to warm data instead of a seed, then kicks the async IDB write too
- * for good measure.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param appStaObj - App State Object: The full app state object to persist.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * fluSynFun(appStaObj) // => void
- * ```
- *
-*/
-
-function fluSynFun( appStaObj ) {
-
-
-	wriLocFun( appStaObj, curEngStr !== 'idb' ); // What: Sync Local Write Call. Why: A tab about to be hidden or torn down needs a synchronous mirror write it cannot risk missing. How: This calls wriLocFun immediately, writing pickLog too whenever IDB is not the current engine of record.
-
-
-	if ( curEngStr === 'idb' && datConObj ) wriDatFun( appStaObj ).catch( () => {} ); // What: Async Database Write Call. Why: The real IDB write should still be attempted alongside the synchronous mirror above, for good measure. How: This fires wriDatFun without awaiting it, swallowing any failure since the sync mirror above is already the safety net.
-
-
-}
-
-// #endregion fluSynFun
 
 
 
@@ -849,6 +932,59 @@ async function wipDatFun() {
 }
 
 // #endregion wipDatFun
+
+// #endregion Lifecycle
+
+
+
+// #region Status And Persistence
+
+// #region reaPerFun
+
+/**
+ * reaPerFun = Read Persisted Function
+ *
+ * @summary
+ * Reads the authoritative persisted state, fresh from whichever store
+ * is currently of record, rather than from the in-memory cacStaObj.
+ * Export uses this specifically so a backup can never inherit a
+ * truncated in-memory pickLog.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A Promise resolving to the authoritative persisted state
+ * object, or null when it cannot be read at all.
+ *
+ * @example
+ * ```ts
+ * reaPerFun() // => persisted state object or null
+ * ```
+ *
+*/
+
+async function reaPerFun() {
+
+
+	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: IDB is the actual store of record whenever it is the current engine, so it must be read directly rather than relying on any in-memory copy. How: This gates the direct reaDatFun read below on that condition.
+
+
+		try { return await reaDatFun(); } // What: Database Read Try. Why: The actual IDB read must be attempted before any fallback can be considered. How: This awaits reaDatFun and returns its own resolved value directly.
+
+		catch ( e ) { return null; } // What: Database Read Guard. Why: A read failure here must resolve to null rather than reject whichever caller (typically an export) invoked this. How: This returns null instead of letting the error propagate.
+
+
+	}
+
+
+
+	return reaLocFun(); // What: Local Read Return. Why: Whenever IDB is not the engine of record, localStorage itself is the actual store of record. How: This returns reaLocFun's own result directly.
+
+
+}
+
+// #endregion reaPerFun
 
 
 
@@ -921,6 +1057,58 @@ async function datBytFun() {
 }
 
 // #endregion datBytFun
+
+
+
+// #region reqPerFun
+
+/**
+ * reqPerFun = Request Persist Function
+ *
+ * @summary
+ * Requests eviction exemption from the browser. This should only ever
+ * be called after real user engagement, since Chromium will not
+ * re-prompt for the rest of the session once denied once.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A Promise resolving to whether persistent storage was
+ * already granted, or was just successfully requested.
+ *
+ * @example
+ * ```ts
+ * reqPerFun() // => true or false
+ * ```
+ *
+*/
+
+async function reqPerFun() {
+
+
+	try { // What: Request Persist Try. Why: navigator.storage itself, or its persist/persisted methods, may not exist in every browser. How: This wraps the whole check-then-request sequence below, falling back to false in its own catch.
+
+
+		if ( !navigator.storage || !navigator.storage.persist ) return false; // What: No Persist Api Guard. Why: There is nothing to request at all in a browser without this API. How: This returns false immediately when either navigator.storage or its own persist method is missing.
+
+
+
+		if ( await navigator.storage.persisted() ) return true; // What: Already Persisted Guard. Why: A repeat call should not re-prompt when persistence was already granted earlier. How: This returns true immediately without ever calling persist() again.
+
+
+
+		return await navigator.storage.persist(); // What: Persist Request Return. Why: The caller needs to know whether this actual request was granted. How: This awaits navigator.storage.persist() and returns its own boolean result.
+
+
+	}
+
+	catch ( e ) { return false; } // What: Request Persist Guard. Why: A throwing storage API must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
+
+
+}
+
+// #endregion reqPerFun
 
 
 
@@ -999,161 +1187,34 @@ async function staRepFun() {
 
 // #endregion staRepFun
 
+// #endregion Status And Persistence
 
-
-// #region reqPerFun
-
-/**
- * reqPerFun = Request Persist Function
- *
- * @summary
- * Requests eviction exemption from the browser. This should only ever
- * be called after real user engagement, since Chromium will not
- * re-prompt for the rest of the session once denied once.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns A Promise resolving to whether persistent storage was
- * already granted, or was just successfully requested.
- *
- * @example
- * ```ts
- * reqPerFun() // => true or false
- * ```
- *
-*/
-
-async function reqPerFun() {
-
-
-	try { // What: Request Persist Try. Why: navigator.storage itself, or its persist/persisted methods, may not exist in every browser. How: This wraps the whole check-then-request sequence below, falling back to false in its own catch.
-
-
-		if ( !navigator.storage || !navigator.storage.persist ) return false; // What: No Persist Api Guard. Why: There is nothing to request at all in a browser without this API. How: This returns false immediately when either navigator.storage or its own persist method is missing.
+// #endregion Helpers
 
 
 
-		if ( await navigator.storage.persisted() ) return true; // What: Already Persisted Guard. Why: A repeat call should not re-prompt when persistence was already granted earlier. How: This returns true immediately without ever calling persist() again.
+// #region Exports
+
+const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports by name. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
 
 
-
-		return await navigator.storage.persist(); // What: Persist Request Return. Why: The caller needs to know whether this actual request was granted. How: This awaits navigator.storage.persist() and returns its own boolean result.
-
-
-	}
-
-	catch ( e ) { return false; } // What: Request Persist Guard. Why: A throwing storage API must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
-
-
-}
-
-// #endregion reqPerFun
-
-
-
-// #region reaPerFun
-
-/**
- * reaPerFun = Read Persisted Function
- *
- * @summary
- * Reads the authoritative persisted state, fresh from whichever store
- * is currently of record, rather than from the in-memory cacStaObj.
- * Export uses this specifically so a backup can never inherit a
- * truncated in-memory pickLog.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns A Promise resolving to the authoritative persisted state
- * object, or null when it cannot be read at all.
- *
- * @example
- * ```ts
- * reaPerFun() // => persisted state object or null
- * ```
- *
-*/
-
-async function reaPerFun() {
-
-
-	if ( curEngStr === 'idb' && datConObj ) { // What: Idb Engine Check. Why: IDB is the actual store of record whenever it is the current engine, so it must be read directly rather than relying on any in-memory copy. How: This gates the direct reaDatFun read below on that condition.
-
-
-		try { return await reaDatFun(); } // What: Database Read Try. Why: The actual IDB read must be attempted before any fallback can be considered. How: This awaits reaDatFun and returns its own resolved value directly.
-
-		catch ( e ) { return null; } // What: Database Read Guard. Why: A read failure here must resolve to null rather than reject whichever caller (typically an export) invoked this. How: This returns null instead of letting the error propagate.
-
-
-	}
-
-
-
-	return reaLocFun(); // What: Local Read Return. Why: Whenever IDB is not the engine of record, localStorage itself is the actual store of record. How: This returns reaLocFun's own result directly.
-
-
-}
-
-// #endregion reaPerFun
-
-
-
-// #region logAutFun
-
-/**
- * logAutFun = Log Authoritative Function
- *
- * @summary
- * Declares that the caller's own pickLog is intentional, whether empty
- * or not (an import, or a reset). Clears the mirror-artefact suspicion
- * so the very next wriDatFun call is allowed to actually write it,
- * even if it happens to be empty.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * logAutFun() // => void
- * ```
- *
-*/
-
-function logAutFun() { logSusBoo = false; } // What: Log Authoritative Body. Why: A caller that just imported or reset the pick log knows its own emptiness (or non-emptiness) is real, not a mirror artefact. How: This clears logSusBoo unconditionally.
-
-// #endregion logAutFun
-
-
-
-const cacStaFun = () => cacStaObj; // What: Cached State Function. Why: store.js's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
-const curEngFun = () => curEngStr; // What: Current Engine Function. Why: Nothing outside this file currently reads which engine is active, but this stays exported as part of STG_NAM_OBJ's own stable public shape. How: This closes over the module-private curEngStr rather than exposing it directly.
-
-
-
-export const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports by name. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
-
-
-	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: store.js's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
-	curEngFun   : curEngFun,   // What: Current Engine Function. Why: Nothing outside this file currently reads which engine is active, but this stays exported as part of STG_NAM_OBJ's own stable public shape. How: This re-exports curEngFun under its own matching name.
-	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: store.js calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
-	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: main.jsx awaits this before React ever mounts, and store.js's own loaStaFun() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
-	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: store.js calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
-	MIG_SNA_STR : MIG_SNA_STR, // What: Migration Snapshot String. Why: This stays exported as part of STG_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level MIG_SNA_STR constant unchanged.
-	MIR_KEY_STR : MIR_KEY_STR, // What: Mirror Key String. Why: This stays exported as part of STG_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level MIR_KEY_STR constant unchanged.
-	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: tab-settings.jsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
-	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: pwa.js calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
-	savStaFun   : savStaFun,   // What: Save State Function. Why: store.js calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
-	staRepFun   : staRepFun,   // What: Status Report Function. Why: tab-settings.jsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
-	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: store.js calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
+	cacStaFun : cacStaFun, // What: Cached State Function. Why: store.js's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
+	fluSynFun : fluSynFun, // What: Flush Sync Function. Why: store.js calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
+	iniStoFun : iniStoFun, // What: Init Storage Function. Why: main.jsx awaits this before React ever mounts, and store.js's own loaStaFun() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
+	logAutFun : logAutFun, // What: Log Authoritative Function. Why: store.js calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
+	reaPerFun : reaPerFun, // What: Read Persisted Function. Why: tab-settings.jsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
+	reqPerFun : reqPerFun, // What: Request Persist Function. Why: pwa.js calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
+	savStaFun : savStaFun, // What: Save State Function. Why: store.js calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
+	staRepFun : staRepFun, // What: Status Report Function. Why: tab-settings.jsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
+	wipDatFun : wipDatFun  // What: Wipe Data Function. Why: store.js calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
 
 
 };
+
+
+
+export { STG_NAM_OBJ }; // What: Storage Namespace Object Export. Why: main.jsx, store.js, pwa.js and tab-settings.jsx reach every persistence operation through the one namespace object. How: This exports STG_NAM_OBJ by name at the very end of the file.
+
+// #endregion Exports
 
 
