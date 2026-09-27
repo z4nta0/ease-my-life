@@ -29,7 +29,7 @@
  * own "Explore the {page}" mini-tour (see ONB_EPT_ARR in
  * onboarding-checklist.js) as its opening step. This is kept as one source of
  * truth instead of being duplicated per consumer, keyed by the same page ids
- * as ONB_EPT_ARR' page field.
+ * as ONB_EPT_ARR's own pagStr field.
  *
  * Each entry holds content only (selStr/place/titStr/bodEle), no navigation
  * (priStr/bacBoo/runFun), since a guided tour needs Back/Next/Skip and a

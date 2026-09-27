@@ -1691,8 +1691,8 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, onCloTouFun } ) {
 
 
-	const tourRecObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.id === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr.
-	const navTarObj = NAV_TAR_OBJ[ tourRecObj.page ];                                   // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by tourRecObj's own page.
+	const tourRecObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.ideStr === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr.
+	const navTarObj = NAV_TAR_OBJ[ tourRecObj.pagStr ];                                   // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by tourRecObj's own page.
 	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ];                                         // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
 
 
@@ -1733,10 +1733,10 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 		return (
 
 			<IntModCom
-				icoTopEle={ <IcoSvgCom icoNamStr={ tourRecObj.page } sizValNum={ 54 } /> }
+				icoTopEle={ <IcoSvgCom icoNamStr={ tourRecObj.pagStr } sizValNum={ 54 } /> }
 				titHeaStr={ ( pagCopObj && pagCopObj.titStr ) || navTarObj.titStr }
 				parEleArr={ [ ( pagCopObj && pagCopObj.bodEle ) || navTarObj.bodEle ] }
-				pilLabArr={ ( pagCopObj && pagCopObj.pilArr ) || [ 'page tour', tourRecObj.label.toLowerCase() ] }
+				pilLabArr={ ( pagCopObj && pagCopObj.pilArr ) || [ 'page tour', tourRecObj.labStr.toLowerCase() ] }
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
 				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying page. How: This calls cloTouFun with 'cancelled'.
 			/> // What: Tutorial Intro Modal Element. Why: This is this page's own opening screen, shown before any spotlight step ever does. How: This is passed this page's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
@@ -1755,13 +1755,13 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 		<GuiTouCom
 			touIdeStr={ `page-${ pagIdeStr }` }
 			steObjArr={ [ // What: Step Object Array. Why: GuiTouCom needs this page's own full ordered step list, Step 1 plus every step buiTesFun returns beyond it. How: This combines buiTs1Fun's own first step with a spread of buiTesFun's own remaining steps into one array.
-				buiTs1Fun( tourRecObj.page,
+				buiTs1Fun( tourRecObj.pagStr,
 					pagIdeStr === 'explore_data' ? () => { seePicFun( staAppObj, actStoObj ); seeTasFun( staAppObj, actStoObj ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pagIdeStr is 'explore_data'.
 					neeCopFun( pagIdeStr ) ? () => seePicFun( staAppObj, actStoObj ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
 					pagIdeStr === 'explore_stats' ? () => unhHisFun( staAppObj, actStoObj ) : // What: Stats Run Branch. Why: The Stats tour's own Step 1 instead needs the real samples unhidden. How: This calls unhHisFun when pagIdeStr is 'explore_stats'.
 					undefined, // What: Default Run Branch. Why: Today/Settings touch neither pickers nor reminders, so Step 1 needs no side effect at all. How: This passes undefined as buiTs1Fun's own runSteFun for every other page.
 					'Next',
-					tourRecObj.label ),
+					tourRecObj.labStr ),
 				...buiTesFun( pagIdeStr, actStoObj )
 			] }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }

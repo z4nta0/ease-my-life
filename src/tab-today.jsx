@@ -2965,7 +2965,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj, touRecObj } ) {
 
 
-	const tutDonBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, touRecObj.id ); // What: Tutorial Done Boolean. Why: A resolved page-tour card renders/behaves differently from a pending one. How: This checks ONB_CHE_OBJ for an existing entry against touRecObj's own id.
+	const tutDonBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, touRecObj.ideStr ); // What: Tutorial Done Boolean. Why: A resolved page-tour card renders/behaves differently from a pending one. How: This checks ONB_CHE_OBJ for an existing entry against touRecObj's own id.
 
 
 	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
@@ -2975,9 +2975,9 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 
-		if ( tutDonBoo ) onUncTutFun( touRecObj.id ); // What: Done Dispatch Branch. Why: A finished page-tour card's row click un-resolves it. How: This calls onUncTutFun with the tour's own id.
+		if ( tutDonBoo ) onUncTutFun( touRecObj.ideStr ); // What: Done Dispatch Branch. Why: A finished page-tour card's row click un-resolves it. How: This calls onUncTutFun with the tour's own id.
 
-		else onPlaTutFun( 'pageTour', touRecObj.id ); // What: Not-Done Dispatch Branch. Why: An unfinished page-tour card's row click starts its tour. How: This calls onPlaTutFun with the pageTour kind and id.
+		else onPlaTutFun( 'pageTour', touRecObj.ideStr ); // What: Not-Done Dispatch Branch. Why: An unfinished page-tour card's row click starts its tour. How: This calls onPlaTutFun with the pageTour kind and id.
 
 
 	};
@@ -3002,14 +3002,14 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 					type='button'
 
-					aria-label={ `Undo ${ touRecObj.label } tour` }
+					aria-label={ `Undo ${ touRecObj.labStr } tour` }
 					aria-pressed='true'
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 						cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onUncTutFun( touRecObj.id ); // What: Uncheck Tutorial Call. Why: This card's own tutorial should go back to unresolved. How: This calls onUncTutFun with the card's own id.
+						onUncTutFun( touRecObj.ideStr ); // What: Uncheck Tutorial Call. Why: This card's own tutorial should go back to unresolved. How: This calls onUncTutFun with the card's own id.
 
 
 					} }
@@ -3039,13 +3039,13 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 					type='button'
 
-					aria-label={ `Start the ${ touRecObj.label } tour` }
+					aria-label={ `Start the ${ touRecObj.labStr } tour` }
 
 					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
 						cliEveObj.stopPropagation();             // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onPlaTutFun( 'pageTour', touRecObj.id ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
+						onPlaTutFun( 'pageTour', touRecObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
 
 
 					} }
@@ -3069,10 +3069,10 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The tour's own label and its optional time estimate sit together. How: This wraps the label span and, when one exists, the time estimate. */ }
 
 
-					<span className='meta-picker'>{ touRecObj.label } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRecObj's own label plus the literal word "Tour". */ }
+					<span className='meta-picker'>{ touRecObj.labStr } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRecObj's own label plus the literal word "Tour". */ }
 
 
-					{ touRecObj.time && ( // What: Time Estimate Check. Why: Not every page-tour card has a manually-timed estimate. How: This renders the dot/time pair only while touRecObj's own time is set.
+					{ touRecObj.timStr && ( // What: Time Estimate Check. Why: Not every page-tour card has a manually-timed estimate. How: This renders the dot/time pair only while touRecObj's own time is set.
 
 
 						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
@@ -3080,7 +3080,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 							<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-							<span className='meta-time'>{ touRecObj.time }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tour takes. How: This renders touRecObj's own time. */ }
+							<span className='meta-time'>{ touRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tour takes. How: This renders touRecObj's own time. */ }
 
 
 						</React.Fragment>
@@ -3092,7 +3092,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 				</div>
 
 
-				<div className='today-card-name'>Take a quick tour of the { touRecObj.label } page</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with touRecObj's own label interpolated. */ }
+				<div className='today-card-name'>Take a quick tour of the { touRecObj.labStr } page</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with touRecObj's own label interpolated. */ }
 
 
 			</div>
@@ -3113,7 +3113,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 							cliEveObj.stopPropagation();                                   // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							actStoObj.setCarFun( touRecObj.id, { status : 'cancelled' } ); // What: Cancel Tutorial Call. Why: The user is dismissing this tutorial card entirely. How: This marks the checklist entry cancelled via actStoObj.setCarFun.
+							actStoObj.setCarFun( touRecObj.ideStr, { status : 'cancelled' } ); // What: Cancel Tutorial Call. Why: The user is dismissing this tutorial card entirely. How: This marks the checklist entry cancelled via actStoObj.setCarFun.
 
 
 						} }
@@ -3642,7 +3642,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const rptVisBoo = cheDonBoo && maiEndBoo && ONB_EPT_ARR.some( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.id ) ); // What: Replay-Page-Tours Visible Boolean. Why: See the doc comment just above. How: This is true only post-checklistDone, post-maiEndBoo, while at least one page tour is still unresolved.
+	const rptVisBoo = cheDonBoo && maiEndBoo && ONB_EPT_ARR.some( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ); // What: Replay-Page-Tours Visible Boolean. Why: See the doc comment just above. How: This is true only post-checklistDone, post-maiEndBoo, while at least one page tour is still unresolved.
 
 	// #endregion rptVisBoo
 
@@ -3828,11 +3828,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const pagCarNum = shoCheBoo // What: Page Card Number. Why: Same replay-continuation treatment as the picker/task counts above: still counted while rptVisBoo cards are on screen, but (matching the render map's own resolved-cards-vanish behavior) only the still-unresolved ones. How: This is every tour during the first-time phase, only the unresolved ones during a replay, otherwise 0.
 		? ONB_EPT_ARR.length                                                                              // What: Checklist Branch. Why: The first-time phase shows every tour card. How: This counts all of ONB_EPT_ARR.
 		: rptVisBoo                                                                                       // What: Replay Check. Why: A replay only shows the still-unresolved tours. How: This tests rptVisBoo next.
-		? ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.id ) ).length // What: Replay Branch. Why: Only unresolved tours are on screen. How: This counts the tours with no checklist entry.
+		? ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ).length // What: Replay Branch. Why: Only unresolved tours are on screen. How: This counts the tours with no checklist entry.
 		: 0;                                                                                              // What: Hidden Branch. Why: No Page Tours cards are showing. How: This returns 0.
 
 
-	const pagDonNum = shoCheBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.id ) ).length : 0; // What: Page Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved ONB_EPT_ARR entries, 0 outside shoCheBoo.
+	const pagDonNum = shoCheBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ).length : 0; // What: Page Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved ONB_EPT_ARR entries, 0 outside shoCheBoo.
 	const genCarNum = shoCheBoo ? 1 : 0;                                                                                              // What: Generate Card Count Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shoCheBoo, otherwise 0.
 	const genDonNum = ( shoCheBoo && ONB_CHE_OBJ.entLooFun( staAppObj, ONB_GII_STR ) ) ? 1 : 0;                                       // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarNum. How: This is 1 only while shoCheBoo AND the Generate item already has a checklist entry.
 
@@ -6761,7 +6761,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-									const touDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.id ) ).length; // What: Tour Done Number. Why: The rail entry needs its own live done count. How: This counts resolved ONB_EPT_ARR entries.
+									const touDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ).length; // What: Tour Done Number. Why: The rail entry needs its own live done count. How: This counts resolved ONB_EPT_ARR entries.
 
 
 
@@ -7054,10 +7054,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									const visTouArr = shoCheBoo // What: Visible Tour Array. Why: Post-cheDonBoo (replay continuation, see rptVisBoo's own comment), only the still-unresolved tours keep showing; the ORIGINAL first-time checklist still shows every one of them, done or not, unchanged. How: This is every tour during shoCheBoo, only the unresolved ones during rptVisBoo.
 										? ONB_EPT_ARR                                                                               // What: Checklist Branch. Why: The first-time checklist shows every tour. How: This returns the whole ONB_EPT_ARR.
-										: ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.id ) ); // What: Replay Branch. Why: A replay only keeps the still-unresolved tours. How: This drops every tour with a checklist entry.
+										: ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ); // What: Replay Branch. Why: A replay only keeps the still-unresolved tours. How: This drops every tour with a checklist entry.
 
 
-									const touDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.id ) ).length; // What: Tour Done Number. Why: The section's own header needs this same live done count. How: This counts resolved ONB_EPT_ARR entries.
+									const touDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ).length; // What: Tour Done Number. Why: The section's own header needs this same live done count. How: This counts resolved ONB_EPT_ARR entries.
 
 
 
@@ -7091,7 +7091,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 													<PagTouCom
-														key={ curTouObj.id }
+														key={ curTouObj.ideStr }
 
 														actStoObj={ actStoObj }
 														cheExiBoo={ cheExiBoo }

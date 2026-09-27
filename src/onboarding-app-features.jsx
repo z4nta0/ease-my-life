@@ -113,7 +113,7 @@ const PAG_LAB_OBJ = { // What: Page Label Object. Why: tab-today.jsx's own AppFe
  *   own pilLabArr prop).
  *
  * - `timStr` (String, optional): Time String is a real, user-confirmed
- *   estimate (same convention as ONB_EPT_ARR' own time field in
+ *   estimate (same convention as ONB_EPT_ARR's own timStr field in
  *   onboarding-checklist.js), shown next to the launcher card's own
  *   label whenever present; tab-today.jsx renders feaRecObj.timStr
  *   directly whenever it's truthy. Only a feature with real step-by-step

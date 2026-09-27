@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: This module needs every seeded sample picker's own id to build its own 'sample' checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun below and mapped into CHE_ITE_ARR's own 'sample' entries.
-import { ONB_STI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: This module needs every seeded sample task's own id to build its own 'sample' checklist entries below. How: This is mapped into CHE_ITE_ARR's own 'sample' entries, one per seeded sample task id.
+import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: This module needs every seeded sample picker's own id to list its own checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun and tutProFun below, and spread into CHE_IDE_ARR.
+import { ONB_STI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: This module needs every seeded sample task's own id to list its own checklist entries below. How: This is spread into CHE_IDE_ARR below and read by tutProFun.
 
 // #endregion Imports
 
@@ -34,14 +34,20 @@ import { ONB_STI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sam
  * nothing needs restoring.
  *
  * Three item kinds exist. 'sample' is one of the Welcome Tour's sample
- * pickers/reminders, built programmatically from ONB_SPI_ARR
+ * pickers/reminders, listed programmatically from ONB_SPI_ARR
  * and ONB_STI_ARR, so a new sample card needs no changes here.
  * 'pageTour' is an "Explore the {page}" tour, not tied to any sample
  * picker/reminder: no data to finish/skip/cancel, just the same
  * checklist bookkeeping. These render in their own "Page Tours" section
  * on Today (see tab-today.jsx), between Reminders and the picker
  * groups. 'generate' is the single closing card, whose fixed id is
- * ONB_GII_STR below.
+ * ONB_GII_STR below. The kinds are conceptual only: CHE_IDE_ARR stores
+ * just the item ids, since nothing reads an item's kind.
+ *
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -49,55 +55,105 @@ import { ONB_STI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sam
 
 
 
-export const ONB_GII_STR = 'ob_generate'; // What: Onboarding Generate-Item-Id String. Why: This is the fixed, load-bearing id for the single closing "Generate a real list" checklist card. How: This is used as CHE_ITE_ARR's own 'generate' entry key and as the checklist map's own key for that card's resolution.
+// #region Constants
 
-
+// #region ONB_EPT_ARR
 
 /**
  * ONB_EPT_ARR = Onboarding Explore-Page-Tours Array
  *
  * @summary
  * One entry per page tour, in the order their cards/tours should
- * appear. `page` matches the `data-tab` value on that page's own nav
- * button (see app.jsx's TabBarCom). It isn't used yet, but it's what
- * each tour's own "explore" step will target once built.
+ * appear. Every entry shares one shape, and none of them repeat these
+ * fields' own boilerplate comments on their own lines (see the
+ * "Repeated-shape object literals" comment exception in CLAUDE.md):
  *
- * `time` is a real, user-confirmed estimate (manually timed
- * 2026-08-14) shown on the tour's Today launcher card (see
- * tab-today.jsx's PageTourCard).
+ * - `ideStr` (String): Identifier String, the tour's own stable id,
+ *   matched against a resolved checklist item id in
+ *   state.onboarding.checklist and against activeTour's own "page-"
+ *   prefixed suffix.
+ *
+ * - `labStr` (String): Label String, the page name shown on the tour's
+ *   Today launcher card (see tab-today.jsx's PagTouCom).
+ *
+ * - `pagStr` (String): Page String, matching the `data-tab` value on
+ *   that page's own nav button (see app.jsx's TabBarCom), which the
+ *   tour's own opening step targets.
+ *
+ * - `timStr` (String): Time String, a real, user-confirmed estimate
+ *   (manually timed 2026-08-14) shown on the tour's Today launcher card.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-export const ONB_EPT_ARR = [ // What: Onboarding Explore-Page-Tours Array. Why: This is the ordered manifest of every "Explore the page" tour described above. How: This is mapped into CHE_ITE_ARR's own 'pageTour' entries below, and read directly by onboarding-page-tours.jsx and tab-today.jsx.
+const ONB_EPT_ARR = [ // What: Onboarding Explore-Page-Tours Array. Why: This is the ordered manifest of every "Explore the page" tour. How: This is mapped into CHE_IDE_ARR below, and read directly by onboarding-page-tours.jsx and tab-today.jsx.
 
 
-	{ id : 'explore_today',    page : 'today',    label : 'Today',    time : '1 min'   }, // What: Identifier String. Why: This is this page tour's own stable id, matched against a resolved checklist item id in state.onboarding.checklist and against activeTour's own "page-" prefixed suffix. How: This is read by CHE_ITE_ARR below and by every ONB_CHE_OBJ.entLooFun lookup keyed on a page tour. // What: Page String. Why: This must match the data-tab value on this page's own nav button so a future "explore" step can target it. How: This is read directly by onboarding-page-tours.jsx to resolve the tour's own nav target. // What: Label String. Why: This names the page shown on this tour's own Today launcher card. How: This is rendered directly as the card's visible page name (see tab-today.jsx's PageTourCard). // What: Time String. Why: This is a real, user-confirmed estimate (manually timed 2026-08-14) of how long this tour takes. How: This is rendered on the tour's Today launcher card (see tab-today.jsx's PageTourCard).
-	{ id : 'explore_pickers',  page : 'picker',   label : 'Pickers',  time : '1.5 min' }, // What: Identifier String. Why: This is this page tour's own stable id, matched against a resolved checklist item id in state.onboarding.checklist and against activeTour's own "page-" prefixed suffix. How: This is read by CHE_ITE_ARR below and by every ONB_CHE_OBJ.entLooFun lookup keyed on a page tour. // What: Page String. Why: This must match the data-tab value on this page's own nav button so a future "explore" step can target it. How: This is read directly by onboarding-page-tours.jsx to resolve the tour's own nav target. // What: Label String. Why: This names the page shown on this tour's own Today launcher card. How: This is rendered directly as the card's visible page name (see tab-today.jsx's PageTourCard). // What: Time String. Why: This is a real, user-confirmed estimate (manually timed 2026-08-14) of how long this tour takes. How: This is rendered on the tour's Today launcher card (see tab-today.jsx's PageTourCard).
-	{ id : 'explore_stats',    page : 'stats',    label : 'Stats',    time : '1 min'   }, // What: Identifier String. Why: This is this page tour's own stable id, matched against a resolved checklist item id in state.onboarding.checklist and against activeTour's own "page-" prefixed suffix. How: This is read by CHE_ITE_ARR below and by every ONB_CHE_OBJ.entLooFun lookup keyed on a page tour. // What: Page String. Why: This must match the data-tab value on this page's own nav button so a future "explore" step can target it. How: This is read directly by onboarding-page-tours.jsx to resolve the tour's own nav target. // What: Label String. Why: This names the page shown on this tour's own Today launcher card. How: This is rendered directly as the card's visible page name (see tab-today.jsx's PageTourCard). // What: Time String. Why: This is a real, user-confirmed estimate (manually timed 2026-08-14) of how long this tour takes. How: This is rendered on the tour's Today launcher card (see tab-today.jsx's PageTourCard).
-	{ id : 'explore_data',     page : 'data',     label : 'Data',     time : '< 1 min' }, // What: Identifier String. Why: This is this page tour's own stable id, matched against a resolved checklist item id in state.onboarding.checklist and against activeTour's own "page-" prefixed suffix. How: This is read by CHE_ITE_ARR below and by every ONB_CHE_OBJ.entLooFun lookup keyed on a page tour. // What: Page String. Why: This must match the data-tab value on this page's own nav button so a future "explore" step can target it. How: This is read directly by onboarding-page-tours.jsx to resolve the tour's own nav target. // What: Label String. Why: This names the page shown on this tour's own Today launcher card. How: This is rendered directly as the card's visible page name (see tab-today.jsx's PageTourCard). // What: Time String. Why: This is a real, user-confirmed estimate (manually timed 2026-08-14) of how long this tour takes. How: This is rendered on the tour's Today launcher card (see tab-today.jsx's PageTourCard).
-	{ id : 'explore_settings', page : 'settings', label : 'Settings', time : '1 min'   }, // What: Identifier String. Why: This is this page tour's own stable id, matched against a resolved checklist item id in state.onboarding.checklist and against activeTour's own "page-" prefixed suffix. How: This is read by CHE_ITE_ARR below and by every ONB_CHE_OBJ.entLooFun lookup keyed on a page tour. // What: Page String. Why: This must match the data-tab value on this page's own nav button so a future "explore" step can target it. How: This is read directly by onboarding-page-tours.jsx to resolve the tour's own nav target. // What: Label String. Why: This names the page shown on this tour's own Today launcher card. How: This is rendered directly as the card's visible page name (see tab-today.jsx's PageTourCard). // What: Time String. Why: This is a real, user-confirmed estimate (manually timed 2026-08-14) of how long this tour takes. How: This is rendered on the tour's Today launcher card (see tab-today.jsx's PageTourCard).
-
-
-];
-
-
-
-const CHE_ITE_ARR = [ // What: Checklist Item Array. Why: This is the full, flat manifest of every checklist item the app currently knows about (every sample picker, every sample task, every page tour, plus the closing Generate card), across all 3 item kinds. How: This concatenates a 'sample' entry per ONB_SPI_ARR/ONB_STI_ARR id, a 'pageTour' entry per ONB_EPT_ARR entry, and the single 'generate' entry, in that fixed order.
-
-
-	...ONB_SPI_ARR.map( ( picIdeStr ) => ( { id : picIdeStr, kind : 'sample', entityKind : 'picker' } ) ), // What: Sample Picker Entries. Why: Every seeded sample picker needs its own 'sample' checklist entry so it can be resolved (finished/skipped/cancelled) independently. How: This maps ONB_SPI_ARR down to one { id, kind, entityKind } object per sample picker id.
-	...ONB_STI_ARR.map( ( tasIdeStr ) => ( { id : tasIdeStr, kind : 'sample', entityKind : 'task' } ) ),     // What: Sample Task Entries. Why: Every seeded sample task needs its own 'sample' checklist entry, same reasoning as the picker entries above. How: This maps ONB_STI_ARR down to one { id, kind, entityKind } object per sample task id.
-	...ONB_EPT_ARR.map( ( touConObj ) => ( { id : touConObj.id, kind : 'pageTour' } ) ),                            // What: Page Tour Entries. Why: Every page tour needs its own checklist entry too, even though it has no sample data of its own to finish/skip/cancel. How: This maps ONB_EPT_ARR down to one { id, kind } object per page tour entry, keyed by that tour's own id.
-	{ id : ONB_GII_STR, kind : 'generate' }                                                                         // What: Generate Entry. Why: The single closing Generate card needs its own checklist entry, the same as every other item. How: This is a single { id, kind } object, keyed by the fixed ONB_GII_STR above.
+	{ ideStr : 'explore_today',    labStr : 'Today',    pagStr : 'today',    timStr : '1 min'   },
+	{ ideStr : 'explore_pickers',  labStr : 'Pickers',  pagStr : 'picker',   timStr : '1.5 min' },
+	{ ideStr : 'explore_stats',    labStr : 'Stats',    pagStr : 'stats',    timStr : '1 min'   },
+	{ ideStr : 'explore_data',     labStr : 'Data',     pagStr : 'data',     timStr : '< 1 min' },
+	{ ideStr : 'explore_settings', labStr : 'Settings', pagStr : 'settings', timStr : '1 min'   }
 
 
 ];
 
+// #endregion ONB_EPT_ARR
 
+
+
+const ONB_GII_STR = 'ob_generate'; // What: Onboarding Generate-Item-Id String. Why: This is the fixed, load-bearing id for the single closing "Generate a real list" checklist card. How: This is CHE_IDE_ARR's own last entry and the checklist map's own key for that card's resolution.
+
+
+
+const CHE_IDE_ARR = [ // What: Checklist Identifier Array. Why: This is the full, flat manifest of every checklist item id the app currently knows about (every sample picker, every sample task, every page tour, plus the closing Generate card). How: This concatenates the sample picker ids, the sample task ids, the page tour ids and ONB_GII_STR, in that fixed order.
+
+
+	...ONB_SPI_ARR,                                          // What: Sample Picker Ids Spread. Why: Every seeded sample picker has its own checklist entry, resolved independently. How: This spreads ONB_SPI_ARR's own ids.
+	...ONB_STI_ARR,                                          // What: Sample Task Ids Spread. Why: Every seeded sample task has its own checklist entry too. How: This spreads ONB_STI_ARR's own ids.
+	...ONB_EPT_ARR.map( ( touConObj ) => touConObj.ideStr ), // What: Page Tour Ids Spread. Why: Every page tour has its own checklist entry, even with no sample data of its own. How: This maps ONB_EPT_ARR down to each tour's own ideStr.
+	ONB_GII_STR                                              // What: Generate Item Id. Why: The single closing Generate card needs its own checklist entry as well. How: This is the fixed ONB_GII_STR.
+
+
+];
+
+// #endregion Constants
+
+
+
+// #region Helpers
+
+// #region entLooFun
+
+/**
+ * entLooFun = Entry Lookup Function
+ *
+ * @summary
+ * Looks up one checklist item's own resolution entry, { status,
+ * createdId? }, in state.onboarding.checklist. A truthy result means the
+ * item is resolved in any of the 3 ways (finished, skipped or
+ * cancelled); null means it is still open. Tolerates a save with no
+ * onboarding state at all.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param appStaObj - App State Object: The full app state object, read for
+ *                    its own onboarding.checklist map.
+ * @param iteIdeStr - Item Identifier String: The checklist item's own id.
+ *
+ * @returns The item's own resolution entry, or null when it has none.
+ *
+ * @example
+ * ```ts
+ * entLooFun(appStaObj, 'explore_today') // => { status : 'finished' }
+ * ```
+ *
+*/
 
 const entLooFun = ( appStaObj, iteIdeStr ) => ( appStaObj.onboarding && appStaObj.onboarding.checklist || {} )[ iteIdeStr ] || null; // What: Entry Lookup Function. Why: Every other function in this module needs to know whether one specific checklist item has already been resolved (any status), keyed by its own id. How: This reads appStaObj.onboarding.checklist (falling back to an empty object when either is missing) and looks up iteIdeStr, defaulting to null when there's no entry yet.
+
+// #endregion entLooFun
 
 
 
@@ -115,7 +171,7 @@ const entLooFun = ( appStaObj, iteIdeStr ) => ( appStaObj.onboarding && appStaOb
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param appStaObj - App State Object: The full app state object, read for its
- *                    own onboarding.checklist map via entLooFun below.
+ *                    own onboarding.checklist map via entLooFun above.
  *
  * @returns The checklist's own summary counts, as a plain object.
  *
@@ -129,8 +185,8 @@ const entLooFun = ( appStaObj, iteIdeStr ) => ( appStaObj.onboarding && appStaOb
 function cheStaFun ( appStaObj ) {
 
 
-	const totIteNum = CHE_ITE_ARR.length;                                                                   // What: Total Item Number. Why: Every summary needs to know how many checklist items exist at all, as the denominator for "done". How: This is simply CHE_ITE_ARR's own length.
-	const donIteNum = CHE_ITE_ARR.filter( ( curIteObj ) => !!entLooFun( appStaObj, curIteObj.id ) ).length; // What: Done Item Number. Why: An item counts as "done" once it has any resolution at all, regardless of which status it resolved to. How: This filters CHE_ITE_ARR down to items with a truthy entLooFun lookup, then takes the resulting count.
+	const totIteNum = CHE_IDE_ARR.length;                                                                // What: Total Item Number. Why: Every summary needs to know how many checklist items exist at all, as the denominator for "done". How: This is simply CHE_IDE_ARR's own length.
+	const donIteNum = CHE_IDE_ARR.filter( ( iteIdeStr ) => !!entLooFun( appStaObj, iteIdeStr ) ).length; // What: Done Item Number. Why: An item counts as "done" once it has any resolution at all, regardless of which status it resolved to. How: This filters CHE_IDE_ARR down to ids with a truthy entLooFun lookup, then takes the resulting count.
 
 
 
@@ -149,6 +205,37 @@ function cheStaFun ( appStaObj ) {
 }
 
 // #endregion cheStaFun
+
+
+
+// #region othRemFun
+
+/**
+ * othRemFun = Others Remaining Function
+ *
+ * @summary
+ * How many checklist items OTHER than the Generate card itself are
+ * still unresolved. Used both by reaGenFun below and by the Generate
+ * card's own dynamic explanation text (see tab-today.jsx).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param appStaObj - App State Object: The full app state object, read for its
+ *                    own onboarding.checklist map via entLooFun above.
+ *
+ * @returns How many non-Generate checklist items still have no
+ * resolution at all, as a plain count.
+ *
+ * @example
+ * ```ts
+ * othRemFun(appStaObj) // => 2
+ * ```
+ *
+*/
+
+function othRemFun ( appStaObj ) { return CHE_IDE_ARR.filter( ( iteIdeStr ) => iteIdeStr !== ONB_GII_STR && !entLooFun( appStaObj, iteIdeStr ) ).length; } // What: Others Remaining Return. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_IDE_ARR down to ids that are neither the Generate card nor already resolved, then takes the resulting count.
+
+// #endregion othRemFun
 
 
 
@@ -197,37 +284,6 @@ function reaPicFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPicObj 
 
 
 
-// #region othRemFun
-
-/**
- * othRemFun = Others Remaining Function
- *
- * @summary
- * How many checklist items OTHER than the Generate card itself are
- * still unresolved. Used both by reaGenFun below and by the Generate
- * card's own dynamic explanation text (see tab-today.jsx).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param appStaObj - App State Object: The full app state object, read for its
- *                    own onboarding.checklist map via entLooFun above.
- *
- * @returns How many non-Generate checklist items still have no
- * resolution at all, as a plain count.
- *
- * @example
- * ```ts
- * othRemFun(appStaObj) // => 2
- * ```
- *
-*/
-
-function othRemFun ( appStaObj ) { return CHE_ITE_ARR.filter( ( curIteObj ) => curIteObj.id !== ONB_GII_STR && !entLooFun( appStaObj, curIteObj.id ) ).length; } // What: Others Remaining Return. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_ITE_ARR down to items that are neither the Generate card nor already resolved, then takes the resulting count.
-
-// #endregion othRemFun
-
-
-
 // #region reaGenFun
 
 /**
@@ -241,7 +297,7 @@ function othRemFun ( appStaObj ) { return CHE_ITE_ARR.filter( ( curIteObj ) => c
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param appStaObj - App State Object: The full app state object, passed
- *                    straight through to othRemFun and reaPicFun below.
+ *                    straight through to othRemFun and reaPicFun above.
  *
  * @returns Whether the Generate card is actionable yet, as a boolean.
  *
@@ -311,7 +367,7 @@ function tutProFun ( appStaObj ) {
 
 
 
-	const picHidBoo = appStaObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) );       // What: Picker Hidden Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample picker. How: This checks appStaObj.pickers for any picker that's both hidden and one of the seeded sample ids.
+	const picHidBoo = appStaObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) );         // What: Picker Hidden Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample picker. How: This checks appStaObj.pickers for any picker that's both hidden and one of the seeded sample ids.
 	const tasHidBoo = ( appStaObj.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) ); // What: Task Hidden Boolean. Why: A hidden sample task counts exactly the same as a hidden sample picker for this check. How: This checks appStaObj.tasks (falling back to an empty array, since old saves may be missing it) for any task that's both hidden and one of the seeded sample ids.
 
 	const maiTouBoo = picHidBoo || tasHidBoo; // What: Main Tour (Ended) Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample, either kind being enough. How: This is true whenever either picHidBoo or tasHidBoo is true.
@@ -325,20 +381,29 @@ function tutProFun ( appStaObj ) {
 
 // #endregion tutProFun
 
+// #endregion Helpers
 
 
-export const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.js/reminders.jsx/tab-today.jsx/tab-picker.jsx/tab-data.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
+
+// #region Exports
+
+const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.js/reminders.jsx/tab-today.jsx/tab-picker.jsx/tab-data.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
 
 
-	cheIteArr : CHE_ITE_ARR, // What: Checklist Item Array. Why: Some future caller may need the full flat manifest directly rather than one of the derived helpers below. How: This re-exports CHE_ITE_ARR as cheIteArr, consistent with this object's own other property names.
-	cheStaFun : cheStaFun,   // What: Checklist Status Function. Why: tab-today.jsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete, by this exact name. How: This re-exports cheStaFun under its own matching name.
-	entLooFun : entLooFun,   // What: Entry Lookup Function. Why: Every consuming file needs to check one specific checklist item's own resolution, by this exact name. How: This re-exports entLooFun under its own matching name.
-	othRemFun : othRemFun,   // What: Others Remaining Function. Why: tab-today.jsx reads this for the Generate card's own dynamic explanation text, by this exact name. How: This re-exports othRemFun under its own matching name.
-	reaGenFun : reaGenFun,   // What: Ready Generate Function. Why: store.js and tab-today.jsx both gate the Generate card's own actionability on this, by this exact name. How: This re-exports reaGenFun under its own matching name.
-	reaPicFun : reaPicFun,   // What: Real Picker Function. Why: store.js and tab-today.jsx both gate real-data-exists checks on this, by this exact name. How: This re-exports reaPicFun under its own matching name.
-	tutProFun : tutProFun    // What: Tutorials Progress Function. Why: reminders.jsx/tab-picker.jsx/tab-data.jsx all gate their own "add new X" controls on this, by this exact name. How: This re-exports tutProFun under its own matching name.
+	cheStaFun : cheStaFun, // What: Checklist Status Function. Why: tab-today.jsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete, by this exact name. How: This re-exports cheStaFun under its own matching name.
+	entLooFun : entLooFun, // What: Entry Lookup Function. Why: Every consuming file needs to check one specific checklist item's own resolution, by this exact name. How: This re-exports entLooFun under its own matching name.
+	othRemFun : othRemFun, // What: Others Remaining Function. Why: tab-today.jsx reads this for the Generate card's own dynamic explanation text, by this exact name. How: This re-exports othRemFun under its own matching name.
+	reaGenFun : reaGenFun, // What: Ready Generate Function. Why: store.js and tab-today.jsx both gate the Generate card's own actionability on this, by this exact name. How: This re-exports reaGenFun under its own matching name.
+	reaPicFun : reaPicFun, // What: Real Picker Function. Why: store.js and tab-today.jsx both gate real-data-exists checks on this, by this exact name. How: This re-exports reaPicFun under its own matching name.
+	tutProFun : tutProFun  // What: Tutorials Progress Function. Why: reminders.jsx/tab-picker.jsx/tab-data.jsx all gate their own "add new X" controls on this, by this exact name. How: This re-exports tutProFun under its own matching name.
 
 
 };
+
+
+
+export { ONB_CHE_OBJ, ONB_EPT_ARR, ONB_GII_STR }; // What: Named Exports. Why: Every checklist consumer uses the ONB_CHE_OBJ namespace, while tab-today.jsx and onboarding-page-tours.jsx also read the page-tour manifest and the Generate card's id. How: This exports all three by name.
+
+// #endregion Exports
 
 
