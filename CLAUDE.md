@@ -2815,7 +2815,9 @@ attribute) are ordered into these 8 tiers, top to bottom:
    ahead of `key`/`ref`, see tier 6 below).
 2. **Identity**: `id` on a native element; on a custom component, whichever
    prop plays the equivalent identity role (e.g. `pickerId`, `featureId`,
-   `pageId`).
+   `pageId`). Decided 2026-09-27: a key that only labels which instance of
+   a component is running, like GuiTouCom's own `touIdeStr` tour slot key,
+   is core data in tier 6, not identity.
 3. **Class**: `className` (never bare `class` — that attribute name
    doesn't exist in JSX at all).
 4. **Style**: `style={{ ... }}`.
