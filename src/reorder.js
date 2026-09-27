@@ -23,17 +23,28 @@
  * order is handed to onDroOrdFun; React re-renders the list already in that
  * order, so the swap is seamless.
  *
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
-const SHI_EAS_STR = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)'; // What: Shift Ease String. Why: This is the shared CSS transition every non-dragged sibling uses while shifting out of the way. How: This is written onto each sibling's own inline style.transition inside the prep forEach below.
-const EDG_THR_NUM = 64;                                             // What: Edge Threshold Number. Why: This is how close, in px, the pointer must sit to the scroll container's own top/bottom edge before auto-scroll kicks in. How: This is compared against the pointer's clientY relative to the scroll container's own rect inside onMovPoiFun.
+// #region Constants
+
 const EDG_SPE_NUM = 14;                                             // What: Edge Speed Number. Why: This is how many px the scroll container moves per animation frame once auto-scroll is active. How: This is multiplied by the current scroll direction and added to the scroll container's own scrollTop inside edgLooFun.
+const EDG_THR_NUM = 64;                                             // What: Edge Threshold Number. Why: This is how close, in px, the pointer must sit to the scroll container's own top/bottom edge before auto-scroll kicks in. How: This is compared against the pointer's clientY relative to the scroll container's own rect inside onMovPoiFun.
+const SHI_EAS_STR = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)'; // What: Shift Ease String. Why: This is the shared CSS transition every non-dragged sibling uses while shifting out of the way. How: This is written onto each sibling's own inline style.transition inside the prep forEach below.
+
+// #endregion Constants
 
 
+
+// #region Helpers
 
 // #region staDraFun
 
@@ -85,6 +96,8 @@ const EDG_SPE_NUM = 14;                                             // What: Edg
 function staDraFun ( dowEveObj, draConObj ) {
 
 
+	// #region Drag Configuration
+
 	const { // What: Drag Configuration Destructure. Why: Every option the caller passed is read once, up front, under its own name. How: This destructures draConObj into one local per option, each key already matching its local's own name.
 
 
@@ -103,23 +116,33 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	const capTarEle = griIcoEle || hanDraEle; // What: Capture Target Element. Why: The pointer capture and every move/up listener must attach to whichever element actually received the pointerdown. How: This prefers griIcoEle, falling back to hanDraEle when no separate grip was given.
 
+	// #endregion Drag Configuration
+
 
 
 	if ( dowEveObj.button != null && dowEveObj.button !== 0 ) return; // What: Primary Button Guard. Why: Only the primary mouse button (or a touch/pen contact, which reports no button at all) should start a drag. How: This bails out early when a real, non-primary button value is present.
 
 
 
+	// #region Origin Lookup
+
 	const iteEleArr = Array.from( conLisEle.querySelectorAll( iteSelStr ) ) // What: Item Element Array. Why: Every reorderable sibling's rect needs to be snapshotted before the gesture moves anything. How: This queries every iteSelStr match under conLisEle, then keeps only its own direct children below.
-		.filter( ( chiCurEle ) => chiCurEle.parentElement === conLisEle );  // What: Direct Child Filter. Why: A nested match (e.g. a card inside a card) would otherwise be mistaken for a top-level sibling. How: This keeps only the elements whose own parentElement is conLisEle itself.
+		.filter( ( chiCurEle ) => chiCurEle.parentElement === conLisEle ); // What: Direct Child Filter. Why: A nested match (e.g. a card inside a card) would otherwise be mistaken for a top-level sibling. How: This keeps only the elements whose own parentElement is conLisEle itself.
+
 
 	const oriIndNum = iteEleArr.indexOf( hanDraEle ); // What: Origin Index Number. Why: Every later shift/target computation is relative to where the dragged element actually started. How: This looks up hanDraEle's own position inside iteEleArr.
 
 
 	if ( oriIndNum === -1 ) return; // What: No Origin Guard. Why: A dragged element that isn't one of iteEleArr's own entries has nothing valid to reorder against. How: This bails out early when the lookup above found no match.
 
+	// #endregion Origin Lookup
 
+
+
+	// #region Pointer Capture
 
 	dowEveObj.preventDefault(); // What: Pointerdown Default Prevention. Why: The native press behavior (text selection, native drag-start on some elements) would otherwise fight this gesture. How: This suppresses it on the triggering pointerdown event.
+
 
 	const poiIdeNum = dowEveObj.pointerId; // What: Pointer Identifier Number. Why: Both the capture call below and the eventual release inside cleDraFun need the exact same pointer id. How: This is read once from dowEveObj and reused in both places.
 
@@ -144,7 +167,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	}
 
+	// #endregion Pointer Capture
 
+
+
+	// #region Layout Snapshot
 
 	const recSnaArr = iteEleArr.map( ( iteCurEle ) => iteCurEle.getBoundingClientRect() );    // What: Rect Snapshot Array. Why: Every later shift/target computation compares against each sibling's position at gesture start, not its live (already-shifting) position. How: This measures every entry of iteEleArr exactly once, up front.
 	const cenPosArr = recSnaArr.map( ( recCurObj ) => recCurObj.top + recCurObj.height / 2 ); // What: Center Position Array. Why: The target index is derived from comparing the dragged element's projected center against every sibling's own center. How: This computes each rect's own vertical center from recSnaArr.
@@ -154,8 +181,15 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	if ( recSnaArr.length > 1 ) gapPixNum = Math.max( 0, recSnaArr[ 1 ].top - recSnaArr[ 0 ].bottom ); // What: Gap Measurement Guard. Why: A single-item list has no adjacent pair to measure a gap from. How: This measures the vertical space between the first two siblings' rects, floored at 0 in case they overlap.
 
+
+
 	const shiDisNum = recSnaArr[ oriIndNum ].height + gapPixNum; // What: Shift Distance Number. Why: This is the exact distance every sibling between the origin and target needs to move to open/close the dragged element's own hole. How: This adds the dragged element's own measured height to gapPixNum.
 
+	// #endregion Layout Snapshot
+
+
+
+	// #region Gesture State
 
 	const staCliNum = dowEveObj.clientY; // What: Start Client Y Number. Why: Every later delta is measured relative to where the gesture actually began. How: This is read once from the triggering pointerdown event.
 
@@ -166,6 +200,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 	let scrComNum   = 0;         // What: Scroll Compensation Number. Why: Auto-scroll movement must be folded into delCliNum so the dragged element and its siblings stay visually anchored under the pointer. How: This accumulates every actual scroll movement edgLooFun applies.
 	let cleDonBoo   = false;     // What: Cleanup Done Boolean. Why: cleDraFun can be reached from more than one path and must not tear things down twice. How: This starts false and is flipped true on cleDraFun's own first run.
 
+	// #endregion Gesture State
+
+
+
+	// #region Gesture Start Effects
 
 	iteEleArr.forEach( ( iteCurEle, iteIndNum ) => { // What: Sibling Prep Loop. Why: Every sibling needs to be readied for smooth shifting before the gesture starts, with the grabbed element floating freely above the rest. How: This gives every sibling a willChange hint, then either marks the dragged one as lifted or gives the rest their shift transition.
 
@@ -185,7 +224,9 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 		else { // What: Sibling Transition Setup. Why: Every non-dragged sibling needs the shared shift transition so its later transform change animates smoothly. How: This writes SHI_EAS_STR onto every sibling except the dragged one.
 
+
 			iteCurEle.style.transition = SHI_EAS_STR; // What: Shift Transition Write. Why: This is what makes a sibling's later translateY change animate instead of jumping. How: This writes the shared SHI_EAS_STR constant onto the sibling's own inline style.
+
 
 		}
 
@@ -195,14 +236,20 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	document.body.classList.add( 'is-reordering' ); // What: Reordering Class Add. Why: The app's own CSS may key off an active drag gesture globally, not just on the dragged element. How: This adds the class to the document body for the gesture's duration.
 
+
 	const kilDraFun = ( draEveObj ) => draEveObj.preventDefault(); // What: Kill Drag Function. Why: Firefox starts a native drag-and-drop on the grip's SVG/icon that silently kills every further pointermove event, and preventDefault on pointerdown alone doesn't stop it. How: This cancels every dragstart event for the gesture's duration.
 
 
 	document.addEventListener( 'dragstart', kilDraFun, true ); // What: Dragstart Suppression Subscribe. Why: kilDraFun must actually run for it to have any effect. How: This registers it on the capture phase, document-wide, for the gesture's duration.
 
+
 	if ( onStaDraFun ) onStaDraFun(); // What: On Start Callback Guard. Why: The caller's own lifecycle hook is optional. How: This calls onStaDraFun only when the caller actually provided one.
 
+	// #endregion Gesture Start Effects
 
+
+
+	// #region Target And Shifts
 
 	// #region cmpTarFun
 
@@ -239,13 +286,17 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 		if ( delCliNum > 0 ) { // What: Downward Movement Check. Why: A positive delta means the dragged element moved down, so the candidate index should only ever walk forward. How: This gates the downward-walking while loop below.
 
+
 			while ( tarCanNum < iteEleArr.length - 1 && proCenNum > cenPosArr[ tarCanNum + 1 ] ) tarCanNum++; // What: Downward Walk Loop. Why: The candidate must advance past every sibling whose own center the projected center has already crossed. How: This increments tarCanNum while a next sibling exists and its center is still below proCenNum.
+
 
 		}
 
 		else if ( delCliNum < 0 ) { // What: Upward Movement Check. Why: A negative delta means the dragged element moved up, so the candidate index should only ever walk backward. How: This gates the upward-walking while loop below.
 
+
 			while ( tarCanNum > 0 && proCenNum < cenPosArr[ tarCanNum - 1 ] ) tarCanNum--; // What: Upward Walk Loop. Why: The candidate must retreat past every sibling whose own center the projected center has already crossed. How: This decrements tarCanNum while a previous sibling exists and its center is still above proCenNum.
+
 
 		}
 
@@ -304,6 +355,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 			else if ( tarIndNum < oriIndNum && iteIndNum < oriIndNum && iteIndNum >= tarIndNum ) eleOffNum = shiDisNum; // What: Upward Range Check. Why: A sibling strictly between a higher target and the origin must shift down to open a hole at the target. How: This applies shiDisNum when all three range conditions hold.
 
 
+
 			iteCurEle.style.transform = eleOffNum ? `translateY(${ eleOffNum }px)` : ''; // What: Sibling Transform Write. Why: A sibling outside both ranges above must have any earlier shift cleared, not left stuck. How: This writes the computed offset, or clears the transform entirely when eleOffNum is still 0.
 
 
@@ -317,7 +369,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	// #endregion appShiFun
 
+	// #endregion Target And Shifts
 
+
+
+	// #region Edge Auto-Scroll
 
 	// #region edgLooFun
 
@@ -385,7 +441,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	edgLooNum = requestAnimationFrame( edgLooFun ); // What: Loop Start Schedule. Why: Auto-scroll must be armed from the very start of the gesture, not only once the pointer first moves. How: This schedules edgLooFun's own first run.
 
+	// #endregion Edge Auto-Scroll
 
+
+
+	// #region Pointer Handlers
 
 	// #region onMovPoiFun
 
@@ -563,7 +623,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 		if ( finTarNum !== oriIndNum ) { // What: Order Changed Guard. Why: onDroOrdFun should only ever fire for a real reorder, never for a drag that snapped back to its own start. How: This gates the whole order-building block below on the index having actually moved.
 
 
-			const ordIndArr = iteEleArr.map( ( _, iteIndNum ) => iteIndNum ); // What: Order Index Array. Why: The caller expects an array of original indices in their new order, not the elements themselves. How: This builds the identity order [0, 1, 2, ...] as the starting point for the splice below.
+			const ordIndArr = Array.from( iteEleArr.keys() ); // What: Order Index Array. Why: The caller expects an array of original indices in their new order, not the elements themselves. How: This builds the identity order [0, 1, 2, ...] as the starting point for the splice below.
 
 			const [ movIndNum ] = ordIndArr.splice( oriIndNum, 1 ); // What: Moved Index Number. Why: The dragged item's own original index must be pulled out before it can be reinserted at its new position. How: This removes exactly one entry at oriIndNum and captures it.
 
@@ -579,6 +639,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	// #endregion onRelPoiFun
 
+	// #endregion Pointer Handlers
+
+
+
+	// #region Listener Subscriptions
 
 	capTarEle.addEventListener( 'pointermove', onMovPoiFun );        // What: Grip Pointermove Subscribe. Why: This is the primary listener path, since it fires reliably everywhere once the pointer is captured. How: This registers onMovPoiFun on capTarEle's own pointermove.
 	capTarEle.addEventListener( 'pointerup', onRelPoiFun );          // What: Grip Pointerup Subscribe. Why: The gesture must end cleanly once the pointer is released. How: This registers onRelPoiFun on capTarEle's own pointerup.
@@ -587,13 +652,25 @@ function staDraFun ( dowEveObj, draConObj ) {
 	document.addEventListener( 'pointerup', onRelPoiFun, true );     // What: Document Pointerup Subscribe. Why: Same reasoning as the document pointermove subscribe above, for the up path instead. How: This registers onRelPoiFun on the document itself, capture phase.
 	document.addEventListener( 'pointercancel', onRelPoiFun, true ); // What: Document Pointercancel Subscribe. Why: A cancelled gesture must be caught by the fallback path too, same as a normal release. How: This registers onRelPoiFun on the document itself, capture phase.
 
+	// #endregion Listener Subscriptions
+
 
 }
 
 // #endregion staDraFun
 
+// #endregion Helpers
 
 
-export const REO_NAM_OBJ = { staDraFun : staDraFun }; // What: Reorder Namespace Object. Why: This is the single public entry point tab-today.jsx imports by name. How: This maps this file's own internal staDraFun name directly onto its own matching external property name.
+
+// #region Exports
+
+const REO_NAM_OBJ = { staDraFun : staDraFun }; // What: Reorder Namespace Object. Why: This is the single public entry point tab-today.jsx imports by name. How: This maps this file's own internal staDraFun name directly onto its own matching external property name.
+
+
+
+export { REO_NAM_OBJ }; // What: Reorder Namespace Object Export. Why: tab-today.jsx reaches the drag gesture through the one namespace object. How: This exports REO_NAM_OBJ by name at the very end of the file.
+
+// #endregion Exports
 
 
