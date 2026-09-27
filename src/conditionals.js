@@ -51,9 +51,11 @@
  * plain JS resolved at call time, never persisted) was checked first,
  * the same way CADENCE's was in cadence.js before that one was renamed,
  * so its external names were swept to match its internal implementation
- * exactly (modProFun, modValFun, truOddFun, resDayFun, supGatFun,
- * advValFun, carComFun, claValFun), with every external call site
- * updated to match.
+ * exactly, with every external call site updated to match.
+ *
+ * Sections:
+ *  - Helpers
+ *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -61,12 +63,82 @@
 
 
 
+// #region Helpers
+
 const claValFun = ( curValNum, minValNum, maxValNum ) => Math.max( minValNum, Math.min( maxValNum, curValNum ) ); // What: Clamp Value Function. Why: Several value-family calculations below need a result kept within a hard [min, max] band, most often [0, threshold]. How: This nests Math.min/Math.max to floor curValNum at minValNum after first ceiling it at maxValNum.
 
 
 
-const modProFun = ( modKeyStr ) => modKeyStr === 'random' || modKeyStr === 'weighted';                              // What: Mode Probability Function. Why: resDayFun below and the exported isProbability property both need to know whether a conditional's own mode rolls triggered fresh at generate time. How: This is true for exactly the two probability-family modes, random and weighted.
-const modValFun = ( modKeyStr ) => modKeyStr === 'ease-up' || modKeyStr === 'ease-down' || modKeyStr === 'dynamic'; // What: Mode Value Function. Why: advValFun below and the exported isValue property both need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
+// #region Mode Classification
+
+const modProFun = ( modKeyStr ) => modKeyStr === 'random' || modKeyStr === 'weighted'; // What: Mode Probability Function. Why: resDayFun below needs to know whether a conditional's own mode rolls triggered fresh at generate time. How: This is true for exactly the two probability-family modes, random and weighted.
+
+
+
+// #region modValFun
+
+/**
+ * modValFun = Mode Value Function
+ *
+ * @summary
+ * Whether a conditional's mode belongs to the value family (ease-up,
+ * ease-down, dynamic), whose state advances on dependent completions,
+ * rather than the probability family (random, weighted), which rolls
+ * fresh each generate.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param modKeyStr - Mode Key String: The conditional's own mode value.
+ *
+ * @returns Whether modKeyStr is a value-family mode.
+ *
+ * @example
+ * ```ts
+ * modValFun('ease-up') // => true
+ * ```
+ *
+*/
+
+const modValFun = ( modKeyStr ) => [ 'dynamic', 'ease-down', 'ease-up' ].includes( modKeyStr ); // What: Mode Value Function. Why: advValFun below, day-log.jsx, and store.js all need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
+
+// #endregion modValFun
+
+// #endregion Mode Classification
+
+
+
+// #region Day Resolution
+
+// #region supGatFun
+
+/**
+ * supGatFun = Suppress Gate Function
+ *
+ * @summary
+ * A dependent picker is suppressed today if and only if its own
+ * conditional is enabled (active, since a disabled one never
+ * suppresses) AND currently triggered.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param conCurObj - Conditional Current Object: The conditional to check, or
+ *                    a nullish value (checked defensively, since a picker's
+ *                    own conditionalId may not resolve to a live conditional
+ *                    at all).
+ *
+ * @returns True when conCurObj currently suppresses its own dependent
+ * pickers, false otherwise.
+ *
+ * @example
+ * ```ts
+ * supGatFun(conCurObj) // => true or false
+ * ```
+ *
+*/
+
+function supGatFun( conCurObj ) { return !!( conCurObj && conCurObj.active !== false && conCurObj.triggered ); } // What: Suppress Gate Body. Why: The caller needs one single boolean covering both the enabled check and the triggered check at once. How: This combines both conditions with &&, wrapped in !! so a nullish conCurObj resolves to a real false rather than undefined.
+
+// #endregion supGatFun
 
 
 
@@ -172,12 +244,15 @@ function resDayFun( conAllArr ) {
 		}
 
 
-		let triValBoo = conCurObj.triggered; // What: Triggered Value Boolean. Why: Ease-up and ease-down carry their own persisted triggered state forward unchanged, so this starts from it before the roll below may overwrite it. How: This reads conCurObj's own current triggered field.
 
-		if ( conCurObj.mode === 'random' || conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) triValBoo = Math.random() < truOddFun( conCurObj ); // What: Probability Roll Check. Why: These three modes resolve triggered fresh every day, rather than carrying yesterday's value forward. How: This rolls a fresh random draw against truOddFun's own odds for conCurObj, replacing triValBoo when conCurObj's own mode calls for it.
+		let trgValBoo = conCurObj.triggered; // What: Triggered Value Boolean. Why: Ease-up and ease-down carry their own persisted triggered state forward unchanged, so this starts from it before the roll below may overwrite it. How: This reads conCurObj's own current triggered field.
 
 
-		patIdeObj[ conCurObj.id ] = { triggered : triValBoo, chargedToday : false }; // What: Resolved Patch Write. Why: This conditional's own resolved-for-today state must be recorded under its own id, alongside the usual per-day charge-guard reset. How: This writes triValBoo and a cleared chargedToday under conCurObj's own id.
+		if ( modProFun( conCurObj.mode ) || conCurObj.mode === 'dynamic' ) trgValBoo = Math.random() < truOddFun( conCurObj ); // What: Probability Roll Check. Why: These three modes resolve triggered fresh every day, rather than carrying yesterday's value forward. How: This rolls a fresh random draw against truOddFun's own odds for conCurObj, replacing trgValBoo when conCurObj's own mode calls for it.
+
+
+
+		patIdeObj[ conCurObj.id ] = { chargedToday : false, triggered : trgValBoo }; // What: Resolved Patch Write. Why: This conditional's own resolved-for-today state must be recorded under its own id, alongside the usual per-day charge-guard reset. How: This writes a cleared chargedToday and trgValBoo under conCurObj's own id.
 
 
 	}
@@ -191,40 +266,11 @@ function resDayFun( conAllArr ) {
 
 // #endregion resDayFun
 
+// #endregion Day Resolution
 
 
-// #region supGatFun
 
-/**
- * supGatFun = Suppress Gate Function
- *
- * @summary
- * A dependent picker is suppressed today if and only if its own
- * conditional is enabled (active, since a disabled one never
- * suppresses) AND currently triggered.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param conCurObj - Conditional Current Object: The conditional to check, or
- *                    a nullish value (checked defensively, since a picker's
- *                    own conditionalId may not resolve to a live conditional
- *                    at all).
- *
- * @returns True when conCurObj currently suppresses its own dependent
- * pickers, false otherwise.
- *
- * @example
- * ```ts
- * supGatFun(conCurObj) // => true or false
- * ```
- *
-*/
-
-function supGatFun( conCurObj ) { return !!( conCurObj && conCurObj.active !== false && conCurObj.triggered ); } // What: Suppress Gate Body. Why: The caller needs one single boolean covering both the enabled check and the triggered check at once. How: This combines both conditions with &&, wrapped in !! so a nullish conCurObj resolves to a real false rather than undefined.
-
-// #endregion supGatFun
-
-
+// #region Value Charging
 
 // #region rolSteFun
 
@@ -317,7 +363,14 @@ const steResFun = ( conCurObj, thrValNum ) => ( conCurObj.chargeStep && conCurOb
 function advValFun( conCurObj ) {
 
 
-	if ( !conCurObj || conCurObj.active === false || !modValFun( conCurObj.mode ) ) return null; // What: Ineligible Guard. Why: There is nothing to advance for a missing conditional, a disabled one, or a probability-family one, which never charges at all. How: This returns null immediately when any of those three hold.
+	const misConBoo = !conCurObj;                    // What: Missing Conditional Boolean. Why: There is nothing to advance for a conditional that doesn't exist. How: This is true when conCurObj is nullish.
+	const disConBoo = conCurObj?.active === false;   // What: Disabled Conditional Boolean. Why: A disabled conditional is frozen and never charges. How: This reads conCurObj's own active flag, safely skipping a nullish conCurObj.
+	const nonValBoo = !modValFun( conCurObj?.mode ); // What: Non-Value Boolean. Why: A probability-family conditional never charges at all. How: This negates modValFun for conCurObj's own mode, safely skipping a nullish conCurObj.
+
+	const ineConBoo = misConBoo || disConBoo || nonValBoo; // What: Ineligible Conditional Boolean. Why: The guard below needs one answer for whether this conditional can advance at all. How: This combines the three checks above with ||.
+
+
+	if ( ineConBoo ) return null; // What: Ineligible Guard. Why: There is nothing to advance for a missing conditional, a disabled one, or a probability-family one. How: This returns null immediately when ineConBoo holds.
 
 
 
@@ -366,7 +419,16 @@ function advValFun( conCurObj ) {
 	if ( conCurObj.mode === 'ease-down' ) { // What: Ease Down Mode Check. Why: An ease-down conditional's own advance branches between a one-shot refill and an ordinary charge-guard patch, unlike the other modes' single return each. How: This branches into the refill guard and mid-streak return below whenever conCurObj's own mode is 'ease-down'.
 
 
-		if ( !conCurObj.triggered ) return { value : thrValNum, triggered : true, chargedToday : true, chargeStep : rolSteFun( conCurObj, thrValNum ) }; // What: One-Shot Refill Guard. Why: A fully-discharged ease-down conditional starts a brand new streak on its own next dependent completion, which must roll a fresh plan rather than reuse the just-finished one. How: This re-arms conCurObj at full charge only when it is not currently triggered.
+		if ( !conCurObj.triggered ) return { // What: One-Shot Refill Guard. Why: A fully-discharged ease-down conditional starts a brand new streak on its own next dependent completion, which must roll a fresh plan rather than reuse the just-finished one. How: This re-arms conCurObj at full charge only when it is not currently triggered.
+
+
+			chargedToday : true,                              // What: Charged Today. Why: This completion must not also charge this same conditional again later today. How: This is fixed true whenever this branch runs at all.
+			chargeStep   : rolSteFun( conCurObj, thrValNum ), // What: Charge Step. Why: A brand new streak needs its own freshly rolled plan. How: This calls rolSteFun for conCurObj and thrValNum.
+			triggered    : true,                              // What: Triggered. Why: A refilled ease-down conditional starts triggered again. How: This is fixed true on a refill.
+			value        : thrValNum                          // What: Value. Why: A refill starts back at full charge. How: This is thrValNum itself.
+
+
+		};
 
 
 
@@ -422,11 +484,19 @@ function carComFun( conCurObj ) {
 	const thrValNum = conCurObj.threshold ?? 100; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to 100 for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to 100 when it is nullish.
 
 
-	if ( conCurObj.mode === 'ease-up' ) return { value : 0, triggered : false, chargeStep : rolSteFun( conCurObj, thrValNum ) }; // What: Ease Up Reset Return. Why: Completing the card both resets this cycle and rolls a fresh plan for the next one, mirroring pickers.js's own reset-on-pick behavior. How: This zeroes value, clears triggered, and rolls a brand new chargeStep via rolSteFun.
+	if ( conCurObj.mode === 'ease-up' ) return { // What: Ease Up Reset Return. Why: Completing the card both resets this cycle and rolls a fresh plan for the next one, mirroring pickers.js's own reset-on-pick behavior. How: This zeroes value, clears triggered, and rolls a brand new chargeStep via rolSteFun.
+
+
+		chargeStep : rolSteFun( conCurObj, thrValNum ), // What: Charge Step. Why: The next cycle needs its own freshly rolled plan. How: This calls rolSteFun for conCurObj and thrValNum.
+		triggered  : false,                             // What: Triggered. Why: A completed card ends the fired day-off. How: This is fixed false on a reset.
+		value      : 0                                  // What: Value. Why: A reset cycle starts from empty. How: This is fixed 0 on a reset.
+
+
+	};
 
 
 
-	if ( conCurObj.mode === 'dynamic' ) return { value : 0, triggered : false }; // What: Dynamic Reset Return. Why: Completing the card means the fired day-off was actually handled, so the miss-accrual value resets for the next cycle. How: This zeroes value and clears triggered.
+	if ( conCurObj.mode === 'dynamic' ) return { triggered : false, value : 0 }; // What: Dynamic Reset Return. Why: Completing the card means the fired day-off was actually handled, so the miss-accrual value resets for the next cycle. How: This clears triggered and zeroes value.
 
 
 
@@ -460,21 +530,30 @@ function carComFun( conCurObj ) {
 
 // #endregion carComFun
 
+// #endregion Value Charging
+
+// #endregion Helpers
 
 
-export const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.js, day-log.jsx, and tab-today.jsx all import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
+
+// #region Exports
+
+const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.js, day-log.jsx, and tab-today.jsx all import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal functions another file uses onto an external property name matching it exactly.
 
 
 	advValFun : advValFun, // What: Advance Value Function. Why: store.js calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
 	carComFun : carComFun, // What: Card Complete Function. Why: store.js calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
-	claValFun : claValFun, // What: Clamp Value Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports claValFun under its own matching name.
-	modProFun : modProFun, // What: Mode Probability Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports modProFun under its own matching name.
 	modValFun : modValFun, // What: Mode Value Function. Why: day-log.jsx and store.js both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
 	resDayFun : resDayFun, // What: Resolve Day Function. Why: store.js calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
-	supGatFun : supGatFun, // What: Suppress Gate Function. Why: tab-today.jsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
-	truOddFun : truOddFun  // What: True Odds Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports truOddFun under its own matching name.
+	supGatFun : supGatFun  // What: Suppress Gate Function. Why: tab-today.jsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
 
 
 };
+
+
+
+export { CON_NAM_OBJ }; // What: Conditionals Namespace Export. Why: Every consumer reaches this file's conditional logic through the one namespace object. How: This exports CON_NAM_OBJ by name at the very end of the file.
+
+// #endregion Exports
 
 
