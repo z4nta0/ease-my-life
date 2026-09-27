@@ -16,7 +16,7 @@ import { ONB_EXA_OBJ } from './onboarding-seed-data.js';    // What: Onboarding 
 import { ONB_SPI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's run() and by bacSteFun below.
 import { ONB_STI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
 import { ONB_TAS_ARR } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own run() and by the intro modal's onSkiTouFun below.
-import { TodTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
+import { todTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
 // #endregion Imports
 
@@ -187,7 +187,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 		{ // What: Generate Step Object. Why: This is the step that actually produces (or reviews) a real Today list, seeding the sample reminders and running the real generator alongside the tour's own "do it yourself" fallback path. How: This targets whichever of .ob-generate/.gen-confirm currently exists, and its own runFun() below both triggers generation and seeds the sample reminders.
 
 
-			advClkStr : '.gen-confirm-continue',      // What: Advance Click String. Why: Confirming the real Regenerate flow (the "do it yourself" path this step's own body text offers) is functionally the same action Next's own runFun() performs below via window.__emlGenerate(), and the real generate() call is reentrancy-guarded (see tab-today.jsx's own generatingRef), so whichever of the two fires first wins and the other becomes a harmless no-op. How: A real click landing on .gen-confirm-continue is treated exactly like clicking Next, runFun() included.
+			advCliStr : '.gen-confirm-continue',      // What: Advance Click String. Why: Confirming the real Regenerate flow (the "do it yourself" path this step's own body text offers) is functionally the same action Next's own runFun() performs below via window.__emlGenerate(), and the real generate() call is reentrancy-guarded (see tab-today.jsx's own generatingRef), so whichever of the two fires first wins and the other becomes a harmless no-op. How: A real click landing on .gen-confirm-continue is treated exactly like clicking Next, runFun() included.
 			bacBoo    : true,                         // What: Back Boolean. Why: The user should always be able to return to the previous, Today-orientation step. How: GuiTouCom shows its own Back button whenever this is true.
 			priStr    : 'Next',                       // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
 			selStr    : '.ob-generate, .gen-confirm', // What: Selector String. Why: .gen-confirm is a fallback, not the primary target: clicking Regenerate yourself (the step's own "do it yourself" path) replaces the button with tab-today.jsx's own confirm prompt, and without this fallback the step's own target would genuinely vanish for however long the user takes to read the step and click Continue, long enough on a real human timescale to trip the not-found watchdog and end the tour outright. How: GuiTouCom tries .ob-generate first, falling back to .gen-confirm once the button has already been replaced.
@@ -450,7 +450,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own preFilObj field.
 
-					TodTopFun( actIdeStr, selTabFun ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
+					todTopFun( actIdeStr, selTabFun ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
 
 
 				} }
