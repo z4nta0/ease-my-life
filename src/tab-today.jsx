@@ -3711,7 +3711,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-	React.useEffect( () => { emlTouObj.set( { showChecklist : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's staAddFun needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own showChecklist field.
+	React.useEffect( () => { emlTouObj.set( { shoCheBoo : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's staAddFun needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own shoCheBoo field.
 
 	const pagNamStr = ( staAppObj.onboarding && staAppObj.onboarding.pageToursName ) || 'Page Tours'; // What: Page Name String. Why: The Page Tours section header needs its own, possibly user-renamed, display name. How: This reads staAppObj.onboarding.pageToursName, falling back to the fixed default.
 
@@ -4962,13 +4962,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		REO_NAM_OBJ.staDraFun( poiEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
-			conLisEle   : wraCurEle,                                   // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes wraCurEle.
-			griIcoEle   : griCurEle,                                   // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
-			hanDraEle   : secCurEle,                                   // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes secCurEle.
-			iteSelStr   : '.group-section',                            // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .group-section selector.
-			onEndDraFun : () => emlTouObj.set( { dragging : false } ), // What: On End Drag Function. Why: The coach must reappear once the gesture ends. How: This publishes dragging:false onto the shared tour bus.
-			onStaDraFun : () => emlTouObj.set( { dragging : true } ),  // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes dragging:true onto the shared tour bus, a harmless no-op when no tour is mounted.
-			scrConEle   : maiScrRef.current?.closest( '.main' ),       // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
+			conLisEle   : wraCurEle,                                    // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes wraCurEle.
+			griIcoEle   : griCurEle,                                    // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
+			hanDraEle   : secCurEle,                                    // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes secCurEle.
+			iteSelStr   : '.group-section',                             // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .group-section selector.
+			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ), // What: On End Drag Function. Why: The coach must reappear once the gesture ends. How: This publishes draActBoo : false onto the shared tour bus.
+			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),  // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes draActBoo : true onto the shared tour bus, a harmless no-op when no tour is mounted.
+			scrConEle   : maiScrRef.current?.closest( '.main' ),        // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
 
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into staAppObj.groupOrder.
 
@@ -5004,13 +5004,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		REO_NAM_OBJ.staDraFun( poiEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
-			conLisEle   : lisCurEle,                                   // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes lisCurEle.
-			griIcoEle   : griCurEle,                                   // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
-			hanDraEle   : carCurEle,                                   // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes carCurEle.
-			iteSelStr   : '.today-card',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .today-card selector.
-			onEndDraFun : () => emlTouObj.set( { dragging : false } ), // What: On End Drag Function. Why: Same reasoning as groDraFun's own onEndDraFun above. How: This publishes dragging:false onto the shared tour bus.
-			onStaDraFun : () => emlTouObj.set( { dragging : true } ),  // What: On Start Drag Function. Why: Same reasoning as groDraFun's own onStaDraFun above. How: This publishes dragging:true onto the shared tour bus.
-			scrConEle   : maiScrRef.current?.closest( '.main' ),       // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
+			conLisEle   : lisCurEle,                                    // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes lisCurEle.
+			griIcoEle   : griCurEle,                                    // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
+			hanDraEle   : carCurEle,                                    // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes carCurEle.
+			iteSelStr   : '.today-card',                                // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .today-card selector.
+			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ), // What: On End Drag Function. Why: Same reasoning as groDraFun's own onEndDraFun above. How: This publishes draActBoo : false onto the shared tour bus.
+			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),  // What: On Start Drag Function. Why: Same reasoning as groDraFun's own onStaDraFun above. How: This publishes draActBoo : true onto the shared tour bus.
+			scrConEle   : maiScrRef.current?.closest( '.main' ),        // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
 
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted per-group picker order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through curGroObj's own current entries, then merges the result into staAppObj.pickerOrder for this group.
 
@@ -5845,7 +5845,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const onbDonBoo = ONB_CHE_OBJ.cheStaFun( staAppObj ).comBoo;    // What: Onboarding Done Boolean. Why: This replaces the old onboarding.dismissed flag (which only ever got set by the now-removed "Get started" checklist, so it was permanently stuck false); derived instead of stored, see onboarding-checklist.js for what counts as done. How: This calls ONB_CHE_OBJ.cheStaFun and reads its own cmtEdiBoo field.
 	const onbCreBoo = !onbDonBoo && staAppObj.pickers.length === 0; // What: Onboarding Create Boolean. Why: This force-shows the create-picker onboarding card whenever onboarding isn't complete and the user has no pickers yet; a future "Create your first picker" mini-tour will need an equivalent force-render once it exists, keyed off its own step numbering. How: This is true only while onboarding isn't complete AND the user has no pickers at all.
-	const notTouBoo = touBusObj.phase !== 'tour';                   // What: Not Tour Boolean. Why: Every empty state below stays hidden while a guided tour is driving the page. How: This is true unless the tour bus reports the tour phase.
+	const notTouBoo = touBusObj.touPhaStr !== 'tour';               // What: Not Tour Boolean. Why: Every empty state below stays hidden while a guided tour is driving the page. How: This is true unless the tour bus reports the tour phase.
 	const zerPicBoo = staAppObj.pickers.length === 0;               // What: Zero Picker Boolean. Why: The "no pickers yet" empty state only applies with zero pickers. How: This checks the picker count.
 
 
@@ -5928,10 +5928,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const shoIdlBoo = !onbCreBoo && notTouBoo && idlTodBoo && zerEntBoo && !hasTutBoo; // What: Show Idle Boolean. Why: This is the actual final gate the JSX below renders from. How: This combines every condition above: not the create card, not mid-tour, no runnable picker, no entries at all, and no tutorial cards masking the emptiness.
 
 
-	const begCreFun = () => { // What: Begin Create Function. Why: The empty-state's own CTA needs to jump to Pickers with the create form already open and prefilled. How: This publishes a startCreate request onto the shared tour bus, then navigates to the Pickers tab.
+	const begCreFun = () => { // What: Begin Create Function. Why: The empty-state's own CTA needs to jump to Pickers with the create form already open and prefilled. How: This publishes a staCreObj request onto the shared tour bus, then navigates to the Pickers tab.
 
 
-		emlTouObj.set( { startCreate : { focusName : true, name : 'Chores', step : 1 } } ); // What: Start Create Publish. Why: The Pickers tab opens its create form when it sees this request. How: This asks for step 1, prefilled as Chores, with the name field focused.
+		emlTouObj.set( { staCreObj : { focusName : true, name : 'Chores', step : 1 } } ); // What: Start Create Publish. Why: The Pickers tab opens its create form when it sees this request. How: This asks for step 1, prefilled as Chores, with the name field focused.
 
 		if ( onNavTabFun ) onNavTabFun( 'picker' ); // What: Pickers Tab Navigate. Why: Picker creation happens on the Pickers tab. How: This switches tabs when a navigator was supplied.
 
@@ -6914,7 +6914,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						className='today-groups'
 
-						style={ touBusObj.reserveTop ? { paddingTop : touBusObj.reserveTop } : undefined }
+						style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
 					>{ /* What: Today Groups Div Element. Why: This is the actual scrollable content column, reserving extra top space while a tour coach card asks for it. How: This renders the celebration overlay portal, every block in genOrdArr, the App Features section, the checklist/empty-state CTAs, and the footer. */ }
 
 

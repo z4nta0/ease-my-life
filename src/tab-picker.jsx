@@ -455,32 +455,32 @@ function PicStrCom ( { canIteArr, picIteObj, styKeyStr, onCycDonFun, forMotBoo }
 function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
-	const touBusObj = useEmlTouFun();             // What: Tour Bus Object. Why: Several buttons on this view must narrow or disable themselves while a guided tour is walking through this exact screen. How: This subscribes to the shared tour event bus, read via its own phase/tourId/step fields below.
-	const isaTouBoo = touBusObj.phase === 'tour'; // What: Is-A Tour Boolean. Why: Every gate below needs to know a tour is actually running before it even checks which one. How: This is reused as the shared first operand of every tour-gating boolean that follows.
+	const touBusObj = useEmlTouFun();                 // What: Tour Bus Object. Why: Several buttons on this view must narrow or disable themselves while a guided tour is walking through this exact screen. How: This subscribes to the shared tour event bus, read via its own touPhaStr/touIdeStr/touSteNum fields below.
+	const isaTouBoo = touBusObj.touPhaStr === 'tour'; // What: Is-A Tour Boolean. Why: Every gate below needs to know a tour is actually running before it even checks which one. How: This is reused as the shared first operand of every tour-gating boolean that follows.
 
-	const intSenBoo = isaTouBoo && touBusObj.tourId === 'page-explore_pickers' && touBusObj.step === 7;                         // What: Intercept Send Boolean. Why: The Pickers page tour's own "Add to Todo List" step wants the real Send to Today -> Sent! animation to play, so the user sees what the button actually does, but explicitly does NOT want a real entry landing on Today from it, since this is a tutorial pick on a disposable sample picker, not something the user meant to act on. How: This gates on the exact tourId and step that step is shown at.
-	const disDonBoo = intSenBoo || ( isaTouBoo && touBusObj.tourId === 'appfeature-feat_manual_pick' && touBusObj.step === 3 ); // What: Disable Done Boolean. Why: Done needs the same visual and functional disabling during App Features' own "Make your first manual pick" tour's equivalent step (buildAppFeatureSteps, feat_manual_pick's Step 4, index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection, Step 3 is Manual Generation), since leaving would discard the very pick that tour just walked the user through making, and would also make the step's own target (this whole done/sent view) vanish. How: Re-roll is deliberately NOT included here, unlike intSenBoo above: App Features wants Re-roll to stay genuinely usable without counting as this step's own advancing click; this is deliberately a SEPARATE flag from intSenBoo, since that one also skips the real actions.addEntFun call in senTodFun below, which is correct for the page tour's disposable sample pick but wrong here.
-	const disIteBoo = isaTouBoo && touBusObj.tourId === 'page-explore_pickers' && touBusObj.step === 8;                         // What: Disable Item Boolean. Why: Step 9 ("Picker Items") highlights the pool's per-item Send to Today/Edit/Delete buttons but explicitly doesn't want any of them actually usable from there, since narrating what they do is the point, not inviting the user to act on a disposable tutorial picker's real items. How: This gates on the exact tourId and step that step is shown at.
-	const disEdiBoo = disIteBoo || ( isaTouBoo && touBusObj.tourId === 'appfeature-feat_manual_pick' && touBusObj.step === 4 ); // What: Disable Edit-Delete Boolean. Why: App Features' own "Make your first manual pick" tour reaches this same pool at its own Step 5 (index 4), but unlike the page tour above, Send to Today should stay genuinely usable there (real data, a second valid way to land a pick besides Manual Generation), only Edit/Delete stay narrated-not-usable. How: This deliberately only gates the pool-edit/pool-del buttons below, NOT pool-send's own disabled prop (still disIteBoo alone, naturally unaffected/enabled during this tour).
-	const higSenBoo = isaTouBoo && touBusObj.tourId === 'appfeature-feat_manual_pick' && touBusObj.step === 4;                  // What: Highlight Send Boolean. Why: The same fading-outline pulse (.ob-tour-pulse) tab-data.jsx's own Edit Item tour uses on its own per-element targets draws the eye to the still-genuinely-usable Send to Today buttons specifically, not just the whole .pool-items box the step's own coach already frames. How: This is only ever applied to the real, enabled button below, since disIteBoo is false here and this never touches the is-sent/is-disabled branches.
-	const disAddBoo = isaTouBoo && touBusObj.tourId === 'page-explore_pickers' && touBusObj.step === 9;                         // What: Disable Add Boolean. Why: Step 10 ("Add Picker Item") highlights "+ Add Item" but explicitly doesn't want the user opening the real create-item form from a disposable tutorial picker. How: This gates on the exact tourId and step that step is shown at.
+	const intSenBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 7;                         // What: Intercept Send Boolean. Why: The Pickers page tour's own "Add to Todo List" step wants the real Send to Today -> Sent! animation to play, so the user sees what the button actually does, but explicitly does NOT want a real entry landing on Today from it, since this is a tutorial pick on a disposable sample picker, not something the user meant to act on. How: This gates on the exact tourId and step that step is shown at.
+	const disDonBoo = intSenBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 3 ); // What: Disable Done Boolean. Why: Done needs the same visual and functional disabling during App Features' own "Make your first manual pick" tour's equivalent step (buildAppFeatureSteps, feat_manual_pick's Step 4, index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection, Step 3 is Manual Generation), since leaving would discard the very pick that tour just walked the user through making, and would also make the step's own target (this whole done/sent view) vanish. How: Re-roll is deliberately NOT included here, unlike intSenBoo above: App Features wants Re-roll to stay genuinely usable without counting as this step's own advancing click; this is deliberately a SEPARATE flag from intSenBoo, since that one also skips the real actions.addEntFun call in senTodFun below, which is correct for the page tour's disposable sample pick but wrong here.
+	const disIteBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 8;                         // What: Disable Item Boolean. Why: Step 9 ("Picker Items") highlights the pool's per-item Send to Today/Edit/Delete buttons but explicitly doesn't want any of them actually usable from there, since narrating what they do is the point, not inviting the user to act on a disposable tutorial picker's real items. How: This gates on the exact tourId and step that step is shown at.
+	const disEdiBoo = disIteBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4 ); // What: Disable Edit-Delete Boolean. Why: App Features' own "Make your first manual pick" tour reaches this same pool at its own Step 5 (index 4), but unlike the page tour above, Send to Today should stay genuinely usable there (real data, a second valid way to land a pick besides Manual Generation), only Edit/Delete stay narrated-not-usable. How: This deliberately only gates the pool-edit/pool-del buttons below, NOT pool-send's own disabled prop (still disIteBoo alone, naturally unaffected/enabled during this tour).
+	const higSenBoo = isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4;                  // What: Highlight Send Boolean. Why: The same fading-outline pulse (.ob-tour-pulse) tab-data.jsx's own Edit Item tour uses on its own per-element targets draws the eye to the still-genuinely-usable Send to Today buttons specifically, not just the whole .pool-items box the step's own coach already frames. How: This is only ever applied to the real, enabled button below, since disIteBoo is false here and this never touches the is-sent/is-disabled branches.
+	const disAddBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 9;                         // What: Disable Add Boolean. Why: Step 10 ("Add Picker Item") highlights "+ Add Item" but explicitly doesn't want the user opening the real create-item form from a disposable tutorial picker. How: This gates on the exact tourId and step that step is shown at.
 
 	const [ busPicBoo, setBusPicBoo ] = React.useState( false );  // What: Busy Picking Boolean And Setter. Why: The Pick One button must disable itself and show a busy label while the cycle animation is actually running. How: This is set true by runPicFun and cleared once onAniDonFun fires.
 	const [ picResObj, setPicResObj ] = React.useState( null );   // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PIC_NAM_OBJ.picIteFun() outcome to render from. How: This is written by runPicFun/rerActFun and read throughout the render below.
 	const [ runPhaStr, setRunPhaStr ] = React.useState( 'idle' ); // What: Run Phase String And Setter. Why: Every part of this view's stage and action row renders differently depending on where the current run actually is. How: This starts on 'idle' and is advanced by runPicFun, onAniDonFun, senTodFun, and the tour-driven effect below. // What: Run Phase Values Note. Why: The phase drives every stage render, so its possible values are worth listing. How: It is one of 'idle', 'running', 'done', 'sent' or 'empty'.
 
 
-	React.useEffect( () => { // What: Tour Reset Effect. Why: Resets this view back to idle whenever the Pickers page tour's own onBacTouFun bumps touBusObj.pickerTourResetNonce: a Back from its "Add to Todo List" step to "Manual Generation" needs Pick One showing again, not whatever real Send to Today/Re-roll/Done state a completed pick left behind. How: This is guarded on truthiness (not just present in the deps array) so the unset/0 starting value doesn't also reset on every fresh mount, only a genuine bump does anything.
+	React.useEffect( () => { // What: Tour Reset Effect. Why: Resets this view back to idle whenever the Pickers page tour's own onBacTouFun bumps touBusObj.resNonNum: a Back from its "Add to Todo List" step to "Manual Generation" needs Pick One showing again, not whatever real Send to Today/Re-roll/Done state a completed pick left behind. How: This is guarded on truthiness (not just present in the deps array) so the unset/0 starting value doesn't also reset on every fresh mount, only a genuine bump does anything.
 
 
-		if ( !touBusObj.pickerTourResetNonce ) return; // What: No Bump Guard. Why: A fresh mount's own initial nonce value must not trigger a reset. How: This bails out unless the nonce is genuinely truthy.
+		if ( !touBusObj.resNonNum ) return; // What: No Bump Guard. Why: A fresh mount's own initial nonce value must not trigger a reset. How: This bails out unless the nonce is genuinely truthy.
 
 
 
 		setBusPicBoo( false ); setPicResObj( null ); setRunPhaStr( 'idle' ); // What: Reset Call. Why: The tour's own Back navigation needs this view showing its pre-pick state again. How: This clears every piece of in-progress pick state back to idle.
 
 
-	}, [ touBusObj.pickerTourResetNonce ] ); // What: Effect Dependency Array. Why: Only a genuine bump of this exact nonce should re-run this reset. How: touBusObj.pickerTourResetNonce is the sole trigger; deliberately excluded from a broader deps list since this must NOT re-run for any other reason.
+	}, [ touBusObj.resNonNum ] ); // What: Effect Dependency Array. Why: Only a genuine bump of this exact nonce should re-run this reset. How: touBusObj.resNonNum is the sole trigger; deliberately excluded from a broader deps list since this must NOT re-run for any other reason.
 
 
 	const [ butLeaBoo, setButLeaBoo ] = React.useState( false ); // What: Button Leaving Boolean And Setter. Why: Re-roll and Done both need their own out-animation to play for a beat before the real state transition happens underneath them. How: This is flipped true by aftExiFun and cleared 180ms later, right before the real action actually runs.
@@ -927,21 +927,21 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 	};
 
 
-	const seeRedRef = React.useRef( touBusObj.pickerTourRedoNonce ); // What: Seen Redo Nonce Reference. Why: Whenever the Pickers page tour's own onBacTouFun bumps touBusObj.pickerTourRedoNonce (Back from its "Picker Items" step to "Add to Todo List"), a fresh 'done' result must be synthesized directly instead of going through runPicFun's own animated 'running' phase, since Step 8's own target (.pv-act--send) needs runPhaStr to genuinely be 'done'/'sent', and by the time this fires the earlier real pick has already run its full course and reverted; skipping the spin is deliberate, this is a revisit. How: Unlike touBusObj.pickerTourResetNonce above, a plain truthiness guard isn't enough here, since this bus value outlives any one PicVieCom instance (it's a module-level singleton, not component state); tracking the last-seen value (initialized to whatever's already on the bus at mount) makes this only fire on a genuine increment that happens while mounted.
+	const seeRedRef = React.useRef( touBusObj.redNonNum ); // What: Seen Redo Nonce Reference. Why: Whenever the Pickers page tour's own onBacTouFun bumps touBusObj.redNonNum (Back from its "Picker Items" step to "Add to Todo List"), a fresh 'done' result must be synthesized directly instead of going through runPicFun's own animated 'running' phase, since Step 8's own target (.pv-act--send) needs runPhaStr to genuinely be 'done'/'sent', and by the time this fires the earlier real pick has already run its full course and reverted; skipping the spin is deliberate, this is a revisit. How: Unlike touBusObj.resNonNum above, a plain truthiness guard isn't enough here, since this bus value outlives any one PicVieCom instance (it's a module-level singleton, not component state); tracking the last-seen value (initialized to whatever's already on the bus at mount) makes this only fire on a genuine increment that happens while mounted.
 
 
 	React.useEffect( () => { // What: Tour Redo Effect. Why: Going Back to the tour's Add to Todo List step needs a fresh settled pick to point at. How: This synthesizes a new 'done' pick whenever pickerTourRedoNonce genuinely changes.
 
 
-		if ( touBusObj.pickerTourRedoNonce === seeRedRef.current ) return; // What: No Change Guard. Why: Only a genuine increment counts as a new bump. How: This bails out when the current bus value still matches what was last seen.
+		if ( touBusObj.redNonNum === seeRedRef.current ) return; // What: No Change Guard. Why: Only a genuine increment counts as a new bump. How: This bails out when the current bus value still matches what was last seen.
 
 
 
-		seeRedRef.current = touBusObj.pickerTourRedoNonce; // What: Seen Value Update. Why: The next run of this effect needs to compare against the value that's current now. How: This overwrites seeRedRef with the newly-seen nonce.
+		seeRedRef.current = touBusObj.redNonNum; // What: Seen Value Update. Why: The next run of this effect needs to compare against the value that's current now. How: This overwrites seeRedRef with the newly-seen nonce.
 
 
 
-		if ( !touBusObj.pickerTourRedoNonce ) return; // What: Falsy Bus Value Guard. Why: A fresh mount that happens to see an unset/0 starting value must not synthesize a bogus result. How: This bails out unless the nonce is genuinely truthy.
+		if ( !touBusObj.redNonNum ) return; // What: Falsy Bus Value Guard. Why: A fresh mount that happens to see an unset/0 starting value must not synthesize a bogus result. How: This bails out unless the nonce is genuinely truthy.
 
 
 
@@ -971,7 +971,7 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The redo pick must run only on a genuine nonce bump, so the values it reads fresh stay out of the array. How: This silences the react-hooks exhaustive-deps warning for the dependency array below.
-	}, [ touBusObj.pickerTourRedoNonce ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact bus value should re-run this synthesis. How: touBusObj.pickerTourRedoNonce is the sole trigger; deliberately excluded from a broader deps list since picker/staAppObj.items/todIdeSet are read fresh from the closure each time it fires.
+	}, [ touBusObj.redNonNum ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact bus value should re-run this synthesis. How: touBusObj.redNonNum is the sole trigger; deliberately excluded from a broader deps list since picker/staAppObj.items/todIdeSet are read fresh from the closure each time it fires.
 
 
 	const rerActFun = () => { // What: Reroll Action Function. Why: Re-roll needs to reset back to idle and then immediately kick off a fresh pick. How: This clears the phase and result, then schedules runPicFun on the next tick.
@@ -2187,7 +2187,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 
-		if ( touBusObj.phase === 'tour' ) return; // What: Tour Active Guard. Why: A running tour's own positioning must not be fought by this scroll-to-top. How: This bails out before scheduling any scroll at all.
+		if ( touBusObj.touPhaStr === 'tour' ) return; // What: Tour Active Guard. Why: A running tour's own positioning must not be fought by this scroll-to-top. How: This bails out before scheduling any scroll at all.
 
 
 
@@ -2348,8 +2348,8 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 		const newIdeStr = 'draft_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The new draft item needs a stable, unique-enough id before it's ever committed. How: This builds a short random suffix onto the conventional 'draft_' item-id prefix.
 
-		const curBusObj = emlTouObj.get();                                     // What: Current Bus Object. Why: The synchronous read described above needs the bus's own live snapshot. How: This calls emlTouObj.get() directly. // What: Tour Prefill Read Note. Why: This reads straight off the bus (emlTouObj.get()), not the React-state touBusObj, since this fires as the NATIVE bubble-phase handler of the same click whose CAPTURE-phase handling just ran a picker-tour step's own run() (which sets itemPrefill on the bus synchronously), but useEmlTouFun's subscriber-driven setState is batched and hasn't actually landed in this component's own render yet, so touBusObj here would still be the PREVIOUS render's snapshot, from before itemPrefill was set. How: Reading the bus's own synchronous getter instead (the same fix reminders.jsx's own prefill already uses) is what actually lands the tour's staged name/ease on the item it creates.
-		const curTouBoo = curBusObj.phase === 'tour' && curBusObj.itemPrefill; // What: Current Tour Boolean. Why: Only an actively-running tour that staged a specific item name should override the generated default below. How: This checks both the bus's own phase and its itemPrefill field.
+		const curBusObj = emlTouObj.get();                                       // What: Current Bus Object. Why: The synchronous read described above needs the bus's own live snapshot. How: This calls emlTouObj.get() directly. // What: Tour Prefill Read Note. Why: This reads straight off the bus (emlTouObj.get()), not the React-state touBusObj, since this fires as the NATIVE bubble-phase handler of the same click whose CAPTURE-phase handling just ran a picker-tour step's own run() (which sets itePreStr on the bus synchronously), but useEmlTouFun's subscriber-driven setState is batched and hasn't actually landed in this component's own render yet, so touBusObj here would still be the PREVIOUS render's snapshot, from before itePreStr was set. How: Reading the bus's own synchronous getter instead (the same fix reminders.jsx's own prefill already uses) is what actually lands the tour's staged name/ease on the item it creates.
+		const curTouBoo = curBusObj.touPhaStr === 'tour' && curBusObj.itePreStr; // What: Current Tour Boolean. Why: Only an actively-running tour that staged a specific item name should override the generated default below. How: This checks both the bus's own phase and its itePreStr field.
 
 		let newNamStr; // What: New Name String. Why: The actual name to seed the draft with depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the two branches that follow.
 
@@ -2357,7 +2357,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 		if ( curTouBoo ) { // What: Tour Name Branch. Why: A tour stages a specific name for its own walkthrough item (see the picker tour's own run()), rather than falling back to a generic default. How: This takes the staged name directly off the bus.
 
 
-			newNamStr = curBusObj.itemPrefill; // What: Tour Name Assign. Why: This is the actual staged value described above. How: This reads curBusObj.itemPrefill.
+			newNamStr = curBusObj.itePreStr; // What: Tour Name Assign. Why: This is the actual staged value described above. How: This reads curBusObj.itePreStr.
 
 
 		}
@@ -2393,9 +2393,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 		const fulChaBoo = selModStr === 'ease-down' || ( curTouBoo && selModStr === 'ease-up' ); // What: Full Charge Boolean. Why: Ease Down items start fully charged (mirrors addPicFun's own initialValue), otherwise the editor would show a spent item needing a Refill it never needed; the tour's own Ease Up item is also given a full charge (like the rest of the sample pool) so the later generation demo step has something eligible to pick, but this doesn't apply to Weighted/Dynamic/Random tour samples, since those modes have no eligibility gate at all (value there is a weight boost, not a charge), so forcing 100 would just unfairly skew the new item's odds against its siblings for no reason.
 
 
-		const easBanObj = curTouBoo && curBusObj.itemEaseMin != null && curBusObj.itemEaseMax != null // What: Ease Band Object. Why: A tour can override the generic 7/14-day defEasObj for its own added item (e.g. a monthly-cadence sample's own item shouldn't look like a daily one). How: This uses the bus's own staged easeMin/easeMax when a tour supplied both, otherwise defEasObj.
-			? { easeMin : curBusObj.itemEaseMin, easeMax : curBusObj.itemEaseMax } // What: Tour Band Branch. Why: A tour can stage its own ease band for the added item. How: This uses the bus's itemEaseMin/itemEaseMax.
-			: defEasObj;                                                           // What: Default Band Branch. Why: Every other add uses the generic defaults. How: This returns defEasObj.
+		const easBanObj = curTouBoo && curBusObj.iteMinNum != null && curBusObj.iteMaxNum != null // What: Ease Band Object. Why: A tour can override the generic 7/14-day defEasObj for its own added item (e.g. a monthly-cadence sample's own item shouldn't look like a daily one). How: This uses the bus's own staged easeMin/easeMax when a tour supplied both, otherwise defEasObj.
+			? { easeMin : curBusObj.iteMinNum, easeMax : curBusObj.iteMaxNum } // What: Tour Band Branch. Why: A tour can stage its own ease band for the added item. How: This uses the bus's itemEaseMin/itemEaseMax.
+			: defEasObj;                                                       // What: Default Band Branch. Why: Every other add uses the generic defaults. How: This returns defEasObj.
 
 
 		setPooIteArr( ( preIteArr ) => [ ...preIteArr, { // What: Seed Item Call. Why: The freshly-opened editor needs a complete, sensible item already sitting in pooIteArr to edit. How: This appends the new item with every field resolved above.
@@ -2536,14 +2536,14 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 	};
 
 
-	React.useEffect( () => { // What: Reopen Tour Item Effect. Why: Back from a picker tour's own Step 12 (Create Picker) to Step 11 (Save this task item) needs that item's editor open again, since its own Save already committed it into pooIteArr (there's no separate "draft" vs "committed" state once saved, just actNewStr no longer pointing at it), so Step 11's own target has nothing left to click; there's no real DOM control left that would reverse this, which is why this needs a bus nonce at all. How: This reopens the SAME item, found by matching the tour's own itemPrefill name (still sitting on the bus since nothing clears it until the whole tour closes), rather than creating a fresh one, preserving whatever the user actually edited in the earlier steps instead of resetting it.
+	React.useEffect( () => { // What: Reopen Tour Item Effect. Why: Back from a picker tour's own Step 12 (Create Picker) to Step 11 (Save this task item) needs that item's editor open again, since its own Save already committed it into pooIteArr (there's no separate "draft" vs "committed" state once saved, just actNewStr no longer pointing at it), so Step 11's own target has nothing left to click; there's no real DOM control left that would reverse this, which is why this needs a bus nonce at all. How: This reopens the SAME item, found by matching the tour's own itePreStr name (still sitting on the bus since nothing clears it until the whole tour closes), rather than creating a fresh one, preserving whatever the user actually edited in the earlier steps instead of resetting it.
 
 
-		if ( !touBusObj.pickerTourReopenItemNonce ) return; // What: No Bump Guard. Why: A fresh mount's own initial nonce value must not trigger a reopen. How: This bails out unless the nonce is genuinely truthy.
+		if ( !touBusObj.reoNonNum ) return; // What: No Bump Guard. Why: A fresh mount's own initial nonce value must not trigger a reopen. How: This bails out unless the nonce is genuinely truthy.
 
 
 
-		const matIteObj = pooIteArr.find( ( iteCurObj ) => iteCurObj.name === touBusObj.itemPrefill ); // What: Matched Item Object. Why: The exact item the tour walked the user through creating needs to be found again by name. How: This searches pooIteArr for an entry whose own name matches the bus's own staged itemPrefill.
+		const matIteObj = pooIteArr.find( ( iteCurObj ) => iteCurObj.name === touBusObj.itePreStr ); // What: Matched Item Object. Why: The exact item the tour walked the user through creating needs to be found again by name. How: This searches pooIteArr for an entry whose own name matches the bus's own staged itePreStr.
 
 
 		if ( matIteObj ) { // What: Reopen Guard. Why: Only a genuinely-found match should be reopened. How: This clears any stale closing state and writes the matched item's own id into actNewStr.
@@ -2557,7 +2557,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The reopen must run only on a genuine nonce bump, so the values it reads fresh stay out of the array. How: This silences the react-hooks exhaustive-deps warning for the dependency array below.
-	}, [ touBusObj.pickerTourReopenItemNonce ] ); // What: Effect Dependency Array. Why: Only a genuine bump of this exact nonce should re-run this reopen. How: touBusObj.pickerTourReopenItemNonce is the sole trigger; pooIteArr/touBusObj.itemPrefill are read fresh from the closure each time it fires.
+	}, [ touBusObj.reoNonNum ] ); // What: Effect Dependency Array. Why: Only a genuine bump of this exact nonce should re-run this reopen. How: touBusObj.reoNonNum is the sole trigger; pooIteArr/touBusObj.itePreStr are read fresh from the closure each time it fires.
 
 
 	const bacSteFun = () => { // What: Back Step Function. Why: Returning to Step 1 must not leave Step 2 stuck with a stale actNewStr (which would make + Add Item a no-op), so any in-progress item is discarded first. How: This disarms EntEdiCom's own deferred revert (else it would fire on the next macrotask and re-set actCloStr='cancel', auto-closing whatever gets added next), removes an in-progress item if there is one, then steps back.
@@ -4100,23 +4100,23 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 	React.useEffect( () => () => clePicFun( actStoObj ), [] ); // What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own delPicFun/delConFun calls are no-ops against ids that don't exist.
 
 
-	const touBusObj = useEmlTouFun ? useEmlTouFun() : { prefill : null, startCreate : null }; // What: Tour Bus Object. Why: This page needs the shared tour bus to stage a prefilled create form and to gate several buttons during the guided walkthroughs. How: This subscribes via useEmlTouFun, or falls back to an inert stub if that hook somehow isn't available.
-	const isaTouBoo = touBusObj.phase === 'tour';                                             // What: Is-A Tour Boolean. Why: Every gate below needs to know a tour is actually running before it even checks which one. How: This is reused as the shared first operand of every tour-gating boolean that follows.
+	const touBusObj = useEmlTouFun ? useEmlTouFun() : { preFilObj : null, staCreObj : null }; // What: Tour Bus Object. Why: This page needs the shared tour bus to stage a prefilled create form and to gate several buttons during the guided walkthroughs. How: This subscribes via useEmlTouFun, or falls back to an inert stub if that hook somehow isn't available.
+	const isaTouBoo = touBusObj.touPhaStr === 'tour';                                         // What: Is-A Tour Boolean. Why: Every gate below needs to know a tour is actually running before it even checks which one. How: This is reused as the shared first operand of every tour-gating boolean that follows.
 
-	const disAddBoo = isaTouBoo && touBusObj.tourId === 'page-explore_pickers' && touBusObj.step === 3;              // What: Disable Add Boolean. Why: The Pickers page tour's own Step 4 highlights "Add New Picker" but explicitly doesn't want the user opening the real create form from it, since that flow is what the separate picker mini-tours already cover. How: This is gated on tourId, not just step index alone, since some OTHER tour could just as easily be sitting on step index 3 for its own unrelated reason.
-	const picTouBoo = isaTouBoo && typeof touBusObj.tourId === 'string' && touBusObj.tourId.startsWith( 'picker-' ); // What: Picker Tour Active Boolean. Why: A running picker mini-tour's own Step 2 wants the user to click the real Add New Picker button themselves, not a simulated click, exempting it from tutProBoo's own gate below for its whole run (later steps' own cirBoo targets are elsewhere, so the click-guard already keeps a stray click on this button from doing anything by then anyway). How: This checks the shared tourId prefix convention picker mini-tours use.
-	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ) && !picTouBoo;                                              // What: Tutorials Progress Boolean. Why: This button is separately disabled anywhere from the Welcome Tour's first step through the closing Generate card's flow completing. How: This is distinct from disAddBoo above (still needed on its own: a Replay of the Pickers page tour runs AFTER the checklist finishes, when this is always false), and is exempted for the whole run of a picker mini-tour via picTouBoo.
+	const disAddBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 3;            // What: Disable Add Boolean. Why: The Pickers page tour's own Step 4 highlights "Add New Picker" but explicitly doesn't want the user opening the real create form from it, since that flow is what the separate picker mini-tours already cover. How: This is gated on tourId, not just step index alone, since some OTHER tour could just as easily be sitting on step index 3 for its own unrelated reason.
+	const picTouBoo = isaTouBoo && typeof touBusObj.touIdeStr === 'string' && touBusObj.touIdeStr.startsWith( 'picker-' ); // What: Picker Tour Active Boolean. Why: A running picker mini-tour's own Step 2 wants the user to click the real Add New Picker button themselves, not a simulated click, exempting it from tutProBoo's own gate below for its whole run (later steps' own cirBoo targets are elsewhere, so the click-guard already keeps a stray click on this button from doing anything by then anyway). How: This checks the shared tourId prefix convention picker mini-tours use.
+	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ) && !picTouBoo;                                                    // What: Tutorials Progress Boolean. Why: This button is separately disabled anywhere from the Welcome Tour's first step through the closing Generate card's flow completing. How: This is distinct from disAddBoo above (still needed on its own: a Replay of the Pickers page tour runs AFTER the checklist finishes, when this is always false), and is exempted for the whole run of a picker mini-tour via picTouBoo.
 
 	const [ opeTouBoo, setOpeTouBoo ] = React.useState( false ); // What: Opened Tour Boolean And Setter. Why: Prefill staged by Today's empty-state card (name focus + "Chores") needs to know NOT to fire the tour's own advance callback, unlike a real tour walkthrough. How: This is set true only by the tour-prefill effect below, never by the empty-state entry effect.
 	const [ empIniObj, setEmpIniObj ] = React.useState( null );  // What: Empty Initial Object And Setter. Why: Prefill staged by Today's empty-state card needs to survive clearing the bus signal that carried it. How: This is set once by the empty-state effect below and consumed as PicForCom's own iniForObj prop.
 
 
-	React.useEffect( () => { // What: Tour Prefill Effect. Why: When the tour stages a prefill, the create form should open for it automatically. How: This opens creOpeBoo and flags opeTouBoo, but only when nothing is already open and the tour hasn't explicitly suppressed this auto-open (see touBusObj.suppressAutoOpen's own comment at its use site in onboarding-picker-tours.jsx: that tour always opens this form via a real click on the button below, which sets creOpeBoo itself; without this flag, that same click's prefill can reach this effect on an earlier render than the one where creOpeBoo turns true, since the bus's subscriber callback isn't part of the click's own React batch, making this effect wrongly claim credit and flip opeTouBoo to true).
+	React.useEffect( () => { // What: Tour Prefill Effect. Why: When the tour stages a prefill, the create form should open for it automatically. How: This opens creOpeBoo and flags opeTouBoo, but only when nothing is already open and the tour hasn't explicitly suppressed this auto-open (see touBusObj.supAutBoo's own comment at its use site in onboarding-picker-tours.jsx: that tour always opens this form via a real click on the button below, which sets creOpeBoo itself; without this flag, that same click's prefill can reach this effect on an earlier render than the one where creOpeBoo turns true, since the bus's subscriber callback isn't part of the click's own React batch, making this effect wrongly claim credit and flip opeTouBoo to true).
 
 
-		const hasPreBoo = !!touBusObj.prefill;         // What: Has Prefill Boolean. Why: The chain below combines 3 real-expression operands, so each is named individually per this project's long-boolean-expression rule. How: This is true whenever the bus is currently staging a prefill.
-		const notCreBoo = !creOpeBoo;                  // What: Not Creating Boolean. Why: See hasPreBoo's own comment. How: This is true whenever the create form isn't already open.
-		const skiAutBoo = !touBusObj.suppressAutoOpen; // What: Skip Auto-Open Boolean. Why: See hasPreBoo's own comment. How: This is true whenever the tour hasn't explicitly suppressed this auto-open.
+		const hasPreBoo = !!touBusObj.preFilObj; // What: Has Prefill Boolean. Why: The chain below combines 3 real-expression operands, so each is named individually per this project's long-boolean-expression rule. How: This is true whenever the bus is currently staging a prefill.
+		const notCreBoo = !creOpeBoo;            // What: Not Creating Boolean. Why: See hasPreBoo's own comment. How: This is true whenever the create form isn't already open.
+		const skiAutBoo = !touBusObj.supAutBoo;  // What: Skip Auto-Open Boolean. Why: See hasPreBoo's own comment. How: This is true whenever the tour hasn't explicitly suppressed this auto-open.
 
 
 		if ( hasPreBoo && notCreBoo && skiAutBoo ) { // What: Auto-Open Guard. Why: All 3 conditions must hold before this effect may claim credit for opening the form. How: This opens creOpeBoo and flags opeTouBoo together.
@@ -4129,28 +4129,28 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 		}
 
 
-	}, [ touBusObj.prefill ] ); // What: Effect Dependency Array. Why: Only a genuine change to the staged prefill should re-evaluate this. How: touBusObj.prefill is the sole trigger.
+	}, [ touBusObj.preFilObj ] ); // What: Effect Dependency Array. Why: Only a genuine change to the staged prefill should re-evaluate this. How: touBusObj.preFilObj is the sole trigger.
 
-	React.useEffect( () => { // What: Empty-State Create Effect. Why: Today's "no pickers" empty-state card should open the create form with its own staged prefill, but WITHOUT opeTouBoo, since this isn't the tour and creating the picker must not fire the tour's own advance callback. How: This consumes touBusObj.startCreate once, then clears it, prefilling a "Chores" group only when there are no groups to auto-select (a group can technically exist with no pickers, so an existing one is respected by leaving group unset, letting the form auto-select it).
-
-
-		if ( touBusObj.startCreate && !creOpeBoo ) { // What: Start Create Guard. Why: Only a genuinely-staged empty-state prefill, with nothing already open, should trigger this. How: This checks both conditions before doing anything.
+	React.useEffect( () => { // What: Empty-State Create Effect. Why: Today's "no pickers" empty-state card should open the create form with its own staged prefill, but WITHOUT opeTouBoo, since this isn't the tour and creating the picker must not fire the tour's own advance callback. How: This consumes touBusObj.staCreObj once, then clears it, prefilling a "Chores" group only when there are no groups to auto-select (a group can technically exist with no pickers, so an existing one is respected by leaving group unset, letting the form auto-select it).
 
 
-			const staPayObj = exiGroArr.length === 0 ? { ...touBusObj.startCreate, group : 'Chores' } : touBusObj.startCreate; // What: Staged Payload Object. Why: A brand-new install with no groups at all should land the empty-state picker in a sensible default group. How: This adds group:'Chores' only when exiGroArr is empty, otherwise passing the staged prefill through unchanged.
+		if ( touBusObj.staCreObj && !creOpeBoo ) { // What: Start Create Guard. Why: Only a genuinely-staged empty-state prefill, with nothing already open, should trigger this. How: This checks both conditions before doing anything.
+
+
+			const staPayObj = exiGroArr.length === 0 ? { ...touBusObj.staCreObj, group : 'Chores' } : touBusObj.staCreObj; // What: Staged Payload Object. Why: A brand-new install with no groups at all should land the empty-state picker in a sensible default group. How: This adds group:'Chores' only when exiGroArr is empty, otherwise passing the staged prefill through unchanged.
 
 
 			setEmpIniObj( staPayObj ); // What: Prefill Store Call. Why: PicForCom needs this exact shape as its own iniForObj prop. How: This writes staPayObj into empIniObj.
 
 			setCreOpeBoo( true ); // What: Open Form Call. Why: The create form must actually show for the staged prefill to matter at all. How: This flips creOpeBoo true.
 
-			emlTouObj.set({ startCreate : null }); // What: Bus Clear Call. Why: This staged signal must only ever be consumed once. How: This writes startCreate:null back onto the shared bus.
+			emlTouObj.set({ staCreObj : null }); // What: Bus Clear Call. Why: This staged signal must only ever be consumed once. How: This writes staCreObj : null back onto the shared bus.
 
 
 		}
 
 
-	}, [ touBusObj.startCreate ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact staged signal should re-run this. How: touBusObj.startCreate is the sole trigger; exiGroArr/creOpeBoo are read fresh from the closure each time it fires.
+	}, [ touBusObj.staCreObj ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact staged signal should re-run this. How: touBusObj.staCreObj is the sole trigger; exiGroArr/creOpeBoo are read fresh from the closure each time it fires.
 
 
 	const exiGroArr = React.useMemo( () => { // What: Existing Group Array. Why: Distinct group names, alphabetical, offered as chips in the form and as the group filter bar above the picker strip ("All" itself is a separate, always-first pill rendered outside this list). How: This walks staAppObj.pickers collecting each visible picker's own group name once, then alphabetizes them.
@@ -4477,7 +4477,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 			<div
 				className='picker-body'
-				style={ touBusObj.reserveTop ? { paddingTop : touBusObj.reserveTop } : undefined }
+				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
 			>{ /* What: Body Div Element. Why: A running tour can reserve extra top padding to keep its own coach clear of the header. How: This wraps every filter row, the Show row, and the active create/view content below. */ }
 
 
@@ -4773,7 +4773,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 						<PicForCom
 							conObjArr={ staAppObj.conditionals || [] }
 							exiGroArr={ exiGroArr }
-							iniForObj={ touBusObj.prefill || empIniObj || null }
+							iniForObj={ touBusObj.preFilObj || empIniObj || null }
 							iniGroStr={ groFilStr === 'all' ? '' : groFilStr }
 							opeTouBoo={ opeTouBoo }
 							onCanForFun={ () => { // What: On Cancel Form Handler. Why: Cancelling the create form must also drop any tour state and prefill. How: This clears the tour flag and the prefill, then runs canCreFun.
@@ -4788,7 +4788,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 							onCrePicFun={ ( payForObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This dedupes an onboarding revisit by name, tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
 
 
-								if ( opeTouBoo && !touBusObj.existingPickerId && staAppObj.pickers.some( ( picCurObj ) => picCurObj.name === payForObj.name ) ) { // What: Onboarding Dedupe Guard. Why: During onboarding, a revisit must never create a second copy of the example picker; instead it should just dedupe by name and advance the tour. How: This is skipped when touBusObj.existingPickerId is set, since that's an INTENTIONAL replay of an already-finished tutorial (see the picker tour's own Step 2 run()), where payForObj.name matching the prior picker is expected, not a same-session double-fire to guard against.
+								if ( opeTouBoo && !touBusObj.exiIdeStr && staAppObj.pickers.some( ( picCurObj ) => picCurObj.name === payForObj.name ) ) { // What: Onboarding Dedupe Guard. Why: During onboarding, a revisit must never create a second copy of the example picker; instead it should just dedupe by name and advance the tour. How: This is skipped when touBusObj.exiIdeStr is set, since that's an INTENTIONAL replay of an already-finished tutorial (see the picker tour's own Step 2 run()), where payForObj.name matching the prior picker is expected, not a same-session double-fire to guard against.
 
 
 									setOpeTouBoo( false ); // What: Tour Flag Clear Call. Why: This branch is itself the tour's own completion path, so the flag must not linger. How: This resets opeTouBoo to false.
@@ -4806,15 +4806,15 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 
 
-								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.js's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prefill, not opeTouBoo, since this tour walks the form via a real click (opeTouBoo only ever gets set by the OTHER, dormant-auto-open prefill entry point above), so opeTouBoo is always false here. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders.jsx's own startAdd). How: This is driven by touBusObj.showChecklist below.
+								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.js's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.preFilObj, not opeTouBoo, since this tour walks the form via a real click (opeTouBoo only ever gets set by the OTHER, dormant-auto-open prefill entry point above), so opeTouBoo is always false here. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders.jsx's own startAdd). How: This is driven by touBusObj.shoCheBoo below.
 
 
 									...payForObj, // What: Payload Spread. Why: Every field the form collected goes into the new picker. How: This spreads in payForObj.
 
-									hidden : !!touBusObj.showChecklist, // What: Hidden. Why: A picker made while the tour checklist is up stays out of sight until the tour finishes. How: This is true while the bus shows the checklist.
+									hidden : !!touBusObj.shoCheBoo, // What: Hidden. Why: A picker made while the tour checklist is up stays out of sight until the tour finishes. How: This is true while the bus shows the checklist.
 
-									...( touBusObj.prefill ? { createdFromSample : touBusObj.createdFromSample } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active.
-									...( touBusObj.existingPickerId ? { replaceId : touBusObj.existingPickerId } : {} )  // What: Replace Id Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
+									...( touBusObj.preFilObj ? { createdFromSample : touBusObj.samIdeStr } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active.
+									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )          // What: Replace Id Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
 
 
 								});

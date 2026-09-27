@@ -2234,7 +2234,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 	React.useEffect( () => { // What: Draft Repeat Publish Effect. Why: A reminder mini-tour's later steps need to show copy matching whichever schedule type is currently selected in this draft, without lifting this local state anywhere else. How: This republishes draTasObj's own repeat field onto the shared tour bus.
 
 
-		emlTouObj.set( { draftRepeat : draTasObj ? draTasObj.repeat : null } ); // What: Draft Repeat Publish Call. Why: A running mini-tour reads this field to decide which copy variant to show next. How: This writes draTasObj's own repeat (or null while no draft exists) onto the shared tour bus.
+		emlTouObj.set( { draRepStr : draTasObj ? draTasObj.repeat : null } ); // What: Draft Repeat Publish Call. Why: A running mini-tour reads this field to decide which copy variant to show next. How: This writes draTasObj's own repeat (or null while no draft exists) onto the shared tour bus.
 
 
 	}, [ draTasObj && draTasObj.repeat ] ); // What: Effect Dependency Array. Why: Only the draft's own repeat field is published, so only a change to that specific field needs to re-run this effect. How: draTasObj && draTasObj.repeat is the exact value being published.
@@ -2249,7 +2249,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 		const touBusObj = emlTouObj.get(); // What: Tour Bus Object. Why: A reminder mini-tour publishes the sample it's walking through here so the real "+" button (which the tour has the user click themselves) opens pre-filled with that sample's data instead of blank. How: This reads the shared tour bus's own current snapshot.
 
 
-		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.prefill || { repeat : 'once' } ), ...( touBusObj.showChecklist ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own showChecklist is set.
+		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.preFilObj || { repeat : 'once' } ), ...( touBusObj.shoCheBoo ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own showChecklist is set.
 
 		setAddCloBoo( false );          // What: Add Closing Flag Reset. Why: A freshly-opened form must not start out mid-close, in case a previous close was still in flight. How: This clears addCloBoo back to false.
 		setActEdiStr( 'reminder-add' ); // What: Active Editor Claim. Why: The quick-add form needs to claim the shared actEdiStr slot so every other open editor forces itself closed. How: This sets actEdiStr to the 'reminder-add' sentinel.

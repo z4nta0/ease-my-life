@@ -23,7 +23,7 @@ import { TabSetCom    } from './tab-settings.jsx';            // What: Tab Setti
 import { TabStaCom    } from './tab-stats.jsx';               // What: Tab Stats Component. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabTodCom     } from './tab-today.jsx';               // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
 import { useAppStaFun } from './store.js';                    // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
-import { useEmlTouFun } from './eml-tour-bus.js';             // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
+import { useEmlTouFun } from './eml-tour-bus.js';             // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
 import { WelTouCom    } from './onboarding-welcome-tour.jsx'; // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 
 // #endregion Imports
@@ -567,16 +567,16 @@ function AppRooCom () {
 
 
 
-	const onbEveBus = useEmlTouFun(); // What: Onboarding Event Bus. Why: The Welcome Tour needs to auto-open/close the rail while running, even outside the user's own manual toggling. How: This subscribes to the shared tour event bus's phase/wantRailOpen/step fields, read by the effect right below.
+	const onbEveBus = useEmlTouFun(); // What: Onboarding Event Bus. Why: The Welcome Tour needs to auto-open/close the rail while running, even outside the user's own manual toggling. How: This subscribes to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields, read by the effect right below.
 
 
-	React.useEffect( () => { // What: Rail Sync Effect. Why: A running tour needs to force the rail open/closed to spotlight nav buttons, without fighting the user's own manual toggle outside of a tour. How: This applies onbEveBus.wantRailOpen to raiOpeBoo whenever the bus reports an active tour phase.
+	React.useEffect( () => { // What: Rail Sync Effect. Why: A running tour needs to force the rail open/closed to spotlight nav buttons, without fighting the user's own manual toggle outside of a tour. How: This applies onbEveBus.wanRaiBoo to raiOpeBoo whenever the bus reports an active tour phase.
 
 
-		if ( onbEveBus.phase === 'tour' && typeof onbEveBus.wantRailOpen === 'boolean' ) setRaiOpeBoo( onbEveBus.wantRailOpen ); // What: Tour Rail Sync Guard. Why: Only a tour actively publishing a boolean wantRailOpen should override the rail's state. How: This applies the bus's requested open/closed value to raiOpeBoo when both conditions hold.
+		if ( onbEveBus.touPhaStr === 'tour' && typeof onbEveBus.wanRaiBoo === 'boolean' ) setRaiOpeBoo( onbEveBus.wanRaiBoo ); // What: Tour Rail Sync Guard. Why: Only a tour actively publishing a boolean wanRaiBoo should override the rail's state. How: This applies the bus's requested open/closed value to raiOpeBoo when both conditions hold.
 
 
-	}, [ onbEveBus.phase, onbEveBus.wantRailOpen, onbEveBus.step ] ); // What: Effect Dependency Array. Why: Re-run whenever the tour's phase, desired rail state, or step changes. How: phase/wantRailOpen changes are the obvious triggers; step is included too so two consecutive nav-button steps (which both want the rail open, an unchanged value) still get re-evaluated and re-corrected.
+	}, [ onbEveBus.touPhaStr, onbEveBus.wanRaiBoo, onbEveBus.touSteNum ] ); // What: Effect Dependency Array. Why: Re-run whenever the tour's phase, desired rail state, or step changes. How: touPhaStr/wanRaiBoo changes are the obvious triggers; touSteNum is included too so two consecutive nav-button steps (which both want the rail open, an unchanged value) still get re-evaluated and re-corrected.
 
 
 

@@ -40,7 +40,7 @@ import { TodTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top F
  * Decoupled from the tabs via three mechanisms: emlTouObj, a tiny
  * observable bus publishing prefill data for the picker form plus a live
  * phase/step so other tabs can react to the tour without a context
- * provider (e.g. Today's own empty states gate on its phase field);
+ * provider (e.g. Today's own empty states gate on its touPhaStr field);
  * window.__emlGenerate(), registered by TabTodCom so the tour can run the
  * real generator without reaching into the footer's own confirm dialog;
  * and a set of data-tour / .ob-* / data-tab selectors on real target
@@ -138,12 +138,12 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 
-	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: Every path that ends the Welcome Tour (Skip, Done, or the not-found watchdog inside GuiTouCom) needs the exact same cleanup. How: This flips onbPhaStr to 'off' and clears the shared bus's own prefill field.
+	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: Every path that ends the Welcome Tour (Skip, Done, or the not-found watchdog inside GuiTouCom) needs the exact same cleanup. How: This flips onbPhaStr to 'off' and clears the shared bus's own preFilObj field.
 
 
 		setOnbPhaStr( 'off' ); // What: Phase Off Set Call. Why: Nothing further from this tour should render once it's finished. How: This flips onbPhaStr to 'off'.
 
-		emlTouObj.set( { prefill : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from an earlier step must not leak into whatever the picker form shows next. How: This clears the shared bus's own prefill field.
+		emlTouObj.set( { preFilObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from an earlier step must not leak into whatever the picker form shows next. How: This clears the shared bus's own preFilObj field.
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This callback closes over nothing that ever changes across renders. How: An empty array means there is no dependency that could ever change to trigger a re-creation.
@@ -448,7 +448,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 					ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
 
-					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own prefill field.
+					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own preFilObj field.
 
 					TodTopFun( actIdeStr, selTabFun ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
 

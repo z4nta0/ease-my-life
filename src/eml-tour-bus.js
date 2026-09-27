@@ -38,7 +38,7 @@ import React from 'react'; // What: React. Why: This is the UI library the hook 
 
 // #region Module State
 
-let curBusObj = { prefill : null, startCreate : null }; // What: Current Bus Object. Why: This is the bus's own live state, read by every get() call and replayed to every subscriber on every set() call. How: This starts with the same two fields the rest of the app already reads (prefill, startCreate), reassigned wholesale by set() below rather than mutated in place.
+let curBusObj = { preFilObj : null, staCreObj : null }; // What: Current Bus Object. Why: This is the bus's own live state, read by every get() call and replayed to every subscriber on every set() call. How: This starts with the same two fields the rest of the app already reads (preFilObj, staCreObj), reassigned wholesale by set() below rather than mutated in place.
 
 const subCalSet = new Set(); // What: Subscriber Callback Set. Why: Every mounted useEmlTouFun instance needs to be notified when curBusObj changes. How: This collects every currently-subscribed callback, added by subscribe() and removed by the cleanup function it returns.
 

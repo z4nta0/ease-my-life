@@ -18,7 +18,7 @@ import { SED_NAM_OBJ  } from './seed.js';             // What: Seed Namespace Ob
 import { STA_HEL_ARR  } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
 import { TAS_NAM_OBJ  } from './tasks.js';            // What: Tasks Namespace Object. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TAS_NAM_OBJ.norOptFun on the raw persisted reminderOpts.
 import { unhHisFun    } from './help-sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
-import { useEmlTouFun } from './eml-tour-bus.js';     // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
+import { useEmlTouFun } from './eml-tour-bus.js';     // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
 
 // #endregion Imports
 
@@ -634,7 +634,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 	// #region Page Tour And Help Mode
 
-	const touBusObj = useEmlTouFun(); // What: Tour Bus Object. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit above/below the highlighted area. How: This is read for its own reserveTop field and applied as top padding on the page body below.
+	const touBusObj = useEmlTouFun(); // What: Tour Bus Object. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit above/below the highlighted area. How: This is read for its own resTopNum field and applied as top padding on the page body below.
 
 
 
@@ -2568,8 +2568,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 			<div
 				className='stat-body-wrap'
-				style={ touBusObj.reserveTop ? { paddingTop : touBusObj.reserveTop } : undefined }
-			>{ /* What: Body Wrap Div Element. Why: The Welcome Tour's own reserved top space applies to the whole scrollable filters/body area together. How: This applies touBusObj.reserveTop as top padding when it's non-zero. */ }
+				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
+			>{ /* What: Body Wrap Div Element. Why: The Welcome Tour's own reserved top space applies to the whole scrollable filters/body area together. How: This applies touBusObj.resTopNum as top padding when it's non-zero. */ }
 
 
 				<div className='stat-filters ob-stat-content'>{ /* What: Filters Div Element. Why: This groups every filter row together above the scope-dependent body cards. How: This renders the Group, Type, Show, and Range rows in that fixed order. */ }

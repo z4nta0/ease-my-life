@@ -11,7 +11,7 @@ import { GuiTouCom   } from './onboarding-tour-runner.jsx'; // What: Guided Tour
 import { IcoSvgCom    } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current varKeyStr. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom    } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each reminder mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this file's own per-varKeyStr copy.
 import { ONB_TAS_ARR  } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: A reload can land on this tour before the live sample task has been re-derived from state.tasks. How: This is searched as the fallback template lookup in buiAddFun's runFun() below.
-import { useEmlTouFun } from './eml-tour-bus.js';            // What: Use Ease My Life Tour. Why: The recurring tour's own Step 4 needs to read the live draft's current schedule type off the shared bus. How: This is called once to subscribe to the bus and read its own draftRepeat field.
+import { useEmlTouFun } from './eml-tour-bus.js';            // What: Use Ease My Life Tour. Why: The recurring tour's own Step 4 needs to read the live draft's current schedule type off the shared bus. How: This is called once to subscribe to the bus and read its own draRepStr field.
 
 // #endregion Imports
 
@@ -125,7 +125,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
 			emlTouObj.set({ // What: Prefill Publish Call. Why: reminders.jsx's own startAdd reads this in its own bubble-phase handler to prefill the real add-reminder form. How: This builds the prefill shape from the resolved samTasObj above.
 
 
-				prefill : { // What: Prefill Object. Why: reminders.jsx's own startAdd reads this nested shape directly as the real form's own prefill payload. How: This is built from samTasObj's own resolved fields below.
+				preFilObj : { // What: Prefill Object. Why: reminders.jsx's own startAdd reads this nested shape directly as the real form's own prefill payload. How: This is built from samTasObj's own resolved fields below.
 
 
 					createdFromSample : varCopObj.ideStr, // What: Created From Sample Field. Why: A future Replay needs to find and update this same reminder instead of creating a duplicate. How: This tags the prefill with the sample task's own id.
@@ -404,7 +404,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actStoObj, onCloForFun, onCloTouFun
 
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ]; // What: Variant Copy Object. Why: Both the intro modal and cloTouFun below need this varKeyStr's own sample task id, icon, title, and second paragraph. How: This looks up VAR_COP_OBJ by the varKeyStr prop.
 
-	const { draftRepeat : draRepStr } = useEmlTouFun(); // What: Draft Repeat String. Why: Only the recurring tour's own Step 4 actually depends on this, but the hook itself has to run unconditionally either way. How: This subscribes to the shared bus and reads its own draftRepeat field, harmless to read up front even when unused.
+	const { draRepStr } = useEmlTouFun(); // What: Draft Repeat String. Why: Only the recurring tour's own Step 4 actually depends on this, but the hook itself has to run unconditionally either way. How: This subscribes to the shared bus and reads its own draRepStr field, harmless to read up front even when unused.
 
 
 	const onbStaObj = staAppObj.onboarding || {};                                                                                  // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads staAppObj.onboarding, falling back to an empty object.
@@ -417,7 +417,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actStoObj, onCloForFun, onCloTouFun
 	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears the checklist status and the shared bus's own prefill together, the only two bits of state this tour ever touches outside its own local phase. How: This never touches the sample task itself (see buiAddFun's own runFun() above), only the new draft it seeded gets built from it.
 
 
-		emlTouObj.set( { prefill : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own prefill field.
+		emlTouObj.set( { preFilObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own preFilObj field.
 
 
 		actStoObj.setCarFun( varCopObj.ideStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this varKeyStr's own sample task's checklist entry to staValStr.

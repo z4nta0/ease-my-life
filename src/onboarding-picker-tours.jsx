@@ -263,15 +263,15 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
  * there at all) fixed that same problem for real usage too, not just
  * this tour.
  *
- * suppressAutoOpen exists because tab-picker.jsx has its own dormant
+ * supAutBoo exists because tab-picker.jsx has its own dormant
  * effect from the original (stashed) create-a-picker tour design
- * (`if (tour.prefill && !creating)`) that auto-opens the form the
+ * (`if (tour.preFilObj && !creating)`) that auto-opens the form the
  * instant prefill appears; without this flag it would wrongly claim
- * credit for the click this step is teaching. existingPickerId/
- * createdFromSample let a finished-before run of this same tour
+ * credit for the click this step is teaching. exiIdeStr/
+ * samIdeStr let a finished-before run of this same tour
  * update its own already-created picker in place (via addPicFun's own
  * replaceId) instead of creating a name-colliding duplicate.
- * createdFromSample is republished regardless (even on a genuine
+ * samIdeStr is republished regardless (even on a genuine
  * first run) so THIS run's own picker is tagged for any future replay
  * to find.
  *
@@ -301,10 +301,10 @@ const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Wh
 		emlTouObj.set({ // What: Prefill Publish Call. Why: tab-picker.jsx's own onCreate reads this in its own bubble-phase handler to prefill (or update in place) the real create-picker form. How: This builds the prefill shape from PIC_SAM_OBJ and the resolved exiPicObj above.
 
 
-			prefill           : PIC_SAM_OBJ[ picIdeStr ],        // What: Prefill Field. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
-			suppressAutoOpen  : true,                            // What: Suppress Auto Open Field. Why: tab-picker.jsx's own dormant auto-open effect must not wrongly claim credit for the click this step is teaching. How: This is read by that effect's own guard, which stays silent whenever this is true.
-			existingPickerId  : exiPicObj ? exiPicObj.id : null, // What: Existing Picker Id Field. Why: A previously-finished run's own real picker must be updated in place, not duplicated. How: This carries exiPicObj's own id through when found, null otherwise.
-			createdFromSample : picIdeStr                        // What: Created From Sample Field. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
+			exiIdeStr : exiPicObj ? exiPicObj.id : null, // What: Existing Identifier String. Why: A previously-finished run's own real picker must be updated in place, not duplicated. How: This carries exiPicObj's own id through when found, null otherwise.
+			preFilObj : PIC_SAM_OBJ[ picIdeStr ],        // What: Prefill Object. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
+			samIdeStr : picIdeStr,                       // What: Sample Identifier String. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
+			supAutBoo : true                             // What: Suppress Auto Boolean. Why: tab-picker.jsx's own dormant auto-open effect must not wrongly claim credit for the click this step is teaching. How: This is read by that effect's own guard, which stays silent whenever this is true.
 
 
 		});
@@ -526,9 +526,9 @@ const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This bui
 		emlTouObj.set({ // What: Item Prefill Publish Call. Why: tab-picker.jsx's own addNewDraft reads this in its own bubble-phase handler to prefill the real inline item editor. How: This builds the prefill shape from picCopObj above.
 
 
-			itemPrefill : picCopObj.preStr,                                 // What: Item Prefill Field. Why: The real editor's own name input needs this item's own prefilled name. How: This reads picCopObj's own preStr straight through.
-			itemEaseMax : picCopObj.sooNum ? 100 / picCopObj.sooNum : null, // What: Item Ease Max Field. Why: 100/days is the same days-to-drift conversion tab-picker.jsx's own driftToSoonest/daysToDrift use, kept in sync manually since those are not exported. How: This converts picCopObj's own sooNum into a drift value, or null when this sample has no override.
-			itemEaseMin : picCopObj.latNum ? 100 / picCopObj.latNum : null  // What: Item Ease Min Field. Why: Same conversion as itemEaseMax, for the slow end of the drift band. How: This converts picCopObj's own latNum into a drift value, or null when this sample has no override.
+			iteMaxNum : picCopObj.sooNum ? 100 / picCopObj.sooNum : null, // What: Item Maximum Number. Why: 100/days is the same days-to-drift conversion tab-picker.jsx's own driftToSoonest/daysToDrift use, kept in sync manually since those are not exported. How: This converts picCopObj's own sooNum into a drift value, or null when this sample has no override.
+			iteMinNum : picCopObj.latNum ? 100 / picCopObj.latNum : null, // What: Item Minimum Number. Why: Same conversion as iteMaxNum, for the slow end of the drift band. How: This converts picCopObj's own latNum into a drift value, or null when this sample has no override.
+			itePreStr : picCopObj.preStr                                  // What: Item Prefill String. Why: The real editor's own name input needs this item's own prefilled name. How: This reads picCopObj's own preStr straight through.
 
 
 		});
@@ -789,7 +789,7 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  * both landing in one React batch; they do not, the bus's own plain-JS
  * subscriber callback commits its own render before the native
  * handler's does) is exactly why runFun() also sets
- * `suppressAutoOpen: true`, without it the dormant effect would see
+ * `supAutBoo : true`, without it the dormant effect would see
  * `creating` still false on its own earlier render and wrongly claim
  * credit, flipping openedByTour to true (this tour walks Details
  * normally via a real click, unlike the other prefill entry point
@@ -839,19 +839,19 @@ function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.jsx's own dormant auto-open effect keys off tour.prefill's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicCom mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.jsx's own dormant auto-open effect keys off tour.preFilObj's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicCom mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloTouFun.
 
 
 		emlTouObj.set({ // What: Prefill Clear Call. Why: A stale prefill left over from this tour must not leak into a future visit to the Pickers tab. How: This resets every field buiNewFun's/buiAddFun's own runFun() published, back to its own idle value.
 
 
-			createdFromSample : null, // What: Created From Sample Field. Why: Same reasoning as existingPickerId. How: This clears the field buiNewFun's own runFun() set.
-			existingPickerId  : null, // What: Existing Picker Id Field. Why: This must not leak into a future, unrelated create-picker flow. How: This clears the field buiNewFun's own runFun() set.
-			itemEaseMax       : null, // What: Item Ease Max Field. Why: Same reasoning as itemPrefill, for the drift band's own fast end. How: This clears the field buiAddFun's own runFun() set.
-			itemEaseMin       : null, // What: Item Ease Min Field. Why: Same reasoning as itemPrefill, for the drift band's own slow end. How: This clears the field buiAddFun's own runFun() set.
-			itemPrefill       : null, // What: Item Prefill Field. Why: The item editor must not reopen with a stale prefilled name. How: This clears the field buiAddFun's own runFun() set.
-			prefill           : null, // What: Prefill Field. Why: The create-picker form must not reopen with stale sample data. How: This clears the field buiNewFun's own runFun() set.
-			suppressAutoOpen  : false // What: Suppress Auto Open Field. Why: A future, non-tour visit to the Pickers tab must not have its own dormant auto-open effect silenced. How: This resets the flag buiNewFun's own runFun() set.
+			exiIdeStr : null, // What: Existing Identifier String. Why: This must not leak into a future, unrelated create-picker flow. How: This clears the field buiNewFun's own runFun() set.
+			iteMaxNum : null, // What: Item Maximum Number. Why: Same reasoning as itePreStr, for the drift band's own fast end. How: This clears the field buiAddFun's own runFun() set.
+			iteMinNum : null, // What: Item Minimum Number. Why: Same reasoning as itePreStr, for the drift band's own slow end. How: This clears the field buiAddFun's own runFun() set.
+			itePreStr : null, // What: Item Prefill String. Why: The item editor must not reopen with a stale prefilled name. How: This clears the field buiAddFun's own runFun() set.
+			preFilObj : null, // What: Prefill Object. Why: The create-picker form must not reopen with stale sample data. How: This clears the field buiNewFun's own runFun() set.
+			samIdeStr : null, // What: Sample Identifier String. Why: Same reasoning as exiIdeStr. How: This clears the field buiNewFun's own runFun() set.
+			supAutBoo : false // What: Suppress Auto Boolean. Why: A future, non-tour visit to the Pickers tab must not have its own dormant auto-open effect silenced. How: This resets the flag buiNewFun's own runFun() set.
 
 
 		});
@@ -952,7 +952,7 @@ function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 				else if ( tarSteNum === steObjArr.length - 2 ) { // What: Reopen Item Nonce Check. Why: Back from CRE_STE_OBJ's own step to SAV_STE_OBJ's own step has no real DOM control, since SAV_STE_OBJ's own Save already committed the item into the real list for good (see tab-picker.jsx's own comment on this); steObjArr.length - 2 rather than a hardcoded index, since how many steps come before these last two varies by picker mode, but SAV_STE_OBJ's own step is always exactly 2 before the end. How: This publishes a bus nonce, the same reasoning as the Pickers page tour's own onBacTouFun uses for its own no-real-control Back cases.
 
 
-					emlTouObj.set({ pickerTourReopenItemNonce : ( emlTouObj.get().pickerTourReopenItemNonce || 0 ) + 1 }); // What: Reopen Item Nonce Publish. Why: tab-picker.jsx's own effect watches this field to reopen the just-saved item's own editor. How: This increments the bus's own current pickerTourReopenItemNonce by 1.
+					emlTouObj.set({ reoNonNum : ( emlTouObj.get().reoNonNum || 0 ) + 1 }); // What: Reopen Item Nonce Publish. Why: tab-picker.jsx's own effect watches this field to reopen the just-saved item's own editor. How: This increments the bus's own current reoNonNum by 1.
 
 
 				}

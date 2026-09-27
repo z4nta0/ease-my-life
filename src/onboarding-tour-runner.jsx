@@ -7,10 +7,10 @@ import React from 'react'; // What: React. Why: This is the UI library GuiTouCom
 
 
 import { createPortal } from 'react-dom';         // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuiTouCom's own JSX and document.body inside the porBodFun helper below.
-import { emlTouObj    } from './eml-tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's phase/step/touIdeStr/reserveTop/wantRailOpen fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
+import { emlTouObj    } from './eml-tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
 import { InfTipCom    } from './ui.jsx';          // What: Info Tip Component. Why: A cirBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
 import { redMotFun    } from './ui.jsx';          // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
-import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own dragging field.
+import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
 
 // #endregion Imports
 
@@ -460,7 +460,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 	// #region State, Refs And Coach Height Tracking
 
-	const { dragging : isaDraBoo } = useEmlTouFun(); // What: Is-A Drag Boolean. Why: Published by tab-today.jsx's group/item drag handlers for the duration of a reorder gesture, since the coach card can sit right over whatever is being dragged. How: This reads the shared bus's own dragging field; only the coach hides while it is true, the spotlight/dim stay so the highlighted target is still visible to drop onto.
+	const { draActBoo } = useEmlTouFun(); // What: Drag Active Boolean. Why: Published by tab-today.jsx's group/item drag handlers for the duration of a reorder gesture, since the coach card can sit right over whatever is being dragged. How: This reads the shared bus's own draActBoo field; only the coach hides while it is true, the spotlight/dim stay so the highlighted target is still visible to drop onto.
 
 	const [ curSteNum, setCurSteNum ] = React.useState( resSteNum || 0 ); // What: Current Step Number And Setter. Why: This is the tour's own live position in `steObjArr`. How: This starts at resSteNum (or 0), then only setCurSteNum ever advances/rewinds it.
 	const [ curRecObj, setCurRecObj ] = React.useState( null );           // What: Current Rect Object And Setter. Why: The render function needs the current step's own clamped highlight rect to position the spotlight and coach. How: This starts null (nothing to show yet) and is written by the position-tracking effect below.
@@ -495,20 +495,20 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 	// #region Bus And Resume Publishing Effects
 
-	React.useEffect( () => { // What: Bus Phase Effect. Why: Other tabs read bus.phase === 'tour' to know a guided tour of SOME kind is active, without caring which one (e.g. tab-today.jsx's own empty-state gating, app.jsx's rail sync). How: This is published for the duration this component is mounted and cleared back to 'off' on unmount, however that happens.
+	React.useEffect( () => { // What: Bus Phase Effect. Why: Other tabs read bus.touPhaStr === 'tour' to know a guided tour of SOME kind is active, without caring which one (e.g. tab-today.jsx's own empty-state gating, app.jsx's rail sync). How: This is published for the duration this component is mounted and cleared back to 'off' on unmount, however that happens.
 
 
-		emlTouObj.set( { phase: 'tour' } ); // What: Phase Publish. Why: Every other module gating on "is any tour running" needs this flipped on the instant this component mounts. How: This writes phase: 'tour' onto the shared bus.
+		emlTouObj.set( { touPhaStr : 'tour' } ); // What: Phase Publish. Why: Every other module gating on "is any tour running" needs this flipped on the instant this component mounts. How: This writes touPhaStr : 'tour' onto the shared bus.
 
-		return () => { emlTouObj.set( { phase: 'off', reserveTop: 0 } ); }; // What: Phase Cleanup Return. Why: resTopNum is republished continuously while mounted (see the effect below), but nothing else clears it on unmount, so the last step's value would otherwise linger on the bus forever, permanently padding Today's list even after the tour is long over. How: This resets both phase and reserveTop back to their off/idle values.
+		return () => { emlTouObj.set( { touPhaStr : 'off', resTopNum : 0 } ); }; // What: Phase Cleanup Return. Why: resTopNum is republished continuously while mounted (see the effect below), but nothing else clears it on unmount, so the last step's value would otherwise linger on the bus forever, permanently padding Today's list even after the tour is long over. How: This resets both touPhaStr and resTopNum back to their off/idle values.
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This mount/unmount publish should only ever run once for this component's own lifetime. How: An empty array means there is no dependency that could ever change to trigger a re-run.
 
 
 
-	React.useEffect( () => { emlTouObj.set( { step: curSteNum } ); }, [ curSteNum ] );    // What: Step Publish Effect. Why: Other modules read bus.step to gate behavior on a specific step index (e.g. onboarding-app-features.jsx). How: This republishes the literal step field whenever curSteNum changes. // What: Effect Dependency Array. Why: This must re-run whenever curSteNum itself changes. How: curSteNum is the exact value being published.
-	React.useEffect( () => { emlTouObj.set( { tourId : touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that needs to act only during a SPECIFIC tour's specific step (not just "some tour is up") tell them apart, e.g. tab-picker.jsx disabling its own "Add New Picker" button only during the Pickers page tour's own Step 4, not any other tour that happens to pass through the same step index. How: This is never cleared on unmount (like `step` itself is not), since every consumer already gates on phase === 'tour' too, which IS cleared, so a stale touIdeStr left over from the last tour can never be read as still current. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
+	React.useEffect( () => { emlTouObj.set( { touSteNum : curSteNum } ); }, [ curSteNum ] ); // What: Step Publish Effect. Why: Other modules read bus.touSteNum to gate behavior on a specific step index (e.g. onboarding-app-features.jsx). How: This republishes the touSteNum field whenever curSteNum changes. // What: Effect Dependency Array. Why: This must re-run whenever curSteNum itself changes. How: curSteNum is the exact value being published.
+	React.useEffect( () => { emlTouObj.set( { touIdeStr : touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that needs to act only during a SPECIFIC tour's specific step (not just "some tour is up") tell them apart, e.g. tab-picker.jsx disabling its own "Add New Picker" button only during the Pickers page tour's own Step 4, not any other tour that happens to pass through the same step index. How: This is never cleared on unmount (like `touSteNum` itself is not), since every consumer already gates on touPhaStr === 'tour' too, which IS cleared, so a stale touIdeStr left over from the last tour can never be read as still current. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
 
 
 
@@ -601,7 +601,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 	React.useEffect( () => { // What: Rail Open Publish Effect. Why: On tabPlacement 'side', the rail collapses to an off-canvas drawer on small screens (App owns the actual open/close state via its own subscription to this same field), and a step targeting a nav button would otherwise never find it there.
 
 
-		emlTouObj.set( { wantRailOpen: !!( curSteObj && curSteObj.selStr.includes( '[data-tab=' ) ) } ); // What: Rail Open Publish. Why: This is published unconditionally, not just when opening, so it also closes the drawer again once the tour moves to a step that does not need it, rather than leaving it open to cover a content target. How: This is a no-op at desktop widths, where the rail is never collapsed to begin with, and is keyed off the selector string itself (not resolved elements), since resolving would need the rail already open, which is exactly what this is for.
+		emlTouObj.set( { wanRaiBoo : !!( curSteObj && curSteObj.selStr.includes( '[data-tab=' ) ) } ); // What: Rail Open Publish. Why: This is published unconditionally, not just when opening, so it also closes the drawer again once the tour moves to a step that does not need it, rather than leaving it open to cover a content target. How: This is a no-op at desktop widths, where the rail is never collapsed to begin with, and is keyed off the selector string itself (not resolved elements), since resolving would need the rail already open, which is exactly what this is for.
 
 
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: This should republish whenever the step index moves, since a different step's own selector decides the answer. How: curSteNum is what curSteObj itself is derived from.
@@ -1546,7 +1546,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 
 
-	React.useEffect( () => { emlTouObj.set( { reserveTop: resTopNum } ); }, [ resTopNum ] ); // What: Reserve Top Publish Effect. Why: This is published on the bus so the active tab (which owns the actual scrollable content) can apply it, since this component only overlays the page and does not own that layout. How: resTopNum itself is set by the position-tracking effect above, decided ONCE per step rather than continuously, see the comment on decResFun there for why. // What: Effect Dependency Array. Why: This must re-run whenever resTopNum itself changes. How: resTopNum is the exact value being published.
+	React.useEffect( () => { emlTouObj.set( { resTopNum : resTopNum } ); }, [ resTopNum ] ); // What: Reserve Top Publish Effect. Why: This is published on the bus so the active tab (which owns the actual scrollable content) can apply it, since this component only overlays the page and does not own that layout. How: resTopNum itself is set by the position-tracking effect above, decided ONCE per step rather than continuously, see the comment on decResFun there for why. // What: Effect Dependency Array. Why: This must re-run whenever resTopNum itself changes. How: resTopNum is the exact value being published.
 
 
 	const porBodFun = ( porNodEle ) => createPortal( porNodEle, document.body ); // What: Portal Body Function. Why: Every branch of this component's own render needs to portal its JSX onto document.body rather than wherever GuiTouCom happens to be mounted in the tree. How: This forwards porNodEle straight into React's own createPortal.
@@ -1663,13 +1663,13 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 			{ meaCoaJsx }{ /* What: Measurer Coach JSX Render. Why: The hidden measurer must stay mounted for every render this branch produces, not just the early pre-resolve branch above, so meaCoaRef's own layout effect keeps measuring the step's real, current height. How: This renders the same meaCoaJsx already built above, unchanged in this branch. */ }
 
-			{ spoStyObj && <div className={ `ob-spot   ${ isaDraBoo ? 'is-dragging' : '' }   ${ shoPulBoo ? 'is-pulsing' : '' }` } ref={ spoEleRef } style={ spoStyObj } /> }{ /* What: Spotlight Element. Why: This is the actual cutout highlight drawn around the target. How: This renders only while spoStyObj is set, toggling the dragging/pulsing modifier classes. */ }{ /* The highlight border itself stays during a drag (still marks the section being dragged); only its box-shadow, which is what dims the REST of the page (the ".ob-spot" trick: a giant shadow darkens everything outside its own bounds), drops out, via the is-dragging CSS override. Otherwise the darkened background would make it hard to see exactly where the group is landing. */ }
+			{ spoStyObj && <div className={ `ob-spot   ${ draActBoo ? 'is-dragging' : '' }   ${ shoPulBoo ? 'is-pulsing' : '' }` } ref={ spoEleRef } style={ spoStyObj } /> }{ /* What: Spotlight Element. Why: This is the actual cutout highlight drawn around the target. How: This renders only while spoStyObj is set, toggling the dragging/pulsing modifier classes. */ }{ /* The highlight border itself stays during a drag (still marks the section being dragged); only its box-shadow, which is what dims the REST of the page (the ".ob-spot" trick: a giant shadow darkens everything outside its own bounds), drops out, via the is-dragging CSS override. Otherwise the darkened background would make it hard to see exactly where the group is landing. */ }
 
-			{ !spoStyObj && !isaDraBoo && <div className='ob-dim' /> }{ /* What: Dim Element. Why: A step with nothing to highlight still needs the dim layer alone. How: This renders only when there is no spot AND no drag in progress. */ }
+			{ !spoStyObj && !draActBoo && <div className='ob-dim' /> }{ /* What: Dim Element. Why: A step with nothing to highlight still needs the dim layer alone. How: This renders only when there is no spot AND no drag in progress. */ }
 
 
 
-			{ !isaDraBoo && ( // What: Coach Visibility Check. Why: The coach card must hide entirely during a drag gesture, per isaDraBoo's own doc comment above.
+			{ !draActBoo && ( // What: Coach Visibility Check. Why: The coach card must hide entirely during a drag gesture, per draActBoo's own doc comment above.
 
 
 				<div className={ `ob-coach   ${ arrClaStr }` } ref={ reaCoaRef } style={{ ...coaStyObj, width: coaWidNum, '--ob-ax': arrHorNum + 'px' }}>{ /* What: Coach Container Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaStyObj/coaWidNum/arrHorNum and renders its own arrow direction class. */ }
