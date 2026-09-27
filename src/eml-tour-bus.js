@@ -25,11 +25,18 @@ import React from 'react'; // What: React. Why: This is the UI library the hook 
  * mini-tour modules) can both import it without a circular dependency
  * between them.
  *
+ * Sections:
+ *  - Module State
+ *  - Hooks
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
+
+// #region Module State
 
 let curBusObj = { prefill : null, startCreate : null }; // What: Current Bus Object. Why: This is the bus's own live state, read by every get() call and replayed to every subscriber on every set() call. How: This starts with the same two fields the rest of the app already reads (prefill, startCreate), reassigned wholesale by set() below rather than mutated in place.
 
@@ -37,7 +44,7 @@ const subCalSet = new Set(); // What: Subscriber Callback Set. Why: Every mounte
 
 
 
-export const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the bus's own whole public API, the single shared object every consuming module reads and writes through. How: This exposes get/set/subscribe, each closing over the module-private curBusObj/subCalSet declared above.
+const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the bus's own whole public API, the single shared object every consuming module reads and writes through. How: This exposes get/set/subscribe, each closing over the module-private curBusObj/subCalSet declared above.
 
 
 	get : () => curBusObj, // What: Get. Why: A caller needs to read the bus's current state synchronously, without waiting on a subscription. How: This returns curBusObj directly.
@@ -67,7 +74,11 @@ export const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the b
 
 };
 
+// #endregion Module State
 
+
+
+// #region Hooks
 
 // #region useEmlTouFun
 
@@ -93,7 +104,7 @@ export const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the b
  *
 */
 
-export function useEmlTouFun() {
+function useEmlTouFun() {
 
 
 	const [ busSnaObj, setBusSnaObj ] = React.useState( emlTouObj.get() ); // What: Bus Snapshot Object And Setter. Why: The calling component needs its own React state that re-renders it whenever the shared bus changes. How: This seeds itself from emlTouObj's own current value on this first render.
@@ -119,5 +130,15 @@ export function useEmlTouFun() {
 }
 
 // #endregion useEmlTouFun
+
+// #endregion Hooks
+
+
+
+// #region Exports
+
+export { emlTouObj, useEmlTouFun }; // What: Named Exports. Why: The onboarding tours, the tour runner and the tabs all share this one bus, reading it through the hook or writing it through the object. How: This exports both bindings by name in one statement at the very end of the file.
+
+// #endregion Exports
 
 
