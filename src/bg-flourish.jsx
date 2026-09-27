@@ -9,6 +9,9 @@ import React from 'react'; // What: React. Why: This is the UI library this file
 
 
 
+
+
+
 /**
  * bg-flourish.jsx = Background Flourish
  *
@@ -38,13 +41,34 @@ import React from 'react'; // What: React. Why: This is the UI library this file
  * actual page reload but survives switching tabs back and forth within the
  * same session.
  *
+ * Sections:
+ *  - Constants
+ *  - Module State
+ *  - Helpers
+ *  - Hooks
+ *  - Components
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
-const FLO_SYM_ARR = [ '✓', '⁓', '←', '→', '△', '∑', '√', '∛', '∳', '≤', '≥', '±', '∞', '≈', '∅' ]; // What: Flourish Symbol Array. Why: This is the fixed pool of glyphs a placed item can render as. How: This is drawn from by the symbol cycler inside genSidFun below.
+// #region Constants
+
+/**
+ * BIG_CHA_NUM = Big Chance Number
+ *
+ * @summary
+ * Chance, per available row, of attempting a 2x2 "big" glyph there instead of
+ * (or in addition to, in other cells) a normal one.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs should render noticeably larger, for visual variety. How: This is the probability, checked once per eligible row in plaGriFun, of that row's glyph claiming a 2x2 block instead of a single cell.
 
 
 
@@ -70,6 +94,10 @@ const ROW_HEI_NUM = 40; // What: Row Height Number. Why: This is the fixed pixel
 
 
 
+const FLO_SYM_ARR = [ '✓', '⁓', '←', '→', '△', '∑', '√', '∛', '∳', '≤', '≥', '±', '∞', '≈', '∅' ]; // What: Flourish Symbol Array. Why: This is the fixed pool of glyphs a placed item can render as. How: This is drawn from by the symbol cycler inside genSidFun below.
+
+
+
 /**
  * MIN_COL_NUM = Minimum Column Number
  *
@@ -83,22 +111,19 @@ const ROW_HEI_NUM = 40; // What: Row Height Number. Why: This is the fixed pixel
 
 const MIN_COL_NUM = 2; // What: Minimum Column Number. Why: A gutter too narrow for at least this many full columns isn't worth decorating at all. How: This is checked in genSidFun, which returns no items at all when the measured gutter falls short of it.
 
+// #endregion Constants
 
 
-/**
- * BIG_CHA_NUM = Big Chance Number
- *
- * @summary
- * Chance, per available row, of attempting a 2x2 "big" glyph there instead of
- * (or in addition to, in other cells) a normal one.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
 
-const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs should render noticeably larger, for visual variety. How: This is the probability, checked once per eligible row in plaGriFun, of that row's glyph claiming a 2x2 block instead of a single cell.
+// #region Module State
+
+const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated side must survive switching tabs back and forth within the same session, without regenerating on every visit. How: This is read/written by useFloIteFun below, keyed by tab id.
+
+// #endregion Module State
 
 
+
+// #region Helpers
 
 // #region shuArrFun
 
@@ -175,7 +200,7 @@ function shuArrFun( souEleArr ) {
  *
 */
 
-function ranArrFun( lenValNum ) { return Array.from( { length : lenValNum }, ( _, i ) => i ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This is a thin wrapper over Array.from's own index-generator form.
+function ranArrFun( lenValNum ) { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
 
 // #endregion ranArrFun
 
@@ -533,11 +558,11 @@ function genSidFun( gutWidNum, conHeiNum ) {
 
 // #endregion genSidFun
 
+// #endregion Helpers
 
 
-const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated side must survive switching tabs back and forth within the same session, without regenerating on every visit. How: This is read/written by useFloIteFun below, keyed by tab id.
 
-
+// #region Hooks
 
 // #region useFloIteFun
 
@@ -619,7 +644,11 @@ function useFloIteFun( tabIdeStr, meaEleRef ) {
 
 // #endregion useFloIteFun
 
+// #endregion Hooks
 
+
+
+// #region Components
 
 // #region FloColCom
 
@@ -632,23 +661,23 @@ function useFloIteFun( tabIdeStr, meaEleRef ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param props.floIteArr - Flourish Item Array: This side's own array of
+ *                          already-generated, already-styled items to render.
  * @param props.sidKeyStr - Side Key String: Which side this column renders on,
  *                          'left' or 'right'; flips which CSS inset property
  *                          each item's own insNum applies to.
- * @param props.floIteArr - Floor Item Array: This side's own array of
- *                          already-generated, already-styled items to render.
  *
  * @returns This side's own flourish items, each as one absolutely-
  * positioned decorative span, or null when there is nothing to render.
  *
  * @example
  * ```tsx
- * FloColCom({ sidKeyStr, floIteArr }) // => <FloColCom />
+ * FloColCom({ floIteArr, sidKeyStr }) // => <FloColCom />
  * ```
  *
 */
 
-function FloColCom( { side : sidKeyStr, items : floIteArr } ) {
+function FloColCom( { floIteArr, sidKeyStr } ) {
 
 
 	if ( !floIteArr.length ) return null; // What: No Items Guard. Why: An empty side has nothing decorative to render at all. How: This returns null early rather than rendering an empty wrapper div.
@@ -714,23 +743,24 @@ function FloColCom( { side : sidKeyStr, items : floIteArr } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tabId      - Tab Id: The current tab's own id, used as the
- *                           cache key.
- * @param props.measureRef - Measure Reference: A ref pointing at the tab's own
- *                           centered- column container, whose real measured
- *                           width/height the grid is generated against.
+ * @param props.meaEleRef - Measure Element Reference: A ref pointing at the
+ *                          tab's own centered-column container, whose real
+ *                          measured width/height the grid is generated
+ *                          against.
+ * @param props.tabIdeStr - Tab Identifier String: The current tab's own id,
+ *                          used as the cache key.
  *
  * @returns Both of this tab's own gutters, each as one FloColCom
  * instance, or null before the first measurement has completed.
  *
  * @example
  * ```tsx
- * BacFloCom({ tabId, measureRef }) // => <BacFloCom />
+ * BacFloCom({ meaEleRef, tabIdeStr }) // => <BacFloCom />
  * ```
  *
 */
 
-function BacFloCom( { tabId : tabIdeStr, measureRef : meaEleRef } ) {
+function BacFloCom( { meaEleRef, tabIdeStr } ) {
 
 
 	const floIteObj = useFloIteFun( tabIdeStr, meaEleRef ); // What: Flourish Item Object. Why: Both gutters below need this tab's own already-generated (or not-yet-generated) items. How: This calls the hook above, which returns null until the first measurement completes.
@@ -746,9 +776,17 @@ function BacFloCom( { tabId : tabIdeStr, measureRef : meaEleRef } ) {
 		<React.Fragment>{ /* What: Flourish Fragment Element. Why: The two gutters are true siblings with no shared wrapper element of their own. How: This groups FloColCom's own left and right instances without adding an extra DOM node. */ }
 
 
-			<FloColCom side='left' items={ floIteObj.left } />{ /* What: Flourish Column Component. Why: This renders the left gutter's own already-generated items. How: This is passed 'left' and floIteObj's own left array. */ }
+			<FloColCom
+				floIteArr={ floIteObj.left }
+				sidKeyStr='left'
+			/>{ /* What: Flourish Column Component. Why: This renders the left gutter's own already-generated items. How: This is passed 'left' and floIteObj's own left array. */ }
 
-			<FloColCom side='right' items={ floIteObj.right } />{ /* What: Flourish Column Component. Why: This renders the right gutter's own already-generated items. How: This is passed 'right' and floIteObj's own right array. */ }
+
+
+			<FloColCom
+				floIteArr={ floIteObj.right }
+				sidKeyStr='right'
+			/>{ /* What: Flourish Column Component. Why: This renders the right gutter's own already-generated items. How: This is passed 'right' and floIteObj's own right array. */ }
 
 
 		</React.Fragment>
@@ -761,8 +799,14 @@ function BacFloCom( { tabId : tabIdeStr, measureRef : meaEleRef } ) {
 
 // #endregion BacFloCom
 
+// #endregion Components
 
+
+
+// #region Exports
 
 export { BacFloCom }; // What: Named Exports. Why: app.jsx and tab-today.jsx both render this behind their own tab content. How: This re-exports BacFloCom; every other binding in this file is internal-only.
+
+// #endregion Exports
 
 

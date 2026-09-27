@@ -813,9 +813,12 @@ function AppRooCom () {
 
 
 						<BacFloCom
-							measureRef={ maiInnRef }
-							tabId={ actIdeStr }
+							tabIdeStr={ actIdeStr }
+
+							meaEleRef={ maiInnRef }
 						/>{ /* What: Background Flourish Component. Why: The decorative background glyphs need to know which tab they're behind and where to measure their bounds. How: This is passed the shared main-inner ref and the current tab id. */ }
+
+
 
 						{ actIdeStr === 'picker' && ( // What: Picker Tab Visibility Check. Why: Only one tab's content should render at a time. How: This renders TabPicCom only while actIdeStr is 'picker'.
 

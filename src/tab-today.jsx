@@ -6632,9 +6632,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 				<BacFloCom
-					measureRef={ todBodRef }
-					tabId='today'
+					tabIdeStr='today'
+
+					meaEleRef={ todBodRef }
 				/>{ /* What: Background Flourish Component. Why: Today needs the same decorative background glyphs every other tab renders behind its own centered column. How: This is passed the fixed 'today' tab id and todBodRef. */ }
+
+
 
 				{ ( ediModBoo || banCloBoo ) && ( // What: Edit Mode Banner Visibility Check. Why: The banner needs to stay mounted through its own close animation, not just while ediModBoo itself is true. How: This renders the banner while either flag holds.
 
