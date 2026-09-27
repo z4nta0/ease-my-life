@@ -112,7 +112,7 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 
 
 
-	const patSetFun = ( patObj ) => onChange( { ...draft, ...patObj } ); // What: Patch Set Function. Why: Every field editor below needs one shared way to merge a partial change into the caller-owned conDraObj. How: This spreads conDraObj and then patObj on top of it, passing the merged result to onChange.
+	const patSetFun = ( patObj ) => onChange( { ...conDraObj, ...patObj } ); // What: Patch Set Function. Why: Every field editor below needs one shared way to merge a partial change into the caller-owned conDraObj. How: This spreads conDraObj and then patObj on top of it, passing the merged result to onChange.
 
 
 
