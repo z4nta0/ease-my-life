@@ -3605,7 +3605,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * they're on screen, see groEntFun's own copy of this same gate. Kept
 	 * additive/separate from todEntArr/dueTasArr (rather than merged in) so
 	 * streak reconciliation and Stats stay untouched by tutorial-card
-	 * completion, see store.js's stkRecFun, which only ever reads
+	 * completion, see store.js's stkSynFun, which only ever reads
 	 * staAppObj.today.entries/staAppObj.tasks.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
