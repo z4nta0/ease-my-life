@@ -4438,8 +4438,10 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     files and a rect in others, so every instance is checked by hand.
     Where a better word than Record exists, use it instead (e.g.
     `tab-today.jsx`'s own `groBucObj`, a bucket pulled from
-    `groBucMap`). Scoped to ease-my-life ONLY, for the same reason as
-    `rmn`/`rmv`.
+    `groBucMap`). Recurring, whose literal first 3 letters are also
+    `rec`, takes Phase A's `reu` instead (Recurring's 4th letter), e.g.
+    `tasks.js`'s own `isaReuFun`. Scoped to ease-my-life ONLY, for the
+    same reason as `rmn`/`rmv`.
   - **When even the escalation letters collide, pick a different word
     entirely rather than force one through**: `tab-today.jsx`'s own
     `rndOrdRef`/`rndArr` (holding the group order actually rendered to
