@@ -1,6 +1,9 @@
 
 
 
+
+
+
 // #region Imports
 
 import { STG_NAM_OBJ } from './storage.js'; // What: Storage Namespace Object. Why: The persistence request below needs to reach the real storage engine to actually call navigator.storage.persist(). How: This is called inside askPerFun via STG_NAM_OBJ.reqPerFun().
@@ -26,34 +29,32 @@ import { STG_NAM_OBJ } from './storage.js'; // What: Storage Namespace Object. W
  * picker), at which point the browser's own heuristics, and any
  * install, work in this app's favor instead of against it.
  *
+ * Sections:
+ *  - Constants
+ *  - Module State
+ *  - Helpers
+ *  - Module Init
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
-const PER_ASK_KEY = 'easemylife.persistasked'; // What: Persist Ask Key. Why: This is the localStorage key recording whether this device has already been asked once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: This is read and written inside askPerFun.
+// #region Constants
+
+const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: This is read and written inside askPerFun.
+
+// #endregion Constants
 
 
+
+// #region Module State
+
+// #region Install State
 
 let insCapObj = null; // What: Install Captured Object. Why: The install button needs a live handle on the captured event so it can call that event's own prompt() method later. How: This starts null and is assigned by the beforeinstallprompt listener below, then cleared again once askInsFun consumes it.
-
-
-
-/**
- * relInsBoo = Related Installed Boolean
- *
- * @summary
- * Set by proRelFun when this PWA is already installed on the device but
- * the user is looking at it in a normal browser tab. Chromium withholds
- * beforeinstallprompt in exactly that situation, which would otherwise
- * be indistinguishable from "this browser cannot install at all."
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-let relInsBoo = false; // What: Related Installed Boolean. Why: insStaFun must be able to tell "already installed elsewhere" apart from "cannot install here at all." How: This starts false and is set true by proRelFun when navigator.getInstalledRelatedApps() reports an existing install.
 
 
 
@@ -79,8 +80,271 @@ let insProBoo = false; // What: Install Probe Boolean. Why: insStaFun must not r
 
 
 
+/**
+ * relInsBoo = Related Installed Boolean
+ *
+ * @summary
+ * Set by proRelFun when this PWA is already installed on the device but
+ * the user is looking at it in a normal browser tab. Chromium withholds
+ * beforeinstallprompt in exactly that situation, which would otherwise
+ * be indistinguishable from "this browser cannot install at all."
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+let relInsBoo = false; // What: Related Installed Boolean. Why: insStaFun must be able to tell "already installed elsewhere" apart from "cannot install here at all." How: This starts false and is set true by proRelFun when navigator.getInstalledRelatedApps() reports an existing install.
+
+// #endregion Install State
+
+
+
 const subFunSet = new Set(); // What: Subscriber Function Set. Why: More than one UI component (Settings, an install button) may want to know about install/persistence changes. How: This holds every callback added via the exported subscribe property, each invoked in turn by notSubFun.
-const notSubFun = () => { for ( const curSubFun of subFunSet ) { try { curSubFun(); } catch ( e ) {} } }; // What: Notify Subscribers Function. Why: Every subscriber must be told a moment after any state this file tracks (install availability, probe result, persistence) changes. How: This calls every function currently in subFunSet, isolating each call in its own try/catch so one throwing subscriber cannot stop the rest from being notified.
+
+
+
+// #region Platform Detection
+
+const iosPlaBoo = /iP(hone|ad|od)/.test( navigator.platform || '' );                 // What: Ios Platform Boolean. Why: navigator.platform is the most direct signal an iPhone/iPad/iPod can offer. How: This tests it against an iOS-device pattern, falling back to an empty string when platform itself is unavailable.
+const iosUsrBoo = /iPhone|iPad|iPod/.test( navigator.userAgent );                    // What: Ios User Boolean. Why: Some environments carry the real device family in the user agent string even when navigator.platform does not. How: This tests navigator.userAgent directly against the same device-family pattern.
+const padMacBoo = /Mac/.test( navigator.userAgent ) && navigator.maxTouchPoints > 1; // What: iPad Mac Boolean. Why: iPadOS 13+ deliberately reports itself as a desktop Mac in its own user agent string, so a touch-capable "Mac" is really an iPad. How: This combines a Mac user-agent match with a real multi-touch capability check.
+
+const isaIosBoo = iosPlaBoo || padMacBoo || iosUsrBoo; // What: Is-An Ios Boolean. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so the UI must show manual Share-to-Home-Screen instructions instead of a dead install button. How: This is true whenever any one of the three device-detection checks above holds.
+
+
+const isaMacBoo = /Mac/.test( navigator.userAgent ) && !( navigator.maxTouchPoints > 1 );   // What: Is-A Mac Boolean. Why: Genuine desktop macOS, excluding any touch-capable device isaIosBoo already claims above, also never fires beforeinstallprompt; installation there is File menu, then Add to Dock. How: This combines a Mac user-agent match with the negation of the same multi-touch check isaIosBoo uses.
+const isaSafBoo = /^((?!chrome|android|crios|fxios).)*safari/i.test( navigator.userAgent ); // What: Is-A Safari Boolean. Why: Safari is the specific browser whose own install path differs by platform (Share sheet on iOS, File menu on macOS), so it has to be told apart from every Chromium/Firefox-based browser that also happens to mention "Safari" in its own user agent. How: This matches 'safari' while excluding every user agent that also contains a known non-Safari browser token.
+
+// #endregion Platform Detection
+
+// #endregion Module State
+
+
+
+// #region Helpers
+
+// #region Subscribers
+
+const notSubFun = () => { // What: Notify Subscribers Function. Why: Every subscriber must be told a moment after any state this file tracks (install availability, probe result, persistence) changes. How: This calls every function currently in subFunSet, isolating each call in its own try/catch so one throwing subscriber cannot stop the rest from being notified.
+
+
+	for ( const curSubFun of subFunSet ) { // What: Subscriber Loop. Why: Every registered subscriber must hear about the change. How: This walks subFunSet in insertion order.
+
+
+		try { curSubFun(); } // What: Subscriber Call Try. Why: This is the actual notification. How: This calls the subscriber with no arguments.
+
+		catch ( e ) {} // What: Subscriber Error Guard. Why: One throwing subscriber must not stop the rest from being notified. How: This swallows the error and moves on to the next subscriber.
+
+
+	}
+
+
+};
+
+
+
+// #region subAddFun
+
+/**
+ * subAddFun = Subscribe Add Function
+ *
+ * @summary
+ * Registers a callback to hear about every change this file tracks:
+ * install availability, the install-support probe result, and
+ * persistence. A callback that throws is swallowed by notSubFun, so one
+ * broken listener never stops the others.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param newSubFun - New Subscriber Function: The callback to call, with no
+ *                     arguments, after each change.
+ *
+ * @returns A cleanup function that unsubscribes newSubFun again.
+ *
+ * @example
+ * ```ts
+ * subAddFun(newSubFun) // => unsubscribe function
+ * ```
+ *
+*/
+
+const subAddFun = ( newSubFun ) => { // What: Subscribe Add Function. Why: A UI component needs to learn about install/persistence changes without polling. How: This adds newSubFun to subFunSet and returns its own unsubscribe function.
+
+
+	subFunSet.add( newSubFun ); // What: New Subscriber Add Call. Why: The freshly-added callback must actually be tracked so notSubFun can reach it later. How: This adds newSubFun to subFunSet.
+
+
+
+	return () => subFunSet.delete( newSubFun ); // What: Unsubscribe Return. Why: The caller needs a way to stop receiving notifications later. How: This returns a closure that removes newSubFun from subFunSet when called.
+
+
+};
+
+// #endregion subAddFun
+
+// #endregion Subscribers
+
+
+
+// #region Install Detection
+
+// #region canInsFun
+
+/**
+ * canInsFun = Can Install Function
+ *
+ * @summary
+ * Whether the browser has handed this session a captured
+ * beforeinstallprompt event, meaning askInsFun can show the native
+ * install prompt right now. It turns false again once that event is
+ * used or the app gets installed.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns Whether an install prompt is available.
+ *
+ * @example
+ * ```ts
+ * canInsFun() // => true or false
+ * ```
+ *
+*/
+
+const canInsFun = () => !!insCapObj; // What: Can Install Function. Why: tab-settings.jsx calls this to decide whether to render its own install button at all. How: This closes over the module-private insCapObj rather than exposing it directly.
+
+// #endregion canInsFun
+
+
+
+// #region isaStaFun
+
+/**
+ * isaStaFun = Is-A Standalone Function
+ *
+ * @summary
+ * Reports whether this page is currently running as an installed app
+ * rather than a normal browser tab, checked three different ways since
+ * no single API is reliable across every browser: the standard
+ * display-mode media queries, and Safari's own legacy
+ * navigator.standalone flag.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns Whether this page is currently running standalone, or false
+ * when the check itself throws.
+ * @see {@link isaStaBoo}
+ *
+ * @example
+ * ```ts
+ * isaStaFun() // => true or false
+ * ```
+ *
+*/
+
+function isaStaFun() {
+
+
+	try { // What: Is-A Standalone Try. Why: window.matchMedia is not guaranteed to exist in every environment this code might run in. How: This wraps the three checks and their combination below, falling back to false in its own catch.
+
+
+		const disStaBoo = window.matchMedia( '(display-mode: standalone)' ).matches; // What: Display Standalone Boolean. Why: This is the standard, spec-defined way a PWA can tell it is running installed. How: This reads the current match state of the 'display-mode: standalone' media query.
+		const disFulBoo = window.matchMedia( '(display-mode: fullscreen)' ).matches; // What: Display Fullscreen Boolean. Why: Some installed configurations report as fullscreen display-mode instead of standalone. How: This reads the current match state of the 'display-mode: fullscreen' media query.
+		const navStaBoo = window.navigator.standalone === true;                      // What: Navigator Standalone Boolean. Why: Safari on iOS predates the display-mode media queries and only ever exposes this legacy flag. How: This compares window.navigator.standalone against true directly.
+
+		const isaStaBoo = disStaBoo || disFulBoo || navStaBoo; // What: Is-A Standalone Boolean. Why: insStaFun (and every other caller) only needs one combined answer, true whenever any one of the three underlying checks holds. How: This ORs all three together.
+
+
+
+		return isaStaBoo; // What: Is-A Standalone Return. Why: The caller needs the fully-combined result computed above. How: This returns the same isaStaBoo just assembled.
+
+
+	}
+
+	catch ( e ) { return false; } // What: Is-A Standalone Guard. Why: An environment missing matchMedia entirely must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
+
+
+}
+
+// #endregion isaStaFun
+
+
+
+// #region insStaFun
+
+/**
+ * insStaFun = Install State Function
+ *
+ * @summary
+ * One value for the UI to switch on, so the "can't install here" case
+ * is feature-detected rather than sniffed for Firefox by name, the
+ * same answer then covers any browser that doesn't implement the
+ * install prompt. The possible values:
+ *
+ *   'standalone'  already running as an installed app
+ *   'ready'       beforeinstallprompt captured; the in-app button will
+ *                 work
+ *   'ios'         iOS/iPadOS Safari, manual Share to Home Screen
+ *   'mac'         macOS Safari, manual File menu to Add to Dock
+ *   'installed'   installed on this device, but viewed in a browser
+ *                 tab
+ *   'pending'     still waiting to find out; show nothing definitive
+ *                 yet
+ *   'unsupported' no prompt after the grace period
+ *
+ * Note 'unsupported' is genuinely ambiguous and the UI copy has to
+ * respect it: some browsers (Firefox on Android, Samsung Internet) do
+ * offer installing from their own menu, while Firefox on desktop
+ * offers no install path at all. There is no reliable way to tell
+ * those apart, so the wording covers both instead of sending desktop
+ * users hunting for a menu item that does not exist.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns One of the seven state strings documented above.
+ *
+ * @example
+ * ```ts
+ * insStaFun() // => 'standalone' | 'ready' | 'ios' | 'mac' |
+ *                    'installed' | 'pending' | 'unsupported'
+ * ```
+ *
+*/
+
+function insStaFun() {
+
+
+	if ( isaStaFun() ) return 'standalone'; // What: Standalone Guard. Why: An already-installed, already-running app has nothing left to offer installing. How: This returns 'standalone' as soon as isaStaFun reports true.
+
+
+
+	if ( insCapObj ) return 'ready'; // What: Ready Guard. Why: A captured beforeinstallprompt event means the in-app install button will actually work. How: This returns 'ready' whenever insCapObj is set.
+
+
+
+	if ( isaIosBoo && isaSafBoo ) return 'ios'; // What: Ios Guard. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so its own manual instructions are needed instead. How: This returns 'ios' whenever both isaIosBoo and isaSafBoo hold.
+
+
+
+	if ( isaMacBoo && isaSafBoo ) return 'mac'; // What: Mac Guard. Why: macOS Safari also never fires beforeinstallprompt, so its own manual instructions are needed instead. How: This returns 'mac' whenever both isaMacBoo and isaSafBoo hold.
+
+
+
+	if ( relInsBoo ) return 'installed'; // What: Installed Guard. Why: proRelFun's own async probe found this PWA already installed elsewhere on this device. How: This returns 'installed' whenever relInsBoo is true.
+
+
+
+	return insProBoo ? 'unsupported' : 'pending'; // What: Fallback Return. Why: Every more specific case above was ruled out, so the only remaining question is whether the grace period has actually elapsed yet. How: This returns 'unsupported' once insProBoo is true, otherwise 'pending'.
+
+
+}
+
+// #endregion insStaFun
 
 
 
@@ -149,10 +413,6 @@ function proRelFun() {
 }
 
 // #endregion proRelFun
-
-
-
-proRelFun(); // What: Probe Related Function Call. Why: This must run once at module load so relInsBoo is known as early as possible, well before insStaFun is likely to be first called. How: This invokes proRelFun immediately; it resolves asynchronously via its own internal .then, so nothing here is awaited.
 
 
 
@@ -236,78 +496,11 @@ function proSupFun() {
 
 // #endregion proSupFun
 
-
-
-proSupFun(); // What: Probe Support Function Call. Why: This must run once at module load so the install-support grace period starts as early as possible. How: This invokes proSupFun immediately; its own clock settles asynchronously via finProFun.
-
-
-
-const iosPlaBoo = /iP(hone|ad|od)/.test( navigator.platform || '' );                 // What: Ios Platform Boolean. Why: navigator.platform is the most direct signal an iPhone/iPad/iPod can offer. How: This tests it against an iOS-device pattern, falling back to an empty string when platform itself is unavailable.
-const padMacBoo = /Mac/.test( navigator.userAgent ) && navigator.maxTouchPoints > 1; // What: iPad Mac Boolean. Why: iPadOS 13+ deliberately reports itself as a desktop Mac in its own user agent string, so a touch-capable "Mac" is really an iPad. How: This combines a Mac user-agent match with a real multi-touch capability check.
-const iosUsrBoo = /iPhone|iPad|iPod/.test( navigator.userAgent );                    // What: Ios User Boolean. Why: Some environments carry the real device family in the user agent string even when navigator.platform does not. How: This tests navigator.userAgent directly against the same device-family pattern.
-
-const isaIosBoo = iosPlaBoo || padMacBoo || iosUsrBoo; // What: Is-An Ios Boolean. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so the UI must show manual Share-to-Home-Screen instructions instead of a dead install button. How: This is true whenever any one of the three device-detection checks above holds.
-
-
-const isaSafBoo = /^((?!chrome|android|crios|fxios).)*safari/i.test( navigator.userAgent ); // What: Is-A Safari Boolean. Why: Safari is the specific browser whose own install path differs by platform (Share sheet on iOS, File menu on macOS), so it has to be told apart from every Chromium/Firefox-based browser that also happens to mention "Safari" in its own user agent. How: This matches 'safari' while excluding every user agent that also contains a known non-Safari browser token.
-const isaMacBoo = /Mac/.test( navigator.userAgent ) && !( navigator.maxTouchPoints > 1 );   // What: Is-A Mac Boolean. Why: Genuine desktop macOS, excluding any touch-capable device isaIosBoo already claims above, also never fires beforeinstallprompt; installation there is File menu, then Add to Dock. How: This combines a Mac user-agent match with the negation of the same multi-touch check isaIosBoo uses.
+// #endregion Install Detection
 
 
 
-// #region isaStaFun
-
-/**
- * isaStaFun = Is-A Standalone Function
- *
- * @summary
- * Reports whether this page is currently running as an installed app
- * rather than a normal browser tab, checked three different ways since
- * no single API is reliable across every browser: the standard
- * display-mode media queries, and Safari's own legacy
- * navigator.standalone flag.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns Whether this page is currently running standalone, or false
- * when the check itself throws.
- * @see {@link isaStaBoo}
- *
- * @example
- * ```ts
- * isaStaFun() // => true or false
- * ```
- *
-*/
-
-function isaStaFun() {
-
-
-	try { // What: Is-A Standalone Try. Why: window.matchMedia is not guaranteed to exist in every environment this code might run in. How: This wraps the three checks and their combination below, falling back to false in its own catch.
-
-
-		const disStaBoo = window.matchMedia( '(display-mode: standalone)' ).matches; // What: Display Standalone Boolean. Why: This is the standard, spec-defined way a PWA can tell it is running installed. How: This reads the current match state of the 'display-mode: standalone' media query.
-		const disFulBoo = window.matchMedia( '(display-mode: fullscreen)' ).matches; // What: Display Fullscreen Boolean. Why: Some installed configurations report as fullscreen display-mode instead of standalone. How: This reads the current match state of the 'display-mode: fullscreen' media query.
-		const navStaBoo = window.navigator.standalone === true;                      // What: Navigator Standalone Boolean. Why: Safari on iOS predates the display-mode media queries and only ever exposes this legacy flag. How: This compares window.navigator.standalone against true directly.
-
-		const isaStaBoo = disStaBoo || disFulBoo || navStaBoo; // What: Is-A Standalone Boolean. Why: insStaFun (and every other caller) only needs one combined answer, true whenever any one of the three underlying checks holds. How: This ORs all three together.
-
-
-
-		return isaStaBoo; // What: Is-A Standalone Return. Why: The caller needs the fully-combined result computed above. How: This returns the same isaStaBoo just assembled.
-
-
-	}
-
-	catch ( e ) { return false; } // What: Is-A Standalone Guard. Why: An environment missing matchMedia entirely must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
-
-
-}
-
-// #endregion isaStaFun
-
-
+// #region Install And Persistence Requests
 
 // #region askInsFun
 
@@ -406,11 +599,11 @@ async function askPerFun( forAskBoo ) {
 	try { // What: Ask Persist Try. Why: localStorage.getItem/setItem can both throw in private mode, and either failure should still let the actual persistence request below proceed. How: This wraps the ask-once bookkeeping below, silently giving up in its own catch.
 
 
-		if ( !forAskBoo && localStorage.getItem( PER_ASK_KEY ) ) return false; // What: Already Asked Guard. Why: A device that has already been asked once, and was not forced, must not be asked again on every later launch. How: This returns false immediately when forAskBoo is falsy and PER_ASK_KEY is already set.
+		if ( !forAskBoo && localStorage.getItem( PER_ASK_STR ) ) return false; // What: Already Asked Guard. Why: A device that has already been asked once, and was not forced, must not be asked again on every later launch. How: This returns false immediately when forAskBoo is falsy and PER_ASK_STR is already set.
 
 
 
-		localStorage.setItem( PER_ASK_KEY, '1' ); // What: Persist Ask Key Set Call. Why: The very next unforced call on this device must see PER_ASK_KEY already set. How: This writes '1' under PER_ASK_KEY.
+		localStorage.setItem( PER_ASK_STR, '1' ); // What: Persist Ask Key Set Call. Why: The very next unforced call on this device must see PER_ASK_STR already set. How: This writes '1' under PER_ASK_STR.
 
 
 	}
@@ -438,6 +631,54 @@ async function askPerFun( forAskBoo ) {
 
 
 
+// #region askFirFun
+
+/**
+ * askFirFun = Ask First Function
+ *
+ * @summary
+ * Requests persistent storage the first time the user creates a picker,
+ * the first moment there is data worth protecting. It never forces a
+ * second ask, so a device that was already asked (and denied) is left
+ * alone; only the Settings action forces a retry.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns A promise of askPerFun's own result.
+ *
+ * @example
+ * ```ts
+ * askFirFun() // => Promise
+ * ```
+ *
+*/
+
+const askFirFun = () => askPerFun( false ); // What: Ask First Function. Why: store.js calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
+
+// #endregion askFirFun
+
+// #endregion Install And Persistence Requests
+
+// #endregion Helpers
+
+
+
+// #region Module Init
+
+// #region Install Probes
+
+proRelFun(); // What: Probe Related Function Call. Why: This must run once at module load so relInsBoo is known as early as possible, well before insStaFun is likely to be first called. How: This invokes proRelFun immediately; it resolves asynchronously via its own internal .then, so nothing here is awaited.
+
+proSupFun(); // What: Probe Support Function Call. Why: This must run once at module load so the install-support grace period starts as early as possible. How: This invokes proSupFun immediately; its own clock settles asynchronously via finProFun.
+
+// #endregion Install Probes
+
+
+
+// #region Install Listeners
+
 window.addEventListener( 'beforeinstallprompt', ( insEveObj ) => { // What: Before Install Prompt Listener. Why: Chromium fires this instead of showing its own mini-infobar, and the app wants to drive its own install button instead of relying on that. How: This suppresses the browser's own UI, captures the event for askInsFun to use later, and tells every subscriber the install state just changed.
 
 
@@ -448,6 +689,8 @@ window.addEventListener( 'beforeinstallprompt', ( insEveObj ) => { // What: Befo
 
 
 } );
+
+
 
 window.addEventListener( 'appinstalled', () => { // What: App Installed Listener. Why: An actual install is the strongest possible engagement signal this app can ever see. How: This clears the now-stale captured event, takes the chance to force a persistence request, and notifies every subscriber.
 
@@ -461,92 +704,15 @@ window.addEventListener( 'appinstalled', () => { // What: App Installed Listener
 
 } );
 
+// #endregion Install Listeners
 
-
-// #region insStaFun
-
-/**
- * insStaFun = Install State Function
- *
- * @summary
- * One value for the UI to switch on, so the "can't install here" case
- * is feature-detected rather than sniffed for Firefox by name, the
- * same answer then covers any browser that doesn't implement the
- * install prompt. The possible values:
- *
- *   'standalone'  already running as an installed app
- *   'ready'       beforeinstallprompt captured; the in-app button will
- *                 work
- *   'ios'         iOS/iPadOS Safari, manual Share to Home Screen
- *   'mac'         macOS Safari, manual File menu to Add to Dock
- *   'installed'   installed on this device, but viewed in a browser
- *                 tab
- *   'pending'     still waiting to find out; show nothing definitive
- *                 yet
- *   'unsupported' no prompt after the grace period
- *
- * Note 'unsupported' is genuinely ambiguous and the UI copy has to
- * respect it: some browsers (Firefox on Android, Samsung Internet) do
- * offer installing from their own menu, while Firefox on desktop
- * offers no install path at all. There is no reliable way to tell
- * those apart, so the wording covers both instead of sending desktop
- * users hunting for a menu item that does not exist.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns One of the seven state strings documented above.
- *
- * @example
- * ```ts
- * insStaFun() // => 'standalone' | 'ready' | 'ios' | 'mac' |
- *                    'installed' | 'pending' | 'unsupported'
- * ```
- *
-*/
-
-function insStaFun() {
-
-
-	if ( isaStaFun() ) return 'standalone'; // What: Standalone Guard. Why: An already-installed, already-running app has nothing left to offer installing. How: This returns 'standalone' as soon as isaStaFun reports true.
+// #endregion Module Init
 
 
 
-	if ( insCapObj ) return 'ready'; // What: Ready Guard. Why: A captured beforeinstallprompt event means the in-app install button will actually work. How: This returns 'ready' whenever insCapObj is set.
+// #region Exports
 
-
-
-	if ( isaIosBoo && isaSafBoo ) return 'ios'; // What: Ios Guard. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so its own manual instructions are needed instead. How: This returns 'ios' whenever both isaIosBoo and isaSafBoo hold.
-
-
-
-	if ( isaMacBoo && isaSafBoo ) return 'mac'; // What: Mac Guard. Why: macOS Safari also never fires beforeinstallprompt, so its own manual instructions are needed instead. How: This returns 'mac' whenever both isaMacBoo and isaSafBoo hold.
-
-
-
-	if ( relInsBoo ) return 'installed'; // What: Installed Guard. Why: proRelFun's own async probe found this PWA already installed elsewhere on this device. How: This returns 'installed' whenever relInsBoo is true.
-
-
-
-	return insProBoo ? 'unsupported' : 'pending'; // What: Fallback Return. Why: Every more specific case above was ruled out, so the only remaining question is whether the grace period has actually elapsed yet. How: This returns 'unsupported' once insProBoo is true, otherwise 'pending'.
-
-
-}
-
-// #endregion insStaFun
-
-
-
-const canInsFun = () => !!insCapObj; // What: Can Install Function. Why: tab-settings.jsx calls this to decide whether to render its own install button at all. How: This closes over the module-private insCapObj rather than exposing it directly.
-
-
-
-const askFirFun = () => askPerFun( false ); // What: Ask First Function. Why: store.js calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
-
-
-
-export const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point store.js and tab-settings.jsx both import by name. How: This maps each of this file's own internal function/variable names directly onto matching external property names.
+const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point store.js and tab-settings.jsx both import by name. How: This maps each of this file's own internal function/variable names directly onto matching external property names.
 
 
 	askFirFun : askFirFun, // What: Ask First Function. Why: store.js calls this the moment the user creates their first picker. How: This re-exports askFirFun under its own matching name.
@@ -556,22 +722,16 @@ export const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why:
 	insStaFun : insStaFun, // What: Install State Function. Why: tab-settings.jsx calls this to choose which install-instructions copy to show. How: This re-exports insStaFun under its own matching name.
 	isaIosBoo : isaIosBoo, // What: Is-An Ios Boolean. Why: tab-settings.jsx reads this directly, not called, to decide whether to show the manual Share-to-Home-Screen instructions. How: This re-exports isaIosBoo under its own matching name.
 	isaMacBoo : isaMacBoo, // What: Is-A Mac Boolean. Why: tab-settings.jsx reads this directly, not called, to decide whether to show the manual File-menu-Add-to-Dock instructions. How: This re-exports isaMacBoo under its own matching name.
-	isaSafBoo : isaSafBoo, // What: Is-A Safari Boolean. Why: This stays exported as part of PWA_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports isaSafBoo under its own matching name.
 	isaStaFun : isaStaFun, // What: Is-A Standalone Function. Why: tab-settings.jsx calls this to decide whether the app is already running installed. How: This re-exports isaStaFun under its own matching name.
-
-	subscribe : ( newSubFun ) => { // What: Subscribe. Why: A UI component needs to learn about install/persistence changes without polling. How: This adds newSubFun to subFunSet and returns its own unsubscribe function.
-
-
-		subFunSet.add( newSubFun ); // What: New Subscriber Add Call. Why: The freshly-added callback must actually be tracked so notSubFun can reach it later. How: This adds newSubFun to subFunSet.
-
-
-
-		return () => subFunSet.delete( newSubFun ); // What: Unsubscribe Return. Why: The caller needs a way to stop receiving notifications later. How: This returns a closure that removes newSubFun from subFunSet when called.
-
-
-	}
+	subscribe : subAddFun  // What: Subscribe. Why: tab-settings.jsx listens for install and persistence changes through this, keeping the conventional observer name. How: This maps onto subAddFun.
 
 
 };
+
+
+
+export { PWA_NAM_OBJ }; // What: Progressive Web App Namespace Object Export. Why: store.js and tab-settings.jsx reach every install and persistence operation through the one namespace object. How: This exports PWA_NAM_OBJ by name at the very end of the file.
+
+// #endregion Exports
 
 
