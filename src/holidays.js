@@ -23,16 +23,25 @@
  * switched off (won't trigger a skip); custom holds the user's own
  * added recurring days off, by month (1-12) and day (1-31).
  *
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
+// #region Constants
+
 const MON_DAY_NUM = 1; // What: Monday Day Number. Why: A holiday rule needs a plain weekday number to test against, matching Date.getDay()'s own encoding (Sun = 0 ... Sat = 6). How: This is read inside HOL_DEF_ARR's own nth/last rule entries below.
 const THU_DAY_NUM = 4; // What: Thursday Day Number. Why: Same reasoning as MON_DAY_NUM above, for the one holiday (Thanksgiving) defined against Thursday instead of Monday. How: This is read inside HOL_DEF_ARR's own nth rule entry below.
 
 
+
+// #region HOL_DEF_ARR
 
 /**
  * HOL_DEF_ARR = Holiday Definition Array
@@ -70,61 +79,19 @@ const HOL_DEF_ARR = [ // What: Holiday Definition Array. Why: This is the single
 
 ];
 
-
-
-const REG_DEF_OBJ = { US : { labStr : 'United States', defArr : HOL_DEF_ARR } }; // What: Region Definition Object. Why: This is the country-keyed lookup every region-aware function below resolves against, shaped so more regions can be added later without touching any caller. How: This currently defines just one entry, US, pairing its own display label with HOL_DEF_ARR.
-
-
-
-const padDigFun = ( digValNum ) => String( digValNum ).padStart( 2, '0' );                                                                          // What: Pad Digit Function. Why: Every ISO date string segment (month, day) needs to render as exactly 2 digits. How: This left-pads digValNum's own string form with a leading '0' when it's under 2 characters.
-const isoDatFun = ( souDatObj ) => `${ souDatObj.getFullYear() }-${ padDigFun( souDatObj.getMonth() + 1 ) }-${ padDigFun( souDatObj.getDate() ) }`; // What: Iso Date Function. Why: Every date comparison and lookup in this module needs a plain, locale-independent, comparable string key, not a Date instance. How: This formats souDatObj as YYYY-MM-DD using padDigFun for the 2-digit month/day segments.
+// #endregion HOL_DEF_ARR
 
 
 
-// #region nthDayFun
+const REG_DEF_OBJ = { US : { defArr : HOL_DEF_ARR } }; // What: Region Definition Object. Why: This is the country-keyed lookup every region-aware function below resolves against, shaped so more regions can be added later without touching any caller. How: This currently defines just one entry, US, holding HOL_DEF_ARR as its own rule table.
 
-/**
- * nthDayFun = Nth Day Function
- *
- * @summary
- * Resolves the actual calendar date of the Nth occurrence of a given
- * weekday within a month, e.g. the 2nd Monday of November.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param yeaValNum - Year Value Number: The calendar year to resolve the date
- *                    within.
- * @param monOneNum - Month One Number: The 1-based month number (1 = January).
- * @param dayIndNum - Day Index Number: The target weekday, matching
- *                    Date.getDay()'s own encoding (Sun = 0 ... Sat = 6).
- * @param nthCouNum - Nth Count Number: Which occurrence of that weekday to
- *                    resolve, 1-based (e.g. 2 for the 2nd Monday).
- *
- * @returns The resolved Date for the Nth occurrence of that weekday.
- *
- * @example
- * ```ts
- * nthDayFun(2026, 10, MON_DAY_NUM, 2) // => 2nd Monday of Nov. 2026
- * ```
- *
-*/
-
-function nthDayFun( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
-
-
-	const firDatObj = new Date( yeaValNum, monOneNum - 1, 1 );    // What: First Date Object. Why: The month's own first day is the anchor every weekday-offset calculation below is computed from. How: This constructs a Date for day 1 of the given month/year.
-	const shiDayNum = ( dayIndNum - firDatObj.getDay() + 7 ) % 7; // What: Shift Day Number. Why: The number of days to add to the 1st of the month to reach the FIRST occurrence of the target weekday must always be a non-negative offset. How: This computes ( target - actual + 7 ) % 7, wrapping a negative difference back into 0-6.
+// #endregion Constants
 
 
 
-	return new Date( yeaValNum, monOneNum - 1, 1 + shiDayNum + ( nthCouNum - 1 ) * 7 ); // What: Nth Weekday Date Return. Why: The caller needs the actual resolved calendar date for the requested occurrence. How: This adds shiDayNum (to reach the first occurrence) plus 7 more days per additional occurrence requested.
+// #region Helpers
 
-
-}
-
-// #endregion nthDayFun
-
-
+// #region Date Math
 
 // #region lasDayFun
 
@@ -170,10 +137,114 @@ function lasDayFun( yeaValNum, monOneNum, dayIndNum ) {
 
 
 
+// #region nthDayFun
+
+/**
+ * nthDayFun = Nth Day Function
+ *
+ * @summary
+ * Resolves the actual calendar date of the Nth occurrence of a given
+ * weekday within a month, e.g. the 2nd Monday of November.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param yeaValNum - Year Value Number: The calendar year to resolve the date
+ *                    within.
+ * @param monOneNum - Month One Number: The 1-based month number (1 = January).
+ * @param dayIndNum - Day Index Number: The target weekday, matching
+ *                    Date.getDay()'s own encoding (Sun = 0 ... Sat = 6).
+ * @param nthCouNum - Nth Count Number: Which occurrence of that weekday to
+ *                    resolve, 1-based (e.g. 2 for the 2nd Monday).
+ *
+ * @returns The resolved Date for the Nth occurrence of that weekday.
+ *
+ * @example
+ * ```ts
+ * nthDayFun(2026, 10, MON_DAY_NUM, 2) // => 2nd Monday of Oct. 2026
+ * ```
+ *
+*/
+
+function nthDayFun( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
+
+
+	const firDatObj = new Date( yeaValNum, monOneNum - 1, 1 );    // What: First Date Object. Why: The month's own first day is the anchor every weekday-offset calculation below is computed from. How: This constructs a Date for day 1 of the given month/year.
+	const shiDayNum = ( dayIndNum - firDatObj.getDay() + 7 ) % 7; // What: Shift Day Number. Why: The number of days to add to the 1st of the month to reach the FIRST occurrence of the target weekday must always be a non-negative offset. How: This computes ( target - actual + 7 ) % 7, wrapping a negative difference back into 0-6.
+
+
+
+	return new Date( yeaValNum, monOneNum - 1, 1 + shiDayNum + ( nthCouNum - 1 ) * 7 ); // What: Nth Weekday Date Return. Why: The caller needs the actual resolved calendar date for the requested occurrence. How: This adds shiDayNum (to reach the first occurrence) plus 7 more days per additional occurrence requested.
+
+
+}
+
+// #endregion nthDayFun
+
+
+
+// #region obsDatFun
+
+/**
+ * obsDatFun = Observed Date Function
+ *
+ * @summary
+ * Applies the federal "observed" shift, for fixed-date holidays only: a
+ * holiday landing on Saturday is observed the Friday before it, and one
+ * landing on Sunday is observed the Monday after it. Weekday-based
+ * holidays (an nth/last rule) never land on a weekend at all, so they
+ * never need this.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param actDatObj - Actual Date Object: The holiday's own true, un-shifted
+ *                    calendar date.
+ *
+ * @returns The observed Date: actDatObj itself, unless it fell on a
+ * Saturday or Sunday, in which case the shifted weekday instead.
+ *
+ * @example
+ * ```ts
+ * obsDatFun(actDatObj) // => observed Date
+ * ```
+ *
+*/
+
+function obsDatFun( actDatObj ) {
+
+
+	const curDayNum = actDatObj.getDay(); // What: Current Day Number. Why: The federal observed-date shift depends on which weekday the actual holiday falls on. How: This reads actDatObj's own weekday via Date.getDay().
+
+
+	if ( curDayNum === 6 ) return new Date( actDatObj.getFullYear(), actDatObj.getMonth(), actDatObj.getDate() - 1 ); // What: Saturday Shift Branch. Why: A federal holiday landing on Saturday is observed the Friday before it instead. How: This returns a Date one day earlier than actDatObj.
+
+
+
+	if ( curDayNum === 0 ) return new Date( actDatObj.getFullYear(), actDatObj.getMonth(), actDatObj.getDate() + 1 ); // What: Sunday Shift Branch. Why: A federal holiday landing on Sunday is observed the Monday after it instead. How: This returns a Date one day later than actDatObj.
+
+
+
+	return actDatObj; // What: Unshifted Date Return. Why: A holiday landing on any weekday but Saturday/Sunday is observed on its own actual date, unshifted. How: This returns actDatObj unchanged.
+
+
+}
+
+// #endregion obsDatFun
+
+
+
+const padDigFun = ( digValNum ) => String( digValNum ).padStart( 2, '0' );                                                                          // What: Pad Digit Function. Why: Every ISO date string segment (month, day) needs to render as exactly 2 digits. How: This left-pads digValNum's own string form with a leading '0' when it's under 2 characters.
+const isoDatFun = ( souDatObj ) => `${ souDatObj.getFullYear() }-${ padDigFun( souDatObj.getMonth() + 1 ) }-${ padDigFun( souDatObj.getDate() ) }`; // What: Iso Date Function. Why: Every date comparison and lookup in this module needs a plain, locale-independent, comparable string key, not a Date instance. How: This formats souDatObj as YYYY-MM-DD using padDigFun for the 2-digit month/day segments.
+
+// #endregion Date Math
+
+
+
+// #region Holiday Resolution
+
 // #region datDefFun
 
 /**
- * datDefFun = Date For Definition Function
+ * datDefFun = Date Definition Function
  *
  * @summary
  * Resolves one HOL_DEF_ARR entry's own rule (fixArr/nthArr/lasArr) into
@@ -181,7 +252,7 @@ function lasDayFun( yeaValNum, monOneNum, dayIndNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param holDefObj - Holiday Default Object: The holiday definition to
+ * @param holDefObj - Holiday Definition Object: The holiday definition to
  *                    resolve, one HOL_DEF_ARR entry carrying exactly one of
  *                    fixArr/nthArr/lasArr.
  * @param yeaValNum - Year Value Number: The calendar year to resolve the date
@@ -221,54 +292,6 @@ function datDefFun( holDefObj, yeaValNum ) {
 
 
 
-// #region obsDatFun
-
-/**
- * obsDatFun = Observed Date Function
- *
- * @summary
- * Applies the federal "observed" shift, for fixed-date holidays only: a
- * holiday landing on Saturday is observed the Friday before it, and one
- * landing on Sunday is observed the Monday after it. Weekday-based
- * holidays (an nth/last rule) never land on a weekend at all, so they
- * never need this.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param actDatObj - Active Date Object: The holiday's own true, un-shifted
- *                    calendar date.
- *
- * @returns The observed Date: actDatObj itself, unless it fell on a
- * Saturday or Sunday, in which case the shifted weekday instead.
- *
- * @example
- * ```ts
- * obsDatFun(actDatObj) // => observed Date
- * ```
- *
-*/
-
-function obsDatFun( actDatObj ) {
-
-
-	const curDayNum = actDatObj.getDay(); // What: Current Day Number. Why: The federal observed-date shift depends on which weekday the actual holiday falls on. How: This reads actDatObj's own weekday via Date.getDay().
-
-
-	if ( curDayNum === 6 ) return new Date( actDatObj.getFullYear(), actDatObj.getMonth(), actDatObj.getDate() - 1 ); // What: Saturday Shift Branch. Why: A federal holiday landing on Saturday is observed the Friday before it instead. How: This returns a Date one day earlier than actDatObj.
-
-	if ( curDayNum === 0 ) return new Date( actDatObj.getFullYear(), actDatObj.getMonth(), actDatObj.getDate() + 1 ); // What: Sunday Shift Branch. Why: A federal holiday landing on Sunday is observed the Monday after it instead. How: This returns a Date one day later than actDatObj.
-
-
-
-	return actDatObj; // What: Unshifted Date Return. Why: A holiday landing on any weekday but Saturday/Sunday is observed on its own actual date, unshifted. How: This returns actDatObj unchanged.
-
-
-}
-
-// #endregion obsDatFun
-
-
-
 // #region comYeaFun
 
 /**
@@ -284,7 +307,7 @@ function obsDatFun( actDatObj ) {
  *
  * @param yeaValNum - Year Value Number: The calendar year to resolve every
  *                    holiday for.
- * @param couCodStr - Count Code String: The 2-letter country code to resolve
+ * @param couCodStr - Country Code String: The 2-letter country code to resolve
  *                    holidays for, defaulting to 'US' (the only region this
  *                    module currently defines a rule table for).
  *
@@ -353,12 +376,12 @@ function comYeaFun( yeaValNum, couCodStr = 'US' ) {
  *
  * @example
  * ```ts
- * defStaFun() // => { country: 'US', disabled: [], custom: [] }
+ * defStaFun() // => { country: 'US', custom: [], disabled: [] }
  * ```
  *
 */
 
-function defStaFun() { return { country : 'US', disabled : [], custom : [] }; } // What: Default State Body. Why: Every caller needs a safe, well-shaped holidays-state object to fall back to when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
+function defStaFun() { return { country : 'US', custom : [], disabled : [] }; } // What: Default State Body. Why: Every caller needs a safe, well-shaped holidays-state object to fall back to when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
 
 // #endregion defStaFun
 
@@ -400,9 +423,9 @@ function actYeaFun( holStaObj, yeaValNum ) {
 
 	const comActArr = comYeaFun( yeaValNum, resHolObj.country ) // What: Computed Active Array. Why: The caller only wants every defined holiday for the year, as a starting point before disabled ones are dropped. How: This computes every holiday record for yeaValNum against resHolObj.country.
 
-		.filter( ( comRecObj ) => !disKeyArr.includes( comRecObj.keyStr ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
+		.filter( ( comRcdObj ) => !disKeyArr.includes( comRcdObj.keyStr ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
 
-		.map( ( comRecObj ) => ( { ...comRecObj, custom : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
+		.map( ( comRcdObj ) => ( { ...comRcdObj, custom : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
 
 
 	const cusDayArr = ( resHolObj.custom || [] ).map( ( cusDefObj ) => { // What: Custom Day Array. Why: The user's own recurring custom days off need resolving to this specific year too, each flagged as custom. How: This maps every saved custom definition to a concrete date for yeaValNum.
@@ -441,7 +464,7 @@ function actYeaFun( holStaObj, yeaValNum ) {
 // #region holDatFun
 
 /**
- * holDatFun = Holiday On Date Function
+ * holDatFun = Holiday Date Function
  *
  * @summary
  * Checks whether a given date is an active day off, returning just its
@@ -475,7 +498,7 @@ function holDatFun( holStaObj, cheDatObj ) {
 	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
 
 
-		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
+		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRcdObj ) => comRcdObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
 
 
 		if ( hitHolObj ) return hitHolObj.namStr; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched record's own name immediately.
@@ -530,7 +553,7 @@ function holInfFun( holStaObj, cheDatObj ) {
 	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
 
 
-		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
+		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRcdObj ) => comRcdObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
 
 
 		if ( hitHolObj ) return hitHolObj; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched full record immediately, unlike holDatFun which returns just its name.
@@ -547,103 +570,29 @@ function holInfFun( holStaObj, cheDatObj ) {
 
 // #endregion holInfFun
 
+// #endregion Holiday Resolution
 
-
-// #region gueCouFun
-
-/**
- * gueCouFun = Guess Country Function
- *
- * @summary
- * Best-effort region guess from the browser's own locale. Only 'US' is
- * wired up with a real rule table today, so this is purely
- * informational; every caller still falls back to 'US' regardless of
- * what this returns.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns The guessed 2-letter region code, or 'US' when nothing
- * recognizable could be parsed out of the browser's own locale.
- *
- * @example
- * ```ts
- * gueCouFun() // => guessed region code, e.g. 'US'
- * ```
- *
-*/
-
-function gueCouFun() {
-
-
-	try { // What: Locale Region Probe Try. Why: Reading navigator.language and probing REG_DEF_OBJ could throw in some environments rather than cleanly returning nothing. How: This wraps the whole guess-and-check sequence below so any such error falls through to the US default.
-
-
-		const regCodStr = ( navigator.language || '' ).split( '-' )[ 1 ]; // What: Region Code String. Why: A BCP 47 locale tag's own region subtag (e.g. 'US' from 'en-US') is the only piece that could plausibly match a REG_DEF_OBJ key. How: This splits navigator.language on '-' and takes its second segment.
-
-
-		if ( regCodStr && REG_DEF_OBJ[ regCodStr.toUpperCase() ] ) return regCodStr.toUpperCase(); // What: Known Region Guard. Why: Only a region this module actually has a rule table for is worth reporting back. How: This returns the upper-cased region code only when REG_DEF_OBJ recognizes it.
-
-
-	}
-
-	catch ( e ) { /* ignore: an unrecognized or unparsable locale just falls through to the US default below */ }
+// #endregion Helpers
 
 
 
-	return 'US'; // What: US Fallback Return. Why: Only the United States is supported for real today, so every other case (no match, or an outright parse error) should still land on a real, working region. How: This returns the literal 'US' region code.
+// #region Exports
+
+const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-}
-
-// #endregion gueCouFun
-
-
-
-// #region regLabFun
-
-/**
- * regLabFun = Region Label Function
- *
- * @summary
- * Resolves a country/region code down to its own human-readable
- * display name, e.g. 'US' to 'United States'.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param couCodStr - Count Code String: The 2-letter country code to resolve a
- *                    label for.
- *
- * @returns The resolved region's own display name, falling back to the
- * US entry's name when couCodStr is unrecognized.
- *
- * @example
- * ```ts
- * regLabFun('US') // => 'United States'
- * ```
- *
-*/
-
-function regLabFun( couCodStr ) { return ( REG_DEF_OBJ[ couCodStr ] || REG_DEF_OBJ.US ).labStr; } // What: Region Label Body. Why: Callers displaying the active region (e.g. Settings) need its human-readable name, not the raw code. How: This looks up couCodStr in REG_DEF_OBJ, falling back to the US entry, and reads its own labStr.
-
-// #endregion regLabFun
-
-
-
-export const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
-
-
-	actYeaFun : actYeaFun, // What: Active Year Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports actYeaFun under its own matching name.
 	comYeaFun : comYeaFun, // What: Compute Year Function. Why: tab-settings.jsx calls this for a specific year's own active holiday set. How: This re-exports comYeaFun under its own matching name.
 	defStaFun : defStaFun, // What: Default State Function. Why: seed.js, store.js, and tab-settings.jsx all call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
-	gueCouFun : gueCouFun, // What: Guess Country Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports gueCouFun under its own matching name.
-	holDatFun : holDatFun, // What: Holiday On Date Function. Why: tab-today.jsx and tasks.js both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
-	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.js calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
-	isoDatFun : isoDatFun, // What: Iso Date Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports isoDatFun under its own matching name.
-	regLabFun : regLabFun  // What: Region Label Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports regLabFun under its own matching name.
+	holDatFun : holDatFun, // What: Holiday Date Function. Why: tab-today.jsx and tasks.js both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
+	holInfFun : holInfFun  // What: Holiday Info Function. Why: tasks.js calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
 
 
 };
+
+
+
+export { HOL_NAM_OBJ }; // What: Holidays Namespace Export. Why: Every consumer reaches this file's holiday engine through the one namespace object. How: This exports HOL_NAM_OBJ by name at the very end of the file.
+
+// #endregion Exports
 
 
