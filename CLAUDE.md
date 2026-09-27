@@ -4067,8 +4067,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `cov` (`covDriFun`/`covLatFun`/`covSooFun`)
   - A third batch, found together in `tab-settings.jsx`'s own review, each
     fixed to its word's literal first 3 letters: `bra` → `bro` (Browser,
-    `broNamStr`/`BRO_PAT_ARR`), `clk` → `cli` (Click), `cpd` → `cop`
-    (Copied), `drk` → `dar` (Dark), `jmp` → `jum` (Jump), `lnk` → `lin`
+    `broNamStr`/`BRO_PAT_ARR`), `clk` → `cli` (Click, which recurred in
+    `onboarding-tour-runner.jsx`'s own step fields, now `advCliStr`/
+    `cliSelStr`, and still has instances in `help-mode.jsx`,
+    `tab-data.jsx`, and `tab-picker.jsx` for their own passes), `cpd` →
+    `cop` (Copied), `drk` → `dar` (Dark), `jmp` → `jum` (Jump), `lnk` → `lin`
     (Link), `mnt` → `mou` (Mount), `ofs` → `off` (Offset), `ply` → `pla`
     (Play), `rch` → `rea` (Reached), `rdr` → `rea` (Reader), `sht` → `sho`
     (Short), `stk` → `sti` (Sticky), `stm` → `sta` (Stamp), `thm` → `the`
