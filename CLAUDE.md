@@ -22,7 +22,11 @@ There is no test suite and no type checker wired up
 (`change-later-tsconfig.json` / `tsconfig.node.json` exist but are not
 referenced by any script). ESLint is installed and configured
 (`eslint.config.js`, with `eslint-plugin-react-hooks`' recommended rules for
-`.jsx` files), but no npm script runs it, so it only runs when invoked by hand
+`.jsx` files, plus `no-undef` and `react/jsx-no-undef` with browser globals
+for everything under `src/`, which catch a reference a rename missed; its
+`files` globs avoid `{a,b}` braces, since the `brace-expansion` override in
+`package.json` breaks ESLint's brace matching), but no npm script runs it, so
+it only runs when invoked by hand
 (`npx eslint <file>`) or through an editor integration; don't assume `tsc` or
 ESLint gate anything. Verify changes by running `npm run dev` and exercising
 the app in a browser.
