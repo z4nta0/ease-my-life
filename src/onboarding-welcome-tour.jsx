@@ -13,9 +13,9 @@ import { IntModCom   } from './onboarding-intro-modal.jsx'; // What: Intro Modal
 import { NAV_TAR_OBJ } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Four of this tour's steps just spotlight a nav button, sharing the same selector/copy as each page's own future mini-tour. How: This is spread into the Pickers/Stats/Data/Settings step objects below.
 import { ONB_ESP_ARR } from './onboarding-seed-data.js';    // What: Onboarding Extra-Sample-Pickers Array. Why: These extra sample pickers make a generated day look like a fuller, more realistic todo list. How: This is spread into actStoObj.addPicFun alongside ONB_EXA_OBJ by the seeding effect below.
 import { ONB_EXA_OBJ } from './onboarding-seed-data.js';    // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour. How: This is spread into actStoObj.addPicFun by the seeding effect below, exactly like a real, user-created picker.
-import { ONB_SPI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's run() and by bacSteFun below.
+import { ONB_SPI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's runFun and by bacSteFun below.
 import { ONB_STI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
-import { ONB_TAS_ARR } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own run() and by the intro modal's onSkiTouFun below.
+import { ONB_TAS_ARR } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by the intro modal's onSkiTouFun below.
 import { todTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
 // #endregion Imports
@@ -52,15 +52,55 @@ import { todTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top F
  * #onboard-demo for a non-destructive clean-state preview (see
  * app.jsx).
  *
+ * Sections:
+ *  - Constants
+ *  - Components
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
+// #region Constants
+
 const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'; // What: Brand Mark String. Why: This is the app's own brand glyph path, drawn as the intro modal's icon. How: This is passed as the sole <path>'s own d attribute inside the icoTopEle prop below.
 
 
+
+const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own icon never depends on props or state, so it is built once rather than on every render. How: This is passed as IntModCom's own icoTopEle prop below.
+
+
+	<svg
+		fill='none'
+		viewBox='8 8 528 528'
+	>{ /* What: Brand Mark Svg Element. Why: This is the frame the brand glyph is drawn in. How: This sizes its viewBox to the glyph path's own bounds and fills nothing itself. */ }
+
+
+		<path
+			style={{
+				fill   : 'currentColor',
+				stroke : 'currentColor'
+			}}
+
+			d={ BRA_MAR_STR }
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			strokeWidth='8'
+		/>{ /* What: Brand Mark Path Element. Why: This draws the app's own brand glyph. How: This traces BRA_MAR_STR in the current text color. */ }
+
+
+	</svg>
+
+
+);
+
+// #endregion Constants
+
+
+
+// #region Components
 
 // #region WelTouCom
 
@@ -77,14 +117,14 @@ const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 43
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.staAppObj - State App Object: The entire app's own
- *                          persisted state.
+ * @param props.actIdeStr - Active Identifier String: The app's own
+ *                          currently active tab id.
  * @param props.actStoObj - Action Store Object: The shared app actions
  *                          that mutate props.staAppObj.
- * @param props.actIdeStr - Active Identifier String: the app's own
- *                          currently active tab id.
- * @param props.selTabFun - Select Tab Function: switches the app's own
+ * @param props.selTabFun - Select Tab Function: Switches the app's own
  *                          active tab.
+ * @param props.staAppObj - State App Object: The entire app's own
+ *                          persisted state.
  *
  * @returns Either null (phase 'off'), the intro modal (phase
  * 'welcome'), or the running guided tour (phase 'tour'), depending on
@@ -92,16 +132,16 @@ const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 43
  *
  * @example
  * ```tsx
- * WelTouCom({ staAppObj, actStoObj, actIdeStr, ... }) // => <WelTouCom />
+ * WelTouCom({ actIdeStr, actStoObj, selTabFun, staAppObj }) // => <WelTouCom />
  * ```
  *
 */
 
-function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
+function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 
-	const onbStaObj = staAppObj.onboarding || { welcomed : true };                                                                       // What: Onboarding State Object. Why: A brand-new install has no persisted onboarding slice yet, so a plain stand-in default is needed until the real one exists. How: This reads staAppObj.onboarding, falling back to an object whose welcomed field alone is enough for every check below.
-	const resTouObj = onbStaObj.welcomed && onbStaObj.activeTour && onbStaObj.activeTour.id === 'welcome' ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: A tour a reload interrupted should resume exactly where it left off instead of vanishing, since activeTour survives a reload (it's real persisted state) unlike GuiTouCom's own step state, but only once welcomed is already true, so the welcome modal (not yet dismissed) always takes priority. How: This reads onbStaObj.activeTour back out only when its own id matches 'welcome', otherwise null.
+	const onbStaObj = staAppObj.onboarding || { welcomed : true };                                                   // What: Onboarding State Object. Why: A brand-new install has no persisted onboarding slice yet, so a plain stand-in default is needed until the real one exists. How: This reads staAppObj.onboarding, falling back to an object whose welcomed field alone is enough for every check below.
+	const resTouObj = onbStaObj.welcomed && onbStaObj.activeTour?.id === 'welcome' ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: A tour a reload interrupted should resume exactly where it left off instead of vanishing, since activeTour survives a reload (it's real persisted state) unlike GuiTouCom's own step state, but only once welcomed is already true, so the welcome modal (not yet dismissed) always takes priority. How: This reads onbStaObj.activeTour back out only when its own id matches 'welcome', otherwise null.
 
 	const [ onbPhaStr, setOnbPhaStr ] = React.useState( !onbStaObj.welcomed ? 'welcome' : ( resTouObj ? 'tour' : 'off' ) ); // What: Onboarding Phase String And Setter. Why: This is the tour's own top-level position: 'welcome' (intro modal showing), 'tour' (GuiTouCom running), or 'off' (nothing to show). How: This starts on 'welcome' whenever onbStaObj.welcomed is false, otherwise resumes straight into 'tour' when resTouObj says a tour was left running, else 'off'.
 
@@ -125,10 +165,10 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 		[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actStoObj.addPicFun( curPicObj ) ); // What: Sample Picker Seed Call. Why: Every step of the tour needs a real, generatable picker to point at. How: This adds ONB_EXA_OBJ and every ONB_ESP_ARR entry exactly like a real, user-created picker.
 
 
-		import( './onboarding-stats-data.js' ).then( ( { ONB_STA_OBJ } ) => { // What: Stats History Import. Why: The sample reminders themselves are seeded later, at the Generate step's own run() below (unlike picker items, a reminder needs no "generate" to become visible on Today, so seeding it here would show it before the user has generated anything), but this precomputed history is independent of whether the live task exists yet, since log rows are denormalized. How: This dynamic-imports the generated stats-history module once seeding is confirmed necessary.
+		import( './onboarding-stats-data.js' ).then( ( { ONB_STA_OBJ } ) => { // What: Stats History Import. Why: The sample reminders themselves are seeded later, at the Generate step's own runFun below (unlike picker items, a reminder needs no "generate" to become visible on Today, so seeding it here would show it before the user has generated anything), but this precomputed history is independent of whether the live task exists yet, since log rows are denormalized. How: This dynamic-imports the generated stats-history module once seeding is confirmed necessary.
 
 
-			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONB_STA_OBJ' own day-offsets into real dates and persists them as pick/reminder log rows.
+			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONB_STA_OBJ's own day-offsets into real dates and persists them as pick/reminder log rows.
 
 
 		} );
@@ -137,6 +177,31 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 	}, [ onbStaObj.welcomed ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag itself flips, the same trigger the reopen effect above reacts to, not just once at mount. How: onbStaObj.welcomed is the exact value gating whether seeding is even considered.
 
 
+
+	// #region finTouFun
+
+	/**
+	 * finTouFun = Finish Tour Function
+	 *
+	 * @summary
+	 * Ends the Welcome Tour however it ends: Skip on the intro modal, the coach
+	 * card's own Done, or GuiTouCom's not-found watchdog. It flips the tour's own
+	 * phase to 'off', so nothing from this tour renders any more, and clears the
+	 * shared bus's preFilObj field, so a prefill staged by an earlier step can
+	 * never leak into the picker form afterward.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * finTouFun() // => void
+	 * ```
+	 *
+	*/
 
 	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: Every path that ends the Welcome Tour (Skip, Done, or the not-found watchdog inside GuiTouCom) needs the exact same cleanup. How: This flips onbPhaStr to 'off' and clears the shared bus's own preFilObj field.
 
@@ -148,34 +213,38 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 	}, [] ); // What: Effect Dependency Array. Why: This callback closes over nothing that ever changes across renders. How: An empty array means there is no dependency that could ever change to trigger a re-creation.
 
+	// #endregion finTouFun
+
 
 
 	const welDonFun = () => actStoObj.setOnbFun( { welcomed : true } ); // What: Welcome Done Function. Why: Both accepting and skipping the tour are, from the persisted state's own point of view, the same "the welcome modal is done" transition. How: This persists onboarding.welcomed as true.
 
 
 
+	// #region steObjArr
+
 	/**
 	 * steObjArr = Step Object Array
 	 *
 	 * @summary
 	 * Each entry holds a target selector, copy, a primary action, and
-	 * which tab its target lives on (tab); GuiTouCom switches there
-	 * automatically, no step here ever calls selectTab itself. Every
-	 * step's own run() is a pure side effect: which step/tab comes
+	 * which tab its target lives on (tabStr); GuiTouCom switches there
+	 * automatically, no step here ever calls selTabFun itself. Every
+	 * step's own runFun is a pure side effect: which step/tab comes
 	 * next is handled generically by GuiTouCom (advance by one, or
-	 * finish once primary is 'Done'), never by run() itself.
+	 * finish once priStr is 'Done'), never by runFun itself.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
 
-	const steObjArr = [ // What: Step Object Array. Why: This is the Welcome Tour's own ordered content, read by <GuiTouCom> below. How: This is passed directly as GuiTouCom's own steps prop.
+	const steObjArr = [ // What: Step Object Array. Why: This is the Welcome Tour's own ordered content, read by <GuiTouCom> below. How: This is passed directly as GuiTouCom's own steObjArr prop.
 
 
-		{ // What: Today Nav Step Object. Why: The tour's very first step orients the user on the Today tab's own nav button. How: This spreads NAV_TAR_OBJ.today's shared selStr/place/titStr/bodEle onto a step targeting the 'today' tab, with no Back button since it's the first step.
+		{ // What: Today Nav Step Object. Why: The tour's very first step orients the user on the Today tab's own nav button. How: This spreads NAV_TAR_OBJ.today's shared selStr/titStr/bodEle onto a step targeting the 'today' tab, with no Back button since it's the first step.
 
 
-			...NAV_TAR_OBJ.today, // What: Today Nav Target Spread. Why: This reuses the shared Today nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.today's own fields onto this step object.
+			...NAV_TAR_OBJ.today, // What: Today Nav Target Spread. Why: This reuses the shared Today nav-target descriptor instead of duplicating its selStr/titStr/bodEle. How: This spreads NAV_TAR_OBJ.today's own fields onto this step object.
 
 			bacBoo : false,  // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.
 			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
@@ -249,10 +318,10 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 		},
 
-		{ // What: Picker Nav Step Object. Why: This step orients the user on the Pickers tab's own nav button, immediately after they have seen a sample list. How: This spreads NAV_TAR_OBJ.picker's shared selStr/place/titStr/bodEle onto a step targeting the 'picker' tab.
+		{ // What: Picker Nav Step Object. Why: This step orients the user on the Pickers tab's own nav button, immediately after they have seen a sample list. How: This spreads NAV_TAR_OBJ.picker's shared selStr/titStr/bodEle onto a step targeting the 'picker' tab.
 
 
-			...NAV_TAR_OBJ.picker, // What: Picker Nav Target Spread. Why: This reuses the shared Pickers nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.picker's own fields onto this step object.
+			...NAV_TAR_OBJ.picker, // What: Picker Nav Target Spread. Why: This reuses the shared Pickers nav-target descriptor instead of duplicating its selStr/titStr/bodEle. How: This spreads NAV_TAR_OBJ.picker's own fields onto this step object.
 
 			bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous, list-review step. How: GuiTouCom shows its own Back button whenever this is true.
 			priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
@@ -261,10 +330,10 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 		},
 
-		{ // What: Stats Nav Step Object. Why: This step orients the user on the Stats tab's own nav button. How: This spreads NAV_TAR_OBJ.stats's shared selStr/place/titStr/bodEle onto a step targeting the 'stats' tab.
+		{ // What: Stats Nav Step Object. Why: This step orients the user on the Stats tab's own nav button. How: This spreads NAV_TAR_OBJ.stats's shared selStr/titStr/bodEle onto a step targeting the 'stats' tab.
 
 
-			...NAV_TAR_OBJ.stats, // What: Stats Nav Target Spread. Why: This reuses the shared Stats nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.stats's own fields onto this step object.
+			...NAV_TAR_OBJ.stats, // What: Stats Nav Target Spread. Why: This reuses the shared Stats nav-target descriptor instead of duplicating its selStr/titStr/bodEle. How: This spreads NAV_TAR_OBJ.stats's own fields onto this step object.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers step. How: GuiTouCom shows its own Back button whenever this is true.
 			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
@@ -273,10 +342,10 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 		},
 
-		{ // What: Data Nav Step Object. Why: This step orients the user on the Data tab's own nav button. How: This spreads NAV_TAR_OBJ.data's shared selStr/place/titStr/bodEle onto a step targeting the 'data' tab.
+		{ // What: Data Nav Step Object. Why: This step orients the user on the Data tab's own nav button. How: This spreads NAV_TAR_OBJ.data's shared selStr/titStr/bodEle onto a step targeting the 'data' tab.
 
 
-			...NAV_TAR_OBJ.data, // What: Data Nav Target Spread. Why: This reuses the shared Data nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.data's own fields onto this step object.
+			...NAV_TAR_OBJ.data, // What: Data Nav Target Spread. Why: This reuses the shared Data nav-target descriptor instead of duplicating its selStr/titStr/bodEle. How: This spreads NAV_TAR_OBJ.data's own fields onto this step object.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Stats step. How: GuiTouCom shows its own Back button whenever this is true.
 			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
@@ -285,10 +354,10 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 		},
 
-		{ // What: Settings Nav Step Object. Why: This step orients the user on the Settings tab's own nav button, and also hides the sample data now that the tour has finished touring every tab. How: This spreads NAV_TAR_OBJ.settings's shared selStr/place/titStr/bodEle onto a step targeting the 'settings' tab, with its own runFun() hiding every sample picker and task.
+		{ // What: Settings Nav Step Object. Why: This step orients the user on the Settings tab's own nav button, and also hides the sample data now that the tour has finished touring every tab. How: This spreads NAV_TAR_OBJ.settings's shared selStr/titStr/bodEle onto a step targeting the 'settings' tab, with its own runFun() hiding every sample picker and task.
 
 
-			...NAV_TAR_OBJ.settings, // What: Settings Nav Target Spread. Why: This reuses the shared Settings nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.settings's own fields onto this step object.
+			...NAV_TAR_OBJ.settings, // What: Settings Nav Target Spread. Why: This reuses the shared Settings nav-target descriptor instead of duplicating its selStr/titStr/bodEle. How: This spreads NAV_TAR_OBJ.settings's own fields onto this step object.
 
 			bacBoo : true,       // What: Back Boolean. Why: The user should always be able to return to the previous, Data step. How: GuiTouCom shows its own Back button whenever this is true.
 			priStr : 'Next',     // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
@@ -325,23 +394,41 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 	];
 
+	// #endregion steObjArr
 
+
+
+	// #region bacSteFun
 
 	/**
 	 * bacSteFun = Back Step Function
 	 *
 	 * @summary
-	 * Sample pickers/tasks only ever get hidden once, at the Settings
-	 * step's own run() above, so stepping back before that point should
-	 * show them exactly as they did the first time through, not
-	 * whatever the checklist phase (tutorial cards, Page Tours) left
-	 * behind from having reached the end. Skipped entirely during a
-	 * replay (onbStaObj.dismissed): those samples are the ORIGINAL ones
-	 * from the user's first-ever onboarding, already hidden long before
-	 * this session started, and un-hiding them would mix stale demo
+	 * Undoes the sample-data side effects of later steps before GuiTouCom
+	 * navigates back to an earlier one. Sample pickers/tasks only ever get hidden
+	 * once, at the Settings step's own runFun, so stepping back before that point
+	 * should show them exactly as they did the first time through, not whatever
+	 * the checklist phase (tutorial cards, Page Tours) left behind from having
+	 * reached the end. Going back to the Generate step also removes the sample
+	 * reminders and clears Today, since that step's own runFun adds them again on
+	 * its next Next.
+	 *
+	 * Skipped entirely during a replay (onbStaObj.dismissed): those samples are
+	 * the ORIGINAL ones from the user's first-ever onboarding, already hidden
+	 * long before this session started, and un-hiding them would mix stale demo
 	 * pickers into the real, current Today list.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param tarSteNum - Target Step Number: The step index GuiTouCom is about to
+	 *                    navigate back to.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * bacSteFun( 1 ) // => void
+	 * ```
 	 *
 	*/
 
@@ -356,10 +443,10 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 
-		if ( tarSteNum === 1 ) { // What: Generate Step Target Check. Why: Sample REMINDERS do not exist yet the very first time the Generate step shows, since its own run() only adds them once its Next actually fires. How: This branch fully removes them instead of hiding them, since a hidden sample would keep the shared bus's own phase reading a tutorial checklist as still relevant here.
+		if ( tarSteNum === 1 ) { // What: Generate Step Target Check. Why: Sample REMINDERS do not exist yet the very first time the Generate step shows, since its own runFun only adds them once its Next actually fires. How: This branch fully removes them instead of hiding them, since a hidden sample would keep the shared bus's own phase reading a tutorial checklist as still relevant here.
 
 
-			ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.delTasFun( curTasObj.id ) ); // What: Sample Task Remove Call. Why: Safe to fully delete, since the Generate step's own forward run() re-adds them exactly as before the moment Next fires again. How: This removes every ONB_TAS_ARR entry's own id from state.tasks.
+			ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.delTasFun( curTasObj.id ) ); // What: Sample Task Remove Call. Why: Safe to fully delete, since the Generate step's own forward runFun re-adds them exactly as before the moment Next fires again. How: This removes every ONB_TAS_ARR entry's own id from state.tasks.
 
 			actStoObj.cleEntFun(); // What: Today Entries Clear Call. Why: The picker list should again look like nothing has been generated yet. How: This clears whatever entries currently sit on Today.
 
@@ -377,6 +464,8 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 	};
 
+	// #endregion bacSteFun
+
 
 
 	if ( onbPhaStr === 'off' ) return null; // What: Off Guard. Why: Nothing should render once the Welcome Tour has finished or was never triggered at all. How: This returns null early whenever onbPhaStr is 'off'.
@@ -390,8 +479,8 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 			<IntModCom
-				icoTopEle={ <svg viewBox='8 8 528 528' fill='none'><path style={{ fill : 'currentColor', stroke : 'currentColor' }} d={ BRA_MAR_STR } strokeWidth='8' strokeLinecap='round' strokeLinejoin='round' /></svg> }
-				titHeaStr='Welcome to Ease My Life'
+				begLabStr='Take the quick tour'
+				icoTopEle={ BRA_ICO_ELE }
 				parEleArr={ [ // What: Paragraph Element Array. Why: The intro modal's own body needs its full set of paragraphs passed as one prop. How: This holds the 3 paragraph entries below, mixing a JSX fragment (for bolded phrases) and plain strings.
 
 
@@ -404,8 +493,9 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 				] }
 				pilLabArr={ [ 'todo list', 'pickers', 'reminders' ] }
-				begLabStr='Take the quick tour'
 				skiLabStr='I’ll explore myself'
+				titHeaStr='Welcome to Ease My Life'
+
 				onBegTouFun={ () => { // What: On Begin Handler. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuiTouCom, all as one action. How: This is called when IntModCom's own primary button is activated.
 
 
@@ -417,7 +507,7 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 				} }
-				onSkiTouFun={ () => { // What: On Skip Handler. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step (the Generate step's task-seeding run(), the Settings step's hide-everything run(), see steObjArr above), since without this Today would have nothing to show: the sample pickers would exist but not be hidden yet, and no sample reminders would exist at all; seeded straight into hidden here, unlike the tour's own Generate step, since there is no in-between "review the generated list" step for them to be visible during first. How: This persists welcomed, seeds the sample tasks (hidden) if they do not already exist, hides the sample pickers, finishes the tour, and lands back on a pristine Today.
+				onSkiTouFun={ () => { // What: On Skip Handler. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step (the Generate step's task-seeding runFun, the Settings step's hide-everything runFun, see steObjArr above), since without this Today would have nothing to show: the sample pickers would exist but not be hidden yet, and no sample reminders would exist at all; seeded straight into hidden here, unlike the tour's own Generate step, since there is no in-between "review the generated list" step for them to be visible during first. How: This persists welcomed, seeds the sample tasks (hidden) if they do not already exist, hides the sample pickers, finishes the tour, and lands back on a pristine Today.
 
 
 					welDonFun(); // What: Welcome Done Call. Why: Skipping is also the point this welcome modal should never show again. How: This persists onboarding.welcomed as true.
@@ -468,12 +558,13 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 
 		<GuiTouCom
-			touIdeStr='welcome'
-			steObjArr={ steObjArr }
-			resSteNum={ resTouObj ? resTouObj.step : 0 }
-			actStoObj={ actStoObj }
 			actIdeStr={ actIdeStr }
+			actStoObj={ actStoObj }
+			resSteNum={ resTouObj ? resTouObj.step : 0 } // What: Resume Step Attribute. Why: A tour a reload interrupted should reopen on its own checkpoint step. How: This passes resTouObj's own step when there is one, otherwise 0.
 			selTabFun={ selTabFun }
+			steObjArr={ steObjArr }
+			touIdeStr='welcome'
+
 			onBacTouFun={ bacSteFun }
 			onFinTouFun={ finTouFun }
 		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough, mounted once the intro modal has been accepted or resumed into. How: This is passed this file's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
@@ -486,8 +577,14 @@ function WelTouCom ( { staAppObj, actStoObj, actIdeStr, selTabFun } ) {
 
 // #endregion WelTouCom
 
+// #endregion Components
 
+
+
+// #region Exports
 
 export { WelTouCom }; // What: Named Exports. Why: app.jsx renders this as the first-run welcome modal and its own driven tour. How: This re-exports WelTouCom; every other binding in this file is internal-only.
+
+// #endregion Exports
 
 
