@@ -401,11 +401,12 @@ function resTheFun( appSetObj, sysDarBoo ) {
  *
  * @summary
  * Resolves an arbitrary CSS color string (palettes are authored in
- * oklch()) down to a plain hex string, by round-tripping it through a
- * scratch canvas's 2D context: assigning the color to fillStyle and
- * reading it back always yields a browser-normalized hex value, since
- * that is the one color format every UA is guaranteed to parse for a
- * PWA manifest/meta theme-color.
+ * oklch()) down to a plain hex string, the one color format every UA is
+ * guaranteed to parse for a meta theme-color. It paints the color onto a
+ * scratch canvas's single pixel and reads the pixel back with
+ * getImageData, which always yields sRGB bytes. Reading fillStyle back
+ * instead used to work, but modern browsers keep an oklch() string as-is
+ * there, which silently disabled the whole theme-color sync.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -415,6 +416,7 @@ function resTheFun( appSetObj, sysDarBoo ) {
  * @returns A hex color string (e.g. '#a1b2c3'), or null if the browser
  * cannot parse the given color or does not support a 2D canvas context
  * at all.
+ * @see {@link hexResStr}
  *
  * @example
  * ```ts
@@ -436,9 +438,13 @@ function toHexFun( cssColStr ) {
 		if ( !__tinProObj ) { // What: No Probe Object Check. Why: The scratch canvas 2D context only needs to be created once, ever. How: This gates the creation block below so it only runs on the very first call.
 
 
-			const canProEle = document.createElement( 'canvas' ); // What: Canvas Probe Element. Why: A canvas 2D context is the mechanism used to normalize the color below. How: This creates a fresh, unattached canvas purely to obtain its context.
+			const canProEle = document.createElement( 'canvas' ); // What: Canvas Probe Element. Why: A canvas 2D context is the mechanism used to resolve the color below. How: This creates a fresh, unattached canvas element.
 
-			__tinProObj = canProEle.getContext && canProEle.getContext( '2d' ); // What: Tint Probe Object Assignment. Why: The created canvas must actually support a 2D context for this technique to work at all. How: This guards the getContext call itself and caches whatever it returns, including undefined.
+
+			canProEle.height = 1; // What: Canvas Height Assignment. Why: The probe only ever paints and reads back a single pixel. How: This shrinks the canvas from its 300x150 default to 1 pixel tall.
+			canProEle.width = 1;  // What: Canvas Width Assignment. Why: The probe only ever paints and reads back a single pixel. How: This shrinks the canvas from its 300x150 default to 1 pixel wide.
+
+			__tinProObj = canProEle.getContext && canProEle.getContext( '2d', { willReadFrequently : true } ); // What: Tint Probe Object Assignment. Why: The created canvas must actually support a 2D context for this technique to work at all, and every call reads a pixel back. How: This requests a 2D context flagged for frequent readback, leaving __tinProObj null when getContext is unavailable.
 
 
 		}
@@ -449,15 +455,27 @@ function toHexFun( cssColStr ) {
 
 
 
-		__tinProObj.fillStyle = '#000000'; // What: Fill Style Reset. Why: fillStyle silently ignores an invalid assignment rather than throwing, so a stale previous value could otherwise be mistaken for a successful parse. How: This resets fillStyle to a known value before attempting the real assignment below.
+		__tinProObj.fillStyle = '#010203'; // What: Fill Style Sentinel. Why: fillStyle silently ignores a color it cannot parse, so an unusual known value must sit there first to detect that. How: This resets fillStyle to a near-black sentinel no palette uses.
 
-		__tinProObj.fillStyle = cssColStr; // What: Fill Style Assignment. Why: This is the actual parse step; the browser normalizes whatever valid color string is assigned here. How: This assigns the given CSS color string, which silently no-ops if it fails to parse.
-
-		const hexResStr = __tinProObj.fillStyle; // What: Hex Result String. Why: Reading fillStyle back after assignment is what yields the browser's normalized value. How: This reads the (possibly unchanged, on parse failure) current fillStyle value.
+		__tinProObj.fillStyle = cssColStr; // What: Fill Style Assignment. Why: This is the actual parse step. How: This assigns the given color, which the browser either accepts or ignores.
 
 
 
-		return typeof hexResStr === 'string' && hexResStr.charAt( 0 ) === '#' ? hexResStr : null; // What: Hex Result Return. Why: A failed parse leaves fillStyle at its prior value, which this codebase always resets to a non-hex sentinel first, so this is what actually detects success. How: This returns the read-back value only when it is a real hex string, null otherwise.
+		if ( __tinProObj.fillStyle === '#010203' ) return null; // What: Unparsed Color Guard. Why: A fillStyle still holding the sentinel means the browser rejected the color, so any pixel painted with it would be wrong. How: This bails out with null in that case.
+
+
+
+		__tinProObj.clearRect( 0, 0, 1, 1 ); // What: Pixel Clear Call. Why: A translucent color would otherwise blend with the previous call's pixel. How: This clears the probe's single pixel to transparent first.
+		__tinProObj.fillRect( 0, 0, 1, 1 );  // What: Pixel Fill Call. Why: Modern browsers keep a color like oklch() as-is in fillStyle, so the only reliable way to get sRGB bytes is to actually paint it. How: This paints the probe's single pixel with the assigned color.
+
+
+		const [ redValNum, greValNum, bluValNum ] = __tinProObj.getImageData( 0, 0, 1, 1 ).data; // What: Red Green Blue Value Numbers. Why: The painted pixel holds the color converted to sRGB, which is what a hex string needs. How: This reads the pixel back and destructures its first 3 channels, ignoring alpha.
+
+		const hexResStr = '#' + [ redValNum, greValNum, bluValNum ].map( ( chaValNum ) => chaValNum.toString( 16 ).padStart( 2, '0' ) ).join( '' ); // What: Hex Result String. Why: A theme-color tag needs a plain hex color every browser parses. How: This formats each channel as 2 hex digits and joins them after a leading #.
+
+
+
+		return hexResStr; // What: Hex Result Return. Why: The caller writes this straight into the theme-color tag. How: This returns hexResStr.
 
 
 	}
