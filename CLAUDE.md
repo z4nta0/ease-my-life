@@ -492,7 +492,11 @@ can move code between files rather than just within one.
   regions, a shape JSDoc block, end-of-file export, sorted keys, a
   comment on each multi-line construct's opening line) apply through
   that template, while the generated data rows themselves are exempt
-  from per-line comments and column alignment. When the template
+  from per-line comments only. The rows are still column-aligned by
+  position, with one exception to key sorting: keys every row carries
+  come first, alphabetized, and any optional key only some rows carry
+  follows them, alphabetized, so it never shifts the aligned columns
+  (the pickLog rows' own `outcome`/`depletedEnd`). When the template
   changes, the existing data is rewritten with the generator's
   `--reformat` flag, which reuses the data already on disk instead of
   simulating new random history.
