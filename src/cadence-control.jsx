@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { CAD_NAM_OBJ } from './cadence.js';    // What: Cadence. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
+import { CAD_NAM_OBJ } from './cadence.js';    // What: Cadence Namespace Object. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
 import { ColDisCom   } from './ui.jsx';        // What: Collapse Disclosure Component. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
 import { InfTipCom   } from './ui.jsx';        // What: Info Tip Component. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
 import { SegConCom   } from './reminders.jsx'; // What: Segment Control Component. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
@@ -16,32 +16,23 @@ import { SegConCom   } from './reminders.jsx'; // What: Segment Control Componen
  * cadence-control.jsx = Cadence Control
  *
  * @summary
- * CadConCom is the shared editor for a single picker's own
- * surfacing cadence (daily, weekly, monthly, or yearly) plus whichever
- * anchor fields that cadence needs: an anchor weekday for weekly, an
- * anchor day of month for monthly, or an anchor month and day for
- * yearly, either one further switchable to an nth-weekday rule (e.g.
- * "the 2nd Tuesday") for monthly and yearly. It is rendered in both the
- * picker create-flow (tab-picker.jsx) and the Data tab's own picker
- * controls (tab-data.jsx), committing every change through a single
- * onChange(patch) callback; the caller owns the actual persisted
- * value and decides how a patch gets merged into it. Reuses the
- * SegConCom control and the Reminders scheduling styles (rem-*, cad-*)
- * rather than defining its own.
+ * CadConCom is the shared editor for a single picker's own surfacing
+ * cadence (daily, weekly, monthly, or yearly) plus whichever anchor fields
+ * that cadence needs: an anchor weekday for weekly, an anchor day of month
+ * for monthly, or an anchor month and day for yearly, either one further
+ * switchable to an nth-weekday rule (e.g. "the 2nd Tuesday") for monthly
+ * and yearly. tab-picker.jsx renders it in the picker schedule editor,
+ * committing every change through a single onChange(patch) callback; the
+ * caller owns the actual persisted value and decides how a patch gets
+ * merged into it. tab-data.jsx reads CAD_OPT_ARR for its own daily-cadence
+ * summary. Reuses the SegConCom control and the Reminders scheduling
+ * styles (rem-*, cad-*) rather than defining its own.
  *
- * The exported CadConCom name and its own value/onChange props are
- * a cross-file contract read directly by tab-picker.jsx, and stay
- * unrenamed for that reason. reminders.jsx's own SegConCom (this
- * file's own animated segmented control) has since had its own
- * options prop renamed to optIteArr, rippled into every call site
- * below. CAD_OPT_ARR (originally named CAD_OPTS) was also read by
- * tab-data.jsx, but was renamed anyway with tab-data.jsx's own import
- * and usage updated to match in the same pass, since the array's own
- * property names (key/label/sub) still follow no naming rule at all and
- * this rename at least gets its own binding name compliant. This
- * collided in name only (not at runtime, separate modules) with
- * cadence.js's own unrelated CAD_OPT_ARR, a flat array of cadence
- * value strings; that one was renamed to CAD_STR_ARR to resolve it.
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Components
+ *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -49,15 +40,42 @@ import { SegConCom   } from './reminders.jsx'; // What: Segment Control Componen
 
 
 
+// #region Constants
+
+// #region CAD_OPT_ARR
+
+/**
+ * CAD_OPT_ARR = Cadence Options Array
+ *
+ * @summary
+ * Every cadence option below shares one shape, the same option shape
+ * SegConCom expects, and none of them repeat these fields' own
+ * boilerplate comments on their own lines (see the "Repeated-shape object
+ * literals" comment exception in CLAUDE.md):
+ *
+ * - `keyStr` (String): Key String, the cadence value the picker compares
+ *   against the current cadence and writes back on selection.
+ *
+ * - `labStr` (String): Label String, the picker button's own visible
+ *   text.
+ *
+ * - `subEle` (Element): Sub Element, the live sub-explanation shown under
+ *   the picker while that cadence is selected, looked up by CadConCom as
+ *   curSubEle (and by tab-data.jsx for its own daily summary).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
 const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence picker below needs one option per cadence, each carrying its own live sub-explanation; tab-data.jsx also reads this same array directly for its own cadence-summary lookup. How: This is passed as the top SegConCom's own optIteArr prop below.
 
 
 	{
 
 
-		keyStr : 'daily',                                                                 // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Daily',                                                                 // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-		subEle : <>surfaces <strong>every day</strong> it runs (the standard behavior)</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'daily' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
+		keyStr : 'daily',
+		labStr : 'Daily',
+		subEle : <>surfaces <strong>every day</strong> it runs (the standard behavior)</>
 
 
 	},
@@ -65,21 +83,10 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'weekly', // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Weekly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'weekly',
+		labStr : 'Weekly',
 
-		subEle : <>surfaces <strong>once a week</strong>, on the weekday you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'weekly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
-
-
-	},
-
-	{
-
-
-		keyStr : 'monthly', // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Monthly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-
-		subEle : <>surfaces <strong>once a month</strong>, on the day you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'monthly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
+		subEle : <>surfaces <strong>once a week</strong>, on the weekday you choose below, after which the pick will persist until marked as completed</>
 
 
 	},
@@ -87,16 +94,29 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'yearly', // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Yearly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'monthly',
+		labStr : 'Monthly',
 
-		subEle : <>surfaces <strong>once a year</strong>, on the date you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'yearly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
+		subEle : <>surfaces <strong>once a month</strong>, on the day you choose below, after which the pick will persist until marked as completed</>
+
+
+	},
+
+	{
+
+
+		keyStr : 'yearly',
+		labStr : 'Yearly',
+
+		subEle : <>surfaces <strong>once a year</strong>, on the date you choose below, after which the pick will persist until marked as completed</>
 
 
 	}
 
 
 ];
+
+// #endregion CAD_OPT_ARR
 
 
 
@@ -114,7 +134,66 @@ const DAT_MOD_ARR = [ // What: Date Mode Array. Why: The monthly and yearly subs
 const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: The weekly, monthly, and yearly subsections below all need the full weekday name, in both their own select options and their own live summaries. How: This is indexed by anchorDow/nthWeekday throughout CadConCom below.
 const MON_FUL_ARR = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; // What: Month Full Array. Why: The yearly subsection's own month select and live summary both need the full month name to display. How: This is indexed by anchorMonth (1-indexed, so minus 1) throughout the yearly subsection below.
 
+// #endregion Constants
 
+
+
+// #region Helpers
+
+// #region dayCouFun
+
+/**
+ * dayCouFun = Day Count Function
+ *
+ * @summary
+ * Returns how many days a month has, always counting February as 29 days
+ * because the year is fixed at 2024 (a leap year). The yearly anchor is
+ * a date that repeats every year, so Feb 29 has to stay selectable; the
+ * scheduler itself clamps it to Feb 28 in a common year.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param monOneNum - Month One Number: The month, 1-indexed (1 is
+ *                    January), matching a picker's own anchorMonth.
+ *
+ * @returns That month's own day count, 29 for February.
+ *
+ * @example
+ * ```ts
+ * dayCouFun(2) // => 29
+ * ```
+ *
+*/
+
+const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // What: Day Count Function. Why: The yearly subsection's day-of-month select always needs to allow day 29 for February, regardless of the real current year. How: This asks for day 0 of the month after monOneNum in a fixed leap year (2024), which JS's own Date resolves back to that month's own real last day.
+
+// #endregion dayCouFun
+
+
+
+// #region ordSufFun
+
+/**
+ * ordSufFun = Ordinal Suffix Function
+ *
+ * @summary
+ * Turns a plain number into its full English ordinal, the number itself
+ * included, not just the suffix: 1 becomes '1st', 22 becomes '22nd', and
+ * 11 through 13 correctly become '11th' through '13th'.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param ordValNum - Ordinal Value Number: The positive whole number to
+ *                    suffix.
+ *
+ * @returns The number followed by its ordinal suffix.
+ *
+ * @example
+ * ```ts
+ * ordSufFun(22) // => '22nd'
+ * ```
+ *
+*/
 
 const ordSufFun = ( ordValNum ) => { // What: Ordinal Suffix Function. Why: Every day-of-month, week-ordinal, and weekday-of-month summary below needs the correct English ordinal suffix appended to a plain number. How: This picks the right suffix off ordValNum's own last two digits and returns the combined string.
 
@@ -123,16 +202,19 @@ const ordSufFun = ( ordValNum ) => { // What: Ordinal Suffix Function. Why: Ever
 	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
 
 
+
 	return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTexArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
 
 
 };
 
+// #endregion ordSufFun
+
+// #endregion Helpers
 
 
-const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // What: Day Count Function. Why: The yearly subsection's day-of-month select always needs to allow day 29 for February, regardless of the real current year. How: This asks for day 0 of the month after monOneNum in a fixed leap year (2024), which JS's own Date resolves back to that month's own real last day.
 
-
+// #region Components
 
 // #region CadConCom
 
@@ -148,12 +230,12 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.value    - Value: The picker's own persisted cadence value (or
- *                         an in-progress draft), normalized on every render
- *                         via CAD_NAM_OBJ.norCadFun.
  * @param props.onChange - On Change: Called with a patch object whenever any
  *                         cadence field changes; the caller owns how the patch
  *                         gets merged into its own storage.
+ * @param props.value    - Value: The picker's own persisted cadence value (or
+ *                         an in-progress draft), normalized on every render
+ *                         via CAD_NAM_OBJ.norCadFun.
  *
  * @returns The full cadence editor: the cadence picker plus, for
  * every mode but daily, the matching anchor subsection inside an
@@ -161,15 +243,15 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
  *
  * @example
  * ```tsx
- * CadConCom({ value, onChange }) // => <CadConCom />
+ * CadConCom({ onChange, value }) // => <CadConCom />
  * ```
  *
 */
 
-function CadConCom ( { value, onChange } ) {
+function CadConCom ( { onChange, value } ) {
 
 
-	const norCadObj = CAD_NAM_OBJ.norCadFun( value || {} );                                                             // What: Normalized Cadence Object. Why: Every field read throughout this component needs a fully-defaulted cadence value, not a possibly-partial draft. How: This calls CAD_NAM_OBJ.norCadFun against the caller's own value, falling back to an empty object for a brand-new draft.
+	const norCadObj = CAD_NAM_OBJ.norCadFun( value || {} );                                                         // What: Normalized Cadence Object. Why: Every field read throughout this component needs a fully-defaulted cadence value, not a possibly-partial draft. How: This calls CAD_NAM_OBJ.norCadFun against the caller's own value, falling back to an empty object for a brand-new draft.
 	const setPatFun = ( patObj ) => onChange( patObj );                                                             // What: Set Patch Function. Why: Every field editor below needs one shared way to forward a partial change up to the caller. How: This calls onChange directly with whatever patch object it is given.
 	const curSubEle = ( CAD_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === norCadObj.cadence ) || {} ).subEle; // What: Current Sub Element. Why: The cadence picker's own live sub-explanation needs whichever CAD_OPT_ARR entry matches the currently-selected cadence. How: This looks up norCadObj's own cadence in CAD_OPT_ARR and reads that entry's own subEle field.
 
@@ -196,7 +278,8 @@ function CadConCom ( { value, onChange } ) {
 
 							<InfTipCom
 								className='pie-help pie-help--sm'
-								labTexStr={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) }
+
+								labTexStr={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the daily cadence.
 							>?</InfTipCom> // What: Info Tip Component. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy.
 
 
@@ -207,6 +290,7 @@ function CadConCom ( { value, onChange } ) {
 
 					<span
 						key={ norCadObj.cadence }
+
 						className='rem-flabel-sub set-sub-fade'
 					>{ curSubEle }</span>{ /* What: Cadence Sub Span Element. Why: This is the live human-readable summary of the currently-selected cadence. How: This re-keys, and so re-fades, whenever norCadObj.cadence changes, rendering curSubEle. */ }
 
@@ -214,21 +298,27 @@ function CadConCom ( { value, onChange } ) {
 				</div>
 
 
+
 				<SegConCom
 					optIteArr={ CAD_OPT_ARR }
 					value={ norCadObj.cadence }
+
 					ariLabStr='Cadence'
+
 					onChange={ ( cadKeyStr ) => setPatFun( { cadence : cadKeyStr } ) }
 				/>{ /* What: Segment Control Component. Why: This is the actual top-level cadence picker. How: This commits the clicked cadence key straight through setPatFun. */ }
 
 
 			</div>
 
+
+
 			<ColDisCom open={ norCadObj.cadence !== 'daily' }>{ /* What: Collapse Disclosure Component. Why: Only a non-daily cadence has any anchor subsection at all to show. How: This animates the whole anchor block below open only while norCadObj.cadence isn't 'daily'. */ }
 
 
 				<div
 					key={ norCadObj.cadence }
+
 					className='cad-anchor-fade'
 				>{ /* What: Anchor Fade Div Element. Why: The anchor subsection should fade in and out as a unit whenever the selected cadence itself changes. How: This re-keys, and so re-fades, whenever norCadObj.cadence changes, wrapping whichever of the 3 subsections below actually matches it. */ }
 
@@ -248,7 +338,8 @@ function CadConCom ( { value, onChange } ) {
 									On which day?
 									<InfTipCom
 										className='pie-help'
-										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) }
+
+										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the weekly cadence.
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
@@ -259,7 +350,6 @@ function CadConCom ( { value, onChange } ) {
 
 							</div>
 
-
 							<div className='rem-inline'>{ /* What: Weekly Inline Div Element. Why: The anchor-weekday select reads best inline with its own leading word. How: This wraps the "Every" span and the weekday select below. */ }
 
 
@@ -267,8 +357,11 @@ function CadConCom ( { value, onChange } ) {
 
 								<select
 									className='np-input rem-sel'
+
 									value={ norCadObj.anchorDow }
+
 									aria-label='Anchor weekday'
+
 									onChange={ ( chaEveObj ) => setPatFun( { anchorDow : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Anchor Weekday Select Element. Why: This is the actual control for choosing the weekly anchor day. How: This commits the chosen weekday's own index straight through setPatFun. */ }
 
@@ -278,6 +371,7 @@ function CadConCom ( { value, onChange } ) {
 
 										<option
 											key={ dowIndNum }
+
 											value={ dowIndNum }
 										>{ dayNamStr }</option> // What: Weekday Option Element. Why: One option is needed per real weekday. How: This renders dayNamStr, valued by its own dowIndNum.
 
@@ -296,6 +390,7 @@ function CadConCom ( { value, onChange } ) {
 
 					) }
 
+
 					{ norCadObj.cadence === 'monthly' && ( // What: Monthly Visibility Check. Why: Only the monthly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'monthly'.
 
 
@@ -311,7 +406,8 @@ function CadConCom ( { value, onChange } ) {
 									On which day?
 									<InfTipCom
 										className='pie-help'
-										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) }
+
+										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the monthly cadence.
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
@@ -319,6 +415,7 @@ function CadConCom ( { value, onChange } ) {
 
 								<span
 									key={ norCadObj.dateMode }
+
 									className='rem-flabel-sub set-sub-fade'
 								>{ norCadObj.dateMode === 'nthWeekday' ? <>surfaces on the <strong>{ ordSufFun( norCadObj.nthOrdinal ) } { DAY_FUL_ARR[ norCadObj.nthWeekday ] }</strong> of every month</> : <>surfaces the <strong>{ ordSufFun( norCadObj.anchorDom ) } of every month</strong></> }</span>{ /* What: Monthly Sub Span Element. Why: This is the live summary of which day (or nth weekday) the picker surfaces on. How: This re-keys, and so re-fades, whenever norCadObj.dateMode changes, rendering one of the 2 branches. */ }
 
@@ -326,12 +423,17 @@ function CadConCom ( { value, onChange } ) {
 							</div>
 
 
+
 							<SegConCom
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
+
 								ariLabStr='Day selection'
+
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
 							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
+
+
 
 							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The monthly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday selects while norCadObj.dateMode is 'nthWeekday', the plain day-of-month select otherwise.
 
@@ -343,8 +445,11 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
+
 										value={ norCadObj.nthOrdinal }
+
 										aria-label='Week of the month'
+
 										onChange={ ( chaEveObj ) => setPatFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Nth Ordinal Select Element. Why: This is the actual control for choosing which occurrence (1st through 5th) of the weekday to target. How: This commits the chosen ordinal straight through setPatFun. */ }
 
@@ -354,6 +459,7 @@ function CadConCom ( { value, onChange } ) {
 
 											<option
 												key={ ordValNum }
+
 												value={ ordValNum }
 											>{ ordSufFun( ordValNum ) }</option> // What: Ordinal Option Element. Why: One option is needed per possible occurrence, 1st through 5th. How: This renders ordSufFun's own suffixed label, valued by ordValNum.
 
@@ -365,8 +471,11 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
+
 										value={ norCadObj.nthWeekday }
+
 										aria-label='Weekday'
+
 										onChange={ ( chaEveObj ) => setPatFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Nth Weekday Select Element. Why: This is the actual control for choosing which weekday to target. How: This commits the chosen weekday's own index straight through setPatFun. */ }
 
@@ -376,6 +485,7 @@ function CadConCom ( { value, onChange } ) {
 
 											<option
 												key={ dowIndNum }
+
 												value={ dowIndNum }
 											>{ dayNamStr }</option> // What: Weekday Option Element. Why: One option is needed per real weekday. How: This renders dayNamStr, valued by its own dowIndNum.
 
@@ -399,17 +509,21 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
+
 										value={ norCadObj.anchorDom }
+
 										aria-label='Anchor day of month'
+
 										onChange={ ( chaEveObj ) => setPatFun( { anchorDom : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Anchor Day Of Month Select Element. Why: This is the actual control for choosing the monthly anchor day. How: This commits the chosen day-of-month straight through setPatFun. */ }
 
 
-										{ Array.from( { length : 31 }, ( _, dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own dayValNum.
+										{ Array.from( Array( 31 ).keys(), ( dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own dayValNum.
 
 
 											<option
 												key={ dayValNum }
+
 												value={ dayValNum }
 											>{ ordSufFun( dayValNum ) }</option> // What: Day Of Month Option Element. Why: One option is needed per possible day of month, 1 through 31. How: This renders ordSufFun's own suffixed label, valued by dayValNum.
 
@@ -424,6 +538,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 							) }
+
 							{ norCadObj.dateMode === 'nthWeekday' // What: Clamp Hint Mode Check. Why: Each date mode has its own clamp edge case to warn about. How: This picks the nth-weekday hint while norCadObj.dateMode is 'nthWeekday', the plain-date hint otherwise.
 								? norCadObj.nthOrdinal === 5 && <p className='rem-hint'>In months without a 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
 								: norCadObj.anchorDom > 28 && <p className='rem-hint'>In shorter months this falls on the last day.</p>             // What: Plain-Date Clamp Hint Paragraph Element. Why: A day past 28 can silently clamp in a shorter month, which the user needs to know about. How: This renders only while norCadObj.anchorDom is past 28.
@@ -434,6 +549,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 					) }
+
 
 					{ norCadObj.cadence === 'yearly' && ( // What: Yearly Visibility Check. Why: Only the yearly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'yearly'.
 
@@ -450,7 +566,8 @@ function CadConCom ( { value, onChange } ) {
 									On which date?
 									<InfTipCom
 										className='pie-help'
-										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) }
+
+										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the yearly cadence.
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
@@ -458,6 +575,7 @@ function CadConCom ( { value, onChange } ) {
 
 								<span
 									key={ norCadObj.dateMode }
+
 									className='rem-flabel-sub set-sub-fade'
 								>{ norCadObj.dateMode === 'nthWeekday' ? <>surfaces the <strong>{ ordSufFun( norCadObj.nthOrdinal ) } { DAY_FUL_ARR[ norCadObj.nthWeekday ] }</strong> of <strong>{ MON_FUL_ARR[ norCadObj.anchorMonth - 1 ] }</strong>, every year</> : <>surfaces <strong>every { MON_FUL_ARR[ norCadObj.anchorMonth - 1 ] } { ordSufFun( Math.min( norCadObj.anchorDay, dayCouFun( norCadObj.anchorMonth ) ) ) }</strong></> }</span>{ /* What: Yearly Sub Span Element. Why: This is the live summary of which date (or nth weekday of month) the picker surfaces on. How: This re-keys, and so re-fades, whenever norCadObj.dateMode changes, rendering one of the 2 branches. */ }
 
@@ -465,12 +583,17 @@ function CadConCom ( { value, onChange } ) {
 							</div>
 
 
+
 							<SegConCom
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
+
 								ariLabStr='Day selection'
+
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
 							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
+
+
 
 							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The yearly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday-plus-month selects while norCadObj.dateMode is 'nthWeekday', the plain month-plus-day selects otherwise.
 
@@ -480,8 +603,11 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
+
 										value={ norCadObj.nthOrdinal }
+
 										aria-label='Week of the month'
+
 										onChange={ ( chaEveObj ) => setPatFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Nth Ordinal Select Element. Why: This is the actual control for choosing which occurrence (1st through 5th) of the weekday to target. How: This commits the chosen ordinal straight through setPatFun. */ }
 
@@ -491,6 +617,7 @@ function CadConCom ( { value, onChange } ) {
 
 											<option
 												key={ ordValNum }
+
 												value={ ordValNum }
 											>{ ordSufFun( ordValNum ) }</option> // What: Ordinal Option Element. Why: One option is needed per possible occurrence, 1st through 5th. How: This renders ordSufFun's own suffixed label, valued by ordValNum.
 
@@ -502,8 +629,11 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
+
 										value={ norCadObj.nthWeekday }
+
 										aria-label='Weekday'
+
 										onChange={ ( chaEveObj ) => setPatFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Nth Weekday Select Element. Why: This is the actual control for choosing which weekday to target. How: This commits the chosen weekday's own index straight through setPatFun. */ }
 
@@ -513,6 +643,7 @@ function CadConCom ( { value, onChange } ) {
 
 											<option
 												key={ dowIndNum }
+
 												value={ dowIndNum }
 											>{ dayNamStr }</option> // What: Weekday Option Element. Why: One option is needed per real weekday. How: This renders dayNamStr, valued by its own dowIndNum.
 
@@ -526,8 +657,11 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
+
 										value={ norCadObj.anchorMonth }
+
 										aria-label='Anchor month'
+
 										onChange={ ( chaEveObj ) => setPatFun( { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Anchor Month Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
 
@@ -537,6 +671,7 @@ function CadConCom ( { value, onChange } ) {
 
 											<option
 												key={ monIndNum }
+
 												value={ monIndNum + 1 }
 											>{ monNamStr }</option> // What: Month Option Element. Why: One option is needed per real month. How: This renders monNamStr, valued by its own 1-indexed monIndNum.
 
@@ -560,8 +695,11 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
+
 										value={ norCadObj.anchorMonth }
+
 										aria-label='Anchor month'
+
 										onChange={ ( chaEveObj ) => setPatFun( { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Anchor Month Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
 
@@ -571,6 +709,7 @@ function CadConCom ( { value, onChange } ) {
 
 											<option
 												key={ monIndNum }
+
 												value={ monIndNum + 1 }
 											>{ monNamStr }</option> // What: Month Option Element. Why: One option is needed per real month. How: This renders monNamStr, valued by its own 1-indexed monIndNum.
 
@@ -582,17 +721,21 @@ function CadConCom ( { value, onChange } ) {
 
 									<select
 										className='np-input rem-sel'
-										value={ Math.min( norCadObj.anchorDay, dayCouFun( norCadObj.anchorMonth ) ) }
+
+										value={ Math.min( norCadObj.anchorDay, dayCouFun( norCadObj.anchorMonth ) ) } // What: Clamped Anchor Day Value. Why: A stored anchor day can outlast a month change (e.g. the 31st after switching to April), which would leave the select with no matching option. How: This shows the anchor day capped at the anchor month's own day count.
+
 										aria-label='Anchor day'
+
 										onChange={ ( chaEveObj ) => setPatFun( { anchorDay : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Anchor Day Select Element. Why: This is the actual control for choosing the yearly anchor day, clamped to whatever the anchor month's own real length allows. How: This commits the chosen day-of-month straight through setPatFun. */ }
 
 
-										{ Array.from( { length : dayCouFun( norCadObj.anchorMonth ) }, ( _, dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by dayCouFun to one option per entry, keyed by its own dayValNum.
+										{ Array.from( Array( dayCouFun( norCadObj.anchorMonth ) ).keys(), ( dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by dayCouFun to one option per entry, keyed by its own dayValNum.
 
 
 											<option
 												key={ dayValNum }
+
 												value={ dayValNum }
 											>{ ordSufFun( dayValNum ) }</option> // What: Anchor Day Option Element. Why: One option is needed per possible day within the anchor month's own real length. How: This renders ordSufFun's own suffixed label, valued by dayValNum.
 
@@ -607,6 +750,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 							) }
+
 							{ norCadObj.dateMode === 'nthWeekday' // What: Clamp Hint Mode Check. Why: Each date mode has its own clamp edge case to warn about. How: This picks the nth-weekday hint while norCadObj.dateMode is 'nthWeekday', the leap-day hint otherwise.
 								? norCadObj.nthOrdinal === 5 && <p className='rem-hint'>In years where that month has no 5th, this falls on the 4th instead.</p>            // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
 								: norCadObj.anchorMonth === 2 && norCadObj.anchorDay === 29 && <p className='rem-hint'>In common (non-leap) years this falls on Feb 28.</p> // What: Leap-Day Clamp Hint Paragraph Element. Why: Feb 29 silently clamps to Feb 28 in a common year, which the user needs to know about. How: This renders only while the anchor month and day are exactly Feb 29.
@@ -635,8 +779,14 @@ function CadConCom ( { value, onChange } ) {
 
 // #endregion CadConCom
 
+// #endregion Components
 
+
+
+// #region Exports
 
 export { CadConCom, CAD_OPT_ARR }; // What: Named Exports. Why: tab-picker.jsx renders CadConCom for its own cadence editor, and tab-data.jsx reads CAD_OPT_ARR for its own daily-cadence summary text; every other binding in this file is internal-only. How: This re-exports the 2 declared above.
+
+// #endregion Exports
 
 
