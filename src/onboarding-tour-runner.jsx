@@ -1522,10 +1522,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			while ( ancCurEle && ancCurEle !== document.body ) { // What: Ancestor Walk Loop. Why: Every ancestor between the target and the document body is a candidate scroller. How: This walks upward one parentElement at a time until it reaches document.body or runs out of ancestors.
 
 
-				const ancOveYStr = getComputedStyle( ancCurEle ).overflowY; // What: Ancestor Overflow-Y String. Why: Only a genuinely vertically-scrollable ancestor counts as a real scroller. How: This reads ancCurEle's own computed overflow-y style.
+				const oveYcoStr = getComputedStyle( ancCurEle ).overflowY; // What: Overflow Y-Coordinate String. Why: Only a genuinely vertically-scrollable ancestor counts as a real scroller. How: This reads ancCurEle's own computed overflow-y style.
 
 
-				if ( ( ancOveYStr === 'auto' || ancOveYStr === 'scroll' ) && ancCurEle.scrollHeight > ancCurEle.clientHeight + 2 ) return ancCurEle; // What: Real Scroller Return. Why: An ancestor whose own content does not actually overflow is not a real scroller even if its CSS allows scrolling. How: This returns ancCurEle once both its overflow-y style and its actual scrollHeight/clientHeight gap qualify it.
+				if ( ( oveYcoStr === 'auto' || oveYcoStr === 'scroll' ) && ancCurEle.scrollHeight > ancCurEle.clientHeight + 2 ) return ancCurEle; // What: Real Scroller Return. Why: An ancestor whose own content does not actually overflow is not a real scroller even if its CSS allows scrolling. How: This returns ancCurEle once both its overflow-y style and its actual scrollHeight/clientHeight gap qualify it.
 
 
 
