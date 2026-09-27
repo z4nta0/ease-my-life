@@ -3179,10 +3179,9 @@ Three tiers:
     construct" reasoning as the declare-then-block case above, even
     between two multi-line siblings back to back (a closing `}`
     immediately followed by the next `if` is itself the shift, not
-    whether the two sides "match"). See `isaAncFun`'s monthly (one-line)
-    into yearly (multi-line) transition, `perStaFun`'s daily (one-line)
-    into weekly (multi-line) transition and its own monthly-into-yearly
-    (multi-line into multi-line) transition, and `advValFun`'s
+    whether the two sides "match"). See `perStaFun`'s weekly-into-monthly
+    and monthly-into-yearly (multi-line into multi-line) transitions, and
+    `advValFun`'s
     ease-up/dynamic/ease-down (all multi-line, each gap still 2) in
     `src/cadence.js` and `src/conditionals.js` for the reference
     examples.
