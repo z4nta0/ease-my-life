@@ -1090,7 +1090,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 								<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The mode's own name and its expandable hint need to sit together beside the radio dot. How: This wraps the name span and the ColDisCom-wrapped hint below. */ }
 
 
-									<span className='rd-mode-name'>{ modValObj.label }</span>{ /* What: Mode Name Span Element. Why: Every mode needs its own visible name. How: This renders modValObj's own label. */ }
+									<span className='rd-mode-name'>{ modValObj.labStr }</span>{ /* What: Mode Name Span Element. Why: Every mode needs its own visible name. How: This renders modValObj's own label. */ }
 
 									<ColDisCom
 										open={ modSelBoo }
@@ -1098,10 +1098,10 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 									>{ /* What: Collapse Disclosure Component. Why: The hint expands/collapses on selection change, so the old row's hint folds away while the new one grows. How: This opens only for the currently-selected mode, instant (no animation) for a brand-new draft. */ }
 
 
-										{ Array.isArray( modValObj.hint ) // What: Hint Content Check. Why: A mode's own hint can be either one paragraph or several. How: This maps every paragraph to its own span when hint is an array, otherwise renders the single hint directly.
+										{ Array.isArray( modValObj.hinArr ) // What: Hint Content Check. Why: A mode's own hint can be either one paragraph or several. How: This maps every paragraph to its own span when hint is an array, otherwise renders the single hint directly.
 
 
-											? modValObj.hint.map( ( parCurStr, parIndNum ) => ( // What: Paragraph Hints Branch. Why: A multi-paragraph hint needs one span per paragraph. How: This maps each paragraph string to its own hint span.
+											? modValObj.hinArr.map( ( parCurStr, parIndNum ) => ( // What: Paragraph Hints Branch. Why: A multi-paragraph hint needs one span per paragraph. How: This maps each paragraph string to its own hint span.
 
 
 												<span
@@ -1112,7 +1112,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 											) )
 
-											: <span className='rd-mode-hint'>{ modValObj.hint }</span> // What: Single Hint Branch. Why: A one-paragraph hint needs just one span. How: This renders modValObj.hint directly.
+											: <span className='rd-mode-hint'>{ modValObj.hinArr }</span> // What: Single Hint Branch. Why: A one-paragraph hint needs just one span. How: This renders modValObj.hinArr directly.
 
 
 										}
@@ -1237,7 +1237,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<span className='cnd-pill-name'>{ conCurObj.name }</span>{ /* What: Pill Name Span Element. Why: Every conditional pill needs its own visible name. How: This renders conCurObj's own name. */ }
 
-										<span className='cnd-pill-mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).label || conCurObj.mode }</span>{ /* What: Pill Mode Span Element. Why: Every conditional pill also shows its own mode label. How: This looks up conCurObj's own mode in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode key. */ }
+										<span className='cnd-pill-mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).labStr || conCurObj.mode }</span>{ /* What: Pill Mode Span Element. Why: Every conditional pill also shows its own mode label. How: This looks up conCurObj's own mode in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode key. */ }
 
 
 									</button>
@@ -2340,14 +2340,14 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 		{ // What: First Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the left-hand conditional onto that shape.
 
 
-			boost    : conBooFun( conOneObj ),                                                     // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
-			count    : null,                                                                       // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
-			group    : null,                                                                       // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
-			isActive : conOneObj.active !== false,                                                 // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
-			name     : conOneObj.name,                                                             // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
-			odds     : conOddFun( conOneObj ),                                                     // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
-			range    : conRanFun( conOneObj ),                                                     // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
-			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conOneObj.mode ] || {} ).label || conOneObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
+			boost    : conBooFun( conOneObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
+			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
+			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
+			isActive : conOneObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
+			name     : conOneObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
+			odds     : conOddFun( conOneObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
+			range    : conRanFun( conOneObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
+			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conOneObj.mode ] || {} ).labStr || conOneObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
 
 
 		},
@@ -2355,14 +2355,14 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 		{ // What: Second Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the right-hand conditional onto that shape.
 
 
-			boost    : conBooFun( conTwoObj ),                                                     // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
-			count    : null,                                                                       // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
-			group    : null,                                                                       // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
-			isActive : conTwoObj.active !== false,                                                 // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
-			name     : conTwoObj.name,                                                             // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
-			odds     : conOddFun( conTwoObj ),                                                     // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
-			range    : conRanFun( conTwoObj ),                                                     // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
-			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conTwoObj.mode ] || {} ).label || conTwoObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
+			boost    : conBooFun( conTwoObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
+			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
+			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
+			isActive : conTwoObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
+			name     : conTwoObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
+			odds     : conOddFun( conTwoObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
+			range    : conRanFun( conTwoObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
+			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conTwoObj.mode ] || {} ).labStr || conTwoObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
 
 
 		},
@@ -2821,7 +2821,7 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 											<span className='rd-sched'>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
 
 
-												{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).label || conCurObj.mode }{ /* What: Mode Label Expression. Why: The summary leads with the conditional's mode. How: This renders the mode's label, falling back to its raw id. */ }
+												{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).labStr || conCurObj.mode }{ /* What: Mode Label Expression. Why: The summary leads with the conditional's mode. How: This renders the mode's label, falling back to its raw id. */ }
 
 												{ ' · ' }{ useCouNum } { useCouNum === 1 ? 'picker' : 'pickers' }{ /* What: Usage Count Expression. Why: The summary says how many pickers use this conditional. How: This renders useCouNum with a singular or plural noun. */ }
 
@@ -3266,7 +3266,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 
-		return [ ...seeModSet ].sort( ( modOneStr, modTwoStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ modOneStr ].label.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ modTwoStr ].label ) ); // What: Seen Set Return. Why: The filter row needs these alphabetized by their own display label, not their raw key. How: This spreads seeModSet into an array and sorts by each mode's own SED_NAM_OBJ.MOD_DEF_OBJ label.
+		return [ ...seeModSet ].sort( ( modOneStr, modTwoStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ modOneStr ].labStr.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ modTwoStr ].labStr ) ); // What: Seen Set Return. Why: The filter row needs these alphabetized by their own display label, not their raw key. How: This spreads seeModSet into an array and sorts by each mode's own SED_NAM_OBJ.MOD_DEF_OBJ label.
 
 
 	}, [ allPicArr ] ); // What: Memo Dependency Array. Why: This only ever needs recomputing when the picker list itself changes. How: allPicArr is the single value this memo's own recompute is built around.
@@ -3529,13 +3529,13 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 			colEntArr.push({ // What: Picker Entry Push. Why: A picker's own entry needs its own name/type/group alongside the precomputed count/active fields. How: This pushes one entry per picCurObj.
 
 
-				count    : picMetObj.count,                                // What: Count. Why: The Count sort needs this section's size. How: This is picMetObj's precomputed count.
-				group    : picCurObj.group || null,                        // What: Group. Why: The Group sort needs this section's group. How: This is the picker's group, or null.
-				isActive : picMetObj.isActive,                             // What: Is Active. Why: The Active sort needs this section's on/off state. How: This is picMetObj's precomputed state.
-				kinStr   : 'picker',                                       // What: Kind String. Why: The render below picks a component by kind. How: This is 'picker'.
-				name     : picCurObj.name,                                 // What: Name. Why: The Name sort and the section heading need this name. How: This is the picker's name.
-				picObj   : picCurObj,                                      // What: Picker Object. Why: A picker card renders straight from its live record. How: This is picCurObj itself.
-				type     : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label // What: Type. Why: The Type sort needs this section's type label. How: This is the mode's label.
+				count    : picMetObj.count,                                 // What: Count. Why: The Count sort needs this section's size. How: This is picMetObj's precomputed count.
+				group    : picCurObj.group || null,                         // What: Group. Why: The Group sort needs this section's group. How: This is the picker's group, or null.
+				isActive : picMetObj.isActive,                              // What: Is Active. Why: The Active sort needs this section's on/off state. How: This is picMetObj's precomputed state.
+				kinStr   : 'picker',                                        // What: Kind String. Why: The render below picks a component by kind. How: This is 'picker'.
+				name     : picCurObj.name,                                  // What: Name. Why: The Name sort and the section heading need this name. How: This is the picker's name.
+				picObj   : picCurObj,                                       // What: Picker Object. Why: A picker card renders straight from its live record. How: This is picCurObj itself.
+				type     : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr // What: Type. Why: The Type sort needs this section's type label. How: This is the mode's label.
 
 
 			});
@@ -3833,7 +3833,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 									cliFun : () => setFilTypStr( modCurStr ),                                                               // What: Click Function. Why: Clicking the pill applies this type filter. How: This sets filTypStr to modCurStr.
 									couNum : allPicArr.filter( ( picCurObj ) => picCurObj.mode === modCurStr && !picCurObj.hidden ).length, // What: Count Number. Why: The pill shows how many visible pickers use this mode. How: This counts non-hidden pickers with a matching mode.
 									keyStr : modCurStr,                                                                                     // What: Key String. Why: React needs a stable key per pill. How: This is the mode id.
-									namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ modCurStr ].label,                                                    // What: Name String. Why: The pill shows the mode's display name. How: This reads the mode's label.
+									namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ modCurStr ].labStr,                                                   // What: Name String. Why: The pill shows the mode's display name. How: This reads the mode's label.
 									selBoo : filTypStr === modCurStr                                                                        // What: Selected Boolean. Why: The active pill is highlighted. How: This checks filTypStr against the mode.
 
 
@@ -4053,12 +4053,12 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 							...visPicArr.map( ( picCurObj ) => ( { // What: Picker Boxes Spread. Why: Every visible picker gets its own box. How: This maps visPicArr to one entry each.
 
 
-								cliFun : () => selScoFun( picCurObj.id ),                 // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
-								ideStr : picCurObj.id,                                    // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-id. How: This is the picker's id.
-								keyStr : picCurObj.id,                                    // What: Key String. Why: React needs a stable key per box. How: This is the picker's id.
-								labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label, // What: Label String. Why: The box's second line names the picker's mode. How: This reads the mode's label.
-								namStr : picCurObj.name,                                  // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
-								selBoo : curScoStr === picCurObj.id                       // What: Selected Boolean. Why: The active box is highlighted. How: This checks curScoStr against the picker's id.
+								cliFun : () => selScoFun( picCurObj.id ),                  // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
+								ideStr : picCurObj.id,                                     // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-id. How: This is the picker's id.
+								keyStr : picCurObj.id,                                     // What: Key String. Why: React needs a stable key per box. How: This is the picker's id.
+								labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The box's second line names the picker's mode. How: This reads the mode's label.
+								namStr : picCurObj.name,                                   // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
+								selBoo : curScoStr === picCurObj.id                        // What: Selected Boolean. Why: The active box is highlighted. How: This checks curScoStr against the picker's id.
 
 
 							} ) )
@@ -4367,9 +4367,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<InfTipCom
 											className='cat-mode-label'
-											labTexStr={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label }
+											labTexStr={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }
 											trnOnlBoo
-										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
+										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
 
 										<InfTipCom
 											className='cat-group'

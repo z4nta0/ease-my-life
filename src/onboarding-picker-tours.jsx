@@ -826,9 +826,9 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
 function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, onCloTouFun } ) {
 
 
-	const picRecObj = ( staAppObj.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr ); // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches staAppObj.pickers for the entry whose own id matches picIdeStr.
-	const picCopObj = PIC_COP_OBJ[ picIdeStr ];                                                        // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by picIdeStr.
-	const modLabStr = ( ( SED_NAM_OBJ.MOD_DEF_OBJ[ picRecObj.mode ] || {} ).label || picRecObj.mode ).toLowerCase(); // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up SED_NAM_OBJ.MOD_DEF_OBJ by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
+	const picRecObj = ( staAppObj.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr );                // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches staAppObj.pickers for the entry whose own id matches picIdeStr.
+	const picCopObj = PIC_COP_OBJ[ picIdeStr ];                                                                       // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by picIdeStr.
+	const modLabStr = ( ( SED_NAM_OBJ.MOD_DEF_OBJ[ picRecObj.mode ] || {} ).labStr || picRecObj.mode ).toLowerCase(); // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up SED_NAM_OBJ.MOD_DEF_OBJ by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
 
 
 

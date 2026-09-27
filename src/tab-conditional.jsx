@@ -324,7 +324,7 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 										<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The option's own name and its expandable hint text need to sit together as one unit. How: This wraps the name span and the ColDisCom below. */ }
 
 
-											<span className='rd-mode-name'>{ modConObj.label }</span>{ /* What: Mode Name Span Element. Why: This is the option's own visible mode name. How: This renders modConObj's own label. */ }
+											<span className='rd-mode-name'>{ modConObj.labStr }</span>{ /* What: Mode Name Span Element. Why: This is the option's own visible mode name. How: This renders modConObj's own label. */ }
 
 
 											<ColDisCom open={ modSelBoo }>{ /* What: Collapse Disclosure Component. Why: The longer explanation of a mode should only take up space while that mode is actually selected. How: This animates the hint text below open only while modSelBoo is true. */ }
@@ -348,7 +348,7 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 												) : ( // What: Fallback Hint Branch. Why: A mode with no conditional-specific override still needs its own hint text. How: This renders a single span from CON_HIN_OBJ or, failing that, SED_NAM_OBJ.MOD_DEF_OBJ.
 
 
-													<span className='rd-mode-hint'>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hint }</span> // What: Fallback Hint Span Element. Why: This is the selected mode's own single-paragraph hint. How: This renders the override string when present, else modConObj's own hint.
+													<span className='rd-mode-hint'>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hinArr }</span> // What: Fallback Hint Span Element. Why: This is the selected mode's own single-paragraph hint. How: This renders the override string when present, else modConObj's own hint.
 
 
 												) }

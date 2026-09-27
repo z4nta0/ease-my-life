@@ -1079,7 +1079,7 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 					<h2 className='picker-title'>{ picDatObj.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. */ }
 
-					<PilTagCom tonValStr='mode'>{ modInfObj.label }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.label inside the shared PilTagCom component. */ }
+					<PilTagCom tonValStr='mode'>{ modInfObj.labStr }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.labStr inside the shared PilTagCom component. */ }
 
 
 				</div>
@@ -1095,10 +1095,10 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 			</header>
 
-			{ Array.isArray( modInfObj.hint ) // What: Hint Content Check. Why: A mode's own hint can be one paragraph or several. How: This maps every paragraph when hint is an array, otherwise renders the single hint.
+			{ Array.isArray( modInfObj.hinArr ) // What: Hint Content Check. Why: A mode's own hint can be one paragraph or several. How: This maps every paragraph when hint is an array, otherwise renders the single hint.
 
 
-				? modInfObj.hint.map( ( parTexStr, parIndNum ) => ( // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hint to one <p> per entry when it's an array.
+				? modInfObj.hinArr.map( ( parTexStr, parIndNum ) => ( // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hinArr to one <p> per entry when it's an array.
 
 
 					<p
@@ -1109,7 +1109,7 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 				) )
 
-				: <p className='picker-hint'>{ modInfObj.hint }</p> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hint directly when it's a plain string.
+				: <p className='picker-hint'>{ modInfObj.hinArr }</p> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hinArr directly when it's a plain string.
 
 
 			}
@@ -2922,12 +2922,12 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 										<div>{ /* What: Mode Text Div Element. Why: The mode's own name and hint text need to sit beside the radio input. How: This wraps mode-opt-name and mode-opt-hint. */ }
 
 
-											<div className='mode-opt-name'>{ modInfObj.label }</div>{ /* What: Mode Name Div Element. Why: The mode needs its own readable name. How: This renders modInfObj.label. */ }
+											<div className='mode-opt-name'>{ modInfObj.labStr }</div>{ /* What: Mode Name Div Element. Why: The mode needs its own readable name. How: This renders modInfObj.labStr. */ }
 
-											{ Array.isArray( modInfObj.hint ) // What: Hint Content Check. Why: A mode's own hint can be one paragraph or several. How: This maps every paragraph when hint is an array, otherwise renders the single hint.
+											{ Array.isArray( modInfObj.hinArr ) // What: Hint Content Check. Why: A mode's own hint can be one paragraph or several. How: This maps every paragraph when hint is an array, otherwise renders the single hint.
 
 
-												? modInfObj.hint.map( ( parTexStr, parIndNum ) => ( // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hint to one div per entry when it's an array.
+												? modInfObj.hinArr.map( ( parTexStr, parIndNum ) => ( // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hinArr to one div per entry when it's an array.
 
 
 													<div
@@ -2938,7 +2938,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 												) )
 
-												: <div className='mode-opt-hint'>{ modInfObj.hint }</div> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hint directly when it's a plain string.
+												: <div className='mode-opt-hint'>{ modInfObj.hinArr }</div> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hinArr directly when it's a plain string.
 
 
 											}
@@ -3033,7 +3033,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 												<span className='cnd-pill-name'>{ curConObj.name }</span>{ /* What: Pill Name Span Element. Why: The pill needs its own readable name. How: This renders curConObj.name. */ }
 
-												<span className='cnd-pill-mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ curConObj.mode ] || {} ).label || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode string. */ }
+												<span className='cnd-pill-mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ curConObj.mode ] || {} ).labStr || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode string. */ }
 
 
 											</button>
@@ -3447,7 +3447,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 						This is the list of items that your
 						{ ' ' }{ newNamStr.trim() ? `“${ newNamStr.trim() }”` : 'this picker' } picker chooses from.
 						Each time it runs it picks one of these items, following the
-						{ ' ' }&ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].label }&rdquo; rule that you chose. You will need
+						{ ' ' }&ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].labStr }&rdquo; rule that you chose. You will need
 						to add at least 2 items before you can finish creating this picker. You
 						can always add, edit or remove items later.
 
@@ -3473,7 +3473,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 					{ selModStr === 'dynamic' && ( // What: Dynamic Note Check. Why: Same reasoning as the Weighted note above, worded to also quote the mode's own live label. How: This renders the note only for that mode.
 
 
-						<p className='picker-hint np-weight-note'>Because you chose &ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].label }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Dynamic Note Paragraph Element. Why: Dynamic items carry a weight plus a drift bonus the user should understand. How: This renders an explanation naming the chosen mode.
+						<p className='picker-hint np-weight-note'>Because you chose &ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].labStr }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Dynamic Note Paragraph Element. Why: Dynamic items carry a weight plus a drift bonus the user should understand. How: This renders an explanation naming the chosen mode.
 
 
 					) }
@@ -4192,7 +4192,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 
 
-		return [ ...seeModSet ].sort( ( modOneStr, modTwoStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ modOneStr ].label.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ modTwoStr ].label ) ); // What: Sorted Modes Return. Why: The mode chips should read in a stable order matching their own display labels, not their raw internal keys. How: This spreads seeModSet into an array and sorts by each key's own SED_NAM_OBJ.MOD_DEF_OBJ label.
+		return [ ...seeModSet ].sort( ( modOneStr, modTwoStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ modOneStr ].labStr.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ modTwoStr ].labStr ) ); // What: Sorted Modes Return. Why: The mode chips should read in a stable order matching their own display labels, not their raw internal keys. How: This spreads seeModSet into an array and sorts by each key's own SED_NAM_OBJ.MOD_DEF_OBJ label.
 
 
 	}, [ staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The mode list only needs recomputing when the pickers list itself changes. How: staAppObj.pickers is what the loop above actually reads.
@@ -4626,7 +4626,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 										>{ /* What: Type Pill Button Element. Why: Tapping a type pill should narrow the Show row down to just that mode. How: This writes curModStr into typFilStr. */ }
 
 
-											{ SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].label }{ /* What: Pill Name Expression. Why: Every type pill needs its mode's visible label. How: This renders the mode's label. */ }
+											{ SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].labStr }{ /* What: Pill Name Expression. Why: Every type pill needs its mode's visible label. How: This renders the mode's label. */ }
 
 											<span className='picker-group-count'>{ picCouNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many pickers it holds. How: This renders picCouNum. */ }
 
@@ -4744,7 +4744,7 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 									<span className='picker-tab-name'>{ curPicObj.name }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own picker name. How: This renders curPicObj.name. */ }
 
-									<span className='picker-tab-mode'>{ SED_NAM_OBJ.MOD_DEF_OBJ[ curPicObj.mode ].label }</span>{ /* What: Tab Mode Span Element. Why: Every tab also names its picker's mode. How: This renders the mode's label. */ }
+									<span className='picker-tab-mode'>{ SED_NAM_OBJ.MOD_DEF_OBJ[ curPicObj.mode ].labStr }</span>{ /* What: Tab Mode Span Element. Why: Every tab also names its picker's mode. How: This renders the mode's label. */ }
 
 
 								</button>

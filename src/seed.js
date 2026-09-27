@@ -221,10 +221,10 @@ const ITE_DEF_ARR = [
  * boilerplate comments on their own lines (see the "Repeated-shape
  * object literals" comment exception in CLAUDE.md):
  *
- * - `hint` (Array): Hint, the mode's user-facing copy as 2 paragraphs, a
- *   ruleset paragraph followed by an explanation paragraph.
+ * - `hinArr` (Array): Hint Array, the mode's user-facing copy as 2
+ *   paragraphs, a ruleset paragraph followed by an explanation paragraph.
  *
- * - `label` (String): Label, the mode's user-facing display name.
+ * - `labStr` (String): Label String, the mode's user-facing display name.
  *
  * The entries keep their authored order rather than an alphabetical one:
  * the Data tab and the conditional editor render one option per mode
@@ -241,9 +241,9 @@ const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needi
 	'random' : { // What: Random Mode Entry. Why: This documents the random selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
 
 
-		label : 'Truly Random',
+		labStr : 'Truly Random',
 
-		hint : [
+		hinArr : [
 
 
 			'Ruleset: This picker’s ruleset makes it so that all of its items have an equally likely chance of being picked.',
@@ -259,9 +259,9 @@ const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needi
 	'weighted' : { // What: Weighted Mode Entry. Why: This documents the weighted selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
 
 
-		label : 'Weighted',
+		labStr : 'Weighted',
 
-		hint : [
+		hinArr : [
 
 
 			'Ruleset: This picker’s ruleset uses adjustable, weighted per-item values that can make them more (or less) likely to be picked.',
@@ -277,9 +277,9 @@ const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needi
 	'dynamic' : { // What: Dynamic Mode Entry. Why: This documents the dynamic weighted selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
 
 
-		label : 'Dynamic Weighted',
+		labStr : 'Dynamic Weighted',
 
-		hint : [
+		hinArr : [
 
 
 			'Ruleset: This picker’s ruleset is exactly the same as the Weighted picker, but it also adds a second per-item value that increments the weighted value every time an item is not picked and then resets its value every time that it is.',
@@ -295,9 +295,9 @@ const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needi
 	'ease-up' : { // What: Ease Up Mode Entry. Why: This documents the ease-up selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
 
 
-		label : 'Ease Up',
+		labStr : 'Ease Up',
 
-		hint : [
+		hinArr : [
 
 
 			'Ruleset: This picker’s ruleset makes it so that all items are ineligible to be picked until their individual values reach 100, at which point they are put into a list of eligible items to be picked. Said values will start at 0 and are incremented every cycle by a random amount within a user defined range.',
@@ -313,9 +313,9 @@ const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needi
 	'ease-down' : { // What: Ease Down Mode Entry. Why: This documents the ease-down selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
 
 
-		label : 'Ease Down',
+		labStr : 'Ease Down',
 
-		hint : [
+		hinArr : [
 
 
 			'Ruleset: This picker’s ruleset is the opposite of the Ease Up picker. It makes it so that all items are eligible to be picked and once an item is picked it will stay picked until its value reaches 0, at which point a new item is picked. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.',

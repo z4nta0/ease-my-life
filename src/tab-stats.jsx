@@ -1021,7 +1021,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		return [ ...seeModSet ].sort( ( modOneStr, modTwoStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ modOneStr ].label.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ modTwoStr ].label ) ); // What: Sorted Mode Return. Why: The Type row's own pills should list by their user-facing label, not their raw internal mode key. How: This spreads the set into an array and sorts by each mode's own SED_NAM_OBJ.MOD_DEF_OBJ label.
+		return [ ...seeModSet ].sort( ( modOneStr, modTwoStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ modOneStr ].labStr.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ modTwoStr ].labStr ) ); // What: Sorted Mode Return. Why: The Type row's own pills should list by their user-facing label, not their raw internal mode key. How: This spreads the set into an array and sorts by each mode's own SED_NAM_OBJ.MOD_DEF_OBJ label.
 
 
 	}, [ picLisArr ] ); // What: Effect Dependency Array. Why: The mode list only ever needs recomputing when the live picker list itself changes. How: picLisArr is the sole source the loop above reads from.
@@ -2692,7 +2692,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										couNum : picLisArr.filter( ( picCurObj ) => picCurObj.mode === picModStr && !picCurObj.hidden ).length, // What: Count Number. Why: The pill shows how many visible pickers use this mode. How: This counts non-hidden pickers with a matching mode.
 										keyStr : picModStr,                                                                                     // What: Key String. Why: Each pill needs a stable React key. How: This uses the mode key itself.
-										namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picModStr ].label,                                                    // What: Name String. Why: The pill shows the mode's own display label. How: This reads it from SED_NAM_OBJ.MOD_DEF_OBJ.
+										namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picModStr ].labStr,                                                   // What: Name String. Why: The pill shows the mode's own display label. How: This reads it from SED_NAM_OBJ.MOD_DEF_OBJ.
 										selBoo : typFilStr === picModStr,                                                                       // What: Selected Boolean. Why: The active Type pill is highlighted. How: This compares typFilStr against the mode.
 
 										cliFun : () => setTypFilStr( picModStr ) // What: Click Function. Why: Choosing this pill narrows the Type filter. How: This sets typFilStr to the mode.
@@ -2821,12 +2821,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								...visPicArr.map( ( picCurObj ) => ( { // What: Picker Tab Entry Mapping. Why: Every currently-visible picker needs its own scope tab entry before the combined list is sorted. How: This maps each visPicArr entry to a small { cliFun, keyStr, labStr, namStr, picStr, selBoo } shape.
 
 
-									cliFun : () => setScoValStr( picCurObj.id ),              // What: Click Function. Why: Choosing this tab switches the page to this picker. How: This sets scoValStr to the picker's own id.
-									keyStr : picCurObj.id,                                    // What: Key String. Why: Each tab needs a stable React key. How: This uses the picker's own id.
-									labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label, // What: Label String. Why: The tab's subline names the picker's mode. How: This reads the mode's own display label.
-									namStr : picCurObj.name,                                  // What: Name String. Why: The tab shows the picker's own name. How: This copies it.
-									picStr : picCurObj.id,                                    // What: Picker String. Why: The tab carries a data-picker-id hook for the tours. How: This copies the picker's own id.
-									selBoo : scoValStr === picCurObj.id                       // What: Selected Boolean. Why: The active tab is highlighted. How: This compares scoValStr against the picker's own id.
+									cliFun : () => setScoValStr( picCurObj.id ),               // What: Click Function. Why: Choosing this tab switches the page to this picker. How: This sets scoValStr to the picker's own id.
+									keyStr : picCurObj.id,                                     // What: Key String. Why: Each tab needs a stable React key. How: This uses the picker's own id.
+									labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The tab's subline names the picker's mode. How: This reads the mode's own display label.
+									namStr : picCurObj.name,                                   // What: Name String. Why: The tab shows the picker's own name. How: This copies it.
+									picStr : picCurObj.id,                                     // What: Picker String. Why: The tab carries a data-picker-id hook for the tours. How: This copies the picker's own id.
+									selBoo : scoValStr === picCurObj.id                        // What: Selected Boolean. Why: The active tab is highlighted. How: This compares scoValStr against the picker's own id.
 
 
 								} ) )
@@ -2914,12 +2914,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<h2 className='picker-title'>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. */ }
 
-							<PilTagCom tonValStr='mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).label || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. */ }
+							<PilTagCom tonValStr='mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).labStr || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. */ }
 
 							{ ( () => { // What: Mode Hint Render. Why: A mode's own hint text can be either a single paragraph or several, and each needs wrapping in its own paragraph element. How: This reads the mode's own hint field and maps an array into one <p> per paragraph, or wraps a plain string in one.
 
 
-								const modHinVal = ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).hint; // What: Mode Hint Value. Why: The render below needs this looked up once rather than twice. How: This reads the scoped picker's own mode's hint field, which may be a string or an array of strings.
+								const modHinVal = ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).hinArr; // What: Mode Hint Value. Why: The render below needs this looked up once rather than twice. How: This reads the scoped picker's own mode's hint field, which may be a string or an array of strings.
 
 
 								if ( !Array.isArray( modHinVal ) ) return <p className='picker-hint'>{ modHinVal }</p>; // What: Single Hint Guard. Why: A plain-string hint is just one paragraph. How: This returns it wrapped in a single picker-hint paragraph.
