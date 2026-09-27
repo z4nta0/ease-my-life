@@ -1906,7 +1906,7 @@ don't invent one for anything else yet:
   and worth keeping easy to scan/diff one property at a time, unlike a
   genuine fixed-shape config entry like `TAB_OBJ_ARR`'s own rows. See
   `CAD_NAM_OBJ` (`cadence.js`), `CON_NAM_OBJ` (`conditionals.js`),
-  `TASKS` (`tasks.js`), `STORAGE` (`storage.js`), `NOT_NAM_OBJ`
+  `TAS_NAM_OBJ` (`tasks.js`), `STORAGE` (`storage.js`), `NOT_NAM_OBJ`
   (`notify.js`), and `PICKERS` (`pickers.js`) for the reference examples:
   each property still gets its own specific What/Why/How comment (never
   one shared comment covering the whole object) and both its own
@@ -2834,7 +2834,13 @@ between JSX siblings. Three tiers:
     (e.g. `if ( mode === 'a' ) return ...; if ( mode === 'b' ) return
     ...;`, not a formal `else if` chain, which has its own fixed
     1-blank rule under "### if/else and while statements" regardless of
-    shape) stays Related (1) ONLY between two adjacent one-line siblings.
+    shape) never groups tighter than 3 blank lines between two adjacent
+    one-line siblings: each one is a single-line exit guard, so "###
+    Return and continue statements" gives it 3 blank lines before and
+    after, even when every guard checks the same value (e.g.
+    `tasks.js`'s own `sumTasFun` `dowSetArr.length` checks). An earlier
+    version of this bullet allowed 1 here; `cadence.js`/
+    `conditionals.js` get corrected in the final file-by-file pass.
     The moment EITHER side of a transition is a multi-line `if` block
     (its own closing `}` on a line by itself), that specific gap is
     Somewhat related (2) instead, the same "different kind of code
@@ -3480,10 +3486,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     this codebase before this fix (`donCouNum`/`donNum`/`donIteNum`/
     `donNowFun`/`donValBoo` across `day-log.jsx`, `onboarding-
     checklist.js`, `reminders.jsx`, and `seed.js`), so no escalation was
-    needed. **Not a collision, deliberately left untouched**:
-    `TASKS.isDoneToday` (`tasks.js`'s own exported namespace-object
-    property, explicitly re-exporting the already-correctly-named
-    `isaDonFun` under its own stable external key, called from `store.js`/
+    needed. **Not a collision, deliberately left untouched at the
+    time**: `TASKS.isDoneToday` (`tasks.js`'s own exported namespace-
+    object property, explicitly re-exporting the already-correctly-named
+    `isaDonFun` under its own stable external key, since swept to
+    `TAS_NAM_OBJ.isaDonFun` with the rest of that object, called from `store.js`/
     `day-log.jsx`/`tab-today.jsx`/`reminders.jsx`) and the bare `done`
     field itself (the real, persisted property on every Today entry and
     pickLog row, e.g. `entry.done`/`curEntObj.done`) are both protected
@@ -3504,6 +3511,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `triValStr`), and Try uses its own complete 3-letter word `try` (e.g.
     `onboarding-app-features.jsx`'s own `tryCouNum`/`tryColFun`). Being
     applied file by file as each file is next reviewed, not in one sweep.
+    Scoped to ease-my-life ONLY, for the same reason as `rmn`/`rmv`.
+  - **Weekend uses `wkd`, not `wee`** (a project-scoped decision): the
+    literal `wee` already means Week heavily throughout this codebase,
+    and Phase A's own first candidate `wek` was a documented Week
+    miscorrection, so per the user's own choice Weekend keeps its
+    consonant skeleton `wkd` (e.g. `tasks.js`'s own `isaWkdBoo`).
     Scoped to ease-my-life ONLY, for the same reason as `rmn`/`rmv`.
   - `cch` → `cac` (Cached/Cache — found in `cchStaObj` (`store.js`'s own
     `loaStaFun`, 2 instances), fixed to `cacStaObj`; `cac` was already
@@ -4220,7 +4233,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     "is this an object I wrote."
   - **Second exemption — an exported namespace object's own properties**:
     this 6-character rule does not apply to the property names of an
-    EXPORTED namespace object either (`STORAGE`, `PICKERS`, `TASKS`,
+    EXPORTED namespace object either (`STORAGE`, `PICKERS`, `TAS_NAM_OBJ`,
     `CAD_NAM_OBJ`, `ONB_CHE_OBJ`, ...). See "Exported namespace objects"
     below for the fuller rule, but in short: each property should just
     reuse the already-named 9-character internal function/constant's own
@@ -4293,7 +4306,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
       the reference example.
 - **Exported namespace objects must use explicit `originalName :
   internalName` mapping, never JS shorthand `{ internalName }`.** A
-  domain module's public API (`STORAGE`, `PICKERS`, `TASKS`,
+  domain module's public API (`STORAGE`, `PICKERS`, `TAS_NAM_OBJ`,
   `HOL_NAM_OBJ`, `NOT_NAM_OBJ`, ...) keeps its own
   ORIGINAL external property names stable while every internal
   implementation gets renamed to the 9-char scheme. Writing the export
@@ -4314,7 +4327,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `notify.js`'s own `NOT_NAM_OBJ`, `onboarding-checklist.js`'s own
     `ONB_CHE_OBJ`, `pickers.js`'s own `PIC_NAM_OBJ` (originally
     `PICKERS`), `pwa.js`'s own `PWA_NAM_OBJ` (originally `PWA`), and
-    `reorder.js`'s own `REO_NAM_OBJ` (originally `REORDER`) all
+    `reorder.js`'s own `REO_NAM_OBJ` (originally `REORDER`), and
+    `tasks.js`'s own `TAS_NAM_OBJ` (originally `TASKS`) all
     deliberately swept their external property names to
     match their internal implementation exactly (e.g. `normalize` →
     `norCadFun`, `isCadence` → `isaCadFun` for the first; `cardComplete`
@@ -4334,11 +4348,15 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `isaMacBoo`, `isStandalone` → `isaStaFun` for the sixth, keeping its
     own already-conventional `subscribe` bare per the Generic JS
     API-shape exemption above; `startDrag` → `staDraFun` for the
-    seventh, its only property), with
+    seventh, its only property; `defaultTask` → `defTasFun`,
+    `isDoneToday` → `isaDonFun`, `nextEligible` → `nexEliFun` and the
+    rest of its 17 keys for the eighth, whose unused `REPEATS` was
+    removed instead), with
     every external call site (~60 across 7 consumer files for
     CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ,
     ~28 across 4 for ONB_CHE_OBJ, 28 across 4 for PIC_NAM_OBJ, 13 across
-    2 for PWA_NAM_OBJ, 14 across 1 for REO_NAM_OBJ) updated
+    2 for PWA_NAM_OBJ, 14 across 1 for REO_NAM_OBJ, ~115 across 7 for
+    TAS_NAM_OBJ) updated
     in the same pass. Reusing the already-named
     9-char internal identifier directly as the external key (rather than
     inventing a separately-compressed name, 6-char property-style or

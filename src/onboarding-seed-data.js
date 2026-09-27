@@ -416,12 +416,12 @@ export const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );    
  * "Repeated-shape object literals" comment exception in CLAUDE.md):
  *
  * - `kicker` (String, optional): Kicker is an explicit override only
- *   where the real schedule summary (TASKS.summary(task)) isn't what
+ *   where the real schedule summary (TAS_NAM_OBJ.sumTasFun(task)) isn't what
  *   should be shown, e.g. the one-time reminder wants "One-Time"
- *   instead of TASKS.summary's own "One-time". Absent on the recurring
+ *   instead of TAS_NAM_OBJ.sumTasFun's own "One-time". Absent on the recurring
  *   reminder on purpose, since its daysOfWeek is set dynamically at
  *   seed time (see onboarding-welcome-tour.jsx) to whatever day the
- *   tour is taken on, so TASKS.summary already produces the right
+ *   tour is taken on, so TAS_NAM_OBJ.sumTasFun already produces the right
  *   "Every {Day}" text for it on its own.
  *
  * - `name` (String): Name is the launcher card's own display name,

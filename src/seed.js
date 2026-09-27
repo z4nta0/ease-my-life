@@ -4,7 +4,7 @@
 // #region Imports
 
 import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object. Why: The seeded demo state needs a real holidays-state shape, and the clean state needs the same canonical empty one. How: This is called (defStaFun) by both buiCleFun and buiSeeFun below.
-import { TASKS       } from './tasks.js';    // What: Tasks. Why: The seeded demo state needs a few real reminder task objects, built to the reminders engine's own shape. How: This is called (defaultTask/defaultOpts) by buiSeeFun and buiCleFun below.
+import { TAS_NAM_OBJ } from './tasks.js';    // What: Tasks Namespace Object. Why: The seeded demo state needs a few real reminder task objects, built to the reminders engine's own shape. How: This is called (defTasFun/defOptFun) by buiSeeFun and buiCleFun below.
 
 // #endregion Imports
 
@@ -1306,21 +1306,21 @@ function buiSeeFun() {
 		pickers         : allPicArr,                                                                                        // What: Pickers. Why: Every seeded picker, already fully resolved (schedule, ease-down state, conditional gate) above. How: This is allPicArr, unchanged.
 		pickLog         : picLogArr,                                                                                        // What: Pick Log. Why: The demo state needs the full assembled pick history built above. How: This is picLogArr, resolved above.
 		reminderLog     : buiRemFun(),                                                                                      // What: Reminder Log. Why: The demo state needs the seeded reminder completion history built above. How: This calls buiRemFun.
-		reminderOpts    : TASKS.defaultOpts(),                                                                              // What: Reminder Opts. Why: The demo state needs a full, valid reminder-options object, same shape a fresh install would get. How: This calls TASKS's own defaultOpts.
+		reminderOpts    : TAS_NAM_OBJ.defOptFun(),                                                                          // What: Reminder Opts. Why: The demo state needs a full, valid reminder-options object, same shape a fresh install would get. How: This calls TAS_NAM_OBJ's own defOptFun.
 		reminderSkipLog : rslBuiFun(),                                                                                      // What: Reminder Skip Log. Why: The demo state needs the seeded reminder skip history built above. How: This calls rslBuiFun.
 		streak          : 11,                                                                                               // What: Streak. Why: The demo state needs a headline streak count consistent with picLogFun's own forced-active last 10 days. How: This is a fixed literal, matching that simulation's own design.
 
-		tasks           : [ // What: Tasks. Why: A few manual reminders need seeding atop Today, covering weekly/monthly/interval/once recurrence. How: This is an array of TASKS.defaultTask calls, in state.tasks' own shape.
+		tasks           : [ // What: Tasks Namespace Object. Why: A few manual reminders need seeding atop Today, covering weekly/monthly/interval/once recurrence. How: This is an array of TAS_NAM_OBJ.defTasFun calls, in state.tasks' own shape.
 
 
-			TASKS.defaultTask({ // What: Trash Task Call. Why: A weekly reminder needs demonstrating, tied to Tuesdays to match buiRemFun's own completion history for tk_trash.
+			TAS_NAM_OBJ.defTasFun({ // What: Trash Task Call. Why: A weekly reminder needs demonstrating, tied to Tuesdays to match buiRemFun's own completion history for tk_trash.
 
 				id : 'tk_trash', name : 'Take out the trash for pickup', repeat : 'weekly', daysOfWeek : [ 2 ]
 
 			}),
-			TASKS.defaultTask({ id : 'tk_rent', name : 'Pay the rent', repeat : 'monthly', dayOfMonth : 1 }),        // What: Rent Task Call. Why: A monthly reminder needs demonstrating. How: This creates a task recurring on the 1st of every month.
-			TASKS.defaultTask({ id : 'tk_meds', name : 'Refill prescription', repeat : 'interval', interval : 30 }), // What: Meds Task Call. Why: An interval reminder needs demonstrating, tied to buiRemFun's own tk_meds completion history. How: This creates a task recurring every 30 days.
-			TASKS.defaultTask({ id : 'tk_call', name : 'Call the plumber back', repeat : 'once' })                   // What: Call Task Call. Why: A one-time reminder needs demonstrating, tied to rslBuiFun's own tk_call skip history. How: This creates a task with no recurrence at all.
+			TAS_NAM_OBJ.defTasFun({ id : 'tk_rent', name : 'Pay the rent', repeat : 'monthly', dayOfMonth : 1 }),        // What: Rent Task Call. Why: A monthly reminder needs demonstrating. How: This creates a task recurring on the 1st of every month.
+			TAS_NAM_OBJ.defTasFun({ id : 'tk_meds', name : 'Refill prescription', repeat : 'interval', interval : 30 }), // What: Meds Task Call. Why: An interval reminder needs demonstrating, tied to buiRemFun's own tk_meds completion history. How: This creates a task recurring every 30 days.
+			TAS_NAM_OBJ.defTasFun({ id : 'tk_call', name : 'Call the plumber back', repeat : 'once' })                   // What: Call Task Call. Why: A one-time reminder needs demonstrating, tied to rslBuiFun's own tk_call skip history. How: This creates a task with no recurrence at all.
 
 
 		],
@@ -1503,10 +1503,10 @@ function buiCleFun() {
 		pickers         : [],                                                                            // What: Pickers. Why: A brand-new user has no pickers at all. How: This is an empty array.
 		pickLog         : [],                                                                            // What: Pick Log. Why: A brand-new user has no pick history at all. How: This is an empty array.
 		reminderLog     : [],                                                                            // What: Reminder Log. Why: A brand-new user has no reminder completion history at all. How: This is an empty array.
-		reminderOpts    : TASKS.defaultOpts(),                                                           // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TASKS's own defaultOpts.
+		reminderOpts    : TAS_NAM_OBJ.defOptFun(),                                                       // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TAS_NAM_OBJ's own defOptFun.
 		reminderSkipLog : [],                                                                            // What: Reminder Skip Log. Why: A brand-new user has no reminder skip history at all. How: This is an empty array.
 		streak          : 0,                                                                             // What: Streak. Why: A brand-new user has no streak yet. How: This is a fixed literal 0.
-		tasks           : [],                                                                            // What: Tasks. Why: A brand-new user has no reminders at all. How: This is an empty array.
+		tasks           : [],                                                                            // What: Tasks Namespace Object. Why: A brand-new user has no reminders at all. How: This is an empty array.
 		today           : { date : todIsoStr, generatedAt : null, streakClaimed : false, entries : [] }, // What: Today. Why: A brand-new user still needs a valid Today, just an entirely empty one. How: This is today's own real date paired with no generation yet and no entries.
 		vacationLog     : [],                                                                            // What: Vacation Log. Why: A brand-new user has no inactive-state history at all. How: This is an empty array.
 

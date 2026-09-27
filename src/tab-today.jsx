@@ -44,7 +44,7 @@ import { redMotFun    } from './ui.jsx';                        // What: Reduce 
 import { RemSecCom    } from './reminders.jsx';                 // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genOrdArr.
 import { RemTouCom    } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while minTouObj holds a 'reminder' kind entry.
 import { REO_NAM_OBJ  } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside groDraFun/iteDraFun.
-import { TASKS        } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
+import { TAS_NAM_OBJ  } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
 import { TOD_HEL_ARR  } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { useEmlTouFun } from './eml-tour-bus.js';               // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useEscCanFun } from './ui.jsx';                        // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
@@ -3578,19 +3578,19 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * toward Stats). Visibility honors each type's weekend/holiday
 	 * exclusions; the ring only counts reminders whose type has "include
 	 * in completion ring" on. Pinned to the last generation (not live
-	 * "now"), via TASKS.anchorDate, so these totals always agree with
+	 * "now"), via TAS_NAM_OBJ.ancDatFun, so these totals always agree with
 	 * what RemSecCom is actually showing.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
 
-	const genTimStr = staAppObj.today && staAppObj.today.generatedAt;                                               // What: Generated Time String. Why: The anchor below needs to know the last real generation timestamp, not the live clock. How: This reads staAppObj.today.generatedAt.
-	const remAncObj = React.useMemo( () => TASKS.anchorDate( genTimStr ), [ genTimStr ] );                          // What: Reminders Anchor Object. Why: See the doc comment just above. How: This calls TASKS.anchorDate with genTimStr.
-	const dueTasArr = React.useMemo( () => TASKS.visibleToday( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, remAncObj ), [ staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, remAncObj ] ); // What: Due Task Array. Why: This is the real, currently-visible reminder list. How: This calls TASKS.visibleToday against remAncObj.
-	const visDonNum = dueTasArr.filter( ( curTasObj ) => TASKS.isDoneToday( curTasObj, remAncObj ) ).length;        // What: Visible Done Number. Why: The rail's own Reminders pill needs a done count covering every VISIBLE due reminder, ring-eligible or not. How: This counts dueTasArr entries that TASKS.isDoneToday already reports done.
-	const rinTasArr = dueTasArr.filter( ( curTasObj ) => TASKS.optsFor( curTasObj, staAppObj.reminderOpts ).ring ); // What: Ring Task Array. Why: Only a reminder type with "include in completion ring" on should ever affect the ring itself. How: This filters dueTasArr down to just those.
-	const remDonNum = rinTasArr.filter( ( curTasObj ) => TASKS.isDoneToday( curTasObj, remAncObj ) ).length;        // What: Reminders Done Number. Why: The completion ring itself only ever counts ring-eligible reminders. How: This counts rinTasArr entries that TASKS.isDoneToday already reports done.
+	const genTimStr = staAppObj.today && staAppObj.today.generatedAt;                                                       // What: Generated Time String. Why: The anchor below needs to know the last real generation timestamp, not the live clock. How: This reads staAppObj.today.generatedAt.
+	const remAncObj = React.useMemo( () => TAS_NAM_OBJ.ancDatFun( genTimStr ), [ genTimStr ] );                             // What: Reminders Anchor Object. Why: See the doc comment just above. How: This calls TAS_NAM_OBJ.ancDatFun with genTimStr.
+	const dueTasArr = React.useMemo( () => TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, remAncObj ), [ staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, remAncObj ] ); // What: Due Task Array. Why: This is the real, currently-visible reminder list. How: This calls TAS_NAM_OBJ.visTodFun against remAncObj.
+	const visDonNum = dueTasArr.filter( ( curTasObj ) => TAS_NAM_OBJ.isaDonFun( curTasObj, remAncObj ) ).length;            // What: Visible Done Number. Why: The rail's own Reminders pill needs a done count covering every VISIBLE due reminder, ring-eligible or not. How: This counts dueTasArr entries that TAS_NAM_OBJ.isaDonFun already reports done.
+	const rinTasArr = dueTasArr.filter( ( curTasObj ) => TAS_NAM_OBJ.optForFun( curTasObj, staAppObj.reminderOpts ).ring ); // What: Ring Task Array. Why: Only a reminder type with "include in completion ring" on should ever affect the ring itself. How: This filters dueTasArr down to just those.
+	const remDonNum = rinTasArr.filter( ( curTasObj ) => TAS_NAM_OBJ.isaDonFun( curTasObj, remAncObj ) ).length;            // What: Reminders Done Number. Why: The completion ring itself only ever counts ring-eligible reminders. How: This counts rinTasArr entries that TAS_NAM_OBJ.isaDonFun already reports done.
 
 	// #endregion Reminder Ring Counts
 
@@ -5579,11 +5579,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 *
 		*/
 
-		const oldDueArr = TASKS.visibleToday( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, remAncObj );                 // What: Old Due Array. Why: This is exactly what RemSecCom is showing right now, before this generation's own anchor shift. How: This calls TASKS.visibleToday with the PRE-generate remAncObj.
-		const depTasArr = oldDueArr.filter( ( curTasObj ) => TASKS.isCompletedOnce( curTasObj ) ).map( ( curTasObj ) => curTasObj.id ); // What: Departing Task Array. Why: A completed one-time reminder is about to be purged and needs its own exit animation first. How: This filters oldDueArr down to completed-once entries, then maps to just their ids.
+		const oldDueArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, remAncObj );              // What: Old Due Array. Why: This is exactly what RemSecCom is showing right now, before this generation's own anchor shift. How: This calls TAS_NAM_OBJ.visTodFun with the PRE-generate remAncObj.
+		const depTasArr = oldDueArr.filter( ( curTasObj ) => TAS_NAM_OBJ.isaComFun( curTasObj ) ).map( ( curTasObj ) => curTasObj.id ); // What: Departing Task Array. Why: A completed one-time reminder is about to be purged and needs its own exit animation first. How: This filters oldDueArr down to completed-once entries, then maps to just their ids.
 
 		const oldDueSet = new Set( oldDueArr.map( ( curTasObj ) => curTasObj.id ) );                                                // What: Old Due Set. Why: The arrival diff below needs a fast membership check against the PRE-generate visible set. How: This collects every oldDueArr entry's own id.
-		const newDueArr = TASKS.visibleToday( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, genNowDat );             // What: New Due Array. Why: This is what becomes visible under the fresh, post-generate anchor. How: This calls TASKS.visibleToday with genNowDat as the anchor.
+		const newDueArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, genNowDat );          // What: New Due Array. Why: This is what becomes visible under the fresh, post-generate anchor. How: This calls TAS_NAM_OBJ.visTodFun with genNowDat as the anchor.
 		const ariTasArr = newDueArr.filter( ( curTasObj ) => !oldDueSet.has( curTasObj.id ) ).map( ( curTasObj ) => curTasObj.id ); // What: Arriving Task Array. Why: This is exactly which reminders are newly visible and deserve an entrance animation. How: This filters newDueArr down to ids absent from oldDueSet.
 
 

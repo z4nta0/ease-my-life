@@ -20,7 +20,7 @@ import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion
 import { RemLogCom    } from './day-log.jsx';             // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpen.
 import { sorEntFun    } from './ui.jsx';                  // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
 import { SorSelCom    } from './ui.jsx';                  // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
-import { TASKS        } from './tasks.js';                // What: Tasks. Why: Every due-ness, visibility, summary, and schedule computation in this file defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout every component below.
+import { TAS_NAM_OBJ  } from './tasks.js';                // What: Tasks Namespace Object. Why: Every due-ness, visibility, summary, and schedule computation in this file defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout every component below.
 import { useEscCanFun } from './ui.jsx';                  // What: Use Escape Cancel Function. Why: Both the quick-add form and EdiFooCom's own confirm flow need Escape to discard in-progress edits. How: This is called once each in EdiFooCom and RemSecCom.
 import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
@@ -36,14 +36,13 @@ import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip 
  * rendered in two places: Today's RemSecCom (the list atop Today,
  * plus its own quick-add form) and Data's RemManCom (full
  * management, including the scheduling editor). All scheduling logic
- * lives in tasks.js (TASKS); this file is presentation plus small
+ * lives in tasks.js (TAS_NAM_OBJ); this file is presentation plus small
  * local form state only.
  *
  * The exported RemSecCom, RemManCom, and SegConCom names
  * are a cross-file contract read directly by tab-today.jsx, tab-data.jsx,
  * cadence-control.jsx, and tab-settings.jsx. They are deliberately left
- * unrenamed on this formatting pass, the same way tasks.js's own TASKS
- * property names were left unrenamed on its own pass.
+ * unrenamed on this formatting pass.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -400,7 +399,7 @@ function nexDatFun ( nexDatObj, alwYeaBoo ) {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param visResObj - Visibility Resolved Object: {@link
- *                    TASKS.todayVisibility}'s own result object, carrying the
+ *                    TAS_NAM_OBJ.todVisFun}'s own result object, carrying the
  *                    causes array and holiday name fields this function reads.
  *
  * @returns The joined reason phrase, e.g. 'weekends and the Christmas
@@ -500,9 +499,9 @@ function reaPhrFun ( visResObj ) {
 function VisNotCom ( { tasRecObj, staAppObj, kinValStr, notIdeStr } ) {
 
 
-	const visResObj = tasRecObj && TASKS.todayVisibility // What: Visibility Result Object. Why: Every branch below reads this same computed visibility result. How: This calls TASKS.todayVisibility against tasRecObj's own schedule, or stays null when there's no task yet.
+	const visResObj = tasRecObj && TAS_NAM_OBJ.todVisFun // What: Visibility Result Object. Why: Every branch below reads this same computed visibility result. How: This calls TAS_NAM_OBJ.todVisFun against tasRecObj's own schedule, or stays null when there's no task yet.
 
-		? TASKS.todayVisibility( tasRecObj, staAppObj.reminderOpts, staAppObj.holidays )
+		? TAS_NAM_OBJ.todVisFun( tasRecObj, staAppObj.reminderOpts, staAppObj.holidays )
 		: null;
 
 	const nevShoBoo = !!visResObj && !visResObj.visible && !visResObj.next; // What: Never Show Boolean. Why: A reminder with no eligible day at all is a dead configuration, not a deferred one, and needs a red warning instead of the calm advisory. How: This is true only when visResObj exists, isn't visible, and has no next eligible date either.
@@ -547,8 +546,8 @@ function VisNotCom ( { tasRecObj, staAppObj, kinValStr, notIdeStr } ) {
 
 
 
-		const nexLabStr = nexDatFun( visResObj.next, tasRecObj.repeat === 'annual' ); // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own next date, always including the year for an annual reminder.
-		const kinWorStr = TASKS.isRecurring( tasRecObj ) ? 'recurring' : 'one-time';  // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TASKS.isRecurring.
+		const nexLabStr = nexDatFun( visResObj.next, tasRecObj.repeat === 'annual' );    // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own next date, always including the year for an annual reminder.
+		const kinWorStr = TAS_NAM_OBJ.isaRecFun( tasRecObj ) ? 'recurring' : 'one-time'; // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TAS_NAM_OBJ.isaRecFun.
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
 
@@ -703,8 +702,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 	const [ oncEdiBoo, setOncEdiBoo ] = React.useState( false ); // What: Once Editing Boolean And Setter. Why: A one-time reminder's own start date can likewise be amended inline. How: This toggles between the plain date link and a native date input in oncFieEle below.
 
-	const oncIsoStr = tasRecObj.onceDate || TASKS.isoToday(); // What: Once Iso String. Why: An older task may have no onceDate set at all. How: This falls back to TASKS.isoToday() when onceDate is missing.
-	const oncFutBoo = oncIsoStr > TASKS.isoToday();           // What: Once Future Boolean. Why: A one-time reminder defaults to due right away; this decides whether it's instead deferred to a future start date. How: This compares oncIsoStr against today's own iso string.
+	const oncIsoStr = tasRecObj.onceDate || TAS_NAM_OBJ.curIsoFun(); // What: Once Iso String. Why: An older task may have no onceDate set at all. How: This falls back to TAS_NAM_OBJ.curIsoFun() when onceDate is missing.
+	const oncFutBoo = oncIsoStr > TAS_NAM_OBJ.curIsoFun();           // What: Once Future Boolean. Why: A one-time reminder defaults to due right away; this decides whether it's instead deferred to a future start date. How: This compares oncIsoStr against today's own iso string.
 
 	const oncLabStr = ( () => { // What: Once Label String. Why: The start-date link's own visible text needs a locale-formatted date. How: This parses oncIsoStr into a real Date and formats it.
 
@@ -815,12 +814,12 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						className='rem-date-inline'
 						type='date'
 						value={ oncIsoStr }
-						min={ TASKS.isoToday() }
+						min={ TAS_NAM_OBJ.curIsoFun() }
 						autoFocus
 						onChange={ ( chaEveObj ) => { // What: Once Date Change Handler. Why: `min` only disables the picker UI's own earlier dates; typing a date by hand bypasses it in every browser, so a past pick still has to be clamped here. How: This commits chaEveObj's own value, clamped up to today when it's earlier.
 
 
-							if ( chaEveObj.target.value ) updPatFun( { onceDate : chaEveObj.target.value < TASKS.isoToday() ? TASKS.isoToday() : chaEveObj.target.value } ); // What: Clamped Commit Guard. Why: A typed-in date must still commit, but never earlier than today. How: This calls updPatFun only when a value exists, clamping it up to today when needed.
+							if ( chaEveObj.target.value ) updPatFun( { onceDate : chaEveObj.target.value < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : chaEveObj.target.value } ); // What: Clamped Commit Guard. Why: A typed-in date must still commit, but never earlier than today. How: This calls updPatFun only when a value exists, clamping it up to today when needed.
 
 
 						} }
@@ -1782,7 +1781,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 		const oveTexObj = ONB_RCT_OBJ[ tasRecObj.id ] || {}; // What: Override Text Object. Why: A sample's own launcher card copy can override the real schedule summary/name/time. How: This looks up tasRecObj's own id in ONB_RCT_OBJ, falling back to an empty object when there's no override.
-		const texDisObj = { kicStr : oveTexObj.kicker || TASKS.summary( tasRecObj ), namStr : oveTexObj.name || tasRecObj.name, timStr : oveTexObj.time }; // What: Text Display Object. Why: This resolves the 3 pieces of copy the card below actually renders, in one place. How: This falls back to the real schedule summary/name when no override was found, and leaves timStr undefined when none was given.
+		const texDisObj = { kicStr : oveTexObj.kicker || TAS_NAM_OBJ.sumTasFun( tasRecObj ), namStr : oveTexObj.name || tasRecObj.name, timStr : oveTexObj.time }; // What: Text Display Object. Why: This resolves the 3 pieces of copy the card below actually renders, in one place. How: This falls back to the real schedule summary/name when no override was found, and leaves timStr undefined when none was given.
 
 
 		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
@@ -1928,8 +1927,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 
-	const isaDonBoo = TASKS.isDoneToday( tasRecObj, cheDatObj ); // What: Is-A Done Boolean. Why: Both the card's own checkbox state and its "fresh" flourish depend on today's real completion state. How: This calls TASKS.isDoneToday against tasRecObj and cheDatObj.
-	const isaFreBoo = jusCheStr === tasRecObj.id && isaDonBoo;   // What: Is-A Fresh Boolean. Why: Only a reminder that was JUST checked (not one that was already done) should play the brief fresh flourish. How: This combines the jusCheStr match with isaDonBoo itself.
+	const isaDonBoo = TAS_NAM_OBJ.isaDonFun( tasRecObj, cheDatObj ); // What: Is-A Done Boolean. Why: Both the card's own checkbox state and its "fresh" flourish depend on today's real completion state. How: This calls TAS_NAM_OBJ.isaDonFun against tasRecObj and cheDatObj.
+	const isaFreBoo = jusCheStr === tasRecObj.id && isaDonBoo;       // What: Is-A Fresh Boolean. Why: Only a reminder that was JUST checked (not one that was already done) should play the brief fresh flourish. How: This combines the jusCheStr match with isaDonBoo itself.
 
 
 
@@ -1999,7 +1998,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 						size={ 12 }
 					/>{ /* What: Icon Svg Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
-					<span className='meta-picker'>{ TASKS.summary( tasRecObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TASKS.summary against tasRecObj. */ }
+					<span className='meta-picker'>{ TAS_NAM_OBJ.sumTasFun( tasRecObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRecObj. */ }
 
 
 				</div>
@@ -2151,8 +2150,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, logOpeBoo, onTogLogFun, leaTasSet, arvTasSet, actEdiStr, setActEdiStr, onPlaTutFun, onUncTutFun, cheExiBoo } ) {
 
 
-	const ancDatObj = TASKS.anchorDate( staAppObj.today && staAppObj.today.generatedAt );                           // What: Anchor Date Object. Why: A reminder due on a new day shouldn't appear until the generator actually runs on/after that day, exactly like picker entries. How: This calls TASKS.anchorDate against staAppObj's own last generation timestamp.
-	const dueTasArr = TASKS.visibleToday( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Due Task Array. Why: This is the real, non-sample reminder list this section actually renders. How: This calls TASKS.visibleToday against staAppObj's own tasks/reminderOpts/holidays, anchored to ancDatObj.
+	const ancDatObj = TAS_NAM_OBJ.ancDatFun( staAppObj.today && staAppObj.today.generatedAt );                         // What: Anchor Date Object. Why: A reminder due on a new day shouldn't appear until the generator actually runs on/after that day, exactly like picker entries. How: This calls TAS_NAM_OBJ.ancDatFun against staAppObj's own last generation timestamp.
+	const dueTasArr = TAS_NAM_OBJ.visTodFun( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Due Task Array. Why: This is the real, non-sample reminder list this section actually renders. How: This calls TAS_NAM_OBJ.visTodFun against staAppObj's own tasks/reminderOpts/holidays, anchored to ancDatObj.
 
 
 	const cheDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: Mini-tour launcher cards behave differently before vs. after the ORIGINAL first-time checklist concludes (see tutTasArr below). How: This reads staAppObj's own onboarding.checklistDone.
@@ -2242,7 +2241,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 
-	const staAddFun = () => { // What: Start Add Function. Why: Opening the quick-add form needs to build a fresh draft task, optionally pre-filled from a running mini-tour's own sample. How: This resolves the tour bus's own prefill (if any), builds a defaulted draft via TASKS.defaultTask, and claims the actEdiStr slot.
+	const staAddFun = () => { // What: Start Add Function. Why: Opening the quick-add form needs to build a fresh draft task, optionally pre-filled from a running mini-tour's own sample. How: This resolves the tour bus's own prefill (if any), builds a defaulted draft via TAS_NAM_OBJ.defTasFun, and claims the actEdiStr slot.
 
 
 		clearTimeout( cloTimRef.current ); // What: Stale Timer Clear. Why: A pending forced-close discard from a moment ago shouldn't wipe this fresh draft once it lands. How: This clears whatever timeout id cloTimRef currently holds.
@@ -2250,7 +2249,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 		const touBusObj = emlTouObj.get(); // What: Tour Bus Object. Why: A reminder mini-tour publishes the sample it's walking through here so the real "+" button (which the tour has the user click themselves) opens pre-filled with that sample's data instead of blank. How: This reads the shared tour bus's own current snapshot.
 
 
-		setDraTasObj( TASKS.defaultTask( { ...( touBusObj.prefill || { repeat : 'once' } ), ...( touBusObj.showChecklist ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own showChecklist is set.
+		setDraTasObj( TAS_NAM_OBJ.defTasFun( { ...( touBusObj.prefill || { repeat : 'once' } ), ...( touBusObj.showChecklist ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own showChecklist is set.
 
 		setAddCloBoo( false );          // What: Add Closing Flag Reset. Why: A freshly-opened form must not start out mid-close, in case a previous close was still in flight. How: This clears addCloBoo back to false.
 		setActEdiStr( 'reminder-add' ); // What: Active Editor Claim. Why: The quick-add form needs to claim the shared actEdiStr slot so every other open editor forces itself closed. How: This sets actEdiStr to the 'reminder-add' sentinel.
@@ -2285,7 +2284,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 	const onTogDonFun = ( curTasObj ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actStoObj.togTasFun, then stages jusCheStr only when curTasObj wasn't already done.
 
 
-		const wasDonBoo = TASKS.isDoneToday( curTasObj, ancDatObj ); // What: Was Done Boolean. Why: The fresh flourish must never replay for a reminder that was already checked before this toggle. How: This reads curTasObj's own done state before the toggle below applies.
+		const wasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, ancDatObj ); // What: Was Done Boolean. Why: The fresh flourish must never replay for a reminder that was already checked before this toggle. How: This reads curTasObj's own done state before the toggle below applies.
 
 
 		actStoObj.togTasFun( curTasObj.id ); // What: Toggle Done Call. Why: This is the actual state change every branch below reacts to. How: This calls actStoObj.togTasFun against curTasObj's own id.
@@ -2314,7 +2313,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 	const annAddFun = ( curTasObj ) => { // What: Announce Added Function. Why: This decides and stages the actual wording of the post-add announcement. How: This computes curTasObj's own real visibility, then picks a success or a "won't show today" message accordingly.
 
 
-		const visResObj = TASKS.todayVisibility( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Visibility Result Object. Why: The message below depends entirely on whether the new reminder is actually visible today. How: This calls TASKS.todayVisibility against curTasObj.
+		const visResObj = TAS_NAM_OBJ.todVisFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Visibility Result Object. Why: The message below depends entirely on whether the new reminder is actually visible today. How: This calls TAS_NAM_OBJ.todVisFun against curTasObj.
 		const nexLabStr = nexDatFun( visResObj.next, curTasObj.repeat === 'annual' );                     // What: Next Label String. Why: A hidden-today message should still say when the reminder WILL next appear, when known. How: This calls nexDatFun against visResObj's own next date.
 
 
@@ -2392,7 +2391,7 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 	useEscCanFun( visForBoo && !addCloBoo, canAddFun ); // What: Use Escape Cancel Function. Why: Escape should discard the quick-add regardless of what's been typed or which of its controls has focus. How: This calls canAddFun whenever the form is visible and not already mid-close.
 
 
-	const donCouNum = dueTasArr.filter( ( curTasObj ) => TASKS.isDoneToday( curTasObj, ancDatObj ) ).length;          // What: Done Count Number. Why: The header's own "N of M" count needs the real completed count among dueTasArr. How: This filters dueTasArr by TASKS.isDoneToday and reads the resulting length.
+	const donCouNum = dueTasArr.filter( ( curTasObj ) => TAS_NAM_OBJ.isaDonFun( curTasObj, ancDatObj ) ).length;      // What: Done Count Number. Why: The header's own "N of M" count needs the real completed count among dueTasArr. How: This filters dueTasArr by TAS_NAM_OBJ.isaDonFun and reads the resulting length.
 	const tutDonNum = tutTasArr.filter( ( curTasObj ) => !!ONB_CHE_OBJ.entLooFun( staAppObj, curTasObj.id ) ).length; // What: Tutorial Done Number. Why: A mini-tour launcher card resolved any of the 3 ways counts toward the same header total as a real completed card. How: This filters tutTasArr by ONB_CHE_OBJ.entLooFun and reads the resulting length.
 	const remTotNum = dueTasArr.length + tutTasArr.length;                                                            // What: Reminder Total Number. Why: The header's own "of M" total must include both real due reminders and any still-offered tutorial cards. How: This sums dueTasArr's own length and tutTasArr's own length.
 	const remDonNum = donCouNum + tutDonNum;                                                                          // What: Reminder Done Number. Why: The header's own "N of" count must likewise include both real completions and resolved tutorial cards. How: This sums donCouNum and tutDonNum.
@@ -2765,9 +2764,9 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 							{ ( () => { // What: Skip Confirm Content Function. Why: The confirm prompt's own wording depends on curTasObj's own next eligible day, computed once as an IIFE rather than inline in the JSX below. How: This resolves that next day, then returns the confirm/no-day-available markup.
 
 
-								const nexEliObj = TASKS.nextEligible( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date the Skip action would defer curTasObj to. How: This calls TASKS.nextEligible against curTasObj.
-								const tomIsoStr = TASKS.isoOf( new Date( Date.now() + 86400000 ) );                            // What: Tomorrow Iso String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
-								const nexIsoStr = nexEliObj ? TASKS.isoOf( nexEliObj ) : null;                                 // What: Next Iso String. Why: This is compared against tomIsoStr to decide the label below. How: This calls TASKS.isoOf against nexEliObj, or null when there's no eligible day at all.
+								const nexEliObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date the Skip action would defer curTasObj to. How: This calls TAS_NAM_OBJ.nexEliFun against curTasObj.
+								const tomIsoStr = TAS_NAM_OBJ.isoDatFun( new Date( Date.now() + 86400000 ) );                     // What: Tomorrow Iso String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
+								const nexIsoStr = nexEliObj ? TAS_NAM_OBJ.isoDatFun( nexEliObj ) : null;                          // What: Next Iso String. Why: This is compared against tomIsoStr to decide the label below. How: This calls TAS_NAM_OBJ.isoDatFun against nexEliObj, or null when there's no eligible day at all.
 
 								const skiLabStr = !nexEliObj ? null // What: Skip Label String. Why: This is the actual day named in the confirm prompt below, or null when there's nothing to skip to. How: This picks 'tomorrow' when nexIsoStr matches tomIsoStr, otherwise a full locale-formatted date, or null when nexEliObj itself is null.
 
@@ -3205,7 +3204,7 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
  * toggle, only a schedule and a today's-completion state, which isn't
  * the same thing) and no Group, so only Name and Type (One-time vs
  * Recurring) apply besides Date, the reminder's own next eligible
- * occurrence (TASKS.nextEligible), the same date a Skip confirm
+ * occurrence (TAS_NAM_OBJ.nexEliFun), the same date a Skip confirm
  * already computes elsewhere in this file. Labeled Soonest/Latest
  * rather than "Low to High"/"High to Low" like the numeric sorts
  * elsewhere, matching the app's own wording for date proximity (e.g.
@@ -3325,13 +3324,13 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 	const focInpRef = React.useRef( null ); // What: Focus Input Reference. Why: The open row's own name input focuses itself via a ref callback below instead of plain autoFocus, suppressing the browser's own instant focus-scroll so it doesn't fight the deliberate smooth scroll above. How: This is attached via that input's own ref callback in the render below.
 
 	const visTasArr = ( staAppObj.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden );                     // What: Visible Task Array. Why: A hidden (mini-tour-linked) task must never appear in this real management list. How: This filters staAppObj's own tasks by their own hidden flag.
-	const norOptObj = TASKS.normalizeOpts( staAppObj.reminderOpts );                                              // What: Normalized Options Object. Why: OptMatCom needs a fully-shaped { once, recurring } object even from an older or partial saved staAppObj. How: This calls TASKS.normalizeOpts against staAppObj's own reminderOpts.
+	const norOptObj = TAS_NAM_OBJ.norOptFun( staAppObj.reminderOpts );                                            // What: Normalized Options Object. Why: OptMatCom needs a fully-shaped { once, recurring } object even from an older or partial saved staAppObj. How: This calls TAS_NAM_OBJ.norOptFun against staAppObj's own reminderOpts.
 	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.reminders ) || 'name-asc'; // What: Item Sort String. Why: The Items list's own sort needs a persisted, defaulted value to drive both the sort control and the comparator below. How: This reads staAppObj's own ui.dataSort.reminders, falling back to 'name-asc'.
 
-	const tasDatMap = new Map( visTasArr.map( ( curTasObj ) => { // What: Task Date Map. Why: TASKS.nextEligible can walk up to ~3 years of days per call; computing every task's own next date once up front (rather than inside the comparator below, which runs it on every comparison) avoids doing that work redundantly. How: This maps each visible task to a [id, time] pair.
+	const tasDatMap = new Map( visTasArr.map( ( curTasObj ) => { // What: Task Date Map. Why: TAS_NAM_OBJ.nexEliFun can walk up to ~3 years of days per call; computing every task's own next date once up front (rather than inside the comparator below, which runs it on every comparison) avoids doing that work redundantly. How: This maps each visible task to a [id, time] pair.
 
 
-		const nexEliObj = TASKS.nextEligible( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date sorEntFun sorts by for the date-asc/date-desc options. How: This calls TASKS.nextEligible against curTasObj.
+		const nexEliObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date sorEntFun sorts by for the date-asc/date-desc options. How: This calls TAS_NAM_OBJ.nexEliFun against curTasObj.
 
 
 
@@ -3346,12 +3345,12 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 		{ // What: Row A Object. Why: sorEntFun needs a comparable shape for the left-hand side of this comparison. How: This builds it from tasAObj, with every field this shape doesn't use left null.
 
 
-			count    : null,                                                    // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
-			date     : tasDatMap.get( tasAObj.id ),                             // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasAObj's own precomputed next-eligible time from tasDatMap.
-			group    : null,                                                    // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
-			isActive : null,                                                    // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
-			name     : tasAObj.name,                                            // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasAObj's own name.
-			type     : TASKS.isRecurring( tasAObj ) ? 'Recurring' : 'One-time'  // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TASKS.isRecurring.
+			count    : null,                                                       // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
+			date     : tasDatMap.get( tasAObj.id ),                                // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasAObj's own precomputed next-eligible time from tasDatMap.
+			group    : null,                                                       // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
+			isActive : null,                                                       // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
+			name     : tasAObj.name,                                               // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasAObj's own name.
+			type     : TAS_NAM_OBJ.isaRecFun( tasAObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaRecFun.
 
 
 		},
@@ -3359,12 +3358,12 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 		{ // What: Row B Object. Why: sorEntFun needs a comparable shape for the right-hand side of this comparison. How: This builds it from tasBObj, mirroring Row A Object's own shape.
 
 
-			count    : null,                                                    // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
-			date     : tasDatMap.get( tasBObj.id ),                             // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasBObj's own precomputed next-eligible time from tasDatMap.
-			group    : null,                                                    // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
-			isActive : null,                                                    // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
-			name     : tasBObj.name,                                            // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasBObj's own name.
-			type     : TASKS.isRecurring( tasBObj ) ? 'Recurring' : 'One-time'  // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TASKS.isRecurring.
+			count    : null,                                                       // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
+			date     : tasDatMap.get( tasBObj.id ),                                // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasBObj's own precomputed next-eligible time from tasDatMap.
+			group    : null,                                                       // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
+			isActive : null,                                                       // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
+			name     : tasBObj.name,                                               // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasBObj's own name.
+			type     : TAS_NAM_OBJ.isaRecFun( tasBObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaRecFun.
 
 
 		},
@@ -3407,7 +3406,7 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 
-		const newIdeStr = 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The freshly-created reminder needs a real, unique id before actStoObj.addTasFun is ever called. How: This mints a random 'tk_'-prefixed id, the same scheme TASKS.defaultTask itself uses.
+		const newIdeStr = 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The freshly-created reminder needs a real, unique id before actStoObj.addTasFun is ever called. How: This mints a random 'tk_'-prefixed id, the same scheme TAS_NAM_OBJ.defTasFun itself uses.
 
 
 		actStoObj.addTasFun( { id : newIdeStr, name : 'New reminder', repeat : 'once' } ); // What: Add Task Call. Why: This is the actual creation of the new, minimal reminder. How: This calls actStoObj.addTasFun with newIdeStr, a placeholder name, and a plain 'once' repeat.
@@ -3741,7 +3740,7 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 															<span className='rd-name'>{ curTasObj.name }</span>{ /* What: Row Name Span Element. Why: This is the row's own primary text. How: This renders curTasObj's own name. */ }
 
-															<span className='rd-sched'>{ TASKS.summary( curTasObj ) }</span>{ /* What: Row Schedule Span Element. Why: This is the row's own secondary, schedule-summary text. How: This calls TASKS.summary against curTasObj. */ }
+															<span className='rd-sched'>{ TAS_NAM_OBJ.sumTasFun( curTasObj ) }</span>{ /* What: Row Schedule Span Element. Why: This is the row's own secondary, schedule-summary text. How: This calls TAS_NAM_OBJ.sumTasFun against curTasObj. */ }
 
 
 														</span>

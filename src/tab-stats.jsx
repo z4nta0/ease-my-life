@@ -16,7 +16,7 @@ import { InfTipCom    } from './ui.jsx';              // What: Info Tip Componen
 import { PilTagCom    } from './ui.jsx';              // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
 import { SED_NAM_OBJ  } from './seed.js';             // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
 import { STA_HEL_ARR  } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
-import { TASKS        } from './tasks.js';            // What: Tasks Namespace Object. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TASKS.normalizeOpts on the raw persisted reminderOpts.
+import { TAS_NAM_OBJ  } from './tasks.js';            // What: Tasks Namespace Object. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TAS_NAM_OBJ.norOptFun on the raw persisted reminderOpts.
 import { unhHisFun    } from './help-sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
 import { useEmlTouFun } from './eml-tour-bus.js';     // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
 
@@ -1058,7 +1058,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 	// #region Reminder Availability
 
-	const remOptObj = TASKS.normalizeOpts( staAppObj.reminderOpts );                                   // What: Reminder Options Object. Why: Which reminder types opt into Stats is a persisted setting that may be missing/partial on an older save. How: This normalizes the raw persisted reminderOpts via TASKS' own helper.
+	const remOptObj = TAS_NAM_OBJ.norOptFun( staAppObj.reminderOpts );                                 // What: Reminder Options Object. Why: Which reminder types opt into Stats is a persisted setting that may be missing/partial on an older save. How: This normalizes the raw persisted reminderOpts via TAS_NAM_OBJ' own helper.
 	const enaTypArr = [ 'once', 'recurring' ].filter( ( typCurStr ) => remOptObj[ typCurStr ].stats ); // What: Enabled Type Array. Why: Every reminder-scoped query below needs to know exactly which of the two types are opted into Stats. How: This keeps whichever of 'once'/'recurring' has its own stats flag turned on.
 	const remEnaBoo = enaTypArr.length > 0;                                                            // What: Reminder Enabled Boolean. Why: The whole Reminders scope, and its Type-row pill, should only exist once at least one reminder type opts in. How: This is true when enaTypArr isn't empty.
 

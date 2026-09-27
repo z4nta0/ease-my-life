@@ -18,7 +18,7 @@ import { PIC_NAM_OBJ } from './pickers.js';              // What: Pickers Namesp
 import { PWA_NAM_OBJ } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
 import { SED_NAM_OBJ } from './seed.js';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
 import { STG_NAM_OBJ } from './storage.js';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loaStaFun, wriStaFun, fluStaFun, and the reset/impDatFun actions below.
-import { TASKS       } from './tasks.js';                // What: Tasks. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migStaFun, stkRecFun, and the task actions below.
+import { TAS_NAM_OBJ } from './tasks.js';                // What: Tasks Namespace Object. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migStaFun, stkRecFun, and the task actions below.
 
 // #endregion Imports
 
@@ -1387,9 +1387,9 @@ function migStaFun( curStaObj ) {
 
 
 
-	if ( curStaObj && Array.isArray( curStaObj.tasks ) && TASKS ) { // What: Stale One-Time Task Purge Guard. Why: A one-time reminder completed on a previous day shouldn't linger forever. How: This drops every task TASKS itself considers stale-once.
+	if ( curStaObj && Array.isArray( curStaObj.tasks ) && TAS_NAM_OBJ ) { // What: Stale One-Time Task Purge Guard. Why: A one-time reminder completed on a previous day shouldn't linger forever. How: This drops every task TAS_NAM_OBJ itself considers stale-once.
 
-		curStaObj.tasks = curStaObj.tasks.filter( ( curTasObj ) => !TASKS.isStaleOnce( curTasObj ) ); // What: Stale-Once Filter. Why: Only TASKS itself knows the exact staleness rule for a one-time reminder. How: This keeps every task TASKS.isStaleOnce reports false for.
+		curStaObj.tasks = curStaObj.tasks.filter( ( curTasObj ) => !TAS_NAM_OBJ.isaStaFun( curTasObj ) ); // What: Stale-Once Filter. Why: Only TAS_NAM_OBJ itself knows the exact staleness rule for a one-time reminder. How: This keeps every task TAS_NAM_OBJ.isaStaFun reports false for.
 
 
 	}
@@ -1437,7 +1437,7 @@ function migStaFun( curStaObj ) {
 	 *
 	 * @summary
 	 * `interval` is reused for weekly/monthly/annual's own "every N
-	 * ___", but defaultTask has ALWAYS unconditionally set interval:2
+	 * ___", but defTasFun has ALWAYS unconditionally set interval:2
 	 * on every new task regardless of repeat kind (a leftover default
 	 * from when only the 'interval' repeat used it), so every pre-
 	 * existing weekly/monthly/annual reminder already carries a real
@@ -1467,7 +1467,7 @@ function migStaFun( curStaObj ) {
 
 
 
-	if ( curStaObj && TASKS ) curStaObj.reminderOpts = TASKS.normalizeOpts( curStaObj.reminderOpts ); // What: Reminder Options Normalize. Why: Per-type reminder participation options were added later; partial or absent state must get the full default switch set. How: This calls TASKS.normalizeOpts on whatever curStaObj.reminderOpts currently holds.
+	if ( curStaObj && TAS_NAM_OBJ ) curStaObj.reminderOpts = TAS_NAM_OBJ.norOptFun( curStaObj.reminderOpts ); // What: Reminder Options Normalize. Why: Per-type reminder participation options were added later; partial or absent state must get the full default switch set. How: This calls TAS_NAM_OBJ.norOptFun on whatever curStaObj.reminderOpts currently holds.
 
 
 
@@ -2219,13 +2219,13 @@ function stkRecFun( curStaObj, entArgArr, tasArgArr ) {
 	const hidPicSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
 	const visEntArr = ( entArgArr || [] ).filter( ( curEntObj ) => !curEntObj.pickerId || !hidPicSet.has( curEntObj.pickerId ) );              // What: Visible Entry Array. Why: An entry belonging to a hidden picker must not count toward, or block, the streak. How: This keeps every entry with no pickerId at all, or whose pickerId isn't in hidPicSet.
 
-	const curAncObj = TASKS.anchorDate( curStaObj.today && curStaObj.today.generatedAt );                             // What: Current Anchor Object. Why: Reminder eligibility below must be pinned to the last generation's own day, matching whatever RemSecCom is actually showing right now. How: This calls TASKS.anchorDate with today's own generatedAt.
-	const visTasArr = TASKS.visibleToday( tasArgArr, curStaObj.reminderOpts, curStaObj.holidays, curAncObj );         // What: Visible Task Array. Why: Only a reminder actually shown today can participate in the streak at all. How: This calls TASKS.visibleToday with curAncObj as the anchor.
-	const stkTasArr = visTasArr.filter( ( curTasObj ) => TASKS.optsFor( curTasObj, curStaObj.reminderOpts ).streak ); // What: Streak Task Array. Why: Only a reminder whose own type has the streak switch on actually counts. How: This filters visTasArr to those TASKS.optsFor reports streak:true for.
+	const curAncObj = TAS_NAM_OBJ.ancDatFun( curStaObj.today && curStaObj.today.generatedAt );                                // What: Current Anchor Object. Why: Reminder eligibility below must be pinned to the last generation's own day, matching whatever RemSecCom is actually showing right now. How: This calls TAS_NAM_OBJ.ancDatFun with today's own generatedAt.
+	const visTasArr = TAS_NAM_OBJ.visTodFun( tasArgArr, curStaObj.reminderOpts, curStaObj.holidays, curAncObj );              // What: Visible Task Array. Why: Only a reminder actually shown today can participate in the streak at all. How: This calls TAS_NAM_OBJ.visTodFun with curAncObj as the anchor.
+	const stkTasArr = visTasArr.filter( ( curTasObj ) => TAS_NAM_OBJ.optForFun( curTasObj, curStaObj.reminderOpts ).streak ); // What: Streak Task Array. Why: Only a reminder whose own type has the streak switch on actually counts. How: This filters visTasArr to those TAS_NAM_OBJ.optForFun reports streak:true for.
 
-	const hasAnyBoo = visEntArr.length > 0 || stkTasArr.length > 0;                                  // What: Has Any Boolean. Why: A day with nothing eligible on it at all can't claim a streak either way. How: This is true when either visEntArr or stkTasArr is non-empty.
-	const entDonBoo = visEntArr.every( ( curEntObj ) => curEntObj.done );                            // What: Entries Done Boolean. Why: The streak requires every visible entry to be done, not just some. How: This is true only when every entry in visEntArr is done.
-	const tasDonBoo = stkTasArr.every( ( curTasObj ) => TASKS.isDoneToday( curTasObj, curAncObj ) ); // What: Tasks Done Boolean. Why: The streak requires every streak-counting reminder to be done today too. How: This is true only when every task in stkTasArr is done as of curAncObj.
+	const hasAnyBoo = visEntArr.length > 0 || stkTasArr.length > 0;                                      // What: Has Any Boolean. Why: A day with nothing eligible on it at all can't claim a streak either way. How: This is true when either visEntArr or stkTasArr is non-empty.
+	const entDonBoo = visEntArr.every( ( curEntObj ) => curEntObj.done );                                // What: Entries Done Boolean. Why: The streak requires every visible entry to be done, not just some. How: This is true only when every entry in visEntArr is done.
+	const tasDonBoo = stkTasArr.every( ( curTasObj ) => TAS_NAM_OBJ.isaDonFun( curTasObj, curAncObj ) ); // What: Tasks Done Boolean. Why: The streak requires every streak-counting reminder to be done today too. How: This is true only when every task in stkTasArr is done as of curAncObj.
 
 	const nowDonBoo = hasAnyBoo && entDonBoo && tasDonBoo; // What: Now Done Boolean. Why: The final streak verdict needs all 3 conditions to hold at once. How: This combines hasAnyBoo/entDonBoo/tasDonBoo with &&.
 
@@ -3573,11 +3573,11 @@ function useAppStaFun( optArgObj ) {
 
 
 
-		addTasFun : ( tasArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Task Function. Why: Hidden reminders (onboarding's own sample reminders, plus any real reminder still hidden pending the checklist's closing Generate step) are excluded from the sibling-name check, same policy as addPicFun's own uniNamFun call, otherwise the FIRST real reminder a tutorial ever creates would collide with its own still-hidden sample template. How: This builds a default task via TASKS.defaultTask, resolves tasArgObj.replaceId, de-duplicates its own name, then replaces or prepends it.
+		addTasFun : ( tasArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Task Function. Why: Hidden reminders (onboarding's own sample reminders, plus any real reminder still hidden pending the checklist's closing Generate step) are excluded from the sibling-name check, same policy as addPicFun's own uniNamFun call, otherwise the FIRST real reminder a tutorial ever creates would collide with its own still-hidden sample template. How: This builds a default task via TAS_NAM_OBJ.defTasFun, resolves tasArgObj.replaceId, de-duplicates its own name, then replaces or prepends it.
 
 
-			const newTasObj = TASKS.defaultTask( tasArgObj );      // What: New Task Object. Why: TASKS itself owns the real default shape for a brand-new task. How: This calls TASKS.defaultTask with the given tasArgObj.
-			const tasIdeStr = tasArgObj.replaceId || newTasObj.id; // What: Task Identifier String. Why: A replace keeps the existing id alive; a fresh add uses the one TASKS.defaultTask just minted. How: This prefers tasArgObj.replaceId, else newTasObj's own id.
+			const newTasObj = TAS_NAM_OBJ.defTasFun( tasArgObj );  // What: New Task Object. Why: TAS_NAM_OBJ itself owns the real default shape for a brand-new task. How: This calls TAS_NAM_OBJ.defTasFun with the given tasArgObj.
+			const tasIdeStr = tasArgObj.replaceId || newTasObj.id; // What: Task Identifier String. Why: A replace keeps the existing id alive; a fresh add uses the one TAS_NAM_OBJ.defTasFun just minted. How: This prefers tasArgObj.replaceId, else newTasObj's own id.
 			const finTasObj = { ...newTasObj, id : tasIdeStr };    // What: Final Task Object. Why: The task actually written must carry tasIdeStr, not necessarily newTasObj's own freshly-minted one. How: This spreads newTasObj with id overridden.
 
 			const sibNamArr = curStaObj.tasks.filter( ( curTasObj ) => curTasObj.id !== tasIdeStr && !curTasObj.hidden ).map( ( curTasObj ) => curTasObj.name ); // What: Sibling Name Array. Why: The de-duplication below must exclude both this task itself and every hidden (invisible) reminder. How: This filters curStaObj.tasks down to visible siblings, then maps to their own names.
@@ -3658,7 +3658,7 @@ function useAppStaFun( optArgObj ) {
 		setOptFun : ( tasTypStr, optKeyStr, optValBoo ) => setAppStaObj( ( curStaObj ) => { // What: Set Option Function. Why: This flips one participation switch for a reminder type ('once' | 'recurring'), without callers re-specifying every other switch. How: This normalizes the current options, then merges one key onto the matching type's own sub-object.
 
 
-			const norOptObj = TASKS.normalizeOpts( curStaObj.reminderOpts ); // What: Normalized Options Object. Why: A patch must be applied against the FULL, normalized switch set, never a possibly-partial raw one. How: This calls TASKS.normalizeOpts with curStaObj's own reminderOpts.
+			const norOptObj = TAS_NAM_OBJ.norOptFun( curStaObj.reminderOpts ); // What: Normalized Options Object. Why: A patch must be applied against the FULL, normalized switch set, never a possibly-partial raw one. How: This calls TAS_NAM_OBJ.norOptFun with curStaObj's own reminderOpts.
 
 
 
@@ -3696,11 +3696,11 @@ function useAppStaFun( optArgObj ) {
 				{ // What: Skip Row Object. Why: This is the one reminderSkipLog row recording this skip. How: This bundles the task's own id/name/type with a fresh row id and timestamp.
 
 
-					name      : curTasObj.name,                                       // What: Name. Why: The skip row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
-					rowId     : 'rs_' + Math.random().toString( 36 ).slice( 2, 9 ),   // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rs_' id.
-					skippedAt : new Date().toISOString(),                             // What: Skipped At. Why: Stats needs the exact moment of the skip. How: This stamps the current time as an ISO string.
-					taskId    : tarIdeStr,                                            // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
-					type      : TASKS.isRecurring( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies skips separately for one-time and recurring reminders. How: This is 'recurring' when TASKS.isRecurring says so, else 'once'.
+					name      : curTasObj.name,                                           // What: Name. Why: The skip row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
+					rowId     : 'rs_' + Math.random().toString( 36 ).slice( 2, 9 ),       // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rs_' id.
+					skippedAt : new Date().toISOString(),                                 // What: Skipped At. Why: Stats needs the exact moment of the skip. How: This stamps the current time as an ISO string.
+					taskId    : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
+					type      : TAS_NAM_OBJ.isaRecFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies skips separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaRecFun says so, else 'once'.
 
 
 				}
@@ -3738,8 +3738,8 @@ function useAppStaFun( optArgObj ) {
 		 * for that reminder. Either way the streak is reconciled, since
 		 * reminders count toward the daily streak per their own type's
 		 * switch, but the Stats log itself is kept regardless of the
-		 * Stats toggle. Stamped against the generator's own day (TASKS.
-		 * anchorDate), not live real time, since Today's own reminders
+		 * Stats toggle. Stamped against the generator's own day
+		 * (TAS_NAM_OBJ.ancDatFun), not live real time, since Today's own reminders
 		 * list is itself pinned to the last generation, so "done" must
 		 * agree with whatever day that list is currently showing.
 		 *
@@ -3755,9 +3755,9 @@ function useAppStaFun( optArgObj ) {
 
 
 
-			const curAncObj = TASKS.anchorDate( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Every day-comparison below must be pinned to the last generation's own day, not live "now". How: This calls TASKS.anchorDate with today's own generatedAt.
-			const curDayStr = TASKS.isoOf( curAncObj );                                           // What: Current Day String. Why: Both the lastDone stamp and the completion-log row below need this exact ISO day. How: This calls TASKS.isoOf with curAncObj.
-			const wasDonBoo = TASKS.isDoneToday( curTasObj, curAncObj );                          // What: Was Done Boolean. Why: Every branch below depends on which direction this toggle is heading. How: This calls TASKS.isDoneToday with curTasObj and curAncObj.
+			const curAncObj = TAS_NAM_OBJ.ancDatFun( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Every day-comparison below must be pinned to the last generation's own day, not live "now". How: This calls TAS_NAM_OBJ.ancDatFun with today's own generatedAt.
+			const curDayStr = TAS_NAM_OBJ.isoDatFun( curAncObj );                                      // What: Current Day String. Why: Both the lastDone stamp and the completion-log row below need this exact ISO day. How: This calls TAS_NAM_OBJ.isoDatFun with curAncObj.
+			const wasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, curAncObj );                           // What: Was Done Boolean. Why: Every branch below depends on which direction this toggle is heading. How: This calls TAS_NAM_OBJ.isaDonFun with curTasObj and curAncObj.
 
 			const nexTasArr = curStaObj.tasks.map( ( tasMapObj ) => // What: Next Task Array. Why: Only the toggled task's own lastDone actually changes. How: This maps curStaObj.tasks, setting lastDone to null (un-checking) or curDayStr (completing) on the one matching task.
 				tasMapObj.id === tarIdeStr ? { ...tasMapObj, lastDone : wasDonBoo ? null : curDayStr } : tasMapObj );
@@ -3769,7 +3769,7 @@ function useAppStaFun( optArgObj ) {
 
 
 				nexLogArr = nexLogArr.filter( ( curRowObj ) => // What: Completion Row Void. Why: Un-checking means today's own completion never happened. How: This drops the row whose taskId matches tarIdeStr and whose completedAt falls on curDayStr.
-					!( curRowObj.taskId === tarIdeStr && TASKS.isoOf( new Date( curRowObj.completedAt ) ) === curDayStr ) );
+					!( curRowObj.taskId === tarIdeStr && TAS_NAM_OBJ.isoDatFun( new Date( curRowObj.completedAt ) ) === curDayStr ) );
 
 
 			}
@@ -3785,11 +3785,11 @@ function useAppStaFun( optArgObj ) {
 					{ // What: Completion Row Object. Why: This is the one reminderLog row recording this completion. How: This bundles the task's own id/name/type with a fresh row id and timestamp.
 
 
-						completedAt : new Date().toISOString(),                             // What: Completed At. Why: Stats needs the exact moment of the completion. How: This stamps the current time as an ISO string.
-						name        : curTasObj.name,                                       // What: Name. Why: The row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
-						rowId       : 'rl_' + Math.random().toString( 36 ).slice( 2, 9 ),   // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rl_' id.
-						taskId      : tarIdeStr,                                            // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
-						type        : TASKS.isRecurring( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies completions separately for one-time and recurring reminders. How: This is 'recurring' when TASKS.isRecurring says so, else 'once'.
+						completedAt : new Date().toISOString(),                                 // What: Completed At. Why: Stats needs the exact moment of the completion. How: This stamps the current time as an ISO string.
+						name        : curTasObj.name,                                           // What: Name. Why: The row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
+						rowId       : 'rl_' + Math.random().toString( 36 ).slice( 2, 9 ),       // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rl_' id.
+						taskId      : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
+						type        : TAS_NAM_OBJ.isaRecFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies completions separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaRecFun says so, else 'once'.
 
 
 					}
@@ -4779,7 +4779,7 @@ function useAppStaFun( optArgObj ) {
 
 
 
-			const nexTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TASKS.isCompletedOnce( curTasObj ) ); // What: Next Task Array. Why: Every Generate also drops completed one-time reminders outright, rather than waiting for a future reload/day-change. How: This keeps every task TASKS.isCompletedOnce reports false for.
+			const nexTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TAS_NAM_OBJ.isaComFun( curTasObj ) ); // What: Next Task Array. Why: Every Generate also drops completed one-time reminders outright, rather than waiting for a future reload/day-change. How: This keeps every task TAS_NAM_OBJ.isaComFun reports false for.
 
 
 

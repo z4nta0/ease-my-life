@@ -10,7 +10,7 @@ import { CAD_NAM_OBJ } from './cadence.js';      // What: Cadence. Why: An ease-
 import { ColDisCom   } from './ui.jsx';          // What: Collapse Disclosure Component. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
 import { CON_NAM_OBJ } from './conditionals.js'; // What: Conditionals. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
 import { InfTipCom   } from './ui.jsx';          // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
-import { TASKS       } from './tasks.js';        // What: Tasks. Why: RemLogCom needs the reminders engine's own scheduling helpers (anchorDate, visibleToday, isDoneToday, nextEligible, summary). How: These are called throughout RemLogCom below.
+import { TAS_NAM_OBJ } from './tasks.js';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
 
 // #endregion Imports
 
@@ -1364,7 +1364,7 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
  * The Reminders section's own log panel, listing every non-hidden
  * task/reminder with its own current status (done/due today/skipped/
  * not yet due) and, for a not-yet-due one, a short relative due label.
- * Pinned to the last generation's own anchor date (TASKS.anchorDate),
+ * Pinned to the last generation's own anchor date (TAS_NAM_OBJ.ancDatFun),
  * not live "now", since this panel is a snapshot of the Reminders
  * section right above it, itself frozen to the last generate() call
  * until the next one runs.
@@ -1387,11 +1387,11 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
 function RemLogCom ( { state, onClose } ) {
 
 
-	const ancDatObj = TASKS.anchorDate( state.today && state.today.generatedAt );                       // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TASKS.anchorDate with state's own today.generatedAt, if any.
-	const dayKeyStr = isoDayFun( ancDatObj );                                                           // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
-	const tasListArr = ( state.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden );              // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters state's own tasks down to the non-hidden ones.
-	const visTasArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TASKS.visibleToday with state's own tasks/reminderOpts/holidays and ancDatObj.
-	const visIdeSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );                        // What: Visible Identifier Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
+	const ancDatObj = TAS_NAM_OBJ.ancDatFun( state.today && state.today.generatedAt );                     // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TAS_NAM_OBJ.ancDatFun with state's own today.generatedAt, if any.
+	const dayKeyStr = isoDayFun( ancDatObj );                                                              // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
+	const tasListArr = ( state.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden );                 // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters state's own tasks down to the non-hidden ones.
+	const visTasArr = TAS_NAM_OBJ.visTodFun( state.tasks, state.reminderOpts, state.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TAS_NAM_OBJ.visTodFun with state's own tasks/reminderOpts/holidays and ancDatObj.
+	const visIdeSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );                           // What: Visible Identifier Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
 
 
 	const skiIdeSet = new Set( // What: Skipped Identifier Set. Why: The status below needs to know which tasks were manually skipped specifically today. How: This filters state's own reminderSkipLog down to today's own rows, then maps to their own taskId.
@@ -1408,7 +1408,7 @@ function RemLogCom ( { state, onClose } ) {
 	const remRowArr = tasListArr.map( ( curTasObj ) => { // What: Reminder Row Array. Why: One display row is needed per task/reminder in tasListArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
 
 
-		const tasDonBoo = TASKS.isDoneToday( curTasObj, ancDatObj ); // What: Task Done Boolean. Why: A done task always outranks every other status below. How: This calls TASKS.isDoneToday for curTasObj/ancDatObj.
+		const tasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, ancDatObj ); // What: Task Done Boolean. Why: A done task always outranks every other status below. How: This calls TAS_NAM_OBJ.isaDonFun for curTasObj/ancDatObj.
 
 		let rowStaStr = 'notdue'; // What: Row Status String And Fallthrough. Why: Every task starts as not-yet-due until one of the checks below says otherwise. How: This is overwritten by whichever of the 3 checks below matches first.
 
@@ -1427,7 +1427,7 @@ function RemLogCom ( { state, onClose } ) {
 		if ( rowStaStr === 'notdue' ) { // What: Not Due Guard. Why: A relative due label only makes sense for a task that is neither done, skipped, nor due today. How: This computes and assigns dueLabStr only while rowStaStr is still 'notdue'.
 
 
-			const nexDatObj = TASKS.nextEligible( curTasObj, state.reminderOpts, state.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TASKS.nextEligible with respectSkipUntil set true.
+			const nexDatObj = TAS_NAM_OBJ.nexEliFun( curTasObj, state.reminderOpts, state.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TAS_NAM_OBJ.nexEliFun with respectSkipUntil set true.
 
 			dueLabStr = forDueFun( nexDatObj, dayKeyStr ); // What: Due Label String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls forDueFun with nexDatObj and dayKeyStr.
 
@@ -1436,7 +1436,7 @@ function RemLogCom ( { state, onClose } ) {
 
 
 
-		return { tasObj : curTasObj, rowStaStr : rowStaStr, dueLabStr : dueLabStr, wheStr : TASKS.summary( curTasObj ) }; // What: Reminder Row Return. Why: The render below needs exactly these 4 fields per row. How: This bundles curTasObj alongside its own computed rowStaStr/dueLabStr and TASKS.summary's own schedule text.
+		return { tasObj : curTasObj, rowStaStr : rowStaStr, dueLabStr : dueLabStr, wheStr : TAS_NAM_OBJ.sumTasFun( curTasObj ) }; // What: Reminder Row Return. Why: The render below needs exactly these 4 fields per row. How: This bundles curTasObj alongside its own computed rowStaStr/dueLabStr and TAS_NAM_OBJ.sumTasFun's own schedule text.
 
 
 	} );
