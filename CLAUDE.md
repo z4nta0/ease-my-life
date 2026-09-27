@@ -1265,7 +1265,12 @@ under the old rule keeps it only if it passes the test below.
   "Object-literal variant" under "### Sectioning / fold regions", i.e.
   `store.js`'s own `actStoObj`) has each entry judged by the test above,
   exactly like a standalone function, since those entries are the app's
-  own action API, called by name from every tab.
+  own action API, called by name from every tab. The "Always gets one"
+  bullet's own "called from another file" clause doesn't apply to these
+  entries (every action is called from another file, which would force
+  a JSDoc onto even a one-line setter); the test alone decides, e.g.
+  `togDonFun` and `delPicFun` get one, `setTheFun` and `revIteFun`
+  don't.
 - **Everything that qualifies gets the full template**: name line,
   `@summary`, `@author`, `@param`, `@returns`, and `@example`, exactly as
   described below, however short the function is. A function written as a
@@ -2459,7 +2464,12 @@ branch lines are a tightly-grouped run, so their comments are
 column-aligned with each other (the opening line keeps its own single
 space), with the same exception as any other run: skip the alignment
 when the longest branch's code is more than 100 characters longer than
-the shortest's. See
+the shortest's. An object literal sitting directly in a `?`/`:` branch
+stays on that branch's one line even when its values are non-trivial,
+an exemption from the "2+ properties with a non-trivial value go
+multi-line" rule under "### Arrays and objects" (decided 2026-09-27), so
+the ternary still reads as one unit; e.g. `store.js`'s own `togDonFun`
+live-row toggle. See
 `tab-conditional.jsx`'s own `sooSubStr`/`latSubStr` for the reference
 example:
 ```
@@ -4450,8 +4460,10 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `tab-today.jsx`'s own `groBucObj`, a bucket pulled from
     `groBucMap`). Recurring, whose literal first 3 letters are also
     `rec`, takes Phase A's `reu` instead (Recurring's 4th letter), e.g.
-    `tasks.js`'s own `isaReuFun`. Scoped to ease-my-life ONLY, for the
-    same reason as `rmn`/`rmv`.
+    `tasks.js`'s own `isaReuFun`. Reconcile, whose Phase A letters all
+    collide (`reo` is Reopen, `ren` is Rename), uses its synonym Sync
+    instead, e.g. `store.js`'s own `stkSynFun`. Scoped to ease-my-life
+    ONLY, for the same reason as `rmn`/`rmv`.
   - **When even the escalation letters collide, pick a different word
     entirely rather than force one through**: `tab-today.jsx`'s own
     `rndOrdRef`/`rndArr` (holding the group order actually rendered to
@@ -4610,7 +4622,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     constrained key stays exactly as it is, and a destructuring reader
     aliases it instead. An object read only through dot access, never
     destructured, keeps the normal 6-character keys. See `store.js`'s own
-    `stkRecFun` for the reference example: its `{ stkClaBoo, stkValNum }`
+    `stkSynFun` for the reference example: its `{ stkClaBoo, stkValNum }`
     return shape matches the local variables of the same names inside the
     function itself, and each of its 4 callers destructures it with
     shorthand, then writes the persisted `streak`/`streakClaimed` state
