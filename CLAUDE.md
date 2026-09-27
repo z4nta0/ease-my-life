@@ -1147,7 +1147,11 @@ src/
     isaDisBoo }`), a bare reference to a named function or variable
     (`onBlur={ cmtTexFun }`, which carries its own comment where it's
     declared), and a single call whose name and arguments already say
-    everything (`onClick={ () => togDayFun( dayIndNum ) }`). The comment
+    everything (`onClick={ () => togDayFun( dayIndNum ) }`), and a
+    `className` whose only ternary/`&&` toggles a modifier class on or
+    off (`${ isaPadBoo ? 'card--p' : '' }`), since the class name reads
+    for itself (decided 2026-09-27); a `className` ternary whose branches
+    are anything more than a class or `''` still gets one. The comment
     is a normal trailing `// What: ...` one space after the attribute's
     own value, never column-aligned with other attributes (most of an
     element's attributes have no comment, so a shared column would be
