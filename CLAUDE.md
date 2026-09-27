@@ -272,6 +272,47 @@ moment. Once an answer is given, write the new rule into this file, in
 whichever section it belongs, before or alongside applying it, so the
 decision is captured for next time instead of getting re-asked later.
 
+### Rendered output always wins
+No formatting rule in this doc (spacing, line breaks, alignment, wrapping,
+reordering) is ever applied where it would change what the app actually
+displays or does. Where a rule and the rendered output conflict, the code
+stays exactly as written. See the display exemption under "### JSX" for
+the most common case (inline JSX text runs, where JSX drops whitespace that
+contains a line break).
+
+### Pre-commit rule check
+Added 2026-09-26. Whenever any code is added or changed, for any reason (a
+feature, a bug fix, a refactor, not only a formatting pass), the last step
+before committing is a check of just the new/changed code against every
+rule in "## Copy rules" and "## Code formatting rules". Take the changed
+lines from `git diff` (staged and unstaged), check them, fix anything that
+doesn't comply, and only then commit, the same way the commit message
+itself gets its own mandatory self-check.
+- **Scope**: the added/changed lines, plus whatever they directly affect
+  around them, since a change can break a rule on a line it didn't touch:
+  the column alignment of the run a changed line sits in, the blank-line
+  gaps on either side of it, the enclosing function's own JSDoc and region
+  when its signature or behavior changed, the file's import lines (an
+  import can go unused, or a new one needs its place in the group),
+  anything referencing a renamed identifier, and the file's own export
+  statement. Untouched code elsewhere in the file is out of scope; a
+  violation noticed there is fixed separately, not folded into this
+  commit.
+- **What to check, at minimum**: naming (the 9-character/3-segment rule,
+  every segment against the Known miscorrections list, the project-scoped
+  overrides), a correct one-line What/Why/How comment on every line that
+  needs one (including the JSX comment self-audit greps under "###
+  Comments"), JSDoc/region qualification for any new or changed function,
+  blank-line spacing and alignment, attribute tiers and alphabetical order,
+  object/destructuring alphabetization, quotes and parentheses spacing,
+  imports and exports, the File/Directory structure placement of any new
+  file, no em dashes in any new prose, and that nothing changes what the
+  app renders or does beyond the change itself (see "### Rendered output
+  always wins").
+- **Report it**: when reporting the commit, say the check was run and what
+  it caught and fixed, if anything, so a skipped check is visible the same
+  way a commit message drift is.
+
 ### Import statements
 - One imported binding per `import` statement, even when multiple bindings
   come from the same source — never combine them into one `import { A, B }`
@@ -372,6 +413,195 @@ decision is captured for next time instead of getting re-asked later.
   lines accounts for that automatic extra row, landing on the same
   3-empty-row visual result the start-of-file rule specifies, without
   actually being 3 blank lines in the file's own written content.
+
+### File structure
+Rules for what a file holds and the order its contents appear in. Written
+2026-09-26, after the last manual file review: the first five bullets are
+applied during the final file-by-file pass, and the last two ("What a file
+holds" and "File size") during a separate pass that follows it, since they
+can move code between files rather than just within one.
+- **Section order.** After the `// #region Imports` block and the file's
+  own header comment, a file's top-level contents always appear in this
+  order, skipping any section the file doesn't need:
+  1. **Constants**: `ALL_CAPS` values and lookup tables.
+  2. **Module state**: module-level `let` bindings, `window.__` globals
+     and their one-time setup.
+  3. **Helpers**: plain, non-component functions (formatters, math,
+     comparators, ...).
+  4. **Hooks**: this file's own custom `useXxxFun` hooks.
+  5. **Components**: private sub-components first, then the main/exported
+     ones.
+  6. **Module init**: code that runs once on load, e.g. an IIFE or a
+     document-level listener registration.
+  7. **Exports**: the single export statement (or the namespace object
+     followed by its export), per "### Exports" above.
+  The order follows the dependency direction: constants feed helpers,
+  helpers feed hooks, hooks feed components.
+- **Order within a section: define before use.** Anything a declaration
+  reads sits above it, so a reader never has to scroll down to learn what
+  a name means, and a `const` is never read before its own line. When two
+  declarations in the same section don't depend on each other, they're
+  alphabetized (case-insensitive) as the tie-break.
+- **Section regions.** A file with at least 2 of the sections above wraps
+  each of them in a `// #region <Section>` / `// #endregion <Section>`
+  pair, whatever the file's length, using the section's own name from the list above (`// #region
+  Constants`, `// #region Components`, ...), so the whole file collapses
+  to its outline. Spacing matches every other region: 1 blank line
+  between each marker and the content it wraps, 3 blank lines between one
+  section's `#endregion` and the next section's `#region`. Every region
+  already defined elsewhere in this doc (a function's own region, a
+  section-intro region, ...) nests inside its section's region unchanged,
+  and the contents of each section are further sectioned by purpose where
+  that makes sense (see "### Sectioning / fold regions"). A file with only
+  one section has no section regions.
+- **Design-rationale comments travel with their declaration.** A `/** ...
+  */` block attached to a constant, helper, or component moves with it
+  wherever the section order puts it; it never stays behind as a
+  free-standing block. A file with section regions also lists its
+  sections, in order, in its own file-level header comment, as a table of
+  contents.
+- **Extension and naming.** A file uses `.jsx` only when it actually
+  contains JSX, and `.js` otherwise. Every filename is kebab-case
+  (`tab-today.jsx`, `onboarding-seed-data.js`). Renaming a file means
+  updating every import of it in the same change.
+- **What a file holds.** A file is either one domain module (a family of
+  related pure functions/constants, usually exported as one namespace
+  object, e.g. `cadence.js`) or one main component plus the private
+  sub-components only it uses (e.g. a tab file). A sub-component used by 2
+  or more files moves to a shared file instead of being exported from the
+  file it happens to live in, the way `ui.jsx` holds the app-wide
+  primitives. Where that shared file lives follows the directory structure
+  rules.
+- **File size.** Whenever it makes logical sense for a block of code to
+  live in its own file, it moves there: a self-contained sub-component
+  (together with the constants, helpers, and hooks only it uses), a
+  distinct sub-concern of a domain module (e.g. one family of `store.js`'s
+  own actions), or a distinct section of a large data catalog. This is a
+  judgment call about cohesion, not a line count. Length is only a
+  guideline for when to look: a file past roughly 2,000 lines is a strong
+  signal that something in it probably belongs in its own file, but a
+  longer file that's genuinely one cohesive unit stays whole, and a shorter
+  one still splits when part of it clearly stands on its own. Each
+  extracted file follows every rule in this section on its own, including
+  its own file-level header comment, and lives where the directory
+  structure rules put it. A split must not change behavior: any value a
+  sub-component used to read from its enclosing scope becomes a real prop,
+  and the result is verified against the pre-split build the same way a
+  rename is.
+
+### Directory structure
+Where each file lives under `src/`. Written 2026-09-26; applied in the same
+pass as the "What a file holds" and "File size" rules above (after the final
+file-by-file pass), since moving files and splitting them both rewrite import
+paths across the codebase. The target layout for this project:
+```
+src/
+  main.jsx               entry point
+  app.jsx                root component + tab bar
+  constants.js           app-wide constants
+  utils/                 app-agnostic pure helpers (see below)
+  core/                  pure domain logic, no React
+  state/                 app state and persistence (store, storage, seed)
+  platform/              browser services (notify, pwa, appearance)
+  ui/                    shared primitives and shared editors
+  tabs/
+    today/  pickers/  stats/  data/  settings/
+  onboarding/            every onboarding file + the tour bus
+  help/                  help mode, its catalog, its sample data
+  styles/                global CSS only (tokens, base, fonts)
+  assets/                shared images, icons, fonts (imported, never public/)
+```
+- **Placement.** A file used by only one feature (one tab, onboarding, or
+  help) lives in that feature's own folder. A file used by 2 or more
+  features lives in the shared folder that matches what it is: `ui/` for
+  components and UI behavior, `state/` for app state, `platform/` for
+  browser services, `core/` for domain logic, `utils/` for app-agnostic
+  helpers. This is where files extracted under "What a file holds" and
+  "File size" land.
+- **`utils/` holds only app-agnostic pure helpers**: code that could be
+  copied into a different project unchanged, with no domain knowledge, no
+  app state, no React components, and no reliance on app globals. It's
+  grouped by kind (`utils/date.js`, `utils/format.js`, ...). Something
+  that merely looks generic but encodes this app's own vocabulary or
+  globals goes elsewhere (e.g. `sorEntFun`, which encodes the Data tab's
+  sort keys, belongs in `tabs/data/`). In this project, the date helpers
+  duplicated between `tasks.js` and `cadence.js` (`nwmDayFun`,
+  `ordSufFun`, `dimCouFun`, the ISO date formatter) move into a shared
+  `utils/date.js` both import, and `ui.jsx`'s date formatters and
+  `redMotFun` move to `utils/` too.
+- **Dependency direction.** A folder imports only from itself or from
+  folders below it in this order: `tabs/`, `onboarding/`, `help/` (top);
+  then `ui/`; then `state/` and `platform/`; then `core/`; then `utils/`
+  (bottom). `utils/` never imports anything from `src/`; `core/` never
+  imports React; no tab imports from another tab. `main.jsx`, `app.jsx`,
+  and `constants.js` sit outside the order: `app.jsx` may import from any
+  folder, and `constants.js` may be imported by any.
+- **No redundant prefixes.** A file inside a folder drops whatever prefix
+  the folder already says (`onboarding/onboarding-tour-runner.jsx` becomes
+  `onboarding/tour-runner.jsx`), the same reasoning as the naming rule that
+  drops a word the import path already conveys. Exception: a tab's main
+  file keeps its `tab-` name (`tabs/today/tab-today.jsx`) so a search for
+  a tab's file lands on it directly.
+- **Folder names** are lowercase kebab-case and short, plural only when
+  the folder holds many of one kind of thing (`tabs/`).
+- **No barrel files.** No `index.js` that just re-exports a folder's
+  contents; every import names the real file, so the import line alone
+  answers where a binding comes from.
+- **Depth.** At most 2 folder levels under `src/` (`tabs/today/`), which
+  keeps relative imports short. No path alias (e.g. Vite's `@/`); plain
+  relative imports only.
+- **A folder exists only once it has a file.** A layout folder with nothing
+  to hold isn't created empty.
+- **Assets live in `src/` and are imported, never served from `public/`.**
+  An image, icon, font, or other static file the app itself uses is
+  imported from its own module (`import logSvgUrl from '../assets/
+  logo.svg';`, or a `url()` in CSS, which Vite resolves the same way), so
+  Vite fingerprints its filename (long-term cacheable), fails the build if
+  it's missing, and drops it when nothing uses it any more. An asset used
+  by one feature lives in that feature's folder (next to its component,
+  like its CSS module will); one used by 2 or more features lives in
+  `src/assets/`, grouped by kind (`assets/images/`, `assets/fonts/`, ...).
+  `assets/` sits outside the dependency order: any folder may import from
+  it, and it imports nothing. Moving an asset means updating every
+  reference to it (JS imports, CSS `url()`s) in the same change.
+- **`public/` holds only files that must be served at a fixed, unhashed
+  URL**, because something outside Vite's module graph requests them by
+  exact path. Every file there must fit one of these exceptions:
+  - **Browser/OS conventions**: `favicon.ico` (browsers request
+    `/favicon.ico` on their own), `apple-touch-icon.png`, and the other
+    favicon/home-screen icons `index.html` links to.
+  - **The web app manifest and everything it references**:
+    `manifest.webmanifest` is hand-written static JSON (the PWA plugin runs
+    with `manifest: false`), so its `icons` entries can't point at hashed
+    files.
+  - **Hosting/deploy files**: Netlify's `_headers` and `_redirects`.
+  - **Crawler files**: `robots.txt`, `sitemap.xml`, and any site
+    verification file (e.g. a search console token) or `.well-known/`
+    entry.
+  - **Social preview images** (e.g. `og-image.png`): `og:image`/
+    `twitter:image` meta tags need a stable absolute URL that scrapers can
+    fetch.
+  - **Scripts loaded outside the bundle**: a script `index.html` pulls in
+    by fixed path before the app's own bundle runs (`boot-splash.js`), or
+    one a service worker loads at runtime via `importScripts`
+    (`sw-notify.js`).
+  - **Anything shared or linked to by a fixed URL outside the app** (a
+    downloadable file, an image an external site or email embeds).
+  A file in `public/` that nothing requests by its fixed path (no
+  `index.html` link, manifest entry, hosting rule, or external use) is
+  either moved into `src/` and imported, if the app uses it, or deleted,
+  if nothing does. Source/master artwork that isn't served at all (e.g. an
+  editable SVG a PNG was exported from) doesn't belong in `public/` or
+  `src/`; keep it outside the served tree (e.g. a top-level `design/`
+  folder) or delete it.
+- **Everything else in `public/` is untouched**: Netlify, the browser, and
+  the PWA read those files from exactly those paths, so they're never
+  renamed or reorganized.
+- **CSS.** Component styles become CSS modules living next to their
+  component during the later CSS pass; `styles/` keeps only global CSS
+  that can't belong to one component (design tokens/themes, base element
+  styles, `@font-face`, shared keyframes). How that global CSS is split is
+  decided in the CSS pass.
 
 ### Top-level (module scope)
 - Between any two distinct top-level declarations (a comment block, a
@@ -858,24 +1088,49 @@ decision is captured for next time instead of getting re-asked later.
     `a?.name || ' '`, a call) does get one, as a `{ /* */ }` block right
     after it on the same line. See `tab-today.jsx`'s own Edit Mode rail
     button label.
-  - **Attribute lines never get their own comment, UNLESS the attribute's
-    own value is itself a multi-line construct** (a multi-line arrow
-    function body, a multi-line array/object literal, ...), in which
-    case it follows the ordinary "multi-line construct gets a comment
-    right after its own opening bracket" treatment instead, the exact
-    same as anywhere else in this doc — the attribute being a JSX prop
-    rather than a plain statement doesn't exempt it once its value
-    genuinely spans multiple lines. A short, single-line attribute value
-    (`className='x'`, `onFinTouFun={ () => cloTouFun( 'finished' ) }`)
-    stays uncommented: unlike object properties, a JSX attribute whose
-    value fits on one line is self-descriptive enough via its own name/
-    value pairing that a comment would just be noise. See
-    `onboarding-page-tours.jsx`'s own `<GuidedTour>` element for the
-    reference example: `onBacTouFun`/`onSkiTouFun` (each a multi-line
-    arrow function) and `steObjArr` (a multi-line array literal) all
-    carry their own comment on the attribute's own opening `{`/`[`,
-    while `onFinTouFun`/`resSteNum`/`actStoObj` (each a single-line
-    value) carry none.
+  - **An attribute whose value is a multi-line construct** (a multi-line
+    arrow function body, a multi-line array/object literal, ...) always
+    gets a comment, following the ordinary "multi-line construct gets a
+    comment right after its own opening bracket" treatment, the exact same
+    as anywhere else in this doc. See `onboarding-page-tours.jsx`'s own
+    `<GuidedTour>` element for the reference example: `onBacTouFun`/
+    `onSkiTouFun` (each a multi-line arrow function) and `steObjArr` (a
+    multi-line array literal) all carry their own comment on the
+    attribute's own opening `{`/`[`.
+  - **A single-line attribute gets a comment when a reader would need to
+    look somewhere else, or work through the expression, to know what it
+    does.** Amended 2026-09-26 (previously every single-line attribute
+    went uncommented) and applied during the final file-by-file pass. This
+    covers any attribute or prop, function or not, on a native element or
+    a custom component. Signs it qualifies:
+    1. **It branches or guards**: an `if`, a ternary, or `&&` inside means
+       it only sometimes acts, or picks between values (e.g. `ui.jsx`'s
+       InfTipCom `onPointerEnter`, which only opens for a mouse, and its
+       `aria-label` ternary, which changes what a screen reader announces
+       when the tip stands in for a disabled action).
+    2. **It does something its name doesn't suggest**: stopping
+       propagation or preventing a default, moving focus, writing a global
+       or a ref, or any side effect beyond the element itself (e.g.
+       InfTipCom's `onPointerDown`, which only records the pointer type
+       for the click handler to read later).
+    3. **It passes values whose meaning isn't obvious**: a magic string,
+       number, or flag (e.g. `cloTouFun( 'finished' )`, or a bare
+       `true`/`false` argument whose meaning lives in the called
+       function).
+    4. **It exists for a reason that lives elsewhere** (e.g. FilButCom's
+       `onAnimationEnd={ () => setSpiAniBoo( false ) }`, which only makes
+       sense once you know the spin is a self-ending CSS animation).
+    Never needs one: a plain HTML attribute with a simple value
+    (`className='x'`, `type='button'`, a literal `aria-label`, `disabled={
+    isaDisBoo }`), a bare reference to a named function or variable
+    (`onBlur={ cmtTexFun }`, which carries its own comment where it's
+    declared), and a single call whose name and arguments already say
+    everything (`onClick={ () => togDayFun( dayIndNum ) }`). The comment
+    is a normal trailing `// What: ...` one space after the attribute's
+    own value, never column-aligned with other attributes (most of an
+    element's attributes have no comment, so a shared column would be
+    mostly empty); a `//` comment inside an opening tag compiles away
+    cleanly (verified with both Babel and Vite's own Oxc transformer).
     - **Exception, `style={{ ... }}` objects**: a multi-line `style`
       object needs no comment on its `style={{` line or on its own
       properties, since real CSS property names already say what each
@@ -941,17 +1196,64 @@ as unused ("Unused eslint-disable directive") is deleted, not documented.
 Check with `npx eslint <file>` after touching one.
 
 ### Custom function declaration comments
-A bare `function Name(...) {}` declaration that isn't stored in a
-`const`/`let` (e.g. `function TabBarCom(...)`, `function AppRooCom()`)
-gets a JSDoc-style block comment instead of the usual one-line What/Why/How
-treatment. So does a component wrapped in `React.forwardRef( function
-Name ( ... ) { ... } )`, even though the wrapper is stored in a `const`:
-it's still a component, so it gets the same block (between its own
-`// #region` marker and the `const` line), and its forwarded ref is
-documented as a bare `@param` after the `props.` lines, since it's a
-positional parameter. It keeps its own one-line comment on the `const`
-line as well. See `tab-today.jsx`'s own `EntEdiCom`. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the reference
-implementation of every rule below.
+Which functions get a JSDoc-style block comment (the full template below)
+instead of, or on top of, the usual one-line What/Why/How treatment. Amended
+2026-09-26 from "every bare `function` declaration" to the rule below, which
+is judged by what a function is, never by how it's written (a bare
+`function`, a `const` arrow, a `React.forwardRef( function Name ... )`
+wrapper, an anonymous function, and a function-module object's own entries
+are all judged the same way). Applied during the final file-by-file pass,
+which re-evaluates every existing JSDoc too: a bare `function` that got one
+under the old rule keeps it only if it passes the test below.
+- **The test**: would someone calling this function, or relying on what it
+  does, need to read its body to use or understand it correctly? If yes,
+  it gets a JSDoc. Length never decides it on
+  its own: a one-line function hiding a non-obvious rule (e.g. `tasks.js`'s
+  `eveNthFun`, where an interval of 1 always qualifies and a negative count
+  never does) can need one, while a long handler wired to a single button
+  may not.
+- **Always gets one**: anything exported or called from another file;
+  every component; every custom hook.
+- **Gets one when the test says yes**: any other function, named or
+  anonymous, at module scope or declared inside another function or
+  component (e.g. `ui.jsx`'s own announce-status setup IIFE, which builds
+  the live region and assigns `annStaFun`'s real implementation). Typical
+  signs the test says yes: parameters, a return value, or side effects
+  that aren't obvious from the name (a sentinel return like `null` meaning
+  "fall through", a returned shape the caller destructures, state or DOM
+  writes in more than one branch), or a function passed down to children
+  as a prop or called from several places, so its contract has more than
+  one reader. Everything that doesn't pass keeps its ordinary one-line
+  comment.
+- **Never gets one**: a function written inline in JSX (an event handler,
+  a `.map` callback rendering children); a function inside an ordinary
+  object literal (a config row, a small helper object like `emlTouObj` or
+  `window.__editGuard`); a trivial local wrapper or alias (`const
+  onTipMovFun = () => plaTipFun();`). Other anonymous functions (a hook's
+  own body, an effect's cleanup, a `.sort` comparator, an IIFE, ...) are
+  not exempt: most of them don't pass the test, but one that does gets a
+  JSDoc like any other function.
+- **Naming an anonymous function's JSDoc**: since it has no name of its
+  own, its name line uses the file's own name plus a descriptive name for
+  what the function does, the same form an in-function design-rationale
+  block uses (`ui.jsx = Announce Status Setup`), and its region reuses that
+  descriptive name (`// #region Announce Status Setup`).
+- **Exception to the objects exclusion, a function-module object**: an
+  object that is really a module of named functions (the themed-region
+  "Object-literal variant" under "### Sectioning / fold regions", i.e.
+  `store.js`'s own `actStoObj`) has each entry judged by the test above,
+  exactly like a standalone function, since those entries are the app's
+  own action API, called by name from every tab.
+- **Everything that qualifies gets the full template**: name line,
+  `@summary`, `@author`, `@param`, `@returns`, and `@example`, exactly as
+  described below, however short the function is. A function written as a
+  `const` (or an object entry) also keeps its own one-line comment on the
+  declaration line; the JSDoc sits between its own `// #region` marker and
+  that line. A `React.forwardRef` component documents its forwarded ref as
+  a bare `@param` after the `props.` lines, since it's a positional
+  parameter; see `tab-today.jsx`'s own `EntEdiCom` and `ui.jsx`'s own
+  `ButBasCom`. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the
+  reference implementation of every rule below.
 - **Placement**: exactly 1 blank line before the opening `/**` (see
   "### Sectioning / fold regions" below for what comes before that blank
   line), exactly 1 blank line between the closing `*/` and the function's
@@ -1165,25 +1467,23 @@ comments in `src/bg-flourish.jsx` for the reference examples.
   the two serve different purposes, this block explains the design
   rationale or history, the trailing comment explains the declaration's
   own role, so both coexist.
-- **The 25+-line `#region` threshold from "### Sectioning / fold
-  regions" below applies to a comment attached to a declaration too**,
-  measured together (the comment's own `/** ... */` plus every
-  declaration it describes), even though this happens at module/
-  top-level scope rather than inside a function body, which is the only
-  case that rule's own wording currently names explicitly. Below 25
-  lines, no `#region` is needed; every example in `src/bg-flourish.jsx`
-  currently falls under this (the longest, `COL_WID_NUM`'s, is around
-  20 lines total).
+- **A comment attached to a top-level declaration gets a `#region` once
+  it reaches 25 lines**, measured together (the comment's own `/** ...
+  */` plus every declaration it describes). Below 25 lines, no `#region`
+  is needed; every example in `src/bg-flourish.jsx` currently falls under
+  this (the longest, `COL_WID_NUM`'s, is around 20 lines total). A
+  design-rationale comment inside a function body always gets one,
+  regardless of length (see "### Sectioning / fold regions").
 
 ### Sectioning / fold regions
 A collapsible fold region uses the editor-standard `// #region <Name>` /
 `// #endregion <Name>` marker pair (recognized by VS Code and other
 editors for code folding), wrapped tightly around the specific unit it
-covers. Six cases are defined so far; more may be added later, but
-don't invent one for anything else yet:
-- **Custom function declarations**: the exact same `function Name(...) {}`
-  case covered by "### Custom function declaration comments" above always
-  gets a region, wrapping the function's own JSDoc comment AND its
+covers. The cases below are the only ones defined; more may be added
+later, but don't invent one for anything else yet:
+- **Custom function declarations**: every function that gets a JSDoc under
+  "### Custom function declaration comments" above, whatever form it's
+  written in, always gets a region, wrapping the function's own JSDoc comment AND its
   declaration/body together as one collapsible unit.
   - `<Name>` on both markers is the function's own literal name,
     unexpanded, e.g. `// #region TabBarCom` / `// #endregion TabBarCom`,
@@ -1218,81 +1518,65 @@ don't invent one for anything else yet:
   - Nothing about the imports themselves changes: still no blank lines
     between individual `import` lines, still the default/named grouping
     with its own 2-blank-line separator inside the region.
-- **A related cluster of declarations/statements inside a function body**
-  (not itself a whole separate function or the import block) can also get
-  its own named region, when ALL of the following hold. This is a manual,
-  judgment-call process (propose a grouping and a name, confirm it),
-  never a mechanical scan; see `TabBarCom`'s "Active Tab Indicator" region
-  in `src/app.jsx` as the reference example.
-  - **Bounded by a genuine unrelated gap**: both the line right before the
-    candidate range and the line right after it are separated from it by
-    the 3-blank-line "unrelated" tier from "### General relatedness
-    tiering" above. This counts normally even when the following line is
-    a `return` statement (whose own mandatory 3-blank-before-`return`
-    rule governs the return's OWN placement, not whether the code above
-    it was genuinely a separate topic): the return being exempt from
-    getting its own region does not disqualify the 3-blank gap in front
-    of it from bounding whatever comes before. The only gaps that DON'T
-    count as a real "this is a new topic" signal are ones produced by a
-    rule that redirects WHERE a 3-blank gap physically sits rather than
-    judging relatedness at all, namely the gap around an already-existing
-    `// #region`/`// #endregion` marker (see the other two cases above).
-    - Exception: the range's own STARTING edge may have only 2 blank
-      lines instead of 3, when it's the very first thing inside its own
-      enclosing `{`/`(` (the function-body-open padding rule) rather than
-      following genuinely different code.
-  - **At least 25 lines long**: counted as the candidate range's own total
-    line span, start to end inclusive, blank padding lines included. This
-    is deliberately a raw line-count (screen space), not a count of real
-    statements, since the actual goal is whether collapsing the range
-    saves meaningful scroll distance. 25 was chosen as a clean quarter of
-    "100 lines of code," an admittedly somewhat arbitrary but easy-to-
-    remember threshold. Below it, don't wrap the range even if it's
-    bounded by genuine unrelated gaps on both sides.
-  - **Isn't already natively foldable as one existing bracketed
-    construct**: if the ENTIRE candidate range is already exactly the
-    body of one function declaration/expression, object/array literal,
-    `if` block, or other bracketed construct an editor can already
-    collapse on its own, wrapping it in a redundant region adds nothing;
-    skip it. But if the range includes anything OUTSIDE that construct's
-    own brackets (e.g. a function's own definition immediately followed
-    by a call to it, where the call sits after the function's closing
-    `}`), the existing fold only covers part of the range, so an explicit
-    region is still needed to cover the whole thing together.
-  - **JSX is entirely exempt from this rule.** VS Code/TypeScript's
-    `#region` folding only recognizes a `//`-style LINE comment as the
-    marker, never a `/* */` block comment. A bare `// #region ...` can't
-    be placed as JSX children at all (it would render as literal DOM
-    text, the same reason JSX elements themselves use `{ /* ... */ }`
-    comments instead of `//`), and the only syntactically-safe
-    alternative, `{ /* #region Name */ }`, is a block comment that the
-    folding provider does not recognize as a marker, so it would compile
-    safely but never actually produce a collapsible chevron. Since the
-    entire point of this mechanism is collapsibility, a marker that can't
-    deliver that inside JSX is pointless there; don't add one, no matter
-    how long or how clearly-groupable a run of JSX children is. (A whole
-    JSX-returning function's own region, from "Custom function
-    declarations" above, still works fine, since that marker sits outside
-    the JSX entirely, in the function's own plain-JS scope.)
-  - `<Name>` is a short, plain-English description of what the block does
-    or represents (Title Case, e.g. `Active Tab Indicator`), not an
-    abbreviated/segmented identifier name.
-  - Spacing works exactly like the other two cases: exactly 1 blank line
-    between each marker and the content it wraps, while whatever blank-
-    line count already existed OUTSIDE the whole candidate range (before
-    its first line, after its last line) stays exactly as it was, now
-    bracketing the markers instead of the content directly.
+- **Sectioning by purpose.** Replaces (2026-09-26) the earlier
+  function-body cluster rule and its 25-line/3-blank-gap conditions; applied
+  during the final file-by-file pass. A manual, judgment-call process, never
+  a mechanical scan; see `TabBarCom`'s "Active Tab Indicator" region in
+  `src/app.jsx` for an example.
+  - **What a section is**: a run of consecutive statements that together
+    serve one nameable purpose. Any kind of statement counts
+    (declarations, local functions, `if` blocks, effects, calls), and there
+    is no minimum size beyond making sense: 2 statements that genuinely
+    share a purpose are a section. E.g. a tooltip's position state, the
+    function that measures it, and the effect that re-measures on scroll
+    together make up "Tooltip Positioning". A single construct on its own
+    (one `if`/`else` chain, one effect, one function) is never a section,
+    however big it is, since it already folds on its own.
+  - **When sections get regions**: whenever a scope divides into at least
+    2 sections, each one gets its own `// #region <Name>` / `//
+    #endregion <Name>` pair. A scope is a function or component body, a
+    nested function's own body, a file's top level, or one of the file's
+    category sections (see "### File structure"). A scope that serves
+    one purpose throughout gets no regions, since wrapping all of it in
+    one region adds nothing.
+  - **Statements that don't belong stay outside**: sectioning is never
+    forced. A statement that doesn't share a purpose with its neighbors
+    (an opening guard, the final `return`, a lone call) stays unwrapped
+    between the regions; no one-statement section is invented to hold it.
+  - **`<Name>`** is a short, plain-English, Title Case description of the
+    section's shared purpose (e.g. `Tooltip Positioning`, `Outside Close
+    Handling`), not an abbreviated/segmented identifier name.
+  - **Spacing**: exactly 1 blank line between each marker and the content
+    it wraps. Separate sections serve different purposes by definition, so
+    3 blank lines separate a section's `#endregion` from whatever comes
+    next and its `#region` from whatever came before, unless the enclosing
+    block's own 2-blank open/close padding applies at that edge.
+  - **Nesting**: a nested function or component body is judged on its own,
+    so a section can contain functions that are sectioned inside. Every
+    other region type nests inside a section unchanged (a function's own
+    region, a design-rationale region, a section-intro region).
+  - **JSX is entirely exempt.** VS Code/TypeScript's `#region` folding only
+    recognizes a `//`-style LINE comment as the marker, never a `/* */`
+    block comment. A bare `// #region ...` can't be placed as JSX children
+    at all (it would render as literal DOM text, the same reason JSX
+    elements themselves use `{ /* ... */ }` comments instead of `//`), and
+    the only syntactically-safe alternative, `{ /* #region Name */ }`, is a
+    block comment the folding provider doesn't recognize, so it would
+    never produce a collapsible chevron. Don't add one, however long or
+    clearly-groupable a run of JSX children is. (A JSX-returning
+    function's own region still works, since that marker sits outside the
+    JSX, in the function's own plain-JS scope.)
 - **A themed cluster of entries inside a top-level array literal** (a
   catalog/config array whose entries correspond to a real, user-facing
   grouping — e.g. every help-catalog item belonging to one page section
   or one step of a multi-step form) can also get its own named region,
-  the same judgment-call process as the function-body cluster above
+  the same judgment-call process as sectioning by purpose above
   (propose a grouping and a name, confirm it, never a mechanical scan).
   This is the array-literal counterpart of that case: same naming
   convention (`<Name>` a short, plain-English, Title Case description,
   e.g. `// #region Create A Picker Form Step 1`), same 1-blank-line
   spacing between each marker and the content it wraps. It does NOT
-  require the function-body case's own 25-line/3-blank-gap thresholds,
+  require a minimum size or any particular surrounding gap,
   since array entries are already naturally 1-blank-separated siblings
   rather than statements that need a 3-blank gap to prove they're a
   genuinely distinct topic; the grouping itself (does this run of
@@ -1308,7 +1592,7 @@ don't invent one for anything else yet:
   Generator`/`Holidays`/`Data Control`/`Account`/`About`/`Legal` regions
   for the reference examples. Not every array needs this: only apply it
   where a file's own catalog genuinely groups into distinct, nameable,
-  real sections, the same restraint as the function-body case.
+  real sections, the same restraint as sectioning by purpose.
   - **Object-literal variant, a large action/API object grouped by
     domain**: the same themed-region treatment also applies to a large
     object literal whose entries genuinely split into distinct domains,
@@ -2400,25 +2684,60 @@ while ( condition );
     own wrapped attributes (no children at all, e.g.
     `<button\n\tclassName='x'\n\tonClick={...}\n>`) needs no padding
     between its attribute lines — there's no "inside" to pad.
-- Between sibling JSX children, apply the same related/somewhat-related/
-  unrelated tiering as regular code (see below). One common case: a run of
-  visually-repetitive sibling elements of the exact same kind (e.g. the
-  several `<path>` elements making up one SVG icon, or a handful of mutually
-  exclusive `{actIdeStr === 'x' && <TabX />}` branches selecting a page) is
-  usually "related" (1), not the 3-blank-line default reserved for
-  genuinely different elements.
-- **A heading element (`<h1>` through `<h6>`) always signifies the start of
-  a new section**, so it gets 3 blank lines before it — the "unrelated"
-  tier — overriding whatever the general sibling-relatedness tiering above
-  would otherwise assign, even when the heading reads as topically
-  connected to whatever precedes it or follows a visually-similar sibling.
-  - **Exception**: a heading that is the very first thing inside its own
-    enclosing block (the first child of a JSX return, a fragment, a
-    conditional branch, ...) is not preceded by anything of its own to
-    separate from, so it follows the ordinary "first thing inside an
-    opening tag/bracket" padding instead (2 blank lines), the same
-    exception every other multi-line construct already gets for its own
-    first entry.
+- **JSX sibling spacing is set by nesting depth alone.** Rewritten
+  2026-09-26 and applied during the final file-by-file pass; it replaces
+  the earlier approach of borrowing the JS relatedness tiers for JSX
+  siblings (and the old "a heading always gets 3 blank lines before it"
+  rule). Every JSX sibling gets at least 1 blank line before and after it,
+  and only these conditions raise that:
+  - **2 blank lines** when one of its block-level children itself contains
+    at least one element (e.g. a `<div>` holding a `<ul>` of `<li>`s).
+  - **3 blank lines** when one of those block-level children in turn
+    contains a block-level element that has elements inside it (e.g. a
+    `<section>` holding a `<div>` holding a `<ul>` of `<li>`s). 3 is the
+    maximum, however deep the nesting goes, the same as the JS tiers.
+  - **Every custom component** (`<ColDisCom>`, `<CarSurCom>`, ...) gets 3
+    blank lines before and after it, self-closing or not, since what it
+    renders can't be seen from the call site and frequently holds many
+    elements. Exception: a component sitting inline, among text or inline
+    elements (e.g. an `<IcoSvgCom />` next to a button's label), is part
+    of that inline run instead (see the display exemption below).
+  - **Block-level** means the HTML block-level elements (`div`, `section`,
+    `header`, `footer`, `main`, `nav`, `article`, `aside`, `form`,
+    `fieldset`, `ul`, `ol`, `li`, `p`, `h1`-`h6`, `table`, `details`,
+    `dialog`, `figure`, `blockquote`, `pre`, ...) plus `<svg>`, which
+    counts as block-level here because it usually holds many elements.
+    Inline elements (`span`, `i`, `b`, `strong`, `em`, `a`, `label`,
+    `input`, `select`, `img`, ...) never count. A `<button>` counts as
+    block-level only when its own content is genuinely structured (it
+    holds block-level elements, or elements that themselves hold
+    elements); a button holding just text, or an icon plus text, doesn't.
+  - **When two neighbors call for different counts, the bigger count
+    wins** for the gap between them.
+  - **A `{ cond && ( ... ) }` or `.map( ... )` wrapper** holding a
+    qualifying element takes that element's count, as a whole, among its
+    own siblings.
+  - **Exception, first or last in its parent**: the parent's own 2-blank
+    open/close padding wins over this rule, exactly like every other block
+    in this doc.
+  - **Exception, anything where whitespace affects what's displayed**: no
+    spacing or line-break rule in this doc ever applies where adding or
+    removing a blank line or line break would change the rendered output.
+    Most commonly that's an inline run: text mixed with inline elements
+    or inline components on one line (JSX drops whitespace that contains
+    a line break, so splitting `Tap <strong>Save</strong> to finish` across
+    lines would lose the spaces around `Save`), plus anything relying on an
+    explicit `{ ' ' }`, and the content of a `<pre>` or other
+    whitespace-preserving element. Such content stays exactly as written.
+  - **Known blind spot**: a run of fully one-line siblings (opening tag,
+    content, closing tag, and its own trailing comment all on one physical
+    line) is easy to under-space, since compact one-liners are
+    conventionally left ungapped in typical JSX found elsewhere. The
+    1-blank minimum makes no such exception; this was found to be a
+    systemic, file-wide miss across every file reviewed before it was
+    written down. When auditing a file, explicitly check one-liner-to-
+    one-liner and one-liner-to-next-sibling transitions, not just
+    multi-line element closings.
 
 ### Attribute/prop ordering
 Every JSX element's attributes/props (native DOM/SVG elements AND custom
@@ -2801,8 +3120,9 @@ identifiers) and also stays inline as one line, for the same reason.
     boolean" shape (three bare identifiers ORed together).
 
 ### General relatedness tiering
-Used for spacing between statements inside a function/block body, and
-between JSX siblings. Three tiers:
+Used for spacing between statements inside a function/block body (JSX
+siblings use their own nesting-depth rule under "### JSX" instead).
+Three tiers:
 - **Related (1 blank line)**: tightly, directly connected — a value used on
   the very next line; two lines that are literally the same *kind* of code
   working toward the same immediate step (e.g. two sibling `useState` calls
@@ -2865,19 +3185,6 @@ between JSX siblings. Three tiers:
   array?") rather than assuming a topical-sounding comment means they're
   related — several calls in this file were revised from 2 down to 3 after
   actually checking for shared data and finding none.
-- **Known blind spot — 0 blank lines is NEVER a valid outcome for JSX
-  siblings, but a run of fully one-line siblings (opening tag, content,
-  closing tag, and its own trailing comment all on one physical line) is
-  easy to under-space, since compact one-liners are conventionally left
-  ungapped in typical JSX found elsewhere. This rule makes no such
-  exception: every JSX sibling pair needs at least 1 blank line regardless
-  of whether either side is one-line or multi-line. This was found to be a
-  systemic, file-wide miss (not an isolated slip) across every file this
-  rule set had already been applied to, the same recurring-bias pattern as
-  the naming "Known miscorrections" list below, just for spacing instead of
-  word choice. When auditing a file for this rule, explicitly check
-  one-liner-to-one-liner and one-liner-to-next-sibling transitions, not
-  just multi-line element closings.
 
 ### Naming conventions
 Applies to every named thing — variables, function/component declarations,
