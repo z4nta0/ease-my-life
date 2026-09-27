@@ -144,7 +144,7 @@ Highlights worth knowing before touching it:
 - A `localStorage` "warm mirror" (minus the pick log) exists purely as a
   same-tick fallback if IDB fails later; it is not the source of truth.
 - `wipe()` (Settings → "Delete all data") must clear every key this layer has
-  ever written, across legacy naming generations — see `OWNED_KEY_RE`.
+  ever written, across legacy naming generations (see `OWN_KEY_REG`).
 
 ### Domain modules (pure logic, no React)
 
