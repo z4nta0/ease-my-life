@@ -445,7 +445,15 @@ can move code between files rather than just within one.
   reads sits above it, so a reader never has to scroll down to learn what
   a name means, and a `const` is never read before its own line. When two
   declarations in the same section don't depend on each other, they're
-  alphabetized (case-insensitive) as the tie-break.
+  alphabetized (case-insensitive) as the tie-break. Decided 2026-09-27:
+  define-before-use also wins over the section order itself and over the
+  Components section's "private first" split. A constant built by
+  calling a helper at load time (e.g. `reminders.jsx`'s own
+  `REM_MAT_ARR`, built with `paiSubFun`) sits in Helpers right after the
+  helper it calls, not in Constants, and an exported component that a
+  private one renders (e.g. `SegConCom`, rendered by `SchEdiCom`) comes
+  before it; "private first, then exported" only orders components that
+  don't depend on each other.
 - **Section regions.** A file with at least 2 of the sections above wraps
   each of them in a `// #region <Section>` / `// #endregion <Section>`
   pair, whatever the file's length, using the section's own name from the list above (`// #region
