@@ -18,110 +18,20 @@
  * That generated file is auto-generated and must never be hand-edited;
  * treat it as read-only.
  *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-
-
-/**
- * ONB_EXA_OBJ = Onboarding Example Object
- *
- * @summary
- * The sample "Daily Chores" picker seeded alongside the Welcome Tour.
- * Doubles as prefill data for whenever a future create-a-picker mini-tour
- * reuses this same data.
- *
- * Every property below shares this exact shape, and none of them repeat
- * these same fields' own boilerplate comments on their own lines (see
- * the "Repeated-shape object literals" comment exception in CLAUDE.md):
- *
- * - `group` (String): Group assigns the picker to one of the app's
- *   built-in sample groups, so it sits alongside real pickers covering
- *   the same topic; read by the grouping/filtering UI exactly like any
- *   real picker's own group.
- *
- * - `id` (String): Id is this sample picker's own stable identifier,
- *   matching what scripts/build-onboarding-stats.mjs baked into
- *   onboarding-stats-data.js and what store.js/onboarding-welcome-tour.jsx
- *   use to recognize and later hide this sample; a literal, load-bearing
- *   string, never generated at runtime.
- *
- * - `items` (Array): Items is every picker's own pool of choosable
- *   items, read by the picker engine exactly like any real picker's own
- *   items array; see below for the shape its own entries share.
- *
- * - `mode` (String): Mode selects which of pickers.js's own selection
- *   algorithms (random/weighted/dynamic/ease-up/ease-down) this sample
- *   picker uses; read by the picker engine exactly like any real
- *   picker's own mode.
- *
- * - `name` (String): Name is the picker's own display name shown
- *   throughout the app; read wherever a picker's name needs displaying,
- *   exactly like any real, user-created picker.
- *
- * - `step` (Number): Step prefills a picker-creation wizard's own step,
- *   for whenever a future create-a-picker mini-tour needs it; not read
- *   by the picker engine itself.
- *
- * Every entry inside `items` above shares this exact shape too, and
- * none of them repeat these same fields' own boilerplate comments
- * either. Each is one sample item in this picker's own seed pool,
- * giving the Welcome Tour something realistic to pick from, read by the
- * picker engine (pickers.js) exactly like any real, user-created item:
- *
- * - `easeMax` (Number): Ease Max is this item's own fastest drift rate,
- *   the upper bound of the random amount its own value grows by each
- *   tick it goes unpicked.
- *
- * - `easeMin` (Number): Ease Min is this item's own slowest drift rate,
- *   the lower bound of that same random growth.
- *
- * - `id` (String): Id is this item's own stable identifier.
- *
- * - `name` (String): Name is this item's own display name.
- *
- * - `value` (Number): Value is this item's own current drift state,
- *   seeded already at 100 (the picker engine's own default threshold)
- *   so every item is immediately eligible for the Welcome Tour's first
- *   generated list, rather than starting from a cold, unrealistic 0.
- *
- * - `weight` (Number): Weight is this item's own fairness weight,
- *   deliberately unused by an ease-up picker's own selection math
- *   (ease-up is a cadence system, not a preference one, per picIteFun's
- *   own comment in pickers.js), kept at a flat 1 throughout since it
- *   plays no real role here.
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
 
 
-	group : 'Chores',
-	id    : 'pkr_ob_daily',
-	mode  : 'ease-up',
-	name  : 'Daily Chores',
-	step  : 1,
+// #region Constants
 
-	items : [
-
-
-		{ id : 'ob_it_laundry', name : 'Do the laundry',            weight : 1, easeMin : 7,       easeMax : 14,      value : 100 },
-		{ id : 'ob_it_bath',    name : 'Clean the bathrooms',       weight : 1, easeMin : 12.5,    easeMax : 20,      value : 100 },
-		{ id : 'ob_it_dust',    name : 'Dust the main living area', weight : 1, easeMin : 9.0909,  easeMax : 12.5,    value : 100 },
-		{ id : 'ob_it_vacuum',  name : 'Vacuum the floors',         weight : 1, easeMin : 11.1111, easeMax : 16.6667, value : 100 },
-		{ id : 'ob_it_shower',  name : 'Clean the shower',          weight : 1, easeMin : 5.5556,  easeMax : 8.3333,  value : 100 },
-		{ id : 'ob_it_oven',    name : 'Clean the oven',            weight : 1, easeMin : 4.7619,  easeMax : 7.1429,  value : 100 }
-
-
-	]
-
-
-};
-
-
+// #region ONB_ESP_ARR
 
 /**
  * ONB_ESP_ARR = Onboarding Extra-Sample-Pickers Array
@@ -204,7 +114,7 @@ export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is th
  *
 */
 
-export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
+const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	{ // What: Monthly Chores Entry. Why: This is a second, less-frequent Chores-group picker alongside ONB_EXA_OBJ's own "Daily Chores," rounding out a generated day with deeper, longer-cycle cleaning tasks. How: This is read by the picker engine exactly like any real picker, its own 5 items (oven, whole-house dust, fridge, under-furniture vacuum, mop) themed around chores done far less often than the Daily Chores picker's own pool.
@@ -218,11 +128,11 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
 		items : [
 
 
-			{ id : 'it_ob_oven2',   name : 'Deep clean the oven',        weight : 1, easeMin : 2.5,    easeMax : 4.1667, value : 100 },
-			{ id : 'it_ob_dust2',   name : 'Dust the entire house',      weight : 1, easeMin : 3.7037, easeMax : 5.5556, value : 100 },
-			{ id : 'it_ob_fridge',  name : 'Clean out the fridge',       weight : 1, easeMin : 2.2222, easeMax : 3.0303, value : 100 },
-			{ id : 'it_ob_vacuum2', name : 'Vacuum under the furniture', weight : 1, easeMin : 1.6667, easeMax : 2.5,    value : 100 },
-			{ id : 'it_ob_mop',     name : 'Mop the floors',             weight : 1, easeMin : 4.3478, easeMax : 6.6667, value : 100 }
+			{ easeMax : 4.1667, easeMin : 2.5,    id : 'it_ob_oven2',   name : 'Deep clean the oven',        value : 100, weight : 1 },
+			{ easeMax : 5.5556, easeMin : 3.7037, id : 'it_ob_dust2',   name : 'Dust the entire house',      value : 100, weight : 1 },
+			{ easeMax : 3.0303, easeMin : 2.2222, id : 'it_ob_fridge',  name : 'Clean out the fridge',       value : 100, weight : 1 },
+			{ easeMax : 2.5,    easeMin : 1.6667, id : 'it_ob_vacuum2', name : 'Vacuum under the furniture', value : 100, weight : 1 },
+			{ easeMax : 6.6667, easeMin : 4.3478, id : 'it_ob_mop',     name : 'Mop the floors',             value : 100, weight : 1 }
 
 
 		]
@@ -266,14 +176,14 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
 		items : [
 
 
-			{ id : 'it_ob_spaghetti',    name : 'Spaghetti and meatballs', weight : 1, easeMin : 8.3333,  easeMax : 14.2857, value : 100 },
-			{ id : 'it_ob_meatloaf',     name : 'Meatloaf',                weight : 1, easeMin : 7.1429,  easeMax : 10,      value : 100 },
-			{ id : 'it_ob_tacos',        name : 'Tacos',                   weight : 1, easeMin : 10,      easeMax : 16.6667, value : 100 },
-			{ id : 'it_ob_pizza',        name : 'Pizza',                   weight : 1, easeMin : 12.5,    easeMax : 20,      value : 100 },
-			{ id : 'it_ob_steak',        name : 'Steak and potatoes',      weight : 1, easeMin : 7.6923,  easeMax : 11.1111, value : 100 },
-			{ id : 'it_ob_burger',       name : 'Burger and fries',        weight : 1, easeMin : 9.0909,  easeMax : 12.5,    value : 100 },
-			{ id : 'it_ob_lemonchicken', name : 'Lemon Chicken',           weight : 1, easeMin : 7.1429,  easeMax : 14.2857, value : 100 },
-			{ id : 'it_ob_friedchicken', name : 'Fried chicken',           weight : 1, easeMin : 11.1111, easeMax : 16.6667, value : 100 }
+			{ easeMax : 14.2857, easeMin : 8.3333,  id : 'it_ob_spaghetti',    name : 'Spaghetti and meatballs', value : 100, weight : 1 },
+			{ easeMax : 10,      easeMin : 7.1429,  id : 'it_ob_meatloaf',     name : 'Meatloaf',                value : 100, weight : 1 },
+			{ easeMax : 16.6667, easeMin : 10,      id : 'it_ob_tacos',        name : 'Tacos',                   value : 100, weight : 1 },
+			{ easeMax : 20,      easeMin : 12.5,    id : 'it_ob_pizza',        name : 'Pizza',                   value : 100, weight : 1 },
+			{ easeMax : 11.1111, easeMin : 7.6923,  id : 'it_ob_steak',        name : 'Steak and potatoes',      value : 100, weight : 1 },
+			{ easeMax : 12.5,    easeMin : 9.0909,  id : 'it_ob_burger',       name : 'Burger and fries',        value : 100, weight : 1 },
+			{ easeMax : 14.2857, easeMin : 7.1429,  id : 'it_ob_lemonchicken', name : 'Lemon Chicken',           value : 100, weight : 1 },
+			{ easeMax : 16.6667, easeMin : 11.1111, id : 'it_ob_friedchicken', name : 'Fried chicken',           value : 100, weight : 1 }
 
 
 		]
@@ -292,11 +202,11 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
 		items : [
 
 
-			{ id : 'it_ob_chest',     name : 'Chest',     weight : 1, easeMin : 14.2857, easeMax : 20,      value : 100 },
-			{ id : 'it_ob_legs',      name : 'Legs',      weight : 1, easeMin : 12.5,    easeMax : 16.6667, value : 100 },
-			{ id : 'it_ob_shoulders', name : 'Shoulders', weight : 1, easeMin : 11.1111, easeMax : 14.2857, value : 100 },
-			{ id : 'it_ob_arms',      name : 'Arms',      weight : 1, easeMin : 12.5,    easeMax : 25,      value : 100 },
-			{ id : 'it_ob_core',      name : 'Core',      weight : 1, easeMin : 12.5,    easeMax : 20,      value : 100 }
+			{ easeMax : 20,      easeMin : 14.2857, id : 'it_ob_chest',     name : 'Chest',     value : 100, weight : 1 },
+			{ easeMax : 16.6667, easeMin : 12.5,    id : 'it_ob_legs',      name : 'Legs',      value : 100, weight : 1 },
+			{ easeMax : 14.2857, easeMin : 11.1111, id : 'it_ob_shoulders', name : 'Shoulders', value : 100, weight : 1 },
+			{ easeMax : 25,      easeMin : 12.5,    id : 'it_ob_arms',      name : 'Arms',      value : 100, weight : 1 },
+			{ easeMax : 20,      easeMin : 12.5,    id : 'it_ob_core',      name : 'Core',      value : 100, weight : 1 }
 
 
 		]
@@ -315,10 +225,10 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
 		items : [
 
 
-			{ id : 'it_ob_readbook',   name : 'Read a book',        weight : 1, easeMin : 14.2857, easeMax : 20,      value : 100 },
-			{ id : 'it_ob_bingewatch', name : 'Binge watch a show', weight : 1, easeMin : 20,      easeMax : 50,      value : 100 },
-			{ id : 'it_ob_watchmovie', name : 'Watch a movie',      weight : 1, easeMin : 16.6667, easeMax : 33.3333, value : 100 },
-			{ id : 'it_ob_youtube',    name : 'Browse YouTube',     weight : 1, easeMin : 25,      easeMax : 50,      value : 100 }
+			{ easeMax : 20,      easeMin : 14.2857, id : 'it_ob_readbook',   name : 'Read a book',        value : 100, weight : 1 },
+			{ easeMax : 50,      easeMin : 20,      id : 'it_ob_bingewatch', name : 'Binge watch a show', value : 100, weight : 1 },
+			{ easeMax : 33.3333, easeMin : 16.6667, id : 'it_ob_watchmovie', name : 'Watch a movie',      value : 100, weight : 1 },
+			{ easeMax : 50,      easeMin : 25,      id : 'it_ob_youtube',    name : 'Browse YouTube',     value : 100, weight : 1 }
 
 
 		]
@@ -329,7 +239,197 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
 
 ];
 
+// #endregion ONB_ESP_ARR
 
+
+
+// #region ONB_EXA_OBJ
+
+/**
+ * ONB_EXA_OBJ = Onboarding Example Object
+ *
+ * @summary
+ * The sample "Daily Chores" picker seeded alongside the Welcome Tour.
+ * Doubles as prefill data for whenever a future create-a-picker mini-tour
+ * reuses this same data.
+ *
+ * Every property below shares this exact shape, and none of them repeat
+ * these same fields' own boilerplate comments on their own lines (see
+ * the "Repeated-shape object literals" comment exception in CLAUDE.md):
+ *
+ * - `group` (String): Group assigns the picker to one of the app's
+ *   built-in sample groups, so it sits alongside real pickers covering
+ *   the same topic; read by the grouping/filtering UI exactly like any
+ *   real picker's own group.
+ *
+ * - `id` (String): Id is this sample picker's own stable identifier,
+ *   matching what scripts/build-onboarding-stats.mjs baked into
+ *   onboarding-stats-data.js and what store.js/onboarding-welcome-tour.jsx
+ *   use to recognize and later hide this sample; a literal, load-bearing
+ *   string, never generated at runtime.
+ *
+ * - `items` (Array): Items is every picker's own pool of choosable
+ *   items, read by the picker engine exactly like any real picker's own
+ *   items array; see below for the shape its own entries share.
+ *
+ * - `mode` (String): Mode selects which of pickers.js's own selection
+ *   algorithms (random/weighted/dynamic/ease-up/ease-down) this sample
+ *   picker uses; read by the picker engine exactly like any real
+ *   picker's own mode.
+ *
+ * - `name` (String): Name is the picker's own display name shown
+ *   throughout the app; read wherever a picker's name needs displaying,
+ *   exactly like any real, user-created picker.
+ *
+ * - `step` (Number): Step prefills a picker-creation wizard's own step,
+ *   for whenever a future create-a-picker mini-tour needs it; not read
+ *   by the picker engine itself.
+ *
+ * Every entry inside `items` above shares this exact shape too, and
+ * none of them repeat these same fields' own boilerplate comments
+ * either. Each is one sample item in this picker's own seed pool,
+ * giving the Welcome Tour something realistic to pick from, read by the
+ * picker engine (pickers.js) exactly like any real, user-created item:
+ *
+ * - `easeMax` (Number): Ease Max is this item's own fastest drift rate,
+ *   the upper bound of the random amount its own value grows by each
+ *   tick it goes unpicked.
+ *
+ * - `easeMin` (Number): Ease Min is this item's own slowest drift rate,
+ *   the lower bound of that same random growth.
+ *
+ * - `id` (String): Id is this item's own stable identifier.
+ *
+ * - `name` (String): Name is this item's own display name.
+ *
+ * - `value` (Number): Value is this item's own current drift state,
+ *   seeded already at 100 (the picker engine's own default threshold)
+ *   so every item is immediately eligible for the Welcome Tour's first
+ *   generated list, rather than starting from a cold, unrealistic 0.
+ *
+ * - `weight` (Number): Weight is this item's own fairness weight,
+ *   deliberately unused by an ease-up picker's own selection math
+ *   (ease-up is a cadence system, not a preference one, per picIteFun's
+ *   own comment in pickers.js), kept at a flat 1 throughout since it
+ *   plays no real role here.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
+
+
+	group : 'Chores',
+	id    : 'pkr_ob_daily',
+	mode  : 'ease-up',
+	name  : 'Daily Chores',
+	step  : 1,
+
+	items : [
+
+
+		{ easeMax : 14,      easeMin : 7,       id : 'ob_it_laundry', name : 'Do the laundry',            value : 100, weight : 1 },
+		{ easeMax : 20,      easeMin : 12.5,    id : 'ob_it_bath',    name : 'Clean the bathrooms',       value : 100, weight : 1 },
+		{ easeMax : 12.5,    easeMin : 9.0909,  id : 'ob_it_dust',    name : 'Dust the main living area', value : 100, weight : 1 },
+		{ easeMax : 16.6667, easeMin : 11.1111, id : 'ob_it_vacuum',  name : 'Vacuum the floors',         value : 100, weight : 1 },
+		{ easeMax : 8.3333,  easeMin : 5.5556,  id : 'ob_it_shower',  name : 'Clean the shower',          value : 100, weight : 1 },
+		{ easeMax : 7.1429,  easeMin : 4.7619,  id : 'ob_it_oven',    name : 'Clean the oven',            value : 100, weight : 1 }
+
+
+	]
+
+
+};
+
+// #endregion ONB_EXA_OBJ
+
+
+
+// #region ONB_PCT_OBJ
+
+/**
+ * ONB_PCT_OBJ = Onboarding Picker-Card-Time Object
+ *
+ * @summary
+ * Same idea as ONB_RCT_OBJ's own timStr field below, but pickers
+ * have no equivalent card-text override table to hang it off of, since
+ * their own kicker/name are derived directly from the picker rather
+ * than overridden. A standalone map keyed by sample picker id instead.
+ * Real, user-confirmed estimates, manually timed 2026-08-14.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const ONB_PCT_OBJ = { // What: Onboarding Picker-Card-Time Object. Why: This is the manually-timed card estimate table described above, keyed by sample picker id. How: This is read by whatever component renders a still-hidden sample picker's own mini-tour launcher card.
+
+
+	pkr_ob_coffee   : '2.5 min', // What: Picker Onboarding Coffee Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_daily    : '2.5 min', // What: Picker Onboarding Daily Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_dinner   : '2.5 min', // What: Picker Onboarding Dinner Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_monthly  : '2.5 min', // What: Picker Onboarding Monthly Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_relax    : '2.5 min', // What: Picker Onboarding Relax Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_workouts : '2.5 min'  // What: Picker Onboarding Workouts Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+
+
+};
+
+// #endregion ONB_PCT_OBJ
+
+
+
+// #region ONB_RCT_OBJ
+
+/**
+ * ONB_RCT_OBJ = Onboarding Reminder-Card-Text Object
+ *
+ * @summary
+ * Override copy for each sample reminder's mini-tour launcher card. A
+ * card's name always reads as an instruction (e.g. "Set up a ...
+ * reminder") rather than the sample's own real name. Sample pickers
+ * don't need an equivalent table at all: their own card kicker is just
+ * the picker's own name, and the card name is always "Set up a {picker
+ * name} picker".
+ *
+ * Every entry below shares this exact shape, and neither repeats these
+ * same fields' own boilerplate comments on its own line (see the
+ * "Repeated-shape object literals" comment exception in CLAUDE.md):
+ *
+ * - `kicStr` (String, optional): Kicker String is an explicit override only
+ *   where the real schedule summary (TAS_NAM_OBJ.sumTasFun(task)) isn't what
+ *   should be shown, e.g. the one-time reminder wants "One-Time"
+ *   instead of TAS_NAM_OBJ.sumTasFun's own "One-time". Absent on the recurring
+ *   reminder on purpose, since its daysOfWeek is set dynamically at
+ *   seed time (see onboarding-welcome-tour.jsx) to whatever day the
+ *   tour is taken on, so TAS_NAM_OBJ.sumTasFun already produces the right
+ *   "Every {Day}" text for it on its own.
+ *
+ * - `namStr` (String): Name String is the launcher card's own display
+ *   name, always phrased as an instruction (e.g. "Set up a ... reminder")
+ *   rather than the sample's own real task name.
+ *
+ * - `timStr` (String): Time String is a real, user-confirmed estimate,
+ *   manually timed 2026-08-14, shown on the card.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const ONB_RCT_OBJ = { // What: Onboarding Reminder-Card-Text Object. Why: This is the mini-tour launcher card copy override table described above, keyed by sample task id. How: This is read by reminders.jsx wherever a still-hidden sample task's own launcher card is rendered.
+
+
+	tk_ob_meds  : { kicStr : 'One-Time',                    namStr : 'Set up a one time reminder', timStr : '< 1 min' }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own launcher-card copy. How: This is looked up by reminders.jsx keyed by tk_ob_meds, this sample task's own id.
+	tk_ob_trash : { namStr : 'Set up a recurring reminder', timStr : '1 min'                                          }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own launcher-card copy. How: This is looked up by reminders.jsx keyed by tk_ob_trash, this sample task's own id.
+
+
+};
+
+// #endregion ONB_RCT_OBJ
+
+
+
+// #region ONB_TAS_ARR
 
 /**
  * ONB_TAS_ARR = Onboarding Task Array
@@ -370,14 +470,16 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
  *
 */
 
-export const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created task.
+const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created task.
 
 
-	{ id : 'tk_ob_meds',  name : 'Pick up prescription',      repeat : 'once'                       }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own entry (see the comment above this array for why it stays pending). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task.
-	{ id : 'tk_ob_trash', name : 'Take trash out for pickup', repeat : 'weekly', daysOfWeek : [ 1 ] }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own entry (see the comment above this array for its own completion-history treatment). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task, its own daysOfWeek overwritten at seed time by onboarding-welcome-tour.jsx to match today's real weekday.
+	{ id : 'tk_ob_meds',  name : 'Pick up prescription', repeat : 'once'                                       }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own entry (see the comment above this array for why it stays pending). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task.
+	{ daysOfWeek : [ 1 ], id : 'tk_ob_trash',            name : 'Take trash out for pickup', repeat : 'weekly' }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own entry (see the comment above this array for its own completion-history treatment). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task, its own daysOfWeek overwritten at seed time by onboarding-welcome-tour.jsx to match today's real weekday.
 
 
 ];
+
+// #endregion ONB_TAS_ARR
 
 
 
@@ -395,85 +497,14 @@ export const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sa
  *
 */
 
-export const ONB_SPI_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ].map( ( curPicObj ) => curPicObj.id ); // What: Onboarding Sample-Picker-Identifiers Array. Why: This is every seeded sample picker's own id, flattened into one array (see the comment above this declaration). How: This maps ONB_EXA_OBJ plus every ONB_ESP_ARR entry down to just its own id field.
-export const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );                     // What: Onboarding Sample-Task-Identifiers Array. Why: This is every seeded sample task's own id, flattened into one array (see the comment above ONB_SPI_ARR above). How: This maps every ONB_TAS_ARR entry down to just its own id field.
+const ONB_SPI_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ].map( ( curPicObj ) => curPicObj.id ); // What: Onboarding Sample-Picker-Identifiers Array. Why: This is every seeded sample picker's own id, flattened into one array (see the comment above this declaration). How: This maps ONB_EXA_OBJ plus every ONB_ESP_ARR entry down to just its own id field.
+const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );                     // What: Onboarding Sample-Task-Identifiers Array. Why: This is every seeded sample task's own id, flattened into one array (see the comment above ONB_SPI_ARR above). How: This maps every ONB_TAS_ARR entry down to just its own id field.
+
+// #endregion Constants
 
 
 
-/**
- * ONB_RCT_OBJ = Onboarding Reminder-Card-Text Object
- *
- * @summary
- * Override copy for each sample reminder's mini-tour launcher card. A
- * card's name always reads as an instruction (e.g. "Set up a ...
- * reminder") rather than the sample's own real name. Sample pickers
- * don't need an equivalent table at all: their own card kicker is just
- * the picker's own name, and the card name is always "Set up a {picker
- * name} picker".
- *
- * Every entry below shares this exact shape, and neither repeats these
- * same fields' own boilerplate comments on its own line (see the
- * "Repeated-shape object literals" comment exception in CLAUDE.md):
- *
- * - `kicker` (String, optional): Kicker is an explicit override only
- *   where the real schedule summary (TAS_NAM_OBJ.sumTasFun(task)) isn't what
- *   should be shown, e.g. the one-time reminder wants "One-Time"
- *   instead of TAS_NAM_OBJ.sumTasFun's own "One-time". Absent on the recurring
- *   reminder on purpose, since its daysOfWeek is set dynamically at
- *   seed time (see onboarding-welcome-tour.jsx) to whatever day the
- *   tour is taken on, so TAS_NAM_OBJ.sumTasFun already produces the right
- *   "Every {Day}" text for it on its own.
- *
- * - `name` (String): Name is the launcher card's own display name,
- *   always phrased as an instruction (e.g. "Set up a ... reminder")
- *   rather than the sample's own real task name.
- *
- * - `time` (String): Time is a real, user-confirmed estimate, manually
- *   timed 2026-08-14, shown on the card.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-export const ONB_RCT_OBJ = { // What: Onboarding Reminder-Card-Text Object. Why: This is the mini-tour launcher card copy override table described above, keyed by sample task id. How: This is read by reminders.jsx wherever a still-hidden sample task's own launcher card is rendered.
-
-
-	tk_ob_meds  : { name : 'Set up a one time reminder',  time : '< 1 min', kicker : 'One-Time' }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own launcher-card copy. How: This is looked up by reminders.jsx keyed by tk_ob_meds, this sample task's own id.
-	tk_ob_trash : { name : 'Set up a recurring reminder', time : '1 min'                        }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own launcher-card copy. How: This is looked up by reminders.jsx keyed by tk_ob_trash, this sample task's own id.
-
-
-};
-
-
-
-/**
- * ONB_PCT_OBJ = Onboarding Picker-Card-Time Object
- *
- * @summary
- * Same idea as ONB_RCT_OBJ's own time field above, but pickers
- * have no equivalent card-text override table to hang it off of, since
- * their own kicker/name are derived directly from the picker rather
- * than overridden. A standalone map keyed by sample picker id instead.
- * Real, user-confirmed estimates, manually timed 2026-08-14.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-export const ONB_PCT_OBJ = { // What: Onboarding Picker-Card-Time Object. Why: This is the manually-timed card estimate table described above, keyed by sample picker id. How: This is read by whatever component renders a still-hidden sample picker's own mini-tour launcher card.
-
-
-	pkr_ob_coffee   : '2.5 min', // What: Picker Onboarding Coffee Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_daily    : '2.5 min', // What: Picker Onboarding Daily Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_dinner   : '2.5 min', // What: Picker Onboarding Dinner Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_monthly  : '2.5 min', // What: Picker Onboarding Monthly Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_relax    : '2.5 min', // What: Picker Onboarding Relax Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_workouts : '2.5 min'  // What: Picker Onboarding Workouts Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-
-
-};
-
-
+// #region Helpers
 
 // #region isoDayFun
 
@@ -499,10 +530,12 @@ export const ONB_PCT_OBJ = { // What: Onboarding Picker-Card-Time Object. Why: T
  *
 */
 
-function isoDayFun( datRawObj ) {
+function isoDayFun ( datRawObj ) {
 
 
 	const datCopObj = new Date( datRawObj ); // What: Date Copy Object. Why: The given date must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datRawObj.
+
+
 
 	datCopObj.setMinutes( datCopObj.getMinutes() - datCopObj.getTimezoneOffset() ); // What: Date Copy Minutes Adjustment. Why: Shifting by the local timezone offset is what makes the ISO string below reflect the local calendar day instead of UTC's. How: This subtracts the local timezone offset, in minutes, from the copy's own minutes.
 
@@ -547,10 +580,14 @@ function isoDayFun( datRawObj ) {
  *
 */
 
-export function hydStaFun( staRawObj ) {
+function hydStaFun ( staRawObj ) {
 
+
+	// #region Date Anchoring
 
 	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every row's own real date is computed relative to this same instant, so all 3 logs line up on the same calendar. How: This is read as "now" and then floored to midnight on the next line.
+
+
 
 	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
 
@@ -561,6 +598,8 @@ export function hydStaFun( staRawObj ) {
 
 		const offDatObj = new Date( todMidObj ); // What: Offset Date Object. Why: todMidObj itself must not be mutated by the offset below. How: This constructs a fresh copy of todMidObj to offset in place instead.
 
+
+
 		offDatObj.setDate( todMidObj.getDate() - dayAgoNum ); // What: Offset Date Day Subtraction. Why: This is the actual day-offset arithmetic the whole function exists to perform. How: This moves offDatObj back by dayAgoNum days from todMidObj's own date.
 
 
@@ -570,7 +609,11 @@ export function hydStaFun( staRawObj ) {
 
 	};
 
+	// #endregion Date Anchoring
 
+
+
+	// #region Row Hydration
 
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every hydrated row across all 3 logs needs its own unique id, and none of the source data carries one. How: This starts at 0 and is incremented once per row created below, shared across all 3 maps.
 
@@ -587,6 +630,8 @@ export function hydStaFun( staRawObj ) {
 
 
 			const rowTimObj = new Date( rowDatObj ); // What: Row Timestamp Object. Why: rowDatObj itself must not be mutated by the time-of-day below. How: This constructs a fresh copy of rowDatObj to set a specific time on instead.
+
+
 
 			rowTimObj.setHours( picRowObj.h, picRowObj.m, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes picRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds.
 
@@ -628,6 +673,8 @@ export function hydStaFun( staRawObj ) {
 
 		const rowTimObj = dayAgoFun( remRowObj.daysAgo ); // What: Row Timestamp Object. Why: This row's own real completion timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves remRowObj's own daysAgo offset via dayAgoFun.
 
+
+
 		rowTimObj.setHours( remRowObj.h, remRowObj.m, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes remRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds.
 
 
@@ -654,6 +701,8 @@ export function hydStaFun( staRawObj ) {
 
 		const rowTimObj = dayAgoFun( skiRowObj.daysAgo ); // What: Row Timestamp Object. Why: This row's own real skip timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves skiRowObj's own daysAgo offset via dayAgoFun.
 
+
+
 		rowTimObj.setHours( skiRowObj.h, skiRowObj.m, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes skiRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds.
 
 
@@ -673,6 +722,8 @@ export function hydStaFun( staRawObj ) {
 
 	} );
 
+	// #endregion Row Hydration
+
 
 
 	return { pickLog : picLogArr, reminderLog : remLogArr, reminderSkipLog : rslRowArr }; // What: Hydrated Logs Return. Why: The caller (onboarding-welcome-tour.jsx's own seeding effect) needs all 3 freshly-hydrated logs at once, in the same shape state itself expects. How: This returns picLogArr/remLogArr/rslRowArr above under their own state-contract key names.
@@ -681,5 +732,15 @@ export function hydStaFun( staRawObj ) {
 }
 
 // #endregion hydStaFun
+
+// #endregion Helpers
+
+
+
+// #region Exports
+
+export { hydStaFun, ONB_ESP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR }; // What: Named Exports. Why: The onboarding tours, help mode, store.js, the Today and Settings tabs, and scripts/build-onboarding-stats.mjs each read some of this sample data by name. How: This exports the sample pickers, tasks, id lists, card copy tables and the stats hydrator.
+
+// #endregion Exports
 
 

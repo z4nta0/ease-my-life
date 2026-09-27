@@ -979,7 +979,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 		const oveTexObj = ONB_RCT_OBJ[ tasRcdObj.id ] || {}; // What: Override Text Object. Why: A sample's own launcher card copy can override the real schedule summary/name/time. How: This looks up tasRcdObj's own id in ONB_RCT_OBJ, falling back to an empty object when there's no override.
-		const texDisObj = { kicStr : oveTexObj.kicker || TAS_NAM_OBJ.sumTasFun( tasRcdObj ), namStr : oveTexObj.name || tasRcdObj.name, timStr : oveTexObj.time }; // What: Text Display Object. Why: This resolves the 3 pieces of copy the card below actually renders, in one place. How: This falls back to the real schedule summary/name when no override was found, and leaves timStr undefined when none was given.
+		const texDisObj = { kicStr : oveTexObj.kicStr || TAS_NAM_OBJ.sumTasFun( tasRcdObj ), namStr : oveTexObj.namStr || tasRcdObj.name, timStr : oveTexObj.timStr }; // What: Text Display Object. Why: This resolves the 3 pieces of copy the card below actually renders, in one place. How: This falls back to the real schedule summary/name when no override was found, and leaves timStr undefined when none was given.
 
 
 		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
