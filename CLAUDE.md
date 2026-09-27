@@ -701,13 +701,26 @@ src/
     stays exactly where it is, since it was never the repeated
     boilerplate this exception targets. See `appearance.js`'s own
     `PAL_SET_OBJ` and `THE_PAI_OBJ` for the reference examples, and
-    `help-content.jsx`, whose header comment (until its own final pass
-    moves the block) documents its shared
+    `help-content.jsx`, whose "Help Catalogs Subsystem" section-intro
+    block documents its shared
     `{ bodEle, groStr?, ideStr, labStr?, mulBoo?, padXcoNum?, padYcoNum?,
     scrBoo?, selStr, shaStr?, titStr }` catalog-item shape once (its own
     fields listed alphabetically, per the object-property-ordering rule
     below), and none of its 210 individual items repeat those same 11
     fields' own boilerplate comments.
+    - **A shape shared by several declarations** (decided 2026-09-27):
+      when more than one declaration holds literals of the same shape
+      (e.g. help-content.jsx's 5 per-page catalogs), the shape block
+      becomes one Section-intro block (see "### Large / design-rationale
+      comments") whose region wraps every one of those declarations,
+      rather than being attached to just one of them.
+    - **Each item's own opening line still gets its identity comment**
+      (decided 2026-09-27): the exemption covers the shared fields' own
+      lines only, so a multi-line item's opening `{` gets a one-line
+      What/Why/How naming that item (e.g. `What: Progress Ring Help
+      Item.`). A leading note about that one item merges onto the same
+      line after the identity comment, per the merging rule below; a note
+      covering several sibling items stays above the first of them.
     - **A repeated-shape literal declared inside a function** has nowhere
       to carry that shape documentation, so when it reads nothing from
       its enclosing scope it's hoisted to a module-level `ALL_CAPS`
