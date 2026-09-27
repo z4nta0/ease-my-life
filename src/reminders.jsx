@@ -8,11 +8,11 @@ import React from 'react'; // What: React. Why: Every component in this file is 
 
 import { ButBasCom    } from './ui.jsx';                  // What: Button Base Component. Why: Every editor footer and quick-add form needs its own Cancel/Save/Delete buttons. How: This is rendered throughout EdiFooCom and the quick-add footer below.
 import { ColDisCom    } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: Every schedule subsection, log panel, and inline editor needs to animate open and closed instead of snapping. How: This wraps the anchor hint, the Reminders log, and every inline editor's own open state throughout this file.
-import { DayLogChip   } from './day-log.jsx';             // What: Day Log Chip. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onToggleLog being supplied.
 import { emlTouObj    } from './eml-tour-bus.js';         // What: Ease My Life Tour Object. Why: A reminder mini-tour publishes prefill data and reads the live draft's own repeat kind through this shared bus. How: This is read via .get() in staAddFun and written to via .set() below.
 import { freEdiFun    } from './ui.jsx';                  // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
 import { IcoSvgCom    } from './ui.jsx';                  // What: Icon Svg Component. Why: Every reminder row, card, and button needs a recognizable glyph. How: This is rendered throughout RemCarCom, RemSecCom, and RemManCom.
 import { InfTipCom    } from './ui.jsx';                  // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add buttons in RemSecCom and RemManCom.
+import { LogChiCom    } from './day-log.jsx';             // What: Log Chip Component. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onToggleLog being supplied.
 import { ONB_CHE_OBJ  } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Both add-reminder entry points must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun and entLooFun helpers.
 import { ONB_RCT_OBJ  } from './onboarding-seed-data.js'; // What: Onboarding Reminder-Card-Text Object. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
 import { ONB_STI_ARR  } from './onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
@@ -4151,14 +4151,14 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 
-					{ !ediModBoo && onTogLogFun && ( // What: Day Log Chip Visibility Check. Why: The day-log toggle only makes sense outside Edit Mode, and only when a caller actually wired up onTogLogFun. How: This renders only while both conditions hold.
+					{ !ediModBoo && onTogLogFun && ( // What: Log Chip Visibility Check. Why: The day-log toggle only makes sense outside Edit Mode, and only when a caller actually wired up onTogLogFun. How: This renders only while both conditions hold.
 
 
-						<DayLogChip
+						<LogChiCom
 							open={ logOpeBoo }
 
-							onClick={ onTogLogFun }
-						/> // What: Day Log Chip. Why: This is the Reminders header's own toggle for its day-log panel. How: This shows logOpeBoo and toggles the panel via onTogLogFun.
+							onTogLogFun={ onTogLogFun }
+						/> // What: Log Chip Component. Why: This is the Reminders header's own toggle for its day-log panel. How: This shows logOpeBoo and toggles the panel via onTogLogFun.
 
 
 					) }
@@ -4255,9 +4255,9 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 					<RemLogCom
-						state={ staAppObj }
+						staAppObj={ staAppObj }
 
-						onClose={ onTogLogFun }
+						onCloLogFun={ onTogLogFun }
 					/>{ /* What: Reminders Log Component. Why: This is the actual "what did the generator do today" audit panel for this group. How: This is passed staAppObj and closes back via onTogLogFun. */ }
 
 

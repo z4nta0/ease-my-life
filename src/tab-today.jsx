@@ -15,7 +15,6 @@ import { CAD_NAM_OBJ  } from './cadence.js';                    // What: Cadence
 import { ColDisCom    } from './ui.jsx';                        // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntEdiCom, gated on whichever key/eid currently owns the open state.
 import { CON_NAM_OBJ  } from './conditionals.js';               // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
 import { createPortal } from 'react-dom';                       // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
-import { DayLogChip   } from './day-log.jsx';                   // What: Day Log Chip. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
 import { emlTouObj    } from './eml-tour-bus.js';               // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
 import { EUR_WAR_STR  } from './constants.js';                  // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntEdiCom.
 import { FeaTipCom    } from './onboarding-app-features.jsx';   // What: Feature Tip Component. Why: The App Features section needs a one-time "One Last Thing..." intro the first time it is shown. How: This is rendered once shoIntBoo is true, passed actStoObj so it can mark itself seen.
@@ -29,6 +28,7 @@ import { HelOveCom    } from './help-mode.jsx';                 // What: Help Ov
 import { HOL_NAM_OBJ  } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against staAppObj.holidays.
 import { IcoSvgCom    } from './ui.jsx';                        // What: Icon Svg Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
 import { InfTipCom    } from './ui.jsx';                        // What: Info Tip Component. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
+import { LogChiCom    } from './day-log.jsx';                   // What: Log Chip Component. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
 import { norGroFun    } from './pickers.js';                    // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside reqRenFun and pagColFun.
 import { NOT_NAM_OBJ  } from './notify.js';                     // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
 import { NumSteCom    } from './ui.jsx';                        // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntEdiCom's own ease rows.
@@ -788,14 +788,14 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 					</span>
 
-					{ !ediModBoo && onTogLogFun && ( // What: Day Log Chip Check. Why: The chip only makes sense outside Edit Mode and only when a caller actually wired up onTogLogFun. How: This renders DayLogChip only while both conditions hold.
+					{ !ediModBoo && onTogLogFun && ( // What: Log Chip Check. Why: The chip only makes sense outside Edit Mode and only when a caller actually wired up onTogLogFun. How: This renders LogChiCom only while both conditions hold.
 
 
-						<DayLogChip
+						<LogChiCom
 							open={ logOpeBoo }
 
-							onClick={ onTogLogFun }
-						/> // What: Day Log Chip. Why: Outside Edit Mode, this group's own Day Log panel needs a visible toggle. How: This is passed logOpeBoo and onTogLogFun directly.
+							onTogLogFun={ onTogLogFun }
+						/> // What: Log Chip Component. Why: Outside Edit Mode, this group's own Day Log panel needs a visible toggle. How: This is passed logOpeBoo and onTogLogFun directly.
 
 
 					) }
@@ -7169,9 +7169,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 											<GroLogCom
 												groNamStr={ curGroObj.namStr }
-												state={ staAppObj }
+												staAppObj={ staAppObj }
 
-												onClose={ () => togLogFun( curGroObj.namStr ) }
+												onCloLogFun={ () => togLogFun( curGroObj.namStr ) }
 											/>{ /* What: Group Log. Why: This renders curGroObj's own picker audit rows. How: This is passed curGroObj's own name and a close handler that re-toggles it shut. */ }
 
 
