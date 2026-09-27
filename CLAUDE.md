@@ -484,6 +484,18 @@ can move code between files rather than just within one.
    *
    * @author z4nta0 <https://github.com/z4nta0>
   ```
+- **Generated files.** Decided 2026-09-27. A file written by a script
+  (so far only `src/onboarding-stats-data.js`, from
+  `scripts/build-onboarding-stats.mjs`) gets its formatting from the
+  generator's own output template, never from hand edits: the
+  file-level rules (naming, header table of contents, sections and
+  regions, a shape JSDoc block, end-of-file export, sorted keys, a
+  comment on each multi-line construct's opening line) apply through
+  that template, while the generated data rows themselves are exempt
+  from per-line comments and column alignment. When the template
+  changes, the existing data is rewritten with the generator's
+  `--reformat` flag, which reuses the data already on disk instead of
+  simulating new random history.
 - **Extension and naming.** A file uses `.jsx` only when it actually
   contains JSX, and `.js` otherwise. Every filename is kebab-case
   (`tab-today.jsx`, `onboarding-seed-data.js`). Renaming a file means
