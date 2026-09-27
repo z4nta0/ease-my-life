@@ -289,19 +289,19 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 			<>
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><IcoSvgCom name='refresh' size={14} /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom icoNamStr='refEle' sizValNum={14} /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><IcoSvgCom name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom icoNamStr='skiEle' sizValNum={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><IcoSvgCom name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom icoNamStr='ediEle' sizValNum={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
@@ -326,13 +326,13 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 			<>
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><IcoSvgCom name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom icoNamStr='skiEle' sizValNum={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><IcoSvgCom name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom icoNamStr='ediEle' sizValNum={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
@@ -1064,7 +1064,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle : (
 
 
-			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className='help-inline-icon'><IcoSvgCom name='calendar' size={13} /></span> Send to Today button will send the item to your todo list on the Today page, the <span className='help-inline-icon'><IcoSvgCom name='edit' size={13} /></span> Edit button will allow you to edit the item's properties and the <span className='help-inline-icon'><IcoSvgCom name='trash' size={13} /></span> Delete button will delete the item after asking for confirmation.</>
+			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className='help-inline-icon'><IcoSvgCom icoNamStr='calEle' sizValNum={13} /></span> Send to Today button will send the item to your todo list on the Today page, the <span className='help-inline-icon'><IcoSvgCom icoNamStr='ediEle' sizValNum={13} /></span> Edit button will allow you to edit the item's properties and the <span className='help-inline-icon'><IcoSvgCom icoNamStr='traEle' sizValNum={13} /></span> Delete button will delete the item after asking for confirmation.</>
 
 
 		),

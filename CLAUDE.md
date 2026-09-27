@@ -2477,8 +2477,8 @@ tag, so it has no effect on rendering.) A multi-line attribute value keeps
 its own internal spacing untouched, e.g. an arrow function body's usual
 2-blank padding. The tier a prop lands in is judged by role on a custom
 component, so `name` is tier 5 only on a native element (where it's the
-real HTML `name` attribute); a custom component's `name` prop, like
-`IcoSvgCom`'s own icon name, is core data in tier 6. See `tab-today.jsx`'s
+real HTML `name` attribute); a custom component's own name-like prop, like
+`IcoSvgCom`'s own `icoNamStr`, is core data in tier 6. See `tab-today.jsx`'s
 own GroHeaCom name `<input>` for the reference example:
 
 ```
@@ -3518,6 +3518,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     miscorrection, so per the user's own choice Weekend keeps its
     consonant skeleton `wkd` (e.g. `tasks.js`'s own `isaWkdBoo`).
     Scoped to ease-my-life ONLY, for the same reason as `rmn`/`rmv`.
+  - **Truncated uses `trn`, not `tru`** (a project-scoped decision): the
+    literal `tru` reads as "true" and already means True in this
+    codebase (`conditionals.js`'s own `truOddFun`, True Odds Function),
+    so per the user's own choice Truncated takes its consonant skeleton
+    `trn` (e.g. `ui.jsx`'s own `texTrnBoo`/`cheTrnFun`, and InfTipCom's
+    `trnOnlBoo` prop). Scoped to ease-my-life ONLY, for the same reason
+    as `rmn`/`rmv`.
   - `cch` → `cac` (Cached/Cache — found in `cchStaObj` (`store.js`'s own
     `loaStaFun`, 2 instances), fixed to `cacStaObj`; `cac` was already
     the established, heavily-used code for this exact word elsewhere in

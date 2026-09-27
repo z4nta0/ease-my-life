@@ -874,7 +874,7 @@ function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 
 			<IntModCom
-				icoTopEle={ <IcoSvgCom name='picker' size={ 54 } /> }
+				icoTopEle={ <IcoSvgCom icoNamStr='picker' sizValNum={ 54 } /> }
 				titHeaStr={ `${ picRecObj.name } Picker` }
 				parEleArr={ [ FIR_PAR_ELE, picCopObj.bodEle ] }
 				pilLabArr={ [ 'pickers', modLabStr, ( picRecObj.group || '' ).toLowerCase() ] }

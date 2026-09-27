@@ -1559,14 +1559,14 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 
 					<ButBasCom
-						kind='ghost'
-						size='sm'
+						kinValStr='ghost'
+						sizValStr='sm'
 						onClick={ () => setConOpeBoo( false ) }
 					>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the delete confirm without changing anything. How: This closes conOpeBoo, returning to the plain footer. */ }
 
 					<ButBasCom
-						kind='danger'
-						size='sm'
+						kinValStr='danger'
+						sizValStr='sm'
 						onClick={ delNowFun }
 					>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls delNowFun, which marks itself handled and invokes onDelTasFun. */ }
 
@@ -1594,9 +1594,9 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 
 				<ButBasCom
-					kind='danger'
-					size='sm'
-					icon='trash'
+					kinValStr='danger'
+					sizValStr='sm'
+					icoNamStr='traEle'
 					onClick={ () => setConOpeBoo( true ) }
 				>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conOpeBoo to true.
 
@@ -1607,14 +1607,14 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 
 				<ButBasCom
-					kind='ghost'
-					size='sm'
+					kinValStr='ghost'
+					sizValStr='sm'
 					onClick={ canNowFun }
 				>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canNowFun. */ }
 
 				<ButBasCom
-					kind='ghost'
-					size='sm'
+					kinValStr='ghost'
+					sizValStr='sm'
 					onClick={ donNowFun }
 				>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls donNowFun. */ }
 
@@ -1824,9 +1824,9 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 						<span className='check-ripple' aria-hidden='true' />{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple, same as every other checkbox in the app. How: This renders an empty, purely decorative span. */ }
 
 						<IcoSvgCom
-							name='check'
-							size={ 14 }
-						/>{ /* What: Icon Svg Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'check' icon. */ }
+							icoNamStr='cheEle'
+							sizValNum={ 14 }
+						/>{ /* What: Icon Svg Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'cheEle' icon. */ }
 
 
 					</button>
@@ -1844,9 +1844,9 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 						<IcoSvgCom
-							name='play'
-							size={ 13 }
-						/>{ /* What: Icon Svg Component. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'play' icon. */ }
+							icoNamStr='plaEle'
+							sizValNum={ 13 }
+						/>{ /* What: Icon Svg Component. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'plaEle' icon. */ }
 
 
 					</button>
@@ -1903,9 +1903,9 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 							<IcoSvgCom
-								name='x'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: This is the Cancel action's own glyph. How: This renders the 'x' icon. */ }
+								icoNamStr='croEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: This is the Cancel action's own glyph. How: This renders the 'croEle' icon. */ }
 
 
 						</button>
@@ -1976,9 +1976,9 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 					<IcoSvgCom
-						name='check'
-						size={ 14 }
-					/> // What: Icon Svg Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'check' icon only while isaDonBoo.
+						icoNamStr='cheEle'
+						sizValNum={ 14 }
+					/> // What: Icon Svg Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'cheEle' icon only while isaDonBoo.
 
 
 				) }
@@ -1994,8 +1994,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 					<IcoSvgCom
-						name={ tasRecObj.repeat === 'once' ? 'pin' : 'calendar' }
-						size={ 12 }
+						icoNamStr={ tasRecObj.repeat === 'once' ? 'pinEle' : 'calEle' }
+						sizValNum={ 12 }
 					/>{ /* What: Icon Svg Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
 					<span className='meta-picker'>{ TAS_NAM_OBJ.sumTasFun( tasRecObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRecObj. */ }
@@ -2047,9 +2047,9 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 					<IcoSvgCom
-						name='skip'
-						size={ 15 }
-					/>{ /* What: Icon Svg Component. Why: This is the Skip action's own glyph. How: This renders the 'skip' icon. */ }
+						icoNamStr='skiEle'
+						sizValNum={ 15 }
+					/>{ /* What: Icon Svg Component. Why: This is the Skip action's own glyph. How: This renders the 'skiEle' icon. */ }
 
 
 				</button>
@@ -2064,9 +2064,9 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 					<IcoSvgCom
-						name='edit'
-						size={ 15 }
-					/>{ /* What: Icon Svg Component. Why: This is the Edit action's own glyph. How: This renders the 'edit' icon. */ }
+						icoNamStr='ediEle'
+						sizValNum={ 15 }
+					/>{ /* What: Icon Svg Component. Why: This is the Edit action's own glyph. How: This renders the 'ediEle' icon. */ }
 
 
 				</button>
@@ -2459,9 +2459,9 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 							<IcoSvgCom
-								name='grip'
-								size={ 16 }
-							/>{ /* What: Icon Svg Component. Why: This is the grip's own visible glyph. How: This renders the 'grip' icon. */ }
+								icoNamStr='griEle'
+								sizValNum={ 16 }
+							/>{ /* What: Icon Svg Component. Why: This is the grip's own visible glyph. How: This renders the 'griEle' icon. */ }
 
 
 						</span>
@@ -2517,15 +2517,15 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 							<InfTipCom
 								className='rem-add-btn is-tour-disabled'
-								action='Add a Reminder'
-								label='This button is disabled until all tutorials are completed.'
+								actNamStr='Add a Reminder'
+								labTexStr='This button is disabled until all tutorials are completed.'
 							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. */ }
 
 
 								<IcoSvgCom
-									name='plus'
-									size={ 16 }
-								/>{ /* What: Icon Svg Component. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'plus' icon. */ }
+									icoNamStr='pluEle'
+									sizValNum={ 16 }
+								/>{ /* What: Icon Svg Component. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'pluEle' icon. */ }
 
 
 							</InfTipCom>
@@ -2543,9 +2543,9 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 								<IcoSvgCom
-									name='plus'
-									size={ 16 }
-								/>{ /* What: Icon Svg Component. Why: This is the add button's own visible glyph. How: This renders the 'plus' icon. */ }
+									icoNamStr='pluEle'
+									sizValNum={ 16 }
+								/>{ /* What: Icon Svg Component. Why: This is the add button's own visible glyph. How: This renders the 'pluEle' icon. */ }
 
 
 							</button>
@@ -2629,14 +2629,14 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 								<ButBasCom
-									kind='ghost'
-									size='sm'
+									kinValStr='ghost'
+									sizValStr='sm'
 									onClick={ canAddFun }
 								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the in-progress draft entirely. How: This calls canAddFun. */ }
 
 								<ButBasCom
-									kind='primary'
-									size='sm'
+									kinValStr='primary'
+									sizValStr='sm'
 									disabled={ !draTasObj.name.trim() }
 									onClick={ comAddFun }
 								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls comAddFun, disabled while the name is blank. */ }
@@ -2793,14 +2793,14 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 													<ButBasCom
-														kind='ghost'
-														size='sm'
+														kinValStr='ghost'
+														sizValStr='sm'
 														onClick={ () => setSkiIdeStr( null ) }
 													>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the skip confirm without changing anything. How: This closes skiIdeStr, returning to the plain row. */ }
 
 													<ButBasCom
-														kind='primary'
-														size='sm'
+														kinValStr='primary'
+														sizValStr='sm'
 														onClick={ () => { // What: Confirm Skip Click Handler. Why: Confirming the skip needs to close the prompt and stage the same collapse-then-skip sequence Delete uses. How: This closes skiIdeStr, then either skips immediately (reduced motion) or defers it behind the collapse-out animation.
 
 
@@ -2839,8 +2839,8 @@ function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, 
 
 
 													<ButBasCom
-														kind='ghost'
-														size='sm'
+														kinValStr='ghost'
+														sizValStr='sm'
 														onClick={ () => setSkiIdeStr( null ) }
 													>Close</ButBasCom>{ /* What: Button Base Component. Why: This is the only available action when there's no eligible day to skip to. How: This closes skiIdeStr, returning to the plain row. */ }
 
@@ -3163,14 +3163,14 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 
 
 					<ButBasCom
-						kind='ghost'
-						size='sm'
+						kinValStr='ghost'
+						sizValStr='sm'
 						onClick={ canMatFun }
 					>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This reverts every toggle changed since this component mounted. How: This calls canMatFun. */ }
 
 					<ButBasCom
-						kind='ghost'
-						size='sm'
+						kinValStr='ghost'
+						sizValStr='sm'
 						onClick={ onCloConFun }
 					>Save</ButBasCom>{ /* What: Button Base Component. Why: This just collapses the body, keeping every toggle as-is (they already committed live, on each individual click). How: This calls onCloConFun directly. */ }
 
@@ -3444,9 +3444,9 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 						<IcoSvgCom
-							name='chev'
-							size={ 14 }
-						/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chev' icon at a small 14px size. */ }
+							icoNamStr='chvEle'
+							sizValNum={ 14 }
+						/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at a small 14px size. */ }
 
 
 					</span>
@@ -3500,9 +3500,9 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 								<IcoSvgCom
-									name='chev'
-									size={ 12 }
-								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chev' icon at a small 12px size. */ }
+									icoNamStr='chvEle'
+									sizValNum={ 12 }
+								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at a small 12px size. */ }
 
 
 							</span>
@@ -3546,9 +3546,9 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 								<IcoSvgCom
-									name='chev'
-									size={ 12 }
-								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chev' icon at a small 12px size. */ }
+									icoNamStr='chvEle'
+									sizValNum={ 12 }
+								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at a small 12px size. */ }
 
 
 							</span>
@@ -3576,15 +3576,15 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 								<InfTipCom
 									className='rd-add is-tour-disabled'
-									action='New reminder'
-									label='This button is disabled until all tutorials are completed.'
+									actNamStr='New reminder'
+									labTexStr='This button is disabled until all tutorials are completed.'
 								>{ /* What: Info Tip Component. Why: This is a second, independent path to a real reminder, so it must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This wraps the plus icon and label text, standing in for the real button below. */ }
 
 
 									<IcoSvgCom
-										name='plus'
-										size={ 13 }
-									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'plus' icon. */ } New reminder
+										icoNamStr='pluEle'
+										sizValNum={ 13 }
+									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
 								</InfTipCom>
@@ -3600,9 +3600,9 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 									<IcoSvgCom
-										name='plus'
-										size={ 13 }
-									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'plus' icon. */ } New reminder
+										icoNamStr='pluEle'
+										sizValNum={ 13 }
+									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
 								</button>
@@ -3626,9 +3626,9 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 										<SorSelCom
-											id='rem-item-sort'
-											label='Sort'
-											options={ ITE_SOR_ARR }
+											selIdeStr='rem-item-sort'
+											labTexStr='Sort'
+											optLisArr={ ITE_SOR_ARR }
 											value={ iteSorStr }
 											onChange={ ( sorKeyStr ) => actStoObj.setSorFun( 'reminders', sorKeyStr ) }
 										/> // What: Sort Select Component. Why: The Items list needs the same sort control every other Data tab list uses. How: This is driven by ITE_SOR_ARR, committing through actStoObj.setSorFun.
@@ -3664,8 +3664,8 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 															<IcoSvgCom
-																name={ isaOncBoo ? 'pin' : 'calendar' }
-																size={ 15 }
+																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' }
+																sizValNum={ 15 }
 															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
@@ -3701,9 +3701,9 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 															<IcoSvgCom
-																name='chev'
-																size={ 16 }
-															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chev' icon at a 16px size. */ }
+																icoNamStr='chvEle'
+																sizValNum={ 16 }
+															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chvEle' icon at a 16px size. */ }
 
 
 														</button>
@@ -3727,8 +3727,8 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 															<IcoSvgCom
-																name={ isaOncBoo ? 'pin' : 'calendar' }
-																size={ 15 }
+																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' }
+																sizValNum={ 15 }
 															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
@@ -3750,9 +3750,9 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 															<IcoSvgCom
-																name='chev'
-																size={ 16 }
-															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chev' icon at a 16px size. */ }
+																icoNamStr='chvEle'
+																sizValNum={ 16 }
+															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chvEle' icon at a 16px size. */ }
 
 
 														</span>

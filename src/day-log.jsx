@@ -788,8 +788,8 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 						<InfTipCom
 							className={ `dl-mode ${ neuModBoo ? 'neutral' : '' }` }
-							label={ modLabStr }
-							truncationOnly
+							labTexStr={ modLabStr }
+							trnOnlBoo
 						>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
@@ -847,8 +847,8 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 					<InfTipCom
 						className={ `dl-mode ${ neuModBoo ? 'neutral' : '' }` }
-						label={ modLabStr }
-						truncationOnly
+						labTexStr={ modLabStr }
+						trnOnlBoo
 					>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
@@ -901,8 +901,8 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 									<InfTipCom
 										className='dl-name'
-										label={ iteRecObj.name }
-										truncationOnly
+										labTexStr={ iteRecObj.name }
+										trnOnlBoo
 									>{ iteRecObj.name }</InfTipCom>{ /* What: Item Name Info Tip Element. Why: A long item name can truncate in a narrow layout. How: This renders iteRecObj's own name as a truncation-revealing InfTipCom. */ }
 
 									<span className='dl-sub'>{ iteSubFun( picRecObj, iteRecObj, hasValBoo ? genIteObj[ iteRecObj.id ] : null ) }</span>{ /* What: Item Subline Span Element. Why: Every item shows its own weight/range/boost text beneath its name. How: This renders iteSubFun's own result, passing the generation snapshot only while hasValBoo. */ }
@@ -1058,14 +1058,14 @@ function ConSecCom ( { appStaObj, picGroArr } ) {
 
 										<InfTipCom
 											className='dl-name'
-											label={ conRecObj.name }
-											truncationOnly
+											labTexStr={ conRecObj.name }
+											trnOnlBoo
 										>{ conRecObj.name }</InfTipCom>{ /* What: Conditional Name Info Tip Element. Why: A long conditional name can truncate in a narrow layout. How: This renders conRecObj's own name as a truncation-revealing InfTipCom. */ }
 
 										<InfTipCom
 											className={ `dl-mode dl-mode--cond ${ neuModBoo ? 'is-neutral' : '' }` }
-											label={ modLabStr }
-											truncationOnly
+											labTexStr={ modLabStr }
+											trnOnlBoo
 										>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
@@ -1504,8 +1504,8 @@ function RemLogCom ( { state, onClose } ) {
 
 						<InfTipCom
 							className='dl-r-name dl-mk-rname'
-							label={ tasObj.name }
-							truncationOnly
+							labTexStr={ tasObj.name }
+							trnOnlBoo
 						>{ tasObj.name }</InfTipCom>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasObj's own name as a truncation-revealing InfTipCom. */ }
 
 						<span className='dl-r-when dl-mk-rwhen'>{ wheStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheStr directly. */ }

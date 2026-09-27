@@ -12,14 +12,6 @@ import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfTipCom
 
 
 
-let annStaFun; // What: Announce Status Function. Why: The real implementation is only built once the IIFE further down in this file runs, but this exported binding must exist and be assignable before that. How: This starts undefined and is overwritten inside the annStaFun-setup IIFE below.
-
-
-
-export { annStaFun }; // What: Announce Status Function. Why: Nearly every tab needs to speak a transient status to screen readers after an action. How: This re-exports the same module-level binding declared just above, whose real value is assigned later in this file.
-
-
-
 /**
  * ui.jsx = Shared UI Primitives
  *
@@ -40,44 +32,46 @@ export { annStaFun }; // What: Announce Status Function. Why: Nearly every tab n
 
 
 
-const IcoSvgCom = ( { name, size = 18 } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up name in pahObj and renders the matching SVG shape at the given size.
+const IcoSvgCom = ( { icoNamStr, sizValNum = 18 } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at sizValNum.
 
 
-	const pahObj = { // What: Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the name prop to pick which shape the rendered svg actually draws.
+	const icoPatObj = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
 
 
-		arrow_down : <><path d='M12 5v14M6 13l6 6 6-6' /></>,                                                                     // What: Arrow Down Icon. Why: This marks a downward move/sort action. How: This draws a vertical line ending in a downward arrowhead.
-		arrow_up   : <><path d='M12 19V5M6 11l6-6 6 6' /></>,                                                                     // What: Arrow Up Icon. Why: This marks an upward move/sort action. How: This draws a vertical line ending in an upward arrowhead.
-		calendar   : <><rect x='3' y='5' width='18' height='16' rx='2' /><path d='M3 9h18M8 3v4M16 3v4' /></>,                    // What: Calendar Icon. Why: This marks a date-related control. How: This draws a plain calendar outline with 2 hanger tabs.
-		check      : <><path d='M4 12l5 5L20 6' /></>,                                                                            // What: Check Icon. Why: This marks a completed/done state. How: This draws a single checkmark stroke.
-		chev       : <><path d='M9 6l6 6-6 6' /></>,                                                                              // What: Chevron Icon. Why: This marks a "forward/expand this way" affordance. How: This draws a plain right-pointing chevron.
-		chev_d     : <><path d='M6 9l6 6 6-6' /></>,                                                                              // What: Chevron Down Icon. Why: This marks a "collapsed, tap to expand downward" affordance. How: This draws a plain downward-pointing chevron.
-		download   : <><path d='M12 3v12M7 10l5 5 5-5M5 21h14' /></>,                                                             // What: Download Icon. Why: This marks an export/download action. How: This draws a downward arrow into a tray.
-		edit       : <><path d='M12 20h9' /><path d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z' /></>,                           // What: Edit Icon. Why: This marks an edit action. How: This draws a classic pencil shape over a baseline.
-		eye        : <><path d='M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z' /><circle cx='12' cy='12' r='3' /></>,              // What: Eye Icon. Why: This marks a "visible/active" state, or a control that hides revealed content. How: This draws a plain open eye shape.
-		flame      : <><path d='M12 3c0 4-5 6-5 11a5 5 0 0 0 10 0c0-2-1-3-2-4 0 2-1 3-2 3 0-3 2-5-1-10z' /></>,                   // What: Flame Icon. Why: This marks a streak/intensity indicator. How: This draws a stylized flame shape.
-		moon       : <><path d='M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10z' /></>,                                                    // What: Moon Icon. Why: This marks a dark-mode/night related control. How: This draws a crescent moon shape.
-		picker     : <><path d='M3 6h4l10 12h4M3 18h4l3.5-4.2M14.5 8.2L17 6h4' /><path d='M18 3l3 3-3 3M18 15l3 3-3 3' /></>,     // What: Picker Icon. Why: This marks the Pickers tab button. How: This draws a pair of crossing shuffle-style arrows.
-		pin        : <><path d='M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z' /><circle cx='12' cy='10' r='2.5' /></>,       // What: Pin Icon. Why: This marks a location/anchor-day related control. How: This draws a classic map pin teardrop with a hollow center circle.
-		play       : <><path d='M6 4l14 8-14 8z' /></>,                                                                           // What: Play Icon. Why: This marks a start/run action. How: This draws a plain filled play triangle.
-		plus       : <><path d='M12 5v14M5 12h14' /></>,                                                                          // What: Plus Icon. Why: This marks an add action. How: This draws a plain plus sign.
-		refresh    : <><path d='M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5' /></>,               // What: Refresh Icon. Why: This marks a Fill/Refill/reload action. How: This draws two curved arrows forming a full circular refresh glyph.
-		skip       : <><path d='M5 4l10 8-10 8V4zM19 5v14' /></>,                                                                 // What: Skip Icon. Why: This marks a skip action. How: This draws a "next track" style triangle-and-bar shape.
-		sparkle    : <><path d='M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' /></>,                                 // What: Sparkle Icon. Why: This marks a highlighted/celebratory state. How: This draws a 4-pointed sparkle star.
-		stats      : <><path d='M4 20V10M11 20V4M18 20v-8M21 20H3' /></>,                                                         // What: Stats Icon. Why: This marks the Stats tab button. How: This draws a simple 3-bar chart shape.
-		trash      : <><path d='M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13' /></>, // What: Trash Icon. Why: This marks a delete action. How: This draws a classic lidded trash can outline.
-		upload     : <><path d='M12 21V9M7 14l5-5 5 5M5 3h14' /></>,                                                              // What: Upload Icon. Why: This marks an import/upload action. How: This draws an upward arrow out of a tray.
-		x          : <><path d='M6 6l12 12M18 6L6 18' /></>,                                                                      // What: X Icon. Why: This marks a close/remove action. How: This draws a plain X shape.
+		ardEle : <><path d='M12 5v14M6 13l6 6 6-6' /></>,                                                                     // What: Arrow-Down Element. Why: This marks a downward move/sort action. How: This draws a vertical line ending in a downward arrowhead.
+		aruEle : <><path d='M12 19V5M6 11l6-6 6 6' /></>,                                                                     // What: Arrow-Up Element. Why: This marks an upward move/sort action. How: This draws a vertical line ending in an upward arrowhead.
+		calEle : <><rect x='3' y='5' width='18' height='16' rx='2' /><path d='M3 9h18M8 3v4M16 3v4' /></>,                    // What: Calendar Element. Why: This marks a date-related control. How: This draws a plain calendar outline with 2 hanger tabs.
+		chdEle : <><path d='M6 9l6 6 6-6' /></>,                                                                              // What: Chevron-Down Element. Why: This marks a "collapsed, tap to expand downward" affordance. How: This draws a plain downward-pointing chevron.
+		cheEle : <><path d='M4 12l5 5L20 6' /></>,                                                                            // What: Check Element. Why: This marks a completed/done state. How: This draws a single checkmark stroke.
+		chvEle : <><path d='M9 6l6 6-6 6' /></>,                                                                              // What: Chevron Element. Why: This marks a "forward/expand this way" affordance. How: This draws a plain right-pointing chevron.
+		croEle : <><path d='M6 6l12 12M18 6L6 18' /></>,                                                                      // What: Cross Element. Why: This marks a close/remove action. How: This draws a plain X shape.
+		dowEle : <><path d='M12 3v12M7 10l5 5 5-5M5 21h14' /></>,                                                             // What: Download Element. Why: This marks an export/download action. How: This draws a downward arrow into a tray.
+		ediEle : <><path d='M12 20h9' /><path d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z' /></>,                           // What: Edit Element. Why: This marks an edit action. How: This draws a classic pencil shape over a baseline.
+		eyeEle : <><path d='M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z' /><circle cx='12' cy='12' r='3' /></>,              // What: Eye Element. Why: This marks a "visible/active" state, or a control that hides revealed content. How: This draws a plain open eye shape.
+		flaEle : <><path d='M12 3c0 4-5 6-5 11a5 5 0 0 0 10 0c0-2-1-3-2-4 0 2-1 3-2 3 0-3 2-5-1-10z' /></>,                   // What: Flame Element. Why: This marks a streak/intensity indicator. How: This draws a stylized flame shape.
+		mooEle : <><path d='M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10z' /></>,                                                    // What: Moon Element. Why: This marks a dark-mode/night related control. How: This draws a crescent moon shape.
+		pinEle : <><path d='M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z' /><circle cx='12' cy='10' r='2.5' /></>,       // What: Pin Element. Why: This marks a location/anchor-day related control. How: This draws a classic map pin teardrop with a hollow center circle.
+		plaEle : <><path d='M6 4l14 8-14 8z' /></>,                                                                           // What: Play Element. Why: This marks a start/run action. How: This draws a plain filled play triangle.
+		pluEle : <><path d='M12 5v14M5 12h14' /></>,                                                                          // What: Plus Element. Why: This marks an add action. How: This draws a plain plus sign.
+		refEle : <><path d='M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5' /></>,               // What: Refresh Element. Why: This marks a Fill/Refill/reload action. How: This draws two curved arrows forming a full circular refresh glyph.
+		skiEle : <><path d='M5 4l10 8-10 8V4zM19 5v14' /></>,                                                                 // What: Skip Element. Why: This marks a skip action. How: This draws a "next track" style triangle-and-bar shape.
+		spaEle : <><path d='M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' /></>,                                 // What: Sparkle Element. Why: This marks a highlighted/celebratory state. How: This draws a 4-pointed sparkle star.
+		traEle : <><path d='M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13' /></>, // What: Trash Element. Why: This marks a delete action. How: This draws a classic lidded trash can outline.
+		uplEle : <><path d='M12 21V9M7 14l5-5 5 5M5 3h14' /></>,                                                              // What: Upload Element. Why: This marks an import/upload action. How: This draws an upward arrow out of a tray.
 
-		data     : <><ellipse cx='12' cy='6' rx='7' ry='3' /><path d='M5 6v12c0 1.66 3.13 3 7 3s7-1.34 7-3V6' /><path d='M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3' /></>,                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // What: Data Icon. Why: This marks the Data tab button. How: This draws a classic 3-band database cylinder.
-		eye_off  : <><path d='M3 3l18 18M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a16 16 0 0 1-3.1 3.6M6.1 6.1A16 16 0 0 0 3 12s4 6 9 6c1.4 0 2.7-.4 4-1' /><circle cx='12' cy='12' r='3' /></>,                                                                                                                                                                                                                                                                                                                                                                                                                                      // What: Eye Off Icon. Why: This marks a "hidden/inactive" state, or a control that reveals hidden content. How: This draws an eye shape crossed out by a diagonal slash.
-		grip     : <><circle cx='9' cy='6' r='1' /><circle cx='15' cy='6' r='1' /><circle cx='9' cy='12' r='1' /><circle cx='15' cy='12' r='1' /><circle cx='9' cy='18' r='1' /><circle cx='15' cy='18' r='1' /></>,                                                                                                                                                                                                                                                                                                                                                                                                                // What: Grip Icon. Why: This marks a drag handle. How: This draws a 2x3 grid of dots.
-		palette  : <><path d='M12 3a9 9 0 1 0 0 18c1 0 1.5-.5 1.5-1.3 0-.4-.2-.7-.4-1-.2-.3-.4-.6-.4-1 0-.8.6-1.4 1.4-1.4H16a4 4 0 0 0 4-4c0-5-3.6-9-8-9z' /><circle cx='7.5' cy='10.5' r='1.1' fill='currentColor' stroke='none' /><circle cx='11' cy='7' r='1.1' fill='currentColor' stroke='none' /><circle cx='15.5' cy='8' r='1.1' fill='currentColor' stroke='none' /></>,                                                                                                                                                                                                                                                    // What: Palette Icon. Why: This marks the Appearance/theme control. How: This draws a classic paint palette with 3 filled color-well dots.
+		eyoEle : <><path d='M3 3l18 18M10.6 6.1A9.7 9.7 0 0 1 12 6c5 0 9 6 9 6a16 16 0 0 1-3.1 3.6M6.1 6.1A16 16 0 0 0 3 12s4 6 9 6c1.4 0 2.7-.4 4-1' /><circle cx='12' cy='12' r='3' /></>, // What: Eye-Off Element. Why: This marks a "hidden/inactive" state, or a control that reveals hidden content. How: This draws an eye shape crossed out by a diagonal slash.
+		griEle : <><circle cx='9' cy='6' r='1' /><circle cx='15' cy='6' r='1' /><circle cx='9' cy='12' r='1' /><circle cx='15' cy='12' r='1' /><circle cx='9' cy='18' r='1' /><circle cx='15' cy='18' r='1' /></>, // What: Grip Element. Why: This marks a drag handle. How: This draws a 2x3 grid of dots.
+		palEle : <><path d='M12 3a9 9 0 1 0 0 18c1 0 1.5-.5 1.5-1.3 0-.4-.2-.7-.4-1-.2-.3-.4-.6-.4-1 0-.8.6-1.4 1.4-1.4H16a4 4 0 0 0 4-4c0-5-3.6-9-8-9z' /><circle cx='7.5' cy='10.5' r='1.1' fill='currentColor' stroke='none' /><circle cx='11' cy='7' r='1.1' fill='currentColor' stroke='none' /><circle cx='15.5' cy='8' r='1.1' fill='currentColor' stroke='none' /></>, // What: Palette Element. Why: This marks the Appearance/theme control. How: This draws a classic paint palette with 3 filled color-well dots.
+
+		data     : <><ellipse cx='12' cy='6' rx='7' ry='3' /><path d='M5 6v12c0 1.66 3.13 3 7 3s7-1.34 7-3V6' /><path d='M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3' /></>,                              // What: Data Icon. Why: This marks the Data tab button. How: This draws a classic 3-band database cylinder.
+		picker   : <><path d='M3 6h4l10 12h4M3 18h4l3.5-4.2M14.5 8.2L17 6h4' /><path d='M18 3l3 3-3 3M18 15l3 3-3 3' /></>,                                                                      // What: Picker Icon. Why: This marks the Pickers tab button. How: This draws a pair of crossing shuffle-style arrows.
 		settings : <><circle cx='12' cy='12' r='3' /><path d='M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1A2 2 0 0 1 7 4.7l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z' /></>, // What: Settings Icon. Why: This marks the Settings tab button. How: This draws a classic gearwheel shape.
-		today    : <><rect x='3' y='5' width='18' height='16' rx='2' /><path d='M3 9h18M8 3v4M16 3v4' /><rect x='7' y='12.5' width='4' height='4' rx='1' fill='currentColor' stroke='none' /></>                                                                                                                                                                                                                                                                                                                                                                                                                                    // What: Today Icon. Why: This marks the Today tab button. How: This draws a small calendar outline with one filled inner square marking the current day.
+		stats    : <><path d='M4 20V10M11 20V4M18 20v-8M21 20H3' /></>, // What: Stats Icon. Why: This marks the Stats tab button. How: This draws a simple 3-bar chart shape.
+		today    : <><rect x='3' y='5' width='18' height='16' rx='2' /><path d='M3 9h18M8 3v4M16 3v4' /><rect x='7' y='12.5' width='4' height='4' rx='1' fill='currentColor' stroke='none' /></> // What: Today Icon. Why: This marks the Today tab button. How: This draws a small calendar outline with one filled inner square marking the current day.
 
 
 	};
+
 
 
 	return (
@@ -85,18 +79,19 @@ const IcoSvgCom = ( { name, size = 18 } ) => { // What: Icon Svg Component. Why:
 
 		<svg
 			fill='none'
-			height={ size }
+			height={ sizValNum }
 			stroke='currentColor'
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			strokeWidth='1.6'
 			viewBox='0 0 24 24'
-			width={ size }
+			width={ sizValNum }
+
 			aria-hidden='true'
-		>{ /* What: Icon Svg Element. Why: This is IcoSvgCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape pahObj[name] resolves to. */ }
+		>{ /* What: Icon Svg Element. Why: This is IcoSvgCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape icoPatObj[ icoNamStr ] resolves to. */ }
 
 
-			{ pahObj[ name ] }
+			{ icoPatObj[ icoNamStr ] }{ /* What: Icon Shape Lookup. Why: The svg's only content is the one glyph this icon name maps to. How: This reads icoNamStr's own entry out of icoPatObj. */ }
 
 
 		</svg>
@@ -109,39 +104,97 @@ const IcoSvgCom = ( { name, size = 18 } ) => { // What: Icon Svg Component. Why:
 
 
 
-// What: Button Base Component. Why: forwardRef lets a caller restore focus to a button after an action that hands focus away (see the Settings export/import confirmations). How: This forwards ref onto the real <button> element, applies the kind/size modifier classes plus any caller className, and spreads every other passed prop through.
-const ButBasCom = React.forwardRef( ( { children, kind = 'ghost', size = 'md', icon, className = '', ...resProObj }, ref ) => (
+// #region ButBasCom
+
+/**
+ * ButBasCom = Button Base Component
+ *
+ * @summary
+ * The shared base for nearly every button in the app: a real <button>
+ * (so it keeps native semantics and keyboard behavior) carrying the
+ * kind/size modifier classes, an optional leading icon, and whatever
+ * other props the caller passes straight through (onClick, disabled,
+ * aria-*, ...). It forwards its ref onto that <button>, so a caller can
+ * restore focus to it after an action that hands focus away (see the
+ * Settings export/import confirmations).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.children  - Children: The button's own visible content.
+ * @param props.className - Class Name: Extra class name(s) to append;
+ *                          defaults to an empty string.
+ * @param props.icoNamStr - Icon Name String: An optional IcoSvgCom icon name
+ *                          to render ahead of the children.
+ * @param props.kinValStr - Kind Value String: The visual kind modifier;
+ *                          defaults to 'ghost'.
+ * @param props.sizValStr - Size Value String: The size modifier, 'sm' or
+ *                          'md'; defaults to 'md'.
+ * @param props.resProObj - Rest Props Object: Every other prop, spread
+ *                          straight onto the <button>.
+ * @param forRefObj       - Forward Reference Object: The caller's own ref,
+ *                          attached to the <button>.
+ *
+ * @returns The rendered button element.
+ *
+ * @example
+ * ```tsx
+ * ButBasCom({ children, className, icoNamStr, ... }) // => <ButBasCom />
+ * ```
+ *
+*/
+
+const ButBasCom = React.forwardRef( function ButBasCom ( { children, className = '', icoNamStr, kinValStr = 'ghost', sizValStr = 'md', ...resProObj }, forRefObj ) { // What: Button Base Component. Why: Nearly every button in the app shares the same chrome, and some callers need a ref on it to restore focus. How: This forwards forRefObj onto a real <button> carrying the kind/size classes and every other passed prop.
 
 
-	<button
-		ref={ ref }
-		className={ `btn btn--${ kind } btn--${ size } ${ className }` }
-		{ ...resProObj }
-	>{ /* What: Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }
+	return (
 
 
-		{ icon && <IcoSvgCom name={ icon } size={ size === 'sm' ? 14 : 16 } /> }{ /* What: Icon Visibility Check. Why: An icon is optional, only some ButBasCom callers pass one. How: This renders an IcoSvgCom sized down for the "sm" size, only while the icon prop holds a name. */ }
+		<button
+			ref={ forRefObj }
 
-		{ children }
+			className={ ` btn   btn--${ kinValStr }   btn--${ sizValStr }   ${ className } ` }
 
-
-	</button>
-
-
-) );
+			{ ...resProObj }
+		>{ /* What: Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards the ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }
 
 
+			{ icoNamStr && ( // What: Icon Visibility Check. Why: An icon is optional, only some ButBasCom callers pass one. How: This renders an IcoSvgCom sized down for the 'sm' size, only while icoNamStr holds a name.
 
-const CarSurCom = ( { children, padded = true, className = '', ...resProObj } ) => ( // What: Card Surface Component. Why: CarSurCom is the shared surface/panel wrapper used throughout every tab. How: This renders a div with the padded/className modifier classes, spreading every other passed prop onto the DOM node.
+
+				<IcoSvgCom
+					icoNamStr={ icoNamStr }
+					sizValNum={ sizValStr === 'sm' ? 14 : 16 }
+				/> // What: Leading Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at a size matched to sizValStr.
+
+
+			) }
+
+			{ children }{ /* What: Button Content. Why: ButBasCom supplies only the button chrome; its label or other content comes from the caller. How: This renders whatever children the caller passed, after the optional icon. */ }
+
+
+		</button>
+
+
+	);
+
+
+} );
+
+// #endregion ButBasCom
+
+
+
+const CarSurCom = ( { children, className = '', isaPadBoo = true, ...resProObj } ) => ( // What: Card Surface Component. Why: CarSurCom is the shared surface/panel wrapper used throughout every tab. How: This renders a div with the isaPadBoo/className modifier classes, spreading every other passed prop onto the DOM node.
 
 
 	<div
-		className={ `card ${ padded ? 'card--p' : ''} ${ className }` }
+		className={ ` card   ${ isaPadBoo ? 'card--p' : '' }   ${ className } ` }
+
 		{ ...resProObj }
-	>{ /* What: Surface Div Element. Why: This is CarSurCom's own root rendered element. How: This applies the padded/className modifier classes, spreads any other passed props, and renders whatever children the caller passed. */ }
+	>{ /* What: Surface Div Element. Why: This is CarSurCom's own root rendered element. How: This applies the isaPadBoo/className modifier classes, spreads any other passed props, and renders whatever children the caller passed. */ }
 
 
-		{ children }
+		{ children }{ /* What: Card Content. Why: CarSurCom is only the surface; everything shown on the card comes from its caller. How: This renders whatever children the caller passed, unchanged. */ }
 
 
 	</div>
@@ -166,31 +219,31 @@ const CarSurCom = ( { children, padded = true, className = '', ...resProObj } ) 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.open      - Open: Whether this section should be expanded.
  * @param props.children  - Children: The section's own content, unmounted
  *                          while closed and remounted on open.
  * @param props.className - Class Name: Extra class name(s) to append; defaults
  *                          to an empty string.
- * @param props.instant   - Instant: Opts a specific mount out of the open
- *                          animation, snapping straight to expanded instead
- *                          (e.g. a freshly-created draft picker's Controls
- *                          section); defaults to false.
+ * @param props.isaInsBoo - Is-An Instant Boolean: Opts a specific mount out of
+ *                          the open animation, snapping straight to expanded
+ *                          instead (e.g. a freshly-created draft picker's
+ *                          Controls section); defaults to false.
+ * @param props.open      - Open: Whether this section should be expanded.
  *
  * @returns The section's own animated wrapper and its children, or
  * null while fully closed and unmounted.
  *
  * @example
  * ```tsx
- * ColDisCom({ open, children, className, instant }) // => <ColDisCom />
+ * ColDisCom({ children, className, isaInsBoo, open }) // => <ColDisCom />
  * ```
  *
 */
 
-function ColDisCom ( { open, children, className = '', instant = false } ) {
+function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
 
 
-	const [ chiMouBoo, setChiMouBoo ] = React.useState( open );            // What: Child Mounted Boolean And Setter. Why: Children must stay in the DOM through the close animation and unmount only once it finishes. How: This starts matching the initial open value and is flipped by the effects below.
-	const [ expStaBoo, setExpStaBoo ] = React.useState( instant && open ); // What: Expand State Boolean And Setter. Why: This drives the 0fr/1fr grid row, starting collapsed even when open so a fresh mount-while-open still animates open instead of snapping. How: instant opts a specific mount out of that behavior by starting already expanded.
+	const [ chiMouBoo, setChiMouBoo ] = React.useState( open );              // What: Child Mounted Boolean And Setter. Why: Children must stay in the DOM through the close animation and unmount only once it finishes. How: This starts matching the initial open value and is flipped by the effects below.
+	const [ expStaBoo, setExpStaBoo ] = React.useState( isaInsBoo && open ); // What: Expand State Boolean And Setter. Why: This drives the 0fr/1fr grid row, starting collapsed even when open so a fresh mount-while-open still animates open instead of snapping. How: isaInsBoo opts a specific mount out of that behavior by starting already expanded.
 
 
 	React.useEffect( () => { // What: Mount Sync Effect. Why: A newly-opened section must mount its children before it can animate expanding, and a newly-closed one must animate before unmounting. How: This mounts immediately on open, or starts the close animation (unmounting right away under reduced motion, since transitionend never fires) on close.
@@ -199,7 +252,9 @@ function ColDisCom ( { open, children, className = '', instant = false } ) {
 		if ( open ) { setChiMouBoo( true ); return; } // What: Open Mount Guard. Why: Expanding is handled by the next effect below; this one only needs to ensure the child is mounted first. How: This mounts the child and bails out of the rest of this effect.
 
 
-		setExpStaBoo( false ); // What: ColDisCom Trigger. Why: Closing must animate the grid row back to 0fr before anything unmounts. How: This flips expStaBoo false, which the JSX below reflects as the "is-open" class being removed.
+
+		setExpStaBoo( false ); // What: Expand State Clear Call. Why: Closing must animate the grid row back to 0fr before anything unmounts. How: This flips expStaBoo false, which the JSX below reflects as the "is-open" class being removed.
+
 
 		if ( redMotFun && redMotFun() ) setChiMouBoo( false ); // What: Reduced Motion Unmount Guard. Why: transitionend never fires without a real transition, so nothing else would ever unmount the child. How: This unmounts the child immediately when the user prefers reduced motion.
 
@@ -213,16 +268,19 @@ function ColDisCom ( { open, children, className = '', instant = false } ) {
 		if ( !open || !chiMouBoo || expStaBoo ) return; // What: Already Handled Guard. Why: There is nothing to animate unless this is an open section whose child just mounted and isn't already expanded. How: This bails out of the rest of the effect when any of those 3 conditions fails.
 
 
-		const rafOneNum = requestAnimationFrame( () => { // What: First Frame Request. Why: One frame lets the collapsed 0fr state actually paint before the second frame flips it. How: This schedules the second frame request below, itself cleaned up if this effect re-runs first.
+
+		const rafOneNum = requestAnimationFrame( () => { // What: Request-Animation-Frame One Number. Why: One frame lets the collapsed 0fr state actually paint before the second frame flips it. How: This schedules the second frame request below, itself cleaned up if this effect re-runs first.
 
 
-			const rafTwoNum = requestAnimationFrame( () => setExpStaBoo( true ) ); // What: Second Frame Request. Why: This is the actual frame that flips the grid row to 1fr, animating the expand. How: This schedules setExpStaBoo(true) one more frame later.
+			const rafTwoNum = requestAnimationFrame( () => setExpStaBoo( true ) ); // What: Request-Animation-Frame Two Number. Why: This is the actual frame that flips the grid row to 1fr, animating the expand. How: This schedules setExpStaBoo(true) one more frame later.
+
 
 
 			return () => cancelAnimationFrame( rafTwoNum ); // What: Second Frame Cleanup. Why: A re-run before the second frame fires must not let a stale expand still happen. How: This cancels the second animation frame request.
 
 
 		} );
+
 
 
 		return () => cancelAnimationFrame( rafOneNum ); // What: First Frame Cleanup. Why: A re-run before the first frame fires must not let a stale chain still start. How: This cancels the first animation frame request.
@@ -234,15 +292,16 @@ function ColDisCom ( { open, children, className = '', instant = false } ) {
 	const onTraEndFun = ( traEndObj ) => { // What: On Transition End Function. Why: The child can only safely unmount once the close animation has actually finished playing. How: This checks that the event is the grid-row transition finishing on this element itself while closed, then unmounts the child.
 
 
-		const tarSelBoo  = traEndObj.target === traEndObj.currentTarget;    // What: Target Self Boolean. Why: A transitionend can bubble up from an unrelated descendant's own transition. How: This confirms the event fired on this element itself, not a child.
-		const rowPropBoo = traEndObj.propertyName === 'grid-template-rows'; // What: Row Property Boolean. Why: Other CSS properties on this element could also transition and fire their own events. How: This confirms the specific property that finished is the grid row driving the collapse.
-		const notOpenBoo = !open;                                          // What: Not Open Boolean. Why: Only a genuine close should ever unmount the child. How: This confirms open is currently false.
+		const tarSelBoo = traEndObj.target === traEndObj.currentTarget;    // What: Target Self Boolean. Why: A transitionend can bubble up from an unrelated descendant's own transition. How: This confirms the event fired on this element itself, not a child.
+		const rowProBoo = traEndObj.propertyName === 'grid-template-rows'; // What: Row Property Boolean. Why: Other CSS properties on this element could also transition and fire their own events. How: This confirms the specific property that finished is the grid row driving the collapse.
+		const notOpeBoo = !open;                                           // What: Not Open Boolean. Why: Only a genuine close should ever unmount the child. How: This confirms open is currently false.
 
 
-		if ( tarSelBoo && rowPropBoo && notOpenBoo ) setChiMouBoo( false ); // What: Unmount Guard. Why: All 3 conditions above must hold before it's actually safe to unmount. How: This unmounts the child once the real close transition has genuinely finished.
+		if ( tarSelBoo && rowProBoo && notOpeBoo ) setChiMouBoo( false ); // What: Unmount Guard. Why: All 3 conditions above must hold before it's actually safe to unmount. How: This unmounts the child once the real close transition has genuinely finished.
 
 
 	};
+
 
 
 	if ( !chiMouBoo ) return null; // What: Unmounted Guard. Why: Nothing should render at all once the child has actually unmounted. How: This returns null before building the wrapper JSX below.
@@ -253,7 +312,8 @@ function ColDisCom ( { open, children, className = '', instant = false } ) {
 
 
 		<div
-			className={ `collapse ${ expStaBoo ? 'is-open' : '' } ${ className }` }
+			className={ ` collapse   ${ expStaBoo ? 'is-open' : '' }   ${ className } ` }
+
 			onTransitionEnd={ onTraEndFun }
 		>{ /* What: Disclosure Div Element. Why: This is ColDisCom's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This toggles the "is-open" class per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
 
@@ -273,41 +333,17 @@ function ColDisCom ( { open, children, className = '', instant = false } ) {
 
 
 
-// What: Section Title Component. Why: Several full-page views need the same kicker/title/subtitle header shape. How: This renders an optional kicker line, the required title as an h1, and an optional sub line.
-const SecTitCom = ( { kicker, title, sub } ) => (
+const PilTagCom = ( { children, tonValStr = 'default' } ) => ( // What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
 
 
-	<header className='section-h'>{ /* What: Container Section Header Element. Why: This is SecTitCom's own root landmark element. How: This wraps the optional kicker, the required title, and the optional sub line below. */ }
-
-
-		{ kicker && <div className='kicker'>{ kicker }</div> }{ /* What: Kicker Visibility Check. Why: Not every section has a kicker line above its title. How: This renders the kicker div only while the kicker prop holds a value. */ }
-
-
-
-		<h1 className='section-title'>{ title }</h1>{ /* What: Section Title Element. Why: This is the section's own required heading text. How: This renders the title prop as an h1. */ }
-
-		{ sub && <p className='section-sub'>{ sub }</p> }{ /* What: Sub Visibility Check. Why: Not every section has a supporting sub line below its title. How: This renders the sub paragraph only while the sub prop holds a value. */ }
-
-
-	</header>
+	<span className={ ` pill   pill--${ tonValStr } ` }>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.
 
 
 );
 
 
 
-// What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
-const PilTagCom = ( { children, tone = 'default' } ) => (
-
-
-	<span className={ `pill pill--${ tone }` }>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tone modifier class and renders whatever children the caller passed.
-
-
-);
-
-
-
-const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];                                                                     // What: Week Label Array. Why: Each weekday chip needs a single-letter visible label. How: This is mapped over by WeeChiCom below, indexed by day number (0=Sun).
+const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];                                            // What: Week Label Array. Why: Each weekday chip needs a single-letter visible label. How: This is mapped over by WeeChiCom below, indexed by day number (0=Sun).
 const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Week Full Array. Why: Each chip's own accessible name/title needs the full weekday name, not just its single-letter label. How: This is indexed by day number inside WeeChiCom below.
 
 
@@ -321,18 +357,17 @@ const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'F
  * one day must stay selected, so the last remaining chip can't be
  * turned off.
  *
- * lockedDay (0-6, or null) pins one day ON: a weekly-cadence picker's
+ * locDayNum (0-6, or null) pins one day ON: a weekly-cadence picker's
  * anchor day must stay selected, so that chip renders as an InfTipCom
  * instead of a toggle. It still looks selected, but tapping explains
  * why it can't be turned off rather than silently doing nothing.
- * lockedTip is that explanation.
+ * locTipStr is that explanation.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-// What: Weekday Chip Component. Why: See the design-rationale block above. How: This renders one chip per weekday, locked (InfTipCom) or toggleable (button) depending on lockedDay.
-const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip = '', desIdeStr } ) => {
+const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, sizValStr = 'md', value } ) => { // What: Weekday Chip Component. Why: See the design-rationale block above. How: This renders one chip per weekday, locked (InfTipCom) or toggleable (button) depending on locDayNum.
 
 
 	const togDayFun = ( dayIndNum ) => { // What: Toggle Day Function. Why: Clicking an unlocked chip needs to add or remove that single day from the selection, while keeping at least one day selected. How: This flips dayIndNum's membership in value, re-sorts the result, and calls onChange unless doing so would leave the week empty.
@@ -342,9 +377,13 @@ const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip 
 		const nexDayArr = hasDayBoo ? value.filter( ( curDayNum ) => curDayNum !== dayIndNum ) : [ ...value, dayIndNum ]; // What: Next Day Array. Why: This is the candidate selection after the toggle, before it's confirmed safe to apply. How: This removes dayIndNum when it was already selected, otherwise appends it.
 
 
-		nexDayArr.sort( ( aDayNum, bDayNum ) => aDayNum - bDayNum ); // What: Next Day Sort Call. Why: The selection should always stay in weekday order regardless of which day was toggled. How: This sorts nexDayArr ascending in place.
+		nexDayArr.sort( ( dayOneNum, dayTwoNum ) => dayOneNum - dayTwoNum ); // What: Next Day Sort Call. Why: The selection should always stay in weekday order regardless of which day was toggled. How: This sorts nexDayArr ascending in place.
+
+
 
 		if ( nexDayArr.length === 0 ) return; // What: Empty Week Guard. Why: At least one day must always stay selected. How: This bails out without calling onChange when the toggle would leave the week empty.
+
+
 
 		onChange( nexDayArr ); // What: On Change Call. Why: The parent owns the actual persisted selection. How: This hands the new, validated day array up to the caller.
 
@@ -352,34 +391,39 @@ const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip 
 	};
 
 
+
 	return (
 
 
 		<div
-			className={ `dow-chips ${ size === 'sm' ? 'dow-chips--sm' : '' }` }
-			role='group'
-			aria-label='Days of the week'
+			className={ ` dow-chips   ${ sizValStr === 'sm' ? 'dow-chips--sm' : '' } ` }
+
 			aria-describedby={ desIdeStr }
-		>{ /* What: Container Dow Chips Div Element. Why: This groups all 7 weekday toggle chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on lockedDay. */ }
+			aria-label='Days of the week'
+			role='group'
+		>{ /* What: Container Dow Chips Div Element. Why: This groups all 7 weekday toggle chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on locDayNum. */ }
 
 
 			{ WEE_LAB_ARR.map( ( labChrStr, dayIndNum ) => { // What: Weekday Chip Map. Why: One chip is needed per day of the week. How: This maps WEE_LAB_ARR to either a locked InfTipCom chip or a toggleable button chip, keyed by dayIndNum.
 
 
-				const onDayBoo = value.includes( dayIndNum ); // What: On Day Boolean. Why: Both chip variants below need to know whether this day is currently selected. How: This checks value's own membership for dayIndNum.
+				const daySelBoo = value.includes( dayIndNum ); // What: Day Selected Boolean. Why: Both chip variants below need to know whether this day is currently selected. How: This checks value's own membership for dayIndNum.
 
 
-				if ( dayIndNum === lockedDay ) return ( // What: Locked Day Check. Why: A locked day (e.g. a weekly picker's anchor day) can't be toggled off and needs an explanation instead. How: This renders an InfTipCom chip instead of a button when dayIndNum matches lockedDay.
+				if ( dayIndNum === locDayNum ) return ( // What: Locked Day Check. Why: A locked day (e.g. a weekly picker's anchor day) can't be toggled off and needs an explanation instead. How: This renders an InfTipCom chip instead of a button when dayIndNum matches locDayNum.
 
 
 					<InfTipCom
 						key={ dayIndNum }
-						className={ `dow-chip is-on is-locked ${ size === 'sm' ? 'dow-chip--sm' : '' }` }
-						label={ lockedTip }
+
+						className={ ` dow-chip   is-on   is-locked   ${ sizValStr === 'sm' ? 'dow-chip--sm' : '' } ` }
+
+						labTexStr={ locTipStr }
 					>{ labChrStr }</InfTipCom> // What: Locked Day Chip Element. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
 
 
 				);
+
 
 
 				return (
@@ -387,14 +431,18 @@ const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip 
 
 					<button
 						key={ dayIndNum }
+
+						className={ ` dow-chip   ${ daySelBoo ? 'is-on' : '' } ` }
+
 						type='button'
-						className={ `dow-chip ${ onDayBoo ? 'is-on' : '' }` }
-						aria-pressed={ onDayBoo }
-						aria-label={ WEE_FUL_ARR[ dayIndNum ] }
+
 						aria-describedby={ desIdeStr }
+						aria-label={ WEE_FUL_ARR[ dayIndNum ] }
+						aria-pressed={ daySelBoo }
 						title={ WEE_FUL_ARR[ dayIndNum ] }
+
 						onClick={ () => togDayFun( dayIndNum ) }
-					>{ labChrStr }</button> // What: Toggle Day Chip Element. Why: This is the actual clickable control for an unlocked day. How: This shows onDayBoo as its own "is-on" class and calls togDayFun with dayIndNum when clicked.
+					>{ labChrStr }</button> // What: Toggle Day Chip Element. Why: This is the actual clickable control for an unlocked day. How: This shows daySelBoo as its own "is-on" class and calls togDayFun with dayIndNum when clicked.
 
 
 				);
@@ -413,42 +461,13 @@ const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip 
 
 
 
-const WEE_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ]; // What: Week Abbreviation Array. Why: The abbreviated-list fallback below needs a 3-letter label per weekday. How: This is indexed by day number inside weeSumFun below.
+const ProBarCom = ( { curValNum, maxValNum = 1, tonValStr = 'accent' } ) => ( // What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, whose width is the clamped curValNum/maxValNum ratio, colored by the tonValStr modifier class.
 
 
-
-// What: Weekday Summary Function. Why: Cadence editors need a compact human-readable summary of an arbitrary day selection instead of showing the raw index array. How: This sorts a defensive copy of daySelArr and matches it against the "every day"/"weekdays"/"weekends"/"never" special cases before falling back to an abbreviated list.
-const weeSumFun = ( daySelArr ) => {
+	<div className={ ` prog   prog--${ tonValStr } ` }>{ /* What: Progress Track Div Element. Why: This is the fixed-width background track the filled bar sits inside. How: This applies the tonValStr modifier class and wraps the filled <i> below. */ }
 
 
-	const sorDayArr = [ ...( daySelArr || [] ) ].sort( ( aDayNum, bDayNum ) => aDayNum - bDayNum ); // What: Sorted Day Array. Why: Every check below assumes an ascending, defensive copy rather than mutating or trusting the caller's own array order. How: This spreads a copy of daySelArr (or an empty array when it's missing) and sorts it ascending.
-
-
-	if ( sorDayArr.length === 7 ) return 'Every day'; // What: Every Day Check. Why: All 7 weekdays selected has its own friendlier label. How: This returns early once sorDayArr's own length confirms every day is selected.
-
-	if ( sorDayArr.length === 5 && [ 1, 2, 3, 4, 5 ].every( ( curDayNum ) => sorDayArr.includes( curDayNum ) ) ) return 'Weekdays'; // What: Weekdays Check. Why: Exactly Monday through Friday selected has its own friendlier label. How: This returns early once sorDayArr's own length and membership confirm exactly the 5 weekdays are selected.
-
-	if ( sorDayArr.length === 2 && sorDayArr.includes( 0 ) && sorDayArr.includes( 6 ) ) return 'Weekends'; // What: Weekends Check. Why: Exactly Saturday and Sunday selected has its own friendlier label. How: This returns early once sorDayArr's own length and membership confirm exactly the weekend days are selected.
-
-	if ( sorDayArr.length === 0 ) return 'Never'; // What: Never Check. Why: An empty selection has its own friendlier label rather than an empty joined string. How: This returns early once sorDayArr's own length confirms nothing is selected.
-
-
-
-	return sorDayArr.map( ( curDayNum ) => WEE_ABB_ARR[ curDayNum ] ).join( ', ' ); // What: Abbreviated List Return. Why: Every other selection falls back to a plain comma-separated abbreviated list. How: This maps each remaining day index through WEE_ABB_ARR and joins the results.
-
-
-};
-
-
-
-// What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, whose width is the clamped value/max ratio driven by the tone modifier class.
-const ProBarCom = ( { value, max = 1, tone = 'accent' } ) => (
-
-
-	<div className={ `prog prog--${ tone }` }>{ /* What: Progress Track Div Element. Why: This is the fixed-width background track the filled bar sits inside. How: This applies the tone modifier class and wraps the filled <i> below. */ }
-
-
-		<i style={{ width : `${ Math.max( 0, Math.min( 1, value / max ) ) * 100 }%` }} />{ /* What: Progress Fill Element. Why: This is the actual filled portion showing how far along value is toward max. How: This is a self-closing <i>, purely styled via inline width, clamped to [0,100]%. */ }
+		<i style={{ width : `${ Math.max( 0, Math.min( 1, curValNum / maxValNum ) ) * 100 }%` }} />{ /* What: Progress Fill Element. Why: This is the actual filled portion showing how far along curValNum is toward maxValNum. How: This is a self-closing <i>, purely styled via inline width, clamped to [0,100]%. */ }
 
 
 	</div>
@@ -466,30 +485,32 @@ const ProBarCom = ( { value, max = 1, tone = 'accent' } ) => (
  * @summary
  * A -/[editable number]/+ stepper. The value can be typed directly
  * (handy for big jumps the +/- buttons make tedious); typing commits
- * on blur/Enter, clamped to [min,max]. onSet receives the new integer.
+ * on blur/Enter, clamped to [minValNum,maxValNum]. onSetValFun receives
+ * the new integer.
  * Used by every ease Soonest/Latest control.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.value     - Value: {@link value}
- * @param props.min       - Minimum: The lowest allowed value; defaults to 1.
- * @param props.max       - Maximum: The highest allowed value; defaults to
- *                          99.
- * @param props.onSet     - On Setter: Receives the newly committed, clamped
- *                          integer.
- * @param props.ariLabStr - Aria Label String: The accessible name for the
- *                          whole stepper group and its own text input.
+ * @param props.ariLabStr   - Aria Label String: The accessible name for the
+ *                            whole stepper group and its own text input.
+ * @param props.maxValNum   - Maximum Value Number: The highest allowed value;
+ *                            defaults to 99.
+ * @param props.minValNum   - Minimum Value Number: The lowest allowed value;
+ *                            defaults to 1.
+ * @param props.onSetValFun - On Set Value Function: Receives the newly
+ *                            committed, clamped integer.
+ * @param props.value       - Value: The current committed integer.
  *
  * @returns The stepper's own -/text/+ trio as one grouped control.
  *
  * @example
  * ```tsx
- * NumSteCom({ value, min, max, onSet, ariLabStr }) // => <NumSteCom />
+ * NumSteCom({ ariLabStr, maxValNum, minValNum, ... }) // => <NumSteCom />
  * ```
  *
 */
 
-function NumSteCom ( { value, min = 1, max = 99, onSet, ariLabStr } ) {
+function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, value } ) {
 
 
 	const [ texValStr, setTexValStr ] = React.useState( String( value ) ); // What: Text Value String And Setter. Why: The value must be typeable as free text, not just steppable, so a separate string buffer is needed alongside the real numeric value. How: This starts mirroring the initial value and is kept in sync by the effect below and overwritten locally while the user types.
@@ -498,21 +519,25 @@ function NumSteCom ( { value, min = 1, max = 99, onSet, ariLabStr } ) {
 	React.useEffect( () => { setTexValStr( String( value ) ); }, [ value ] ); // What: Value Sync Effect. Why: An external change to value (e.g. a +/- click, or another control writing the same state) must be reflected in the typed text too. How: This overwrites texValStr with the current value whenever it changes.
 
 
-	const comTexFun = () => { // What: Commit Text Function. Why: Whatever the user typed must be parsed, validated, and clamped before it becomes the real committed value. How: This parses texValStr, falls back to the last real value if unparseable, clamps to [min,max], calls onSet, and re-syncs the text buffer to the final result.
+	const cmtTexFun = () => { // What: Commit Text Function. Why: Whatever the user typed must be parsed, validated, and clamped before it becomes the real committed value. How: This parses texValStr, falls back to the last real value if unparseable, clamps to [minValNum,maxValNum], calls onSetValFun, and re-syncs the text buffer to the final result.
 
 
 		let parIntNum = parseInt( texValStr, 10 ); // What: Parsed Integer Number. Why: The raw typed text needs to become a real number before it can be validated. How: This parses texValStr as a base-10 integer, which yields NaN for anything unparseable.
 
+
 		if ( isNaN( parIntNum ) ) parIntNum = value; // What: Not A Number Guard. Why: An unparseable or emptied text field should fall back to the last known-good value rather than committing NaN. How: This overwrites parIntNum with the current value when parsing failed.
 
-		parIntNum = Math.max( min, Math.min( max, parIntNum ) ); // What: Clamp Call. Why: A typed value can freely exceed [min,max], which must never reach onSet. How: This clamps parIntNum into the allowed range.
 
 
-		onSet( parIntNum );                  // What: On Set Call. Why: The parent owns the real persisted value. How: This hands the freshly-validated integer up to the caller.
+		parIntNum = Math.max( minValNum, Math.min( maxValNum, parIntNum ) ); // What: Clamp Call. Why: A typed value can freely exceed [minValNum,maxValNum], which must never reach onSetValFun. How: This clamps parIntNum into the allowed range.
+
+
+		onSetValFun( parIntNum );            // What: On Set Value Call. Why: The parent owns the real persisted value. How: This hands the freshly-validated integer up to the caller.
 		setTexValStr( String( parIntNum ) ); // What: Text Value Sync. Why: The visible text should reflect exactly what was actually committed, not whatever was typed. How: This overwrites texValStr with the final clamped value.
 
 
 	};
+
 
 
 	return (
@@ -520,36 +545,46 @@ function NumSteCom ( { value, min = 1, max = 99, onSet, ariLabStr } ) {
 
 		<div
 			className='np-stepper'
-			role='group'
+
 			aria-label={ ariLabStr }
+			role='group'
 		>{ /* What: Container Stepper Div Element. Why: This groups the -/text/+ trio as one accessible group. How: This renders the decrement button, the editable text input, and the increment button below. */ }
 
 
 			<button
 				className='np-weight-btn'
-				disabled={ value <= min }
+
+				disabled={ value <= minValNum }
+
 				aria-label='Fewer days'
-				onClick={ () => onSet( Math.max( min, value - 1 ) ) }
-			>−</button>{ /* What: Decrement Button Element. Why: This is the "-" side of the stepper. How: This is disabled once value reaches min, otherwise steps it down by 1 on click. */ }
+
+				onClick={ () => onSetValFun( Math.max( minValNum, value - 1 ) ) }
+			>−</button>{ /* What: Decrement Button Element. Why: This is the "-" side of the stepper. How: This is disabled once value reaches minValNum, otherwise steps it down by 1 on click. */ }
 
 			<input
 				className='np-stepper-input'
-				type='text'
+
 				inputMode='numeric'
+				type='text'
 				value={ texValStr }
+
 				aria-label={ ariLabStr }
+
+				onBlur={ cmtTexFun }
 				onChange={ ( chaEveObj ) => setTexValStr( chaEveObj.target.value.replace( /[^0-9]/g, '' ) ) }
 				onFocus={ ( focEveObj ) => focEveObj.target.select() }
-				onBlur={ comTexFun }
 				onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 			/>{ /* What: Stepper Input Element. Why: This lets the value be typed directly, handy for big jumps the +/- buttons make tedious. How: This mirrors texValStr, strips non-digit characters as the user types, selects-all on focus, commits on blur, and commits early on Enter. */ }
 
 			<button
 				className='np-weight-btn'
-				disabled={ value >= max }
+
+				disabled={ value >= maxValNum }
+
 				aria-label='More days'
-				onClick={ () => onSet( Math.min( max, value + 1 ) ) }
-			>+</button>{ /* What: Increment Button Element. Why: This is the "+" side of the stepper. How: This is disabled once value reaches max, otherwise steps it up by 1 on click. */ }
+
+				onClick={ () => onSetValFun( Math.min( maxValNum, value + 1 ) ) }
+			>+</button>{ /* What: Increment Button Element. Why: This is the "+" side of the stepper. How: This is disabled once value reaches maxValNum, otherwise steps it up by 1 on click. */ }
 
 
 		</div>
@@ -579,7 +614,7 @@ function NumSteCom ( { value, min = 1, max = 99, onSet, ariLabStr } ) {
  * touch/pen taps to toggle, and keyboard uses focus plus Enter/Space
  * to toggle, with Escape or blur to close.
  *
- * The action prop marks the tip as standing in for a disabled
+ * The actNamStr prop marks the tip as standing in for a disabled
  * control: it names the action in the accessible name and adds
  * aria-disabled, which announces the disabled state without removing
  * focusability or replacing the name, so the tip's explanation is
@@ -587,7 +622,7 @@ function NumSteCom ( { value, min = 1, max = 99, onSet, ariLabStr } ) {
  * plus Enter is the only way a keyboard user can learn why the action
  * is unavailable.)
  *
- * truncationOnly is for the "reveal a CSS-ellipsis-truncated name" use
+ * trnOnlBoo is for the "reveal a CSS-ellipsis-truncated name" use
  * case, as opposed to an always-relevant explanation like a disabled-
  * action reason or a "?" help icon. When set, the trigger measures its
  * own scrollWidth vs. clientWidth and behaves as a totally inert,
@@ -604,30 +639,35 @@ function NumSteCom ( { value, min = 1, max = 99, onSet, ariLabStr } ) {
  *
 */
 
-// What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
-const InfTipCom = ( { children, label, className = '', action = null, truncationOnly = false } ) => {
+const InfTipCom = ( { actNamStr = null, children, className = '', labTexStr, trnOnlBoo = false } ) => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
 
 
-	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                     // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
-	const [ tipPosObj, setTipPosObj ] = React.useState( { left : 0, top : 0, placement : 'top' } );   // What: Tip Position Object And Setter. Why: The portaled tooltip needs an absolute left/top plus which side it's placed on, recomputed every time it opens or the page scrolls/resizes. How: This is written by plaTipFun below and read directly in the portaled span's own inline style.
-	const [ texTrnBoo, setTexTrnBoo ] = React.useState( false );                                     // What: Text Truncated Boolean And Setter. Why: truncationOnly mode needs to know whether the trigger's own text is actually overflowing before deciding to be interactive at all. How: This is measured by the effect below and read by actTipBoo.
-	const triEleRef                   = React.useRef( null );                                        // What: Trigger Element Reference. Why: Both the truncation measurement and the positioning math need a handle on the real trigger DOM node. How: This is attached to the trigger span's own ref prop in both the inert and interactive render branches below.
-	const tipEleRef                   = React.useRef( null );                                        // What: Tip Element Reference. Why: The positioning math needs to measure the portaled tooltip's own rendered size. How: This is attached to the portaled tooltip span's own ref prop below.
-	const lasPoiStr                   = React.useRef( 'mouse' );                                     // What: Last Pointer String Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
-	const actTipBoo                   = truncationOnly ? texTrnBoo : true;                           // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is texTrnBoo itself under truncationOnly, otherwise always true.
+	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                      // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
+	const [ tipPosObj, setTipPosObj ] = React.useState( { lefNum : 0, plaStr : 'top', topNum : 0 } ); // What: Tip Position Object And Setter. Why: The portaled tooltip needs an absolute left/top plus which side it's placed on, recomputed every time it opens or the page scrolls/resizes. How: This is written by plaTipFun below and read directly in the portaled span's own inline style.
+	const [ texTrnBoo, setTexTrnBoo ] = React.useState( false );                                      // What: Text Truncated Boolean And Setter. Why: trnOnlBoo mode needs to know whether the trigger's own text is actually overflowing before deciding to be interactive at all. How: This is measured by the effect below and read by actTipBoo.
+
+	const trgEleRef = React.useRef( null );         // What: Trigger Element Reference. Why: Both the truncation measurement and the positioning math need a handle on the real trigger DOM node. How: This is attached to the trigger span's own ref prop in both the inert and interactive render branches below.
+	const tipEleRef = React.useRef( null );         // What: Tip Element Reference. Why: The positioning math needs to measure the portaled tooltip's own rendered size. How: This is attached to the portaled tooltip span's own ref prop below.
+	const lasPoiRef = React.useRef( 'mouse' );      // What: Last Pointer Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
+	const actTipBoo = trnOnlBoo ? texTrnBoo : true; // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is texTrnBoo itself under trnOnlBoo, otherwise always true.
 
 
-	React.useLayoutEffect( () => { // What: Truncation Measurement Effect. Why: truncationOnly needs to know, before paint, whether the trigger's own text is actually overflowing. How: This measures scrollWidth vs. clientWidth on mount and on every observed resize, via ResizeObserver where available, a plain window resize listener otherwise.
+	React.useLayoutEffect( () => { // What: Truncation Measurement Effect. Why: trnOnlBoo needs to know, before paint, whether the trigger's own text is actually overflowing. How: This measures scrollWidth vs. clientWidth on mount and on every observed resize, via ResizeObserver where available, a plain window resize listener otherwise.
 
 
-		if ( !truncationOnly ) return; // What: Not Truncation Only Guard. Why: The always-relevant tip variant never needs this measurement at all. How: This skips the rest of the effect entirely when truncationOnly is false.
-
-		const triCurEle = triEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from triEleRef.current and reused for every check below.
-
-		if ( !triCurEle ) return; // What: No Trigger Guard. Why: The ref may not be attached yet. How: This bails out early when there is no trigger element to measure.
+		if ( !trnOnlBoo ) return; // What: Not Truncation Only Guard. Why: The always-relevant tip variant never needs this measurement at all. How: This skips the rest of the effect entirely when trnOnlBoo is false.
 
 
-		const cheTrnFun = () => setTexTrnBoo( triCurEle.scrollWidth > triCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares triCurEle's own scrollWidth against its clientWidth.
+
+		const trgCurEle = trgEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from trgEleRef.current and reused for every check below.
+
+
+		if ( !trgCurEle ) return; // What: No Trigger Guard. Why: The ref may not be attached yet. How: This bails out early when there is no trigger element to measure.
+
+
+
+		const cheTrnFun = () => setTexTrnBoo( trgCurEle.scrollWidth > trgCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares trgCurEle's own scrollWidth against its clientWidth.
+
 
 		cheTrnFun(); // What: Initial Check Call. Why: The truncation state must be known immediately on mount, not just after a later resize. How: This invokes cheTrnFun once, synchronously.
 
@@ -637,7 +677,9 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 			const resObsObj = new ResizeObserver( cheTrnFun ); // What: Resize Observer Object. Why: The trigger's own box (not just the viewport) needs to be watched. How: This creates an observer that re-runs cheTrnFun on every observed size change.
 
-			resObsObj.observe( triCurEle ); // What: Resize Observer Start Call. Why: An observer does nothing until it's actually watching something. How: This starts watching triCurEle for size changes.
+
+			resObsObj.observe( trgCurEle ); // What: Resize Observer Start Call. Why: An observer does nothing until it's actually watching something. How: This starts watching trgCurEle for size changes.
+
 
 
 			return () => resObsObj.disconnect(); // What: Resize Observer Cleanup Return. Why: The observer must not outlive this effect run. How: This disconnects resObsObj on cleanup.
@@ -646,45 +688,62 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 		}
 
 
+
 		window.addEventListener( 'resize', cheTrnFun ); // What: Window Resize Listener Fallback. Why: A browser without ResizeObserver still needs some way to catch a viewport-level size change. How: This re-runs cheTrnFun on every window resize event.
+
+
 
 		return () => window.removeEventListener( 'resize', cheTrnFun ); // What: Window Resize Listener Cleanup Return. Why: The fallback listener must not outlive this effect run. How: This removes the same cheTrnFun reference that was added above.
 
 
-	}, [ truncationOnly, label ] ); // What: Effect Dependency Array. Why: truncationOnly decides whether to measure at all, and label changing means the underlying text (and therefore its own overflow) may have changed too. How: Both are read directly inside the guards/effect above.
+	}, [ trnOnlBoo, labTexStr ] ); // What: Effect Dependency Array. Why: trnOnlBoo decides whether to measure at all, and labTexStr changing means the underlying text (and therefore its own overflow) may have changed too. How: Both are read directly inside the guards/effect above.
 
 
 	const plaTipFun = React.useCallback( () => { // What: Place Tip Function. Why: The portaled tooltip needs its own absolute position recomputed from scratch every time it might have moved. How: This measures both the trigger and the tip, prefers placing above, flips below if that would clip, and clamps both axes to the viewport.
 
 
-		const triCurEle = triEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from triEleRef.current and reused below.
+		const trgCurEle = trgEleRef.current; // What: Trigger Current Element. Why: The measurement below needs a stable local reference to the live trigger DOM node. How: This is read once from trgEleRef.current and reused below.
 		const tipCurEle = tipEleRef.current; // What: Tip Current Element. Why: The measurement below needs a stable local reference to the live tooltip DOM node. How: This is read once from tipEleRef.current and reused below.
 
-		if ( !triCurEle || !tipCurEle ) return; // What: No Element Guard. Why: Both elements must actually be mounted before there is anything real to measure. How: This bails out early when either ref isn't attached yet.
+
+		if ( !trgCurEle || !tipCurEle ) return; // What: No Element Guard. Why: Both elements must actually be mounted before there is anything real to measure. How: This bails out early when either ref isn't attached yet.
 
 
-		const triRecObj = triCurEle.getBoundingClientRect(); // What: Trigger Rect Object. Why: The tooltip's own position is computed relative to the trigger's real on-screen position. How: This reads triCurEle's own bounding rect.
+
+		const trgRecObj = trgCurEle.getBoundingClientRect(); // What: Trigger Rect Object. Why: The tooltip's own position is computed relative to the trigger's real on-screen position. How: This reads trgCurEle's own bounding rect.
 		const tipWidNum = tipCurEle.offsetWidth;             // What: Tip Width Number. Why: Centering and clamping the tooltip both need its own real rendered width. How: This reads tipCurEle's own offsetWidth.
 		const tipHeiNum = tipCurEle.offsetHeight;            // What: Tip Height Number. Why: Placing the tooltip above/below the trigger needs its own real rendered height. How: This reads tipCurEle's own offsetHeight.
 		const edgMarNum = 8;                                 // What: Edge Margin Number. Why: The tooltip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear.
-		const vieWidNum  = window.innerWidth;                 // What: Viewport Width Number. Why: The horizontal clamp below needs the real current viewport width. How: This reads window.innerWidth.
-		const vieHeiNum  = window.innerHeight;                // What: Viewport Height Number. Why: The vertical clamp below needs the real current viewport height. How: This reads window.innerHeight.
+		const vieWidNum = window.innerWidth;                 // What: Viewport Width Number. Why: The horizontal clamp below needs the real current viewport width. How: This reads window.innerWidth.
+		const vieHeiNum = window.innerHeight;                // What: Viewport Height Number. Why: The vertical clamp below needs the real current viewport height. How: This reads window.innerHeight.
 
 
-		let tipPlaStr = 'top';                        // What: Tip Placement String. Why: Above the trigger is the preferred placement, flipped below only if it would clip. How: This starts at 'top' and may be overwritten to 'bottom' just below.
-		let tipTopNum = triRecObj.top - tipHeiNum - 8; // What: Tip Top Number. Why: This is the candidate vertical position for the preferred above-trigger placement. How: This sits tipHeiNum plus an 8px gap above triRecObj's own top edge.
+		let tipPlaStr = 'top';                         // What: Tip Placement String. Why: Above the trigger is the preferred placement, flipped below only if it would clip. How: This starts at 'top' and may be overwritten to 'bottom' just below.
+		let tipTopNum = trgRecObj.top - tipHeiNum - 8; // What: Tip Top Number. Why: This is the candidate vertical position for the preferred above-trigger placement. How: This sits tipHeiNum plus an 8px gap above trgRecObj's own top edge.
 
-		if ( tipTopNum < edgMarNum ) { tipPlaStr = 'bottom'; tipTopNum = triRecObj.bottom + 8; } // What: Top Clip Guard. Why: A tooltip that would clip the top of the viewport must flip to sit below the trigger instead. How: This overwrites both tipPlaStr and tipTopNum together when the above-placement candidate falls too high.
+
+		if ( tipTopNum < edgMarNum ) { // What: Top Clip Guard. Why: A tooltip that would clip the top of the viewport must flip to sit below the trigger instead. How: This overwrites both tipPlaStr and tipTopNum together when the above-placement candidate falls too high.
+
+
+			tipPlaStr = 'bottom';             // What: Bottom Placement Set. Why: The tooltip now sits below the trigger. How: This overwrites tipPlaStr.
+			tipTopNum = trgRecObj.bottom + 8; // What: Bottom Top Set. Why: The flipped tooltip needs its own below-trigger vertical position. How: This places it 8px below trgRecObj's own bottom edge.
+
+
+		}
+
+
 
 		if ( tipTopNum + tipHeiNum > vieHeiNum - edgMarNum ) tipTopNum = Math.max( edgMarNum, vieHeiNum - tipHeiNum - edgMarNum ); // What: Bottom Clip Guard. Why: A below-placement (or an above one that's still too tall) must not run past the bottom of the viewport either. How: This clamps tipTopNum so the tooltip's own bottom edge never crosses vieHeiNum - edgMarNum.
 
 
-		let tipLefNum = triRecObj.left + triRecObj.width / 2 - tipWidNum / 2; // What: Tip Left Number. Why: The tooltip should start centered on the trigger horizontally. How: This computes the centered left offset before the horizontal clamp below.
+
+		let tipLefNum = trgRecObj.left + trgRecObj.width / 2 - tipWidNum / 2; // What: Tip Left Number. Why: The tooltip should start centered on the trigger horizontally. How: This computes the centered left offset before the horizontal clamp below.
+
 
 		tipLefNum = Math.max( edgMarNum, Math.min( tipLefNum, vieWidNum - tipWidNum - edgMarNum ) ); // What: Horizontal Clamp. Why: A centered tooltip can still overflow either side of a narrow viewport. How: This clamps tipLefNum between edgMarNum and the viewport's own right-edge margin.
 
 
-		setTipPosObj( { left : tipLefNum, top : tipTopNum, placement : tipPlaStr } ); // What: Tip Position Update Call. Why: This publishes the freshly-computed position so the portaled tooltip re-renders in the right place. How: This builds the { left, top, placement } shape the render below reads directly.
+		setTipPosObj( { lefNum : tipLefNum, plaStr : tipPlaStr, topNum : tipTopNum } ); // What: Tip Position Update Call. Why: This publishes the freshly-computed position so the portaled tooltip re-renders in the right place. How: This builds the { lefNum, plaStr, topNum } shape the render below reads directly.
 
 
 	}, [] ); // What: Effect Dependency Array. Why: plaTipFun only closes over stable refs and its own setter, none of which ever change identity. How: An empty array means this callback is created once and never recreated.
@@ -695,20 +754,24 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 		if ( !tipOpeBoo ) return; // What: Not Open Guard. Why: There is nothing to position or track while the tooltip is closed. How: This skips the rest of the effect entirely while tipOpeBoo is false.
 
+
+
 		plaTipFun(); // What: Initial Placement Call. Why: The tooltip must be positioned immediately on open, without waiting for a scroll or resize. How: This invokes plaTipFun once, synchronously.
 
 
-		const onMovFun = () => plaTipFun(); // What: On Move Function. Why: Both the scroll and resize listeners below need to re-run the same placement logic. How: This is a thin wrapper calling plaTipFun.
+		const onTipMovFun = () => plaTipFun(); // What: On Tip Move Function. Why: Both the scroll and resize listeners below need to re-run the same placement logic. How: This is a thin wrapper calling plaTipFun.
 
-		window.addEventListener( 'scroll', onMovFun, true ); // What: Scroll Listener Add Call. Why: The tooltip must follow the trigger if the page (or an inner scroll container) scrolls while it's open. How: This listens in the capture phase so it catches a scroll on any ancestor, not just the window.
-		window.addEventListener( 'resize', onMovFun );       // What: Resize Listener Add Call. Why: The tooltip must re-clamp itself if the viewport is resized while it's open. How: This listens for the plain window resize event.
+
+		window.addEventListener( 'scroll', onTipMovFun, true ); // What: Scroll Listener Add Call. Why: The tooltip must follow the trigger if the page (or an inner scroll container) scrolls while it's open. How: This listens in the capture phase so it catches a scroll on any ancestor, not just the window.
+		window.addEventListener( 'resize', onTipMovFun );       // What: Resize Listener Add Call. Why: The tooltip must re-clamp itself if the viewport is resized while it's open. How: This listens for the plain window resize event.
+
 
 
 		return () => { // What: Effect Cleanup Function. Why: Neither listener may outlive this effect run. How: This removes both the scroll and resize listeners registered above.
 
 
-			window.removeEventListener( 'scroll', onMovFun, true ); // What: Scroll Listener Remove Call. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onMovFun reference, matching the capture-phase flag.
-			window.removeEventListener( 'resize', onMovFun );       // What: Resize Listener Remove Call. Why: Same reasoning as the scroll listener removal above. How: This removes the same onMovFun reference.
+			window.removeEventListener( 'scroll', onTipMovFun, true ); // What: Scroll Listener Remove Call. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onTipMovFun reference, matching the capture-phase flag.
+			window.removeEventListener( 'resize', onTipMovFun );       // What: Resize Listener Remove Call. Why: Same reasoning as the scroll listener removal above. How: This removes the same onTipMovFun reference.
 
 
 		};
@@ -723,21 +786,26 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 		if ( !tipOpeBoo ) return; // What: Not Open Guard. Why: There is nothing to guard against while the tooltip is already closed. How: This skips the rest of the effect entirely while tipOpeBoo is false.
 
 
+
 		const onPoiDowFun = ( poiDowObj ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
 
 
-			if ( triEleRef.current && triEleRef.current.contains( poiDowObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
+			if ( trgEleRef.current && trgEleRef.current.contains( poiDowObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
+
+
 
 			setTipOpeBoo( false ); // What: Tip Close Call. Why: A pointerdown genuinely outside the trigger should close the tooltip. How: This sets tipOpeBoo false.
 
 
 		};
 
+
 		const onKeyDowFun = ( keyDowObj ) => { if ( keyDowObj.key === 'Escape' ) setTipOpeBoo( false ); }; // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
 
 
 		document.addEventListener( 'pointerdown', onPoiDowFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPoiDowFun for every pointerdown in the document.
 		document.addEventListener( 'keydown', onKeyDowFun );           // What: Key Down Listener Add Call. Why: Escape must close the tooltip regardless of which element currently has focus. How: This registers onKeyDowFun for every keydown in the document.
+
 
 
 		return () => { // What: Effect Cleanup Function. Why: Neither listener may outlive this effect run. How: This removes both listeners registered above.
@@ -753,14 +821,15 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 	}, [ tipOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when tipOpeBoo itself changes. How: tipOpeBoo is read directly inside the guard above.
 
 
-	React.useEffect( () => { if ( !actTipBoo ) setTipOpeBoo( false ); }, [ actTipBoo ] ); // What: Truncation Safety Effect. Why: A resize that un-truncates the text while its tip is open (truncationOnly only) should close it rather than leave a tooltip open on what just became an inert span. How: This closes the tooltip whenever actTipBoo itself goes false.
+	React.useEffect( () => { if ( !actTipBoo ) setTipOpeBoo( false ); }, [ actTipBoo ] ); // What: Truncation Safety Effect. Why: A resize that un-truncates the text while its tip is open (trnOnlBoo only) should close it rather than leave a tooltip open on what just became an inert span. How: This closes the tooltip whenever actTipBoo itself goes false.
 
 
-	if ( !actTipBoo ) return ( // What: Inert Guard. Why: With nothing extra to reveal (untruncated text under truncationOnly), this must render as a totally inert, non-interactive span. How: This returns just the ref-and-className span, skipping every interactive attribute and the portal entirely.
+	if ( !actTipBoo ) return ( // What: Inert Guard. Why: With nothing extra to reveal (untruncated text under trnOnlBoo), this must render as a totally inert, non-interactive span. How: This returns just the ref-and-className span, skipping every interactive attribute and the portal entirely.
 
 
 		<span
-			ref={ triEleRef }
+			ref={ trgEleRef }
+
 			className={ className }
 		>{ children }</span> // What: Inert Trigger Span Element. Why: With nothing to reveal, this must still keep the ref attached so a later resize can re-measure and flip actTipBoo. How: This renders only the ref and the caller's own className, no interactive attributes at all.
 
@@ -773,52 +842,66 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 
 		<span
-			ref={ triEleRef }
-			className={ `infotip-trigger ${ className }` }
-			tabIndex={ 0 }
+			ref={ trgEleRef }
+
+			className={ ` infotip-trigger   ${ className } ` }
+
+			aria-disabled={ actNamStr ? 'true' : undefined }
+			aria-label={ actNamStr ? `${ actNamStr }, unavailable. ${ labTexStr }` : labTexStr }
 			role='button'
-			aria-label={ action ? `${ action }, unavailable. ${ label }` : label }
-			aria-disabled={ action ? 'true' : undefined }
-			onPointerDown={ ( poiDowObj ) => { lasPoiStr.current = poiDowObj.pointerType || 'mouse'; } }
-			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }
-			onPointerLeave={ ( poiLeaObj ) => { if ( ( poiLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } }
-			onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: A mouse click should never toggle the tooltip since hover already owns it, but a touch/pen tap should. How: This stops the click from also reaching an outside-close listener, then toggles tipOpeBoo only when the last known pointer type wasn't mouse.
+			tabIndex={ 0 }
+
+			onBlur={ () => setTipOpeBoo( false ) }
+			onClick={ ( cliEveObj ) => { // What: On Click Handler. Why: A mouse click should never toggle the tooltip since hover already owns it, but a touch/pen tap should. How: This stops the click from also reaching an outside-close listener, then toggles tipOpeBoo only when the last known pointer type wasn't mouse.
 
 
-				clkEveObj.stopPropagation(); // What: Propagation Stop Call. Why: This click must not also be seen as an "outside click" by some ancestor's own dismiss handler. How: This stops the click event from bubbling further.
+				cliEveObj.stopPropagation(); // What: Propagation Stop Call. Why: This click must not also be seen as an "outside click" by some ancestor's own dismiss handler. How: This stops the click event from bubbling further.
 
-				if ( lasPoiStr.current !== 'mouse' ) setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); // What: Tap Toggle Guard. Why: Only a touch/pen tap should toggle the tooltip this way; a mouse click is intentionally ignored since hover already handles it. How: This flips tipOpeBoo only when lasPoiStr's own current value isn't 'mouse'.
+
+				if ( lasPoiRef.current !== 'mouse' ) setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); // What: Tap Toggle Guard. Why: Only a touch/pen tap should toggle the tooltip this way; a mouse click is intentionally ignored since hover already handles it. How: This flips tipOpeBoo only when lasPoiRef's own current value isn't 'mouse'.
 
 
 			} }
 			onKeyDown={ ( keyDowObj ) => { // What: On Key Down Handler. Why: A keyboard user has no hover/tap, so Enter/Space must be able to toggle the tooltip directly. How: This toggles tipOpeBoo and prevents the key's own default action (e.g. Space scrolling the page) for either key.
 
 
-				if ( keyDowObj.key === 'Enter' || keyDowObj.key === ' ' ) { keyDowObj.preventDefault(); setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); } // What: Toggle Key Guard. Why: Only Enter and Space are meaningful "activate" keys for a role="button" trigger. How: This prevents the key's default action and flips tipOpeBoo only for those 2 keys.
+				if ( keyDowObj.key === 'Enter' || keyDowObj.key === ' ' ) { // What: Toggle Key Check. Why: Only Enter and Space are meaningful "activate" keys for a role="button" trigger. How: This prevents the key's default action and flips tipOpeBoo only for those 2 keys.
+
+
+					keyDowObj.preventDefault();                  // What: Default Prevention Call. Why: Space would otherwise scroll the page. How: This prevents the key's own default action.
+					setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); // What: Tip Toggle Call. Why: This is the keyboard's own way to open or close the tip. How: This flips tipOpeBoo.
+
+
+				}
 
 
 			} }
-			onBlur={ () => setTipOpeBoo( false ) }
+			onPointerDown={ ( poiDowObj ) => { lasPoiRef.current = poiDowObj.pointerType || 'mouse'; } }
+			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }
+			onPointerLeave={ ( poiLeaObj ) => { if ( ( poiLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } }
 		>{ /* What: Container Infotip Trigger Span Element. Why: This is the actual focusable, interactive trigger, wrapping the caller's own children and (while open) the portaled tooltip. How: This handles hover for mouse, tap for touch/pen, and Enter/Space/Escape/blur for keyboard, per the design-rationale block above. */ }
 
 
-			{ children }
+			{ children }{ /* What: Trigger Content. Why: InfTipCom wraps whatever the caller wants the tip attached to (a word, an icon, a chip). How: This renders the caller's own children inside the interactive trigger. */ }
 
 			{ tipOpeBoo && createPortal( // What: Portal Visibility Check. Why: The floating tooltip itself should only exist in the DOM while actually open. How: This portals the tooltip span into document.body only while tipOpeBoo is true.
 
 
 				<span
 					ref={ tipEleRef }
-					className={ `infotip infotip--${ tipPosObj.placement }` }
+
+					className={ ` infotip   infotip--${ tipPosObj.plaStr } ` }
+
 					style={{
-						left : tipPosObj.left,
-						top  : tipPosObj.top
+						left : tipPosObj.lefNum,
+						top  : tipPosObj.topNum
 					}}
+
 					role='tooltip'
-				>{ /* What: Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own label text, placed per its own infotip--{placement} modifier class. */ }
+				>{ /* What: Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own labTexStr text, placed per its own infotip--{placement} modifier class. */ }
 
 
-					{ label }
+					{ labTexStr }
 
 
 				</span>,
@@ -838,38 +921,35 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 
 
-// What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
-const forDatFun = ( isoDatStr ) => {
+const forDatFun = ( isoDatStr ) => { // What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
 
 
 
-	return parDatObj.toLocaleDateString( 'en-US', { weekday : 'short', month : 'short', day : 'numeric' } ); // What: Short Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wed, May 13" via the locale API.
+	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ); // What: Short Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wed, May 13" via the locale API.
 
 
 };
 
 
 
-// What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
-const forLonFun = ( isoDatStr ) => {
+const forLonFun = ( isoDatStr ) => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
 
 
 
-	return parDatObj.toLocaleDateString( 'en-US', { weekday : 'long', month : 'short', day : 'numeric' } ); // What: Long Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wednesday, May 13" via the locale API.
+	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'long' } ); // What: Long Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wednesday, May 13" via the locale API.
 
 
 };
 
 
 
-// What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
-const forTimFun = ( isoDatStr ) => {
+const forTimFun = ( isoDatStr ) => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -890,96 +970,125 @@ const forTimFun = ( isoDatStr ) => {
  *
  * @summary
  * The dynamic-mode "+N" Boost value plus its Reset lever. Clicking
- * Reset commits the value to 0 (via onReset) AND animates the shown
+ * Reset commits the value to 0 (via onResBooFun) AND animates the shown
  * number ticking down to zero. Used by picker items (tab-today's
  * EntEdiCom) and conditionals.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.value   - Value: The current boost value to display and reset
- *                        from.
- * @param props.suffix  - Suffix: Extra text appended after the number (e.g. a
- *                        unit); defaults to an empty string.
- * @param props.onReset - On Reset: Commits the real value to 0; called once,
- *                        immediately, when Reset is clicked.
+ * @param props.booValNum   - Boost Value Number: The current boost value to
+ *                            display and reset from.
+ * @param props.onResBooFun - On Reset Boost Function: Commits the real value
+ *                            to 0; called once, immediately, when Reset is
+ *                            clicked.
+ * @param props.sufTexStr   - Suffix Text String: Extra text appended after
+ *                            the number (e.g. a unit); defaults to an empty
+ *                            string.
  *
  * @returns The boost value span and the Reset button, as sibling
  * elements with no shared wrapper.
  *
  * @example
  * ```tsx
- * BooResCom({ value, suffix, onReset }) // => <BooResCom />
+ * BooResCom({ booValNum, onResBooFun, sufTexStr }) // => <BooResCom />
  * ```
  *
 */
 
-function BooResCom ( { value, suffix = '', onReset } ) {
+function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
 
 
-	const [ dspValNum, setDspValNum ] = React.useState( value ); // What: Display Value Number And Setter. Why: The shown number needs to animate independently of the real committed value while a reset is ticking down. How: This starts mirroring value and is driven by doResFun's own tick loop while a reset animation is running.
-	const aniFrmRef                  = React.useRef( 0 );        // What: Animation Frame Reference. Why: A running tick loop's own requestAnimationFrame id must be cancelable, both mid-animation and on unmount. How: This holds the current frame id, read/cleared by doResFun and the cleanup effect below.
+	const [ disValNum, setDisValNum ] = React.useState( booValNum ); // What: Display Value Number And Setter. Why: The shown number needs to animate independently of the real committed booValNum while a reset is ticking down. How: This starts mirroring booValNum and is driven by runResFun's own tick loop while a reset animation is running.
+
+	const aniFraRef = React.useRef( 0 ); // What: Animation Frame Reference. Why: A running tick loop's own requestAnimationFrame id must be cancelable, both mid-animation and on unmount. How: This holds the current frame id, read/cleared by runResFun and the cleanup effect below.
 
 
-	React.useEffect( () => { if ( !aniFrmRef.current ) setDspValNum( value ); }, [ value ] ); // What: Value Follow Effect. Why: The shown number should track the real value (e.g. it climbed +1) whenever no reset animation is currently running. How: This applies the real value to dspValNum only while aniFrmRef holds no active frame id.
+	React.useEffect( () => { if ( !aniFraRef.current ) setDisValNum( booValNum ); }, [ booValNum ] ); // What: Value Follow Effect. Why: The shown number should track the real booValNum (e.g. it climbed +1) whenever no reset animation is currently running. How: This applies the real booValNum to disValNum only while aniFraRef holds no active frame id.
 
-	React.useEffect( () => () => cancelAnimationFrame( aniFrmRef.current ), [] ); // What: Unmount Cleanup Effect. Why: A tick loop still running when this component unmounts must not keep scheduling frames forever. How: This cancels whatever frame id aniFrmRef holds when the component unmounts.
-
-
-	const doResFun = () => { // What: Do Reset Function. Why: Clicking Reset must commit the real value to 0 immediately while animating the shown number ticking down to match. How: This guards against a no-op reset, respects reduced motion, then drives a duration-scaled eased tick loop down to 0.
+	React.useEffect( () => () => cancelAnimationFrame( aniFraRef.current ), [] ); // What: Unmount Cleanup Effect. Why: A tick loop still running when this component unmounts must not keep scheduling frames forever. How: This cancels whatever frame id aniFraRef holds when the component unmounts.
 
 
-		if ( !value ) return; // What: No Value Guard. Why: There is nothing to reset when the boost is already at 0. How: This bails out before touching onReset or starting any animation.
-
-		if ( redMotFun && redMotFun() ) { onReset(); setDspValNum( 0 ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't see the ticking-down animation. How: This commits the reset and snaps the shown number straight to 0, skipping the tick loop entirely.
+	const runResFun = () => { // What: Run Reset Function. Why: Clicking Reset must commit the real booValNum to 0 immediately while animating the shown number ticking down to match. How: This guards against a no-op reset, respects reduced motion, then drives a duration-scaled eased tick loop down to 0.
 
 
-		const staValNum = value;                                            // What: Start Value Number. Why: The tick loop below needs the original boost value to ease down from, even after onReset below changes the real value to 0. How: This captures value before it changes.
+		if ( !booValNum ) return; // What: No Value Guard. Why: There is nothing to reset when the boost is already at 0. How: This bails out before touching onResBooFun or starting any animation.
+
+
+
+		if ( redMotFun() ) { // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't see the ticking-down animation. How: This commits the reset and snaps the shown number straight to 0, skipping the tick loop entirely.
+
+
+			onResBooFun();     // What: On Reset Boost Call. Why: The real value must still be committed to 0. How: This calls the caller's own reset handler.
+			setDisValNum( 0 ); // What: Display Value Snap. Why: The shown number should match without animating. How: This sets disValNum straight to 0.
+
+
+
+			return; // What: Reduced Motion Return. Why: Nothing is left to animate. How: This exits before the tick loop below is ever started.
+
+
+		}
+
+
+
+		const staValNum = booValNum;                                        // What: Start Value Number. Why: The tick loop below needs the original boost booValNum to ease down from, even after onResBooFun below changes the real booValNum to 0. How: This captures booValNum before it changes.
 		const staTimNum = performance.now();                                // What: Start Time Number. Why: Each animation frame needs to know how much time has elapsed since the tick loop began. How: This captures the current high-resolution timestamp.
-		const durValNum = Math.max( 280, Math.min( 900, staValNum * 55 ) );  // What: Duration Value Number. Why: A small boost shouldn't blink past and a large one shouldn't crawl. How: This scales the animation's own duration with staValNum, clamped to a sensible min/max.
+		const durValNum = Math.max( 280, Math.min( 900, staValNum * 55 ) ); // What: Duration Value Number. Why: A small boost shouldn't blink past and a large one shouldn't crawl. How: This scales the animation's own duration with staValNum, clamped to a sensible min/max.
 
 
-		onReset(); // What: On Reset Call. Why: The real committed value must become 0 immediately, independent of however long the shown-number animation takes. How: This calls the caller's own reset handler right away.
+		onResBooFun(); // What: On Reset Call. Why: The real committed booValNum must become 0 immediately, independent of however long the shown-number animation takes. How: This calls the caller's own reset handler right away.
 
-		cancelAnimationFrame( aniFrmRef.current ); // What: Frame Cancel Guard. Why: A rapid repeat click must not let an earlier tick loop keep racing this new one. How: This cancels whatever frame id aniFrmRef currently holds before starting a fresh loop.
-
-
-		const tikFrmFun = ( frmTimNum ) => { // What: Tick Frame Function. Why: This is the actual per-frame step that eases the shown number down to 0 over durValNum. How: This computes an eased progress ratio from elapsed time, sets dspValNum accordingly, and reschedules itself until progress reaches 1.
+		cancelAnimationFrame( aniFraRef.current ); // What: Frame Cancel Guard. Why: A rapid repeat click must not let an earlier tick loop keep racing this new one. How: This cancels whatever frame id aniFraRef currently holds before starting a fresh loop.
 
 
-			const prgRatNum = Math.min( 1, ( frmTimNum - staTimNum ) / durValNum ); // What: Progress Ratio Number. Why: The eased value below needs a clamped [0,1] linear progress to work from. How: This divides elapsed time by durValNum, capped at 1.
-			const easRatNum = 1 - Math.pow( 1 - prgRatNum, 3 );                    // What: Eased Ratio Number. Why: A cubic ease-out reads more natural than a linear countdown. How: This applies a standard cubic ease-out curve to prgRatNum.
+		const ticFraFun = ( fraTimNum ) => { // What: Tick Frame Function. Why: This is the actual per-frame step that eases the shown number down to 0 over durValNum. How: This computes an eased progress ratio from elapsed time, sets disValNum accordingly, and reschedules itself until progress reaches 1.
 
 
-			setDspValNum( Math.round( staValNum * ( 1 - easRatNum ) ) ); // What: Display Value Update. Why: This is the actual visible countdown step for this frame. How: This sets dspValNum to staValNum scaled down by the eased ratio, rounded to a whole number.
+			const proRatNum = Math.min( 1, ( fraTimNum - staTimNum ) / durValNum ); // What: Progress Ratio Number. Why: The eased booValNum below needs a clamped [0,1] linear progress to work from. How: This divides elapsed time by durValNum, capped at 1.
+			const easRatNum = 1 - Math.pow( 1 - proRatNum, 3 );                     // What: Eased Ratio Number. Why: A cubic ease-out reads more natural than a linear countdown. How: This applies a standard cubic ease-out curve to proRatNum.
 
-			if ( prgRatNum < 1 ) aniFrmRef.current = requestAnimationFrame( tikFrmFun ); // What: Reschedule Guard. Why: The loop must keep running until progress genuinely reaches 1. How: This schedules another frame and keeps aniFrmRef pointed at it.
 
-			else { aniFrmRef.current = 0; setDspValNum( 0 ); } // What: Completion Guard. Why: The loop must end exactly at 0, not whatever the last rounded frame happened to compute. How: This clears aniFrmRef and snaps dspValNum to exactly 0.
+			setDisValNum( Math.round( staValNum * ( 1 - easRatNum ) ) ); // What: Display Value Update. Why: This is the actual visible countdown step for this frame. How: This sets disValNum to staValNum scaled down by the eased ratio, rounded to a whole number.
+
+
+			if ( proRatNum < 1 ) aniFraRef.current = requestAnimationFrame( ticFraFun ); // What: Reschedule Guard. Why: The loop must keep running until progress genuinely reaches 1. How: This schedules another frame and keeps aniFraRef pointed at it.
+
+			else { // What: Completion Branch. Why: The loop must end exactly at 0, not whatever the last rounded frame happened to compute. How: This clears aniFraRef and snaps disValNum to exactly 0.
+
+
+				aniFraRef.current = 0; // What: Animation Frame Clear. Why: No loop is running anymore, so the value-follow effect may resume. How: This resets aniFraRef to 0.
+				setDisValNum( 0 );     // What: Display Value Snap. Why: The countdown must land on exactly 0. How: This sets disValNum to 0.
+
+
+			}
 
 
 		};
 
 
-		aniFrmRef.current = requestAnimationFrame( tikFrmFun ); // What: Frame Start Call. Why: The tick loop above needs to actually begin. How: This schedules the first frame and records its id in aniFrmRef.
+		aniFraRef.current = requestAnimationFrame( ticFraFun ); // What: Frame Start Call. Why: The tick loop above needs to actually begin. How: This schedules the first frame and records its id in aniFraRef.
 
 
 	};
 
 
+
 	return (
 
 
-		<React.Fragment>{ /* What: Boost Reset Fragment Element. Why: The value span and reset button are true siblings with no shared wrapper element of their own. How: This groups the two below without adding an extra DOM node. */ }
+		<React.Fragment>{ /* What: Boost Reset Fragment Element. Why: The booValNum span and reset button are true siblings with no shared wrapper element of their own. How: This groups the two below without adding an extra DOM node. */ }
 
 
-			<span className='pie-boost-val'>+{ dspValNum }{ suffix }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by dspValNum and the caller's own suffix. */ }
+			<span className='pie-boost-val'>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. */ }
 
 			<button
 				className='pie-reset'
-				disabled={ !value }
+
+				disabled={ !booValNum }
+
 				aria-label='Reset boost to zero'
-				onClick={ doResFun }
-			>Reset</button>{ /* What: Reset Button Element. Why: This is the actual lever that commits the boost back to 0. How: This is disabled while already at 0, otherwise runs doResFun on click. */ }
+
+				onClick={ runResFun }
+			>Reset</button>{ /* What: Reset Button Element. Why: This is the actual lever that commits the boost back to 0. How: This is disabled while already at 0, otherwise runs runResFun on click. */ }
 
 
 		</React.Fragment>
@@ -994,14 +1103,15 @@ function BooResCom ( { value, suffix = '', onReset } ) {
 
 
 
-// What: Reduce Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
-export const redMotFun = () => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+const redMotFun = () => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduce Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
 
 
 
-window.__escStack = window.__escStack || []; // What: Escape Stack Global. Why: Multiple inline editors can be open across different components at once, and only the innermost one should react to Escape. How: This is a plain array of { run } entries, pushed/spliced by every useEscCanFun call below and read by the document-level listener further down.
+window.__escStack = window.__escStack || []; // What: Escape Stack Global. Why: Multiple inline editors can be open across different components at once, and only the innermost one should react to Escape. How: This is a plain array of { runFun } entries, pushed/spliced by every useEscCanFun call below and read by the document-level listener further down.
 
 
+
+// #region useEscCanFun
 
 /**
  * useEscCanFun = Use Escape Cancel Function
@@ -1017,26 +1127,41 @@ window.__escStack = window.__escStack || []; // What: Escape Stack Global. Why: 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param actStaBoo - Active State Boolean: Whether the calling editor is
+ *                    currently open, and so should hold a stack slot.
+ * @param hanCalFun - Handler Callback Function: Runs when Escape cancels
+ *                    this editor; the latest one passed is always used.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * useEscCanFun(actStaBoo, hanCalFun) // => void
+ * ```
+ *
 */
 
-// What: Use Escape Cancel Function. Why: See the design-rationale block above. How: This registers/deregisters a stack entry while active, wired to always call whatever handler was most recently passed.
-export const useEscCanFun = function useEscCanFun ( active, handler ) {
+function useEscCanFun ( actStaBoo, hanCalFun ) {
 
 
-	const hndFunRef = React.useRef( handler ); // What: Handler Function Reference. Why: The registered stack entry must always call the latest handler, not whichever one was passed on the render that first mounted it. How: This is created once from the initial handler and overwritten on every render below.
+	const hanFunRef = React.useRef( hanCalFun ); // What: Handler Function Reference. Why: The registered stack entry must always call the latest handler, not whichever one was passed on the render that first mounted it. How: This is created once from the initial handler and overwritten on every render below.
 
-	hndFunRef.current = handler; // What: Handler Reference Update. Why: A closure captured on mount would otherwise go stale across re-renders. How: This keeps hndFunRef pointed at the caller's own current handler on every render.
+
+	hanFunRef.current = hanCalFun; // What: Handler Reference Update. Why: A closure captured on mount would otherwise go stale across re-renders. How: This keeps hanFunRef pointed at the caller's own current handler on every render.
 
 
 	React.useEffect( () => { // What: Stack Registration Effect. Why: Only an active editor should occupy a slot on the shared escape stack. How: This pushes a stack entry while active, and removes that same entry on cleanup.
 
 
-		if ( !active ) return; // What: Inactive Guard. Why: A closed editor has nothing to register. How: This skips the rest of the effect while active is false.
+		if ( !actStaBoo ) return; // What: Inactive Guard. Why: A closed editor has nothing to register. How: This skips the rest of the effect while actStaBoo is false.
 
 
-		const staEntObj = { run : () => hndFunRef.current && hndFunRef.current() }; // What: Stack Entry Object. Why: The shared stack needs a stable object identity per registration, so this exact entry can be found and removed again on cleanup. How: This wraps a call to whatever handler hndFunRef currently points at.
+
+		const staEntObj = { runFun : () => hanFunRef.current && hanFunRef.current() }; // What: Stack Entry Object. Why: The shared stack needs a stable object identity per registration, so this exact entry can be found and removed again on cleanup. How: This wraps a call to whatever handler hanFunRef currently points at.
+
 
 		window.__escStack.push( staEntObj ); // What: Stack Push Call. Why: This is what actually makes this editor reachable by the document-level Escape listener below. How: This appends staEntObj to the shared stack.
+
 
 
 		return () => { // What: Stack Cleanup Function. Why: A closed or unmounted editor must not linger on the shared stack. How: This finds staEntObj's own current index and removes it.
@@ -1044,16 +1169,19 @@ export const useEscCanFun = function useEscCanFun ( active, handler ) {
 
 			const entIndNum = window.__escStack.indexOf( staEntObj ); // What: Entry Index Number. Why: splice needs a real index, not the entry object itself. How: This looks up staEntObj's own current position in the shared stack.
 
+
 			if ( entIndNum > -1 ) window.__escStack.splice( entIndNum, 1 ); // What: Stack Splice Guard. Why: The entry could conceivably already be gone. How: This removes exactly one element at entIndNum when it was actually found.
 
 
 		};
 
 
-	}, [ active ] ); // What: Effect Dependency Array. Why: Registration/deregistration only needs to happen when active itself flips. How: active is read directly inside the guard above.
+	}, [ actStaBoo ] ); // What: Effect Dependency Array. Why: Registration/deregistration only needs to happen when actStaBoo itself flips. How: actStaBoo is read directly inside the guard above.
 
 
-};
+}
+
+// #endregion useEscCanFun
 
 
 
@@ -1068,16 +1196,21 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 		if ( keyDowObj.key !== 'Escape' || keyDowObj.defaultPrevented ) return; // What: Non-Escape Guard. Why: Only an actual, not-already-handled Escape keypress should ever reach the stack. How: This bails out for any other key, or one whose default was already prevented by something else.
 
 
+
 		const escStaArr = window.__escStack; // What: Escape Stack Array. Why: The rest of this handler needs a stable local reference to the shared stack. How: This reads window.__escStack once and reuses it below.
 
+
 		if ( !escStaArr.length ) return; // What: Empty Stack Guard. Why: There is nothing to cancel when no editor is currently registered. How: This bails out when the shared stack is empty.
+
+
 
 		if ( document.querySelector( '.infotip, .ob-scrim' ) ) return; // What: Overlay Guard. Why: A visible tooltip or modal scrim owns Escape first, ahead of any inline editor. How: This bails out while either kind of overlay is present in the document.
 
 
+
 		keyDowObj.preventDefault(); // What: Default Prevention Call. Why: The browser's own Escape behavior (e.g. exiting fullscreen) shouldn't also fire alongside this cancel. How: This prevents the keydown event's default action.
 
-		escStaArr[ escStaArr.length - 1 ].run(); // What: Top Entry Run Call. Why: Only the deepest (innermost, most-recently-registered) active editor should react. How: This invokes the run() of the last entry in escStaArr.
+		escStaArr[ escStaArr.length - 1 ].runFun(); // What: Top Entry Run Call. Why: Only the deepest (innermost, most-recently-registered) active editor should react. How: This invokes the runFun() of the last entry in escStaArr.
 
 
 	} );
@@ -1087,32 +1220,40 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 
 
-// What: annStaFun Setup IIFE. Why: The live region must be created exactly once, at module load, since a region that mounts together with its own text is announced unreliably (or not at all) in several browser/screen-reader pairs. How: This builds the live region, attaches it to <body> (immediately or on DOMContentLoaded), and assigns the real implementation into the module-level annStaFun binding declared at the top of this file.
-(() => {
+let annStaFun; // What: Announce Status Function. Why: The real implementation is only built once the setup IIFE just below runs, but the exported binding must already exist for it to assign into. How: This starts undefined and is overwritten inside that IIFE.
+
+
+
+(() => { // What: Announce Status Setup IIFE. Why: The live region must be created exactly once, at module load, since a region that mounts together with its own text is announced unreliably (or not at all) in several browser/screen-reader pairs. How: This builds the live region, attaches it to <body> (immediately or on DOMContentLoaded), and assigns the real implementation into the module-level annStaFun binding declared just above.
 
 
 	const livRegEle = document.createElement( 'div' ); // What: Live Region Element. Why: This is the actual DOM node screen readers watch for status announcements. How: This is a plain div, styled invisibly by CSS via its own class below, that persists for the app's whole lifetime.
 
+
 	livRegEle.className = 'sr-live';                 // What: Live Region Class Name. Why: CSS needs a selector to visually hide this element while keeping it in the accessibility tree. How: This sets the class the app's stylesheet targets.
-	livRegEle.setAttribute( 'role', 'status' );       // What: Live Region Role Attribute. Why: This tells assistive tech that this element carries transient status updates. How: This sets the standard ARIA role.
-	livRegEle.setAttribute( 'aria-live', 'polite' );  // What: Live Region Live Attribute. Why: A default politeness level is needed before any real annStaFun() call can override it per-call. How: This starts the region at "polite", overwritten per-call below.
-	livRegEle.setAttribute( 'aria-atomic', 'true' );  // What: Live Region Atomic Attribute. Why: A screen reader should read the whole message, not just whatever text node changed. How: This tells assistive tech to treat content changes as replacing the whole region.
+	livRegEle.setAttribute( 'role', 'status' );      // What: Live Region Role Attribute. Why: This tells assistive tech that this element carries transient status updates. How: This sets the standard ARIA role.
+	livRegEle.setAttribute( 'aria-live', 'polite' ); // What: Live Region Live Attribute. Why: A default politeness level is needed before any real annStaFun() call can override it per-call. How: This starts the region at "polite", overwritten per-call below.
+	livRegEle.setAttribute( 'aria-atomic', 'true' ); // What: Live Region Atomic Attribute. Why: A screen reader should read the whole message, not just whatever text node changed. How: This tells assistive tech to treat content changes as replacing the whole region.
 
 
-	const atcRegFun = () => document.body && document.body.appendChild( livRegEle ); // What: Attach Region Function. Why: The live region does nothing until it's actually in the document. How: This appends livRegEle to document.body, guarded in case body doesn't exist yet.
+	const attRegFun = () => document.body && document.body.appendChild( livRegEle ); // What: Attach Region Function. Why: The live region does nothing until it's actually in the document. How: This appends livRegEle to document.body, guarded in case body doesn't exist yet.
 
-	if ( document.body ) atcRegFun(); // What: Immediate Attach Branch. Why: A load order where document.body already exists needs no further waiting. How: This calls atcRegFun immediately.
 
-	else document.addEventListener( 'DOMContentLoaded', atcRegFun ); // What: Deferred Attach Branch. Why: A load order where document.body doesn't exist yet must wait for the DOM to finish parsing. How: This defers atcRegFun until DOMContentLoaded fires.
+	if ( document.body ) attRegFun(); // What: Immediate Attach Branch. Why: A load order where document.body already exists needs no further waiting. How: This calls attRegFun immediately.
+
+	else document.addEventListener( 'DOMContentLoaded', attRegFun ); // What: Deferred Attach Branch. Why: A load order where document.body doesn't exist yet must wait for the DOM to finish parsing. How: This defers attRegFun until DOMContentLoaded fires.
+
 
 
 	let annTimNum = null; // What: Announce Timeout Number. Why: A rapid-fire annStaFun() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
 
 
-	annStaFun = ( mesTexStr, mesOptObj ) => { // What: Announce Status Function. Why: This is the actual exported implementation, assigned into the module-level annStaFun binding declared at the top of this file. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
+	annStaFun = ( mesTexStr, mesOptObj ) => { // What: Announce Status Function. Why: This is the actual exported implementation, assigned into the module-level annStaFun binding declared just above this IIFE. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
 
 
 		if ( !mesTexStr ) return; // What: No Message Guard. Why: There is nothing useful to annStaFun for an empty/falsy message. How: This bails out without touching the region at all.
+
+
 
 		livRegEle.setAttribute( 'aria-live', ( mesOptObj && mesOptObj.assertive ) ? 'assertive' : 'polite' ); // What: Live Attribute Update. Why: Some announcements (e.g. an error) need to interrupt immediately rather than wait politely. How: This sets assertive only when mesOptObj explicitly asks for it, polite otherwise.
 
@@ -1138,9 +1279,10 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
  * Lets live-commit editors (picker settings, picker items) discard
  * UNSAVED edits when the editor closes implicitly (tab-switch or
  * reload) while KEEPING them on an in-tab sibling swap. An unmounting
- * editor arm()s a revert on the next macrotask; a sibling editor
- * mounting in the same React commit disarm()s it before it fires. A
- * real tab-switch leaves nothing to disarm, so the revert runs.
+ * editor calls armFun() to stage a revert on the next macrotask; a
+ * sibling editor mounting in the same React commit calls disFun() to
+ * cancel it before it fires. A real tab-switch leaves nothing to
+ * cancel it, so the revert runs.
  * (Reload is handled by each editor's own pagehide synchronous
  * localStorage restore, so this timeout never matters there.)
  *
@@ -1148,34 +1290,35 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
  *
 */
 
-window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: This must be a single shared object every editor's mount/unmount can read and write, reachable outside the normal React import graph. How: This is only created once (a re-evaluation keeps whatever the global already holds), exposing arm/disarm as the stable methods every editor calls by name.
+window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: This must be a single shared object every editor's mount/unmount can read and write, reachable outside the normal React import graph. How: This is only created once (a re-evaluation keeps whatever the global already holds), exposing armFun/disFun as the stable methods every editor calls by name.
 
 
 	_revFun : null, // What: Revert Function. Why: The actual staged revert callback must be reachable from the timeout that eventually runs it. How: This starts null and is set by arm, read and cleared by the timeout callback below.
-	_tmoNum : null, // What: Timeout Number. Why: A pending revert's own setTimeout id must be cancelable by a later arm/disarm call. How: This starts null and is set/cleared by arm and disarm below.
+	_timNum : null, // What: Timeout Number. Why: A pending revert's own setTimeout id must be cancelable by a later armFun/disFun call. How: This starts null and is set/cleared by arm and disarm below.
 
-	arm( pndRevFun ) { // What: Arm Method. Why: An unmounting editor needs to stage its own revert, cancelable by a sibling mounting in the same commit. How: This cancels any previous timeout, stores pndRevFun, and schedules it to run on the next macrotask unless disarmed first.
-
-
-		clearTimeout( this._tmoNum ); // What: Timeout Cancel. Why: A previous arm() call's own pending revert must not also fire alongside this new one. How: This cancels whatever timeout id was previously stored.
-
-		this._revFun = pndRevFun; // What: Revert Function Store. Why: The scheduled timeout below needs to find this exact callback when it runs. How: This overwrites _revFun with the newly-armed callback.
-
-		this._tmoNum = setTimeout( () => { // What: Timeout Schedule. Why: A same-commit sibling mount must get a chance to disarm() before this actually runs. How: This schedules the revert for the very next macrotask, i.e. after the current commit's own synchronous work finishes.
+	armFun( penRevFun ) { // What: Arm Function. Why: An unmounting editor needs to stage its own revert, cancelable by a sibling mounting in the same commit. How: This cancels any previous timeout, stores penRevFun, and schedules it to run on the next macrotask unless disarmed first.
 
 
-			const staRevFun = this._revFun; // What: Staged Revert Function. Why: _revFun must be captured before it's cleared below, in case running it somehow re-enters arm/disarm. How: This reads the currently-staged callback into a local before touching the shared fields.
+		clearTimeout( this._timNum ); // What: Timeout Cancel. Why: A previous armFun() call's own pending revert must not also fire alongside this new one. How: This cancels whatever timeout id was previously stored.
+
+		this._revFun = penRevFun; // What: Revert Function Store. Why: The scheduled timeout below needs to find this exact callback when it runs. How: This overwrites _revFun with the newly-armed callback.
+
+		this._timNum = setTimeout( () => { // What: Timeout Schedule. Why: A same-commit sibling mount must get a chance to disFun() before this actually runs. How: This schedules the revert for the very next macrotask, i.e. after the current commit's own synchronous work finishes.
+
+
+			const staRevFun = this._revFun; // What: Staged Revert Function. Why: _revFun must be captured before it's cleared below, in case running it somehow re-enters armFun/disFun. How: This reads the currently-staged callback into a local before touching the shared fields.
+
 
 			this._revFun = null; // What: Revert Function Clear. Why: A fired revert must not remain staged as if it were still pending. How: This resets _revFun back to null.
-			this._tmoNum = null; // What: Timeout Number Clear. Why: A fired timeout's own id is no longer meaningful to cancel. How: This resets _tmoNum back to null.
+			this._timNum = null; // What: Timeout Number Clear. Why: A fired timeout's own id is no longer meaningful to cancel. How: This resets _timNum back to null.
 
 
-			if ( staRevFun ) { // What: Staged Revert Guard. Why: disarm() may have already cleared the callback before this timeout fired. How: This only attempts to run the revert when one was actually still staged.
+			if ( staRevFun ) { // What: Staged Revert Guard. Why: disFun() may have already cleared the callback before this timeout fired. How: This only attempts to run the revert when one was actually still staged.
 
 
 				try { staRevFun(); } // What: Staged Revert Call. Why: This is the actual state-reverting side effect an unmounted editor asked for. How: This invokes the captured callback.
 
-				catch ( errCauObj ) {} // What: Staged Revert Error Guard. Why: A revert callback throwing must not crash whatever unrelated code happens to run next on this same tick. How: This silently swallows any error the callback raised.
+				catch {} // What: Staged Revert Error Guard. Why: A revert callback throwing must not crash whatever unrelated code happens to run next on this same tick. How: This silently swallows any error the callback raised.
 
 
 			}
@@ -1186,12 +1329,12 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
 
 	},
 
-	disarm() { // What: Disarm Method. Why: A sibling editor mounting in the same React commit needs to cancel an outgoing editor's staged revert before it fires. How: This cancels the pending timeout and clears both shared fields back to their idle state.
+	disFun() { // What: Disarm Function. Why: A sibling editor mounting in the same React commit needs to cancel an outgoing editor's staged revert before it fires. How: This cancels the pending timeout and clears both shared fields back to their idle state.
 
 
-		clearTimeout( this._tmoNum ); // What: Timeout Cancel. Why: The scheduled revert must never actually run once disarmed. How: This cancels whatever timeout id is currently stored.
+		clearTimeout( this._timNum ); // What: Timeout Cancel. Why: The scheduled revert must never actually run once disarmed. How: This cancels whatever timeout id is currently stored.
 
-		this._tmoNum = null; // What: Timeout Number Clear. Why: A canceled timeout's own id is no longer meaningful. How: This resets _tmoNum back to null.
+		this._timNum = null; // What: Timeout Number Clear. Why: A canceled timeout's own id is no longer meaningful. How: This resets _timNum back to null.
 		this._revFun = null; // What: Revert Function Clear. Why: A canceled arm should leave nothing staged behind. How: This resets _revFun back to null.
 
 
@@ -1216,54 +1359,62 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.label    - Label: The button's own visible text (e.g. "Fill",
- *                         "Refill all").
- * @param props.onClick  - On Click: The real Fill/Refill action, called once
- *                         the disabled guard passes.
- * @param props.disabled - Disabled: Whether this lever is currently
- *                         unavailable (e.g. already at full charge).
+ * @param props.isaDisBoo   - Is-A Disabled Boolean: Whether this lever is
+ *                            currently unavailable (e.g. already at full
+ *                            charge).
+ * @param props.labTexStr   - Label Text String: The button's own visible text
+ *                            (e.g. "Fill", "Refill all").
+ * @param props.onFilActFun - On Fill Action Function: The real Fill/Refill
+ *                            action, called once the disabled guard passes.
  *
  * @returns The lever rendered as a ButBasCom, with its own spin-on-click
  * behavior layered on top.
  *
  * @example
  * ```tsx
- * FilButCom({ label, onClick, disabled }) // => <FilButCom />
+ * FilButCom({ isaDisBoo, labTexStr, onFilActFun }) // => <FilButCom />
  * ```
  *
 */
 
-function FilButCom ( { label, onClick, disabled } ) {
+function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } ) {
 
 
-	const [ spnAniBoo, setSpnAniBoo ] = React.useState( false ); // What: Spin Animate Boolean And Setter. Why: The refresh icon's own spin is purely decorative feedback, layered on top of the real Fill/Refill action. How: This is started on a live click (unless reduced motion) and cleared once the CSS spin animation finishes.
+	const [ spiAniBoo, setSpiAniBoo ] = React.useState( false ); // What: Spin Animate Boolean And Setter. Why: The refresh icon's own spin is purely decorative feedback, layered on top of the real Fill/Refill action. How: This is started on a live click (unless reduced motion) and cleared once the CSS spin animation finishes.
+
 
 
 	return (
 
 
 		<ButBasCom
-			className={ spnAniBoo ? 'is-spinning' : '' }
-			kind='ghost'
-			size='sm'
-			icon='refresh'
-			disabled={ disabled }
-			onClick={ () => { // What: On Click Handler. Why: A disabled FilButCom must be fully inert, and clicking a live one should spin the icon (unless reduced motion) before performing the real action. How: This guards on disabled, conditionally starts the spin, then always calls the caller's own onClick.
+			className={ spiAniBoo ? 'is-spinning' : '' }
+
+			disabled={ isaDisBoo }
+			icoNamStr='refEle'
+			kinValStr='ghost'
+			sizValStr='sm'
+
+			onAnimationEnd={ () => setSpiAniBoo( false ) }
+			onClick={ () => { // What: On Click Handler. Why: A disabled FilButCom must be fully inert, and clicking a live one should spin the icon (unless reduced motion) before performing the real action. How: This guards on disabled, conditionally starts the spin, then always calls the caller's own onFilActFun.
 
 
-				if ( disabled ) return; // What: Disabled Guard. Why: A disabled button must not spin or fire its own action at all. How: This bails out before touching spnAniBoo or calling onClick.
+				if ( isaDisBoo ) return; // What: Disabled Guard. Why: A disabled button must not spin or fire its own action at all. How: This bails out before touching spiAniBoo or calling onFilActFun.
 
-				if ( !redMotFun() ) setSpnAniBoo( true ); // What: Spin Start Guard. Why: The spin is purely decorative feedback, skipped entirely under reduced motion. How: This starts the spin animation only when redMotFun() reports false.
 
-				onClick(); // What: On Click Call. Why: This is the actual Fill/Refill action the caller owns. How: This invokes the passed-in onClick handler unconditionally once the guards above pass.
+
+				if ( !redMotFun() ) setSpiAniBoo( true ); // What: Spin Start Guard. Why: The spin is purely decorative feedback, skipped entirely under reduced motion. How: This starts the spin animation only when redMotFun() reports false.
+
+
+
+				onFilActFun(); // What: On Fill Action Call. Why: This is the actual Fill/Refill action the caller owns. How: This invokes the passed-in onFilActFun handler unconditionally once the guards above pass.
 
 
 			} }
-			onAnimationEnd={ () => setSpnAniBoo( false ) }
-		>{ /* What: Fill Button Element. Why: This is FilButCom's own rendered control, reusing ButBasCom for consistent button chrome. How: This shows the spin class while spnAniBoo is true, is fully inert while disabled, and clears the spin on its own CSS animation finishing. */ }
+		>{ /* What: Fill Button Element. Why: This is FilButCom's own rendered control, reusing ButBasCom for consistent button chrome. How: This shows the spin class while spiAniBoo is true, is fully inert while disabled, and clears the spin on its own CSS animation finishing. */ }
 
 
-			{ label }
+			{ labTexStr }
 
 
 		</ButBasCom>
@@ -1309,43 +1460,51 @@ function FilButCom ( { label, onClick, disabled } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rowAObj   - Row A Object: The left-hand row to compare.
- * @param rowBObj   - Row B Object: The right-hand row to compare.
+ * @param rowOneObj   - Row One Object: The left-hand row to compare.
+ * @param rowTwoObj   - Row Two Object: The right-hand row to compare.
  * @param sorKeyStr - Sort Key String: The sort key, e.g. 'name-asc' or
  *                    'count-desc'; everything before the last dash names the
  *                    field, the trailing 'asc'/'desc' names the direction.
  *
  * @returns A standard Array.prototype.sort comparator result: negative
- * when rowAObj sorts first, positive when rowBObj sorts first, 0 on a
+ * when rowOneObj sorts first, positive when rowTwoObj sorts first, 0 on a
  * genuine tie.
  *
  * @example
  * ```ts
- * sorEntFun(rowAObj, rowBObj, sorKeyStr) // => -1 | 0 | 1
+ * sorEntFun(rowOneObj, rowTwoObj, sorKeyStr) // => -1 | 0 | 1
  * ```
  *
 */
 
-function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
+function sorEntFun ( rowOneObj, rowTwoObj, sorKeyStr ) {
 
 
 	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String And Direction String. Why: Every sort key packs both which field to compare and which way, joined by a dash. How: This splits sorKeyStr once into the two pieces every branch below reads.
-	const revSorBoo                = sorDirStr === 'desc';   // What: Reverse Sort Boolean. Why: Every branch below needs to know whether to flip its own comparison. How: This is true only when sorDirStr is exactly 'desc'.
+
+	const revSorBoo = sorDirStr === 'desc'; // What: Reverse Sort Boolean. Why: Every branch below needs to know whether to flip its own comparison. How: This is true only when sorDirStr is exactly 'desc'.
 
 
-	const byNamFun = () => rowAObj.name.localeCompare( rowBObj.name ); // What: By Name Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
+	const namSorFun = () => rowOneObj.name.localeCompare( rowTwoObj.name ); // What: Name Sort Function. Why: Every field's own tie-break, and the fallback for an unrecognized field, both need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
 
 
-	const dirNulFun = ( aCmpVal, bCmpVal ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
+	const dirNulFun = ( cmpOneVal, cmpTwoVal ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
 
 
-		const aNulBoo = aCmpVal == null; // What: A Null Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually missing. How: This checks aCmpVal with a loose null comparison, matching undefined too.
-		const bNulBoo = bCmpVal == null; // What: B Null Boolean. Why: Same reasoning as aNulBoo, for the other side. How: This checks bCmpVal with a loose null comparison, matching undefined too.
+		const nulOneBoo = cmpOneVal == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually missing. How: This checks cmpOneVal with a loose null comparison, matching undefined too.
+		const nulTwoBoo = cmpTwoVal == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoVal with a loose null comparison, matching undefined too.
 
 
-		if ( aNulBoo && bNulBoo ) return byNamFun();  // What: Both Null Check. Why: Two equally-missing rows have nothing else to compare by. How: This falls back to the plain name tie-break.
-		if ( aNulBoo ) return revSorBoo ? 1 : -1;     // What: A Null Check. Why: A missing left side sorts to the top ascending, bottom descending. How: This returns the direction-appropriate sentinel comparison result.
-		if ( bNulBoo ) return revSorBoo ? -1 : 1;     // What: B Null Check. Why: Same reasoning as the A Null check, mirrored for the right side. How: This returns the direction-appropriate sentinel comparison result.
+		if ( nulOneBoo && nulTwoBoo ) return namSorFun(); // What: Both Null Check. Why: Two equally-missing rows have nothing else to compare by. How: This falls back to the plain name tie-break.
+
+
+
+		if ( nulOneBoo ) return revSorBoo ? 1 : -1; // What: A Null Check. Why: A missing left side sorts to the top ascending, bottom descending. How: This returns the direction-appropriate sentinel comparison result.
+
+
+
+		if ( nulTwoBoo ) return revSorBoo ? -1 : 1; // What: B Null Check. Why: Same reasoning as the A Null check, mirrored for the right side. How: This returns the direction-appropriate sentinel comparison result.
+
 
 
 		return null; // What: Both Real Return. Why: Neither side was missing, so this helper has nothing useful to say. How: This signals the caller to fall through to its own real field comparison.
@@ -1354,16 +1513,23 @@ function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
 	};
 
 
-	const lasNulFun = ( aCmpVal, bCmpVal ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
+	const lasNulFun = ( cmpOneVal, cmpTwoVal ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
 
 
-		const aNulBoo = aCmpVal == null; // What: A Null Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually N/A. How: This checks aCmpVal with a loose null comparison, matching undefined too.
-		const bNulBoo = bCmpVal == null; // What: B Null Boolean. Why: Same reasoning as aNulBoo, for the other side. How: This checks bCmpVal with a loose null comparison, matching undefined too.
+		const nulOneBoo = cmpOneVal == null; // What: Null One Boolean. Why: The 3 outcomes below all depend on which side (if any) is actually N/A. How: This checks cmpOneVal with a loose null comparison, matching undefined too.
+		const nulTwoBoo = cmpTwoVal == null; // What: Null Two Boolean. Why: Same reasoning as nulOneBoo, for the other side. How: This checks cmpTwoVal with a loose null comparison, matching undefined too.
 
 
-		if ( aNulBoo && bNulBoo ) return byNamFun(); // What: Both Null Check. Why: Two equally-N/A rows have nothing else to compare by. How: This falls back to the plain name tie-break.
-		if ( aNulBoo ) return 1;                     // What: A Null Check. Why: An N/A left side always sorts last, regardless of direction. How: This returns a fixed "a goes after b" result.
-		if ( bNulBoo ) return -1;                    // What: B Null Check. Why: Same reasoning as the A Null check, mirrored for the right side. How: This returns a fixed "b goes after a" result.
+		if ( nulOneBoo && nulTwoBoo ) return namSorFun(); // What: Both Null Check. Why: Two equally-N/A rows have nothing else to compare by. How: This falls back to the plain name tie-break.
+
+
+
+		if ( nulOneBoo ) return 1; // What: A Null Check. Why: An N/A left side always sorts last, regardless of direction. How: This returns a fixed "a goes after b" result.
+
+
+
+		if ( nulTwoBoo ) return -1; // What: B Null Check. Why: Same reasoning as the A Null check, mirrored for the right side. How: This returns a fixed "b goes after a" result.
+
 
 
 		return null; // What: Both Real Return. Why: Neither side was N/A, so this helper has nothing useful to say. How: This signals the caller to fall through to its own real field comparison.
@@ -1372,36 +1538,39 @@ function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
 	};
 
 
-	const numLasFun = ( aCmpVal, bCmpVal ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
+	const numLasFun = ( cmpOneVal, cmpTwoVal ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
 
 
-		const notAvaNum = lasNulFun( aCmpVal, bCmpVal ); // What: Not Available Number. Why: A real comparison result from lasNulFun means one side was N/A and nothing more needs computing. How: This calls lasNulFun and checks its result before doing any real math.
+		const notAvaNum = lasNulFun( cmpOneVal, cmpTwoVal ); // What: Not Available Number. Why: A real comparison result from lasNulFun means one side was N/A and nothing more needs computing. How: This calls lasNulFun and checks its result before doing any real math.
+
 
 		if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from lasNulFun already fully answers this comparison. How: This returns that result directly instead of falling through to the numeric comparison below.
 
 
-		const priCmpNum = aCmpVal - bCmpVal; // What: Primary Compare Number. Why: Both sides are confirmed real numbers at this point, so a plain subtraction is a valid ascending comparison. How: This subtracts bCmpVal from aCmpVal.
+
+		const priCmpNum = cmpOneVal - cmpTwoVal; // What: Primary Compare Number. Why: Both sides are confirmed real numbers at this point, so a plain subtraction is a valid ascending comparison. How: This subtracts cmpTwoVal from cmpOneVal.
 
 
 
-		return ( revSorBoo ? -priCmpNum : priCmpNum ) || byNamFun(); // What: Numeric Compare Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to byNamFun() only when the numeric comparison itself was exactly 0.
+		return ( revSorBoo ? -priCmpNum : priCmpNum ) || namSorFun(); // What: Numeric Compare Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to namSorFun() only when the numeric comparison itself was exactly 0.
 
 
 	};
 
 
-	switch ( fieNamStr ) { // What: Field Switch. Why: Each sortable field has its own distinct comparison rule, keyed by name. How: This dispatches to one of the branches below, falling back to a plain name comparison for any unrecognized field. (Every case below returns directly; per this file's own switch-statement convention, a case's own return is treated like an if-branch's guard return rather than forcing a 3-blank-line gap before it.)
+	switch ( fieNamStr ) { // What: Field Switch. Why: Each sortable field has its own distinct comparison rule, keyed by name. How: This dispatches to one of the branches below, falling back to a plain name comparison for any unrecognized field.
 
 
-		case 'name':
-			return revSorBoo ? -byNamFun() : byNamFun(); // What: Name Case Return. Why: Sorting by name itself is just the plain comparison, optionally flipped. How: This negates byNamFun()'s result when revSorBoo is true.
+		case 'name': return revSorBoo ? -namSorFun() : namSorFun(); // What: Name Case Return. Why: Sorting by name itself is just the plain comparison, optionally flipped. How: This negates namSorFun()'s result when revSorBoo is true.
 
 		case 'type': { // What: Type Case Block. Why: Type has no N/A concept at all, unlike most other fields, so it skips straight to a real comparison. How: This compares the two rows' own type strings, flips for descending, and falls back to name on a tie.
 
 
-			const priCmpNum = rowAObj.type.localeCompare( rowBObj.type ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields.
+			const priCmpNum = rowOneObj.type.localeCompare( rowTwoObj.type ); // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This calls String.localeCompare between the two rows' own type fields.
 
-			return ( revSorBoo ? -priCmpNum : priCmpNum ) || byNamFun(); // What: Type Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to byNamFun() only on an exact tie.
+
+
+			return ( revSorBoo ? -priCmpNum : priCmpNum ) || namSorFun(); // What: Type Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to namSorFun() only on an exact tie.
 
 
 		}
@@ -1409,14 +1578,18 @@ function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
 		case 'group': { // What: Group Case Block. Why: Group can be genuinely N/A for a row with no meaningful single group. How: This defers to dirNulFun first, then compares the two rows' own group strings.
 
 
-			const naaCmpNum = dirNulFun( rowAObj.group, rowBObj.group ); // What: NA Compare Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
-
-			if ( naaCmpNum != null ) return naaCmpNum; // What: NA Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
+			const notAvaNum = dirNulFun( rowOneObj.group, rowTwoObj.group ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
 
 
-			const priCmpNum = rowAObj.group.localeCompare( rowBObj.group ); // What: Primary Compare Number. Why: Both sides are confirmed real strings at this point. How: This calls String.localeCompare between the two rows' own group fields.
+			if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
 
-			return ( revSorBoo ? -priCmpNum : priCmpNum ) || byNamFun(); // What: Group Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to byNamFun() only on an exact tie.
+
+
+			const priCmpNum = rowOneObj.group.localeCompare( rowTwoObj.group ); // What: Primary Compare Number. Why: Both sides are confirmed real strings at this point. How: This calls String.localeCompare between the two rows' own group fields.
+
+
+
+			return ( revSorBoo ? -priCmpNum : priCmpNum ) || namSorFun(); // What: Group Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to namSorFun() only on an exact tie.
 
 
 		}
@@ -1424,9 +1597,11 @@ function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
 		case 'count': { // What: Count Case Block. Why: Count is always a real number for every row, with no N/A concept at all. How: This compares the two rows' own count fields directly.
 
 
-			const priCmpNum = rowAObj.count - rowBObj.count; // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This subtracts rowBObj.count from rowAObj.count.
+			const priCmpNum = rowOneObj.count - rowTwoObj.count; // What: Primary Compare Number. Why: This is the actual field comparison this case exists to perform. How: This subtracts rowTwoObj.count from rowOneObj.count.
 
-			return ( revSorBoo ? -priCmpNum : priCmpNum ) || byNamFun(); // What: Count Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to byNamFun() only on an exact tie.
+
+
+			return ( revSorBoo ? -priCmpNum : priCmpNum ) || namSorFun(); // What: Count Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to namSorFun() only on an exact tie.
 
 
 		}
@@ -1434,39 +1609,43 @@ function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
 		case 'date': { // What: Date Case Block. Why: Date can be genuinely N/A for a reminder with no next occurrence at all. How: This defers to dirNulFun first, then compares the two rows' own date fields.
 
 
-			const naaCmpNum = dirNulFun( rowAObj.date, rowBObj.date ); // What: NA Compare Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
-
-			if ( naaCmpNum != null ) return naaCmpNum; // What: NA Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
+			const notAvaNum = dirNulFun( rowOneObj.date, rowTwoObj.date ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
 
 
-			const priCmpNum = rowAObj.date - rowBObj.date; // What: Primary Compare Number. Why: Both sides are confirmed real timestamps at this point. How: This subtracts rowBObj.date from rowAObj.date.
+			if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
 
-			return ( revSorBoo ? -priCmpNum : priCmpNum ) || byNamFun(); // What: Date Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to byNamFun() only on an exact tie.
+
+
+			const priCmpNum = rowOneObj.date - rowTwoObj.date; // What: Primary Compare Number. Why: Both sides are confirmed real timestamps at this point. How: This subtracts rowTwoObj.date from rowOneObj.date.
+
+
+
+			return ( revSorBoo ? -priCmpNum : priCmpNum ) || namSorFun(); // What: Date Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort, falling back to name on an exact tie. How: This negates priCmpNum when reversed, then falls back to namSorFun() only on an exact tie.
 
 
 		}
 
-		case 'range':
-			return numLasFun( rowAObj.range, rowBObj.range ); // What: Range Case Return. Why: Range only means something for an ease-up/ease-down conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'range': return numLasFun( rowOneObj.range, rowTwoObj.range ); // What: Range Case Return. Why: Range only means something for an ease-up/ease-down conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
 
-		case 'odds':
-			return numLasFun( rowAObj.odds, rowBObj.odds ); // What: Odds Case Return. Why: Odds only means something for a weighted/dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'odds': return numLasFun( rowOneObj.odds, rowTwoObj.odds ); // What: Odds Case Return. Why: Odds only means something for a weighted/dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
 
-		case 'boost':
-			return numLasFun( rowAObj.boost, rowBObj.boost ); // What: Boost Case Return. Why: Boost only means something for a dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
+		case 'boost': return numLasFun( rowOneObj.boost, rowTwoObj.boost ); // What: Boost Case Return. Why: Boost only means something for a dynamic conditional, so it always sorts last on any other mode. How: This defers entirely to numLasFun.
 
 		case 'active': { // What: Active Case Block. Why: isActive can be genuinely N/A for a row with no single meaningful active state. How: This defers to dirNulFun first, then compares the two rows' own boolean isActive fields.
 
 
-			const naaCmpNum = dirNulFun( rowAObj.isActive, rowBObj.isActive ); // What: NA Compare Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
-
-			if ( naaCmpNum != null ) return naaCmpNum; // What: NA Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
+			const notAvaNum = dirNulFun( rowOneObj.isActive, rowTwoObj.isActive ); // What: Not Available Number. Why: A real result from dirNulFun already fully answers this comparison. How: This calls dirNulFun and checks its result before doing any real comparison.
 
 
-			if ( rowAObj.isActive !== rowBObj.isActive ) { // What: Active Difference Check. Why: A plain boolean subtraction doesn't work, so an unequal pair needs its own explicit comparison. How: This picks -1/1 based on which row is active, then flips it for a descending sort.
+			if ( notAvaNum != null ) return notAvaNum; // What: Not Available Check. Why: An N/A result from dirNulFun already fully answers this comparison. How: This returns that result directly instead of falling through.
 
 
-				const priCmpNum = rowAObj.isActive ? -1 : 1; // What: Primary Compare Number. Why: An active row should sort before an inactive one, ascending. How: This picks -1 when rowAObj is the active one, 1 otherwise.
+
+			if ( rowOneObj.isActive !== rowTwoObj.isActive ) { // What: Active Difference Check. Why: A plain boolean subtraction doesn't work, so an unequal pair needs its own explicit comparison. How: This picks -1/1 based on which row is active, then flips it for a descending sort.
+
+
+				const priCmpNum = rowOneObj.isActive ? -1 : 1; // What: Primary Compare Number. Why: An active row should sort before an inactive one, ascending. How: This picks -1 when rowOneObj is the active one, 1 otherwise.
+
 
 
 				return revSorBoo ? -priCmpNum : priCmpNum; // What: Active Case Return. Why: The caller needs the actual final ordering, flipped for a descending sort. How: This negates priCmpNum when reversed.
@@ -1475,13 +1654,13 @@ function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
 			}
 
 
-			return byNamFun(); // What: Active Tie Return. Why: Two rows with the same active state have nothing else to compare by for this field. How: This falls back to the plain name tie-break.
+
+			return namSorFun(); // What: Active Tie Return. Why: Two rows with the same active state have nothing else to compare by for this field. How: This falls back to the plain name tie-break.
 
 
 		}
 
-		default:
-			return byNamFun(); // What: Default Case Return. Why: An unrecognized field has no dedicated rule, so name is a safe universal fallback. How: This returns the plain name comparison.
+		default: return namSorFun(); // What: Default Case Return. Why: An unrecognized field has no dedicated rule, so name is a safe universal fallback. How: This returns the plain name comparison.
 
 
 	}
@@ -1504,25 +1683,25 @@ function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.id      - Id: The id shared between the label's htmlFor and the
- *                        select itself.
- * @param props.label   - Label: The visible label text.
- * @param props.options - Options: The list of { keyStr, labStr } choices to
- *                        render as options.
- * @param props.value   - Value: The currently-selected option's own key.
- * @param props.onChange - On Change: Receives the newly-chosen option's own
- *                         key.
+ * @param props.labTexStr - Label Text String: The visible label text.
+ * @param props.onChange  - On Change: Receives the newly-chosen option's own
+ *                          key.
+ * @param props.optLisArr - Option List Array: The list of { keyStr, labStr }
+ *                          choices to render as options.
+ * @param props.selIdeStr - Select Identifier String: The id shared between
+ *                          the label's htmlFor and the select itself.
+ * @param props.value     - Value: The currently-selected option's own key.
  *
  * @returns The labeled select as one grouped row.
  *
  * @example
  * ```tsx
- * SorSelCom({ id, label, options, value, onChange }) // => <SorSelCom />
+ * SorSelCom({ labTexStr, onChange, optLisArr, ... }) // => <SorSelCom />
  * ```
  *
 */
 
-function SorSelCom ( { id, label, options, value, onChange } ) {
+function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } ) {
 
 
 	return (
@@ -1533,24 +1712,38 @@ function SorSelCom ( { id, label, options, value, onChange } ) {
 
 			<label
 				className='data-sort-lbl'
-				htmlFor={ id }
-			>{ /* What: Sort Label Element. Why: The select below needs an associated visible label for accessibility. How: This is linked to the select via htmlFor/id and shows the caller's own label text. */ }
+
+				htmlFor={ selIdeStr }
+			>{ /* What: Sort Label Element. Why: The select below needs an associated visible label for accessibility. How: This is linked to the select via htmlFor/id and shows the caller's own labTexStr text. */ }
 
 
-				{ label }
+				{ labTexStr }
 
 
 			</label>
 
 			<select
-				id={ id }
+				id={ selIdeStr }
+
 				className='np-input data-sort-sel'
+
 				value={ value }
+
 				onChange={ ( chaEveObj ) => onChange( chaEveObj.target.value ) }
-			>{ /* What: Sort Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in options below, and reports the chosen key up via onChange. */ }
+			>{ /* What: Sort Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in optLisArr below, and reports the chosen key up via onChange. */ }
 
 
-				{ options.map( ( optCurObj ) => <option key={ optCurObj.keyStr } value={ optCurObj.keyStr }>{ optCurObj.labStr }</option> ) }{ /* What: Sort Option Map. Why: One <option> is needed per entry in options. How: This maps options to one <option> per entry, keyed by its own keyStr. */ }
+				{ optLisArr.map( ( optCurObj ) => ( // What: Sort Option Map. Why: One <option> is needed per entry in optLisArr. How: This maps optLisArr to one <option> per entry, keyed by its own keyStr.
+
+
+					<option
+						key={ optCurObj.keyStr }
+
+						value={ optCurObj.keyStr }
+					>{ optCurObj.labStr }</option> // What: Sort Option Element. Why: This is one selectable sort choice. How: This shows optCurObj's own labStr and reports its keyStr when chosen.
+
+
+				) ) }
 
 
 			</select>
@@ -1578,15 +1771,15 @@ function SorSelCom ( { id, label, options, value, onChange } ) {
  * around a live sort (picker items and reminders both write each
  * keystroke straight to the store, so their sort key can change mid-
  * edit): a brand-new row (still being named for the first time, id
- * === justCreatedId) pins to the very top, matching where its own
+ * === newIdeVal) pins to the very top, matching where its own
  * "+ Add" button sits, rather than wherever its still-default values
  * would otherwise sort it; an existing row being edited freezes at
  * whatever index it already occupied when editing began, instead of
  * chasing its live-typed values through the sort in real time.
- * frozenRef is a plain useRef({}) owned by the caller, persisted
- * across renders for as long as openId stays the same; the caller is
+ * froRowRef is a plain useRef({}) owned by the caller, persisted
+ * across renders for as long as opeIdeVal stays the same; the caller is
  * responsible for replaying the row's entrance animation once its
- * editor actually closes (openId changes away), so it settles into
+ * editor actually closes (opeIdeVal changes away), so it settles into
  * its now-current live position with the same visual treatment a
  * freshly-created row already gets, rather than silently snapping
  * there.
@@ -1596,12 +1789,13 @@ function SorSelCom ( { id, label, options, value, onChange } ) {
  * @param sorLisArr  - Sort List Array: The list, already sorted by the
  *                     caller's own live sort key.
  * @param opeIdeVal  - Open Identifier Value: The currently-open row's own id,
- *                     or null/ undefined when nothing is open.
+ *                     or null/undefined when nothing is open.
  * @param newIdeVal  - New Identifier Value: The id of a row that was just
  *                     created (pins to the top instead of freezing at its live
  *                     index).
- * @param frzRowRef  - Frozen Row Reference: A ref, owned by the caller, that
- *                     persists the frozen { id, index } record across renders.
+ * @param froRowRef  - Frozen Row Reference: A ref, owned by the caller, that
+ *                     persists the frozen { ideVal, indNum } record across
+ *                     renders.
  *
  * @returns sorLisArr unmodified when nothing is open or the open row
  * isn't in this list, otherwise the same rows with the open one
@@ -1609,18 +1803,19 @@ function SorSelCom ( { id, label, options, value, onChange } ) {
  *
  * @example
  * ```ts
- * freEdiFun(sorLisArr, opeIdeVal, newIdeVal, frzRowRef) // => reordered array
+ * freEdiFun(sorLisArr, opeIdeVal, newIdeVal, froRowRef) // => reordered array
  * ```
  *
 */
 
-function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
+function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, froRowRef ) {
 
 
 	if ( opeIdeVal == null ) { // What: No Open Row Guard. Why: With nothing currently open for editing, there is no frozen position to maintain at all. How: This clears any stale frozen record and returns the live sorted list completely unmodified.
 
 
-		frzRowRef.current = null; // What: Frozen Row Reference Clear. Why: A stale frozen record from a previously-open row must not leak into a later editing session. How: This resets frzRowRef back to null.
+		froRowRef.current = null; // What: Frozen Row Reference Clear. Why: A stale frozen record from a previously-open row must not leak into a later editing session. How: This resets froRowRef back to null.
+
 
 
 		return sorLisArr; // What: Live List Return. Why: With nothing open, the caller's own live sort order is already correct. How: This returns sorLisArr unmodified.
@@ -1632,14 +1827,22 @@ function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
 	const livIndNum = sorLisArr.findIndex( ( curRowObj ) => curRowObj.id === opeIdeVal ); // What: Live Index Number. Why: The frozen position logic below needs to know where the open row currently sits in the live sort. How: This searches sorLisArr for the row whose id matches opeIdeVal.
 
+
 	if ( livIndNum === -1 ) return sorLisArr; // What: Not Found Guard. Why: A list that doesn't contain the currently-open row has nothing to freeze at all. How: This returns sorLisArr unmodified when no matching row was found.
 
 
 
-	if ( !frzRowRef.current || frzRowRef.current.id !== opeIdeVal ) { // What: Frozen Record Guard. Why: A frozen position must only be computed once per "this row became the open one" session, not recomputed on every render while it stays open. How: This (re)computes frzRowRef only when there's no existing record or it belongs to a different row than the currently-open one.
+	if ( !froRowRef.current || froRowRef.current.ideVal !== opeIdeVal ) { // What: Frozen Record Guard. Why: A frozen position must only be computed once per "this row became the open one" session, not recomputed on every render while it stays open. How: This (re)computes froRowRef only when there's no existing record or it belongs to a different row than the currently-open one.
 
 
-		frzRowRef.current = { id : opeIdeVal, index : opeIdeVal === newIdeVal ? 0 : livIndNum }; // What: Frozen Record Set. Why: A brand-new row pins to the very top matching its own "+ Add" button, while an existing row freezes at whatever index it already occupied. How: This records the open row's id plus its own starting index, 0 for a just-created row, livIndNum otherwise.
+		froRowRef.current = { // What: Frozen Record Set. Why: A brand-new row pins to the very top matching its own "+ Add" button, while an existing row freezes at whatever index it already occupied. How: This records the open row's id plus its own starting index, 0 for a just-created row, livIndNum otherwise.
+
+
+			ideVal : opeIdeVal,                              // What: Identifier Value. Why: A later render must be able to tell whether this record still belongs to the open row. How: This stores opeIdeVal.
+			indNum : opeIdeVal === newIdeVal ? 0 : livIndNum // What: Index Number. Why: This is the position the open row stays frozen at. How: This is 0 for a just-created row, livIndNum otherwise.
+
+
+		};
 
 
 	}
@@ -1648,7 +1851,7 @@ function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
 	const opeRowObj = sorLisArr[ livIndNum ];                                          // What: Open Row Object. Why: The final result needs the actual open row's own data to reinsert at its frozen position. How: This reads the row at livIndNum from sorLisArr.
 	const resRowArr = sorLisArr.filter( ( curRowObj ) => curRowObj.id !== opeIdeVal ); // What: Rest Row Array. Why: The open row must be pulled out before it can be reinserted at a fixed position rather than wherever it currently live-sorts to. How: This filters sorLisArr down to every row except the open one.
-	const insIndNum = Math.min( frzRowRef.current.index, resRowArr.length );          // What: Insert Index Number. Why: A frozen index from an earlier, longer list must not run past the current (possibly shorter) rest array. How: This clamps frzRowRef's own recorded index to resRowArr's own current length.
+	const insIndNum = Math.min( froRowRef.current.indNum, resRowArr.length );          // What: Insert Index Number. Why: A frozen index from an earlier, longer list must not run past the current (possibly shorter) rest array. How: This clamps froRowRef's own recorded index to resRowArr's own current length.
 
 
 
@@ -1661,7 +1864,6 @@ function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
 
 
-// What: Named Exports. Why: Every tab file imports these shared UI primitives by name rather than through a namespace object. How: This re-exports every non-inline-exported binding declared in this file (redMotFun, useEscCanFun, and annStaFun are already exported directly at their own declarations above).
-export { IcoSvgCom, ButBasCom, CarSurCom, ColDisCom, PilTagCom, ProBarCom, NumSteCom, InfTipCom, WeeChiCom, BooResCom, FilButCom, forDatFun, forLonFun, forTimFun, sorEntFun, SorSelCom, freEdiFun }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name. How: This re-exports all 17 declared above; every other binding in this file is internal-only.
+export { annStaFun, BooResCom, ButBasCom, CarSurCom, ColDisCom, FilButCom, forDatFun, forLonFun, forTimFun, freEdiFun, IcoSvgCom, InfTipCom, NumSteCom, PilTagCom, ProBarCom, redMotFun, sorEntFun, SorSelCom, useEscCanFun, WeeChiCom }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name rather than through a namespace object. How: This exports every shared component, formatter, hook, and helper declared above in one statement; every other binding in this file is internal-only.
 
 

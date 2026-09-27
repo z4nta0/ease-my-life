@@ -475,9 +475,9 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 
 
 									<BooResCom
-										value={ conDraObj.value || 0 }
-										suffix='%'
-										onReset={ () => patSetFun( { value : 0 } ) }
+										booValNum={ conDraObj.value || 0 }
+										sufTexStr='%'
+										onResBooFun={ () => patSetFun( { value : 0 } ) }
 									/>{ /* What: Boost Reset Component. Why: A user who wants to discard an accrued miss-boost needs a direct way to zero it out. How: This shows the current boost value and zeroes conDraObj.value when reset. */ }
 
 
@@ -523,10 +523,10 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 
 								<NumSteCom
 									value={ sooDayNum }
-									min={ 1 }
-									max={ 100 }
+									minValNum={ 1 }
+									maxValNum={ 100 }
 									ariLabStr={ sooLabStr }
-									onSet={ appSooFun }
+									onSetValFun={ appSooFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the lower drift bound. How: This commits every change through appSooFun. */ }
 
 								<span className='np-ease-unit'>{ sooDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Soonest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on sooDayNum. */ }
@@ -559,10 +559,10 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 
 								<NumSteCom
 									value={ latDayNum }
-									min={ 1 }
-									max={ 100 }
+									minValNum={ 1 }
+									maxValNum={ 100 }
 									ariLabStr={ latLabStr }
-									onSet={ appLatFun }
+									onSetValFun={ appLatFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the upper drift bound. How: This commits every change through appLatFun. */ }
 
 								<span className='np-ease-unit'>{ latDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Latest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on latDayNum. */ }
@@ -594,9 +594,9 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 
 
 								<FilButCom
-									label='Fill'
-									disabled={ ( conDraObj.value ?? 0 ) >= thrValNum }
-									onClick={ () => patSetFun( { value : thrValNum, triggered : true } ) }
+									labTexStr='Fill'
+									isaDisBoo={ ( conDraObj.value ?? 0 ) >= thrValNum }
+									onFilActFun={ () => patSetFun( { value : thrValNum, triggered : true } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-up. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
 
 
@@ -626,9 +626,9 @@ function CodConCom ( { conDraObj, onChange, namErrStr, layVarStr = 'card', hidNa
 
 
 								<FilButCom
-									label='Refill'
-									disabled={ ( conDraObj.value ?? 0 ) >= thrValNum }
-									onClick={ () => patSetFun( { value : thrValNum, triggered : true } ) }
+									labTexStr='Refill'
+									isaDisBoo={ ( conDraObj.value ?? 0 ) >= thrValNum }
+									onFilActFun={ () => patSetFun( { value : thrValNum, triggered : true } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-down. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
 
 

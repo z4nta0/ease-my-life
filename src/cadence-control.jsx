@@ -196,7 +196,7 @@ function CadConCom ( { value, onChange } ) {
 
 							<InfTipCom
 								className='pie-help pie-help--sm'
-								label={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) }
+								labTexStr={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) }
 							>?</InfTipCom> // What: Info Tip Component. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy.
 
 
@@ -248,7 +248,7 @@ function CadConCom ( { value, onChange } ) {
 									On which day?
 									<InfTipCom
 										className='pie-help'
-										label={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) }
+										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) }
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
@@ -311,7 +311,7 @@ function CadConCom ( { value, onChange } ) {
 									On which day?
 									<InfTipCom
 										className='pie-help'
-										label={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) }
+										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) }
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
@@ -450,7 +450,7 @@ function CadConCom ( { value, onChange } ) {
 									On which date?
 									<InfTipCom
 										className='pie-help'
-										label={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) }
+										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) }
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 

@@ -1707,7 +1707,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 						{ curSteObj.cirBoo ? ( // What: Require-Click Check. Why: A cirBoo step needs its Next button disabled and explained instead of the normal clickable one. How: This renders the InfTipCom-wrapped disabled button while curSteObj.cirBoo is true.
 
 
-							<InfTipCom label='Please click the indicated element in order to advance.'>{ /* What: Require-Click Info Tip Element. Why: A cirBoo step's Next button is disabled, and the user needs to be told why. How: This wraps the disabled button below with a hover/tap hint. */ }
+							<InfTipCom labTexStr='Please click the indicated element in order to advance.'>{ /* What: Require-Click Info Tip Element. Why: A cirBoo step's Next button is disabled, and the user needs to be told why. How: This wraps the disabled button below with a hover/tap hint. */ }
 
 
 								<button className='ob-next' disabled>{ /* What: Disabled Next Button Element. Why: The user must click the highlighted target itself to advance, not this button. How: This renders curSteObj.priStr plus a trailing arrow glyph unless the step is 'Done' or solo, always disabled. */ }

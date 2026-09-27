@@ -863,7 +863,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 	React.useEffect( () => { // What: Mount Cleanup Effect. Why: Controls opening replaces whichever item editor was previously open, and closing (implicitly or not) must revert unsaved edits exactly like the item editor's own guard does. How: This disarms any pending revert from the replaced editor on mount, then arms its own revert (or restores the mirror) on unmount.
 
 
-		window.__editGuard.disarm(); // What: Edit Guard Disarm Call. Why: A pending revert from whichever editor Controls just replaced must not fire later and clobber this component's own state. How: This cancels that pending revert.
+		window.__editGuard.disFun(); // What: Edit Guard Disarm Call. Why: A pending revert from whichever editor Controls just replaced must not fire later and clobber this component's own state. How: This cancels that pending revert.
 
 
 		const onPagHidFun = () => { if ( !cloWayRef.current ) resStoFun(); }; // What: On Page Hide Function. Why: A reload/tab-hide is an implicit close and must roll back the warm mirror synchronously, since there's no time for React's own unmount cleanup. How: This only restores when cloWayRef.current is still null, meaning neither Cancel nor Save ever ran.
@@ -879,7 +879,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 			window.removeEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Unsubscribe Call. Why: This listener must not outlive this component. How: This removes the exact same onPagHidFun reference that was added.
 
 
-			if ( !cloWayRef.current ) window.__editGuard.arm( revStaFun ); // What: Implicit Close Guard. Why: An unmount with no explicit Cancel/Save (e.g. switching tabs) must still discard unsaved edits. How: This arms the shared edit guard with revStaFun only when cloWayRef.current is still null.
+			if ( !cloWayRef.current ) window.__editGuard.armFun( revStaFun ); // What: Implicit Close Guard. Why: An unmount with no explicit Cancel/Save (e.g. switching tabs) must still discard unsaved edits. How: This arms the shared edit guard with revStaFun only when cloWayRef.current is still null.
 
 
 		};
@@ -994,9 +994,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 									<IcoSvgCom
-										name='check'
-										size={ 14 }
-									/>{ /* What: Icon Svg Component. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+										icoNamStr='cheEle'
+										sizValNum={ 14 }
+									/>{ /* What: Icon Svg Component. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 								</button>
@@ -1010,9 +1010,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 									<IcoSvgCom
-										name='x'
-										size={ 14 }
-									/>{ /* What: Icon Svg Component. Why: The cancel button needs a recognizable close glyph. How: This renders the 'x' icon at a fixed size. */ }
+										icoNamStr='croEle'
+										sizValNum={ 14 }
+									/>{ /* What: Icon Svg Component. Why: The cancel button needs a recognizable close glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 								</button>
@@ -1032,9 +1032,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 								<IcoSvgCom
-									name='plus'
-									size={ 13 }
-								/>{ /* What: Icon Svg Component. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } New Group
+									icoNamStr='pluEle'
+									sizValNum={ 13 }
+								/>{ /* What: Icon Svg Component. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 
 							</button>
@@ -1094,7 +1094,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<ColDisCom
 										open={ modSelBoo }
-										instant={ isaNewBoo }
+										isaInsBoo={ isaNewBoo }
 									>{ /* What: Collapse Disclosure Component. Why: The hint expands/collapses on selection change, so the old row's hint folds away while the new one grows. How: This opens only for the currently-selected mode, instant (no animation) for a brand-new draft. */ }
 
 
@@ -1329,7 +1329,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<InfTipCom
 										className='pie-help pie-help--sm'
-										label={ CAD_NAM_OBJ.tipMesFun( picDatObj.cadence ) }
+										labTexStr={ CAD_NAM_OBJ.tipMesFun( picDatObj.cadence ) }
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The cadence choice needs a fuller explanation available on demand. How: This shows CAD_NAM_OBJ's own tip text for the picker's current cadence. */ }
 
 
@@ -1723,10 +1723,10 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 							</span>
 
 							<WeeChiCom
+								locDayNum={ picDatObj.cadence === 'weekly' ? ( picDatObj.anchorDow ?? 0 ) : null }
+								locTipStr={ picDatObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( picDatObj.anchorDow ?? 0 ) : '' }
+								sizValStr='sm'
 								value={ picDatObj.daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ] }
-								size='sm'
-								lockedDay={ picDatObj.cadence === 'weekly' ? ( picDatObj.anchorDow ?? 0 ) : null }
-								lockedTip={ picDatObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( picDatObj.anchorDow ?? 0 ) : '' }
 								onChange={ ( dayValArr ) => actStoObj.updPicFun( picDatObj.id, { daysOfWeek : dayValArr } ) }
 							/>{ /* What: Weekday Chips Component. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when picDatObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
 
@@ -1858,9 +1858,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 								</div>
 
 								<FilButCom
-									label='Fill all'
-									disabled={ picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) ) }
-									onClick={ () => actStoObj.filPicFun( picDatObj.id ) }
+									labTexStr='Fill all'
+									isaDisBoo={ picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) ) }
+									onFilActFun={ () => actStoObj.filPicFun( picDatObj.id ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
 
 
@@ -1886,9 +1886,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 								</div>
 
 								<FilButCom
-									label='Refill all'
-									disabled={ picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) ) }
-									onClick={ () => actStoObj.filPicFun( picDatObj.id ) }
+									labTexStr='Refill all'
+									isaDisBoo={ picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) ) }
+									onFilActFun={ () => actStoObj.filPicFun( picDatObj.id ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
 
 
@@ -1924,14 +1924,14 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 							<ButBasCom
-								kind='ghost'
-								size='sm'
+								kinValStr='ghost'
+								sizValStr='sm'
 								onClick={ () => setConDelBoo( false ) }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
 
 							<ButBasCom
-								kind='danger'
-								size='sm'
+								kinValStr='danger'
+								sizValStr='sm'
 								onClick={ () => ( onReqDelFun ? onReqDelFun() : actStoObj.delPicFun( picDatObj.id ) ) }
 							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onReqDelFun when the caller wants to animate the removal itself, otherwise removes the picker directly. */ }
 
@@ -1955,8 +1955,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 							<ButBasCom
-								kind='ghost'
-								size='sm'
+								kinValStr='ghost'
+								sizValStr='sm'
 								onClick={ () => { // What: On Click Handler. Why: Cancelling a brand-new draft must mark the close as explicit before discarding it. How: This marks cloWayRef, then calls onCanNewFun.
 
 
@@ -1968,12 +1968,12 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 								} }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: A brand-new draft's Cancel discards the whole thing rather than reverting to a blank snapshot; cloWayRef is marked first so the implicit-close guard doesn't ALSO try to revert it. How: This marks cloWayRef then calls onCanNewFun. */ }
 
-							<InfTipCom label={ fooTipStr }>{ /* What: Info Tip Component. Why: The footer button's own current disabled reason (or confirmation once ready) needs to be available on demand. How: This shows fooTipStr, wrapping the ButBasCom below. */ }
+							<InfTipCom labTexStr={ fooTipStr }>{ /* What: Info Tip Component. Why: The footer button's own current disabled reason (or confirmation once ready) needs to be available on demand. How: This shows fooTipStr, wrapping the ButBasCom below. */ }
 
 
 								<ButBasCom
-									kind='primary'
-									size='sm'
+									kinValStr='primary'
+									sizValStr='sm'
 									disabled={ fooDisBoo }
 									onClick={ fooDisBoo ? undefined : () => { // What: On Click Handler. Why: The primary footer button only acts while it's enabled. How: This is undefined while fooDisBoo, otherwise it marks cloWayRef and runs fooActFun.
 
@@ -2006,9 +2006,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 						<ButBasCom
-							kind='danger'
-							size='sm'
-							icon='trash'
+							kinValStr='danger'
+							sizValStr='sm'
+							icoNamStr='traEle'
 							onClick={ () => setConDelBoo( true ) }
 						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This opens the inline delete confirm rather than deleting immediately. How: This sets conDelBoo true on click. */ }
 
@@ -2016,14 +2016,14 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 							<ButBasCom
-								kind='ghost'
-								size='sm'
+								kinValStr='ghost'
+								sizValStr='sm'
 								onClick={ canConFun }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every change made since Controls opened. How: This calls canConFun on click. */ }
 
 							<ButBasCom
-								kind='ghost'
-								size='sm'
+								kinValStr='ghost'
+								sizValStr='sm'
 								onClick={ savCloFun }
 							>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps every change made since Controls opened. How: This calls savCloFun on click. */ }
 
@@ -2189,14 +2189,14 @@ function ConEdiCom ( { curConObj, conDraObj, setConDraObj, actStoObj, isaNewBoo,
 
 
 								<ButBasCom
-									kind='ghost'
-									size='sm'
+									kinValStr='ghost'
+									sizValStr='sm'
 									onClick={ () => setConDelBoo( false ) }
 								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
 
 								<ButBasCom
-									kind='danger'
-									size='sm'
+									kinValStr='danger'
+									sizValStr='sm'
 									onClick={ () => onDelConFun() }
 								>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onDelConFun on click. */ }
 
@@ -2220,9 +2220,9 @@ function ConEdiCom ( { curConObj, conDraObj, setConDraObj, actStoObj, isaNewBoo,
 
 
 								<ButBasCom
-									kind='danger'
-									size='sm'
-									icon='trash'
+									kinValStr='danger'
+									sizValStr='sm'
+									icoNamStr='traEle'
 									onClick={ () => setConDelBoo( true ) }
 								>Delete</ButBasCom> // What: Button Base Component. Why: A brand-new, not-yet-saved conditional has nothing to delete yet. How: This opens the inline delete confirm, rendered only while isaNewBoo is false.
 
@@ -2233,14 +2233,14 @@ function ConEdiCom ( { curConObj, conDraObj, setConDraObj, actStoObj, isaNewBoo,
 
 
 								<ButBasCom
-									kind='ghost'
-									size='sm'
+									kinValStr='ghost'
+									sizValStr='sm'
 									onClick={ canConFun }
 								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards a brand-new conditional or closes an existing one's edits. How: This calls canConFun on click. */ }
 
 								<ButBasCom
-									kind='ghost'
-									size='sm'
+									kinValStr='ghost'
+									sizValStr='sm'
 									disabled={ !!namErrStr }
 									onClick={ savConFun }
 								>Save</ButBasCom>{ /* What: Button Base Component. Why: This commits the draft's own fields. How: This calls savConFun on click, disabled while namErrStr holds a message. */ }
@@ -2592,9 +2592,9 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 
 						<IcoSvgCom
-							name='chev'
-							size={ 14 }
-						/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+							icoNamStr='chvEle'
+							sizValNum={ 14 }
+						/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 					</span>
@@ -2636,15 +2636,15 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 						<InfTipCom
 							className='rd-add is-tour-disabled'
-							action='Add a conditional'
-							label='This button is disabled until all tutorials are completed.'
+							actNamStr='Add a conditional'
+							labTexStr='This button is disabled until all tutorials are completed.'
 						>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. */ }
 
 
 							<IcoSvgCom
-								name='plus'
-								size={ 13 }
-							/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add a conditional
+								icoNamStr='pluEle'
+								sizValNum={ 13 }
+							/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
 						</InfTipCom>
@@ -2677,9 +2677,9 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 
 							<IcoSvgCom
-								name='plus'
-								size={ 13 }
-							/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add a conditional
+								icoNamStr='pluEle'
+								sizValNum={ 13 }
+							/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
 						</button>
@@ -2699,9 +2699,9 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 
 						<SorSelCom
-							id='cnd-item-sort'
-							label='Sort'
-							options={ CIS_OPT_ARR }
+							selIdeStr='cnd-item-sort'
+							labTexStr='Sort'
+							optLisArr={ CIS_OPT_ARR }
 							value={ iteSorStr }
 							onChange={ ( keyValStr ) => actStoObj.setSorFun( 'conditionals', keyValStr ) }
 						/> // What: Sort Select Component. Why: This is the actual control for reordering the conditional list. How: This commits the chosen key as this section's own persisted conditionals sort.
@@ -2780,9 +2780,9 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 
 												<IcoSvgCom
-													name='chev'
-													size={ 14 }
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+													icoNamStr='chvEle'
+													sizValNum={ 14 }
+												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 											</span>
@@ -2840,9 +2840,9 @@ function ConManCom ( { staAppObj, actStoObj } ) {
 
 
 												<IcoSvgCom
-													name='chev'
-													size={ 14 }
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+													icoNamStr='chvEle'
+													sizValNum={ 14 }
+												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 											</span>
@@ -4103,9 +4103,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 				<SorSelCom
-					id='data-section-sort'
-					label='Sort'
-					options={ SEC_SOR_ARR }
+					selIdeStr='data-section-sort'
+					labTexStr='Sort'
+					optLisArr={ SEC_SOR_ARR }
 					value={ secSorStr }
 					onChange={ ( keyValStr ) => actStoObj.setSorFun( 'sections', keyValStr ) }
 				/>{ /* What: Sort Select Component. Why: This is the actual control for reordering Conditionals/Reminders/every picker card below. How: This commits the chosen key as this page's own persisted sections sort. */ }
@@ -4329,9 +4329,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 										<IcoSvgCom
-											name='chev'
-											size={ 14 }
-										/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+											icoNamStr='chvEle'
+											sizValNum={ 14 }
+										/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 									</span>
@@ -4367,14 +4367,14 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<InfTipCom
 											className='cat-mode-label'
-											label={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label }
-											truncationOnly
+											labTexStr={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label }
+											trnOnlBoo
 										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
 
 										<InfTipCom
 											className='cat-group'
-											label={ picCurObj.group }
-											truncationOnly
+											labTexStr={ picCurObj.group }
+											trnOnlBoo
 										>{ picCurObj.group }</InfTipCom>{ /* What: Info Tip Component. Why: A long group name can also still truncate at this width. How: This reveals the full name on demand only when it's actually truncated. */ }
 
 
@@ -4398,8 +4398,8 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 										<IcoSvgCom
-											name={ allVacBoo ? 'moon' : 'sparkle' }
-											size={ 14 }
+											icoNamStr={ allVacBoo ? 'mooEle' : 'spaEle' }
+											sizValNum={ 14 }
 										/>{ /* What: Icon Svg Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
 
 										<span
@@ -4418,7 +4418,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<ColDisCom
 								open={ secOpeBoo }
-								instant={ isaDraBoo }
+								isaInsBoo={ isaDraBoo }
 							>{ /* What: Collapse Disclosure Component. Why: The card's own body (Controls + Items) only needs to exist while it's actually expanded, instant (no animation) for a brand-new draft. How: This opens per secOpeBoo. */ }
 
 
@@ -4441,9 +4441,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 												<IcoSvgCom
-													name='chev'
-													size={ 12 }
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+													icoNamStr='chvEle'
+													sizValNum={ 12 }
+												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 											</span>
@@ -4460,7 +4460,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<ColDisCom
 										open={ !conColBoo }
-										instant={ isaDraBoo }
+										isaInsBoo={ isaDraBoo }
 									>{ /* What: Collapse Disclosure Component. Why: PicConCom itself is expensive/stateful enough that it only needs to exist while the Controls disclosure is actually open. How: This opens per !conColBoo. */ }
 
 
@@ -4508,9 +4508,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 												<IcoSvgCom
-													name='chev'
-													size={ 12 }
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+													icoNamStr='chvEle'
+													sizValNum={ 12 }
+												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 											</span>
@@ -4536,15 +4536,15 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 												<InfTipCom
 													className='rd-add is-tour-disabled'
-													action={ `Add to ${ picCurObj.name.toLowerCase() }` }
-													label='This button is disabled until all tutorials are completed.'
+													actNamStr={ `Add to ${ picCurObj.name.toLowerCase() }` }
+													labTexStr='This button is disabled until all tutorials are completed.'
 												>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. */ }
 
 
 													<IcoSvgCom
-														name='plus'
-														size={ 13 }
-													/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
+														icoNamStr='pluEle'
+														sizValNum={ 13 }
+													/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
 												</InfTipCom>
@@ -4561,9 +4561,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 													<IcoSvgCom
-														name='plus'
-														size={ 13 }
-													/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
+														icoNamStr='pluEle'
+														sizValNum={ 13 }
+													/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
 												</button>
@@ -4575,9 +4575,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 												<SorSelCom
-													id={ `item-sort-${ picCurObj.id }` }
-													label='Sort'
-													options={ pisOptFun( picCurObj.mode ) }
+													selIdeStr={ `item-sort-${ picCurObj.id }` }
+													labTexStr='Sort'
+													optLisArr={ pisOptFun( picCurObj.mode ) }
 													value={ iteSorStr }
 													onChange={ ( keyValStr ) => actStoObj.setSorFun( picCurObj.id, keyValStr ) }
 												/> // What: Sort Select Component. Why: This is the actual control for reordering this picker's own item list, mode-dependent per pisOptFun. How: This commits the chosen key as this picker's own persisted item sort.
@@ -4673,9 +4673,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 																	<IcoSvgCom
-																		name='chev'
-																		size={ 16 }
-																	/>{ /* What: Icon Svg Component. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+																		icoNamStr='chvEle'
+																		sizValNum={ 16 }
+																	/>{ /* What: Icon Svg Component. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 																</button>
@@ -4712,9 +4712,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 																	<IcoSvgCom
-																		name='chev'
-																		size={ 16 }
-																	/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+																		icoNamStr='chvEle'
+																		sizValNum={ 16 }
+																	/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
 																</span>
@@ -4843,9 +4843,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 						<IcoSvgCom
-							name='plus'
-							size={ 14 }
-						/>{ /* What: Icon Svg Component. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Create Picker
+							icoNamStr='pluEle'
+							sizValNum={ 14 }
+						/>{ /* What: Icon Svg Component. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Create Picker
 
 
 					</button>

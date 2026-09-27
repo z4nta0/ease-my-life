@@ -885,7 +885,7 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 			<IntModCom
 				icoTopEle={ feaIdeStr === 'feat_highlights'
 					? <span className='ob-wmark-help'>i</span>
-					: <IcoSvgCom name={ feaRecObj.pagStr } size={ 54 } /> }
+					: <IcoSvgCom icoNamStr={ feaRecObj.pagStr } sizValNum={ 54 } /> }
 				titHeaStr={ feaRecObj.titStr }
 				parEleArr={ [ feaRecObj.bodEle ] }
 				pilLabArr={ feaRecObj.pilArr }

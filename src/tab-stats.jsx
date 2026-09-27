@@ -2914,7 +2914,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<h2 className='picker-title'>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. */ }
 
-							<PilTagCom tone='mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).label || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. */ }
+							<PilTagCom tonValStr='mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).label || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. */ }
 
 							{ ( () => { // What: Mode Hint Render. Why: A mode's own hint text can be either a single paragraph or several, and each needs wrapping in its own paragraph element. How: This reads the mode's own hint field and maps an array into one <p> per paragraph, or wraps a plain string in one.
 
@@ -3023,8 +3023,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											{ conSorStr === 'desc' ? 'High → Low' : 'Low → High' }{ /* What: Sort Label Expression. Why: The button names the current direction. How: This reads High to Low or Low to High from conSorStr. */ }
 
 											<IcoSvgCom
-												name={ conSorStr === 'desc' ? 'arrow_down' : 'arrow_up' }
-												size={ 13 }
+												icoNamStr={ conSorStr === 'desc' ? 'ardEle' : 'aruEle' }
+												sizValNum={ 13 }
 											/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on conSorStr. */ }
 
 
@@ -3294,9 +3294,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<div className='stat-lbl'>day streak</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "day streak". */ }
 
 										<IcoSvgCom
-											name='flame'
-											size={ 16 }
-										/>{ /* What: Icon Svg Component. Why: The streak card needs a small flame glyph reinforcing its own meaning. How: This renders the 'flame' icon at a fixed size. */ }
+											icoNamStr='flaEle'
+											sizValNum={ 16 }
+										/>{ /* What: Icon Svg Component. Why: The streak card needs a small flame glyph reinforcing its own meaning. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 
 									</CarSurCom>
@@ -3704,8 +3704,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											: ( remSorStr === 'desc' ? 'High → Low' : 'Low → High' )           // What: Count Label Branch. Why: Completions and Skipped list counts. How: This phrases the direction as high/low.
 										}
 										<IcoSvgCom
-											name={ remSorStr === 'desc' ? 'arrow_down' : 'arrow_up' }
-											size={ 13 }
+											icoNamStr={ remSorStr === 'desc' ? 'ardEle' : 'aruEle' }
+											sizValNum={ 13 }
 										/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on remSorStr. */ }
 
 
@@ -4048,8 +4048,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									{ sorDirStr === 'desc' ? 'High → Low' : 'Low → High' }{ /* What: Sort Label Expression. Why: The button names the current direction. How: This reads High to Low or Low to High from sorDirStr. */ }
 
 									<IcoSvgCom
-										name={ sorDirStr === 'desc' ? 'arrow_down' : 'arrow_up' }
-										size={ 13 }
+										icoNamStr={ sorDirStr === 'desc' ? 'ardEle' : 'aruEle' }
+										sizValNum={ 13 }
 									/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on sorDirStr. */ }
 
 
@@ -4343,7 +4343,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 															<InfTipCom
 																className='pie-help pie-help--sm'
-																label='No full cycle has been completed yet'
+																labTexStr='No full cycle has been completed yet'
 															>?</InfTipCom>{ /* What: Info Tip Component. Why: A N/A Spent value needs a small inline explanation of why there's no cycle to measure yet. How: This renders the shared "?" bubble with its own label text. */ }
 
 

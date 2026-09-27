@@ -46,7 +46,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 	once : { // What: Once Entry. Why: This is the copy content descriptor for the one-time reminder tour variant. How: This is looked up by VAR_COP_OBJ via the real 'once' varKeyStr.
 
 
-		icoStr : 'pin',                // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		icoStr : 'pinEle',                // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
 		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun() below and against the checklist by cloTouFun.
 		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
@@ -58,7 +58,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 	recurring : { // What: Recurring Entry. Why: This is the copy content descriptor for the recurring reminder tour variant. How: This is looked up by VAR_COP_OBJ via the real 'recurring' varKeyStr.
 
 
-		icoStr : 'calendar',            // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		icoStr : 'calEle',            // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
 		ideStr : 'tk_ob_trash',         // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun() below and against the checklist by cloTouFun.
 		titStr : 'Recurring Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
@@ -437,7 +437,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actStoObj, onCloForFun, onCloTouFun
 
 
 			<IntModCom
-				icoTopEle={ <IcoSvgCom name={ varCopObj.icoStr } size={ 54 } /> }
+				icoTopEle={ <IcoSvgCom icoNamStr={ varCopObj.icoStr } sizValNum={ 54 } /> }
 				titHeaStr={ varCopObj.titStr }
 				parEleArr={ [ FIR_PAR_ELE, varCopObj.bodStr ] }
 				pilLabArr={ [ 'reminders', 'one-time', 'recurring' ] }

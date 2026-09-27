@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This is the UI library both of this file's components are built on. How: This is used directly (React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { IcoSvgCom   } from './ui.jsx';         // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'check' icon name.
+import { IcoSvgCom   } from './ui.jsx';         // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'cheEle' icon name.
 import { PicStrCom } from './tab-picker.jsx'; // What: Picker Strip Component. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
 
 // #endregion Imports
@@ -329,13 +329,13 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 						<span
 							className='check'
 							aria-hidden='true'
-						>{ /* What: Check Span Element. Why: A completed Today card always shows a check glyph. How: This wraps the IcoSvgCom component rendering the 'check' glyph. */ }
+						>{ /* What: Check Span Element. Why: A completed Today card always shows a check glyph. How: This wraps the IcoSvgCom component rendering the 'cheEle' glyph. */ }
 
 
 							<IcoSvgCom
-								name='check'
-								size={ 14 }
-							/>{ /* What: Icon Svg Component. Why: This is the actual check glyph shown on a completed card. How: This renders the 'check' icon at a fixed size matching the real Today card. */ }
+								icoNamStr='cheEle'
+								sizValNum={ 14 }
+							/>{ /* What: Icon Svg Component. Why: This is the actual check glyph shown on a completed card. How: This renders the 'cheEle' icon at a fixed size matching the real Today card. */ }
 
 
 						</span>

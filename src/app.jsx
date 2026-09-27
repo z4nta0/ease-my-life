@@ -412,8 +412,8 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 					<IcoSvgCom
-						name={ tabConObj.icoStr }
-						size={ 20 }
+						icoNamStr={ tabConObj.icoStr }
+						sizValNum={ 20 }
 					/>{ /* What: Icon Svg Component. Why: Every tab needs a recognizable glyph alongside its label. How: This renders the icon named by the tab's own icoStr at a fixed size. */ }
 
 

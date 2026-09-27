@@ -1089,8 +1089,8 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 						<IcoSvgCom
-							name='x'
-							size={ 18 }
+							icoNamStr='croEle'
+							sizValNum={ 18 }
 						/>{ /* What: Icon Svg Component. Why: The close button needs a recognizable "x" glyph rather than just its own aria-label text. How: This renders the shared IcoSvgCom component at size 18. */ }
 
 

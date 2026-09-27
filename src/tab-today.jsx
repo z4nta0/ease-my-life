@@ -691,9 +691,9 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 
 							<IcoSvgCom
-								name='grip'
-								size={ 16 }
-							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+								icoNamStr='griEle'
+								sizValNum={ 16 }
+							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
 						</span>
@@ -762,9 +762,9 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 							{ groNamStr }
 							<IcoSvgCom
-								name='edit'
-								size={ 13 }
-							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'edit' icon at a fixed size. */ }
+								icoNamStr='ediEle'
+								sizValNum={ 13 }
+							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 						</button>
@@ -845,15 +845,15 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 
 						<ButBasCom
-							kind='ghost'
-							size='sm'
+							kinValStr='ghost'
+							sizValStr='sm'
 
 							onClick={ onCanMerFun }
 						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the pending merge without changing anything. How: This calls onCanMerFun. */ }
 
 						<ButBasCom
-							kind='primary'
-							size='sm'
+							kinValStr='primary'
+							sizValStr='sm'
 
 							onClick={ onConMerFun }
 						>Merge</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed merge trigger. How: This calls onConMerFun. */ }
@@ -1273,7 +1273,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 	React.useEffect( () => { // What: Discard Guard Effect. Why: An editor left open through a tab switch or reload should discard its own unsaved live edits, matching the "nothing changes until you actually save" expectation every other inline editor in the app follows. How: This disarms window.__editGuard on mount, restores the warm mirror directly on pagehide, and arms __editGuard to revert on an ordinary unmount, in both cases only when cloWayRef is still null (nothing explicit already handled the close).
 
 
-		window.__editGuard.disarm(); // What: Edit Guard Disarm. Why: A stale armed guard from a PREVIOUS editor instance must not fire against this fresh one. How: This clears whatever revert thunk __editGuard was last armed with.
+		window.__editGuard.disFun(); // What: Edit Guard Disarm. Why: A stale armed guard from a PREVIOUS editor instance must not fire against this fresh one. How: This clears whatever revert thunk __editGuard was last armed with.
 
 		const onPagHidFun = () => { if ( !cloWayRef.current ) resStoFun(); }; // What: On Page Hide Function. Why: A pagehide (the tab closing or backgrounding) needs its own direct storage restore, since a React unmount effect may not get to run in time. How: This calls resStoFun only when cloWayRef is still null.
 
@@ -1287,7 +1287,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 			window.removeEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPagHidFun reference that was added above.
 
-			if ( !cloWayRef.current ) window.__editGuard.arm( revStaFun ); // What: Edit Guard Arm. Why: The NEXT editor instance's own disarm (above) is what actually cancels this, so arming here is what makes an ordinary unmount revert at all. How: This arms __editGuard with revStaFun only when cloWayRef is still null.
+			if ( !cloWayRef.current ) window.__editGuard.armFun( revStaFun ); // What: Edit Guard Arm. Why: The NEXT editor instance's own disarm (above) is what actually cancels this, so arming here is what makes an ordinary unmount revert at all. How: This arms __editGuard with revStaFun only when cloWayRef is still null.
 
 
 		};
@@ -1320,7 +1320,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 	const latDayNum = driLatFun( easMinNum );                                              // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts easMinNum via driLatFun.
 
 
-	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
+	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
 
 
 		const newMaxNum = dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDriFun.
@@ -1339,7 +1339,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 	};
 
 
-	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
+	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
 
 
 		const newMinNum = dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDriFun.
@@ -1432,7 +1432,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 										<InfTipCom
 											className='pie-help'
 
-											label={ EUR_WAR_STR }
+											labTexStr={ EUR_WAR_STR }
 										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
 
 
@@ -1455,13 +1455,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 								<NumSteCom
-									max={ 60 }
-									min={ 1 }
+									maxValNum={ 60 }
+									minValNum={ 1 }
 									value={ sooDayNum }
 
 									ariLabStr={ `${ sooLabStr } for ${ iteDatObj.name }` }
 
-									onSet={ setSooFun }
+									onSetValFun={ setSooFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. */ }
@@ -1490,7 +1490,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 										<InfTipCom
 											className='pie-help'
 
-											label={ EUR_WAR_STR }
+											labTexStr={ EUR_WAR_STR }
 										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
 
 
@@ -1513,13 +1513,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 								<NumSteCom
-									max={ 90 }
-									min={ 1 }
+									maxValNum={ 90 }
+									minValNum={ 1 }
 									value={ latDayNum }
 
 									ariLabStr={ `${ latLabStr } for ${ iteDatObj.name }` }
 
-									onSet={ setLatFun }
+									onSetValFun={ setLatFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. */ }
@@ -1552,10 +1552,10 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 								<FilButCom
-									disabled={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
-									label='Fill'
+									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									labTexStr='Fill'
 
-									onClick={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -1586,10 +1586,10 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 								<FilButCom
-									disabled={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
-									label='Refill'
+									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									labTexStr='Refill'
 
-									onClick={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -1703,9 +1703,9 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 							<BooResCom
-								value={ iteDatObj.value || 0 }
+								booValNum={ iteDatObj.value || 0 }
 
-								onReset={ () => actStoObj.updIteFun( iteDatObj.id, { value : 0 } ) }
+								onResBooFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : 0 } ) }
 							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actStoObj.updIteFun on reset. */ }
 
 
@@ -1771,15 +1771,15 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 						<ButBasCom
-							kind='ghost'
-							size='sm'
+							kinValStr='ghost'
+							sizValStr='sm'
 
 							onClick={ () => setConDelBoo( false ) }
 						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the delete confirm without changing anything. How: This closes conDelBoo, returning to the plain footer. */ }
 
 						<ButBasCom
-							kind='danger'
-							size='sm'
+							kinValStr='danger'
+							sizValStr='sm'
 
 							onClick={ () => ( onDelIteFun ? onDelIteFun() : actStoObj.delIteFun( iteDatObj.id ) ) }
 						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun when supplied, otherwise removes the item directly via actStoObj.delIteFun. */ }
@@ -1807,15 +1807,15 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						<InfTipCom
 							className='rd-del-disabled-tip'
 
-							label='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
+							labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
 						>{ /* What: Info Tip Component. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text. */ }
 
 
 							<ButBasCom
 								disabled
-								icon='trash'
-								kind='danger'
-								size='sm'
+								icoNamStr='traEle'
+								kinValStr='danger'
+								sizValStr='sm'
 							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This shows the disabled Delete control the wrapping InfTipCom explains. How: This never fires, since disabled is always set in this branch. */ }
 
 
@@ -1826,9 +1826,9 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 						<ButBasCom
-							icon='trash'
-							kind='danger'
-							size='sm'
+							icoNamStr='traEle'
+							kinValStr='danger'
+							sizValStr='sm'
 
 							onClick={ () => setConDelBoo( true ) }
 						>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conDelBoo to true.
@@ -1842,8 +1842,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						<ButBasCom
 							className='ob-item-cancel'
 
-							kind='ghost'
-							size='sm'
+							kinValStr='ghost'
+							sizValStr='sm'
 
 							onClick={ canEdiFun }
 						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. */ }
@@ -1851,8 +1851,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						<ButBasCom
 							className='ob-item-save'
 
-							kind='ghost'
-							size='sm'
+							kinValStr='ghost'
+							sizValStr='sm'
 
 							onClick={ savCloFun }
 						>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls savCloFun. */ }
@@ -2009,9 +2009,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
 						<IcoSvgCom
-							name='check'
-							size={ 14 }
-						/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+							icoNamStr='cheEle'
+							sizValNum={ 14 }
+						/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 					</button>
@@ -2039,9 +2039,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<IcoSvgCom
-							name='play'
-							size={ 13 }
-						/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'play' icon at a fixed size. */ }
+							icoNamStr='plaEle'
+							sizValNum={ 13 }
+						/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 					</button>
@@ -2107,9 +2107,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 							<IcoSvgCom
-								name='x'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
+								icoNamStr='croEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 						</button>
@@ -2189,9 +2189,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<IcoSvgCom
-							name='grip'
-							size={ 16 }
-						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+							icoNamStr='griEle'
+							sizValNum={ 16 }
+						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
 					</span>
@@ -2230,9 +2230,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 							<IcoSvgCom
-								name='check'
-								size={ 14 }
-							/> // What: Icon Svg Component. Why: A completed day-off card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
+								icoNamStr='cheEle'
+								sizValNum={ 14 }
+							/> // What: Icon Svg Component. Why: A completed day-off card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
 
 
 						) }
@@ -2252,9 +2252,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='meta-picker meta-dayoff-title'
 
-							label={ daoTitStr }
-							truncationOnly
-						>{ /* What: Info Tip Component. Why: A visually-truncated title still needs its own full text reachable on hover/tap. How: This wraps the visible title text, only ever showing its own tooltip when the text is actually truncated (truncationOnly). */ }
+							labTexStr={ daoTitStr }
+							trnOnlBoo
+						>{ /* What: Info Tip Component. Why: A visually-truncated title still needs its own full text reachable on hover/tap. How: This wraps the visible title text, only ever showing its own tooltip when the text is actually truncated (trnOnlBoo). */ }
 
 
 							{ entRecObj.pickerName ? <>{ entRecObj.pickerName } &middot; <strong>{ entRecObj.condName || 'Day off' }</strong></> : 'Day off' }{ /* What: Day-Off Title Expression. Why: The title names both the suppressed picker and its conditional when the entry carries them. How: This renders the picker name and bold conditional name, or a plain "Day off". */ }
@@ -2280,15 +2280,15 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='icon-btn is-disabled'
 
-							action='Re-Roll'
-							label={ disTipStr }
+							actNamStr='Re-Roll'
+							labTexStr={ disTipStr }
 						>{ /* What: Info Tip Component. Why: A day-off card has no items to re-roll between, so this action is explained rather than removed. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
 
 
 							<IcoSvgCom
-								name='refresh'
-								size={ 14 }
-							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+								icoNamStr='refEle'
+								sizValNum={ 14 }
+							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
 						</InfTipCom>
@@ -2311,9 +2311,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 							<IcoSvgCom
-								name='skip'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+								icoNamStr='skiEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
 						</button>
@@ -2321,15 +2321,15 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='icon-btn is-disabled'
 
-							action='Edit'
-							label={ disTipStr }
+							actNamStr='Edit'
+							labTexStr={ disTipStr }
 						>{ /* What: Info Tip Component. Why: A day-off card has no editable name of its own, so this action is explained rather than removed. How: This wraps a disabled-looking edit icon with disTipStr. */ }
 
 
 							<IcoSvgCom
-								name='edit'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
+								icoNamStr='ediEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 						</InfTipCom>
@@ -2408,9 +2408,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<IcoSvgCom
-							name='grip'
-							size={ 16 }
-						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+							icoNamStr='griEle'
+							sizValNum={ 16 }
+						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
 					</span>
@@ -2449,9 +2449,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 							<IcoSvgCom
-								name='check'
-								size={ 14 }
-							/> // What: Icon Svg Component. Why: A completed charging card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
+								icoNamStr='cheEle'
+								sizValNum={ 14 }
+							/> // What: Icon Svg Component. Why: A completed charging card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
 
 
 						) }
@@ -2488,15 +2488,15 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='icon-btn is-disabled'
 
-							action='Re-Roll'
-							label={ disTipStr }
+							actNamStr='Re-Roll'
+							labTexStr={ disTipStr }
 						>{ /* What: Info Tip Component. Why: A charging card has no items to re-roll between yet. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
 
 
 							<IcoSvgCom
-								name='refresh'
-								size={ 14 }
-							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+								icoNamStr='refEle'
+								sizValNum={ 14 }
+							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
 						</InfTipCom>
@@ -2504,15 +2504,15 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='icon-btn is-disabled'
 
-							action='Skip'
-							label={ disTipStr }
+							actNamStr='Skip'
+							labTexStr={ disTipStr }
 						>{ /* What: Info Tip Component. Why: Skipping a charging card would discard the day's own staged drift instead of applying it. How: This wraps a disabled-looking skip icon with disTipStr. */ }
 
 
 							<IcoSvgCom
-								name='skip'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+								icoNamStr='skiEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
 						</InfTipCom>
@@ -2520,15 +2520,15 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='icon-btn is-disabled'
 
-							action='Edit'
-							label={ disTipStr }
+							actNamStr='Edit'
+							labTexStr={ disTipStr }
 						>{ /* What: Info Tip Component. Why: A charging card has no item of its own yet to edit. How: This wraps a disabled-looking edit icon with disTipStr. */ }
 
 
 							<IcoSvgCom
-								name='edit'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
+								icoNamStr='ediEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 						</InfTipCom>
@@ -2676,9 +2676,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<IcoSvgCom
-						name='grip'
-						size={ 16 }
-					/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+						icoNamStr='griEle'
+						sizValNum={ 16 }
+					/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
 				</span>
@@ -2717,9 +2717,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<IcoSvgCom
-							name='check'
-							size={ 14 }
-						/> // What: Icon Svg Component. Why: A completed pick card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
+							icoNamStr='cheEle'
+							sizValNum={ 14 }
+						/> // What: Icon Svg Component. Why: A completed pick card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
 
 
 					) }
@@ -2801,9 +2801,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 							<IcoSvgCom
-								name='refresh'
-								size={ 14 }
-							/>{ /* What: Icon Svg Component. Why: The Re-Roll action needs a recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+								icoNamStr='refEle'
+								sizValNum={ 14 }
+							/>{ /* What: Icon Svg Component. Why: The Re-Roll action needs a recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
 						</button>
@@ -2815,15 +2815,15 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='icon-btn is-disabled'
 
-							action='Re-Roll'
-							label={ actRerStr }
+							actNamStr='Re-Roll'
+							labTexStr={ actRerStr }
 						>{ /* What: Info Tip Component. Why: A blocked re-roll (too few candidates, or already completed) still needs to explain itself. How: This wraps a disabled-looking refresh icon with actRerStr. */ }
 
 
 							<IcoSvgCom
-								name='refresh'
-								size={ 14 }
-							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+								icoNamStr='refEle'
+								sizValNum={ 14 }
+							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
 						</InfTipCom>
@@ -2837,15 +2837,15 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						<InfTipCom
 							className='icon-btn is-disabled'
 
-							action='Skip'
-							label={ donSkiStr }
+							actNamStr='Skip'
+							labTexStr={ donSkiStr }
 						>{ /* What: Info Tip Component. Why: A completed row's own skip is explained rather than removed, matching re-roll's own lockout above. How: This wraps a disabled-looking skip icon with donSkiStr. */ }
 
 
 							<IcoSvgCom
-								name='skip'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+								icoNamStr='skiEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
 						</InfTipCom>
@@ -2872,9 +2872,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 							<IcoSvgCom
-								name='skip'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+								icoNamStr='skiEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
 						</button>
@@ -2901,9 +2901,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<IcoSvgCom
-							name='edit'
-							size={ 15 }
-						/>{ /* What: Icon Svg Component. Why: The Edit action needs a recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
+							icoNamStr='ediEle'
+							sizValNum={ 15 }
+						/>{ /* What: Icon Svg Component. Why: The Edit action needs a recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 					</button>
@@ -3023,9 +3023,9 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
 					<IcoSvgCom
-						name='check'
-						size={ 14 }
-					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+						icoNamStr='cheEle'
+						sizValNum={ 14 }
+					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -3053,9 +3053,9 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 					<IcoSvgCom
-						name='play'
-						size={ 13 }
-					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start the tour. How: This renders the 'play' icon at a fixed size. */ }
+						icoNamStr='plaEle'
+						sizValNum={ 13 }
+					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start the tour. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -3121,9 +3121,9 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 						<IcoSvgCom
-							name='x'
-							size={ 15 }
-						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
+							icoNamStr='croEle'
+							sizValNum={ 15 }
+						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 					</button>
@@ -3245,9 +3245,9 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
 					<IcoSvgCom
-						name='check'
-						size={ 14 }
-					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+						icoNamStr='cheEle'
+						sizValNum={ 14 }
+					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -3259,15 +3259,15 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 				<InfTipCom
 					className='check is-disabled'
 
-					action={ `Start the ${ feaRecObj.labStr } tutorial` }
-					label={ bloReaStr }
+					actNamStr={ `Start the ${ feaRecObj.labStr } tutorial` }
+					labTexStr={ bloReaStr }
 				>{ /* What: Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with bloReaStr. */ }
 
 
 					<IcoSvgCom
-						name='play'
-						size={ 13 }
-					/>{ /* What: Icon Svg Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'play' icon at a fixed size. */ }
+						icoNamStr='plaEle'
+						sizValNum={ 13 }
+					/>{ /* What: Icon Svg Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 				</InfTipCom>
@@ -3295,9 +3295,9 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 					<IcoSvgCom
-						name='play'
-						size={ 13 }
-					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'play' icon at a fixed size. */ }
+						icoNamStr='plaEle'
+						sizValNum={ 13 }
+					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -3363,9 +3363,9 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 						<IcoSvgCom
-							name='x'
-							size={ 15 }
-						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
+							icoNamStr='croEle'
+							sizValNum={ 15 }
+						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
 					</button>
@@ -6374,9 +6374,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<IcoSvgCom
-										name='flame'
-										size={ 12 }
-									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flame' icon at a fixed size. */ }
+										icoNamStr='flaEle'
+										sizValNum={ 12 }
+									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 									<span>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }
 
@@ -6650,9 +6650,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 							<IcoSvgCom
-								name='grip'
-								size={ 15 }
-							/>{ /* What: Icon Svg Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'grip' icon at a fixed size. */ }
+								icoNamStr='griEle'
+								sizValNum={ 15 }
+							/>{ /* What: Icon Svg Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'griEle' icon at a fixed size. */ }
 
 							Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
 
@@ -6663,16 +6663,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 							<ButBasCom
-								kind='ghost'
-								size='sm'
+								kinValStr='ghost'
+								sizValStr='sm'
 
 								onClick={ () => cloModFun( false ) }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). */ }
 
 							<ButBasCom
-								icon='check'
-								kind='primary'
-								size='sm'
+								icoNamStr='cheEle'
+								kinValStr='primary'
+								sizValStr='sm'
 
 								onClick={ () => cloModFun( true ) }
 							>Done</ButBasCom>{ /* What: Button Base Component. Why: This keeps every drag made during the current Edit Mode session. How: This calls cloModFun(true). */ }
@@ -6894,9 +6894,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 								<IcoSvgCom
-									name='grip'
-									size={ 15 }
-								/>{ /* What: Icon Svg Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'grip' icon at a fixed size. */ }
+									icoNamStr='griEle'
+									sizValNum={ 15 }
+								/>{ /* What: Icon Svg Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'griEle' icon at a fixed size. */ }
 
 								{ ediModBoo ? 'Done' : 'Edit Mode' }{ /* What: Edit Mode Label Expression. Why: The same rail button enters and leaves Edit Mode. How: This reads "Done" while Edit Mode is on, otherwise "Edit Mode". */ }
 
@@ -7360,8 +7360,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<IcoSvgCom
-										name='check'
-										size={ 22 }
+										icoNamStr='cheEle'
+										sizValNum={ 22 }
 									/>{ /* What: Icon Svg Component. Why: The Generate card leads with a check mark, matching the other onboarding create cards. How: This renders the check glyph at 22px. */ }
 
 
@@ -7376,9 +7376,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<ButBasCom
-										icon='check'
-										kind='primary'
-										size='sm'
+										icoNamStr='cheEle'
+										kinValStr='primary'
+										sizValStr='sm'
 
 										onClick={ onGenCarFun }
 									>Generate your list</ButBasCom> // What: Button Base Component. Why: This is the actual working trigger once every requirement is satisfied. How: This calls onGenCarFun.
@@ -7390,8 +7390,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<InfTipCom
 										className='btn btn--primary btn--sm is-disabled'
 
-										action='Generate your list'
-										label='Complete at least one "Create a picker" tutorial above first.'
+										actNamStr='Generate your list'
+										labTexStr='Complete at least one "Create a picker" tutorial above first.'
 									>Generate your list</InfTipCom> // What: Info Tip Component. Why: A not-yet-ready Generate button still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation.
 
 
@@ -7413,8 +7413,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<IcoSvgCom
-										name='plus'
-										size={ 22 }
+										icoNamStr='pluEle'
+										sizValNum={ 22 }
 									/>{ /* What: Icon Svg Component. Why: The no-pickers card leads with a plus, pointing at creating one. How: This renders the plus glyph at 22px. */ }
 
 
@@ -7426,9 +7426,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 								<ButBasCom
-									icon='plus'
-									kind='primary'
-									size='sm'
+									icoNamStr='pluEle'
+									kinValStr='primary'
+									sizValStr='sm'
 
 									onClick={ begCreFun }
 								>Create a picker</ButBasCom>{ /* What: Button Base Component. Why: This is the actual shortcut into the Pickers tab's own create flow. How: This calls begCreFun. */ }
@@ -7449,8 +7449,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<IcoSvgCom
-										name='calendar'
-										size={ 22 }
+										icoNamStr='calEle'
+										sizValNum={ 22 }
 									/>{ /* What: Icon Svg Component. Why: The idle card leads with a calendar, since nothing is scheduled today. How: This renders the calendar glyph at 22px. */ }
 
 
@@ -7497,8 +7497,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 										<ButBasCom
-											kind='ghost'
-											size='sm'
+											kinValStr='ghost'
+											sizValStr='sm'
 
 											onClick={ () => setConGenBoo( false ) }
 										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the confirm without regenerating anything. How: This clears conGenBoo. */ }
@@ -7506,9 +7506,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										<ButBasCom
 											className='gen-confirm-continue'
 
-											icon='refresh'
-											kind='primary'
-											size='sm'
+											icoNamStr='refEle'
+											kinValStr='primary'
+											sizValStr='sm'
 
 											onClick={ () => genLisFun() }
 										>Continue</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed regeneration trigger. How: This calls genLisFun with no options (a manual, non-auto run). */ }
@@ -7527,14 +7527,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<ButBasCom
-										kind='ghost'
+										kinValStr='ghost'
 
 										onClick={ () => cloModFun( false ) }
 									>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). */ }
 
 									<ButBasCom
-										icon='check'
-										kind='primary'
+										icoNamStr='cheEle'
+										kinValStr='primary'
 
 										onClick={ () => cloModFun( true ) }
 									>Done</ButBasCom>{ /* What: Button Base Component. Why: This keeps every drag made during the current Edit Mode session. How: This calls cloModFun(true). */ }
@@ -7556,8 +7556,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											className='foot-editmode'
 
 											disabled={ genActBoo }
-											icon='grip'
-											kind='secondary'
+											icoNamStr='griEle'
+											kinValStr='secondary'
 
 											onClick={ togModFun }
 										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togModFun, disabled while a generation is in flight. */ }
@@ -7568,14 +7568,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											<InfTipCom
 												className='btn btn--secondary btn--md ob-generate is-disabled'
 
-												action='Regenerate'
-												label='Complete every tutorial above and generate your real list first.'
+												actNamStr='Regenerate'
+												labTexStr='Complete every tutorial above and generate your real list first.'
 											>{ /* What: Info Tip Component. Why: A blocked Regenerate still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation. */ }
 
 
 												<IcoSvgCom
-													name='refresh'
-													size={ 16 }
+													icoNamStr='refEle'
+													sizValNum={ 16 }
 												/>{ /* What: Icon Svg Component. Why: The disabled Regenerate control keeps the same refresh icon as the real button. How: This renders the refresh glyph at 16px, followed by the label text. */ }Regenerate
 
 
@@ -7589,8 +7589,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												className='ob-generate'
 
 												disabled={ genActBoo }
-												icon='refresh'
-												kind='secondary'
+												icoNamStr='refEle'
+												kinValStr='secondary'
 
 												onClick={ () => setConGenBoo( true ) }
 											>{ genActBoo ? 'Generating…' : 'Regenerate' }</ButBasCom> // What: Button Base Component. Why: This is the actual working Regenerate trigger, opening the confirm prompt above. How: This sets conGenBoo, disabled and relabeled while a cascade is already in flight.

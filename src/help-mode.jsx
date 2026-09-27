@@ -1103,7 +1103,7 @@ const NAV_HEL_OBJ = {
 
 				<div className='help-nav-item' key={ curTabObj.icoStr }>{ /* What: Help Nav Item Div Element. Why: Each tab gets its own icon/label/description block inside the shared nav tip. How: This renders curTabObj's own icon and label on one line, its description below. */ }
 
-					<div className='help-nav-label'><IcoSvgCom name={ curTabObj.icoStr } size={ 14 } /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
+					<div className='help-nav-label'><IcoSvgCom icoNamStr={ curTabObj.icoStr } sizValNum={ 14 } /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
 
 					<p>{ curTabObj.desStr }</p>{ /* What: Help Nav Description Paragraph Element. Why: This is the actual explanatory text for this tab. How: This renders curTabObj.desStr as plain text. */ }
 

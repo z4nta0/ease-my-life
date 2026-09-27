@@ -296,9 +296,9 @@ function HolEdiCom ( { staAppObj, actStoObj } ) {
 
 
 							<IcoSvgCom
-								name='trash'
-								size={ 14 }
-							/>{ /* What: Icon Svg Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'trash' icon at a fixed small size. */ }
+								icoNamStr='traEle'
+								sizValNum={ 14 }
+							/>{ /* What: Icon Svg Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed small size. */ }
 
 
 						</button>
@@ -344,9 +344,9 @@ function HolEdiCom ( { staAppObj, actStoObj } ) {
 				/>{ /* What: Draft Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like every other input in this tab. */ }
 
 				<ButBasCom
-					kind='primary'
-					size='sm'
-					icon='plus'
+					kinValStr='primary'
+					sizValStr='sm'
+					icoNamStr='pluEle'
 					disabled={ !draNamStr.trim() || !draDatStr }
 					onClick={ addCusFun }
 				>Add</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit submit action, disabled until both drafts are filled. How: This calls addCusFun when clicked. */ }
@@ -787,8 +787,8 @@ function ConSupCom () {
 					</div>
 
 					<ButBasCom
-						kind='secondary'
-						size='sm'
+						kinValStr='secondary'
+						sizValStr='sm'
 						onClick={ opeForFun }
 					>Contact Support</ButBasCom>{ /* What: Button Base Component. Why: This is the actual trigger that expands the support form below. How: This calls opeForFun when clicked. */ }
 
@@ -933,8 +933,8 @@ function ConSupCom () {
 
 
 								<ButBasCom
-									kind='ghost'
-									size='sm'
+									kinValStr='ghost'
+									sizValStr='sm'
 									onClick={ copAdrFun }
 								>{ adrCopBoo ? 'Copied' : 'Copy address' }</ButBasCom> // What: Button Base Component. Why: This lets the user copy the fallback address without selecting it by hand. How: This calls copAdrFun when clicked, and its own label reflects adrCopBoo.
 
@@ -942,14 +942,14 @@ function ConSupCom () {
 							) }
 
 							<ButBasCom
-								kind='ghost'
-								size='sm'
+								kinValStr='ghost'
+								sizValStr='sm'
 								onClick={ canForFun }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit way to back out without sending. How: This calls canForFun when clicked. */ }
 
 							<ButBasCom
-								kind='secondary'
-								size='sm'
+								kinValStr='secondary'
+								sizValStr='sm'
 								disabled={ isaSenBoo }
 								onClick={ senForFun }
 							>{ isaSenBoo ? 'Sending…' : 'Send' }</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls senForFun when clicked, disabling itself and relabeling while isaSenBoo is true. */ }
@@ -2722,7 +2722,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<CarSurCom
 								className='style-radio-card'
-								padded={ false }
+								isaPadBoo={ false }
 							>{ /* What: Card Surface Component. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and CelPreCom together. */ }
 
 
@@ -2765,7 +2765,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<CarSurCom
 								className='style-radio-card'
-								padded={ false }
+								isaPadBoo={ false }
 							>{ /* What: Card Surface Component. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and PicAniCom together. */ }
 
 
@@ -3031,8 +3031,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 										<ButBasCom
-											kind='secondary'
-											size='sm'
+											kinValStr='secondary'
+											sizValStr='sm'
 											onClick={ enaNotFun }
 										>Enable</ButBasCom> // What: Button Base Component. Why: This is the actual explicit request for notification permission. How: This calls enaNotFun when clicked.
 
@@ -3187,9 +3187,9 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<ButBasCom
 											className='set-install-btn'
-											kind='primary'
-											size='sm'
-											icon='download'
+											kinValStr='primary'
+											sizValStr='sm'
+											icoNamStr='dowEle'
 											onClick={ onInsAppFun }
 										>Install app</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for the native install prompt. How: This calls onInsAppFun when clicked.
 
@@ -3200,9 +3200,9 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 										<ButBasCom
-											kind='secondary'
-											size='sm'
-											icon='download'
+											kinValStr='secondary'
+											sizValStr='sm'
+											icoNamStr='dowEle'
 											disabled
 										>Install app</ButBasCom> // What: Button Base Component. Why: This is a disabled placeholder shown only until install support is actually known one way or the other. How: This renders with no onClick at all, since it is always disabled.
 
@@ -3214,8 +3214,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<ButBasCom
 											className='set-protect-btn'
-											kind='secondary'
-											size='sm'
+											kinValStr='secondary'
+											sizValStr='sm'
 											onClick={ onProDatFun }
 										>Protect Data</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for the storage-persistence request. How: This calls onProDatFun when clicked.
 
@@ -3350,9 +3350,9 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<ButBasCom
 										ref={ expButRef }
-										kind='secondary'
-										size='sm'
-										icon='download'
+										kinValStr='secondary'
+										sizValStr='sm'
+										icoNamStr='dowEle'
 										onClick={ expDatFun }
 									>Export</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for building and downloading the backup. How: This calls expDatFun when clicked.
 
@@ -3362,14 +3362,14 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<InfTipCom
 										className='set-disabled-btn'
-										label='There is no user data to export.'
+										labTexStr='There is no user data to export.'
 									>{ /* What: Info Tip Component. Why: A disabled Export button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled ButBasCom, shown only while hasDatBoo is false. */ }
 
 
 										<ButBasCom
-											kind='secondary'
-											size='sm'
-											icon='download'
+											kinValStr='secondary'
+											sizValStr='sm'
+											icoNamStr='dowEle'
 											disabled
 										>Export</ButBasCom>{ /* What: Button Base Component. Why: This is the disabled Export button the tip explains. How: This renders with no onClick at all, since it is always disabled. */ }
 
@@ -3432,15 +3432,15 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<ButBasCom
 											ref={ impConRef }
-											kind='danger'
-											size='sm'
+											kinValStr='danger'
+											sizValStr='sm'
 											aria-describedby='set-import-confirm-msg'
 											onClick={ runImpFun }
 										>Import</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that replaces all data with the staged backup. How: This calls runImpFun when clicked. */ }
 
 										<ButBasCom
-											kind='ghost'
-											size='sm'
+											kinValStr='ghost'
+											sizValStr='sm'
 											onClick={ canImpFun }
 										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without importing. How: This calls canImpFun when clicked. */ }
 
@@ -3453,9 +3453,9 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<ButBasCom
 										ref={ impButRef }
-										kind='secondary'
-										size='sm'
-										icon='upload'
+										kinValStr='secondary'
+										sizValStr='sm'
+										icoNamStr='uplEle'
 										onClick={ () => filInpRef.current && filInpRef.current.click() }
 									>Import</ButBasCom> // What: Button Base Component. Why: This is the actual trigger that opens the native file picker. How: This calls the hidden file input's own click() when clicked.
 
@@ -3502,8 +3502,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<ButBasCom
 											ref={ resConRef }
-											kind='danger'
-											size='sm'
+											kinValStr='danger'
+											sizValStr='sm'
 											aria-describedby='set-reset-confirm-msg'
 											onClick={ () => { // What: Reset Confirm Click Handler. Why: Confirming wipes every piece of data, so it also has to land the user somewhere sensible and report what happened. How: This navigates home, wipes the store, closes the confirm pair, and announces the outcome.
 
@@ -3525,8 +3525,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 										>Reset</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes all data. How: This navigates home, resets the store, closes the confirm, and announces the outcome when clicked. */ }
 
 										<ButBasCom
-											kind='ghost'
-											size='sm'
+											kinValStr='ghost'
+											sizValStr='sm'
 											onClick={ cloResFun }
 										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without resetting. How: This calls cloResFun when clicked. */ }
 
@@ -3539,9 +3539,9 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<ButBasCom
 										ref={ resButRef }
-										kind='danger'
-										size='sm'
-										icon='refresh'
+										kinValStr='danger'
+										sizValStr='sm'
+										icoNamStr='refEle'
 										onClick={ () => { // What: Reset Open Click Handler. Why: Pressing Reset should open the confirm pair without a stale message lingering beside it. How: This clears resMesStr, then opens the confirmation.
 
 
@@ -3559,14 +3559,14 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<InfTipCom
 										className='set-disabled-btn'
-										label='There is no user data to reset.'
+										labTexStr='There is no user data to reset.'
 									>{ /* What: Info Tip Component. Why: A disabled Reset button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled ButBasCom, shown only while there is no data and no confirm pending. */ }
 
 
 										<ButBasCom
-											kind='danger'
-											size='sm'
-											icon='refresh'
+											kinValStr='danger'
+											sizValStr='sm'
+											icoNamStr='refEle'
 											disabled
 										>Reset</ButBasCom>{ /* What: Button Base Component. Why: This is the disabled Reset button the tip explains. How: This renders with no onClick at all, since it is always disabled. */ }
 
@@ -3618,8 +3618,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 								</div>
 
 								<ButBasCom
-									kind='secondary'
-									size='sm'
+									kinValStr='secondary'
+									sizValStr='sm'
 									disabled
 								>Coming Soon</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
 
@@ -3693,8 +3693,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 								</div>
 
 								<ButBasCom
-									kind='secondary'
-									size='sm'
+									kinValStr='secondary'
+									sizValStr='sm'
 									disabled
 								>Buy Me a Coffee</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
 
@@ -3721,9 +3721,9 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 								</div>
 
 								<ButBasCom
-									kind='secondary'
-									size='sm'
-									icon='refresh'
+									kinValStr='secondary'
+									sizValStr='sm'
+									icoNamStr='refEle'
 									onClick={ () => { // What: Replay Tour Click Handler. Why: Replaying the tour needs to start from the Today tab with the onboarding flags reset. How: This navigates home, then resets (and, for an established account, self-heals) the onboarding flags.
 
 

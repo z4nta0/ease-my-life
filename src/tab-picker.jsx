@@ -1079,16 +1079,16 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 					<h2 className='picker-title'>{ picDatObj.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. */ }
 
-					<PilTagCom tone='mode'>{ modInfObj.label }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.label inside the shared PilTagCom component. */ }
+					<PilTagCom tonValStr='mode'>{ modInfObj.label }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.label inside the shared PilTagCom component. */ }
 
 
 				</div>
 
 				<ButBasCom
 					className='picker-edit-btn'
-					kind='secondary'
-					size='sm'
-					icon='edit'
+					kinValStr='secondary'
+					sizValStr='sm'
+					icoNamStr='ediEle'
 					onClick={ () => setEdiOpeBoo( true ) }
 				>Edit</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpeBoo true on click. */ }
 
@@ -1162,8 +1162,8 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 								<IcoSvgCom
-									name='check'
-									size={ 26 }
+									icoNamStr='cheEle'
+									sizValNum={ 26 }
 								/>{ /* What: Icon Svg Component. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
 
 
@@ -1211,9 +1211,9 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 								<ButBasCom
-									kind='primary'
-									size='sm'
-									icon='refresh'
+									kinValStr='primary'
+									sizValStr='sm'
+									icoNamStr='refEle'
 									onClick={ () => actStoObj.filPicFun( picDatObj.id ) }
 								>Refill</ButBasCom> // What: Button Base Component. Why: The user needs a direct way to bring every item back to full charge. How: This calls actions.filPicFun with this picker's own id.
 
@@ -1241,8 +1241,8 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 							<ButBasCom
 								className={ ` pv-act   pv-act--send   ${ runPhaStr === 'sent' ? 'is-sent' : '' } ` }
 								style={{ animationDelay : '0ms' }}
-								kind='primary'
-								icon='check'
+								kinValStr='primary'
+								icoNamStr='cheEle'
 								onClick={ senTodFun }
 							>{ /* What: Button Base Component. Why: This is the primary confirm action for a settled pick. How: This calls senTodFun, then re-labels itself "Sent!" once runPhaStr flips to 'sent'. */ }
 
@@ -1264,8 +1264,8 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 							<ButBasCom
 								className={ ` pv-act   pv-act--reroll   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? 'is-leaving' : '' }   ${ intSenBoo ? 'is-tour-disabled' : '' } ` }
 								style={{ animationDelay : '60ms' }}
-								kind='ghost'
-								icon='refresh'
+								kinValStr='ghost'
+								icoNamStr='refEle'
 								disabled={ intSenBoo }
 								onClick={ () => aftExiFun( rerActFun ) }
 							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Classname Design Note. Why: The pv-act--reroll class lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding-app-features.jsx) without also matching Send to Today or Done. How: disabled/is-tour-disabled below still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. */ }
@@ -1273,8 +1273,8 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 							<ButBasCom
 								className={ ` pv-act   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? 'is-leaving' : '' }   ${ disDonBoo ? 'is-tour-disabled' : '' } ` }
 								style={{ animationDelay : '120ms' }}
-								kind='ghost'
-								size='sm'
+								kinValStr='ghost'
+								sizValStr='sm'
 								disabled={ disDonBoo }
 								onClick={ () => aftExiFun( () => { // What: On Click Handler. Why: Done plays the buttons' exit before clearing the pick. How: This runs aftExiFun with a reset of the phase and the result.
 
@@ -1295,8 +1295,8 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 						<ButBasCom
 							className={ ` pv-act   pv-act--pick   ${ busPicBoo ? 'is-busy' : '' } ` }
-							kind='primary'
-							icon='play'
+							kinValStr='primary'
+							icoNamStr='plaEle'
 							disabled={ busPicBoo }
 							onClick={ runPicFun }
 						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button Base Component. Why: This is the sole entry point into a fresh cycle. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true.
@@ -1331,8 +1331,8 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 								<IcoSvgCom
-									name={ shoDriBoo ? 'eye_off' : 'eye' }
-									size={ 13 }
+									icoNamStr={ shoDriBoo ? 'eyoEle' : 'eyeEle' }
+									sizValNum={ 13 }
 								/>{ /* What: Icon Svg Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
 
 								{ shoDriBoo ? 'Hide drift' : 'Show drift' }{ /* What: Drift Label Expression. Why: The toggle's text names what clicking it will do. How: This reads 'Hide drift' while shoDriBoo is on, otherwise 'Show drift'. */ }
@@ -1414,15 +1414,15 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 												<ButBasCom
-													kind='ghost'
-													size='sm'
+													kinValStr='ghost'
+													sizValStr='sm'
 													onClick={ canConFun }
 												>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls canConFun. */ }
 
 												<ButBasCom
-													kind='danger'
-													size='sm'
-													icon='trash'
+													kinValStr='danger'
+													sizValStr='sm'
+													icoNamStr='traEle'
 													onClick={ () => { // What: On Click Handler. Why: Confirming a delete starts the row's removal animation. How: This clears the confirm state and marks the row as removing.
 
 
@@ -1451,9 +1451,9 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 												<span className='pool-item-name'>{ curIteObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
 
-												{ curIteObj.vacation && <PilTagCom tone='muted'>inactive</PilTagCom> }{ /* What: Inactive PilTagCom Check. Why: A vacationing item needs a clear status label. How: This renders the pill only while curIteObj.vacation is true. */ }
+												{ curIteObj.vacation && <PilTagCom tonValStr='muted'>inactive</PilTagCom> }{ /* What: Inactive PilTagCom Check. Why: A vacationing item needs a clear status label. How: This renders the pill only while curIteObj.vacation is true. */ }
 
-												{ !eliHerBoo && !curIteObj.vacation && <PilTagCom tone='muted'>{ picDatObj.mode === 'ease-up' ? 'not yet' : 'spent' }</PilTagCom> }{ /* What: Ineligible PilTagCom Check. Why: An active-but-currently-ineligible item needs a status label distinct from "inactive". How: This renders only while eliHerBoo is false and curIteObj.vacation is also false, wording itself per mode. */ }
+												{ !eliHerBoo && !curIteObj.vacation && <PilTagCom tonValStr='muted'>{ picDatObj.mode === 'ease-up' ? 'not yet' : 'spent' }</PilTagCom> }{ /* What: Ineligible PilTagCom Check. Why: An active-but-currently-ineligible item needs a status label distinct from "inactive". How: This renders only while eliHerBoo is false and curIteObj.vacation is also false, wording itself per mode. */ }
 
 
 											</div>
@@ -1466,14 +1466,14 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 													<InfTipCom
 														className='pool-prog'
-														label={ valTipStr }
+														labTexStr={ valTipStr }
 													>{ /* What: Info Tip Component. Why: The drift bar benefits from an on-demand explanation of what its value means. How: This shows valTipStr on hover or focus. */ }
 
 
 														<ProBarCom
-															value={ reaValNum }
-															max={ 1 }
-															tone={ picDatObj.mode === 'ease-down' ? 'warm' : 'accent' }
+															curValNum={ reaValNum }
+															maxValNum={ 1 }
+															tonValStr={ picDatObj.mode === 'ease-down' ? 'warm' : 'accent' }
 														/>{ /* What: Progress Bar Component. Why: A visual bar reads faster than the raw number alone. How: This renders reaValNum against a max of 1, tinted warm for Ease Down and accent otherwise. */ }
 
 														<span className='pool-val'>{ Math.round( curIteObj.value ) }</span>{ /* What: Value Span Element. Why: The exact underlying number is still useful alongside the bar. How: This renders curIteObj.value, rounded. */ }
@@ -1489,7 +1489,7 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 													<InfTipCom
 														className='pool-weight'
-														label={ weiTipStr }
+														labTexStr={ weiTipStr }
 													>w{ curIteObj.weight }</InfTipCom> // What: Info Tip Component. Why: The weight number benefits from the same hover explanation every other tooltip in this row gets. How: This renders "w" plus the raw weight, tipped with weiTipStr.
 
 
@@ -1511,9 +1511,9 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 													<IcoSvgCom
-														name='check'
-														size={ 15 }
-													/>{ /* What: Icon Svg Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'check' icon at a fixed size. */ }
+														icoNamStr='cheEle'
+														sizValNum={ 15 }
+													/>{ /* What: Icon Svg Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 												</button>
@@ -1524,14 +1524,14 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 												<InfTipCom
 													className='pool-send is-disabled'
-													label='This item is already included in the Today tab.'
+													labTexStr='This item is already included in the Today tab.'
 												>{ /* What: Info Tip Component. Why: An item already on Today can't be sent again, and the user should know why the button is inert. How: This wraps the calendar glyph with an explanatory tooltip instead of a real button. */ }
 
 
 													<IcoSvgCom
-														name='calendar'
-														size={ 15 }
-													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calendar' icon at a fixed size. */ }
+														icoNamStr='calEle'
+														sizValNum={ 15 }
+													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
 												</InfTipCom>
@@ -1551,9 +1551,9 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 													<IcoSvgCom
-														name='calendar'
-														size={ 15 }
-													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calendar' icon at a fixed size. */ }
+														icoNamStr='calEle'
+														sizValNum={ 15 }
+													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
 												</button>
@@ -1572,9 +1572,9 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 												<IcoSvgCom
-													name='edit'
-													size={ 15 }
-												/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'edit' icon at a fixed size. */ }
+													icoNamStr='ediEle'
+													sizValNum={ 15 }
+												/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 											</button>
@@ -1584,15 +1584,15 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 												<InfTipCom
 													className='pool-del is-disabled'
-													action='Delete'
-													label='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
+													actNamStr='Delete'
+													labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
 												>{ /* What: Info Tip Component. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above. */ }
 
 
 													<IcoSvgCom
-														name='trash'
-														size={ 15 }
-													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'trash' icon at a fixed size. */ }
+														icoNamStr='traEle'
+														sizValNum={ 15 }
+													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 												</InfTipCom>
@@ -1611,9 +1611,9 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 													<IcoSvgCom
-														name='trash'
-														size={ 15 }
-													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'trash' icon at a fixed size. */ }
+														icoNamStr='traEle'
+														sizValNum={ 15 }
+													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 												</button>
@@ -1773,9 +1773,9 @@ function PicVieCom ( { picDatObj, staAppObj, actStoObj, aniStyStr } ) {
 
 
 								<IcoSvgCom
-									name='plus'
-									size={ 14 }
-								/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add Item
+									icoNamStr='pluEle'
+									sizValNum={ 14 }
+								/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 
 							</button>
@@ -2563,7 +2563,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 	const bacSteFun = () => { // What: Back Step Function. Why: Returning to Step 1 must not leave Step 2 stuck with a stale actNewStr (which would make + Add Item a no-op), so any in-progress item is discarded first. How: This disarms EntEdiCom's own deferred revert (else it would fire on the next macrotask and re-set actCloStr='cancel', auto-closing whatever gets added next), removes an in-progress item if there is one, then steps back.
 
 
-		window.__editGuard.disarm(); // What: Edit Guard Disarm Call. Why: A deferred revert firing after this navigation would corrupt whatever item gets added next. How: This calls the shared global editor guard's own disarm method.
+		window.__editGuard.disFun(); // What: Edit Guard Disarm Call. Why: A deferred revert firing after this navigation would corrupt whatever item gets added next. How: This calls the shared global editor guard's own disarm method.
 
 		if ( actNewStr ) { // What: Discard In-Progress Guard. Why: An unsaved in-progress item must not linger once the user navigates away from it. How: This removes it from pooIteArr and clears actNewStr, only if one was actually open.
 
@@ -2719,9 +2719,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 								<IcoSvgCom
-									name='check'
-									size={ 12 }
-								/> // What: Icon Svg Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'check' icon at a fixed size.
+									icoNamStr='cheEle'
+									sizValNum={ 12 }
+								/> // What: Icon Svg Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'cheEle' icon at a fixed size.
 
 
 							) : ( // What: Step Number Branch. Why: An unfinished step shows its own number. How: This renders the else branch while forSteNum is 1.
@@ -2861,9 +2861,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 									<IcoSvgCom
-										name='plus'
-										size={ 13 }
-									/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } New Group
+										icoNamStr='pluEle'
+										sizValNum={ 13 }
+									/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 
 								</button>
@@ -3056,9 +3056,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 											<IcoSvgCom
-												name='plus'
-												size={ 16 }
-											/>{ /* What: Icon Svg Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'plus' icon at a fixed size. */ }
+												icoNamStr='pluEle'
+												sizValNum={ 16 }
+											/>{ /* What: Icon Svg Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 											<span className='cnd-pill-name'>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
 
@@ -3182,9 +3182,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 											<WeeChiCom
+												locDayNum={ locDowNum }
+												locTipStr={ locDowNum === null ? '' : CAD_NAM_OBJ.locTipFun( locDowNum, 'On which day?' ) }
 												value={ runDowArr }
-												lockedDay={ locDowNum }
-												lockedTip={ locDowNum === null ? '' : CAD_NAM_OBJ.locTipFun( locDowNum, 'On which day?' ) }
 												onChange={ setRunDowArr }
 											/>{ /* What: Weekday Chips Component. Why: The user needs a direct way to toggle individual weekdays on or off. How: This is passed runDowArr and locDowNum so a weekly cadence's own anchor day can't be turned off here. */ }
 
@@ -3393,7 +3393,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 							<ButBasCom
-								kind='ghost'
+								kinValStr='ghost'
 								onClick={ onCanForFun }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to back out of this form entirely. How: This calls onCanForFun. */ }
 
@@ -3401,8 +3401,8 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 								<ButBasCom
-									kind='primary'
-									icon='check'
+									kinValStr='primary'
+									icoNamStr='cheEle'
 									disabled={ !detReaBoo || conColBoo }
 									onClick={ subForFun }
 								>Save</ButBasCom> // What: Button Base Component. Why: Editing only ever has one step, so this button both validates and commits. How: This calls subForFun directly, disabled until detReaBoo holds and no conditional name collides.
@@ -3413,8 +3413,8 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 								<ButBasCom
 									className='ob-picker-next'
-									kind='primary'
-									icon='chev'
+									kinValStr='primary'
+									icoNamStr='chvEle'
 									disabled={ !detReaBoo || conColBoo }
 									onClick={ advSteFun }
 								>Add Items</ButBasCom> // What: Button Base Component. Why: Creating still has an Items step to fill in. How: This calls advSteFun to advance, disabled under the same conditions as the edit Save button above.
@@ -3586,15 +3586,15 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 														<ButBasCom
-															kind='ghost'
-															size='sm'
+															kinValStr='ghost'
+															sizValStr='sm'
 															onClick={ canConFun }
 														>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls canConFun. */ }
 
 														<ButBasCom
-															kind='danger'
-															size='sm'
-															icon='trash'
+															kinValStr='danger'
+															sizValStr='sm'
+															icoNamStr='traEle'
 															onClick={ () => { // What: On Click Handler. Why: Confirming a delete starts the row's removal animation. How: This clears the confirm state and marks the row as removing.
 
 
@@ -3642,9 +3642,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 														<IcoSvgCom
-															name='edit'
-															size={ 15 }
-														/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'edit' icon at a fixed size. */ }
+															icoNamStr='ediEle'
+															sizValNum={ 15 }
+														/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
 													</button>
@@ -3654,15 +3654,15 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 														<InfTipCom
 															className='pool-del is-disabled'
-															action='Delete'
-															label='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
+															actNamStr='Delete'
+															labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
 														>{ /* What: Info Tip Component. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above. */ }
 
 
 															<IcoSvgCom
-																name='trash'
-																size={ 15 }
-															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'trash' icon at a fixed size. */ }
+																icoNamStr='traEle'
+																sizValNum={ 15 }
+															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 														</InfTipCom>
@@ -3680,9 +3680,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 															<IcoSvgCom
-																name='trash'
-																size={ 15 }
-															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'trash' icon at a fixed size. */ }
+																icoNamStr='traEle'
+																sizValNum={ 15 }
+															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
 														</button>
@@ -3842,9 +3842,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 										<IcoSvgCom
-											name='plus'
-											size={ 14 }
-										/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add Item
+											icoNamStr='pluEle'
+											sizValNum={ 14 }
+										/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 
 									</button>
@@ -3992,14 +3992,14 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCanForFun, onCreP
 
 
 							<ButBasCom
-								kind='ghost'
+								kinValStr='ghost'
 								onClick={ bacSteFun }
 							>Back</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to return to Step 1 without losing their in-progress items. How: This calls bacSteFun. */ }
 
 							<ButBasCom
 								className='ob-picker-create'
-								kind='primary'
-								icon='check'
+								kinValStr='primary'
+								icoNamStr='cheEle'
 								disabled={ !enoIteBoo || conColBoo }
 								onClick={ subForFun }
 							>Create Picker</ButBasCom>{ /* What: Button Base Component. Why: This is the actual final commit for a brand-new picker. How: This calls subForFun, disabled until enoIteBoo holds and no conditional name collides. */ }
@@ -4665,8 +4665,8 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 								<InfTipCom
 									className={ ` picker-tab   picker-tab--add   picker-tab--enter   is-tour-disabled   ${ creOpeBoo ? 'is-on' : '' } ` }
-									action='Add New Picker'
-									label='This button is disabled until all tutorials are completed.'
+									actNamStr='Add New Picker'
+									labTexStr='This button is disabled until all tutorials are completed.'
 								>{ /* What: Info Tip Component. Why: A disabled add tab still needs to explain why it can't be clicked yet. How: This wraps the same visible label the real tab uses. */ }
 
 
@@ -4677,9 +4677,9 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 
 										<IcoSvgCom
-											name='plus'
-											size={ 16 }
-										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'plus' icon at a fixed size. */ }
+											icoNamStr='pluEle'
+											sizValNum={ 16 }
+										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 
 									</span>
@@ -4709,9 +4709,9 @@ function TabPicCom ( { staAppObj, actStoObj, aniStyStr, onNavHomFun, onNavTabFun
 
 
 										<IcoSvgCom
-											name='plus'
-											size={ 16 }
-										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'plus' icon at a fixed size. */ }
+											icoNamStr='pluEle'
+											sizValNum={ 16 }
+										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 
 									</span>

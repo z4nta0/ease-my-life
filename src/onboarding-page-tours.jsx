@@ -1733,7 +1733,7 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 		return (
 
 			<IntModCom
-				icoTopEle={ <IcoSvgCom name={ tourRecObj.page } size={ 54 } /> }
+				icoTopEle={ <IcoSvgCom icoNamStr={ tourRecObj.page } sizValNum={ 54 } /> }
 				titHeaStr={ ( pagCopObj && pagCopObj.titStr ) || navTarObj.titStr }
 				parEleArr={ [ ( pagCopObj && pagCopObj.bodEle ) || navTarObj.bodEle ] }
 				pilLabArr={ ( pagCopObj && pagCopObj.pilArr ) || [ 'page tour', tourRecObj.label.toLowerCase() ] }
