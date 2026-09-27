@@ -547,7 +547,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kinValStr, notIdeStr } ) {
 
 
 		const nexLabStr = nexDatFun( visResObj.next, tasRecObj.repeat === 'annual' );    // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own next date, always including the year for an annual reminder.
-		const kinWorStr = TAS_NAM_OBJ.isaRecFun( tasRecObj ) ? 'recurring' : 'one-time'; // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TAS_NAM_OBJ.isaRecFun.
+		const kinWorStr = TAS_NAM_OBJ.isaReuFun( tasRecObj ) ? 'recurring' : 'one-time'; // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
 
@@ -3350,7 +3350,7 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 			group    : null,                                                       // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
 			isActive : null,                                                       // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
 			name     : tasAObj.name,                                               // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasAObj's own name.
-			type     : TAS_NAM_OBJ.isaRecFun( tasAObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaRecFun.
+			type     : TAS_NAM_OBJ.isaReuFun( tasAObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 
 		},
@@ -3363,7 +3363,7 @@ function RemManCom ( { staAppObj, actStoObj } ) {
 			group    : null,                                                       // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
 			isActive : null,                                                       // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
 			name     : tasBObj.name,                                               // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasBObj's own name.
-			type     : TAS_NAM_OBJ.isaRecFun( tasBObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaRecFun.
+			type     : TAS_NAM_OBJ.isaReuFun( tasBObj ) ? 'Recurring' : 'One-time' // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 
 		},

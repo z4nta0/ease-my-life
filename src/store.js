@@ -3700,7 +3700,7 @@ function useAppStaFun( optArgObj ) {
 					rowId     : 'rs_' + Math.random().toString( 36 ).slice( 2, 9 ),       // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rs_' id.
 					skippedAt : new Date().toISOString(),                                 // What: Skipped At. Why: Stats needs the exact moment of the skip. How: This stamps the current time as an ISO string.
 					taskId    : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
-					type      : TAS_NAM_OBJ.isaRecFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies skips separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaRecFun says so, else 'once'.
+					type      : TAS_NAM_OBJ.isaReuFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies skips separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaReuFun says so, else 'once'.
 
 
 				}
@@ -3789,7 +3789,7 @@ function useAppStaFun( optArgObj ) {
 						name        : curTasObj.name,                                           // What: Name. Why: The row keeps the reminder's own name, denormalized so history survives a later rename or delete. How: This is curTasObj.name.
 						rowId       : 'rl_' + Math.random().toString( 36 ).slice( 2, 9 ),       // What: Row Id. Why: Every log row needs its own unique id. How: This mints a random 'rl_' id.
 						taskId      : tarIdeStr,                                                // What: Task Id. Why: The row must point back at the reminder it belongs to. How: This is tarIdeStr.
-						type        : TAS_NAM_OBJ.isaRecFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies completions separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaRecFun says so, else 'once'.
+						type        : TAS_NAM_OBJ.isaReuFun( curTasObj ) ? 'recurring' : 'once' // What: Type. Why: Stats tallies completions separately for one-time and recurring reminders. How: This is 'recurring' when TAS_NAM_OBJ.isaReuFun says so, else 'once'.
 
 
 					}
