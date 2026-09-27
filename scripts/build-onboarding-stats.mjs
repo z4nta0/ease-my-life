@@ -101,7 +101,7 @@ const iteRecArr = PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( c
 
 
 const onVacFun = () => false; // What: On Vacation Function. Why: SED_NAM_OBJ.picLogFun requires a vacation-check callback, but the sample pickers below have no vacation history at all. How: This always returns false, meaning "never on vacation".
-const { rowArr : rawLogArr } = SED_NAM_OBJ.picLogFun( iteRecArr, picRecArr, onVacFun, 365 ); // What: Raw Log Array. Why: This is the full simulated year of pick-log rows, before daysAgo conversion below. How: This calls SED_NAM_OBJ.picLogFun with iteRecArr/picRecArr/onVacFun over a 365-day span.
+const { hisRowArr } = SED_NAM_OBJ.picLogFun( iteRecArr, picRecArr, onVacFun, 365 ); // What: History Row Array. Why: This is the full simulated year of pick-log rows, before daysAgo conversion below. How: This calls SED_NAM_OBJ.picLogFun with iteRecArr/picRecArr/onVacFun over a 365-day span.
 
 
 
@@ -120,7 +120,7 @@ const dayAgoFun = ( isoStr ) => todIndNum - isoIndFun( isoStr ); // What: Day Ag
 
 
 
-const finLogArr = rawLogArr.map( ( curRowObj ) => { // What: Final Log Array. Why: This is rawLogArr, converted from real dates to the portable daysAgo/houValNum/minValNum shape the generated file actually stores. How: This maps each rawLogArr entry through the conversion below.
+const finLogArr = hisRowArr.map( ( curRowObj ) => { // What: Final Log Array. Why: This is hisRowArr, converted from real dates to the portable daysAgo/houValNum/minValNum shape the generated file actually stores. How: This maps each hisRowArr entry through the conversion below.
 
 
 	let houValNum = null, minValNum = null; // What: Hour Minute Values And Guard. Why: An entry that was never completed has no time of day to record at all. How: This starts both null and is only overwritten below when curRowObj carries a real completedAt.

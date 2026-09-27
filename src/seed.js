@@ -1,6 +1,9 @@
 
 
 
+
+
+
 // #region Imports
 
 import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object. Why: The seeded demo state needs a real holidays-state shape, and the clean state needs the same canonical empty one. How: This is called (defStaFun) by both buiCleFun and buiSeeFun below.
@@ -47,25 +50,18 @@ import { TAS_NAM_OBJ } from './tasks.js';    // What: Tasks Namespace Object. Wh
  *     item's own weight goes up by 1, so long-ignored items rise and
  *     picks stay fair over time.
  *
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
-const uniIdeFun = (() => { // What: Unique Identifier Function. Why: Every seeded item/vacation/pick-log/reminder-log row below needs its own distinct string id, and nothing else in this module tracks a shared counter for that. How: This is an immediately-invoked closure that captures one counter and returns the actual generator function used everywhere below.
-
-
-	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every id minted below needs a distinct numeric suffix appended after its own prefix. How: This starts at 0 and is incremented once per call to the returned generator function below.
-
-
-
-	return ( preFixStr ) => `${ preFixStr }_${ ++seqCouNum }`; // What: Id Generator Return. Why: The caller needs a closure that mints a new, distinct id string on every call, sharing one counter across all of them. How: This returns an arrow function that increments seqCouNum and interpolates it after preFixStr, separated by an underscore.
-
-
-})();
-
-
+// #region Constants
 
 // #region ITE_DEF_ARR
 
@@ -210,6 +206,360 @@ const ITE_DEF_ARR = [
 ];
 
 // #endregion ITE_DEF_ARR
+
+
+
+// #region MOD_DEF_OBJ
+
+/**
+ * MOD_DEF_OBJ = Mode Definition Object
+ *
+ * @summary
+ * Every mode entry below shares one shape, read wherever a picker's mode
+ * needs a label or an explanation (the Pickers, Data and Stats tabs and
+ * the picker mini-tours), and none of them repeat these fields' own
+ * boilerplate comments on their own lines (see the "Repeated-shape
+ * object literals" comment exception in CLAUDE.md):
+ *
+ * - `hint` (Array): Hint, the mode's user-facing copy as 2 paragraphs, a
+ *   ruleset paragraph followed by an explanation paragraph.
+ *
+ * - `label` (String): Label, the mode's user-facing display name.
+ *
+ * The entries keep their authored order rather than an alphabetical one:
+ * the Data tab and the conditional editor render one option per mode
+ * through Object.entries, so this order is the order those options
+ * appear in.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text (Pickers/Data/Stats tabs, the picker mini-tours) reads this shared table. How: This maps each of pickers.js's own 5 selection-algorithm keys to its own { label, hint } pair.
+
+
+	'random' : { // What: Random Mode Entry. Why: This documents the random selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
+
+
+		label : 'Truly Random',
+
+		hint : [
+
+
+			'Ruleset: This picker’s ruleset makes it so that all of its items have an equally likely chance of being picked.',
+
+			'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can pick the exact same item multiple times in a row or an item can go a long time without being picked.'
+
+
+		]
+
+
+	},
+
+	'weighted' : { // What: Weighted Mode Entry. Why: This documents the weighted selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
+
+
+		label : 'Weighted',
+
+		hint : [
+
+
+			'Ruleset: This picker’s ruleset uses adjustable, weighted per-item values that can make them more (or less) likely to be picked.',
+
+			'Explanation: This is a good choice for mitigating some of the Truly Random drawbacks by tuning individual items’ % chance to make them more (or less) likely to be picked. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is less likely to do so.'
+
+
+		]
+
+
+	},
+
+	'dynamic' : { // What: Dynamic Mode Entry. Why: This documents the dynamic weighted selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
+
+
+		label : 'Dynamic Weighted',
+
+		hint : [
+
+
+			'Ruleset: This picker’s ruleset is exactly the same as the Weighted picker, but it also adds a second per-item value that increments the weighted value every time an item is not picked and then resets its value every time that it is.',
+
+			'Explanation: This is a good choice for mitigating almost all of the Truly Random drawbacks by tuning individual items’ % chance to make them more (or less) likely to be picked. Furthermore, by adding a dynamic per-item value it makes it increasingly likely to be picked when it isn’t and less likely when it is. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is much less likely to do so.'
+
+
+		]
+
+
+	},
+
+	'ease-up' : { // What: Ease Up Mode Entry. Why: This documents the ease-up selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
+
+
+		label : 'Ease Up',
+
+		hint : [
+
+
+			'Ruleset: This picker’s ruleset makes it so that all items are ineligible to be picked until their individual values reach 100, at which point they are put into a list of eligible items to be picked. Said values will start at 0 and are incremented every cycle by a random amount within a user defined range.',
+
+			'Explanation: This is a good choice for ensuring that picker items can only be picked once every N days and can never be picked multiple times in a row. e.g. an item can only be picked at most once a week and must be picked at least once every two weeks.'
+
+
+		]
+
+
+	},
+
+	'ease-down' : { // What: Ease Down Mode Entry. Why: This documents the ease-down selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
+
+
+		label : 'Ease Down',
+
+		hint : [
+
+
+			'Ruleset: This picker’s ruleset is the opposite of the Ease Up picker. It makes it so that all items are eligible to be picked and once an item is picked it will stay picked until its value reaches 0, at which point a new item is picked. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.',
+
+			'Explanation: This is a good choice for ensuring that an item stays picked for at least N days and then is not picked again for at least one cycle afterwards. e.g. it must remain picked for at least a week and must not remain picked for more than two weeks.'
+
+
+		]
+
+
+	}
+
+
+};
+
+// #endregion MOD_DEF_OBJ
+
+// #endregion Constants
+
+
+
+// #region Helpers
+
+// #region Shared Utilities
+
+// #region picWeiFun
+
+/**
+ * picWeiFun = Pick Weighted Function
+ *
+ * @summary
+ * Picks one random item from a pool, weighted by each item's own
+ * weight field (falling back to 1 for an item with no weight at all).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param itePooArr - Item Pool Array: The pool of items to pick from.
+ *
+ * @returns The chosen item.
+ *
+ * @example
+ * ```ts
+ * picWeiFun(itePooArr) // => chosen item object
+ * ```
+ *
+*/
+
+function picWeiFun( itePooArr ) {
+
+
+	const totWeiNum = itePooArr.reduce( ( sumWeiNum, curIteObj ) => sumWeiNum + ( curIteObj.weight || 1 ), 0 ); // What: Total Weight Number. Why: The random draw below needs the combined weight of the whole pool to scale against. How: This sums every item's own weight, defaulting a missing weight to 1.
+
+	let remWeiNum = Math.random() * totWeiNum; // What: Remaining Weight Number And Guard. Why: The loop below needs a running countdown to know which item the random draw landed on. How: This starts at a random point somewhere within the total weight.
+
+
+	for ( const curIteObj of itePooArr ) { // What: Weighted Draw Loop. Why: Every item in the pool must be walked in order, subtracting its own weight, until the running countdown crosses zero. How: This iterates itePooArr, returning the first item whose own weight subtraction brings remWeiNum to zero or below.
+
+
+		remWeiNum -= ( curIteObj.weight || 1 ); // What: Remaining Weight Subtraction. Why: This item's own share of the total must be removed from the running countdown before checking whether it was the one drawn. How: This subtracts curIteObj's own weight (or 1, if missing) from remWeiNum.
+
+
+
+		if ( remWeiNum <= 0 ) return curIteObj; // What: Draw Hit Guard. Why: Once the countdown crosses zero, this is the item the weighted draw landed on. How: This returns curIteObj immediately once remWeiNum is zero or below.
+
+
+	}
+
+
+
+	return itePooArr[ itePooArr.length - 1 ]; // What: Fallback Last Item Return. Why: Floating-point rounding could in rare cases leave the loop above without ever triggering its own return. How: This returns the pool's own last item as a safe fallback.
+
+
+}
+
+// #endregion picWeiFun
+
+
+
+// #region seeIsoFun
+
+/**
+ * seeIsoFun = Seed Iso Function
+ *
+ * @summary
+ * Produces the same local-timezone-adjusted ISO day string as
+ * store.js's own isoDay and onboarding-seed-data.js's own isoDayFun,
+ * kept as a local copy since this module has no dependency on either.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param datRawObj - Date Raw Object: The date to convert.
+ *
+ * @returns The given date's own local calendar day, as a "YYYY-MM-DD"
+ * string.
+ *
+ * @example
+ * ```ts
+ * seeIsoFun(datRawObj) // => 'YYYY-MM-DD'
+ * ```
+ *
+*/
+
+function seeIsoFun( datRawObj ) {
+
+
+	const datCopObj = new Date( datRawObj ); // What: Date Copy Object. Why: The given date must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datRawObj.
+
+	datCopObj.setMinutes( datCopObj.getMinutes() - datCopObj.getTimezoneOffset() ); // What: Date Copy Minutes Adjustment. Why: Shifting by the local timezone offset is what makes the ISO string below reflect the local calendar day instead of UTC's. How: This subtracts the local timezone offset, in minutes, from the copy's own minutes.
+
+
+
+	return datCopObj.toISOString().slice( 0, 10 ); // What: Iso Day String Return. Why: The caller only wants the calendar-day portion, not a full timestamp. How: This takes the shifted copy's own ISO string and slices off everything after the first 10 characters (YYYY-MM-DD).
+
+
+}
+
+// #endregion seeIsoFun
+
+
+
+const uniIdeFun = (() => { // What: Unique Identifier Function. Why: Every seeded item/vacation/pick-log/reminder-log row below needs its own distinct string id, and nothing else in this module tracks a shared counter for that. How: This is an immediately-invoked closure that captures one counter and returns the actual generator function used everywhere below.
+
+
+	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every id minted below needs a distinct numeric suffix appended after its own prefix. How: This starts at 0 and is incremented once per call to the returned generator function below.
+
+
+
+	return ( preFixStr ) => `${ preFixStr }_${ ++seqCouNum }`; // What: Id Generator Return. Why: The caller needs a closure that mints a new, distinct id string on every call, sharing one counter across all of them. How: This returns an arrow function that increments seqCouNum and interpolates it after preFixStr, separated by an underscore.
+
+
+})();
+
+// #endregion Shared Utilities
+
+
+
+// #region Demo State
+
+// #region buiConFun
+
+/**
+ * buiConFun = Build Conditional Function
+ *
+ * @summary
+ * Builds about 1 year of trigger history for the demo ease-up
+ * "Chore Free Day" gate: one row per completed weekly cycle, mostly
+ * triggered : false (chores got done and the gate didn't fire), with
+ * the gate firing every 4 to 6 weeks once it charges to 100
+ * (triggered : true).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns An array of conditionalLog rows, in state.conditionalLog's
+ * own shape.
+ *
+ * @example
+ * ```ts
+ * buiConFun() // => array of conditionalLog rows
+ * ```
+ *
+*/
+
+function buiConFun() {
+
+
+	const conRowArr = []; // What: Conditional Row Array And Guard. Why: Every row built by addConFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
+
+	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every simulated week below is computed relative to this same anchor. How: This is read as "now" and then floored to midnight on the next line.
+
+	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
+
+
+	let weeSinNum = 2; // What: Weeks Since Number And Guard. Why: The fire-check below needs a running count of weeks since the gate last fired, seeded partway so an early fire is still plausible. How: This starts at 2 and is incremented once per simulated cycle below, reset to 0 whenever the gate fires.
+	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
+
+
+	const addConFun = ( bacDayNum, trgValBoo ) => { // What: Add Conditional Function. Why: Every simulated cycle below shares the same row-building logic. How: This resolves bacDayNum into a real ISO date, then pushes one conditionalLog row onto conRowArr.
+
+
+		const curDatObj = new Date( todMidObj ); // What: Current Date Object. Why: Every row needs its own resolved real date. How: This copies todMidObj.
+
+
+		curDatObj.setDate( todMidObj.getDate() - bacDayNum ); // What: Current Date Step. Why: The copy must land on this row's own day. How: This moves curDatObj back bacDayNum days.
+
+
+
+		conRowArr.push({ // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/trgValBoo plus a few fixed fields matching the demo gate's own identity.
+
+
+			condId    : 'cnd_chorefree',                            // What: Conditional Identifier. Why: Every simulated row belongs to the demo's own Chore Free Day gate. How: This is that gate's fixed id.
+			date      : seeIsoFun( curDatObj ),                     // What: Date. Why: The Stats tab groups conditional history by day. How: This formats curDatObj as a local ISO date.
+			id        : 'clseed_' + ( seqCouNum++ ).toString( 36 ), // What: Identifier. Why: Every log row needs its own unique id. How: This appends the next base-36 sequence number to a seed prefix.
+			mode      : 'ease-up',                                  // What: Mode. Why: The demo gate charges up over time. How: This is the gate's fixed ease-up mode.
+			name      : 'Chore Free Day',                           // What: Name. Why: Log rows denormalize the gate's name so history survives a rename. How: This is the gate's fixed display name.
+			triggered : trgValBoo                                   // What: Triggered. Why: This records whether the gate fired that day. How: This is the caller's own trgValBoo.
+
+
+		});
+
+
+	};
+
+
+	for ( let weeIndNum = 51; weeIndNum >= 1; weeIndNum-- ) { // What: Weekly Cycle Loop. Why: About 52 weeks of history needs simulating, one cycle per week, walking backward from 51 weeks ago to 1 week ago. How: This walks weeIndNum from 51 down to 1.
+
+
+		const bacDayNum = weeIndNum * 7; // What: Back Day Number. Why: Every check and row below needs this simulated week's own real days-back count. How: This converts weeIndNum into a days-back count, 7 days per week.
+
+
+
+		if ( weeIndNum % 9 === 0 ) continue; // What: Skipped Cycle Guard. Why: An occasional un-completed cycle (no row logged at all) reads more honestly than a row every single week without exception. How: This skips roughly 1 in 9 weeks entirely.
+
+
+
+		weeSinNum++; // What: Weeks Since Increment. Why: Every completed cycle simulated below moves the gate one week closer to firing. How: This increments weeSinNum by 1.
+
+		const isaFirBoo = weeSinNum >= 5 && ( weeSinNum >= 6 || weeIndNum % 2 === 0 ); // What: Is-A Fire Boolean. Why: The gate should fire every 4 to 6 weeks, not on a perfectly fixed schedule. How: This is true once weeSinNum reaches 5, guaranteed by 6, with a coin-flip at exactly 5 to vary the exact week.
+
+
+		if ( isaFirBoo ) { // What: Fire Guard. Why: This is the guard gating the whole block below: a firing cycle must both log itself as triggered and reset the weeks-since counter. How: This checks isaFirBoo before running the 2 statements below.
+
+
+			addConFun( bacDayNum, true ); // What: Triggered Row Log Call. Why: A firing cycle needs its own logged row, marked triggered. How: This logs bacDayNum's own row with triggered set true.
+
+			weeSinNum = 0; // What: Weeks Since Reset. Why: A firing cycle must restart the weeks-since count from zero. How: This resets weeSinNum back to 0.
+
+
+		}
+
+		else addConFun( bacDayNum, false ); // What: Non-Fire Branch. Why: Every other completed cycle logs as a normal, non-triggered row. How: This logs a non-triggered row for this simulated week.
+
+
+	}
+
+
+
+	return conRowArr; // What: Conditional Row Array Return. Why: The caller needs the finished seeded conditional trigger history. How: This returns conRowArr, built above.
+
+
+}
+
+// #endregion buiConFun
 
 
 
@@ -361,98 +711,163 @@ function buiPicFun() {
 
 
 
-// #region seeIsoFun
+// #region buiRemFun
 
 /**
- * seeIsoFun = Seed Iso Function
+ * buiRemFun = Build Reminder Function
  *
  * @summary
- * Produces the same local-timezone-adjusted ISO day string as
- * store.js's own isoDay and onboarding-seed-data.js's own isoDayFun,
- * kept as a local copy since this module has no dependency on either.
+ * Builds a seeded reminder completion log: many completions each for
+ * the recurring demo reminders (so they dominate a High to Low
+ * completions sort), plus one completion each for several one-time
+ * reminders, including some whose own tasks have since been purged, to
+ * demonstrate that history survives deletion via this denormalized log.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param datRawObj - Date Raw Object: The date to convert.
+ * @param void - This function takes no parameters.
  *
- * @returns The given date's own local calendar day, as a "YYYY-MM-DD"
- * string.
+ * @returns An array of reminderLog rows, in state.reminderLog's own
+ * shape.
  *
  * @example
  * ```ts
- * seeIsoFun(datRawObj) // => 'YYYY-MM-DD'
+ * buiRemFun() // => array of reminderLog rows
  * ```
  *
 */
 
-function seeIsoFun( datRawObj ) {
+function buiRemFun() {
 
 
-	const datCopObj = new Date( datRawObj ); // What: Date Copy Object. Why: The given date must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datRawObj.
-
-	datCopObj.setMinutes( datCopObj.getMinutes() - datCopObj.getTimezoneOffset() ); // What: Date Copy Minutes Adjustment. Why: Shifting by the local timezone offset is what makes the ISO string below reflect the local calendar day instead of UTC's. How: This subtracts the local timezone offset, in minutes, from the copy's own minutes.
-
+	const nowDatObj = new Date(); // What: Now Date Object. Why: Every row below is computed relative to this same anchor instant. How: This is read once and reused by bacDatFun below.
+	const remRowArr = [];         // What: Reminder Row Array And Guard. Why: Every row built by addRemFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
 
 
-	return datCopObj.toISOString().slice( 0, 10 ); // What: Iso Day String Return. Why: The caller only wants the calendar-day portion, not a full timestamp. How: This takes the shifted copy's own ISO string and slices off everything after the first 10 characters (YYYY-MM-DD).
+	const addRemFun = ( tarTasStr, tarNamStr, tarTypStr, tarDatObj ) => remRowArr.push({ rowId : 'rl_seed_' + Math.random().toString( 36 ).slice( 2, 8 ), taskId : tarTasStr, name : tarNamStr, type : tarTypStr, completedAt : tarDatObj.toISOString() }); // What: Add Reminder Function. Why: Every completion simulated below shares the same row-building logic. How: This pushes one reminderLog row, shaped to state.reminderLog's own contract, onto remRowArr.
+
+	const bacDatFun = ( bacDayNum, houValNum = 9, minValNum = 0 ) => { // What: Back Date Function. Why: Every row below needs to turn a plain days-back count plus a time of day into a real Date. How: This subtracts bacDayNum days from nowDatObj, then sets houValNum/minValNum onto the result.
 
 
-}
+		const retDatObj = new Date( nowDatObj ); // What: Return Date Object. Why: nowDatObj itself must not be mutated by the offset/time below. How: This constructs a fresh copy of nowDatObj to offset in place instead.
 
-// #endregion seeIsoFun
+		retDatObj.setDate( nowDatObj.getDate() - bacDayNum ); // What: Return Date Day Subtraction. Why: This is the actual day-offset arithmetic this function exists to perform. How: This moves retDatObj back bacDayNum days from nowDatObj's own date.
 
-
-
-// #region picWeiFun
-
-/**
- * picWeiFun = Pick Weighted Function
- *
- * @summary
- * Picks one random item from a pool, weighted by each item's own
- * weight field (falling back to 1 for an item with no weight at all).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param itePooArr - Item Pool Array: The pool of items to pick from.
- *
- * @returns The chosen item.
- *
- * @example
- * ```ts
- * picWeiFun(itePooArr) // => chosen item object
- * ```
- *
-*/
-
-function picWeiFun( itePooArr ) {
-
-
-	const totWeiNum = itePooArr.reduce( ( sumWeiNum, curIteObj ) => sumWeiNum + ( curIteObj.weight || 1 ), 0 ); // What: Total Weight Number. Why: The random draw below needs the combined weight of the whole pool to scale against. How: This sums every item's own weight, defaulting a missing weight to 1.
-
-	let remWeiNum = Math.random() * totWeiNum; // What: Remaining Weight Number And Guard. Why: The loop below needs a running countdown to know which item the random draw landed on. How: This starts at a random point somewhere within the total weight.
-
-
-	for ( const curIteObj of itePooArr ) { // What: Weighted Draw Loop. Why: Every item in the pool must be walked in order, subtracting its own weight, until the running countdown crosses zero. How: This iterates itePooArr, returning the first item whose own weight subtraction brings remWeiNum to zero or below.
-
-
-		remWeiNum -= ( curIteObj.weight || 1 ); // What: Remaining Weight Subtraction. Why: This item's own share of the total must be removed from the running countdown before checking whether it was the one drawn. How: This subtracts curIteObj's own weight (or 1, if missing) from remWeiNum.
+		retDatObj.setHours( houValNum, minValNum, 0, 0 ); // What: Return Date Hours Set. Why: A completion needs a plausible time of day, not always midnight. How: This writes houValNum/minValNum onto retDatObj, zeroing seconds/milliseconds.
 
 
 
-		if ( remWeiNum <= 0 ) return curIteObj; // What: Draw Hit Guard. Why: Once the countdown crosses zero, this is the item the weighted draw landed on. How: This returns curIteObj immediately once remWeiNum is zero or below.
+		return retDatObj; // What: Return Date Object Return. Why: The caller needs the resolved real date back. How: This returns the same copy offset/timed in place above.
+
+
+	};
+
+
+	let fouCouNum = 0; // What: Found Count Number And Guard. Why: The weekly-recurrence loops directly below each need to stop once they've generated enough rows, not walk the full day range every time. How: This is reset to 0 before each loop and incremented once per matching row found.
+
+
+	for ( let bacIndNum = 1; bacIndNum <= 300 && fouCouNum < 38; bacIndNum++ ) { // What: Weekly Trash Loop. Why: About 9 months of a weekly Tuesday reminder needs simulating, walking day by day until 38 matches are found. How: This walks back up to 300 days, checking each one for a Tuesday.
+
+
+		const curDatObj = bacDatFun( bacIndNum, 8, 10 ); // What: Current Date Object. Why: Every checked day needs its own resolved real date, at a plausible completion time. How: This resolves bacIndNum days back via bacDatFun.
+
+
+		if ( curDatObj.getDay() === 2 ) { // What: Tuesday Match Guard. Why: This is the guard gating the whole block below: only a Tuesday counts as a real occurrence of this weekly reminder. How: This checks curDatObj's own weekday before running the 2 statements below.
+
+
+			addRemFun( 'tk_trash', 'Take out the trash for pickup', 'recurring', curDatObj ); // What: Trash Completion Log Call. Why: A matching Tuesday needs its own logged completion. How: This logs curDatObj as one completion of the tk_trash reminder.
+
+			fouCouNum++; // What: Found Count Increment. Why: The loop condition above needs to know how many matches have been found so far. How: This increments fouCouNum by 1.
+
+
+		}
 
 
 	}
 
 
+	fouCouNum = 0; // What: Found Count Number Reset. Why: The next weekly-recurrence loop below needs its own fresh count, independent of the trash loop above. How: This resets fouCouNum back to 0.
 
-	return itePooArr[ itePooArr.length - 1 ]; // What: Fallback Last Item Return. Why: Floating-point rounding could in rare cases leave the loop above without ever triggering its own return. How: This returns the pool's own last item as a safe fallback.
+	for ( let bacIndNum = 1; bacIndNum <= 300 && fouCouNum < 30; bacIndNum++ ) { // What: Weekly Plants Loop. Why: About 9 months of a weekly Saturday reminder needs simulating, walking day by day until 30 matches are found. How: This walks back up to 300 days, checking each one for a Saturday.
+
+
+		const curDatObj = bacDatFun( bacIndNum, 10, 0 ); // What: Current Date Object. Why: Every checked day needs its own resolved real date, at a plausible completion time. How: This resolves bacIndNum days back via bacDatFun.
+
+
+		if ( curDatObj.getDay() === 6 ) { // What: Saturday Match Guard. Why: This is the guard gating the whole block below: only a Saturday counts as a real occurrence of this weekly reminder. How: This checks curDatObj's own weekday before running the 2 statements below.
+
+
+			addRemFun( 'tk_plants', 'Water the plants', 'recurring', curDatObj ); // What: Plants Completion Log Call. Why: A matching Saturday needs its own logged completion. How: This logs curDatObj as one completion of the tk_plants reminder.
+
+			fouCouNum++; // What: Found Count Increment. Why: The loop condition above needs to know how many matches have been found so far. How: This increments fouCouNum by 1.
+
+
+		}
+
+
+	}
+
+
+	fouCouNum = 0; // What: Found Count Number Reset. Why: The next weekly-recurrence loop below needs its own fresh count, independent of the loops above. How: This resets fouCouNum back to 0.
+
+	for ( let bacIndNum = 1; bacIndNum <= 150 && fouCouNum < 18; bacIndNum++ ) { // What: Weekly Budget Loop. Why: About 5 months of a weekly Sunday reminder needs simulating, walking day by day until 18 matches are found. How: This walks back up to 150 days, checking each one for a Sunday.
+
+
+		const curDatObj = bacDatFun( bacIndNum, 19, 30 ); // What: Current Date Object. Why: Every checked day needs its own resolved real date, at a plausible completion time. How: This resolves bacIndNum days back via bacDatFun.
+
+
+		if ( curDatObj.getDay() === 0 ) { // What: Sunday Match Guard. Why: This is the guard gating the whole block below: only a Sunday counts as a real occurrence of this weekly reminder. How: This checks curDatObj's own weekday before running the 2 statements below.
+
+
+			addRemFun( 'tk_budget', 'Weekly budget review', 'recurring', curDatObj ); // What: Budget Completion Log Call. Why: A matching Sunday needs its own logged completion. How: This logs curDatObj as one completion of the tk_budget reminder.
+
+			fouCouNum++; // What: Found Count Increment. Why: The loop condition above needs to know how many matches have been found so far. How: This increments fouCouNum by 1.
+
+
+		}
+
+
+	}
+
+
+	for ( let occIndNum = 1; occIndNum <= 8; occIndNum++ ) addRemFun( 'tk_meds', 'Refill prescription', 'recurring', bacDatFun( occIndNum * 30 + 2, 9, 0 ) ); // What: Monthly Prescription Loop. Why: A monthly recurring reminder needs 8 past completions, roughly 30 days apart. How: This logs one completion per occIndNum, spaced 30 days apart plus a small fixed offset.
+
+	for ( let occIndNum = 1; occIndNum <= 5; occIndNum++ ) addRemFun( 'tk_filter', 'Change the HVAC filter', 'recurring', bacDatFun( occIndNum * 30 + 12, 17, 0 ) ); // What: Monthly Filter Loop. Why: A monthly recurring reminder needs 5 past completions, roughly 30 days apart. How: This logs one completion per occIndNum, spaced 30 days apart plus a small fixed offset.
+
+
+
+	const oncDonArr = [ // What: Once Done Array. Why: Each of these one-time reminders needs exactly one past completion, spread across the year; several of their own tasks have since been purged, demonstrating that this denormalized log survives deletion. How: This is read by the loop directly below, one row logged per entry.
+
+
+		[ 'tk_landlord',  'Email the landlord about the lease', 6   ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_passport',  'Renew passport', 40                      ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_dentist',   'Book dentist appointment', 22            ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_faucet',    'Fix the leaky faucet', 95                ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_taxes',     'Submit tax documents', 130               ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_library',   'Return library books', 17                ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_carserv',   'Schedule car service', 58                ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_resume',    'Update resume', 210                      ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_subcancel', 'Cancel unused subscription', 74          ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_bday',      'Send birthday card to Mom', 160          ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_backup',    'Back up the laptop', 33                  ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_conf',      'Register for the conference', 118        ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_smoke',     'Replace smoke detector battery', 250     ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+		[ 'tk_drycln',    'Pick up dry cleaning', 9                 ]  // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
+
+
+	];
+
+
+	for ( const [ tasIdeStr, tasNamStr, bckDayNum ] of oncDonArr ) addRemFun( tasIdeStr, tasNamStr, 'once', bacDatFun( bckDayNum, 12 + ( bckDayNum % 8 ), 15 ) ); // What: One-Time Completion Loop. Why: Every entry in oncDonArr needs its own single logged completion. How: This destructures each tuple and logs one completion at a time of day that varies with bckDayNum.
+
+
+
+	return remRowArr; // What: Reminder Row Array Return. Why: The caller needs the finished seeded reminder completion log. How: This returns remRowArr, built above.
 
 
 }
 
-// #endregion picWeiFun
+// #endregion buiRemFun
 
 
 
@@ -662,7 +1077,7 @@ function makVacFun( vacRowArr ) {
  *
  * @example
  * ```ts
- * picLogFun(allIteArr, allPicArr, isaVacFun, 365) // => { rowArr, easSta }
+ * picLogFun(allIteArr, allPicArr, isaVacFun, 365) // => { easStaObj, ... }
  * ```
  *
 */
@@ -783,6 +1198,7 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 			}
 
 
+
 			const isaDonBoo = Math.random() < 0.82;                                               // What: Is-A Done Boolean. Why: A real generated pick is usually, but not always, actually completed. How: This rolls an 82% chance of having been completed.
 			const souRolNum = Math.random();                                                      // What: Source Roll Number. Why: The source mix below needs one shared random roll to pick from. How: This rolls once, reused by souValStr's own ternary chain directly below.
 			const souValStr = souRolNum < 0.10 ? 'manual' : souRolNum < 0.16 ? 'reroll' : 'auto'; // What: Source Value String. Why: Most picks come from the daily generator, with a smaller mix of hand-pushed and rerolled picks. How: This resolves souRolNum into 'manual' (10%), 'reroll' (6%), or 'auto' (the remaining 84%).
@@ -880,172 +1296,12 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 
 
-	return { rowArr : picRowArr, easSta : easStaObj }; // What: Pick Log Return. Why: The caller (buiSeeFun below, and scripts/build-onboarding-stats.mjs externally) needs both the generated rows and every Ease Down picker's own final state at once. How: This returns picRowArr and easStaObj under their own external contract key names.
+	return { easStaObj : easStaObj, hisRowArr : picRowArr }; // What: Pick Log Return. Why: The caller (buiSeeFun below, and scripts/build-onboarding-stats.mjs externally) needs both the generated rows and every Ease Down picker's own final state at once. How: This returns picRowArr and easStaObj under their own external contract key names.
 
 
 }
 
 // #endregion picLogFun
-
-
-
-// #region buiRemFun
-
-/**
- * buiRemFun = Build Reminder Function
- *
- * @summary
- * Builds a seeded reminder completion log: many completions each for
- * the recurring demo reminders (so they dominate a High to Low
- * completions sort), plus one completion each for several one-time
- * reminders, including some whose own tasks have since been purged, to
- * demonstrate that history survives deletion via this denormalized log.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns An array of reminderLog rows, in state.reminderLog's own
- * shape.
- *
- * @example
- * ```ts
- * buiRemFun() // => array of reminderLog rows
- * ```
- *
-*/
-
-function buiRemFun() {
-
-
-	const nowDatObj = new Date(); // What: Now Date Object. Why: Every row below is computed relative to this same anchor instant. How: This is read once and reused by bacDatFun below.
-	const remRowArr = [];         // What: Reminder Row Array And Guard. Why: Every row built by addRemFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
-
-
-	const addRemFun = ( tarTasStr, tarNamStr, tarTypStr, tarDatObj ) => remRowArr.push({ rowId : 'rl_seed_' + Math.random().toString( 36 ).slice( 2, 8 ), taskId : tarTasStr, name : tarNamStr, type : tarTypStr, completedAt : tarDatObj.toISOString() }); // What: Add Reminder Function. Why: Every completion simulated below shares the same row-building logic. How: This pushes one reminderLog row, shaped to state.reminderLog's own contract, onto remRowArr.
-
-	const bacDatFun = ( bacDayNum, houValNum = 9, minValNum = 0 ) => { // What: Back Date Function. Why: Every row below needs to turn a plain days-back count plus a time of day into a real Date. How: This subtracts bacDayNum days from nowDatObj, then sets houValNum/minValNum onto the result.
-
-
-		const retDatObj = new Date( nowDatObj ); // What: Return Date Object. Why: nowDatObj itself must not be mutated by the offset/time below. How: This constructs a fresh copy of nowDatObj to offset in place instead.
-
-		retDatObj.setDate( nowDatObj.getDate() - bacDayNum ); // What: Return Date Day Subtraction. Why: This is the actual day-offset arithmetic this function exists to perform. How: This moves retDatObj back bacDayNum days from nowDatObj's own date.
-
-		retDatObj.setHours( houValNum, minValNum, 0, 0 ); // What: Return Date Hours Set. Why: A completion needs a plausible time of day, not always midnight. How: This writes houValNum/minValNum onto retDatObj, zeroing seconds/milliseconds.
-
-
-
-		return retDatObj; // What: Return Date Object Return. Why: The caller needs the resolved real date back. How: This returns the same copy offset/timed in place above.
-
-
-	};
-
-
-	let fouCouNum = 0; // What: Found Count Number And Guard. Why: The weekly-recurrence loops directly below each need to stop once they've generated enough rows, not walk the full day range every time. How: This is reset to 0 before each loop and incremented once per matching row found.
-
-
-	for ( let bacIndNum = 1; bacIndNum <= 300 && fouCouNum < 38; bacIndNum++ ) { // What: Weekly Trash Loop. Why: About 9 months of a weekly Tuesday reminder needs simulating, walking day by day until 38 matches are found. How: This walks back up to 300 days, checking each one for a Tuesday.
-
-
-		const curDatObj = bacDatFun( bacIndNum, 8, 10 ); // What: Current Date Object. Why: Every checked day needs its own resolved real date, at a plausible completion time. How: This resolves bacIndNum days back via bacDatFun.
-
-
-		if ( curDatObj.getDay() === 2 ) { // What: Tuesday Match Guard. Why: This is the guard gating the whole block below: only a Tuesday counts as a real occurrence of this weekly reminder. How: This checks curDatObj's own weekday before running the 2 statements below.
-
-
-			addRemFun( 'tk_trash', 'Take out the trash for pickup', 'recurring', curDatObj ); // What: Trash Completion Log Call. Why: A matching Tuesday needs its own logged completion. How: This logs curDatObj as one completion of the tk_trash reminder.
-
-			fouCouNum++; // What: Found Count Increment. Why: The loop condition above needs to know how many matches have been found so far. How: This increments fouCouNum by 1.
-
-
-		}
-
-
-	}
-
-
-	fouCouNum = 0; // What: Found Count Number Reset. Why: The next weekly-recurrence loop below needs its own fresh count, independent of the trash loop above. How: This resets fouCouNum back to 0.
-
-	for ( let bacIndNum = 1; bacIndNum <= 300 && fouCouNum < 30; bacIndNum++ ) { // What: Weekly Plants Loop. Why: About 9 months of a weekly Saturday reminder needs simulating, walking day by day until 30 matches are found. How: This walks back up to 300 days, checking each one for a Saturday.
-
-
-		const curDatObj = bacDatFun( bacIndNum, 10, 0 ); // What: Current Date Object. Why: Every checked day needs its own resolved real date, at a plausible completion time. How: This resolves bacIndNum days back via bacDatFun.
-
-
-		if ( curDatObj.getDay() === 6 ) { // What: Saturday Match Guard. Why: This is the guard gating the whole block below: only a Saturday counts as a real occurrence of this weekly reminder. How: This checks curDatObj's own weekday before running the 2 statements below.
-
-
-			addRemFun( 'tk_plants', 'Water the plants', 'recurring', curDatObj ); // What: Plants Completion Log Call. Why: A matching Saturday needs its own logged completion. How: This logs curDatObj as one completion of the tk_plants reminder.
-
-			fouCouNum++; // What: Found Count Increment. Why: The loop condition above needs to know how many matches have been found so far. How: This increments fouCouNum by 1.
-
-
-		}
-
-
-	}
-
-
-	fouCouNum = 0; // What: Found Count Number Reset. Why: The next weekly-recurrence loop below needs its own fresh count, independent of the loops above. How: This resets fouCouNum back to 0.
-
-	for ( let bacIndNum = 1; bacIndNum <= 150 && fouCouNum < 18; bacIndNum++ ) { // What: Weekly Budget Loop. Why: About 5 months of a weekly Sunday reminder needs simulating, walking day by day until 18 matches are found. How: This walks back up to 150 days, checking each one for a Sunday.
-
-
-		const curDatObj = bacDatFun( bacIndNum, 19, 30 ); // What: Current Date Object. Why: Every checked day needs its own resolved real date, at a plausible completion time. How: This resolves bacIndNum days back via bacDatFun.
-
-
-		if ( curDatObj.getDay() === 0 ) { // What: Sunday Match Guard. Why: This is the guard gating the whole block below: only a Sunday counts as a real occurrence of this weekly reminder. How: This checks curDatObj's own weekday before running the 2 statements below.
-
-
-			addRemFun( 'tk_budget', 'Weekly budget review', 'recurring', curDatObj ); // What: Budget Completion Log Call. Why: A matching Sunday needs its own logged completion. How: This logs curDatObj as one completion of the tk_budget reminder.
-
-			fouCouNum++; // What: Found Count Increment. Why: The loop condition above needs to know how many matches have been found so far. How: This increments fouCouNum by 1.
-
-
-		}
-
-
-	}
-
-
-	for ( let occIndNum = 1; occIndNum <= 8; occIndNum++ ) addRemFun( 'tk_meds', 'Refill prescription', 'recurring', bacDatFun( occIndNum * 30 + 2, 9, 0 ) ); // What: Monthly Prescription Loop. Why: A monthly recurring reminder needs 8 past completions, roughly 30 days apart. How: This logs one completion per occIndNum, spaced 30 days apart plus a small fixed offset.
-
-	for ( let occIndNum = 1; occIndNum <= 5; occIndNum++ ) addRemFun( 'tk_filter', 'Change the HVAC filter', 'recurring', bacDatFun( occIndNum * 30 + 12, 17, 0 ) ); // What: Monthly Filter Loop. Why: A monthly recurring reminder needs 5 past completions, roughly 30 days apart. How: This logs one completion per occIndNum, spaced 30 days apart plus a small fixed offset.
-
-
-
-	const oncDonArr = [ // What: Once Done Array. Why: Each of these one-time reminders needs exactly one past completion, spread across the year; several of their own tasks have since been purged, demonstrating that this denormalized log survives deletion. How: This is read by the loop directly below, one row logged per entry.
-
-
-		[ 'tk_landlord',  'Email the landlord about the lease', 6   ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_passport',  'Renew passport', 40                      ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_dentist',   'Book dentist appointment', 22            ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_faucet',    'Fix the leaky faucet', 95                ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_taxes',     'Submit tax documents', 130               ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_library',   'Return library books', 17                ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_carserv',   'Schedule car service', 58                ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_resume',    'Update resume', 210                      ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_subcancel', 'Cancel unused subscription', 74          ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_bday',      'Send birthday card to Mom', 160          ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_backup',    'Back up the laptop', 33                  ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_conf',      'Register for the conference', 118        ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_smoke',     'Replace smoke detector battery', 250     ], // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-		[ 'tk_drycln',    'Pick up dry cleaning', 9                 ]  // What: One-Time Completion Tuple. Why: See the comment above this array. How: This is [ taskId, name, daysBack ], destructured by position below.
-
-
-	];
-
-
-	for ( const [ tasIdeStr, tasNamStr, bckDayNum ] of oncDonArr ) addRemFun( tasIdeStr, tasNamStr, 'once', bacDatFun( bckDayNum, 12 + ( bckDayNum % 8 ), 15 ) ); // What: One-Time Completion Loop. Why: Every entry in oncDonArr needs its own single logged completion. How: This destructures each tuple and logs one completion at a time of day that varies with bckDayNum.
-
-
-
-	return remRowArr; // What: Reminder Row Array Return. Why: The caller needs the finished seeded reminder completion log. How: This returns remRowArr, built above.
-
-
-}
-
-// #endregion buiRemFun
 
 
 
@@ -1160,7 +1416,7 @@ function buiSeeFun() {
 	const vacLogArr = buiVacFun( allIteArr ); // What: Vacation Log Array. Why: The pick-log simulation below needs a real inactive-state log to honor. How: This calls buiVacFun with the seeded items.
 	const isaVacFun = makVacFun( vacLogArr ); // What: Is-A Vacation Function. Why: The pick-log simulation below needs a predicate, not just the raw log rows. How: This builds the predicate via makVacFun from vacLogArr.
 
-	const { rowArr : hisRowArr, easSta : easStaObj } = picLogFun( allIteArr, allPicArr, isaVacFun ); // What: History Row Array And Ease State Object. Why: This is about a year of simulated pick history, plus each Ease Down picker's own final in-progress state. How: This destructures picLogFun's own return value.
+	const { easStaObj, hisRowArr } = picLogFun( allIteArr, allPicArr, isaVacFun ); // What: History Row Array And Ease State Object. Why: This is about a year of simulated pick history, plus each Ease Down picker's own final in-progress state. How: This destructures picLogFun's own return value.
 
 
 	for ( const curPicObj of allPicArr ) { // What: Ease Down Apply Loop. Why: Every Ease Down picker's own live snapshot must reflect where the simulation above actually left it, not the picker's own static defaults. How: This recharges every item in an Ease Down picker's own pool except the in-progress one, then points the picker at it.
@@ -1220,8 +1476,8 @@ function buiSeeFun() {
 		{ pickerId : 'pkr_din',     iteStr : 'Sheet-pan vegetables',    donValBoo : false, souValStr : 'auto'   }, // What: Food Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
 
 		// Singletons, a couple hand-picked from the Pickers tab
-		{ pickerId : 'pkr_self',    iteStr : 'Walk without headphones', donValBoo : true,  souValStr : 'manual' }, // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
-		{ pickerId : 'pkr_work',    iteStr : 'Inbox triage, 20 min',    donValBoo : false, souValStr : 'auto'   }, // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_self',    iteStr : 'Walk without headphones', donValBoo : true,  souValStr : 'manual' },                           // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_work',    iteStr : 'Inbox triage, 20 min',    donValBoo : false, souValStr : 'auto'   },                           // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
 		{ pickerId : 'pkr_play',    iteStr : ( plaActObj ? plaActObj.name : 'Long bath, no phone' ), donValBoo : false, souValStr : 'auto' } // What: Ease Down Singleton Pick Tuple. Why: This continues whichever item the Ease Down simulation left in progress (or a safe fallback name if somehow none is), rather than authoring a fixed name like every entry above it. How: This is expanded below into both a today.entries row and a pickLog row.
 
 
@@ -1362,100 +1618,7 @@ function buiSeeFun() {
 
 // #endregion buiSeeFun
 
-
-
-// #region buiConFun
-
-/**
- * buiConFun = Build Conditional Function
- *
- * @summary
- * Builds about 1 year of trigger history for the demo ease-up
- * "Chore Free Day" gate: one row per completed weekly cycle, mostly
- * triggered : false (chores got done and the gate didn't fire), with
- * the gate firing every 4 to 6 weeks once it charges to 100
- * (triggered : true).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns An array of conditionalLog rows, in state.conditionalLog's
- * own shape.
- *
- * @example
- * ```ts
- * buiConFun() // => array of conditionalLog rows
- * ```
- *
-*/
-
-function buiConFun() {
-
-
-	const conRowArr = []; // What: Conditional Row Array And Guard. Why: Every row built by addConFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
-
-	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every simulated week below is computed relative to this same anchor. How: This is read as "now" and then floored to midnight on the next line.
-
-	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
-
-
-	let weeSinNum = 2; // What: Weeks Since Number And Guard. Why: The fire-check below needs a running count of weeks since the gate last fired, seeded partway so an early fire is still plausible. How: This starts at 2 and is incremented once per simulated cycle below, reset to 0 whenever the gate fires.
-	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
-
-
-	const addConFun = ( bacDayNum, triValBoo ) => { // What: Add Conditional Function. Why: Every simulated cycle below shares the same row-building logic. How: This resolves bacDayNum into a real ISO date, then pushes one conditionalLog row onto conRowArr.
-
-
-		const curDatObj = new Date( todMidObj ); curDatObj.setDate( todMidObj.getDate() - bacDayNum ); // What: Current Date Object. Why: Every row needs its own resolved real date. How: This copies todMidObj, then moves it back bacDayNum days.
-
-
-
-		conRowArr.push({ id : 'clseed_' + ( seqCouNum++ ).toString( 36 ), condId : 'cnd_chorefree', date : seeIsoFun( curDatObj ), triggered : triValBoo, mode : 'ease-up', name : 'Chore Free Day' }); // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/triValBoo plus a few fixed fields matching the demo gate's own identity.
-
-
-	};
-
-
-	for ( let weeIndNum = 51; weeIndNum >= 1; weeIndNum-- ) { // What: Weekly Cycle Loop. Why: About 52 weeks of history needs simulating, one cycle per week, walking backward from 51 weeks ago to 1 week ago. How: This walks weeIndNum from 51 down to 1.
-
-
-		const bacDayNum = weeIndNum * 7; // What: Back Day Number. Why: Every check and row below needs this simulated week's own real days-back count. How: This converts weeIndNum into a days-back count, 7 days per week.
-
-
-
-		if ( weeIndNum % 9 === 0 ) continue; // What: Skipped Cycle Guard. Why: An occasional un-completed cycle (no row logged at all) reads more honestly than a row every single week without exception. How: This skips roughly 1 in 9 weeks entirely.
-
-
-
-		weeSinNum++; // What: Weeks Since Increment. Why: Every completed cycle simulated below moves the gate one week closer to firing. How: This increments weeSinNum by 1.
-
-		const isaFirBoo = weeSinNum >= 5 && ( weeSinNum >= 6 || weeIndNum % 2 === 0 ); // What: Is-A Fire Boolean. Why: The gate should fire every 4 to 6 weeks, not on a perfectly fixed schedule. How: This is true once weeSinNum reaches 5, guaranteed by 6, with a coin-flip at exactly 5 to vary the exact week.
-
-
-		if ( isaFirBoo ) { // What: Fire Guard. Why: This is the guard gating the whole block below: a firing cycle must both log itself as triggered and reset the weeks-since counter. How: This checks isaFirBoo before running the 2 statements below.
-
-
-			addConFun( bacDayNum, true ); // What: Triggered Row Log Call. Why: A firing cycle needs its own logged row, marked triggered. How: This logs bacDayNum's own row with triggered set true.
-
-			weeSinNum = 0; // What: Weeks Since Reset. Why: A firing cycle must restart the weeks-since count from zero. How: This resets weeSinNum back to 0.
-
-
-		}
-
-		else addConFun( bacDayNum, false ); // What: Non-Fire Branch. Why: Every other completed cycle logs as a normal, non-triggered row. How: This logs a non-triggered row for this simulated week.
-
-
-	}
-
-
-
-	return conRowArr; // What: Conditional Row Array Return. Why: The caller needs the finished seeded conditional trigger history. How: This returns conRowArr, built above.
-
-
-}
-
-// #endregion buiConFun
+// #endregion Demo State
 
 
 
@@ -1520,117 +1683,28 @@ function buiCleFun() {
 
 // #endregion buiCleFun
 
-
-
-const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text (Pickers/Data/Stats tabs, the picker mini-tours) reads this shared table. How: This maps each of pickers.js's own 5 selection-algorithm keys to its own { label, hint } pair.
-
-
-	'random' : { // What: Random Mode Entry. Why: This documents the random selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
-
-
-		label : 'Truly Random', // What: Label. Why: This is the mode's own user-facing display name, shown wherever a picker's mode needs a human-readable label. How: This is read directly as this mode's own display text.
-
-		hint  : [ // What: Hint. Why: This is the mode's own user-facing ruleset/explanation copy, shown wherever this mode needs documenting. How: This is a 2-entry array, a ruleset paragraph followed by an explanation paragraph.
-
-
-			'Ruleset: This picker’s ruleset makes it so that all of its items have an equally likely chance of being picked.',
-
-			'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can pick the exact same item multiple times in a row or an item can go a long time without being picked.'
-
-
-		]
-
-
-	},
-
-	'weighted' : { // What: Weighted Mode Entry. Why: This documents the weighted selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
-
-
-		label : 'Weighted', // What: Label. Why: This is the mode's own user-facing display name, shown wherever a picker's mode needs a human-readable label. How: This is read directly as this mode's own display text.
-
-		hint  : [ // What: Hint. Why: This is the mode's own user-facing ruleset/explanation copy, shown wherever this mode needs documenting. How: This is a 2-entry array, a ruleset paragraph followed by an explanation paragraph.
-
-
-			'Ruleset: This picker’s ruleset uses adjustable, weighted per-item values that can make them more (or less) likely to be picked.',
-
-			'Explanation: This is a good choice for mitigating some of the Truly Random drawbacks by tuning individual items’ % chance to make them more (or less) likely to be picked. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is less likely to do so.'
-
-
-		]
-
-
-	},
-
-	'dynamic' : { // What: Dynamic Mode Entry. Why: This documents the dynamic weighted selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
-
-
-		label : 'Dynamic Weighted', // What: Label. Why: This is the mode's own user-facing display name, shown wherever a picker's mode needs a human-readable label. How: This is read directly as this mode's own display text.
-
-		hint  : [ // What: Hint. Why: This is the mode's own user-facing ruleset/explanation copy, shown wherever this mode needs documenting. How: This is a 2-entry array, a ruleset paragraph followed by an explanation paragraph.
-
-
-			'Ruleset: This picker’s ruleset is exactly the same as the Weighted picker, but it also adds a second per-item value that increments the weighted value every time an item is not picked and then resets its value every time that it is.',
-
-			'Explanation: This is a good choice for mitigating almost all of the Truly Random drawbacks by tuning individual items’ % chance to make them more (or less) likely to be picked. Furthermore, by adding a dynamic per-item value it makes it increasingly likely to be picked when it isn’t and less likely when it is. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is much less likely to do so.'
-
-
-		]
-
-
-	},
-
-	'ease-up' : { // What: Ease Up Mode Entry. Why: This documents the ease-up selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
-
-
-		label : 'Ease Up', // What: Label. Why: This is the mode's own user-facing display name, shown wherever a picker's mode needs a human-readable label. How: This is read directly as this mode's own display text.
-
-		hint  : [ // What: Hint. Why: This is the mode's own user-facing ruleset/explanation copy, shown wherever this mode needs documenting. How: This is a 2-entry array, a ruleset paragraph followed by an explanation paragraph.
-
-
-			'Ruleset: This picker’s ruleset makes it so that all items are ineligible to be picked until their individual values reach 100, at which point they are put into a list of eligible items to be picked. Said values will start at 0 and are incremented every cycle by a random amount within a user defined range.',
-
-			'Explanation: This is a good choice for ensuring that picker items can only be picked once every N days and can never be picked multiple times in a row. e.g. an item can only be picked at most once a week and must be picked at least once every two weeks.'
-
-
-		]
-
-
-	},
-
-	'ease-down' : { // What: Ease Down Mode Entry. Why: This documents the ease-down selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
-
-
-		label : 'Ease Down', // What: Label. Why: This is the mode's own user-facing display name, shown wherever a picker's mode needs a human-readable label. How: This is read directly as this mode's own display text.
-
-		hint  : [ // What: Hint. Why: This is the mode's own user-facing ruleset/explanation copy, shown wherever this mode needs documenting. How: This is a 2-entry array, a ruleset paragraph followed by an explanation paragraph.
-
-
-			'Ruleset: This picker’s ruleset is the opposite of the Ease Up picker. It makes it so that all items are eligible to be picked and once an item is picked it will stay picked until its value reaches 0, at which point a new item is picked. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.',
-
-			'Explanation: This is a good choice for ensuring that an item stays picked for at least N days and then is not picked again for at least one cycle afterwards. e.g. it must remain picked for at least a week and must not remain picked for more than two weeks.'
-
-
-		]
-
-
-	}
-
-
-};
+// #endregion Helpers
 
 
 
-export const SED_NAM_OBJ = { // What: Seed Namespace Object. Why: This is the single public entry point every consumer imports by name. How: This maps this file's own internal function/constant names directly onto matching external property names.
+// #region Exports
+
+const SED_NAM_OBJ = { // What: Seed Namespace Object. Why: This is the single public entry point every consumer imports by name. How: This maps this file's own internal function/constant names directly onto matching external property names.
 
 
 	buiCleFun   : buiCleFun,   // What: Build Clean Function. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This re-exports buiCleFun under its own matching name.
 	buiSeeFun   : buiSeeFun,   // What: Build Seed Function. Why: This design-time demo/sample state builder is meant to be called manually during development, not imported by any live app code path. How: This re-exports buiSeeFun under its own matching name.
 	MOD_DEF_OBJ : MOD_DEF_OBJ, // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text reads this shared table. How: This re-exports MOD_DEF_OBJ under its own matching name.
 	picLogFun   : picLogFun,   // What: Pick Log Function. Why: scripts/build-onboarding-stats.mjs reuses this exact simulation to precompute the Welcome Tour's own sample history offline. How: This re-exports picLogFun under its own matching name.
-	picWeiFun   : picWeiFun,   // What: Pick Weighted Function. Why: This stays exported as part of SED_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports picWeiFun under its own matching name.
 	seeIsoFun   : seeIsoFun    // What: Seed Iso Function. Why: scripts/build-onboarding-stats.mjs needs the exact same date-to-ISO-string conversion this file's own simulation uses. How: This re-exports seeIsoFun under its own matching name.
 
 
 };
+
+
+
+export { SED_NAM_OBJ }; // What: Seed Namespace Object Export. Why: store.js, the tabs, the tours and the onboarding-stats script reach the clean state, the mode table and the simulation helpers through the one namespace object. How: This exports SED_NAM_OBJ by name at the very end of the file.
+
+// #endregion Exports
 
 
