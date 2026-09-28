@@ -1864,10 +1864,14 @@ still passes.
   and a search for the value lists all of them. The value follows the
   class naming rule below, element-type segment included (e.g.
   `data-element-name-hook='remRowBut'`), the same name the element's
-  class gets in the design-system pass. Selectors match it exactly
-  (`[data-element-name-hook='remRowBut']`); an element that genuinely
-  needs a second identity holds both values, space-separated, and
-  selectors for it use `~=`. The element's own What/Why/How comment says
+  class gets in the design-system pass. An element that genuinely needs
+  a second identity holds both values, space-separated, so every
+  selector matches the hook with `~=`
+  (`[data-element-name-hook~="remRowBut"]`), never an exact `=`, which
+  silently stops matching the moment an element gains a second value.
+  Hooks are for JS only: CSS never styles through a hook selector,
+  except where there is genuinely no other way, and then it uses `~=`
+  too. The element's own What/Why/How comment says
   which kinds of code rely on the hook. A custom component that renders
   a hooked element accepts `data-element-name-hook` under that same name
   at its call sites and forwards it to the element.
@@ -1885,6 +1889,16 @@ still passes.
   `data-*` attribute, set as `data-row-edit-active={ isaEdiBoo ||
   undefined }` so it disappears when false, and matched with
   `[data-row-edit-active]`.
+- **Converting an existing state class** (`is-on`, `is-open`, ...) during
+  the module move, judged per element, since the same class often sits
+  on elements with different semantics: first, an `aria-*` attribute the
+  element already carries that mirrors the same condition (e.g. a switch's
+  own `aria-checked`) replaces the class, with no accessibility change;
+  otherwise a new presence-only `data-*` attribute does. An aria
+  attribute the element doesn't already have is never added just to
+  carry styling, since it changes what assistive technology announces.
+  Animation-trigger classes (`is-celebrating`, `is-pulsing`,
+  `is-closing`, ...) stay module classes, per the exception above.
 - **Other `data-*` attribute names** (state attributes, and any future
   attribute) are kebab-case and built like any other name (name,
   descriptor, purpose, in that order), but from 3 full words with no
@@ -1949,9 +1963,22 @@ still passes.
   temporary duplication, which the design-system pass cleans up:
   - Every rule styling the file's own elements moves (cut, never copied,
     so a broken module can't hide behind a leftover global rule).
-  - A rule where a parent styles a child component's element (e.g.
-    `.today-card .check`) is copied into the child's own module, attached
-    to that element's existing class.
+  - A rule where a parent in one component file styles an element that
+    another file renders (e.g. `.entry-editor .pie-reset`) moves into the
+    child's own module, and the child owns every one of its own styles.
+    When the child only ever renders inside that parent, the parent
+    prefix was only scoping and is simply dropped. When the child looks
+    different depending on where it sits (a real variant, e.g. `.seg`
+    compacted inside Settings rows), the child's module reads the value
+    from a custom property with its normal value as the fallback (`.seg
+    { height: var(--seg-height, 34px); }`), and the parent's own module
+    sets that property on itself (`.setDataRow { --seg-height: 28px;
+    }`). The property is named after the child it's for (`--seg-...`),
+    since a custom property inherits to every descendant, including a
+    nested instance of the same child. Where a variant changes
+    structure rather than values and a custom property reads badly,
+    the parent passes a module class down as a `className` prop
+    instead; each such case is raised with the user first.
   - A class several components use (`btn`, `pill`, ...) has its
     declarations copied into each module that uses it, attached to that
     element's existing class.
