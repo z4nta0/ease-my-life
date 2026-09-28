@@ -1887,17 +1887,35 @@ still passes.
   miscorrection and project-scoped override applying), except the type
   segment names the element's own type rather than a JS type: `<button>`
   → `But`, `<section>` → `Sec`, `<div>` → `Div`, `<span>` → `Spa`, and so
-  on (e.g. `.groHeaSec`, read as `cssModObj.groHeaSec`). Existing classes
+  on (e.g. `.groHeaSec`, read as `cssModObj.groHeaSec`). A tag too short
+  for a 3-letter segment is expanded to the full word it stands for first:
+  `p` → `Par` (Paragraph), `a` → `Anc` (Anchor), `h1`-`h6` → `Hea`
+  (Heading), `ul` → `Uno` (Unordered list), `ol` → `Ord` (Ordered list),
+  `li` → `Ite` (list Item), `img` → `Ima` (Image), `svg` → `Svg`, `g` →
+  `Gro` (Group), `tr` → `Row`, `td` → `Cel` (Cell), and `th` → `Hce`
+  (Header cell, since `Hea` already means Heading). Existing classes
   keep their current names while they move into modules; renaming them
   to this rule belongs to the design-system pass.
 - **CSS file order follows the cascade**: a parent element's rules come
   first, then its first child's, then the next child's, and so on, in the
   same order the elements appear in the component's own markup, each
   child's own descendants following it before its next sibling.
+- **Variants of one element's rule** (`:hover`, `[data-open]`,
+  `::before`, a `@media` override, ...) come directly after that element's
+  own base rule and before its children's rules.
 - **Sectioning in CSS**: an element that contains child elements gets a
   `/* #region <Name> */` / `/* #endregion <Name> */` pair (the CSS form
-  VS Code folds), whose start and end contain its children's rules. An
-  element with no child elements gets no region.
+  VS Code folds), named after the element's own class and wrapping its
+  own rule (with its variants) plus every one of its children's rules. An
+  element with no child elements gets no region. Exactly 1 blank line
+  sits between each marker and the rules it wraps, the same as every
+  other region in this doc.
+- **Blank lines between siblings in CSS** mirror the JSX sibling spacing
+  rule under "### JSX": 3 blank lines around a section whose element
+  contains elements that themselves have children, 2 around a section
+  whose children are all simple (childless) elements, and 1 around a
+  childless element's own rule. When two neighbors call for different
+  counts, the bigger count wins.
 - **What moves into a module.** Everything that can, even at the cost of
   temporary duplication, which the design-system pass cleans up:
   - Every rule styling the file's own elements moves (cut, never copied,
