@@ -811,7 +811,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			const carEleLis = ( celStyStr === 'ripple' && maiScrRef.current ) // What: Card Element List. Why: Only the Ripple style needs the per-card exhale cascade at all. How: This queries every rendered card only under that style, otherwise an empty array.
-				? maiScrRef.current.querySelectorAll( '[data-element-name-hook="todCarArt"]' ) // What: Ripple Branch. Why: The ripple cascades across every rendered card. How: This queries them all from the scroll root.
+				? maiScrRef.current.querySelectorAll( '[data-element-name-hook~="todCarArt"]' ) // What: Ripple Branch. Why: The ripple cascades across every rendered card. How: This queries them all from the scroll root.
 				: [];                                                                          // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
 
 
@@ -1902,7 +1902,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		const griCurEle = poiEveObj.currentTarget;                                     // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
 		const lisCurEle = griCurEle.closest( '[data-element-name-hook="todLisDiv"]' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest .today-list ancestor.
-		const carCurEle = griCurEle.closest( '[data-element-name-hook="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
+		const carCurEle = griCurEle.closest( '[data-element-name-hook~="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
 
 
 		if ( !lisCurEle || !carCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
@@ -1915,7 +1915,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			conLisEle   : lisCurEle,                                                            // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes lisCurEle.
 			griIcoEle   : griCurEle,                                                            // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
 			hanDraEle   : carCurEle,                                                            // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes carCurEle.
-			iteSelStr   : '[data-element-name-hook="todCarArt"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .today-card selector.
+			iteSelStr   : '[data-element-name-hook~="todCarArt"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .today-card selector.
 			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                         // What: On End Drag Function. Why: Same reasoning as groDraFun's own onEndDraFun above. How: This publishes draActBoo : false onto the shared tour bus.
 			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                          // What: On Start Drag Function. Why: Same reasoning as groDraFun's own onStaDraFun above. How: This publishes draActBoo : true onto the shared tour bus.
 			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
@@ -3324,7 +3324,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									ref={ stkEleRef }
 
 									className='streak'
-								>{ /* What: Streak Div Element. Why: This is the badge the streak-pulse effect above targets directly. How: This renders a flame icon plus the current streak count. */ }
+
+									data-element-name-hook='todStrDiv'
+								>{ /* What: Streak Div Element. Why: This is the badge the streak-pulse effect above targets directly. How: This renders a flame icon plus the current streak count. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<IcoSvgCom
@@ -3353,18 +3355,24 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-						<div className='today-h-lead'>{ /* What: Header Lead Div Element. Why: The brand mark, the title, and the completion ring read as one shared row beneath the kicker. How: This wraps all 3 below. */ }
+						<div
+							className='today-h-lead'
+
+							data-element-name-hook='heaLeaDiv'
+						>{ /* What: Header Lead Div Element. Why: The brand mark, the title, and the completion ring read as one shared row beneath the kicker. How: This wraps all 3 below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, and help mode's Today catalog. */ }
 
 
 							<button
 								className='brand-mark'
+
+								data-element-name-hook='braMarBut'
 
 								type='button'
 
 								aria-label='Ease My Life link to go to the Today page'
 
 								onClick={ onNavHomFun }
-							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which .brand-mark sets to var(--accent); the grid lines use var(--accent-soft), the same color as the Today group-rail/tabbar selected backgrounds. */ }
+							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which .brand-mark sets to var(--accent); the grid lines use var(--accent-soft), the same color as the Today group-rail/tabbar selected backgrounds. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, and help mode's Today catalog. */ }
 
 
 								<svg
@@ -3506,7 +3514,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								className='ring'
 
 								data-element-name-hook='proRinDiv'
-							>{ /* What: Ring Div Element. Why: This is the completion ring the celebration effect above targets directly. How: This renders the SVG ring itself, its numeric label, and 3 purely decorative overlay elements the celebration effect's own CSS classes animate. Its data-element-name-hook is read by the Today page tour. */ }
+							>{ /* What: Ring Div Element. Why: This is the completion ring the celebration effect above targets directly. How: This renders the SVG ring itself, its numeric label, and 3 purely decorative overlay elements the celebration effect's own CSS classes animate. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
 								<svg viewBox='0 0 36 36'>{ /* What: Ring Svg Element. Why: This draws the actual ring shape. How: This renders a background circle plus a foreground circle whose dash array reflects donCouNum over totCouNum. */ }
@@ -3620,7 +3628,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							className='editmode-banner-actions'
 
 							data-element-name-hook='ediBanSpa'
-						>{ /* What: Banner Actions Span Element. Why: The Cancel/Done pair reads as one right-aligned cluster. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour. */ }
+						>{ /* What: Banner Actions Span Element. Why: The Cancel/Done pair reads as one right-aligned cluster. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
 							<ButBasCom
@@ -3668,7 +3676,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						data-element-name-hook='groRaiAsi'
 
 						aria-label='Groups'
-					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks and help mode's chrome clipping. */ }
+					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks, help mode's chrome clipping, and help mode's Today catalog. */ }
 
 
 						<div className='kicker rail-kicker'>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
@@ -3866,7 +3874,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								type='button'
 
 								onClick={ togModFun }
-							>{ /* What: Edit Mode Rail Button Element. Why: This is the actual toggle control, disabled while a generation is in flight since dragging mid-cascade makes no sense. How: This calls togModFun, swapping its own label per ediModBoo. Its data-element-name-hook is read by the Today page tour. */ }
+							>{ /* What: Edit Mode Rail Button Element. Why: This is the actual toggle control, disabled while a generation is in flight since dragging mid-cascade makes no sense. How: This calls togModFun, swapping its own label per ediModBoo. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
 								<IcoSvgCom
@@ -4049,7 +4057,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											className='group-section pt-section'
 
 											data-element-name-hook='pagTouSec todGroSec'
-										>{ /* What: Page Tours Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the page tours' own group-rename steps, Today's own drag-to-reorder and scroll code, and the Welcome Tour. */ }
+										>{ /* What: Page Tours Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the page tours' own group-rename steps, help mode's Today catalog, Today's own drag-to-reorder and scroll code, and the Welcome Tour. */ }
 
 
 											<GroHeaCom
@@ -4125,7 +4133,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										className='group-section'
 
 										data-element-name-hook='todGroSec'
-									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code and the Welcome Tour. */ }
+									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and help mode's Today catalog. */ }
 
 
 										<GroHeaCom
@@ -4309,7 +4317,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								className='group-section af-section'
 
 								data-element-name-hook='todGroSec appFeaSec'
-							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and the App Features tours. */ }
+							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the App Features tours. */ }
 
 
 								<GroHeaCom
@@ -4549,8 +4557,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<div
 									className='today-foot-actions editmode-foot-actions'
 
-									data-element-name-hook='fooActDiv'
-								>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour. */ }
+									data-element-name-hook='fooActDiv ediActDiv'
+								>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
 									<ButBasCom
@@ -4597,7 +4605,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											kinValStr='secondary'
 
 											onClick={ togModFun }
-										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togModFun, disabled while a generation is in flight. Its data-element-name-hook is read by the Today page tour. */ }
+										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togModFun, disabled while a generation is in flight. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
 
@@ -4611,7 +4619,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 												actNamStr='Regenerate'
 												labTexStr='Complete every tutorial above and generate your real list first.'
-											>{ /* What: Info Tip Component. Why: A blocked Regenerate still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation. Its data-element-name-hook is read by the Welcome Tour. */ }
+											>{ /* What: Info Tip Component. Why: A blocked Regenerate still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation. Its data-element-name-hook is read by the Welcome Tour and help mode's Today catalog. */ }
 
 
 												<IcoSvgCom
@@ -4636,7 +4644,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												kinValStr='secondary'
 
 												onClick={ () => setConGenBoo( true ) }
-											>{ genActBoo ? 'Generating…' : 'Regenerate' }</ButBasCom> // What: Button Base Component. Why: This is the actual working Regenerate trigger, opening the confirm prompt above. How: This sets conGenBoo, disabled and relabeled while a cascade is already in flight. Its data-element-name-hook is read by the Welcome Tour.
+											>{ genActBoo ? 'Generating…' : 'Regenerate' }</ButBasCom> // What: Button Base Component. Why: This is the actual working Regenerate trigger, opening the confirm prompt above. How: This sets conGenBoo, disabled and relabeled while a cascade is already in flight. Its data-element-name-hook is read by the Welcome Tour and help mode's Today catalog.
 
 
 										) }

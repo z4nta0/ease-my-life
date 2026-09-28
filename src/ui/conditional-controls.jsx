@@ -512,7 +512,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							className='pie-row'
 
 							data-element-name-hook='ediRowDiv'
-						>{ /* What: Random Row Div Element. Why: This is the shared row layout (a label plus a control) reused across every mode's settings. How: This wraps the label block and the "No weight" text in place of an actual control. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Random Row Div Element. Why: This is the shared row layout (a label plus a control) reused across every mode's settings. How: This wraps the label block and the "No weight" text in place of an actual control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Random Rowlabel Div Element. Why: The row's own title and explanatory sub-text need to sit together. How: This wraps the "Weight" title span and the RAN_NOT_STR sub span below. */ }
@@ -548,7 +548,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							className='pie-row'
 
 							data-element-name-hook='ediRowDiv'
-						>{ /* What: Odds Row Div Element. Why: This is the shared row layout for the odds percentage control. How: This wraps the label block and the plus/minus stepper below. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Odds Row Div Element. Why: This is the shared row layout for the odds percentage control. How: This wraps the label block and the plus/minus stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Odds Rowlabel Div Element. Why: The row's own title and live percentage summary need to sit together. How: This wraps the "Odds" title span and the live sub span below. */ }
@@ -561,7 +561,11 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 							</div>
 
-							<div className='weight-stepper'>{ /* What: Odds Stepper Div Element. Why: The odds percentage needs a plain plus/minus control, distinct from the drag-free NumSteCom used elsewhere. How: This wraps the lower button, the live value, and the raise button below. */ }
+							<div
+								className='weight-stepper'
+
+								data-element-name-hook='weiSteDiv'
+							>{ /* What: Odds Stepper Div Element. Why: The odds percentage needs a plain plus/minus control, distinct from the drag-free NumSteCom used elsewhere. How: This wraps the lower button, the live value, and the raise button below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 								<button
@@ -597,7 +601,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 								className='pie-row'
 
 								data-element-name-hook='ediRowDiv'
-							>{ /* What: Boost Row Div Element. Why: This is the shared row layout for the dynamic mode's own boost display and reset control. How: This wraps the label block and the BooResCom control below. Its data-element-name-hook is read by the picker mini-tours. */ }
+							>{ /* What: Boost Row Div Element. Why: This is the shared row layout for the dynamic mode's own boost display and reset control. How: This wraps the label block and the BooResCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Boost Rowlabel Div Element. Why: The row's own title and live boost summary need to sit together. How: This wraps the "Boost" title span and the fading summary span below. */ }
@@ -651,7 +655,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							className={ ` pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' } ` }
 
 							data-element-name-hook='ediRowDiv'
-						>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Soonest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
@@ -683,7 +687,11 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 
-								<span className='np-ease-unit'>{ sooDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Soonest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on sooDayNum. */ }
+								<span
+									className='np-ease-unit'
+
+									data-element-name-hook='easUniSpa'
+								>{ sooDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Soonest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on sooDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
 
 
 							</div>
@@ -696,7 +704,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							className={ ` pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' } ` }
 
 							data-element-name-hook='ediRowDiv'
-						>{ /* What: Latest Row Div Element. Why: This is the shared row layout for the upper drift bound, labeled Longest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Latest Row Div Element. Why: This is the shared row layout for the upper drift bound, labeled Longest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Latest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
@@ -728,7 +736,11 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 
-								<span className='np-ease-unit'>{ latDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Latest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on latDayNum. */ }
+								<span
+									className='np-ease-unit'
+
+									data-element-name-hook='easUniSpa'
+								>{ latDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Latest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on latDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
 
 
 							</div>
@@ -744,7 +756,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 								className='pie-row cnd-ease-up-row'
 
 								data-element-name-hook='ediRowDiv'
-							>{ /* What: Fill Row Div Element. Why: Ease-up's own charge can be jumped straight to full instead of waiting out the drift. How: This wraps the label block and the Fill button below. Its data-element-name-hook is read by the picker mini-tours. */ }
+							>{ /* What: Fill Row Div Element. Why: Ease-up's own charge can be jumped straight to full instead of waiting out the drift. How: This wraps the label block and the Fill button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Fill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Fill" title span and the fading charge summary span below. */ }
@@ -784,7 +796,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 								className='pie-row cnd-ease-down-row'
 
 								data-element-name-hook='ediRowDiv'
-							>{ /* What: Refill Row Div Element. Why: Ease-down's own charge can be jumped straight back to full instead of waiting out a fresh streak. How: This wraps the label block and the Refill button below. Its data-element-name-hook is read by the picker mini-tours. */ }
+							>{ /* What: Refill Row Div Element. Why: Ease-down's own charge can be jumped straight back to full instead of waiting out a fresh streak. How: This wraps the label block and the Refill button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Refill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Refill" title span and the fading charge summary span below. */ }
@@ -831,7 +843,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 						className='pie-row'
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Active Row Div Element. Why: This is the shared row layout for the enabled/disabled toggle. How: This wraps the label block and the switch button below. Its data-element-name-hook is read by the picker mini-tours. */ }
+					>{ /* What: Active Row Div Element. Why: This is the shared row layout for the enabled/disabled toggle. How: This wraps the label block and the switch button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
 
 
 						<div className='pie-rowlabel'>{ /* What: Active Rowlabel Div Element. Why: The row's own state title and live explanation need to sit together. How: This wraps the fading state span and the fading explanation span below. */ }
@@ -855,6 +867,8 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 						<button
 							className={ ` switch   ${ conDraObj.active !== false ? 'is-on' : '' } ` }
 
+							data-element-name-hook='togSwiBut'
+
 							type='button'
 
 							aria-checked={ conDraObj.active !== false }
@@ -862,7 +876,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							role='switch'
 
 							onClick={ () => patSetFun( { active : conDraObj.active === false } ) } // What: Active Toggle Patch. Why: A conditional with no active field counts as active, so a plain negation would misread it. How: This sets active to true only when it is currently exactly false.
-						><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Active Switch Button Element. Why: This is the actual enabled/disabled toggle control. How: This flips conDraObj.active and marks itself pressed via aria-checked and the "is-on" class. */ }
+						><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Active Switch Button Element. Why: This is the actual enabled/disabled toggle control. How: This flips conDraObj.active and marks itself pressed via aria-checked and the "is-on" class. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					</div>

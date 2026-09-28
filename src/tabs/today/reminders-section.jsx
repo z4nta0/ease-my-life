@@ -144,10 +144,10 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 			<article
 				className={ ` today-card   rem-card   today-card--tutorial   ${ tutDonBoo ? 'is-done' : '' }   ${ extClaStr } ` }
 
-				data-element-name-hook='todCarArt'
+				data-element-name-hook='todCarArt tutCarArt remCarArt'
 
 				onClick={ onRowCliFun }
-			>{ /* What: Tutorial Article Element. Why: This is the mini-tour launcher card's own root element. How: This marks itself "is-done" once tutDonBoo, and dispatches every non-actions-area click to onRowCliFun. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code. */ }
+			>{ /* What: Tutorial Article Element. Why: This is the mini-tour launcher card's own root element. How: This marks itself "is-done" once tutDonBoo, and dispatches every non-actions-area click to onRowCliFun. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 				{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved sample card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
@@ -155,6 +155,8 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<button
 						className='check'
+
+						data-element-name-hook='carCheBut'
 
 						type='button'
 
@@ -170,7 +172,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 						} }
-					>{ /* What: Undo Check Button Element. Why: A resolved sample can be un-resolved directly from its own checkbox, same as a normal completed card toggling back off. How: This calls onUncTutFun, isolated from the row's own onRowCliFun via stopPropagation. */ }
+					>{ /* What: Undo Check Button Element. Why: A resolved sample can be un-resolved directly from its own checkbox, same as a normal completed card toggling back off. How: This calls onUncTutFun, isolated from the row's own onRowCliFun via stopPropagation. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 						<span
@@ -194,6 +196,8 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 					<button
 						className='check'
 
+						data-element-name-hook='carCheBut'
+
 						type='button'
 
 						aria-label={ `Start the ${ texDisObj.namStr } tutorial` }
@@ -207,7 +211,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 						} }
-					>{ /* What: Play Check Button Element. Why: An unresolved sample's own checkbox instead starts the mini-tour, never marks it done directly. How: This calls onPlaTutFun, isolated from the row's own onRowCliFun via stopPropagation. */ }
+					>{ /* What: Play Check Button Element. Why: An unresolved sample's own checkbox instead starts the mini-tour, never marks it done directly. How: This calls onPlaTutFun, isolated from the row's own onRowCliFun via stopPropagation. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 						<IcoSvgCom
@@ -262,7 +266,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 						className='today-card-actions'
 
 						data-element-name-hook='carActDiv'
-					>{ /* What: Card Actions Div Element. Why: This is the click-isolated actions area onRowCliFun already excludes. How: This wraps the single Cancel button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it. */ }
+					>{ /* What: Card Actions Div Element. Why: This is the click-isolated actions area onRowCliFun already excludes. How: This wraps the single Cancel button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 						<button
@@ -337,15 +341,17 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 		<article
 			className={ ` today-card   rem-card   ${ isaDonBoo ? 'is-done' : '' }   ${ isaFreBoo ? 'is-fresh' : '' }   ${ isaOpeBoo ? 'is-editing' : '' }   ${ extClaStr } ` }
 
-			data-element-name-hook='todCarArt'
+			data-element-name-hook='todCarArt remCarArt'
 
 			onAnimationEnd={ onAniEndFun }
 			onClick={ onRowCliFun }
-		>{ /* What: Reminder Article Element. Why: This is the real reminder row's own root element, matching a picker EntryCard's structure. How: This marks itself done/fresh/editing per the 3 booleans above, plus whatever animation class extClaStr carries. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code. */ }
+		>{ /* What: Reminder Article Element. Why: This is the real reminder row's own root element, matching a picker EntryCard's structure. How: This marks itself done/fresh/editing per the 3 booleans above, plus whatever animation class extClaStr carries. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 			<button
 				className='check'
+
+				data-element-name-hook='carCheBut'
 
 				type='button'
 
@@ -361,7 +367,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 				} }
-			>{ /* What: Check Button Element. Why: The checkbox is also independently clickable, isolated from the row's own onRowCliFun (both end up calling onTogTasFun, but the button needs its own accessible name/state). How: This toggles done via stopPropagation plus a direct onTogTasFun call. */ }
+			>{ /* What: Check Button Element. Why: The checkbox is also independently clickable, isolated from the row's own onRowCliFun (both end up calling onTogTasFun, but the button needs its own accessible name/state). How: This toggles done via stopPropagation plus a direct onTogTasFun call. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span
@@ -431,7 +437,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 						onChange={ ( chaEveObj ) => onRenTasFun( chaEveObj.target.value ) }
 						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }                                            // What: Row Click Isolation. Why: Clicking into the name input must not also toggle the row done. How: This stops the click from bubbling to the card.
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish the name the same way leaving the field does. How: This blurs the input on Enter, which runs onBlur's own commit.
-					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This commits on every change, re-trims and re-commits on blur, and blurs itself on Enter. Its data-element-name-hook is read by the reminder card's own row-click handler.
+					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This commits on every change, re-trims and re-commits on blur, and blurs itself on Enter. Its data-element-name-hook is read by the reminder card's own row-click handler and help mode's Today catalog.
 
 
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaOpeBoo is false.
@@ -450,7 +456,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 				className='today-card-actions'
 
 				data-element-name-hook='carActDiv'
-			>{ /* What: Card Actions Div Element. Why: Skip and Edit are the row's own click-isolated actions. How: This wraps both buttons below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it. */ }
+			>{ /* What: Card Actions Div Element. Why: Skip and Edit are the row's own click-isolated actions. How: This wraps both buttons below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 				<button
@@ -567,7 +573,11 @@ function InlEdiCom ( { onCloEdiFun, onComTasFun, onDelTasFun, staAppObj, tasRcdO
 	return (
 
 
-		<div className='rem-inline-editor'>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. */ }
+		<div
+			className='rem-inline-editor'
+
+			data-element-name-hook='inlEdiDiv'
+		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<SchEdiCom
@@ -1036,7 +1046,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 			className='group-section rem-section'
 
 			data-element-name-hook='todGroSec remGroSec'
-		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and the Today page tour. */ }
+		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the Today page tour. */ }
 
 
 			<header className={ ` group-h   ${ ediModBoo ? 'is-reorderable' : '' } ` }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders group-h-l and rem-h-r below, marking itself reorderable while ediModBoo is on. */ }
@@ -1061,7 +1071,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() } // What: Native Drag Block. Why: The grip uses its own pointer-driven reorder, so the browser's HTML5 drag must never start. How: This cancels dragstart.
 							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGriDowFun. Its data-element-name-hook is read by the Today page tour. */ }
+						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGriDowFun. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
 							<IcoSvgCom
@@ -1141,7 +1151,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 								actNamStr='Add a Reminder'
 								labTexStr='This button is disabled until all tutorials are completed.'
-							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. Its data-element-name-hook is read by the reminder mini-tours. */ }
+							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
 
 
 								<IcoSvgCom
@@ -1165,7 +1175,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 								title='Add a Reminder'
 
 								onClick={ () => { addOpeBoo ? canAddFun() : staAddFun(); } } // What: Add Toggle Click. Why: The same button opens the quick-add form or cancels it when already open. How: This calls canAddFun while addOpeBoo, staAddFun otherwise.
-							>{ /* What: Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. Its data-element-name-hook is read by the reminder mini-tours. */ }
+							>{ /* What: Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
 
 
 								<IcoSvgCom
@@ -1238,20 +1248,22 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 						className={ ` rem-quickadd-wrap   ${ addCloBoo ? 'is-closing' : '' } ` }
 
 						data-element-name-hook='remAddDiv'
-					>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the reminder mini-tours. */ }
+					>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
 
 
 						<div
 							className='rem-quickadd'
 
 							data-element-name-hook='remFieDiv'
-						>{ /* What: Quick-Add Div Element. Why: The name input needs its own row above the schedule editor. How: This wraps the single name input below. Its data-element-name-hook is read by the reminder mini-tours. */ }
+						>{ /* What: Quick-Add Div Element. Why: The name input needs its own row above the schedule editor. How: This wraps the single name input below. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
 
 
 							<input
 								ref={ inpEleRef }
 
 								className='np-input'
+
+								data-element-name-hook='addNamInp'
 
 								maxLength={ 60 }
 								placeholder='Add a reminder, e.g. Take out the trash'
@@ -1262,13 +1274,17 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 								onChange={ ( chaEveObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, name : chaEveObj.target.value } ) ) }
 								onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) comAddFun(); } } // What: Enter Commit Shortcut. Why: Pressing Enter in the name field should add the reminder. How: This calls comAddFun on Enter.
-							/>{ /* What: Name Input Element. Why: This is the quick-add form's own primary, first-focused field. How: This commits every keystroke straight into draTasObj, and Enter commits the whole form via comAddFun. */ }
+							/>{ /* What: Name Input Element. Why: This is the quick-add form's own primary, first-focused field. How: This commits every keystroke straight into draTasObj, and Enter commits the whole form via comAddFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 						</div>
 
 
-						<div className='rem-inline-editor'>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. */ }
+						<div
+							className='rem-inline-editor'
+
+							data-element-name-hook='inlEdiDiv'
+						>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 							<SchEdiCom
@@ -1280,7 +1296,11 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 
-							<div className='rem-inline-foot'>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. */ }
+							<div
+								className='rem-inline-foot'
+
+								data-element-name-hook='ediFooDiv'
+							>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 								<ButBasCom

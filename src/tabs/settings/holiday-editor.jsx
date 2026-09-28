@@ -227,11 +227,13 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 							<button
 								className={ ` switch   ${ holEnaBoo ? 'is-on' : '' } ` }
 
+								data-element-name-hook='togSwiBut'
+
 								aria-label={ `${ holEnaBoo ? 'Disable' : 'Enable' } ${ holCurObj.namStr }` }
 								aria-pressed={ holEnaBoo }
 
 								onClick={ () => actStoObj.togHolFun( holCurObj.keyStr ) }
-							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. */ }
+							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 								<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }

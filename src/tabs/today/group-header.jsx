@@ -291,7 +291,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
 							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by the Today page tour. */ }
+						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
 
 
 							<IcoSvgCom
@@ -349,7 +349,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 
 							} }
-						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape. Its data-element-name-hook is read by the page tours' own group-rename steps.
+						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape. Its data-element-name-hook is read by the page tours' own group-rename steps and help mode's Today catalog.
 
 
 					) : ediModBoo ? ( // What: Rename Button Branch. Why: While Edit Mode is on but the field is closed, the name itself acts as a button that opens it. How: This renders a button showing groNamStr plus an edit glyph, wired to staEdiFun.
@@ -365,7 +365,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 							aria-label={ `Rename group ${ groNamStr }` }
 
 							onClick={ staEdiFun }
-						>{ /* What: Group Rename Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. Its data-element-name-hook is read by the page tours' own group-rename steps. */ }
+						>{ /* What: Group Rename Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. Its data-element-name-hook is read by the page tours' own group-rename steps and help mode's Today catalog. */ }
 
 
 							{ groNamStr }

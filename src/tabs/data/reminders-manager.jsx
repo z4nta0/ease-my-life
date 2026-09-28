@@ -375,11 +375,13 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 								<button
 									className={ ` switch   ${ swtEnaBoo ? 'is-on' : '' } ` }
 
+									data-element-name-hook='togSwiBut'
+
 									aria-label={ `${ tasClaStr === 'once' ? 'One-time' : 'Recurring' }: ${ optDefObj.labStr }` } // What: Switch Label Pick. Why: Each switch's accessible name must say which class and setting it controls. How: This joins the class name with the row's own label.
 									aria-pressed={ swtEnaBoo }
 
 									onClick={ () => actStoObj.setOptFun( tasClaStr, optDefObj.keyStr, !swtEnaBoo ) }
-								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setOptFun. */ }
+								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setOptFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<i />{ /* What: Switch Thumb Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
@@ -1078,7 +1080,11 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 													<div className='rd-edit'>{ /* What: Edit Div Element. Why: The editor needs its own padding/framing distinct from the plain row above it. How: This wraps the shared rem-inline-editor div below. */ }
 
 
-														<div className='rem-inline-editor'>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, matching InlEdiCom's own root layout. How: This renders SchEdiCom against curTasObj directly (the real store, not a local draft), then EdiFooCom below it. */ }
+														<div
+															className='rem-inline-editor'
+
+															data-element-name-hook='inlEdiDiv'
+														>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, matching InlEdiCom's own root layout. How: This renders SchEdiCom against curTasObj directly (the real store, not a local draft), then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 															<SchEdiCom

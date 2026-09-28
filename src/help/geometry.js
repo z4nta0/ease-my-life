@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import { splSelFun } from '../utils/selector.js'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called with the step's or item's own selector list.
+
+// #endregion Imports
+
+
+
 /**
  * geometry.js = Geometry
  *
@@ -174,10 +182,10 @@ function cliHorFun ( tarRecObj, tarDomEle ) {
 function finTarFun ( selStr ) {
 
 
-	for ( const oneSelStr of selStr.split( ',' ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selStr's own alternatives left to right.
+	for ( const oneSelStr of splSelFun( selStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selStr's own alternatives left to right.
 
 
-		const tarEleArr = [ ...document.querySelectorAll( oneSelStr.trim() ) ] // What: Target Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array.
+		const tarEleArr = [ ...document.querySelectorAll( oneSelStr ) ] // What: Target Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array.
 			.filter( ( curTarEle ) => { // What: Visibility Filter. Why: A matched element that is display:none or otherwise zero-sized should never count as a real, clickable target. How: This keeps only elements whose own bounding rect has a real width or height.
 
 

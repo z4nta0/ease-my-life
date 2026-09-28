@@ -441,7 +441,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				if ( tarSteNum === 3 ) { // What: Edit Mode Toggle Check. Why: Back from Group Grip to Edit Mode must toggle Edit Mode back off via its own real control, since the .foot-editmode target only exists while it's off. How: This clicks whichever real Edit Mode toggle/Cancel control is currently visible.
 
 
-					const butEdmEle = document.querySelector( '[data-element-name-hook="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector( '[data-element-name-hook="fooActDiv"] [data-element-name-hook="ediCanBut"]' ); // What: Edit Mode Button Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping .foot-editmode. How: This looks up whichever control is currently present.
+					const butEdmEle = document.querySelector( '[data-element-name-hook="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector( '[data-element-name-hook~="fooActDiv"] [data-element-name-hook="ediCanBut"]' ); // What: Edit Mode Button Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping .foot-editmode. How: This looks up whichever control is currently present.
 
 
 					if ( butEdmEle ) butEdmEle.click(); // What: Edit Mode Button Click. Why: This must only fire when a control actually exists. How: This clicks butEdmEle.

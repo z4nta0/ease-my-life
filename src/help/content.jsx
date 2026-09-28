@@ -992,7 +992,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
-			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
+			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
 
 
 
@@ -1031,7 +1031,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
-			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
+			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
 
 
 
@@ -1356,7 +1356,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
-			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
+			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
 
 
 
@@ -1395,7 +1395,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
-			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
+			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
 
 
 
@@ -2705,7 +2705,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This tracks your current progress of completed / total tasks for today's todo list. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
 		ideStr : 'progressRing',
-		selStr : '.ring',
+		selStr : '[data-element-name-hook="proRinDiv"]',
 		shaStr : 'circle',
 		titStr : 'Progress Ring'
 
@@ -2717,7 +2717,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
 		ideStr : 'brandMark',
-		selStr : '.today-h-lead .brand-mark',
+		selStr : '[data-element-name-hook="heaLeaDiv"] [data-element-name-hook="braMarBut"]',
 		titStr : 'Home Link'
 
 
@@ -2728,7 +2728,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This counts how many days in a row you've completed everything on your todo list. Missing a day resets it back to zero.</>,
 		ideStr : 'streak',
-		selStr : '.streak',
+		selStr : '[data-element-name-hook="todStrDiv"]',
 		titStr : 'Day Streak'
 
 
@@ -2739,7 +2739,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This is the todo list's navigation, allowing you to jump directly to a group's section. Over time your list can grow quite long and this helps to eliminate any long scrolling.</>,
 		ideStr : 'groupsNav',
-		selStr : '.group-rail ul',
+		selStr : '[data-element-name-hook="groRaiAsi"] ul',
 		titStr : 'List Navigation'
 
 
@@ -2756,11 +2756,11 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr    : 'editMode',
 		padXcoNum : 4, // padXcoNum: 4 exists because .foot-editmode sits right next to .ob-generate (Regenerate) with only a 10px gap between them, and the default 8px pad on each side would overlap by 6px.
-		selStr    : '.em-rail-btn, .foot-editmode',
+		selStr    : '[data-element-name-hook="ediRaiBut"], [data-element-name-hook="fooEdiBut"]',
 
-		titStr : () => document.querySelector( '.em-rail-btn' )?.classList.contains( 'is-on' ) ? 'Done Button' : 'Edit Mode', // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
+		titStr : () => document.querySelector( '[data-element-name-hook="ediRaiBut"]' )?.hasAttribute( 'data-edit-mode-active' ) ? 'Done Button' : 'Edit Mode', // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
 
-		bodEle : () => document.querySelector( '.em-rail-btn' )?.classList.contains( 'is-on' ) // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
+		bodEle : () => document.querySelector( '[data-element-name-hook="ediRaiBut"]' )?.hasAttribute( 'data-edit-mode-active' ) // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
 			? <>This button saves any edits that you have made and exits Edit Mode.</> // What: Done Body Branch. Why: With Edit Mode on, this same button saves and exits instead. How: This renders the Done copy.
 			: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</> // What: Edit Mode Body Branch. Why: With Edit Mode off, this button opens it. How: This renders the Edit Mode copy.
 
@@ -2772,7 +2772,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr : 'editModeBannerActions',
-		selStr : '.editmode-banner-actions',
+		selStr : '[data-element-name-hook="ediBanSpa"]',
 		titStr : 'Cancel / Done',
 
 		bodEle : (
@@ -2798,7 +2798,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr : 'editModeFootActions',
-		selStr : '.editmode-foot-actions',
+		selStr : '[data-element-name-hook~="ediActDiv"]',
 		titStr : 'Cancel / Done',
 
 		bodEle : (
@@ -2828,7 +2828,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		ideStr    : 'groupGrip',
 		mulBoo    : true,
 		padXcoNum : 1, // padXcoNum: 1 exists because .group-grip and .group-name--editable sit only 4px apart in practice (the negative margin on .group-grip eats into .group-h-l's own 10px gap); the default 8px pad on each side, and even editMode's own padXcoNum:4 fix above, both still overlap here, so 1px each side leaves 2px of real clearance instead.
-		selStr    : '.group-grip',
+		selStr    : '[data-element-name-hook="groGriSpa"]',
 		titStr    : 'Reorder Group'
 
 
@@ -2840,7 +2840,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>While Edit Mode is on, drag this handle to change this item's position within its group.</>,
 		ideStr : 'cardGrip',
 		mulBoo : true,
-		selStr : '.card-grip',
+		selStr : '[data-element-name-hook="carGriSpa"]',
 		titStr : 'Reorder Item'
 
 
@@ -2853,7 +2853,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		ideStr    : 'groupNameEdit',
 		mulBoo    : true,
 		padXcoNum : 1,
-		selStr    : '.group-name-slot',
+		selStr    : ':is([data-element-name-hook="groNamBut"], [data-element-name-hook="groNamInp"])',
 		titStr    : 'Rename Group'
 
 
@@ -2870,7 +2870,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr : 'cardCheck',
 		mulBoo : true, // mulBoo is true because every real entry card gets its own badge, a user could be looking at any card on the page, not just whichever one happened to be first, and the main help toggle can be clicked from anywhere regardless of scroll position.
-		selStr : '.today-card:not(.today-card--tutorial) .check',
+		selStr : '[data-element-name-hook~="todCarArt"]:not([data-element-name-hook~="tutCarArt"]) :is([data-element-name-hook="carCheBut"], [data-element-name-hook="carCheSpa"])',
 		titStr : 'Mark Complete',
 
 		bodEle : (
@@ -2898,7 +2898,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr : 'cardActionsPicker',
 		mulBoo : true,
-		selStr : '.today-card:not(.rem-card):not(.today-card--tutorial):not(.today-card--dayoff):not(.today-card--charging) .today-card-actions',
+		selStr : '[data-element-name-hook~="todCarArt"]:not([data-element-name-hook~="remCarArt"]):not([data-element-name-hook~="tutCarArt"]):not([data-element-name-hook~="daoCarArt"]):not([data-element-name-hook~="chrCarArt"]) [data-element-name-hook="carActDiv"]',
 		titStr : 'Card Actions',
 
 		bodEle : (
@@ -2953,7 +2953,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr : 'cardActionsReminder',
 		mulBoo : true,
-		selStr : '.rem-card .today-card-actions',
+		selStr : '[data-element-name-hook~="remCarArt"] [data-element-name-hook="carActDiv"]',
 		titStr : 'Card Actions',
 
 		bodEle : (
@@ -2998,7 +2998,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-Roll and Edit are disabled for this type of card.</>,
 		ideStr : 'cardActionsDayOff',
 		mulBoo : true,
-		selStr : '.today-card--dayoff .today-card-actions button',
+		selStr : '[data-element-name-hook~="daoCarArt"] [data-element-name-hook="carActDiv"] button',
 		titStr : 'Skip'
 
 
@@ -3016,7 +3016,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This is the name field for this item, you can rename it here.</>,
 		ideStr : 'itemName',
-		selStr : '.entry-card-name-input',
+		selStr : '[data-element-name-hook="entNamInp"]',
 		titStr : 'Item Name'
 
 
@@ -3027,13 +3027,13 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr    : 'itemChargeRangeUp',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-ease-up-row',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active]',
 		titStr    : 'Item Charge Controls',
 
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
-			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
+			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
 
 
 
@@ -3066,13 +3066,13 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr    : 'itemChargeRangeDown',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-ease-down-row',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active]',
 		titStr    : 'Item Charge Controls',
 
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
-			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
+			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
 
 
 
@@ -3106,7 +3106,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle    : <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
 		ideStr    : 'itemWeight',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.weight-stepper)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="weiSteDiv"])',
 		titStr    : 'Item Weight'
 
 
@@ -3118,7 +3118,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle    : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
 		ideStr    : 'itemBoost',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.pie-boost-val)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="booValSpa"])',
 		titStr    : 'Item Boost'
 
 
@@ -3130,7 +3130,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle    : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
 		ideStr    : 'itemActive',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.switch)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="togSwiBut"])',
 		titStr    : 'Item Active Toggle'
 
 
@@ -3140,7 +3140,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr : 'itemFoot',
-		selStr : '.entry-editor .rem-inline-foot .btn',
+		selStr : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediFooDiv"] button',
 		titStr : 'Delete / Cancel / Save',
 
 		bodEle : (
@@ -3175,7 +3175,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
 		ideStr : 'addReminder',
-		selStr : '.rem-add-btn',
+		selStr : ':is([data-element-name-hook="remAddBut"], [data-element-name-hook="remAddSpa"])',
 		titStr : 'Add a Reminder'
 
 
@@ -3186,7 +3186,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This is the name field for your new reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
 		ideStr : 'addReminderName',
-		selStr : '.rem-quickadd .np-input',
+		selStr : '[data-element-name-hook="remFieDiv"] [data-element-name-hook="addNamInp"]',
 		titStr : 'Reminder Name'
 
 
@@ -3197,7 +3197,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr : 'addReminderRepeat',
 		scrBoo : true, // scrBoo is true because the body now covers 5 schedule kinds including the every-N/weekday recurrence wording, tall enough to overlap the Repeat control/highlight on a short viewport without it; caps to whichever side (above/below) plaTipFun finds more room and scrolls internally there instead of overflowing into the target either way.
-		selStr : '.rem-quickadd-wrap .rem-editor',
+		selStr : '[data-element-name-hook="remAddDiv"] [data-element-name-hook="schEdiDiv"]',
 		titStr : 'Reminder Schedule',
 
 		bodEle : (
@@ -3229,7 +3229,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr : 'addReminderFoot',
-		selStr : '.rem-quickadd-wrap .rem-inline-foot .btn',
+		selStr : '[data-element-name-hook="remAddDiv"] [data-element-name-hook="ediFooDiv"] button',
 		titStr : 'Cancel / Add',
 
 		bodEle : (
@@ -3263,7 +3263,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This is the name field for your reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
 		ideStr : 'editReminderName',
-		selStr : '.rem-card-name-input',
+		selStr : '[data-element-name-hook="remNamInp"]',
 		titStr : 'Reminder Name'
 
 
@@ -3274,7 +3274,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		ideStr : 'editReminderRepeat',
 		scrBoo : true, // scrBoo is true here too, same reasoning as addReminderRepeat above.
-		selStr : '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor',
+		selStr : '[data-element-name-hook="inlEdiDiv"]:not([data-element-name-hook="remAddDiv"] *) [data-element-name-hook="schEdiDiv"]',
 		titStr : 'Reminder Schedule',
 
 		bodEle : (
@@ -3306,7 +3306,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr : 'editReminderFoot',
-		selStr : '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-inline-foot .btn',
+		selStr : '[data-element-name-hook="inlEdiDiv"]:not([data-element-name-hook="remAddDiv"] *) [data-element-name-hook="ediFooDiv"] button',
 		titStr : 'Delete / Cancel / Save',
 
 		bodEle : (
@@ -3341,7 +3341,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 		bodEle : <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
 		ideStr : 'dayLog',
-		selStr : '.rem-section .dl-chip',
+		selStr : '[data-element-name-hook~="remGroSec"] [data-element-name-hook="logChiBut"]',
 		titStr : 'Section Log'
 
 
@@ -3353,7 +3353,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
 		ideStr : 'dayLogPicker',
 		mulBoo : true, // mulBoo is true (see help/mode.jsx) so each group's OWN Log button gets its own badge, since the user could be scrolled to any one of them.
-		selStr : '.group-section:not(.rem-section):not(.pt-section) .dl-chip',
+		selStr : '[data-element-name-hook~="todGroSec"]:not([data-element-name-hook~="remGroSec"]):not([data-element-name-hook~="pagTouSec"]) [data-element-name-hook="logChiBut"]',
 		titStr : 'Section Log'
 
 
@@ -3365,7 +3365,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle    : <>This re-runs the daily generator manually, replacing your todo list. Anything already marked complete will be replaced too and won't show up in the Stats tab.</>,
 		ideStr    : 'regenerate',
 		padXcoNum : 4, // padXcoNum: 4, see editMode's own comment; same gap, same fix, symmetric.
-		selStr    : '.ob-generate',
+		selStr    : ':is([data-element-name-hook="genLisBut"], [data-element-name-hook="genLisSpa"])',
 		titStr    : 'Regenerate'
 
 
@@ -3384,7 +3384,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This lists every reminder you've created, whether it's due today or not.</>,
 		groStr : 'reminderLogCols', // groStr (see help/mode.jsx) makes the 3 highlights meet edge-to-edge with no gap or overlap between them, rather than each shrinking to its own content.
 		ideStr : 'logReminderName',
-		selStr : '.dl-mk-rname',
+		selStr : '[data-element-name-hook="remNamSpa"]',
 		titStr : 'Reminder Column'
 
 
@@ -3396,7 +3396,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows each reminder's schedule. That includes how often it repeats, or if it's only a one-time reminder.</>,
 		groStr : 'reminderLogCols',
 		ideStr : 'logReminderWhen',
-		selStr : '.dl-mk-rwhen',
+		selStr : '[data-element-name-hook="remWheSpa"]',
 		titStr : 'When Column'
 
 
@@ -3408,7 +3408,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows whether this reminder is done, due today, skipped for today, or when it will next come due.</>,
 		groStr : 'reminderLogCols',
 		ideStr : 'logReminderStatus',
-		selStr : '.dl-mk-rst',
+		selStr : '[data-element-name-hook="remStaSpa"]',
 		titStr : 'Status Column'
 
 
@@ -3425,7 +3425,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr : 'logPickerKey',
-		selStr : '.dl-key',
+		selStr : '[data-element-name-hook="logKeyDiv"]',
 		titStr : 'Key',
 
 		bodEle : (
@@ -3461,7 +3461,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This lists every item in this picker's pool. It also shows its weight (Weighted), weight + boost (Dynamic Weighted) or eligible range (Ease Up or Ease Down), depending on the picker's mode.</>,
 		groStr : 'pickerLogCols',
 		ideStr : 'logPickerItem',
-		selStr : '.dl-block:not(.dl-cond-sec) .dl-mk-item',
+		selStr : '[data-element-name-hook="logBloDiv"] [data-element-name-hook="logIteSpa"]',
 		titStr : 'Item Column'
 
 
@@ -3473,7 +3473,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This lists the item's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down picker items, it shows N/A otherwise.</>,
 		groStr : 'pickerLogCols',
 		ideStr : 'logPickerAtGen',
-		selStr : '.dl-block:not(.dl-cond-sec) .dl-mk-atgen',
+		selStr : '[data-element-name-hook="logBloDiv"] [data-element-name-hook="logGenSpa"]',
 		titStr : 'At Gen Column'
 
 
@@ -3485,7 +3485,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows how much this item's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down picker items.</>,
 		groStr : 'pickerLogCols',
 		ideStr : 'logPickerDelta',
-		selStr : '.dl-block:not(.dl-cond-sec) .dl-mk-delta',
+		selStr : '[data-element-name-hook="logBloDiv"] [data-element-name-hook="logDelSpa"]',
 		titStr : 'Δ Column'
 
 
@@ -3497,7 +3497,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows the item's current value, reflecting updated values due to the current item being marked as completed in your todo list.</>,
 		groStr : 'pickerLogCols',
 		ideStr : 'logPickerAfter',
-		selStr : '.dl-block:not(.dl-cond-sec) .dl-mk-after',
+		selStr : '[data-element-name-hook="logBloDiv"] [data-element-name-hook="logAftSpa"]',
 		titStr : 'After Column'
 
 
@@ -3509,7 +3509,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows any relevant icons that reflect what has happened to this item today. Please see the KEY row above for what each icon means.</>,
 		groStr : 'pickerLogCols',
 		ideStr : 'logPickerStatus',
-		selStr : '.dl-block:not(.dl-cond-sec) .dl-mk-status',
+		selStr : '[data-element-name-hook="logBloDiv"] [data-element-name-hook="logStaSpa"]',
 		titStr : 'Status Column'
 
 
@@ -3521,7 +3521,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This lists every conditional attached to a picker in this group. It also shows its odds of being triggered or its charge range, depending on its mode.</>,
 		groStr : 'condLogCols',
 		ideStr : 'logCondItem',
-		selStr : '.dl-cond-sec .dl-mk-item',
+		selStr : '[data-element-name-hook="logConDiv"] [data-element-name-hook="logIteSpa"]',
 		titStr : 'Conditional Column'
 
 
@@ -3533,7 +3533,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This lists the conditional's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down conditionals, it shows N/A otherwise.</>,
 		groStr : 'condLogCols',
 		ideStr : 'logCondAtGen',
-		selStr : '.dl-cond-sec .dl-mk-atgen',
+		selStr : '[data-element-name-hook="logConDiv"] [data-element-name-hook="logGenSpa"]',
 		titStr : 'At Gen Column'
 
 
@@ -3545,7 +3545,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows how much this conditional's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down conditionals.</>,
 		groStr : 'condLogCols',
 		ideStr : 'logCondDelta',
-		selStr : '.dl-cond-sec .dl-mk-delta',
+		selStr : '[data-element-name-hook="logConDiv"] [data-element-name-hook="logDelSpa"]',
 		titStr : 'Δ Column'
 
 
@@ -3557,7 +3557,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows the conditional's current value, reflecting any change from a dependent picker's item being marked as completed in your todo list.</>,
 		groStr : 'condLogCols',
 		ideStr : 'logCondAfter',
-		selStr : '.dl-cond-sec .dl-mk-after',
+		selStr : '[data-element-name-hook="logConDiv"] [data-element-name-hook="logAftSpa"]',
 		titStr : 'After Column'
 
 
@@ -3569,7 +3569,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle : <>This shows whether this conditional is currently triggered (its dependent pickers are resting today) or not.</>,
 		groStr : 'condLogCols',
 		ideStr : 'logCondStatus',
-		selStr : '.dl-cond-sec .dl-mk-status',
+		selStr : '[data-element-name-hook="logConDiv"] [data-element-name-hook="logStaSpa"]',
 		titStr : 'Status Column'
 
 

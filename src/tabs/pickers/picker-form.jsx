@@ -1401,6 +1401,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								<button
 									className={ ` switch   ${ conAttBoo ? 'is-on' : '' } ` }
 
+									data-element-name-hook='togSwiBut'
+
 									type='button'
 
 									aria-checked={ conAttBoo }
@@ -1408,7 +1410,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									role='switch'
 
 									onClick={ () => setConAttBoo( ( preValBoo ) => !preValBoo ) }
-								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. */ }
+								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1575,6 +1577,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 									className={ ` switch   ${ incDaiBoo ? 'is-on' : '' } ` }
 
+									data-element-name-hook='togSwiBut'
+
 									type='button'
 
 									aria-checked={ incDaiBoo }
@@ -1589,7 +1593,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									} }
-								>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This marks daiTogRef true (so the reveal effect above knows this was a genuine user toggle) and flips incDaiBoo. */ }
+								>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This marks daiTogRef true (so the reveal effect above knows this was a genuine user toggle) and flips incDaiBoo. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1726,6 +1730,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											className={ ` switch   ${ skiHolBoo ? 'is-on' : '' } ` }
 
+											data-element-name-hook='togSwiBut'
+
 											type='button'
 
 											aria-checked={ skiHolBoo }
@@ -1733,7 +1739,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											role='switch'
 
 											onClick={ () => setSkiHolBoo( ( preValBoo ) => !preValBoo ) }
-										>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips skiHolBoo on click. */ }
+										>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips skiHolBoo on click. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1787,6 +1793,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											className={ ` switch   ${ avoDupBoo ? 'is-on' : '' } ` }
 
+											data-element-name-hook='togSwiBut'
+
 											type='button'
 
 											aria-checked={ avoDupBoo }
@@ -1794,7 +1802,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											role='switch'
 
 											onClick={ () => setAvoDupBoo( ( preValBoo ) => !preValBoo ) }
-										>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips avoDupBoo on click. */ }
+										>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips avoDupBoo on click. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }

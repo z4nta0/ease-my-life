@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';            // What: Create Portal. Why
 import { emlTouObj    } from '../state/tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
 import { InfTipCom    } from '../ui/info-tip.jsx';   // What: Info Tip Component. Why: A cirBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
 import { redMotFun    } from '../utils/motion.js';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
+import { splSelFun    } from '../utils/selector.js'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called with the step's or item's own selector list.
 import { useEmlTouFun } from '../state/tour-bus.js'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
 
 // #endregion Imports
@@ -721,10 +722,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	const finTarFun = ( selStr ) => { // What: Find Targets Function. Why: Every element a step's selector matches needs resolving, honoring selector ORDER (comma-separated fallbacks), so a step can spotlight more than one element (e.g. "the whole list") as a single combined highlight. How: This filters out zero-rect (CSS display:none) elements before checking emptiness, since some responsive pairs (e.g. the sidebar vs. footer Edit Mode button) both exist in the DOM at every width, only swapping which one is display:none via a container query, unlike .ob-generate/.gen-confirm's conditional-render swap; without this, the first alternative in a fallback list would always win even when it is the hidden one.
 
 
-		for ( const oneSelStr of selStr.split( ',' ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selStr's own alternatives left to right.
+		for ( const oneSelStr of splSelFun( selStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selStr's own alternatives left to right.
 
 
-			const curEleArr = [ ...document.querySelectorAll( oneSelStr.trim() ) ].filter( ( curIteEle ) => { // What: Current Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array, then keeps only the elements the visibility filter below accepts.
+			const curEleArr = [ ...document.querySelectorAll( oneSelStr ) ].filter( ( curIteEle ) => { // What: Current Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array, then keeps only the elements the visibility filter below accepts.
 
 
 				const eleRecObj = curIteEle.getBoundingClientRect(); // What: Element Rect Object. Why: The visibility check below needs this element's own on-screen size. How: This reads curIteEle's own bounding rect.

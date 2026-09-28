@@ -1394,7 +1394,11 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, staAppObj, tasRcdObj } ) {
 	return (
 
 
-		<div className='rem-editor'>{ /* What: Reminder Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. */ }
+		<div
+			className='rem-editor'
+
+			data-element-name-hook='schEdiDiv'
+		>{ /* What: Reminder Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<div className='rem-field'>{ /* What: Repeat Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the segmented control plus its own live summary and visibility note. */ }
@@ -1453,10 +1457,29 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, staAppObj, tasRcdObj } ) {
 
 
 
-			{ aniExtBoo // What: Once Fields Animation Check. Why: Only a caller that opted into animation wraps the once fields in a collapse. How: This picks the animated or plain branch below based on aniExtBoo.
-				? <ColDisCom open={ tasRcdObj.repeat === 'once' }><div className='rem-extra-fade'>{ oncFieEle }</div></ColDisCom> // What: Animated Once Fields Branch. Why: A caller that opted into animation needs the once-fields subsection to grow/shrink instead of snapping. How: This wraps oncFieEle in ColDisCom, open only while repeat is 'once'.
-				: ( tasRcdObj.repeat === 'once' && oncFieEle )                                                                    // What: Plain Once Fields Branch. Why: A caller that didn't opt into animation just needs oncFieEle shown or hidden outright. How: This renders oncFieEle directly, with no ColDisCom wrapper, only while repeat is 'once'.
-			}
+			{ aniExtBoo ? ( // What: Animated Once Fields Branch. Why: A caller that opted into animation needs the once-fields subsection to grow/shrink instead of snapping. How: This wraps oncFieEle in ColDisCom, open only while repeat is 'once'.
+
+
+				<ColDisCom open={ tasRcdObj.repeat === 'once' }>{ /* What: Collapse Disclosure Component. Why: A caller that opted into animation needs the once-fields subsection to grow/shrink instead of snapping. How: This wraps oncFieEle, open only while repeat is 'once'. */ }
+
+
+					<div
+						className='rem-extra-fade'
+
+						data-element-name-hook='remExtDiv'
+					>{ oncFieEle }</div>{ /* What: Extra Fade Div Element. Why: The once fields share the extra-fields subsection's own fade wrapper. How: This wraps oncFieEle inside the collapse. Its data-element-name-hook is read by the reminder mini-tours. */ }
+
+
+				</ColDisCom>
+
+
+			) : ( // What: Plain Once Fields Branch. Why: A caller that didn't opt into animation just needs oncFieEle shown or hidden outright. How: This renders oncFieEle directly, with no ColDisCom wrapper, only while repeat is 'once'.
+
+
+				tasRcdObj.repeat === 'once' && oncFieEle
+
+
+			) }
 
 
 

@@ -147,7 +147,11 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
 		<React.Fragment>{ /* What: Boost Reset Fragment Element. Why: The booValNum span and reset button are true siblings with no shared wrapper element of their own. How: This groups the two below without adding an extra DOM node. */ }
 
 
-			<span className='pie-boost-val'>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. */ }
+			<span
+				className='pie-boost-val'
+
+				data-element-name-hook='booValSpa'
+			>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 			<button
 				className='pie-reset'

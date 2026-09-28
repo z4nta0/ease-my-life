@@ -214,7 +214,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. This will not be included as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
-		selStr : '[data-element-name-hook="picAddBut"], [data-element-name-hook="picAddSpa"]', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : ':is([data-element-name-hook="picAddBut"], [data-element-name-hook="picAddSpa"])', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Create New Pickers'
 
 

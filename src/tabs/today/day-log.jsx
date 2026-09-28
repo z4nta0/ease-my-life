@@ -499,7 +499,23 @@ function IcoSetCom ( { icoKeyStr, strWidNum = 2 } ) {
 function StaChiCom ( { iteFlaObj } ) {
 
 
-	if ( !iteFlaObj || !iteFlaObj.anyBoo ) return <span className='dl-none dl-mk-status'>—</span>; // What: No Rows Guard. Why: An item with no pick-log rows today has nothing to show but a placeholder. How: This returns the em-dash placeholder span (a display glyph, not prose) before building any chips below.
+	if ( !iteFlaObj || !iteFlaObj.anyBoo ) { // What: No Rows Guard. Why: An item with no pick-log rows today has nothing to show but a placeholder. How: This returns the em-dash placeholder span below (a display glyph, not prose) before building any chips below.
+
+
+		return (
+
+
+			<span
+				className='dl-none dl-mk-status'
+
+				data-element-name-hook='logStaSpa'
+			>—</span> // What: No Rows Span Element. Why: An item with no pick-log rows today still needs a placeholder in its status column. How: This renders an em-dash display glyph. Its data-element-name-hook is read by help mode's Today catalog.
+
+
+		);
+
+
+	}
 
 
 
@@ -529,7 +545,11 @@ function StaChiCom ( { iteFlaObj } ) {
 	return (
 
 
-		<span className='dl-status dl-mk-status'>{ /* What: Status Chip Row Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. */ }
+		<span
+			className='dl-status dl-mk-status'
+
+			data-element-name-hook='logStaSpa'
+		>{ /* What: Status Chip Row Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			{ chiTupArr.map( ( [ chiKeyStr, chiIcoStr, chiTitStr, chiWidNum ] ) => ( // What: Chip Map Callback. Why: One small span is needed per earned chip. How: This destructures each chiTupArr tuple and renders it as a titled icon span, keyed by chiKeyStr.
@@ -601,9 +621,17 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 		<div className='dl-thead'>{ /* What: Table Head Div Element. Why: This is TabHeaCom's own root element. How: This renders the 5 shared column headers below. */ }
 
 
-			<span className='dl-mk-item'>{ heaLabStr }</span>{ /* What: Item Header Span Element. Why: The first column's own label varies by caller. How: This renders heaLabStr directly. */ }
+			<span
+				className='dl-mk-item'
 
-			<span className='r dl-mk-atgen'>{ /* What: At Generation Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders an open-circle glyph plus a visually-hidden "At generation" span. */ }
+				data-element-name-hook='logIteSpa'
+			>{ heaLabStr }</span>{ /* What: Item Header Span Element. Why: The first column's own label varies by caller. How: This renders heaLabStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+			<span
+				className='r dl-mk-atgen'
+
+				data-element-name-hook='logGenSpa'
+			>{ /* What: At Generation Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders an open-circle glyph plus a visually-hidden "At generation" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span
@@ -617,7 +645,11 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 
 			</span>
 
-			<span className='r dl-mk-delta'>{ /* What: Delta Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a delta glyph plus a visually-hidden "Change" span. */ }
+			<span
+				className='r dl-mk-delta'
+
+				data-element-name-hook='logDelSpa'
+			>{ /* What: Delta Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a delta glyph plus a visually-hidden "Change" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span aria-hidden='true'>Δ</span>{ /* What: Delta Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders Δ hidden from screen readers. */ }
@@ -627,7 +659,11 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 
 			</span>
 
-			<span className='r dl-mk-after'>{ /* What: After Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a filled-circle glyph plus a visually-hidden "After" span. */ }
+			<span
+				className='r dl-mk-after'
+
+				data-element-name-hook='logAftSpa'
+			>{ /* What: After Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a filled-circle glyph plus a visually-hidden "After" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span
@@ -641,7 +677,11 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 
 			</span>
 
-			<span className='r dl-mk-status'>Status</span>{ /* What: Status Header Span Element. Why: The last column is a plain text header, no glyph needed. How: This renders the literal text "Status". */ }
+			<span
+				className='r dl-mk-status'
+
+				data-element-name-hook='logStaSpa'
+			>Status</span>{ /* What: Status Header Span Element. Why: The last column is a plain text header, no glyph needed. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 		</div>
@@ -707,11 +747,23 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } ) {
 			<React.Fragment>{ /* What: No Value Cells Fragment Element. Why: This row still needs all 3 value cell slots rendered, even with nothing real to show. How: This renders 2 N/A cells and a flat placeholder delta between them. */ }
 
 
-				<span className='dl-val dl-mk-atgen r'><span className='dl-na'>N/A</span></span>{ /* What: At Generation Not Available Span Element. Why: There is no generation-time value to show. How: This renders the shared dl-na "N/A" placeholder. */ }
+				<span
+					className='dl-val dl-mk-atgen r'
 
-				<span className='dl-delta dl-mk-delta flat r'>—</span>{ /* What: Delta Placeholder Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). */ }
+					data-element-name-hook='logGenSpa'
+				><span className='dl-na'>N/A</span></span>{ /* What: At Generation Not Available Span Element. Why: There is no generation-time value to show. How: This renders the shared dl-na "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
-				<span className='dl-val dl-mk-after r'><span className='dl-na'>N/A</span></span>{ /* What: After Not Available Span Element. Why: There is no current value to show either. How: This renders the shared dl-na "N/A" placeholder. */ }
+				<span
+					className='dl-delta dl-mk-delta flat r'
+
+					data-element-name-hook='logDelSpa'
+				>—</span>{ /* What: Delta Placeholder Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+				<span
+					className='dl-val dl-mk-after r'
+
+					data-element-name-hook='logAftSpa'
+				><span className='dl-na'>N/A</span></span>{ /* What: After Not Available Span Element. Why: There is no current value to show either. How: This renders the shared dl-na "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			</React.Fragment>
@@ -738,11 +790,23 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } ) {
 		<React.Fragment>{ /* What: Value Cells Fragment Element. Why: This row's own 3 real value cells share no wrapping DOM element. How: This renders the at-generation, delta and after cells in order. */ }
 
 
-			<span className='dl-val dl-mk-atgen r'>{ effGenNum }</span>{ /* What: At Generation Value Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. */ }
+			<span
+				className='dl-val dl-mk-atgen r'
 
-			<span className={ ` dl-delta   dl-mk-delta   ${ treClaStr }   r ` }>{ disTexStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. */ }
+				data-element-name-hook='logGenSpa'
+			>{ effGenNum }</span>{ /* What: At Generation Value Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
-			<span className='dl-val dl-after dl-mk-after r'>{ effAftNum }</span>{ /* What: After Value Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. */ }
+			<span
+				className={ ` dl-delta   dl-mk-delta   ${ treClaStr }   r ` }
+
+				data-element-name-hook='logDelSpa'
+			>{ disTexStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+			<span
+				className='dl-val dl-after dl-mk-after r'
+
+				data-element-name-hook='logAftSpa'
+			>{ effAftNum }</span>{ /* What: After Value Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 		</React.Fragment>
@@ -803,7 +867,11 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 	return (
 
 
-		<div className='dl-block dl-cond-sec'>{ /* What: Conditional Section Div Element. Why: This is ConSecCom's own root element, tinted blue via its own dl-cond-sec class. How: This renders a static header plus the conditional table below. */ }
+		<div
+			className='dl-block dl-cond-sec'
+
+			data-element-name-hook='logConDiv'
+		>{ /* What: Conditional Section Div Element. Why: This is ConSecCom's own root element, tinted blue via its own dl-cond-sec class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<div className='dl-block-h dl-block-h--static'>{ /* What: Conditional Section Header Div Element. Why: This mirrors PicBloCom's own static header shape. How: This renders the section's own title plus a count pill. */ }
@@ -845,7 +913,11 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 							<div className='dl-trow dl-cond-row'>{ /* What: Conditional Row Div Element. Why: This is one conditional's own full row, spanning name/subline, value cells and its own triggered pill. How: This renders the name/mode span, ValCelCom, and the triggered pill below. */ }
 
 
-								<span className='dl-item dl-mk-item'>{ /* What: Conditional Name Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. */ }
+								<span
+									className='dl-item dl-mk-item'
+
+									data-element-name-hook='logIteSpa'
+								>{ /* What: Conditional Name Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<span className='dl-nrow'>{ /* What: Name Row Span Element. Why: The name and mode pill sit side by side on their own row above the subline. How: This renders conRcdObj's own name plus its modLabStr pill. */ }
@@ -885,7 +957,11 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 
 
-								<span className='dl-status dl-mk-status'>{ /* What: Conditional Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. */ }
+								<span
+									className='dl-status dl-mk-status'
+
+									data-element-name-hook='logStaSpa'
+								>{ /* What: Conditional Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<span className={ ` dl-st-pill   ${ trgFlaBoo ? 'dl-st-trig' : 'dl-st-nottrig' } ` }>{ trgFlaBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Triggered Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from trgFlaBoo. */ }
@@ -993,7 +1069,11 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 		return (
 
 
-			<div className='dl-block'>{ /* What: Rested Picker Block Div Element. Why: This is the whole static-rested variant's own root element. How: This renders a single non-interactive header row, no table beneath it. */ }
+			<div
+				className='dl-block'
+
+				data-element-name-hook='logBloDiv'
+			>{ /* What: Rested Picker Block Div Element. Why: This is the whole static-rested variant's own root element. How: This renders a single non-interactive header row, no table beneath it. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<div className='dl-block-h dl-block-h--static'>{ /* What: Rested Block Header Div Element. Why: This mirrors the interactive header's own layout without being a button. How: This renders the picker's own name/mode pill plus the rested strip. */ }
@@ -1047,7 +1127,11 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 	return (
 
 
-		<div className={ ` dl-block   ${ bloOpeBoo ? '' : 'is-closed' } ` }>{ /* What: Picker Block Div Element. Why: This is the interactive variant's own root element. How: This toggles its own is-closed class per bloOpeBoo, wrapping the header button and the collapsible table below. */ }
+		<div
+			className={ ` dl-block   ${ bloOpeBoo ? '' : 'is-closed' } ` }
+
+			data-element-name-hook='logBloDiv'
+		>{ /* What: Picker Block Div Element. Why: This is the interactive variant's own root element. How: This toggles its own is-closed class per bloOpeBoo, wrapping the header button and the collapsible table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<button
@@ -1145,7 +1229,11 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 							>{ /* What: Item Row Div Element. Why: This is one item's own full row, spanning name/subline, value cells and status. How: This toggles its own is-done/is-dim classes from iteDonBoo/iteRcdObj.vacation. */ }
 
 
-								<span className='dl-item dl-mk-item'>{ /* What: Item Name Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. */ }
+								<span
+									className='dl-item dl-mk-item'
+
+									data-element-name-hook='logIteSpa'
+								>{ /* What: Item Name Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<InfTipCom
@@ -1174,7 +1262,11 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 
 								{ iteRcdObj.vacation // What: Vacation Status Check. Why: A vacationing item shows a plain "Inactive" label instead of the normal status chips. How: This renders the inactive span for a vacationing item, StaChiCom otherwise.
-									? <span className='dl-status dl-mk-status'><span className='dl-vac'>Inactive</span></span> // What: Inactive Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column.
+									? <span
+										className='dl-status dl-mk-status'
+
+										data-element-name-hook='logStaSpa'
+									><span className='dl-vac'>Inactive</span></span> // What: Inactive Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column. Its data-element-name-hook is read by help mode's Today catalog.
 									: <StaChiCom iteFlaObj={ iteFlaObj } />                                                    // What: Status Chip Component. Why: Every other item shows its own status chips. How: This passes the item's own flags.
 								}
 
@@ -1324,7 +1416,11 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 			</div>
 
-			<div className='dl-key'>{ /* What: Key Legend Div Element. Why: The panel needs a one-time legend explaining every status chip's own meaning. How: This renders 5 icon/label pairs, one per possible status. */ }
+			<div
+				className='dl-key'
+
+				data-element-name-hook='logKeyDiv'
+			>{ /* What: Key Legend Div Element. Why: The panel needs a one-time legend explaining every status chip's own meaning. How: This renders 5 icon/label pairs, one per possible status. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span className='dl-kicker'>Key</span>{ /* What: Key Kicker Span Element. Why: The legend needs its own small title. How: This renders the literal text "Key". */ }
@@ -1507,6 +1603,8 @@ function LogChiCom ( { onTogLogFun, open } ) {
 		<button
 			className={ ` dl-chip   ${ open ? 'is-on' : '' } ` }
 
+			data-element-name-hook='logChiBut'
+
 			type='button'
 
 			aria-label={ open ? 'Hide day log' : 'Show day log' } // What: Chip Label Pick. Why: The screen reader label names the action the chip will take. How: This says Hide while open and Show otherwise.
@@ -1521,7 +1619,7 @@ function LogChiCom ( { onTogLogFun, open } ) {
 
 
 			} }
-		>{ /* What: Day Log Toggle Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open as both its "is-on" class and its aria-pressed state, and toggles the panel without the click reaching the group header. */ }
+		>{ /* What: Day Log Toggle Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open as both its "is-on" class and its aria-pressed state, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<IcoSetCom icoKeyStr='logEle' />{ /* What: Icon Shape Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
@@ -1700,11 +1798,23 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 				<div className='dl-rt-head'>{ /* What: Reminders Table Head Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 shared column-header spans. */ }
 
 
-					<span className='dl-mk-rname'>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". */ }
+					<span
+						className='dl-mk-rname'
 
-					<span className='dl-mk-rwhen'>When</span>{ /* What: When Header Span Element. Why: This labels the schedule column. How: This renders the literal text "When". */ }
+						data-element-name-hook='remNamSpa'
+					>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
-					<span className='r dl-mk-rst'>Status</span>{ /* What: Status Header Span Element. Why: This labels the status column. How: This renders the literal text "Status". */ }
+					<span
+						className='dl-mk-rwhen'
+
+						data-element-name-hook='remWheSpa'
+					>When</span>{ /* What: When Header Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+					<span
+						className='r dl-mk-rst'
+
+						data-element-name-hook='remStaSpa'
+					>Status</span>{ /* What: Status Header Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				</div>
@@ -1724,15 +1834,25 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 						<InfTipCom
 							className='dl-r-name dl-mk-rname'
 
+							data-element-name-hook='remNamSpa'
+
 							labTexStr={ tasRcdObj.name }
 							trnOnlBoo
-						>{ tasRcdObj.name }</InfTipCom>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. */ }
+						>{ tasRcdObj.name }</InfTipCom>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasRcdObj's own name as a truncation-revealing InfTipCom. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 
-						<span className='dl-r-when dl-mk-rwhen'>{ wheSumStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheSumStr directly. */ }
+						<span
+							className='dl-r-when dl-mk-rwhen'
 
-						<span className='dl-r-st dl-mk-rst'>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. */ }
+							data-element-name-hook='remWheSpa'
+						>{ wheSumStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheSumStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+
+						<span
+							className='dl-r-st dl-mk-rst'
+
+							data-element-name-hook='remStaSpa'
+						>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 							{ rowStaStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while rowStaStr is 'done'.
