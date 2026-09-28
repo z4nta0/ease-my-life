@@ -2225,9 +2225,9 @@ later, but don't invent one for anything else yet:
       one whose values stay short across every row, then leave that
       long property and the closing `}` completely unaligned/natural,
       each row ending wherever its own value happens to end. See
-      `help-mode.jsx`'s own small inline nav-tip array (`icoStr`/
-      `labStr`/`desStr`, the `NAV_HEL_OBJ` tip's own tab-description
-      catalog): `icoStr` and `labStr` line up across all 5 rows, but
+      `help-mode.jsx`'s own `NAV_TAB_ARR` (`icoStr`/`labStr`/`desStr`,
+      the `NAV_HEL_OBJ` tip's own tab-description catalog): `icoStr`
+      and `labStr` line up across all 5 rows, but
       `desStr` (a full sentence or more per row) and the closing `}`
       after it are left natural.
 - An object literal with 2+ properties gets split to one property per line
@@ -4089,8 +4089,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     fixed to its word's literal first 3 letters: `bra` → `bro` (Browser,
     `broNamStr`/`BRO_PAT_ARR`), `clk` → `cli` (Click, which recurred in
     `onboarding-tour-runner.jsx`'s own step fields, now `advCliStr`/
-    `cliSelStr`, and still has instances in `help-mode.jsx`,
-    `tab-data.jsx`, and `tab-picker.jsx` for their own passes), `cpd` →
+    `cliSelStr`, and in `help-mode.jsx`'s own `cliEveObj`/`cliCapFun`,
+    and still has instances in `tab-data.jsx` and `tab-picker.jsx` for
+    their own passes), `cpd` →
     `cop` (Copied), `drk` → `dar` (Dark), `jmp` → `jum` (Jump), `lnk` → `lin`
     (Link), `mnt` → `mou` (Mount), `ofs` → `off` (Offset), `ply` → `pla`
     (Play), `rch` → `rea` (Reached), `rdr` → `rea` (Reader), `sht` → `sho`
