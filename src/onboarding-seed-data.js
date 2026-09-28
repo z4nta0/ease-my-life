@@ -513,7 +513,7 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );           
  *
  * @summary
  * Produces the same local-timezone-adjusted ISO day string as
- * store.js's own isoDay and seed.js's own seedIsoDay, kept as a local
+ * store.js's own isoDayFun and seed.js's own seeIsoFun, kept as a local
  * copy since this module has no dependency on either.
  *
  * @author z4nta0 <https://github.com/z4nta0>
