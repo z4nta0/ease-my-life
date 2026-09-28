@@ -1,0 +1,1170 @@
+
+
+
+/**
+ * app.module.css = App Module
+ *
+ * @summary
+ * Styles for the app shell: AppRooCom's full-height root, which is also the
+ * "app" size container every @container query in the app measures, the
+ * scrolling main area, and TabBarCom's navigation bar in its three
+ * placements. At the bottom it's a floating pill of tab buttons; at the side
+ * it's a rail with the Ease My Life wordmark, which becomes an off-canvas
+ * drawer with a pull handle and scrim on a narrow screen; at the top it's a
+ * bar with the wordmark and tabs on one line. A single indicator pill slides
+ * behind the active tab. When the placement changes, a ghost copy of the old
+ * bar exits toward its edge while the real one enters from its new edge.
+ *
+ * The nav's small mark and initials (.brand-mark, .brand-name) are hidden in
+ * every placement, the wordmark standing in for them; their rules are carried
+ * over as they were. The main area reads data-tab-today-active, set while the
+ * Today tab shows, since Today runs edge to edge.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region app */
+
+.app { /* What: App Root. Why: The app fills the viewport, and its width drives every container query in the app. How: This makes it a full-height flex column that clips overflow and names it the "app" inline-size container. */
+
+
+	container      : app / inline-size;
+	display        : flex;
+	flex-direction : column;
+	height         : 100dvh;
+	overflow       : hidden;
+
+
+}
+.app[data-placement="side"] { /* What: Side Placement App Root. Why: A side rail sits beside the content rather than above it. How: This lays the root out as a row. */
+
+
+	flex-direction : row;
+
+
+}
+.app[data-placement="top"] { /* What: Top Placement App Root. Why: A top bar sits above the content. How: This keeps the root a column. */
+
+
+	flex-direction : column;
+
+
+}
+
+/* #region tabbar */
+
+.tabbar { /* What: Tab Bar. Why: The navigation reads as a translucent frosted bar over the content. How: This lays the tabs out in a centered row on a blurred translucent background, with a zero-width border each placement widens on its own edge. */
+
+
+	-webkit-backdrop-filter : blur(20px) saturate(150%); /* What: WebKit Backdrop Filter. Why: Safari only honors its own prefixed backdrop-filter. How: This blurs what's behind in WebKit, the same as the standard backdrop-filter line below. */
+	align-items             : center;
+	backdrop-filter         : blur(20px) saturate(150%);
+	background              : oklch(from var(--bg) l c h / 0.85);
+	border                  : 0 solid var(--border);
+	display                 : flex;
+	gap                     : 4px;
+
+
+}
+.tabbar--exiting { /* What: Exiting Tab Bar. Why: When the placement changes, a ghost of the old bar plays its exit over the page without taking clicks. How: This makes it inert and raises it, and must stay before the placement rules so their own stacking wins where they set one. */
+
+
+	pointer-events : none;
+	z-index        : 150;
+
+
+}
+.tabbar--exiting.tabbar--side { /* What: Exiting Side Tab Bar. Why: The ghost side rail leaves the layout so the real bar can take its slot. How: This pins it to the left edge as an overlay. */
+
+
+	bottom   : 0;
+	left     : 0;
+	position : fixed;
+	top      : 0;
+
+
+}
+.tabbar--exiting.tabbar--top { /* What: Exiting Top Tab Bar. Why: The ghost top bar leaves the layout so the real bar can take its slot. How: This pins it to the top edge as an overlay. */
+
+
+	left     : 0;
+	position : fixed;
+	right    : 0;
+	top      : 0;
+
+
+}
+.tabbar--exiting.tabbar--bottom { /* What: Exiting Bottom Tab Bar Motion. Why: The old bottom bar should slide away toward its own edge. How: This plays the bottom exit. */
+
+
+	animation : navExitBottom .34s cubic-bezier(.4, 0, 1, 1) forwards;
+
+
+}
+.tabbar--exiting.tabbar--top { /* What: Exiting Top Tab Bar Motion. Why: The old top bar should slide away toward its own edge. How: This plays the top exit. */
+
+
+	animation : navExitTop .34s cubic-bezier(.4, 0, 1, 1) forwards;
+
+
+}
+.tabbar--exiting.tabbar--side { /* What: Exiting Side Tab Bar Motion. Why: The old side rail should slide away toward its own edge. How: This plays the side exit. */
+
+
+	animation : navExitSide .34s cubic-bezier(.4, 0, 1, 1) forwards;
+
+
+}
+.tabbar--entering.tabbar--bottom { /* What: Entering Bottom Tab Bar. Why: The new bottom bar should arrive from its edge just after the old one leaves. How: This plays the bottom entrance after a short stagger. */
+
+
+	animation : navEnterBottom .42s cubic-bezier(.2, .7, .3, 1) .12s both;
+
+
+}
+.tabbar--entering.tabbar--top { /* What: Entering Top Tab Bar. Why: The new top bar should arrive from its edge just after the old one leaves. How: This plays the top entrance after a short stagger. */
+
+
+	animation : navEnterTop .42s cubic-bezier(.2, .7, .3, 1) .12s both;
+
+
+}
+.tabbar--entering.tabbar--side { /* What: Entering Side Tab Bar. Why: The new side rail should arrive from its edge just after the old one leaves. How: This plays the side entrance after a short stagger. */
+
+
+	animation : navEnterSide .42s cubic-bezier(.2, .7, .3, 1) .12s both;
+
+
+}
+.tabbar--bottom { /* What: Bottom Tab Bar. Why: At the bottom, the tabs sit in a bar pinned to the screen's bottom edge, clear of the device's safe areas. How: This fixes the bar to the bottom with a top border and safe-area-aware padding, centering the tabs. */
+
+
+	border-top-width : 0.5px;
+	bottom           : 0;
+	justify-content  : center;
+	left             : 0;
+	padding          : 8px max(env(safe-area-inset-left), 12px) calc(8px + env(safe-area-inset-bottom)) max(env(safe-area-inset-right), 12px);
+	position         : fixed;
+	right            : 0;
+	z-index          : 100;
+
+
+}
+@container app (min-width: 720px) { /* What: Wide Bottom Tab Bar. Why: On a wide screen the bottom bar floats as a centered pill instead of spanning the edge. How: This applies only when the app is at least 720px wide. */
+
+
+	.tabbar--bottom { /* What: Floating Bottom Tab Bar. Why: A full-width bar looks sparse on a wide screen. How: This centers a content-width rounded pill above the bottom edge with a border, shadow, and surface fill. */
+
+
+		background    : oklch(from var(--surface) l c h / 0.94);
+		border        : 0.5px solid var(--border);
+		border-radius : 999px;
+		bottom        : 20px;
+		box-shadow    : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
+		gap           : 2px;
+		left          : 50%;
+		padding       : 6px 8px;
+		right         : auto;
+		transform     : translateX(-50%);
+		width         : max-content;
+
+
+	}
+
+
+}
+@container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Bar. Why: On a small screen the bottom bar is a floating icon-only pill, consistent with the wider one; deleting this block restores the edge-to-edge bar. How: This applies only when the app is narrower than 720px. */
+
+
+	.tabbar--bottom { /* What: Floating Narrow Bottom Tab Bar. Why: The pill must fit a phone and clear its home indicator. How: This centers a content-width pill capped to the screen width, above the safe area, with a border, shadow, and surface fill. */
+
+
+		background    : oklch(from var(--surface) l c h / 0.94);
+		border        : 0.5px solid var(--border);
+		border-radius : 999px;
+		bottom        : calc(12px + env(safe-area-inset-bottom));
+		box-shadow    : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
+		gap           : 2px;
+		left          : 50%;
+		max-width     : calc(100% - 24px);
+		padding       : 6px 8px;
+		right         : auto;
+		transform     : translateX(-50%);
+		width         : max-content;
+
+
+	}
+
+
+}
+.tabbar--side { /* What: Side Tab Bar. Why: At the side, the tabs stack in a full-height rail beside the content. How: This makes a sticky full-height column with a right border. */
+
+
+	align-items        : stretch;
+	border-right-width : 0.5px;
+	flex-direction     : column;
+	gap                : 2px;
+	height             : 100dvh;
+	padding            : 24px 16px;
+	position           : sticky;
+	top                : 0;
+	width              : 220px;
+
+
+}
+@container app (max-width: 700px) { /* What: Narrow Side Tab Bar. Why: On a small screen the side rail becomes an off-canvas drawer overlaying the content instead of taking its width. How: This applies only when the app is 700px wide or less. */
+
+
+	.tabbar--side { /* What: Drawer Side Tab Bar. Why: The rail should sit off the left edge until its handle opens it. How: This fixes the rail to the left edge, translated fully off screen, sliding when it opens. */
+
+
+		align-items    : stretch;
+		bottom         : 0;
+		flex-direction : column;
+		height         : 100dvh;
+		left           : 0;
+		padding        : 24px 16px calc(24px + env(safe-area-inset-bottom));
+		position       : fixed;
+		top            : 0;
+		transform      : translateX(-100%);
+		transition     : transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+		width          : 232px;
+		z-index        : 200;
+
+
+	}
+
+	.tabbar--side[data-rail-open-active] { /* What: Open Drawer Side Tab Bar. Why: An open drawer slides into view over the content. How: This slides it back on screen with a soft shadow. */
+
+
+		box-shadow : 12px 0 44px -14px rgba(0,0,0,0.3);
+		transform  : translateX(0);
+
+
+	}
+
+
+}
+.tabbar--top { /* What: Top Tab Bar. Why: At the top, the brand and tabs sit in one sticky bar whose content lines up with the page column. How: This makes a sticky bar with a bottom border and padding that centers its content in a 960px column. */
+
+
+	border-bottom-width : 0.5px;
+	justify-content     : space-between;
+	padding             : 12px max(20px, calc((100% - 960px) / 2)); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's 960px column. How: The side padding grows to center that width, never below 20px; the other tabs' 720px column would use the same formula with 720px. */
+	position            : sticky;
+	top                 : 0;
+	z-index             : 100;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Tab Bar. Why: Someone who asked for less motion shouldn't see the bars slide out and in, or the drawer slide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.tabbar--exiting { /* What: Hidden Exiting Tab Bar. Why: Without its slide the ghost bar adds nothing. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+	.tabbar--entering.tabbar--bottom,
+	.tabbar--entering.tabbar--top,
+	.tabbar--entering.tabbar--side { /* What: Still Entering Tab Bar. Why: The new bar should simply be there. How: This turns the entrances off. */
+
+
+		animation : none;
+
+
+	}
+
+	.tabbar--side { /* What: Still Side Tab Bar. Why: The drawer should simply open and close. How: This turns its slide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+@keyframes navExitBottom { /* What: Nav Exit Bottom. Why: The bottom bar leaves downward. How: This slides the centered bar below the screen while fading it. */
+
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateX(-50%) translateY(130%);
+
+
+	}
+
+
+}
+@keyframes navExitTop { /* What: Nav Exit Top. Why: The top bar leaves upward. How: This slides the bar above the screen while fading it. */
+
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY(-130%);
+
+
+	}
+
+
+}
+@keyframes navExitSide { /* What: Nav Exit Side. Why: The side rail leaves to the left. How: This slides the rail off the left edge while fading it. */
+
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateX(-115%);
+
+
+	}
+
+
+}
+@keyframes navEnterBottom { /* What: Nav Enter Bottom. Why: The bottom bar arrives from below. How: This slides the centered bar up from below the screen while fading it in. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX(-50%) translateY(130%);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : translateX(-50%);
+
+
+	}
+
+
+}
+@keyframes navEnterTop { /* What: Nav Enter Top. Why: The top bar arrives from above. How: This slides the bar down from above the screen while fading it in. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-130%);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes navEnterSide { /* What: Nav Enter Side. Why: The side rail arrives from the left. How: This slides the rail in from off the left edge while fading it in. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX(-115%);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.tabbar-indicator { /* What: Tab Indicator. Why: One accent pill slides behind the active tab. How: JS measures the active tab and writes the pill's size and position, which glide on transform, width, and height behind the buttons. */
+
+
+	background     : var(--accent-soft);
+	border-radius  : 10px;
+	left           : 0;
+	pointer-events : none;
+	position       : absolute;
+	top            : 0;
+	transition     : transform .34s cubic-bezier(.2, .7, .3, 1), width .34s cubic-bezier(.2, .7, .3, 1), height .34s cubic-bezier(.2, .7, .3, 1);
+	z-index        : 0;
+
+
+}
+.tabbar--bottom .tabbar-indicator { /* What: Bottom Tab Indicator. Why: The floating bottom pill needs a rounder indicator than the squarer side and top bars. How: This rounds it further. */
+
+
+	border-radius : 22px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Tab Indicator. Why: Someone who asked for less motion shouldn't see the pill glide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.tabbar-indicator { /* What: Still Tab Indicator. Why: The pill should simply jump to the active tab. How: This turns its glide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region tabbar-brand */
+
+.tabbar-brand { /* What: Tab Bar Brand. Why: The brand is a button back to Today that the placement rules lay out, not a styled native button. How: This strips the button chrome and inherits the text styling. */
+
+
+	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	font               : inherit;
+	text-align         : left;
+
+
+}
+.tabbar--bottom .tabbar-brand { /* What: Bottom Tab Bar Brand. Why: The bottom bar has no room for a brand, and each tab's header already shows the logo. How: This hides it. */
+
+
+	display : none;
+
+
+}
+.tabbar--side .tabbar-brand { /* What: Side Tab Bar Brand. Why: The rail leads with the wordmark above its tabs. How: This lays the brand out as a padded row above the tabs. */
+
+
+	align-items : center;
+	display     : flex;
+	font-weight : 600;
+	gap         : 9px;
+	padding     : 6px 10px 18px;
+
+
+}
+.tabbar--top .tabbar-brand { /* What: Top Tab Bar Brand. Why: The top bar leads with the wordmark, divided from the tabs. How: This lays the brand out as a row with a right divider. */
+
+
+	align-items   : center;
+	border-right  : 0.5px solid var(--border);
+	display       : flex;
+	font-weight   : 600;
+	margin-right  : 8px;
+	padding-right : 16px;
+
+
+}
+@container app (max-width: 720px) { /* What: Narrow Top Tab Bar Brand. Why: On a small screen the top bar must fit on one line. How: This applies only when the app is 720px wide or less. */
+
+
+	.tabbar--top .tabbar-brand { /* What: Tight Top Tab Bar Brand. Why: The brand should give the icon-only tabs more room. How: This tightens its divider spacing. */
+
+
+		margin-right  : 4px;
+		padding-right : 12px;
+
+
+	}
+
+
+}
+
+/* #region brand-mark */
+
+.brand-mark { /* What: Nav Brand Mark. Why: The nav keeps the logo mark in its brand button, though every placement shows the wordmark instead. How: This sizes the mark like the tab headers' logos, in the accent color, with a lift on hover. */
+
+
+	--brand-mark-h  : calc(34px * 1.1 * 2);
+	aspect-ratio    : 1 / 1;
+	border-radius   : 11px;
+	color           : var(--accent);
+	display         : block;
+	flex            : 0 0 auto;
+	height          : calc(34px * 1.1 * 2); /* What: Two-Line Height. Why: The mark matches a header title's two-line height. How: This multiplies the title's font size by its line height, twice. */
+	text-decoration : none;
+	transition      : transform 180ms ease;
+
+
+}
+.brand-mark:hover { /* What: Hovered Nav Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY(-1px);
+
+
+}
+.tabbar--side .brand-mark,
+.tabbar--top .brand-mark { /* What: Hidden Nav Brand Mark. Why: The side and top bars show the wordmark, which already includes the mark. How: This hides the separate mark. */
+
+
+	display : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Nav Brand Mark. Why: Someone who asked for less motion shouldn't see the mark lift. How: This applies only when the reduced-motion preference is set. */
+
+
+	.brand-mark { /* What: Still Nav Brand Mark. Why: The mark should stay put. How: This turns its lift transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.brand-mark svg { /* What: Nav Brand Mark Glyph. Why: The logo should fill its mark box. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion brand-mark */
+
+
+/* #region brand-name */
+
+.brand-name { /* What: Nav Brand Initials. Why: The initials are a fallback wordmark the side and top bars never show. How: This tightens their letter spacing. */
+
+
+	letter-spacing : -0.02em;
+
+
+}
+.tabbar--side .brand-name,
+.tabbar--top .brand-name { /* What: Hidden Nav Brand Initials. Why: The side and top bars show the full wordmark instead. How: This hides the initials. */
+
+
+	display : none;
+
+
+}
+
+.brand-name span { /* What: Nav Brand Initial. Why: Each initial reads in the accent color. How: This colors the letter spans. */
+
+
+	color : var(--accent);
+
+
+}
+
+/* #endregion brand-name */
+
+
+
+/* #region brand-wordmark */
+
+.brand-wordmark { /* What: Nav Wordmark. Why: The wordmark only belongs in the side and top bars. How: This hides it by default. */
+
+
+	display : none;
+
+
+}
+.tabbar--side .brand-wordmark,
+.tabbar--top .brand-wordmark { /* What: Shown Nav Wordmark. Why: The side and top bars lead with "Ease" over "My Life" beside the mark. How: This lays the mark and the stacked lines out in a tight row in capitals. */
+
+
+	align-items    : center;
+	display        : flex;
+	flex-direction : row;
+	gap            : 11px;
+	line-height    : 0.98;
+	padding        : 2px 2px 0;
+	text-transform : uppercase;
+
+
+}
+@container app (max-width: 460px) { /* What: Narrowest Top Wordmark. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 460px wide or less. */
+
+
+	.tabbar--top .brand-wordmark { /* What: Mark-Only Top Wordmark. Why: With the text gone, the gap is empty space. How: This drops the gap. */
+
+
+		gap : 0;
+
+
+	}
+
+
+}
+
+/* #region bw-mark */
+
+.tabbar--side .brand-wordmark .bw-mark,
+.tabbar--top .brand-wordmark .bw-mark { /* What: Wordmark Mark. Why: The wordmark repeats the small logo mark beside its text. How: This sizes a fixed square in the accent color. */
+
+
+	color   : var(--accent);
+	display : inline-flex;
+	flex    : none;
+	height  : 30px;
+	width   : 30px;
+
+
+}
+
+.tabbar--side .brand-wordmark .bw-mark svg,
+.tabbar--top .brand-wordmark .bw-mark svg { /* What: Wordmark Mark Glyph. Why: The logo should fill its square. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion bw-mark */
+
+
+/* #region bw-lines */
+
+.tabbar--side .brand-wordmark .bw-lines,
+.tabbar--top .brand-wordmark .bw-lines { /* What: Wordmark Lines. Why: "Ease" stacks over "My Life". How: This stacks the two lines left-aligned. */
+
+
+	align-items    : flex-start;
+	display        : flex;
+	flex-direction : column;
+
+
+}
+@container app (max-width: 460px) { /* What: Narrowest Top Wordmark Lines. Why: On the narrowest screens the top bar keeps only the mark. How: This applies only when the app is 460px wide or less. */
+
+
+	.tabbar--top .brand-wordmark .bw-lines { /* What: Hidden Top Wordmark Lines. Why: Five tabs and the brand must fit on one line. How: This hides the text. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+.tabbar--side .brand-wordmark .bw-ease,
+.tabbar--top .brand-wordmark .bw-ease { /* What: Wordmark Ease Line. Why: "Ease" leads the wordmark in the brand's display face. How: This sets it large and bold in Shantell Sans, in the accent color. */
+
+
+	color          : var(--accent);
+	font-family    : "Shantell Sans", "Geist", sans-serif;
+	font-size      : 34px;
+	font-weight    : 600;
+	letter-spacing : -0.01em;
+
+
+}
+
+.tabbar--side .brand-wordmark .bw-rest,
+.tabbar--top .brand-wordmark .bw-rest { /* What: Wordmark My Life Line. Why: "My Life" completes the wordmark in the brand's second face. How: This sets it bold in Quicksand, in the text color. */
+
+
+	color          : var(--text);
+	font-family    : "Quicksand", "Geist", sans-serif;
+	font-size      : 25px;
+	font-weight    : 700;
+	letter-spacing : -0.005em;
+
+
+}
+
+/* #endregion bw-lines */
+
+/* #endregion brand-wordmark */
+
+/* #endregion tabbar-brand */
+
+
+
+/* #region tabbtn */
+
+.tabbtn { /* What: Tab Button. Why: Each tab button sits above the sliding indicator and fades its colors as it becomes active. How: This lays out its icon and label in a row, raised above the indicator. */
+
+
+	align-items : center;
+	display     : flex;
+	position    : relative;
+	transition  : color .12s, background .12s;
+	z-index     : 1;
+
+
+}
+.tabbtn:hover:not([aria-current="page"]) { /* What: Hovered Tab Button. Why: An inactive tab should respond to the pointer. How: This darkens its text, keyed off the active tab's own aria-current. */
+
+
+	color : var(--text);
+
+
+}
+.tabbar--bottom .tabbtn { /* What: Bottom Tab Button. Why: In the edge-to-edge bottom bar, each tab is a tall evenly-sized cell with its icon over its label. How: This stacks icon and label in a shared-width column cell in small muted text. */
+
+
+	border-radius  : 10px;
+	color          : var(--muted);
+	flex           : 1 1 0;
+	flex-direction : column;
+	font-size      : 11px;
+	font-weight    : 500;
+	gap            : 3px;
+	letter-spacing : 0.01em;
+	max-width      : 120px;
+	min-height     : 52px;
+	padding        : 6px 4px;
+
+
+}
+.tabbar--bottom .tabbtn[aria-current="page"] { /* What: Active Bottom Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+
+
+	background : transparent;
+	color      : var(--accent);
+
+
+}
+@container app (min-width: 720px) { /* What: Wide Bottom Tab Button. Why: In the floating wide pill, tabs sit as compact rounded pills with the icon beside the label. How: This applies only when the app is at least 720px wide. */
+
+
+	.tabbar--bottom .tabbtn { /* What: Pill Bottom Tab Button. Why: Each tab should size to its content as a pill. How: This lays icon and label in a row with pill padding and rounding. */
+
+
+		border-radius  : 999px;
+		flex           : 0 0 auto;
+		flex-direction : row;
+		font-size      : 13px;
+		gap            : 7px;
+		max-width      : none;
+		min-height     : 0;
+		padding        : 8px 14px;
+
+
+	}
+
+
+}
+@container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Button. Why: In the floating narrow pill, tabs are icon-only pills. How: This applies only when the app is narrower than 720px. */
+
+
+	.tabbar--bottom .tabbtn { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and pads the icon into a pill. */
+
+
+		border-radius  : 999px;
+		flex           : 0 0 auto;
+		flex-direction : row;
+		gap            : 0;
+		max-width      : none;
+		min-height     : 0;
+		padding        : 12px 28px;
+
+
+	}
+
+
+}
+@container app (max-width: 430px) { /* What: Narrowest Bottom Tab Button. Why: Around 430px and below, five buttons at 28px of side padding overflow the pill's rounded edges. How: This applies only when the app is 430px wide or less. */
+
+
+	.tabbar--bottom .tabbtn { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to 20px. */
+
+
+		padding-left  : 20px;
+		padding-right : 20px;
+
+
+	}
+
+
+}
+.tabbar--side .tabbtn { /* What: Side Tab Button. Why: In the rail each tab is a full-width row. How: This lays icon and label in a left-aligned padded row in muted text. */
+
+
+	border-radius   : 10px;
+	color           : var(--muted);
+	flex-direction  : row;
+	font-size       : 14px;
+	font-weight     : 500;
+	gap             : 12px;
+	justify-content : flex-start;
+	padding         : 10px 12px;
+
+
+}
+.tabbar--side .tabbtn[aria-current="page"] { /* What: Active Side Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+
+
+	background : transparent;
+	color      : var(--accent);
+
+
+}
+.tabbar--top .tabbtn { /* What: Top Tab Button. Why: In the top bar each tab is a compact pill. How: This lays icon and label in a padded row pill in muted text. */
+
+
+	border-radius  : 999px;
+	color          : var(--muted);
+	flex-direction : row;
+	font-size      : 13px;
+	font-weight    : 500;
+	gap            : 8px;
+	padding        : 8px 14px;
+
+
+}
+.tabbar--top .tabbtn[aria-current="page"] { /* What: Active Top Tab Button. Why: The active tab reads in the accent color over the indicator. How: This colors it accent with no fill of its own. */
+
+
+	background : transparent;
+	color      : var(--accent);
+
+
+}
+@container app (max-width: 720px) { /* What: Narrow Top Tab Button. Why: On a small screen the top bar keeps everything on one line with icon-only tabs. How: This applies only when the app is 720px wide or less. */
+
+
+	.tabbar--top .tabbtn { /* What: Icon Top Tab Button. Why: With the label gone the tab only needs room for its icon. How: This tightens its padding and drops the gap. */
+
+
+		gap     : 0;
+		padding : 8px;
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Tab Button. Why: Someone who asked for less motion shouldn't see a tab's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.tabbtn { /* What: Still Tab Button. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.tabbar--bottom .tabbtn span { /* What: Bottom Tab Label. Why: The bottom bar's labels sit small under their icons. How: This sets them at 11px. */
+
+
+	font-size : 11px;
+
+
+}
+@container app (min-width: 720px) { /* What: Wide Bottom Tab Label. Why: The wide pill's labels sit beside their icons at a readable size. How: This applies only when the app is at least 720px wide. */
+
+
+	.tabbar--bottom .tabbtn span { /* What: Larger Bottom Tab Label. Why: The label should match the pill's text size. How: This sets it at 13px. */
+
+
+		font-size : 13px;
+
+
+	}
+
+
+}
+@container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Label. Why: The narrow pill is icon-only. How: This applies only when the app is narrower than 720px. */
+
+
+	.tabbar--bottom .tabbtn span { /* What: Hidden Bottom Tab Label. Why: Five labels don't fit a phone-width pill. How: This hides the label. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+@container app (max-width: 720px) { /* What: Narrow Top Tab Label. Why: The narrow top bar is icon-only. How: This applies only when the app is 720px wide or less. */
+
+
+	.tabbar--top .tabbtn span { /* What: Hidden Top Tab Label. Why: The brand and five labels don't fit on one line. How: This hides the label. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+.tabbar--side .tabbtn[aria-current="page"] svg,
+.tabbar--top .tabbtn[aria-current="page"] svg { /* What: Active Tab Icon. Why: The active tab's icon should match its accent label. How: This colors the icon accent. */
+
+
+	color : var(--accent);
+
+
+}
+
+/* #endregion tabbtn */
+
+
+.rail-handle { /* What: Rail Pull Handle. Why: The drawer rail needs a visible pull tab riding its right edge, which only exists on a small screen. How: This draws a frosted tab centered on the rail's right edge, hidden until the narrow-screen query shows it. */
+
+
+	-webkit-backdrop-filter : blur(20px) saturate(150%); /* What: WebKit Backdrop Filter. Why: Safari only honors its own prefixed backdrop-filter. How: This blurs what's behind in WebKit, the same as the standard backdrop-filter line below. */
+	align-items             : center;
+	backdrop-filter         : blur(20px) saturate(150%);
+	background              : oklch(from var(--bg) l c h / 0.92);
+	border                  : 0.5px solid var(--border);
+	border-left             : 0;
+	border-radius           : 0 12px 12px 0;
+	box-shadow              : 6px 0 16px -8px rgba(0,0,0,0.28);
+	color                   : var(--muted);
+	cursor                  : pointer;
+	display                 : none;
+	height                  : 60px;
+	justify-content         : center;
+	left                    : 100%;
+	padding                 : 0;
+	position                : absolute;
+	top                     : 50%;
+	transform               : translateY(-50%);
+	width                   : 22px;
+
+
+}
+.rail-handle:hover { /* What: Hovered Rail Pull Handle. Why: The handle should respond to the pointer. How: This colors its glyph accent. */
+
+
+	color : var(--accent);
+
+
+}
+@container app (max-width: 700px) { /* What: Narrow Rail Pull Handle. Why: The handle only exists while the rail is a drawer. How: This applies only when the app is 700px wide or less. */
+
+
+	.tabbar--side .rail-handle { /* What: Shown Rail Pull Handle. Why: The drawer needs its handle. How: This shows it. */
+
+
+		display : flex;
+
+
+	}
+
+
+}
+
+/* #endregion tabbar */
+
+
+
+.rail-scrim { /* What: Rail Scrim. Why: An open drawer dims the content behind it, and only exists on a small screen. How: This covers the viewport with a translucent layer below the drawer, hidden until the narrow-screen query shows it. */
+
+
+	background : oklch(from var(--text) l c h / 0.32);
+	display    : none;
+	inset      : 0;
+	position   : fixed;
+	z-index    : 190;
+
+
+}
+@container app (max-width: 700px) { /* What: Narrow Rail Scrim. Why: The scrim only belongs to the drawer rail. How: This applies only when the app is 700px wide or less. */
+
+
+	.app[data-placement="side"] .rail-scrim { /* What: Shown Rail Scrim. Why: With the side placement as a drawer, an open rail dims the content. How: This shows the scrim. */
+
+
+		display : block;
+
+
+	}
+
+
+}
+
+
+
+/* #region main */
+
+.main { /* What: Main Area. Why: The active tab scrolls in its own area, with side padding each layout can change, clipped horizontally so the background flourish's edge glyphs never scroll it sideways. How: This fills the remaining space, pads it from --main-pad-x, scrolls vertically, and eases padding changes between layouts. */
+
+
+	flex           : 1;
+	min-height     : 0;
+	min-width      : 0;
+	overflow-x     : hidden; /* What: Explicit Horizontal Clip. Why: Setting overflow-y alone makes overflow-x compute to auto, giving main its own sideways scroll that the flourish's edge glyphs would push. How: This sets it to hidden explicitly. */
+	overflow-y     : auto;
+	padding-bottom : 96px;
+	padding-left   : var(--main-pad-x, 20px);
+	padding-right  : var(--main-pad-x, 20px);
+	transition     : padding 0.42s cubic-bezier(.4, 0, .2, 1);
+
+
+}
+.app[data-placement="side"] .main { /* What: Side Placement Main Area. Why: Beside a rail, the content has no bottom bar to clear and more room to pad. How: This widens its side padding and shortens its bottom padding. */
+
+
+	--main-pad-x   : 32px;
+	padding-bottom : 32px;
+
+
+}
+.app[data-placement="top"] .main { /* What: Top Placement Main Area. Why: Under a top bar, there is no bottom bar to clear. How: This shortens its bottom padding. */
+
+
+	padding-bottom : 32px;
+
+
+}
+.main[data-tab-today-active] { /* What: Today Main Area. Why: The Today tab runs edge to edge. How: This drops the side padding while Today shows, which the placement rules above can still override. */
+
+
+	--main-pad-x : 0;
+
+
+}
+@container app (min-width: 720px) { /* What: Wide Bottom Placement Main Area. Why: The floating wide pill sits higher, so the content needs more room to clear it. How: This applies only when the app is at least 720px wide. */
+
+
+	.app[data-placement="bottom"] .main { /* What: Clear Wide Pill Main Area. Why: The last content should scroll clear of the pill. How: This deepens the bottom padding. */
+
+
+		padding-bottom : 110px;
+
+
+	}
+
+
+}
+@container app (max-width: 719.98px) { /* What: Narrow Bottom Placement Main Area. Why: The narrow pill floats above the home indicator. How: This applies only when the app is narrower than 720px. */
+
+
+	.app[data-placement="bottom"] .main { /* What: Clear Narrow Pill Main Area. Why: The last content should scroll clear of the pill and the safe area. How: This pads the bottom by the pill plus the safe area. */
+
+
+		padding-bottom : calc(84px + env(safe-area-inset-bottom));
+
+
+	}
+
+
+}
+@container app (min-width: 880px) { /* What: Widest Bottom Placement Main Area. Why: On a wide screen the content can take more side padding. How: This applies only when the app is at least 880px wide. */
+
+
+	.app[data-placement="bottom"] .main { /* What: Roomy Main Area. Why: Wider screens read better with more margin. How: This widens the side padding and keeps room to clear the pill. */
+
+
+		--main-pad-x   : 32px;
+		padding-bottom : 110px;
+
+
+	}
+
+
+}
+@container app (max-width: 700px) { /* What: Narrow Side Placement Main Area. Why: With the rail as an overlay drawer, the content takes the full width again. How: This applies only when the app is 700px wide or less. */
+
+
+	.app[data-placement="side"] .main { /* What: Full-Width Main Area. Why: The content no longer shares the row with the rail. How: This returns to the standard side padding. */
+
+
+		--main-pad-x   : 20px;
+		padding-bottom : 32px;
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Main Area. Why: Someone who asked for less motion shouldn't see the content reflow between layouts. How: This applies only when the reduced-motion preference is set. */
+
+
+	.main { /* What: Still Main Area. Why: The padding should simply switch. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.main-inner { /* What: Main Content Column. Why: Every tab but Today reads in one centered, capped column. How: This centers a 720px flex column with a top offset and a gap between sections. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 24px;
+	margin         : 0 auto;
+	max-width      : 720px;
+	padding-top    : 24px;
+	position       : relative;
+
+
+}
+
+.tab-fade { /* What: Tab Fade. Why: Switching tabs should fade and lift the new tab in rather than snap. How: This plays the shared fade each time the keyed wrapper remounts. */
+
+
+	animation : global(tabFadeIn) .2s ease both; /* What: Global Fade Keyframes. Why: The tabFadeIn keyframes are shared with the tabs' own fading sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Tab Fade. Why: Someone who asked for less motion shouldn't see tabs fade in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.tab-fade { /* What: Still Tab Fade. Why: The new tab should simply appear. How: This turns the fade off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion main */
+
+/* #endregion app */
+
+

@@ -2518,52 +2518,11 @@ button.rd-chev {
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
-@container app (min-width: 880px) {
-  .app[data-placement="bottom"] .main { --main-pad-x: 32px; padding-bottom: 110px; }
-}
 @container app (max-width: 520px) {
   .section-title { font-size: 26px; }
   .today-title { font-size: 28px; }
   .picker-title { font-size: 24px; }
   .stage-idle-num { font-size: 48px; }
-}
-
-/* Side placement on small screens: instead of falling back to bottom tabs,
-   the rail becomes an off-canvas drawer. It's position:fixed (contained by
-   .app, which is a containing block via container-type), so it overlays the
-   content rather than consuming layout width — main stays full-width. The pull
-   handle rides the rail's right edge and stays visible when the rail is
-   translated off-screen; a scrim dims the content while it's open. */
-@container app (max-width: 700px) {
-  .tabbar--side {
-    position: fixed; top: 0; left: 0; bottom: 0;
-    height: 100dvh; width: 232px;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
-    transform: translateX(-100%);
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 200;
-  }
-  .tabbar--side.is-open { transform: translateX(0); box-shadow: 12px 0 44px -14px rgba(0,0,0,0.3); }
-  .tabbar--side .rail-handle { display: flex; }
-  .app[data-placement="side"] .rail-scrim { display: block; }
-  /* Rail is an overlay now — main reclaims full width + its own padding. */
-  .app[data-placement="side"] { flex-direction: row; }
-  .app[data-placement="side"] .main { --main-pad-x: 20px; padding-bottom: 32px; }
-}
-
-/* Top placement on small screens: keep everything on one line by dropping the
-   tab text (icon-only tabs). Below a narrower cutoff the wordmark collapses to
-   just the easing-check mark so five icons + brand always fit. */
-@container app (max-width: 720px) {
-  .tabbar--top .tabbtn span { display: none; }
-  .tabbar--top .tabbtn { padding: 8px; gap: 0; }
-  .tabbar--top .tabbar-brand { padding-right: 12px; margin-right: 4px; }
-}
-@container app (max-width: 460px) {
-  .tabbar--top .brand-wordmark .bw-lines { display: none; }
-  .tabbar--top .brand-wordmark { gap: 0; }
 }
 
 /* ═══ Today "Edit Mode" (drag-to-reorder) ══════════════════════════════════
