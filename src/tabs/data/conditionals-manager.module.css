@@ -1,0 +1,621 @@
+
+
+
+/**
+ * conditionals-manager.module.css = Conditionals Manager Module
+ *
+ * @summary
+ * Styles for the Data tab's Conditionals section: its collapsible card and
+ * header, the Add control, the empty message, each conditional's row (a
+ * button while closed, a live name field while open), and ConEdiCom's editor
+ * body with its delete confirm and Save/Cancel footer. Most of these classes
+ * are shared with the Data tab's other sections, so their rules are copies of
+ * the global ones, resolved where this section's own editor overrides used to
+ * win on specificity. An open chevron keys off data-chevron-open-active, an
+ * open row off data-row-edit-active, the disabled Add control and an invalid
+ * name off the aria-disabled and aria-invalid they already carry.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region cat */
+
+.cat { /* What: Category Card. Why: The Conditionals section reads as one card among the Data tab's sections. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance each time it mounts. */
+
+
+	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global Entrance Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var(--surface);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-md);
+	overflow      : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cat { /* What: Still Category Card. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #region cat-h */
+
+.cat-h { /* What: Category Header. Why: The header opens and closes the whole section. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
+
+
+	align-items     : center;
+	cursor          : pointer;
+	display         : flex;
+	gap             : 10px;
+	justify-content : space-between;
+	padding         : 14px 16px;
+	user-select     : none;
+
+
+}
+
+/* #region cat-h-l */
+
+.cat-h-l { /* What: Category Header Toggle. Why: The chevron and the name block read as one control. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 10px;
+
+
+}
+button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a real button but should look like the header text it holds. How: This strips the button chrome and lets it fill the header's width. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	flex               : 1 1 auto;
+	font               : inherit;
+	margin             : 0;
+	min-width          : 0;
+	padding            : 0;
+	text-align         : left;
+
+
+}
+
+/* #region chev */
+
+.chev { /* What: Chevron. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
+
+
+	color      : var(--muted);
+	display    : inline-flex;
+	transition : transform .15s;
+
+
+}
+.chev[data-chevron-open-active] { /* What: Open Chevron. Why: An open disclosure points down. How: This turns the chevron a quarter turn. */
+
+
+	transform : rotate(90deg);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.chev { /* What: Still Chevron. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion chev */
+
+
+
+/* #region cat-h-main */
+
+.cat-h-main { /* What: Category Header Main. Why: The name and count stack as the header's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.cat-name { /* What: Category Name. Why: The section's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
+
+
+	font-size      : 16px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	margin         : 0;
+	overflow       : hidden;
+	text-overflow  : ellipsis;
+	white-space    : nowrap;
+
+
+}
+
+
+/* #region cat-count */
+
+.cat-count { /* What: Category Count. Why: The active and total counts read as small mono metadata under the name. How: This sets the three count pieces on one baseline in muted mono type. */
+
+
+	align-items    : baseline;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 3px;
+	letter-spacing : 0.03em;
+
+
+}
+
+/* #endregion cat-count */
+
+/* #endregion cat-h-main */
+
+/* #endregion cat-h-l */
+
+/* #endregion cat-h */
+
+
+
+/* #region cat-body */
+
+.cat-body { /* What: Category Body. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
+
+
+	--data-sort-row-border-bottom : 0.5px solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--data-sort-row-padding       : 13px 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
+	border-top                    : 0.5px solid var(--border);
+
+
+}
+
+/* #region rd-add */
+
+.rd-add { /* What: Add Conditional Control. Why: Adding a conditional is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below. */
+
+
+	align-items    : center;
+	border-bottom  : 0.5px solid var(--border);
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 7px;
+	letter-spacing : 0.04em;
+	padding        : 13px 16px;
+	text-align     : left;
+	text-transform : uppercase;
+	width          : 100%;
+
+
+}
+.rd-add:hover { /* What: Hovered Add Conditional Control. Why: The control should respond to the pointer. How: This tints it in the accent color. */
+
+
+	color : var(--accent);
+
+
+}
+.rd-add[aria-disabled="true"] { /* What: Disabled Add Conditional Control. Why: While the tutorials run, adding a conditional is unavailable and should look it. How: This dims the control and drops the pointer cursor, keying off the aria-disabled its info tip already sets. */
+
+
+	cursor  : default;
+	opacity : 0.5;
+
+
+}
+
+/* #endregion rd-add */
+
+
+
+.rd-cnd-empty { /* What: Empty List Message. Why: An empty list explains how to start. How: This sets a small muted message padded like a row. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.4;
+	margin      : 0;
+	padding     : 12px 14px 14px;
+	text-wrap   : pretty;
+
+
+}
+
+
+
+/* #region rd-item */
+
+.rd-item { /* What: Conditional Item. Why: Each conditional is divided from the next. How: This draws a hairline under every item but the last. */
+
+
+	border-bottom : 0.5px solid var(--border);
+
+
+}
+.rd-item:last-child { /* What: Last Conditional Item. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+/* #region rd-row */
+
+.rd-row { /* What: Conditional Row. Why: A closed row is one button that opens its conditional. How: This strips the button chrome and lays the name block and chevron out in a padded row. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	font               : inherit;
+	gap                : 12px;
+	padding            : 11px 16px;
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+.rd-row:hover { /* What: Hovered Conditional Row. Why: The row should respond to the pointer. How: This shades it slightly darker than the surface. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.008) c h);
+
+
+}
+.rd-item[data-row-edit-active] > .rd-row:hover { /* What: Hovered Open Row. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
+
+
+	background : transparent;
+
+
+}
+.rd-item[data-row-edit-active] > .rd-row { /* What: Open Row. Why: An open row's header isn't clickable. How: This resets the cursor. */
+
+
+	cursor : default;
+
+
+}
+
+/* #region rd-main */
+
+.rd-main { /* What: Row Main. Why: The name and its summary stack as the row's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.rd-name-input { /* What: Row Name Input. Why: An open row renames its conditional in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+
+
+	background     : transparent;
+	border         : 0;
+	border-bottom  : 1px solid var(--border);
+	font           : inherit;
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+	padding        : 1px 0;
+	transition     : border-color .12s;
+	width          : 100%;
+
+
+}
+.rd-name-input:focus { /* What: Focused Row Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var(--accent);
+	outline             : none;
+
+
+}
+.rd-name-input::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.rd-name-input[aria-invalid="true"],
+.rd-name-input[aria-invalid="true"]:focus { /* What: Invalid Row Name Input. Why: A blank or colliding name has to stand out, focused or not. How: This turns the underline red, keying off the aria-invalid the field already sets. */
+
+
+	border-bottom-color : oklch(0.55 0.18 25);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Row Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-name-input { /* What: Still Row Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rd-name { /* What: Row Name. Why: A closed row leads with its conditional's name. How: This sets it in medium weight. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+.rd-sched { /* What: Row Summary. Why: The mode, usage count, and active state read as quiet metadata. How: This sets them in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion rd-main */
+
+
+
+/* #region rd-chev */
+
+.rd-chev { /* What: Row Chevron Holder. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color. */
+
+
+	color : var(--muted);
+	flex  : 0 0 auto;
+
+
+}
+.rd-item[data-row-edit-active] .rd-chev { /* What: Open Row Chevron Holder. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
+
+
+	color : var(--accent);
+
+
+}
+button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevron is a real button that closes it. How: This strips the button chrome and gives it a small padded hit area that doesn't shift the layout. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : inline-flex;
+	font               : inherit;
+	margin             : -4px;
+	padding            : 4px;
+
+
+}
+
+/* #endregion rd-chev */
+
+/* #endregion rd-row */
+
+
+
+/* #region rd-edit */
+
+.rd-edit { /* What: Conditional Editor. Why: The editor body runs edge to edge under its row. How: This drops the padding other sections' editors use. */
+
+
+	padding : 0;
+
+
+}
+
+/* #region rd-ctl-body */
+
+.rd-ctl-body { /* What: Editor Body. Why: The editor reads as a slightly recessed panel under its row. How: This shades it darker than the surface and stacks its fields in a column. */
+
+
+	background     : oklch(from var(--surface) calc(l - 0.012) c h);
+	border-bottom  : 0.5px solid var(--border);
+	display        : flex;
+	flex-direction : column;
+	gap            : 0;
+	padding        : 0;
+
+
+}
+
+.rd-cnd-name-err { /* What: Name Error. Why: A blank or colliding name needs a red warning above the fields. How: This sets a small red message inset to line up with the fields. */
+
+
+	color        : oklch(0.5 0.18 25);
+	font-size    : 12.5px;
+	line-height  : 1.4;
+	margin       : 0 0 12px;
+	padding-left : 16px;
+
+
+}
+
+
+
+/* #region rd-ctl-group--foot */
+
+.rd-ctl-group--foot { /* What: Editor Footer. Why: The footer ends the editor below a divider. How: This stacks its row in a padded column under a hairline. */
+
+
+	border-top     : 0.5px solid var(--border);
+	display        : flex;
+	flex-direction : column;
+	gap            : 12px;
+	margin         : 0;
+	padding        : 14px 16px 16px;
+
+
+}
+
+/* #region rd-ctl-confirm */
+
+.rd-ctl-confirm { /* What: Delete Confirm Row. Why: The question and its actions share one line, swapping in for the footer. How: This spreads them across a centered row and slides it in each time it mounts. */
+
+
+	align-items     : center;
+	animation       : global(footSwapIn) .16s ease both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display         : flex;
+	flex-direction  : row;
+	gap             : 16px;
+	justify-content : space-between;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Delete Confirm Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-ctl-confirm { /* What: Still Delete Confirm Row. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.confirm-msg { /* What: Delete Confirm Message. Why: The question reads as quiet supporting text beside the buttons. How: This sets it small and muted, capped in width and wrapping cleanly. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.4;
+	max-width   : 340px;
+	text-wrap   : pretty;
+
+
+}
+
+
+/* #region rem-del-actions */
+
+.rem-del-actions { /* What: Delete Confirm Actions. Why: Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+
+
+	display : flex;
+	flex    : 0 0 auto;
+	gap     : 8px;
+
+
+}
+
+/* #endregion rem-del-actions */
+
+/* #endregion rd-ctl-confirm */
+
+
+
+/* #region rd-ctl-foot-row */
+
+.rd-ctl-foot-row { /* What: Editor Footer Row. Why: Delete sits on the left while Cancel and Save sit on the right. How: This spreads the row across the footer and slides it in each time it mounts. */
+
+
+	align-items     : center;
+	animation       : global(footSwapIn) .16s ease both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display         : flex;
+	justify-content : space-between;
+	width           : 100%;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Editor Footer Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-ctl-foot-row { /* What: Still Editor Footer Row. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #region rem-foot-right */
+
+.rem-foot-right { /* What: Footer Right Group. Why: Cancel and Save pair up on the right even when there's no Delete. How: This lays them out in a fixed-size row pushed right. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+	margin-left : auto;
+
+
+}
+
+/* #endregion rem-foot-right */
+
+/* #endregion rd-ctl-foot-row */
+
+/* #endregion rd-ctl-group--foot */
+
+/* #endregion rd-ctl-body */
+
+/* #endregion rd-edit */
+
+/* #endregion rd-item */
+
+/* #endregion cat-body */
+
+/* #endregion cat */
+
+

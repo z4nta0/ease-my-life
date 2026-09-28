@@ -169,8 +169,6 @@
    Lives inside a card's .rd-ctl-body, so drop the Pickers-tab "card-in-card"
    look: full-bleed rows with hairline dividers, no bordered mode card, and a
    doubled border before the footer (matching the picker controls). */
-.rd-item .rd-edit--cnd { padding: 0; }
-.rd-edit--cnd .rd-ctl-body { padding: 0; }
 .cnd-controls--inline { gap: 0; padding: 0; }
 /* Every section is full-bleed (no negative margins — the container has no
    padding); each provides its own 16px inner padding + a hairline top divider. */
@@ -200,16 +198,9 @@
 /* The standalone Active row (last cnd-typectl) gets a bottom border too, so it
    doubles against the footer's top border — matching the other controls. */
 .cnd-controls--inline > .cnd-type-group > .cnd-typectl:last-child .pie-row { border-bottom: 0.5px solid var(--border); }
-.rd-edit--cnd .rd-ctl-group--foot { margin: 0; padding: 14px 16px 16px; border-top: 0.5px solid var(--border); }
-/* Delete-confirm: message + actions on one row (text column capped). */
-.rd-edit--cnd .rd-ctl-confirm { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
-.rd-edit--cnd .rd-ctl-confirm .confirm-msg { max-width: 340px; font-size: 12.5px; line-height: 1.4; color: var(--muted); }
-.rd-edit--cnd .rd-ctl-confirm .rem-del-actions { display: flex; gap: 8px; flex: 0 0 auto; }
 /* Collision error on the conditional name field. */
 .np-input.is-error { border-color: oklch(0.55 0.18 25); box-shadow: 0 0 0 1px oklch(0.55 0.18 25) inset; }
 .np-error { margin: 6px 0 0; font-size: 12.5px; line-height: 1.4; color: oklch(0.5 0.18 25); }
-.rd-cnd-name-err { margin: 0 0 12px; padding-left: 16px; }
-.rd-name-input.is-error, .rd-name-input.is-error:focus { border-bottom-color: oklch(0.55 0.18 25); }
 .picker-group-pill.is-on {
   background: oklch(from var(--accent-soft) l c h);
   border-color: var(--accent);
