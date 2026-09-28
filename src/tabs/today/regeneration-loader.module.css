@@ -1,0 +1,306 @@
+
+
+
+/**
+ * regeneration-loader.module.css = Regeneration Loader Module
+ *
+ * @summary
+ * Styles for LoaCarCom and LoaReeCom, the placeholder card that stands in for
+ * a picker's slot while a new list is generated. The card copies a real Today
+ * card's layout (check spot, meta and name rows, actions strip) with the
+ * check dashed and dimmed, never reacts to the pointer, and moves through
+ * three states: pending (a slightly lighter card with faded text and waiting
+ * dots), active (the reel cycling candidate names), and settled (the final
+ * name landing in the accent color and easing to normal text).
+ *
+ * The card's declarations are copied from the shared Today card classes the
+ * real cards still use, until the design-system pass merges them. Under
+ * reduced motion the reel never mounts, since the Today tab settles every slot
+ * at once, and the settled name simply appears.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region today-card */
+
+.today-card { /* What: Loader Card. Why: The placeholder should sit in the list exactly like the card it stands in for. How: This lays out the check, body, and actions in the same three-column grid, surface, border, and spacing as a real Today card. */
+
+
+	align-items           : center;
+	background            : var(--surface);
+	border                : 0.5px solid var(--border);
+	border-radius         : var(--r-lg);
+	cursor                : pointer;
+	display               : grid;
+	gap                   : 16px;
+	grid-template-columns : auto 1fr auto;
+	margin-bottom         : 10px;
+	padding               : 16px 18px;
+	perspective           : 800px;
+	transition            : background .15s, opacity .2s, border-color .12s;
+	user-select           : none;
+
+
+}
+.today-card:last-child { /* What: Last Loader Card. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
+
+
+	margin-bottom : 0;
+
+
+}
+.today-card--loader { /* What: Inert Loader Card. Why: A placeholder isn't a real card and shouldn't respond to the pointer. How: This drops the pointer cursor and all pointer events. */
+
+
+	cursor         : default;
+	pointer-events : none;
+
+
+}
+.today-card--loader[data-slot-pending-active] { /* What: Pending Loader Card. Why: A slot still waiting its turn should read as not started yet. How: This lightens the card's surface slightly. */
+
+
+	background : oklch(from var(--surface) calc(l + 0.005) c h);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Loader Card. Why: Someone who asked for less motion shouldn't see the card's colors fade between states. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card { /* What: Still Loader Card. Why: The card's state changes should simply switch. How: This turns its fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.check { /* What: Loader Check Spot. Why: The placeholder keeps the same slot a real card's check button fills. How: This draws the same rounded square, with the button chrome reset, since here it's an inert span. */
+
+
+	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 1px solid var(--border);
+	border-radius      : 8px;
+	color              : inherit;
+	display            : inline-flex;
+	flex               : none;
+	font               : inherit;
+	height             : 24px;
+	justify-content    : center;
+	margin             : 0;
+	padding            : 0;
+	position           : relative;
+	transition         : background .12s, border-color .12s, color .12s;
+	width              : 24px;
+
+
+}
+.today-card--loader .check { /* What: Dashed Loader Check Spot. Why: The check spot should read as a placeholder, not a real checkbox. How: This dims it and dashes its border. */
+
+
+	border-style : dashed;
+	opacity      : 0.4;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Loader Check Spot. Why: Someone who asked for less motion shouldn't see the spot's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.check { /* What: Still Loader Check Spot. Why: The spot's colors should simply switch. How: This turns its fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region today-card-body */
+
+.today-card-body { /* What: Loader Card Body. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.today-card-meta { /* What: Loader Card Meta Row. Why: The picker's name sits above the slot's value like a real card's meta line. How: This sets it in small, spaced, muted mono capitals. */
+
+
+	align-items    : center;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 6px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+.today-card--loader[data-slot-pending-active] .today-card-meta { /* What: Pending Loader Card Meta Row. Why: A waiting slot's text should read as not started yet. How: This fades the meta row. */
+
+
+	opacity : 0.55;
+
+
+}
+
+
+/* #region today-card-name */
+
+.today-card-name { /* What: Loader Card Name Row. Why: The slot's waiting dots, reel, or settled name sit where a real card's item name goes. How: This sets the row in the same large medium-weight text. */
+
+
+	font-size      : 17px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	text-wrap      : pretty;
+
+
+}
+.today-card--loader[data-slot-pending-active] .today-card-name { /* What: Pending Loader Card Name Row. Why: A waiting slot's text should read as not started yet. How: This fades the name row. */
+
+
+	opacity : 0.55;
+
+
+}
+
+.loader-pending { /* What: Loader Waiting Dots. Why: A slot with nothing to show yet displays quiet waiting dots. How: This sets them muted and widely spaced. */
+
+
+	color          : var(--muted);
+	font-size      : 15px;
+	letter-spacing : 0.2em;
+
+
+}
+
+.loader-reel-name { /* What: Loader Reel Name. Why: Each candidate name the reel flashes should drop in rather than blink. How: This plays a quick fade-and-drop each time a new name mounts. */
+
+
+	animation   : loaderReelStep 90ms ease-out;
+	display     : inline-block;
+	will-change : transform, opacity;
+
+
+}
+@keyframes loaderReelStep { /* What: Loader Reel Step. Why: A short drop reads as the reel ticking to the next name. How: This fades a name in from slightly above. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-4px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.loader-settled { /* What: Loader Settled Name. Why: The final pick should land with a small bounce and a flash of accent before reading as normal text. How: This plays the landing animation, which starts in the accent color and eases to the text color. */
+
+
+	animation : loaderSettleLand 320ms cubic-bezier(.22,1.4,.36,1) both;
+	color     : var(--accent);
+
+
+}
+@keyframes loaderSettleLand { /* What: Loader Settle Land. Why: A rise, a slight overshoot, and a color ease read as the pick locking in. How: This lifts the name in, scales it past and back to size, and fades its color from accent to text. */
+
+
+	0% {
+
+
+		color     : var(--accent);
+		opacity   : 0;
+		transform : translateY(6px) scale(0.96);
+
+
+	}
+
+	50% {
+
+
+		color     : var(--accent);
+		opacity   : 1;
+		transform : scale(1.04);
+
+
+	}
+
+	100% {
+
+
+		color     : var(--text);
+		transform : scale(1);
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Loader Names. Why: Someone who asked for less motion should see the settled name directly, with no cycling or landing bounce. How: This applies only when the reduced-motion preference is set. */
+
+
+	.loader-reel-name,
+	.loader-settled { /* What: Still Loader Names. Why: The name should simply be there, in the accent color. How: This turns the animations off and holds the name fully visible in place. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion today-card-name */
+
+/* #endregion today-card-body */
+
+
+
+.today-card-actions { /* What: Loader Card Actions Strip. Why: The placeholder keeps the same slot a real card's action buttons fill, so the layout doesn't shift when the real card replaces it. How: This lays the (empty) strip out as a small-gap row. */
+
+
+	display : flex;
+	gap     : 4px;
+
+
+}
+
+/* #endregion today-card */
+
+

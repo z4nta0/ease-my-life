@@ -836,47 +836,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   animation: cardSkipOut 380ms cubic-bezier(.4,.05,.7,.4) forwards;
 }
 
-/* Loader card — replaces EntryCard during regeneration. Three states:
-   pending (waiting its turn), active (reel cycling), settled (locked in). */
-.today-card--loader {
-  cursor: default;
-  pointer-events: none;
-}
-.today-card--loader .check {
-  opacity: 0.4;
-  border-style: dashed;
-}
-.today-card--loader.is-pending {
-  background: oklch(from var(--surface) calc(l + 0.005) c h);
-}
-.today-card--loader.is-pending .today-card-meta,
-.today-card--loader.is-pending .today-card-name {
-  opacity: 0.55;
-}
-.loader-pending {
-  color: var(--muted);
-  letter-spacing: 0.2em;
-  font-size: 15px;
-}
-.loader-reel-name {
-  display: inline-block;
-  animation: loaderReelStep 90ms ease-out;
-  will-change: transform, opacity;
-}
-@keyframes loaderReelStep {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: none; }
-}
-.loader-settled {
-  animation: loaderSettleLand 320ms cubic-bezier(.22,1.4,.36,1) both;
-  color: var(--accent);
-}
-@keyframes loaderSettleLand {
-  0%   { opacity: 0; transform: translateY(6px) scale(0.96); color: var(--accent); }
-  50%  { opacity: 1; transform: scale(1.04);                  color: var(--accent); }
-  100% { transform: scale(1);                                 color: var(--text); }
-}
-
 /* Re-roll flip — full 360° tumble on X axis (single direction). State swaps
    at the midpoint (180°, card upside-down) so the new content rolls through
    from upside-down back to right-side up. Backface stays visible so the
@@ -1391,14 +1350,6 @@ button.check { cursor: pointer; }
     padding-top: 0;
     padding-bottom: 0;
     border-width: 0;
-  }
-  /* Pick loader: the reel is the animation. Reduced motion shows the settled
-     name directly — visible, accent-coloured, no cycling or landing bounce. */
-  .loader-reel-name,
-  .loader-settled {
-    animation: none;
-    opacity: 1;
-    transform: none;
   }
   /* Re-roll: no 3D tumble, no spinner rotation. */
   .today-card.is-rolling .today-card-body {

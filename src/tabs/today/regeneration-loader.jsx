@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: LoaReeCom and LoaCarCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
+import cssModObj from './regeneration-loader.module.css'; // What: CSS Module Object. Why: The loader card and its reel are styled from their own module. How: This maps each class name in regeneration-loader.module.css to its hashed module class.
+import React     from 'react';                              // What: React. Why: LoaReeCom and LoaCarCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
 
 // #endregion Imports
 
@@ -93,7 +94,7 @@ function LoaReeCom ( { canIteArr } ) {
 		<span
 			key={ curIndNum }
 
-			className='loader-reel-name'
+			className={ cssModObj.loaderReelName }
 		>{ /* What: Loader Reel Name Span Element. Why: The key on curIndNum forces a fresh mount every tick, replaying the fade-in. How: This renders the current candidate's own name, or a non-breaking space while none exists yet. */ }
 
 
@@ -164,14 +165,15 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 
 
 		<article
-			className={ ` today-card   today-card--loader   is-${ sloStaStr } ` }
+			className={` ${ cssModObj.todayCard }   ${ cssModObj.todayCardLoader } `}
 
 			data-element-name-hook='todCarArt'
+			data-slot-pending-active={ sloStaStr === 'pending' || undefined } // What: Slot Pending Active Attribute. Why: A slot still waiting its turn gets a lighter card and faded text from its module. How: This sets the presence-only attribute while sloStaStr is 'pending' and removes it otherwise.
 		>{ /* What: Loader Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 			<span
-				className='check'
+				className={ cssModObj.check }
 
 				data-element-name-hook='carCheSpa'
 
@@ -179,21 +181,21 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 			/>{ /* What: Check Span Element. Why: A loader card still needs the same layout slot a real card's check button occupies. How: This renders an inert, unclickable placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-			<div className='today-card-body'>{ /* What: Loader Card Body Div Element. Why: The meta row and name row read as one grouped block, matching a real card's own layout. How: This wraps the meta row and the name row below. */ }
+			<div className={ cssModObj.todayCardBody }>{ /* What: Loader Card Body Div Element. Why: The meta row and name row read as one grouped block, matching a real card's own layout. How: This wraps the meta row and the name row below. */ }
 
 
-				<div className='today-card-meta'>{ /* What: Loader Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
+				<div className={ cssModObj.todayCardMeta }>{ /* What: Loader Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
 
 
-					<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRecObj's own name. */ }
+					<span>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRecObj's own name. */ }
 
 
 				</div>
 
-				<div className='today-card-name'>{ /* What: Loader Card Name Div Element. Why: This is where the slot's own pending/active/settled visual actually renders. How: This renders exactly one of the three branches below, gated on staStr. */ }
+				<div className={ cssModObj.todayCardName }>{ /* What: Loader Card Name Div Element. Why: This is where the slot's own pending/active/settled visual actually renders. How: This renders exactly one of the three branches below, gated on staStr. */ }
 
 
-					{ sloStaStr === 'pending' && <span className='loader-pending'>·  ·  ·</span> }{ /* What: Pending Dots Span Element. Why: A slot not yet reached by the cascade shows plain waiting dots. How: This renders only while sloStaStr is 'pending'. */ }
+					{ sloStaStr === 'pending' && <span className={ cssModObj.loaderPending }>·  ·  ·</span> }{ /* What: Pending Dots Span Element. Why: A slot not yet reached by the cascade shows plain waiting dots. How: This renders only while sloStaStr is 'pending'. */ }
 
 
 
@@ -201,12 +203,12 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 
 
 
-					{ sloStaStr === 'active' && !hasReeBoo && <span className='loader-pending'>·  ·  ·</span> }{ /* What: Active Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
+					{ sloStaStr === 'active' && !hasReeBoo && <span className={ cssModObj.loaderPending }>·  ·  ·</span> }{ /* What: Active Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
 
 					{ sloStaStr === 'settled' && ( // What: Settled State Check. Why: Once this slot's own cascade step finishes, it shows the final resolved name instead of any dots/reel. How: This renders finNamStr only while sloStaStr is 'settled'.
 
 
-						<span className='loader-reel-name loader-settled'>{ finNamStr }</span> // What: Loader Reel Name Span Element. Why: This is the slot's own final, settled display name. How: This renders finNamStr directly.
+						<span className={` ${ cssModObj.loaderReelName }   ${ cssModObj.loaderSettled } `}>{ finNamStr }</span> // What: Loader Reel Name Span Element. Why: This is the slot's own final, settled display name. How: This renders finNamStr directly.
 
 
 					) }
@@ -219,7 +221,7 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 
 
 			<div
-				className='today-card-actions'
+				className={ cssModObj.todayCardActions }
 
 				data-element-name-hook='carActDiv'
 			/>{ /* What: Loader Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
