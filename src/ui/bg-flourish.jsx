@@ -3,12 +3,10 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library this file's two components are built on. How: This is used directly (React.useState, React.useEffect, React.Fragment) throughout, instead of importing individual named hooks.
+import cssModObj from './bg-flourish.module.css'; // What: CSS Module Object. Why: The flourish column and glyph styles live in their own module. How: This maps each class name in bg-flourish.module.css to its hashed module class.
+import React     from 'react';                    // What: React. Why: This is the UI library this file's two components are built on. How: This is used directly (React.useState, React.useEffect, React.Fragment) throughout, instead of importing individual named hooks.
 
 // #endregion Imports
-
-
-
 
 
 
@@ -688,7 +686,7 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
 
 
 		<div
-			className={ ` bg-flourish   bg-flourish--${ sidKeyStr } ` }
+			className={` ${ cssModObj.bgFlourish }   ${ sidKeyStr === 'left' ? cssModObj.bgFlourishLeft : '' }   ${ sidKeyStr === 'right' ? cssModObj.bgFlourishRight : '' } `}
 			aria-hidden='true'
 		>{ /* What: Flourish Column Div Element. Why: This is one gutter's own root wrapper, positioned by CSS per its own bg-flourish--{side} modifier class. How: This renders every item below as an absolutely-positioned child span. */ }
 
@@ -698,7 +696,7 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
 
 				<span
 					key={ floCurObj.ideStr }
-					className={ ` bg-flourish-item   ${ floCurObj.bigBoo ? 'is-big' : '' } ` }
+					className={ cssModObj.bgFlourishItem }
 					style={{
 						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`,
 

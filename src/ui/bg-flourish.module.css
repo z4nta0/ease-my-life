@@ -1,0 +1,64 @@
+
+
+
+/**
+ * bg-flourish.module.css = Background Flourish Module
+ *
+ * @summary
+ * Styles for the decorative math glyphs in the open gutters beside the main
+ * column. Each gutter is a zero-width column pinned just outside the content,
+ * and every glyph inside it is absolutely positioned by real pixel values the
+ * component computes, so the column itself never needs a height.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region bg-flourish */
+
+.bg-flourish { /* What: Flourish Column. Why: Each gutter's glyphs need an anchor just outside the main content that never blocks it. How: This pins a zero-width, click-through column to the top of the content, and the side variants push it past the left or right edge. */
+
+
+	pointer-events : none;
+	position       : absolute;
+	top            : 0;
+	width          : 0;
+	z-index        : 0;
+
+
+}
+.bg-flourish--left { /* What: Left Flourish Column. Why: The left gutter's column sits just past the content's left edge. How: This anchors it at the content's left side with a small gap. */
+
+
+	margin-right : 16px;
+	right        : 100%;
+
+
+}
+.bg-flourish--right { /* What: Right Flourish Column. Why: The right gutter's column sits just past the content's right edge. How: This anchors it at the content's right side with a small gap. */
+
+
+	left        : 100%;
+	margin-left : 16px;
+
+
+}
+
+.bg-flourish-item { /* What: Flourish Glyph. Why: Each glyph is a faint decoration, placed and sized per glyph by the component. How: This positions it absolutely in the mono typeface with a tight line height, tinted and unselectable. */
+
+
+	--flourish-color : oklch(from var(--accent) calc(l + 0.3) c h); /* What: Flourish Color. Why: The accent itself read as too loud at these sizes for a background decoration. How: This lightens the accent rather than fading it, so each glyph's own random opacity stays the only thing controlling how faint it is. */
+	color            : var(--flourish-color);
+	font-family      : var(--font-mono);
+	line-height      : 1;
+	position         : absolute;
+	user-select      : none;
+
+
+}
+
+/* #endregion bg-flourish */
+
+
