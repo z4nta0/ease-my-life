@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: AppFeaCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
+import cssModObj from './app-feature-card.module.css'; // What: CSS Module Object. Why: The App Feature card is styled from its own module. How: This maps each class name in app-feature-card.module.css to its hashed module class.
+import React     from 'react';                           // What: React. Why: AppFeaCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
 import { bloReaFun   } from '../../onboarding/app-features.jsx'; // What: Blocked Reason Function. Why: An app-feature tour can require an earlier one first, and its card must explain why it can't start yet. How: This is called with the card's feature id.
@@ -98,8 +99,10 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 		<article
-			className={ ` today-card   today-card--tutorial   ${ tutDonBoo ? 'is-done' : '' }   ${ bloReaStr ? 'is-needed' : '' } ` }
+			className={ cssModObj.todayCard }
 
+			data-card-done-active={ tutDonBoo || undefined } // What: Card Done Active Attribute. Why: A resolved tutorial's card dims, fills its check, and strikes its text through from its module. How: This sets the presence-only attribute while tutDonBoo is true and removes it otherwise.
+			data-card-needed-active={ !!bloReaStr || undefined } // What: Card Needed Active Attribute. Why: A tutorial that can't run yet takes the warm needs-attention tint from its module. How: This sets the presence-only attribute while bloReaStr holds a reason and removes it otherwise.
 			data-element-name-hook='todCarArt tutCarArt'
 
 			onClick={ onRowCliFun }
@@ -110,7 +113,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<button
-					className='check'
+					className={ cssModObj.check }
 
 					data-element-name-hook='carCheBut'
 
@@ -131,7 +134,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 					<span
-						className='check-ripple'
+						className={ cssModObj.checkRipple }
 
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
@@ -149,7 +152,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<InfTipCom
-					className='check is-disabled'
+					className={` ${ cssModObj.check }   ${ cssModObj.isDisabled } `}
 
 					data-element-name-hook='carCheSpa'
 
@@ -171,7 +174,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<button
-					className='check'
+					className={ cssModObj.check }
 
 					data-element-name-hook='carCheBut'
 
@@ -203,13 +206,13 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 
-			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
+			<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
-				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
+				<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
 
 
-					<span className='meta-picker'>{ PAG_LAB_OBJ[ feaRecObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own pagStr in PAG_LAB_OBJ. */ }
+					<span>{ PAG_LAB_OBJ[ feaRecObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own pagStr in PAG_LAB_OBJ. */ }
 
 
 
@@ -219,9 +222,9 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
-							<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
+							<span className={ cssModObj.metaDot }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-							<span className='meta-time'>{ feaRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
+							<span>{ feaRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
 
 
 						</React.Fragment>
@@ -232,7 +235,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 				</div>
 
-				<div className='today-card-name'>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
+				<div className={ cssModObj.todayCardName }>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
 
 
 			</div>
@@ -242,14 +245,14 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<div
-					className='today-card-actions'
+					className={ cssModObj.todayCardActions }
 
 					data-element-name-hook='carActDiv'
 				>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 					<button
-						className='icon-btn'
+						className={ cssModObj.iconBtn }
 
 						aria-label='Cancel tutorial'
 						title='Cancel'

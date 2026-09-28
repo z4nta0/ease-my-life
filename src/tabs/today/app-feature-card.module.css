@@ -1,0 +1,352 @@
+
+
+
+/**
+ * app-feature-card.module.css = App Feature Card Module
+ *
+ * @summary
+ * Styles for AppFeaCom, the Today list card that offers an App Feature
+ * tutorial. It looks and behaves like a real Today card: a play button in the
+ * check spot starts the tutorial, the card fills with a done check once the
+ * tutorial is resolved, and a Cancel icon dismisses it. A tutorial that can't
+ * run yet shows a dimmed check that explains why on tap, and its card takes
+ * the warm "needs attention" tint. The card's declarations are copied from the
+ * shared Today card classes the other cards still use, until the
+ * design-system pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region today-card */
+
+.today-card { /* What: App Feature Card. Why: The tutorial offer should sit in the list like any other Today card. How: This lays out the check, body, and actions in the Today card's three-column grid, surface, border, and spacing. */
+
+
+	align-items           : center;
+	background            : var(--surface);
+	border                : 0.5px solid var(--border);
+	border-radius         : var(--r-lg);
+	cursor                : pointer;
+	display               : grid;
+	gap                   : 16px;
+	grid-template-columns : auto 1fr auto;
+	margin-bottom         : 10px;
+	padding               : 16px 18px;
+	perspective           : 800px;
+	transition            : background .15s, opacity .2s, border-color .12s;
+	user-select           : none;
+
+
+}
+.today-card:last-child { /* What: Last App Feature Card. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
+
+
+	margin-bottom : 0;
+
+
+}
+.today-card:hover { /* What: Hovered App Feature Card. Why: The card should respond to the pointer. How: This darkens its border slightly. */
+
+
+	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+
+
+}
+.today-card:active { /* What: Pressed App Feature Card. Why: A press should register on the card. How: This darkens its surface slightly. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.01) c h);
+
+
+}
+.today-card[data-card-done-active] { /* What: Done App Feature Card. Why: A finished tutorial should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.005) c h);
+
+
+}
+.today-card[data-card-needed-active] { /* What: Needs Attention App Feature Card. Why: A tutorial that can't run yet is flagged as unfinished, warm rather than red, since nothing is wrong. How: This tints the card's border and surface with the warm color, and must stay after the hover and pressed rules so it wins. */
+
+
+	background   : oklch(from var(--warm) l c h/0.06);
+	border-color : oklch(from var(--warm) l c h/0.55);
+
+
+}
+.today-card[data-card-needed-active]:hover { /* What: Hovered Needs Attention App Feature Card. Why: The flagged card should still respond to the pointer. How: This deepens its warm border. */
+
+
+	border-color : oklch(from var(--warm) l c h/0.7);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion App Feature Card. Why: Someone who asked for less motion shouldn't see the card fade between states. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card { /* What: Still App Feature Card. Why: The card's state changes should simply switch. How: This turns its fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region check */
+
+.check { /* What: App Feature Check Button. Why: The check spot holds the play and undo buttons, shaped like a real card's checkbox. How: This draws the rounded square with the button chrome reset and a color fade. */
+
+
+	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 1px solid var(--border);
+	border-radius      : 8px;
+	color              : inherit;
+	display            : inline-flex;
+	flex               : none;
+	font               : inherit;
+	height             : 24px;
+	justify-content    : center;
+	margin             : 0;
+	padding            : 0;
+	position           : relative;
+	transition         : background .12s, border-color .12s, color .12s;
+	width              : 24px;
+
+
+}
+button.check { /* What: Clickable App Feature Check Button. Why: The check spot is a real button here. How: This shows the pointer cursor. */
+
+
+	cursor : pointer;
+
+
+}
+.check:focus-visible { /* What: Focused App Feature Check Button. Why: A keyboard user needs a visible ring that still reads on the filled done state. How: This draws an accent ring separated from the box by a background-colored gap. */
+
+
+	box-shadow     : 0 0 0 3px var(--bg);
+	outline        : 2px solid var(--accent);
+	outline-offset : 3px;
+
+
+}
+.today-card[data-card-done-active] .check:focus-visible { /* What: Focused Done App Feature Check Button. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This adds a thin background-colored inset line inside the gap. */
+
+
+	box-shadow : 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
+
+
+}
+.check:hover { /* What: Hovered App Feature Check Button. Why: The button should respond to the pointer. How: This darkens its border to the text color. */
+
+
+	border-color : var(--text);
+
+
+}
+.check.is-disabled { /* What: Blocked App Feature Check. Why: A tutorial that can't run yet shows a dimmed play button that explains itself on tap instead of starting. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+.check.is-disabled:hover { /* What: Hovered Blocked App Feature Check. Why: A blocked button shouldn't look clickable on hover. How: This holds its border at the normal border color. */
+
+
+	border-color : var(--border);
+
+
+}
+.today-card[data-card-done-active] .check { /* What: Done App Feature Check Button. Why: A finished tutorial's check should read as checked. How: This fills the box with the accent color and sets its glyph in the background color. */
+
+
+	background   : var(--accent);
+	border-color : var(--accent);
+	color        : var(--bg);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion App Feature Check Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.check { /* What: Still App Feature Check Button. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.today-card[data-card-done-active] .check svg { /* What: Done App Feature Checkmark. Why: The checkmark should spring in when the tutorial is resolved. How: This plays the shared spring animation on the glyph. */
+
+
+	animation : global(checkSpring) 360ms cubic-bezier(.22,1.4,.36,1) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion App Feature Checkmark. Why: The checkmark is state, so it stays, but its spring is motion. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card[data-card-done-active] .check svg { /* What: Still App Feature Checkmark. Why: The checkmark should simply be there. How: This turns the spring off and holds the glyph fully visible at full size. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.check-ripple { /* What: App Feature Check Ripple. Why: The done check keeps the same ripple layer every done row carries. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
+
+
+	border         : 1.5px solid var(--accent);
+	border-radius  : 9px;
+	inset          : -1px;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+
+/* #endregion check */
+
+
+
+/* #region today-card-body */
+
+.today-card-body { /* What: App Feature Card Body. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+/* #region today-card-meta */
+
+.today-card-meta { /* What: App Feature Card Meta Row. Why: The feature's page label and time estimate sit above the call to action like a real card's meta line. How: This sets them in small, spaced, muted mono capitals. */
+
+
+	align-items    : center;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 6px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+.meta-dot { /* What: App Feature Meta Separator. Why: The dot between the label and the time should sit quieter than either. How: This fades it. */
+
+
+	opacity : 0.5;
+
+
+}
+
+/* #endregion today-card-meta */
+
+
+.today-card-name { /* What: App Feature Card Name. Why: The call to action reads like a real card's item name. How: This sets it in large medium-weight text. */
+
+
+	font-size      : 17px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	text-wrap      : pretty;
+
+
+}
+.today-card[data-card-done-active] .today-card-name { /* What: Done App Feature Card Name. Why: A finished tutorial's text should read as checked off. How: This mutes it and strikes it through with a hairline. */
+
+
+	color                     : var(--muted);
+	text-decoration           : line-through;
+	text-decoration-thickness : 0.5px;
+
+
+}
+
+/* #endregion today-card-body */
+
+
+
+/* #region today-card-actions */
+
+.today-card-actions { /* What: App Feature Card Actions. Why: The Cancel action sits at the card's right edge like a real card's action strip. How: This lays it out as a small-gap row. */
+
+
+	display : flex;
+	gap     : 4px;
+
+
+}
+
+.icon-btn { /* What: App Feature Cancel Button. Why: Cancel is a quiet icon action beside the card's content. How: This draws a small muted square button with a color fade. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	display         : inline-flex;
+	height          : 30px;
+	justify-content : center;
+	transition      : background .12s, color .12s;
+	width           : 30px;
+
+
+}
+.icon-btn:hover { /* What: Hovered App Feature Cancel Button. Why: The button should respond to the pointer. How: This gives it a background fill and the full text color. */
+
+
+	background : var(--bg);
+	color      : var(--text);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion App Feature Cancel Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.icon-btn { /* What: Still App Feature Cancel Button. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion today-card-actions */
+
+/* #endregion today-card */
+
+
