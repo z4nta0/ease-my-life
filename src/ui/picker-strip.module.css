@@ -1,0 +1,384 @@
+
+
+
+/**
+ * picker-strip.module.css = Picker Strip Module
+ *
+ * @summary
+ * Styles for PicStrCom, the pick animation shown while a picker chooses: the
+ * reel (a vertical strip of names sliding past a center line), the dissolve (a
+ * single name cross-fading until it lands with a glow), and the spotlight (a
+ * list whose highlight hops between rows). Each style marks its landed row or
+ * name in the accent color once the cycle settles. The reel track's slide
+ * duration is written inline per step from JS.
+ *
+ * Under reduced motion the JS skips the cycle and shows one calm settled name,
+ * and these rules turn the remaining motion off. The Settings preview passes
+ * forMotBoo, an explicit request to see the animation, which marks each root
+ * with data-motion-force-active so its motion plays even under reduced motion.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region reel */
+
+.reel { /* What: Picker Reel. Why: The reel shows a window of names sliding past a fixed center line. How: This clips a full-width, capped-width window over the sliding track. */
+
+
+	max-width : 420px;
+	overflow  : hidden;
+	position  : relative;
+	width     : 100%;
+
+
+}
+
+/* #region reel-track */
+
+.reel-track { /* What: Picker Reel Track. Why: The names slide as one continuous strip, each move lasting exactly until the next. How: This stacks the rows and transitions only their transform, with the duration written inline per step. */
+
+
+	display                    : flex;
+	flex-direction             : column;
+	transition-property        : transform;
+	transition-timing-function : linear;
+	will-change                : transform;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Reel Track. Why: Someone who asked for less motion shouldn't see the strip slide, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+
+
+	.reel:not([data-motion-force-active]) .reel-track { /* What: Still Picker Reel Track. Why: The strip should simply jump to each position. How: This turns the transform transition off, except inside a forced-motion preview. */
+
+
+		transition-property : none;
+
+
+	}
+
+
+}
+
+.reel-row { /* What: Picker Reel Row. Why: Each candidate is one fixed-height row of large centered text. How: This sizes the row, centers its name in muted text, and fades its color as it becomes current. */
+
+
+	align-items     : center;
+	color           : var(--muted);
+	display         : flex;
+	font-size       : 19px;
+	font-weight     : 500;
+	height          : 56px;
+	justify-content : center;
+	letter-spacing  : -0.015em;
+	padding         : 0 12px;
+	text-align      : center;
+	text-wrap       : pretty;
+	transition      : color .25s;
+
+
+}
+.reel-row[data-row-highlight-active] { /* What: Current Picker Reel Row. Why: The row on the center line should read as the current name. How: This sets it in the full text color. */
+
+
+	color : var(--text);
+
+
+}
+.reel--settled .reel-row[data-row-highlight-active] { /* What: Landed Picker Reel Row. Why: The final pick should stand out once the reel settles. How: This sets it in the accent color, slightly larger. */
+
+
+	color     : var(--accent);
+	font-size : 22px;
+	transform : scale(1.02);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Reel Row. Why: Someone who asked for less motion shouldn't see the row's color fade, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+
+
+	.reel:not([data-motion-force-active]) .reel-row { /* What: Still Picker Reel Row. Why: The row's color should simply switch. How: This turns the color fade off, except inside a forced-motion preview. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion reel-track */
+
+
+.reel-mask { /* What: Picker Reel Mask. Why: The reel's top and bottom edges should fade out instead of cutting off hard. How: This lays a gradient from the surface color to transparent over both ends. */
+
+
+	background     : linear-gradient(180deg, var(--surface), transparent 28%, transparent 72%, var(--surface));
+	inset          : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+
+.reel-line { /* What: Picker Reel Line. Why: The center landing row needs a marker so the eye has somewhere to settle. How: This draws hairlines above and below the center row's position. */
+
+
+	border-bottom  : 0.5px solid var(--border);
+	border-top     : 0.5px solid var(--border);
+	height         : 56px;
+	left           : 8%;
+	pointer-events : none;
+	position       : absolute;
+	right          : 8%;
+	top            : calc(50% - 28px); /* What: Center Row Top. Why: The line must frame the middle row exactly. How: This sits the 56px band half its height above the reel's midpoint. */
+
+
+}
+
+/* #endregion reel */
+
+
+
+/* #region dissolve */
+
+.dissolve { /* What: Picker Dissolve. Why: The dissolve shows one name at a time in a roomy centered stage. How: This centers the name in a full-width box with a minimum height. */
+
+
+	align-items     : center;
+	display         : flex;
+	justify-content : center;
+	min-height      : 120px;
+	position        : relative;
+	width           : 100%;
+
+
+}
+
+.dissolve-name { /* What: Picker Dissolve Name. Why: Each candidate should fade in rather than blink. How: This sets the name large and centered and fades it up each time it remounts. */
+
+
+	animation      : dissolveIn 180ms ease;
+	font-size      : 30px;
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	text-align     : center;
+	text-wrap      : pretty;
+
+
+}
+.dissolve--settled .dissolve-name { /* What: Landed Picker Dissolve Name. Why: The final pick should land with a small bounce in the accent color. How: This colors it and plays the settle animation. */
+
+
+	animation : settleIn 380ms cubic-bezier(.3,1.2,.4,1);
+	color     : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Dissolve Name. Why: Someone who asked for less motion should see the landed name without the fade-through or bounce, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+
+
+	.dissolve:not([data-motion-force-active]) .dissolve-name { /* What: Still Picker Dissolve Name. Why: The name should simply be there. How: This turns its animations off and holds it fully visible in place, except inside a forced-motion preview. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes dissolveIn { /* What: Dissolve In. Why: A quick fade and rise reads as one name replacing the last. How: This fades the name in from slightly lower and smaller. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(4px) scale(0.985);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes settleIn { /* What: Settle In. Why: A rise with a slight overshoot reads as the pick locking in. How: This lifts the name in, scales it past and back to size. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : translateY(6px) scale(0.97);
+
+
+	}
+
+	60% {
+
+
+		opacity   : 1;
+		transform : translateY(0) scale(1.03);
+
+
+	}
+
+	100% {
+
+
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+.dissolve-glow { /* What: Picker Dissolve Glow. Why: A soft halo marks the moment the pick lands. How: This draws a faint accent radial glow behind the name that grows in. */
+
+
+	animation      : glow 480ms ease-out;
+	background     : radial-gradient(circle, var(--accent-soft), transparent 70%);
+	border-radius  : 50%;
+	height         : 60%;
+	pointer-events : none;
+	position       : absolute;
+	width          : 60%;
+	z-index        : -1;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Dissolve Glow. Why: The glow is decorative motion, unless the user asked to preview it. How: This applies only when the reduced-motion preference is set. */
+
+
+	.dissolve:not([data-motion-force-active]) .dissolve-glow { /* What: Hidden Picker Dissolve Glow. Why: Without its bloom the glow adds nothing. How: This turns it off and hides it, except inside a forced-motion preview. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+@keyframes glow { /* What: Glow. Why: The halo should bloom rather than appear. How: This fades and scales it up from smaller. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : scale(0.6);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+/* #endregion dissolve */
+
+
+
+/* #region spot */
+
+.spot { /* What: Picker Spotlight. Why: The spotlight lists the candidates with the highlight hopping between them. How: This stacks the rows in a capped-width, capped-height column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+	max-height     : 360px;
+	max-width      : 380px;
+	overflow       : hidden;
+	width          : 100%;
+
+
+}
+@media (max-height: 750px) { /* What: Short Viewport Picker Spotlight. Why: A short screen needs the list to squeeze, the same as the picker stage around it. How: This applies only when the viewport is 750px tall or less. */
+
+
+	.spot { /* What: Squeezed Picker Spotlight. Why: The list should fit a short screen. How: This lowers its maximum height. */
+
+
+		max-height : 200px;
+
+
+	}
+
+
+}
+
+.spot-row { /* What: Picker Spotlight Row. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, taking its alignment from --spot-row-text-align, and fades as the highlight moves. */
+
+
+	border-radius : 8px;
+	color         : var(--muted);
+	font-size     : 15px;
+	padding       : 8px 14px;
+	text-align    : var(--spot-row-text-align, inherit); /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spot-row-text-align, falling back to the inherited alignment. */
+	text-wrap     : pretty;
+	transition    : background .12s, color .12s, transform .12s;
+
+
+}
+.spot-row[data-row-highlight-active] { /* What: Highlighted Picker Spotlight Row. Why: The row the highlight is on should stand out. How: This darkens its background and sets it in the text color. */
+
+
+	background : oklch(from var(--bg) calc(l - 0.01) c h);
+	color      : var(--text);
+
+
+}
+.spot--settled .spot-row[data-row-highlight-active] { /* What: Landed Picker Spotlight Row. Why: The final pick should stand out once the highlight settles. How: This fills it with the accent tint, colors its text accent, and scales it up slightly. */
+
+
+	background  : var(--accent-soft);
+	color       : var(--accent);
+	font-weight : 500;
+	transform   : scale(1.01);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Spotlight Row. Why: Someone who asked for less motion shouldn't see the highlight fade and scale, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+
+
+	.spot:not([data-motion-force-active]) .spot-row { /* What: Still Picker Spotlight Row. Why: The highlight should simply switch. How: This turns its fades off, except inside a forced-motion preview. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion spot */
+
+

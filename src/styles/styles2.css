@@ -354,118 +354,6 @@
   margin-bottom: 8px;
 }
 
-/* Reel */
-.reel { position: relative; width: 100%; max-width: 420px; overflow: hidden; }
-.reel-track {
-  display: flex; flex-direction: column;
-  /* Duration is set inline per step (see PicStrCom) so each move animates
-     over exactly the gap until the next one — continuous, no stutter. */
-  transition-property: transform;
-  transition-timing-function: linear;
-  will-change: transform;
-}
-.reel-row {
-  height: 56px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 19px; font-weight: 500;
-  letter-spacing: -0.015em;
-  color: var(--muted);
-  text-wrap: pretty;
-  text-align: center;
-  padding: 0 12px;
-  transition: color .25s;
-}
-.reel-row.is-on { color: var(--text); }
-.reel--settled .reel-row.is-on {
-  color: var(--accent);
-  font-size: 22px;
-  transform: scale(1.02);
-}
-.reel-mask {
-  pointer-events: none;
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(180deg, var(--surface), transparent 28%, transparent 72%, var(--surface));
-}
-.reel-line {
-  pointer-events: none;
-  position: absolute; left: 8%; right: 8%;
-  top: calc(50% - 28px); height: 56px;
-  border-top: 0.5px solid var(--border);
-  border-bottom: 0.5px solid var(--border);
-}
-
-/* Dissolve */
-.dissolve {
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  min-height: 120px; width: 100%;
-}
-.dissolve-name {
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  text-align: center;
-  text-wrap: pretty;
-  animation: dissolveIn 180ms ease;
-}
-@keyframes dissolveIn {
-  from { opacity: 0; transform: translateY(4px) scale(0.985); }
-  to   { opacity: 1; transform: none; }
-}
-.dissolve--settled .dissolve-name {
-  color: var(--accent);
-  animation: settleIn 380ms cubic-bezier(.3,1.2,.4,1);
-}
-@keyframes settleIn {
-  0%   { opacity: 0; transform: translateY(6px) scale(0.97); }
-  60%  { opacity: 1; transform: translateY(0) scale(1.03); }
-  100% { transform: scale(1); }
-}
-.dissolve-glow {
-  position: absolute;
-  width: 60%; height: 60%;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-soft), transparent 70%);
-  pointer-events: none; z-index: -1;
-  animation: glow 480ms ease-out;
-}
-@keyframes glow {
-  from { opacity: 0; transform: scale(0.6); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* Spotlight */
-.spot {
-  display: flex; flex-direction: column; gap: 2px;
-  width: 100%; max-width: 380px;
-  max-height: 360px; overflow: hidden;
-}
-/* Same short-viewport squeeze as .picker-stage's own (see its comment) —
-   this cap is pure CSS (unlike the 'reel' style's fixed inline height, so
-   nothing extra is needed in tab-picker.jsx to make it responsive here). */
-@media (max-height: 750px) {
-  .spot { max-height: 200px; }
-}
-.spot-row {
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 15px;
-  color: var(--muted);
-  transition: background .12s, color .12s, transform .12s;
-  text-wrap: pretty;
-}
-.spot-row.is-on {
-  color: var(--text);
-  background: oklch(from var(--bg) calc(l - 0.01) c h);
-}
-.spot--settled .spot-row.is-on {
-  color: var(--accent);
-  background: var(--accent-soft);
-  font-weight: 500;
-  transform: scale(1.01);
-}
-
 /* Actions */
 .picker-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
@@ -2390,7 +2278,7 @@ button.rd-chev {
 .celeb-preview-particles { position: absolute; inset: 0; pointer-events: none; }
 .celeb-preview-particles .confetti-piece { top: 50%; left: 50%; }
 .pickanim-preview-stage { width: 100%; display: flex; align-items: center; justify-content: center; min-height: 180px; }
-.pickanim-preview-stage .spot-row { text-align: center; }
+.pickanim-preview-stage { --spot-row-text-align: center; }
 .pickanim-preview-pick { font-family: var(--font-mono); font-size: 16px; color: var(--accent); font-weight: 600; }
 .rd-mode-opt.is-on::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
@@ -3493,18 +3381,6 @@ body.ob-touring .tab{padding-bottom:200px}
     opacity: 1;
     transform: none;
   }
-  /* Dissolve pick animation: show the landed name, skip the fade-through and
-     the settle bounce. The glow is decorative. */
-  .dissolve-name,
-  .dissolve--settled .dissolve-name {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-  .dissolve-glow {
-    animation: none;
-    opacity: 0;
-  }
   /* The inline editors: all entrance fades. */
   /* .rem-quickadd-wrap was already covered; this is the inner row, which has its
      own np-row-in fade. */
@@ -3515,23 +3391,6 @@ body.ob-touring .tab{padding-bottom:200px}
   }
 }
 
-
-/* Settings pick-animation preview: restore the dissolve style's own motion inside
-   .motion-ok only (reel and spotlight were never suppressed — they animate via
-   inline transition durations, not keyframes). */
-@media (prefers-reduced-motion: reduce) {
-  .motion-ok .dissolve-name {
-    animation: dissolveIn 180ms ease;
-    opacity: 1;
-  }
-  .motion-ok .dissolve--settled .dissolve-name {
-    animation: settleIn 380ms cubic-bezier(.3,1.2,.4,1);
-  }
-  .motion-ok .dissolve-glow {
-    animation: glow 480ms ease-out;
-    opacity: 1;
-  }
-}
 
 /* Reduced-motion advisory under the two animation-choice headings. Darkened from
    raw --warm (L=0.62), which only reaches 3.64:1 at this 14px/400 body size —
