@@ -1923,31 +1923,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 
 .np-ease-unit { font-size: 13px; color: var(--muted); align-self: center; }
 
-/* ─── Weekday chips (shared: new-picker form + Data schedule) ─────────────── */
-.dow-chips { display: flex; gap: 6px; flex-wrap: wrap; }
-.dow-chip {
-  width: 34px; height: 34px; flex: 0 0 auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid var(--border); border-radius: 999px;
-  background: var(--bg);
-  font-size: 13px; font-weight: 600; color: var(--muted);
-  cursor: pointer;
-  transition: border-color .24s ease, background .24s ease, color .24s ease;
-}
-.dow-chip:hover { border-color: var(--muted); }
-.dow-chip.is-on {
-  background: oklch(from var(--accent-soft) l c h);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.dow-chips--sm .dow-chip { width: 30px; height: 30px; font-size: 12px; }
-/* Locked chip (weekly cadence anchor): looks selected but is an InfoTip trigger,
-   not a toggle — no hover affordance, and the help cursor signals "explains
-   itself" rather than "click me". */
-.dow-chip.is-locked { cursor: help; }
-.dow-chip.is-locked:hover { border-color: var(--accent); }
-.dow-chip--sm { width: 30px; height: 30px; font-size: 12px; }
-
 /* ─── New-picker form: daily schedule sub-area ────────────────────────────── */
 /* Sits beneath the "Include in the Daily generator" toggle; only shown when
    that toggle is on, so it reads as a refinement of it. */

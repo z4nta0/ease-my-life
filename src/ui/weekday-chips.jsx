@@ -3,6 +3,9 @@
 
 // #region Imports
 
+import cssModObj from './weekday-chips.module.css'; // What: CSS Module Object. Why: The chip row and its chips are styled from their own module. How: This maps each class name in weekday-chips.module.css to its hashed module class.
+
+
 import { InfTipCom } from './info-tip.jsx'; // What: Info Tip Component. Why: A weekly cadence's pinned anchor day explains why it can't be turned off. How: This wraps that locked chip with locTipStr as its tip.
 
 // #endregion Imports
@@ -112,7 +115,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 
 
 		<div
-			className={ ` dow-chips   ${ sizValStr === 'sm' ? 'dow-chips--sm' : '' } ` }
+			className={` ${ cssModObj.dowChips }   ${ sizValStr === 'sm' ? cssModObj.dowChipsSm : '' } `}
 
 			data-element-name-hook='dowChiDiv'
 
@@ -134,7 +137,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 					<InfTipCom
 						key={ dayIndNum }
 
-						className={ ` dow-chip   is-on   is-locked   ${ sizValStr === 'sm' ? 'dow-chip--sm' : '' } ` }
+						className={` ${ cssModObj.dowChip }   ${ cssModObj.isOn }   ${ cssModObj.isLocked }   ${ sizValStr === 'sm' ? cssModObj.dowChipSm : '' } `}
 
 						labTexStr={ locTipStr }
 					>{ labChrStr }</InfTipCom> // What: Locked Day Chip Element. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
@@ -150,7 +153,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 					<button
 						key={ dayIndNum }
 
-						className={ ` dow-chip   ${ daySelBoo ? 'is-on' : '' } ` }
+						className={ cssModObj.dowChip }
 
 						type='button'
 
@@ -160,7 +163,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 						title={ WEE_FUL_ARR[ dayIndNum ] }
 
 						onClick={ () => togDayFun( dayIndNum ) }
-					>{ labChrStr }</button> // What: Toggle Day Chip Element. Why: This is the actual clickable control for an unlocked day. How: This shows daySelBoo as its own "is-on" class and calls togDayFun with dayIndNum when clicked.
+					>{ labChrStr }</button> // What: Toggle Day Chip Element. Why: This is the actual clickable control for an unlocked day. How: This shows daySelBoo as its own aria-pressed state, which its module styles as selected, and calls togDayFun with dayIndNum when clicked.
 
 
 				);
