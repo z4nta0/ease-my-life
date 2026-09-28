@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library IntModCom is built on. How: This is used directly (React.useRef, React.useEffect) inside the component below.
+import cssModObj from './intro-modal.module.css'; // What: CSS Module Object. Why: The modal's backdrop, card, and button styles live in its own module. How: This maps each class name in intro-modal.module.css to its hashed module class.
+import React     from 'react';                    // What: React. Why: This is the UI library IntModCom is built on. How: This is used directly (React.useRef, React.useEffect) inside the component below.
 
 
 import { createPortal } from 'react-dom';          // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside IntModCom's return.
@@ -106,7 +107,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 
 
 		<div
-			className='ob-scrim'
+			className={ cssModObj.obScrim }
 
 			data-element-name-hook='intScrDiv'
 
@@ -116,10 +117,10 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 		>{ /* What: Container Scrim Div Element. Why: This is the modal's own full-viewport backdrop and, since it can scroll, the positioning context the focus effect above cares about. How: This wraps the welcome card below and marks itself as an accessible dialog named by titHeaStr. Its data-element-name-hook is read by the shared Escape-key handler. */ }
 
 
-			<div className={ ` ob-welcome   ${ redMotBoo ? '' : 'ob-in' } ` }>{ /* What: Welcome Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the "ob-in" entrance class unless redMotBoo reports the user prefers reduced motion. */ }
+			<div className={` ${ cssModObj.obWelcome }   ${ redMotBoo ? '' : cssModObj.obIn } `}>{ /* What: Welcome Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the "ob-in" entrance class unless redMotBoo reports the user prefers reduced motion. */ }
 
 
-				<div className='ob-wmark'>{ icoTopEle }</div>{ /* What: Icon Mark Div Element. Why: Every intro modal shows a recognizable glyph above its own title. How: This renders whatever icon node the caller passed in. */ }
+				<div className={ cssModObj.obWmark }>{ icoTopEle }</div>{ /* What: Icon Mark Div Element. Why: Every intro modal shows a recognizable glyph above its own title. How: This renders whatever icon node the caller passed in. */ }
 
 				<h2>{ titHeaStr }</h2>{ /* What: Title Heading Element. Why: Every intro modal needs one visible, accessible heading. How: This renders the titHeaStr prop as an h2. */ }
 
@@ -134,7 +135,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 				{ pilLabArr && pilLabArr.length > 0 && ( // What: Pills Visibility Check. Why: Not every intro modal has pills to show. How: This renders the chip row only while pilLabArr holds at least one entry.
 
 
-					<div className='ob-chips'>{ /* What: Container Chips Div Element. Why: This groups every pill chip as one visual row below the paragraphs. How: This renders one span per pilLabArr entry below. */ }
+					<div className={ cssModObj.obChips }>{ /* What: Container Chips Div Element. Why: This groups every pill chip as one visual row below the paragraphs. How: This renders one span per pilLabArr entry below. */ }
 
 
 						{ pilLabArr.map( ( pilValStr ) => ( // What: Pill Map. Why: One chip is needed per entry in pilLabArr. How: This maps every pilLabArr entry to its own span, keyed by its own text.
@@ -151,19 +152,19 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 
 				) }
 
-				<div className='ob-wact'>{ /* What: Container Action Div Element. Why: This groups the modal's own primary/secondary action pair on one row. How: This renders the primary start button followed by the secondary skip button below. */ }
+				<div className={ cssModObj.obWact }>{ /* What: Container Action Div Element. Why: This groups the modal's own primary/secondary action pair on one row. How: This renders the primary start button followed by the secondary skip button below. */ }
 
 
 					<button
 						ref={ priButRef }
 
-						className='ob-btn ob-btn--primary'
+						className={` ${ cssModObj.obBtn }   ${ cssModObj.obBtnPrimary } `}
 
 						onClick={ onBegTouFun }
 					>{ begLabStr }</button>{ /* What: Primary Action Button Element. Why: This is the tour's own main call to action. How: This is focused on mount via priButRef and calls onBegTouFun when clicked. */ }
 
 					<button
-						className='ob-btn ob-btn--ghost'
+						className={` ${ cssModObj.obBtn }   ${ cssModObj.obBtnGhost } `}
 
 						onClick={ onSkiTouFun }
 					>{ skiLabStr }</button>{ /* What: Skip Action Button Element. Why: A user must always be able to decline a tour instead of taking it. How: This calls onSkiTouFun when clicked. */ }

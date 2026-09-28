@@ -3662,31 +3662,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 /* ── Onboarding ──────────────────────────────────────────────────────────
    Welcome modal, get-started checklist, first-picker CTA, and the spotlight
    tour (dim + cut-out + coach card). Uses app tokens throughout. */
-/* flex-direction:column + overflow-y:auto + margin:auto on .ob-welcome
-   (instead of align-items/justify-content:center) so a modal taller than
-   a short viewport (e.g. iPhone SE at 667px) becomes scrollable instead of
-   clipping symmetrically top and bottom — align-items/justify-content:
-   center have no graceful-overflow behavior (the centered item just
-   overflows equally past both edges with no way to scroll to the clipped
-   part), but flex auto-margins do: they only ever consume positive free
-   space, collapsing to 0 (i.e. top-aligned, normal document flow) once the
-   content no longer fits, which is what actually makes overflow-y:auto able
-   to reach the rest of it. Covers every onboarding intro modal at once
-   (Welcome Tour + every mini-tour) since they all share this one class. */
-.ob-scrim{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;overflow-y:auto;padding:24px;background:oklch(0.15 0.02 250/0.5);animation:obFade .22s ease both}
-.ob-welcome{margin:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);width:100%;max-width:400px;padding:28px 24px 22px;text-align:left;box-shadow:0 24px 60px -20px oklch(0 0 0/0.5)}
-.ob-welcome.ob-in{animation:obRise .26s cubic-bezier(.2,.8,.3,1) both}
-.ob-wmark{width:54px;height:54px;margin:0 auto 14px;color:var(--accent)}
-.ob-wmark svg{width:100%;height:100%}
-.ob-welcome h2{font-size:21px;font-weight:600;letter-spacing:-0.02em;margin:0 0 8px;text-align:center}
-.ob-welcome>p{font-size:13.5px;line-height:1.55;color:var(--muted);margin:0 6px}
-.ob-welcome>p+p{margin-top:10px}
-.ob-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px}
-.ob-chips span{font-family:var(--font-mono);font-size:11px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:none;outline:none}
-.ob-wact{display:flex;flex-direction:column;gap:9px;margin-top:20px}
-.ob-btn{font-size:14px;font-weight:600;border-radius:var(--r-md);padding:13px;font-family:inherit;border:0.5px solid var(--border);cursor:pointer;color:var(--text);background:transparent}
-.ob-btn--primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.ob-btn--ghost:hover{background:var(--hover,oklch(0 0 0/0.05))}
 
 /* z-index:1010, not 1000 — a GuidedTour step can be active at the same time
    as help-mode's own separate dim layer (.help-mode, z-index:1000) whenever
@@ -3830,9 +3805,8 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .today-card--tutorial.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.06)}
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
-@keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
-  .ob-scrim,.ob-welcome,.ob-coach,.ob-spot,.ob-spot.is-pulsing::after,.ob-generate-pulse::after{animation:none;transition:none}
+  .ob-coach,.ob-spot,.ob-spot.is-pulsing::after,.ob-generate-pulse::after{animation:none;transition:none}
   /* Frozen mid-fade would read as a paused animation rather than a
      deliberate static state — pin it to full color instead. */
   .ob-tour-pulse{animation:none;outline-color:var(--accent)}
