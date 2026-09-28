@@ -1,0 +1,294 @@
+
+
+
+/**
+ * previews.module.css = Previews Module
+ *
+ * @summary
+ * Styles for Appearance's two live preview stages. CelPreCom's stage mirrors
+ * a strip of done Today cards (with accent-filled checks) and overlays the
+ * confetti and sparkle pieces, so each celebration style can be watched on
+ * demand; the ripple style exhales each card in a cascade. PicAniCom's stage
+ * centers either the picked name or the running pick animation.
+ *
+ * Pressing Play or Preview is an explicit request to see the animation, so
+ * the previewed animations here keep their motion under reduced motion, per
+ * the Reduced motion rule's preview exception; the cards' ordinary transitions
+ * still turn off. The card declarations are copied from the shared Today card
+ * classes, resolved for these always-done mock cards, until the design-system
+ * pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region celeb-preview-stage */
+
+.celeb-preview-stage { /* What: Celebration Preview Stage. Why: The preview should echo the Today cards area it stands in for, and keep its particles inside it. How: This pads a clipped, slightly darker block under a top divider. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.015) c h);
+	border-top : 0.5px solid var(--border);
+	display    : block;
+	overflow   : hidden;
+	padding    : 20px 18px;
+	position   : relative;
+
+
+}
+
+
+
+/* #region celeb-preview-cards */
+
+.celeb-preview-cards { /* What: Celebration Preview Cards. Why: The mock cards stack like a real Today list. How: This stacks them in a column with a small gap. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 10px;
+	position       : relative;
+
+
+}
+
+
+
+/* #region today-card */
+
+.today-card { /* What: Preview Card. Why: Each mock card should look exactly like a done Today card, so the celebration renders the same as the real one. How: This lays out the check and body in the Today card's grid, with the done card's dimmed surface. */
+
+
+	align-items           : center;
+	background            : oklch(from var(--surface) calc(l - 0.005) c h);
+	border                : 0.5px solid var(--border);
+	border-radius         : var(--r-lg);
+	cursor                : default;
+	display               : grid;
+	gap                   : 16px;
+	grid-template-columns : auto 1fr auto;
+	margin-bottom         : 10px;
+	padding               : 16px 18px;
+	perspective           : 800px;
+	transition            : background .15s, opacity .2s, border-color .12s;
+	user-select           : none;
+
+
+}
+.today-card:last-child { /* What: Last Preview Card. Why: The last card needs no gap below it. How: This drops its bottom margin. */
+
+
+	margin-bottom : 0;
+
+
+}
+.today-card:hover { /* What: Hovered Preview Card. Why: The mock card responds to the pointer like a real one. How: This darkens its border slightly. */
+
+
+	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+
+
+}
+.today-card.is-exhaling { /* What: Exhaling Preview Card. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exhale-delay, playing the shared exhale animation. */
+
+
+	animation : global(cardExhale) var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both; /* What: Global Exhale Keyframes. Why: The cardExhale keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Preview Card. Why: Someone who asked for less motion shouldn't see the card's colors fade on hover; the exhale itself is the previewed animation, so it stays. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card { /* What: Still Preview Card. Why: The hover border should simply switch. How: This turns the card's fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region check */
+
+.check { /* What: Preview Card Check. Why: A done card shows a filled accent check. How: This draws the rounded check box with the button chrome reset, filled with the accent color and its glyph in the background color. */
+
+
+	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping native control styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	align-items        : center;
+	appearance         : none;
+	background         : var(--accent);
+	border             : 1px solid var(--accent);
+	border-radius      : 8px;
+	color              : var(--bg);
+	display            : inline-flex;
+	flex               : none;
+	font               : inherit;
+	height             : 24px;
+	justify-content    : center;
+	margin             : 0;
+	padding            : 0;
+	position           : relative;
+	transition         : background .12s, border-color .12s, color .12s;
+	width              : 24px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Preview Card Check. Why: Someone who asked for less motion shouldn't see the check's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.check { /* What: Still Preview Card Check. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.check svg { /* What: Preview Card Checkmark. Why: The checkmark springs in like a freshly checked card, which is part of the previewed celebration. How: This plays the shared spring animation on the glyph. */
+
+
+	animation : global(checkSpring) 360ms cubic-bezier(.22,1.4,.36,1) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the real Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+
+/* #endregion check */
+
+
+
+/* #region today-card-body */
+
+.today-card-body { /* What: Preview Card Body. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.today-card-meta { /* What: Preview Card Meta Row. Why: The picker name sits above the item like a real card's meta line. How: This sets it in small, spaced, muted mono capitals. */
+
+
+	align-items    : center;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 6px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+.today-card-name { /* What: Preview Card Name. Why: A done card's item name reads as checked off. How: This sets it in large medium-weight muted text struck through with a hairline. */
+
+
+	color                     : var(--muted);
+	font-size                 : 17px;
+	font-weight               : 500;
+	letter-spacing            : -0.01em;
+	text-decoration           : line-through;
+	text-decoration-thickness : 0.5px;
+	text-wrap                 : pretty;
+
+
+}
+
+/* #endregion today-card-body */
+
+/* #endregion today-card */
+
+/* #endregion celeb-preview-cards */
+
+
+
+/* #region celeb-preview-particles */
+
+.celeb-preview-particles { /* What: Celebration Preview Particles. Why: The confetti and sparkle pieces overlay the mock cards without ever taking the pointer. How: This covers the stage as an inert positioned layer. */
+
+
+	inset          : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+
+.confetti-piece { /* What: Preview Confetti Piece. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --angle, --dist, and --rot. */
+
+
+	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global Burst Keyframes. Why: The confettiBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var(--accent);
+	border-radius : 2px;
+	height        : 14px;
+	left          : 50%;
+	opacity       : 0;
+	position      : absolute;
+	top           : 50%;
+	width         : 9px;
+
+
+}
+
+.sparkle-piece { /* What: Preview Sparkle Piece. Why: Each sparkle glints at its own spot like the real sparkle celebration. How: This centers an accent glyph on its inline position and twinkles it with the shared animation. */
+
+
+	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global Twinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var(--accent);
+	font-size   : 18px;
+	line-height : 1;
+	opacity     : 0;
+	position    : absolute;
+	transform   : translate(-50%, -50%) scale(0.4);
+
+
+}
+
+/* #endregion celeb-preview-particles */
+
+/* #endregion celeb-preview-stage */
+
+
+
+/* #region pickanim-preview-stage */
+
+.pickanim-preview-stage { /* What: Pick Animation Preview Stage. Why: The picked name or the running animation should sit centered in a fixed-height stage. How: This centers its content in a full-width box with a minimum height, and centers the spotlight's rows. */
+
+
+	--spot-row-text-align : center; /* What: Spotlight Row Alignment. Why: The spotlight's rows read best centered in this narrow stage. How: The picker strip's spotlight rows read this as their text alignment. */
+	align-items           : center;
+	display               : flex;
+	justify-content       : center;
+	min-height            : 180px;
+	width                 : 100%;
+
+
+}
+
+.pickanim-preview-pick { /* What: Pick Animation Preview Name. Why: Before Play is pressed, the stage shows the picked name on its own. How: This sets it in bold accent mono text. */
+
+
+	color       : var(--accent);
+	font-family : var(--font-mono);
+	font-size   : 16px;
+	font-weight : 600;
+
+
+}
+
+/* #endregion pickanim-preview-stage */
+
+

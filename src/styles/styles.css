@@ -1361,25 +1361,3 @@ button.check { cursor: pointer; }
     transform: none;
   }
 }
-
-
-/* Settings previews opt back IN to motion (see .motion-ok in tabs/settings/previews.jsx):
-   pressing Play is an explicit request to see the animation, so the global
-   reduced-motion rules above are undone for these contained stages only. Each
-   declaration mirrors the original rule it is restoring. */
-@media (prefers-reduced-motion: reduce) {
-  .motion-ok .today-card.is-exhaling {
-    animation: cardExhale var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both;
-  }
-  .motion-ok .today-card.is-done .check svg {
-    animation: checkSpring 360ms cubic-bezier(.22,1.4,.36,1) both;
-  }
-  /* Base opacity stays 0 — `both` fill lets the keyframes own it, exactly as the
-     unprefixed rules do. Per-piece delays are set inline by JS and survive. */
-  .motion-ok .confetti-piece {
-    animation: confettiBurst 850ms cubic-bezier(.2,.7,.3,1) both;
-  }
-  .motion-ok .sparkle-piece {
-    animation: sparkleTwinkle 780ms ease-in-out both;
-  }
-}
