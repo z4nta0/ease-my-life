@@ -3595,43 +3595,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    Welcome modal, get-started checklist, first-picker CTA, and the spotlight
    tour (dim + cut-out + coach card). Uses app tokens throughout. */
 
-/* z-index:1010, not 1000 — a GuidedTour step can be active at the same time
-   as help-mode's own separate dim layer (.help-mode, z-index:1000) whenever
-   a step's real target IS the help-highlight toggle itself (the "Use the
-   highlight feature" App Feature tutorial's own Step 2, once its Step 1
-   click has turned help-mode on): two same-numbered z-index:1000 stacking
-   contexts fall back to DOM order, and .help-mode happens to mount later,
-   so it painted its dim + badges OVER .ob-coach and .ob-spot, only NOT
-   dimming wherever they happened to overlap a help-mode cutout hole. Same
-   fix, same reasoning as .help-btn's own z-index:1001 lift just below —
-   this needs to clear THAT too, so the tour's own spotlight/coach always
-   sit on top of literally everything else on screen while a step is
-   active, not just help-mode's dim layer. .ob-tour itself has
-   pointer-events:none (only .ob-coach opts back in), so lifting the whole
-   stacking context doesn't block clicks through to the real target
-   underneath — .ob-spot's own box-shadow trick, not an actual cutout,
-   is what "reveals" it either way. */
-.ob-tour{position:fixed;inset:0;z-index:1010;pointer-events:none}
-.ob-dim{position:absolute;inset:0;background:oklch(0.15 0.02 250/0.55)}
-.ob-spot{position:fixed;border-radius:var(--r-md);box-shadow:0 0 0 9999px oklch(0.15 0.02 250/0.6);border:2px solid oklch(from var(--accent) l c h/0.9)}
-/* Drops just the dimming shadow during a group/item drag (see GuidedTour's
-   own dragging state) — the border stays so the section being dragged is
-   still marked, but the rest of the page is no longer darkened, so it's
-   easy to see exactly where it's landing. */
-.ob-spot.is-dragging{box-shadow:none}
-/* requireClick steps: a white ring pulses outward from the target's own
-   border and fades, drawing the eye to the exact element to click while
-   Next stays disabled. A separate ::after (not an .ob-spot box-shadow
-   itself) so it doesn't fight the dimming box-shadow above; white rather
-   than --accent because the accent blue reads too close to the dim
-   scrim's own near-black to register as a pulse. */
-.ob-spot.is-pulsing::after{content:"";position:absolute;inset:0;border-radius:inherit;animation:obSpotPing 1.8s ease-out infinite}
-@keyframes obSpotPing{
-  0%{box-shadow:0 0 0 0 oklch(1 0 0/0.65)}
-  70%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
-  100%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
-}
-/* Same sonar-ping treatment as .ob-spot.is-pulsing above, applied to the
+/* Same sonar-ping treatment as the tour spotlight's own pulse, applied to the
    whole "Generate your real list" card once every prerequisite is done and
    the button is actually clickable. Own keyframe, not obSpotPing verbatim:
    the ring expands from the card's own edge outward onto the page
@@ -3681,35 +3645,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   0%,100%{border-color:oklch(from var(--accent) l c h/1)}
   50%{border-color:oklch(from var(--accent) l c h/0.2)}
 }
-.ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
-.ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
-.ob-coach-title{font-size:15px;font-weight:600;margin:0 0 5px}
-.ob-coach .ob-body{font-size:12.5px;line-height:1.5;color:var(--muted);margin:0}
-.ob-crow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px}
-.ob-lnav{display:flex;align-items:center;gap:12px}
-.ob-skip{font-size:12px;color:var(--muted);background:0;border:0;font-family:inherit;cursor:pointer;padding:4px 2px}
-.ob-back{font-size:12px;font-weight:500;color:var(--accent);background:0;border:0;font-family:inherit;cursor:pointer;padding:4px 2px}
-.ob-next{font-size:12.5px;font-weight:600;border-radius:999px;padding:8px 15px;font-family:inherit;cursor:pointer;border:0.5px solid var(--accent);background:var(--accent);color:#fff}
-.ob-next:disabled{opacity:.6;cursor:default}
-/* solo step (see its own doc comment in onboarding/tour-runner.jsx) —
-   .ob-lnav is removed entirely rather than just hidden, so .ob-next is the
-   ONLY child left in the row; stretch it to fill that space instead of
-   leaving it sized to its own text and pinned to one side by
-   justify-content:space-between, which would read as off-balance for a
-   standalone closing message with nothing to pair it against. */
-.ob-crow--solo .ob-next{width:100%;text-align:center}
-/* translateX(-50%) first: --ob-ax is computed (both here and in the tour's
-   own coach placement) as the TARGET's center offset from the tip's own
-   left edge, but `left` alone positions this box's own left edge there,
-   not its center — the box's post-rotation visual point then sits a half-
-   width (7px) right of the intended center. Usually too small to notice
-   next to a real-size highlighted target, but glaring for the Day Log's
-   columnGroup tips, whose badge is deliberately centered on the same
-   target midpoint this arrow points at — any offset between the two reads
-   as the arrow pointing at the badge's edge instead of its middle. */
-.ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:translateX(-50%) rotate(45deg);left:var(--ob-ax,28px)}
-.ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
-.ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
 
 .ob-create{border:1px dashed oklch(from var(--accent) l c h/0.5);background:var(--accent-soft);border-radius:var(--r-md);padding:18px 16px;text-align:center;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .ob-create-i{width:40px;height:40px;border-radius:11px;background:var(--surface);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent)}
@@ -3738,7 +3673,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){
-  .ob-coach,.ob-spot,.ob-spot.is-pulsing::after,.ob-generate-pulse::after{animation:none;transition:none}
+  .ob-generate-pulse::after{animation:none;transition:none}
   /* Frozen mid-fade would read as a paused animation rather than a
      deliberate static state — pin it to full color instead. */
   .ob-tour-pulse{animation:none;outline-color:var(--accent)}

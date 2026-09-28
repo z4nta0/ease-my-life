@@ -1,0 +1,321 @@
+
+
+
+/**
+ * tour-runner.module.css = Tour Runner Module
+ *
+ * @summary
+ * Styles for GuiTouCom, the guided tour's overlay: a full-screen layer that
+ * sits above everything else (help mode's own dim layer included), the plain
+ * dim shown before a target is found, the spotlight that darkens the page
+ * around the current target with one huge box-shadow instead of a real
+ * cut-out, and the coach card with its arrow, progress line, title, body, and
+ * Skip/Back/Next row.
+ *
+ * The spotlight drops its dimming shadow while the user drags a group or item
+ * so they can see where it lands, and pulses a white ring while a step waits
+ * for a real click on its target. The coach card's arrow is positioned from
+ * the --ob-ax custom property the placement code writes, since only that code
+ * knows where the target sits relative to the card.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region ob-tour */
+
+.ob-tour { /* What: Tour Overlay. Why: The tour's dim, spotlight, and coach card must sit above everything on screen, while clicks still reach the real target underneath. How: This fixes a full-screen layer above help mode's own layer that ignores the pointer, with only the coach card opting back in. */
+
+
+	inset          : 0;
+	pointer-events : none;
+	position       : fixed;
+	z-index        : 1010; /* What: Tour Layer Height. Why: A tour step can run while help mode's own dim layer (z-index 1000) is up, and two equal layers fall back to DOM order, which put help mode's dim over the tour. How: 1010 keeps the tour above it, and above the help button's own 1001. */
+
+
+}
+
+.ob-dim { /* What: Tour Dim. Why: Before a step's target is found, the whole page stays dimmed. How: This covers the overlay with a dark translucent scrim. */
+
+
+	background : oklch(0.15 0.02 250/0.55);
+	inset      : 0;
+	position   : absolute;
+
+
+}
+
+.ob-spot { /* What: Tour Spotlight. Why: The step's target should stand out against a darkened page. How: This outlines the target's box in the accent color and darkens everything around it with one huge box-shadow. */
+
+
+	border        : 2px solid oklch(from var(--accent) l c h/0.9);
+	border-radius : var(--r-md);
+	box-shadow    : 0 0 0 9999px oklch(0.15 0.02 250/0.6); /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
+	position      : fixed;
+
+
+}
+.ob-spot[data-spot-drag-active] { /* What: Dragging Tour Spotlight. Why: While a group or item is dragged, the user needs to see the whole page to judge where it lands. How: This drops the dimming shadow and keeps the border so the target stays marked. */
+
+
+	box-shadow : none;
+
+
+}
+.ob-spot.is-pulsing::after { /* What: Pulsing Tour Spotlight Ring. Why: A step that waits for a real click on its target should draw the eye to it while Next stays disabled. How: This draws a separate ring over the spotlight's border that pings outward, so it doesn't fight the dimming shadow. */
+
+
+	animation     : obSpotPing 1.8s ease-out infinite;
+	border-radius : inherit;
+	content       : "";
+	inset         : 0;
+	position      : absolute;
+
+
+}
+@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Tour Spotlight. Why: Someone who asked for less motion shouldn't see the ring ping. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ob-spot.is-pulsing::after { /* What: Motionless Spotlight Ring. Why: The ring should stay still. How: This turns its ping and transitions off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+@keyframes obSpotPing { /* What: Spotlight Ring Ping. Why: A ring that grows and fades reads as a call to click. How: This spreads a white shadow outward from the border while fading it out, white because the accent color barely shows against the dark scrim. */
+
+
+	0% {
+
+
+		box-shadow : 0 0 0 0 oklch(1 0 0/0.65);
+
+
+	}
+
+	70% {
+
+
+		box-shadow : 0 0 0 12px oklch(1 0 0/0);
+
+
+	}
+
+	100% {
+
+
+		box-shadow : 0 0 0 12px oklch(1 0 0/0);
+
+
+	}
+
+
+}
+
+
+
+/* #region ob-coach */
+
+.ob-coach { /* What: Tour Coach Card. Why: Each step's explanation needs a raised card that floats beside its target. How: This fixes a surface card over the page that takes the pointer back from the overlay and fades in. */
+
+
+	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background     : var(--surface);
+	border         : 0.5px solid var(--border);
+	border-radius  : var(--r-md);
+	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
+	padding        : 14px 15px;
+	pointer-events : auto;
+	position       : fixed;
+
+
+}
+.ob-coach::before { /* What: Tour Coach Arrow. Why: The card should point at the element its step explains. How: This draws a small rotated square that pokes out of the card's edge. */
+
+
+	background : var(--surface);
+	border     : 0.5px solid var(--border);
+	content    : "";
+	height     : 14px;
+	left       : var(--ob-ax,28px); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: The tour writes --ob-ax as the target's center offset from the card's left edge, falling back to 28px. */
+	position   : absolute;
+	transform  : translateX(-50%) rotate(45deg); /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would sit half its width right of the target's center. How: Shifting it back by half its width first centers it, then the turn makes it a diamond. */
+	width      : 14px;
+
+
+}
+.ob-coach--up::before { /* What: Upward Tour Coach Arrow. Why: A card below its target points up at it. How: This sets the arrow on the card's top edge, hiding the two borders that would cross into the card. */
+
+
+	border-bottom : 0;
+	border-right  : 0;
+	top           : -8px;
+
+
+}
+.ob-coach--down::before { /* What: Downward Tour Coach Arrow. Why: A card above its target points down at it. How: This sets the arrow on the card's bottom edge, hiding the two borders that would cross into the card. */
+
+
+	border-left : 0;
+	border-top  : 0;
+	bottom      : -8px;
+
+
+}
+@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Tour Coach Card. Why: Someone who asked for less motion shouldn't see the card fade in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ob-coach { /* What: Motionless Tour Coach Card. Why: The card should simply appear. How: This turns its fade and transitions off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+
+.ob-coach .ob-prog { /* What: Tour Progress Line. Why: Each step shows where it sits in the tour. How: This sets the "Step N of M" line in small accent-colored mono type above the title. */
+
+
+	color          : var(--accent);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.05em;
+	margin         : 0 0 5px;
+
+
+}
+
+.ob-coach-title { /* What: Tour Coach Title. Why: The step's title leads its explanation. How: This sets it slightly larger and bold above the body. */
+
+
+	font-size   : 15px;
+	font-weight : 600;
+	margin      : 0 0 5px;
+
+
+}
+
+.ob-coach .ob-body { /* What: Tour Coach Body. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in small muted type with a relaxed line height. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.5;
+	margin      : 0;
+
+
+}
+
+
+
+/* #region ob-crow */
+
+.ob-crow { /* What: Tour Coach Row. Why: Skip and Back sit on the left while Next sits on the right. How: This spreads the row's two groups apart below the body. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 8px;
+	justify-content : space-between;
+	margin-top      : 13px;
+
+
+}
+
+
+
+/* #region ob-lnav */
+
+.ob-lnav { /* What: Tour Coach Left Nav. Why: Skip and the optional Back button read as one group. How: This lays them out in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 12px;
+
+
+}
+
+.ob-skip { /* What: Tour Skip Button. Why: Leaving the tour should always be possible but shouldn't compete with Next. How: This styles a borderless text button in small muted type. */
+
+
+	background  : 0;
+	border      : 0;
+	color       : var(--muted);
+	cursor      : pointer;
+	font-family : inherit;
+	font-size   : 12px;
+	padding     : 4px 2px;
+
+
+}
+
+.ob-back { /* What: Tour Back Button. Why: A step that allows going back offers it as a quiet link. How: This styles a borderless text button in the accent color. */
+
+
+	background  : 0;
+	border      : 0;
+	color       : var(--accent);
+	cursor      : pointer;
+	font-family : inherit;
+	font-size   : 12px;
+	font-weight : 500;
+	padding     : 4px 2px;
+
+
+}
+
+/* #endregion ob-lnav */
+
+
+
+.ob-next { /* What: Tour Next Button. Why: Moving on is the step's main action. How: This styles a filled accent pill with white text. */
+
+
+	background    : var(--accent);
+	border        : 0.5px solid var(--accent);
+	border-radius : 999px;
+	color         : #fff;
+	cursor        : pointer;
+	font-family   : inherit;
+	font-size     : 12.5px;
+	font-weight   : 600;
+	padding       : 8px 15px;
+
+
+}
+.ob-next:disabled { /* What: Disabled Tour Next Button. Why: A step waiting on a real click keeps Next unavailable. How: This dims the button and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : .6;
+
+
+}
+.ob-crow--solo .ob-next { /* What: Solo Tour Next Button. Why: A solo step drops Skip and Back entirely, and a lone button pinned to one side would read as off-balance. How: This stretches Next across the whole row with its label centered. */
+
+
+	text-align : center;
+	width      : 100%;
+
+
+}
+
+/* #endregion ob-crow */
+
+/* #endregion ob-coach */
+
+/* #endregion ob-tour */
+
+

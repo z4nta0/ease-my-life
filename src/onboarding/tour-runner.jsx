@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library GuiTouCom and its supporting helpers are built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useLayoutEffect, React.useCallback) throughout, instead of importing individual named hooks.
+import cssModObj from './tour-runner.module.css'; // What: CSS Module Object. Why: The tour overlay, spotlight, and coach card styles live in their own module. How: This maps each class name in tour-runner.module.css to its hashed module class.
+import React     from 'react';                    // What: React. Why: This is the UI library GuiTouCom and its supporting helpers are built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useLayoutEffect, React.useCallback) throughout, instead of importing individual named hooks.
 
 
 import { createPortal } from 'react-dom';            // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuiTouCom's own JSX and document.body inside the porBodFun helper below.
@@ -1888,11 +1889,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				const coaLayObj = coaLayFun( tarRecObj, coaHeiRef.current, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
 				const coaStyObj = reaCoaRef.current.style;                                                    // What: Coach Style Object. Why: The layout above must actually be written onto the real DOM element. How: This reads reaCoaRef.current's own live CSSStyleDeclaration.
 
-				coaStyObj.left = coaLayObj.left + 'px';                                                        // What: Coach Left Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline left directly.
-				coaStyObj.top  = coaLayObj.top + 'px';                                                         // What: Coach Top Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline top directly.
-				coaStyObj.setProperty( '--ob-ax', arrHorFun( tarRecObj, coaLayObj.left, coaWidNum ) + 'px' );  // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --ob-ax to the freshly computed arrow offset.
-				reaCoaRef.current.classList.toggle( 'ob-coach--up', coaLayObj.arrStr === 'ob-coach--up' );     // What: Arrow Up Class Toggle. Why: The coach's own arrow direction must match whichever side coaLayFun picked. How: This toggles the ob-coach--up class based on coaLayObj.arrStr.
-				reaCoaRef.current.classList.toggle( 'ob-coach--down', coaLayObj.arrStr === 'ob-coach--down' ); // What: Arrow Down Class Toggle. Why: Same reasoning as the up-class toggle, for the opposite direction. How: This toggles the ob-coach--down class based on coaLayObj.arrStr.
+				coaStyObj.left = coaLayObj.left + 'px';                                                             // What: Coach Left Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline left directly.
+				coaStyObj.top  = coaLayObj.top + 'px';                                                              // What: Coach Top Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline top directly.
+				coaStyObj.setProperty( '--ob-ax', arrHorFun( tarRecObj, coaLayObj.left, coaWidNum ) + 'px' );       // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --ob-ax to the freshly computed arrow offset.
+				reaCoaRef.current.classList.toggle( cssModObj.obCoachUp, coaLayObj.arrStr === 'ob-coach--up' );     // What: Arrow Up Class Toggle. Why: The coach's own arrow direction must match whichever side coaLayFun picked. How: This toggles the module's upward-arrow class based on coaLayObj.arrStr.
+				reaCoaRef.current.classList.toggle( cssModObj.obCoachDown, coaLayObj.arrStr === 'ob-coach--down' ); // What: Arrow Down Class Toggle. Why: Same reasoning as the up-class toggle, for the opposite direction. How: This toggles the module's downward-arrow class based on coaLayObj.arrStr.
 
 
 			}
@@ -2243,7 +2244,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 			<div
-				className='ob-tour'
+				className={ cssModObj.obTour }
 
 				data-element-name-hook='touOveDiv'
 
@@ -2251,7 +2252,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			>{ /* What: Tour Overlay Container Element. Why: This is the overlay root every render branch portals. How: This wraps the dim alone here. Its data-element-name-hook is read by help mode's own outside-click check. */ }
 
 
-				<div className='ob-dim' />{ /* What: Dim Element. Why: The page stays dimmed for the single frame before the tour skips itself. How: This renders the plain dim layer. */ }
+				<div className={ cssModObj.obDim } />{ /* What: Dim Element. Why: The page stays dimmed for the single frame before the tour skips itself. How: This renders the plain dim layer. */ }
 
 
 			</div>
@@ -2279,7 +2280,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		<div
 			ref={ meaCoaRef }
 
-			className='ob-coach'
+			className={ cssModObj.obCoach }
 
 			style={{
 				left          : -9999,
@@ -2296,25 +2297,25 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		>{ /* What: Measurer Coach Element. Why: This is the hidden clone described above. How: This renders the exact same content as the real coach below, but off-screen and pointer-events:none. Its data-element-name-hook is read by the tour runner's own outside-click checks. */ }
 
 
-			{ !curSteObj.solBoo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }
+			{ !curSteObj.solBoo && <p className={ cssModObj.obProg }>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }
 
-			<p className='ob-coach-title'>{ curSteObj.titStr }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.titStr directly. */ }
+			<p className={ cssModObj.obCoachTitle }>{ curSteObj.titStr }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.titStr directly. */ }
 
-			<p className='ob-body'>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
+			<p className={ cssModObj.obBody }>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
 
 
-			<div className={ ` ob-crow   ${ curSteObj.solBoo ? 'ob-crow--solo' : '' } ` }>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
+			<div className={` ${ cssModObj.obCrow }   ${ curSteObj.solBoo ? cssModObj.obCrowSolo : '' } `}>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
 
 
 				{ !curSteObj.solBoo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solBoo's own doc comment in GuiTouCom's own JSDoc above. How: This renders the left nav only for a non-solo step.
 
 
-					<div className='ob-lnav'>{ /* What: Left Nav Container Element. Why: This groups Skip and the optional Back button together on the row's own left side. How: This is only rendered for a non-solo step. */ }
+					<div className={ cssModObj.obLnav }>{ /* What: Left Nav Container Element. Why: This groups Skip and the optional Back button together on the row's own left side. How: This is only rendered for a non-solo step. */ }
 
 
-						<button className='ob-skip'>Skip</button>{ /* What: Skip Button Element. Why: This is the measurer's own inert copy of the real Skip button. How: This has no onClick, since the measurer is never actually interactive. */ }
+						<button className={ cssModObj.obSkip }>Skip</button>{ /* What: Skip Button Element. Why: This is the measurer's own inert copy of the real Skip button. How: This has no onClick, since the measurer is never actually interactive. */ }
 
-						{ curSteObj.bacBoo && <button className='ob-back'>&lsaquo; Back</button> }{ /* What: Back Button Element. Why: Only a step that opts in via `bacBoo` shows this. How: This is the measurer's own inert copy of the real Back button. */ }
+						{ curSteObj.bacBoo && <button className={ cssModObj.obBack }>&lsaquo; Back</button> }{ /* What: Back Button Element. Why: Only a step that opts in via `bacBoo` shows this. How: This is the measurer's own inert copy of the real Back button. */ }
 
 
 					</div>
@@ -2323,7 +2324,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				) }
 
 				<button
-					className='ob-next'
+					className={ cssModObj.obNext }
 
 					disabled={ curSteObj.cirBoo }
 				>{ priLabStr }</button>{ /* What: Next Button Element. Why: This is the measurer's own inert copy of the real Next/Done button, disabled exactly when the real one would be. How: This renders priLabStr. */ }
@@ -2346,7 +2347,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 			<div
-				className='ob-tour'
+				className={ cssModObj.obTour }
 
 				data-element-name-hook='touOveDiv'
 
@@ -2354,7 +2355,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			>{ /* What: Tour Overlay Container Element. Why: This is the overlay root every render branch portals. How: This wraps the dim and the hidden measurer here. Its data-element-name-hook is read by help mode's own outside-click check. */ }
 
 
-				<div className='ob-dim' />{ /* What: Dim Element. Why: Nothing is highlighted yet, so the whole page stays dimmed. How: This renders the plain dim layer. */ }
+				<div className={ cssModObj.obDim } />{ /* What: Dim Element. Why: Nothing is highlighted yet, so the whole page stays dimmed. How: This renders the plain dim layer. */ }
 
 
 
@@ -2381,7 +2382,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 		<div
-			className='ob-tour'
+			className={ cssModObj.obTour }
 
 			data-element-name-hook='touOveDiv'
 
@@ -2396,7 +2397,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			<div
 				ref={ spoEleRef }
 
-				className={ ` ob-spot   ${ draActBoo ? 'is-dragging' : '' }   ${ shoPulBoo ? 'is-pulsing' : '' } ` }
+				className={` ${ cssModObj.obSpot }   ${ shoPulBoo ? cssModObj.isPulsing : '' } `}
 
 				style={{
 					height     : curRecObj.height + spoPadNum * 2,
@@ -2405,6 +2406,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 					transition : 'none',
 					width      : curRecObj.width + spoPadNum * 2
 				}}
+
+				data-spot-drag-active={ draActBoo || undefined } // What: Spot Drag Active Attribute. Why: The spotlight drops its dimming shadow while a group or item is dragged, so the page underneath stays visible. How: This sets the presence-only attribute while draActBoo is true and removes it otherwise, since undefined leaves it off.
 			/>{ /* What: Spotlight Element. Why: This is the actual cutout highlight drawn around the target. How: This pads curRecObj outward by spoPadNum on every side, disables any CSS transition since plaTarFun already moves it imperatively every frame, and toggles the dragging/pulsing modifier classes. */ }{ /* The highlight border itself stays during a drag (still marks the section being dragged); only its box-shadow, which is what dims the REST of the page (the ".ob-spot" trick: a giant shadow darkens everything outside its own bounds), drops out, via the is-dragging CSS override. Otherwise the darkened background would make it hard to see exactly where the group is landing. */ }
 
 
@@ -2415,7 +2418,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				<div
 					ref={ reaCoaRef }
 
-					className={ ` ob-coach   ${ coaLayObj.arrStr } ` }
+					className={` ${ cssModObj.obCoach }   ${ coaLayObj.arrStr === 'ob-coach--up' ? cssModObj.obCoachUp : '' }   ${ coaLayObj.arrStr === 'ob-coach--down' ? cssModObj.obCoachDown : '' } `}
 
 					style={{
 						'--ob-ax' : arrHorNum + 'px',
@@ -2428,24 +2431,24 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				>{ /* What: Coach Container Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaLayObj, coaWidNum, and arrHorNum, and renders its own arrow direction class. Its data-element-name-hook is read by the tour runner's own outside-click checks. */ }
 
 
-					{ !curSteObj.solBoo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }
+					{ !curSteObj.solBoo && <p className={ cssModObj.obProg }>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }
 
-					<p className='ob-coach-title'>{ curSteObj.titStr }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.titStr directly. */ }
+					<p className={ cssModObj.obCoachTitle }>{ curSteObj.titStr }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.titStr directly. */ }
 
-					<p className='ob-body'>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
+					<p className={ cssModObj.obBody }>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
 
 
-					<div className={ ` ob-crow   ${ curSteObj.solBoo ? 'ob-crow--solo' : '' } ` }>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
+					<div className={` ${ cssModObj.obCrow }   ${ curSteObj.solBoo ? cssModObj.obCrowSolo : '' } `}>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
 
 
 						{ !curSteObj.solBoo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solBoo's own doc comment in GuiTouCom's own JSDoc above. How: This renders the left nav only for a non-solo step.
 
 
-							<div className='ob-lnav'>{ /* What: Left Nav Container Element. Why: This groups Skip and the optional Back button together on the row's own left side. How: This is only rendered for a non-solo step. */ }
+							<div className={ cssModObj.obLnav }>{ /* What: Left Nav Container Element. Why: This groups Skip and the optional Back button together on the row's own left side. How: This is only rendered for a non-solo step. */ }
 
 
 								<button
-									className='ob-skip'
+									className={ cssModObj.obSkip }
 
 									onClick={ skiTouFun }
 								>Skip</button>{ /* What: Skip Button Element. Why: This ends the tour as a non-completion, per skiTouFun's own comment above. How: This calls skiTouFun on click. */ }
@@ -2454,7 +2457,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 									<button
-										className='ob-back'
+										className={ cssModObj.obBack }
 
 										onClick={ bacSteFun }
 									>&lsaquo; Back</button> // What: Back Button Element. Why: Back reverses to the previous step. How: This calls bacSteFun on click.
@@ -2477,7 +2480,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 								<button
-									className='ob-next'
+									className={ cssModObj.obNext }
 
 									disabled
 								>{ priLabStr }</button>{ /* What: Disabled Next Button Element. Why: The user must click the highlighted target itself to advance, not this button. How: This renders priLabStr, always disabled. */ }
@@ -2490,7 +2493,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 							<button
-								className='ob-next'
+								className={ cssModObj.obNext }
 
 								onClick={ priActFun }
 							>{ priLabStr }</button> // What: Enabled Next Button Element. Why: A step without cirBoo needs a real, clickable way to advance instead of the disabled InfTipCom-wrapped one above. How: This renders priLabStr and calls priActFun on click.
