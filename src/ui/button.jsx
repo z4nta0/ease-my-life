@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: ButBasCom is built directly on React's own APIs. How: This is used directly (React.forwardRef) instead of importing individual named hooks.
+import cssModObj from './button.module.css'; // What: CSS Module Object. Why: The button's base, size, and kind styles live in its own module. How: This maps each class name in button.module.css to its hashed module class.
+import React     from 'react';               // What: React. Why: ButBasCom is built directly on React's own APIs. How: This is used directly (React.forwardRef) instead of importing individual named hooks.
 
 
 import { IcoSvgCom } from './icon.jsx'; // What: Icon Svg Component. Why: A button can carry an optional leading icon. How: This renders icoNamStr's glyph ahead of the button's own label.
@@ -81,7 +82,7 @@ const ButBasCom = React.forwardRef( function ButBasCom ( { children, className =
 		<button
 			ref={ forRefObj }
 
-			className={ ` btn   btn--${ kinValStr }   btn--${ sizValStr }   ${ className } ` }
+			className={` ${ cssModObj.btn }   ${ kinValStr === 'primary' ? cssModObj.btnPrimary : '' }   ${ kinValStr === 'ghost' ? cssModObj.btnGhost : '' }   ${ kinValStr === 'danger' ? cssModObj.btnDanger : '' }   ${ kinValStr === 'secondary' ? cssModObj.btnSecondary : '' }   ${ sizValStr === 'sm' ? cssModObj.btnSm : '' }   ${ className } `}
 
 			{ ...resProObj }
 		>{ /* What: Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards the ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }

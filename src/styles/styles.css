@@ -1303,6 +1303,7 @@ button.check { cursor: pointer; }
 .today-foot-actions { display: flex; gap: 10px; align-items: center; justify-content: center; }
 .today-foot-actions + .today-foot-sub { margin-top: 8px; }
 .today-footer .btn { font-variant-numeric: tabular-nums; }
+.today-footer { --btn-font-variant-numeric: tabular-nums; }
 .today-foot-sub { font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* Inline "regenerate" confirmation that replaces the footer button, matching the

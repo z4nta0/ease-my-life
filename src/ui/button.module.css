@@ -1,0 +1,130 @@
+
+
+
+/**
+ * button.module.css = Button Module
+ *
+ * @summary
+ * Styles for ButBasCom, the app's shared pill button: the base shape, the
+ * pressed and disabled states, the small size, and the primary, ghost,
+ * danger, and secondary kinds. A parent that needs a button to fit its row
+ * differently sets the --btn-* custom properties on itself (flex sizing, text
+ * wrapping, tabular figures, or hiding a danger button) instead of styling
+ * the button from outside.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.btn { /* What: Base Button. Why: Every action button in the app shares one pill shape. How: This lays out the icon and label in a rounded pill, reading its fit from --btn-* properties a parent may set, each falling back to a button's normal behavior. */
+
+
+	align-items          : center;
+	border-radius        : 999px;
+	display              : inline-flex;
+	flex                 : var(--btn-flex, 0 1 auto); /* What: Button Flex. Why: Some rows need their buttons to keep their size instead of shrinking. How: A parent sets --btn-flex, falling back to the normal flex sizing. */
+	font-size            : 14px;
+	font-variant-numeric : var(--btn-font-variant-numeric, inherit); /* What: Button Figures. Why: A button whose label counts up should keep its width steady as digits change. How: A parent sets --btn-font-variant-numeric to tabular figures, otherwise the button inherits as usual. */
+	font-weight          : 500;
+	gap                  : 7px;
+	height               : 38px;
+	letter-spacing       : -0.005em;
+	padding              : 0 14px;
+	transition           : background .12s, color .12s, transform .08s;
+	white-space          : var(--btn-white-space, inherit); /* What: Button Wrapping. Why: A button in a tight row shouldn't wrap its label. How: A parent sets --btn-white-space to nowrap, otherwise the button inherits as usual. */
+
+
+}
+.btn:active { /* What: Pressed Button. Why: A press should feel physical. How: This nudges the button down half a pixel. */
+
+
+	transform : translateY(0.5px);
+
+
+}
+.btn:disabled { /* What: Disabled Button. Why: An unavailable action should look it. How: This dims the button and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.5;
+
+
+}
+.btn--sm { /* What: Small Button. Why: Compact rows need a shorter button. How: This shrinks the height, padding, text, and gap. */
+
+
+	border-radius : 999px;
+	font-size     : 13px;
+	gap           : 5px;
+	height        : 30px;
+	padding       : 0 11px;
+
+
+}
+.btn--primary { /* What: Primary Button. Why: The main action in a view should stand out. How: This fills the button with the text color and uses the background color for its label. */
+
+
+	background : var(--text);
+	color      : var(--bg);
+
+
+}
+.btn--primary:hover { /* What: Hovered Primary Button. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
+
+
+	background : oklch(from var(--text) calc(l + 0.06) c h);
+
+
+}
+.btn--ghost { /* What: Ghost Button. Why: Secondary actions shouldn't compete with the content. How: This leaves the button unfilled with a muted label. */
+
+
+	color : var(--muted);
+
+
+}
+.btn--ghost:hover { /* What: Hovered Ghost Button. Why: A quiet button still needs to respond to the pointer. How: This gives it a surface fill and the full text color. */
+
+
+	background : var(--surface);
+	color      : var(--text);
+
+
+}
+.btn--danger { /* What: Danger Button. Why: A destructive action should read as one before it's clicked. How: This outlines the button in red, and a parent can hide it through --btn-danger-display. */
+
+
+	background : transparent;
+	border     : 0.5px solid currentColor;
+	color      : oklch(0.5 0.18 25);
+	display    : var(--btn-danger-display, inline-flex); /* What: Danger Button Display. Why: A brand-new item's editor is discarded with Cancel, so its footer Delete button is redundant there. How: That form's footer sets --btn-danger-display to none, falling back to the button's normal inline-flex. */
+
+
+}
+.btn--danger:hover { /* What: Hovered Danger Button. Why: The destructive action should respond to the pointer. How: This gives it a faint red fill. */
+
+
+	background : oklch(0.97 0.02 25);
+
+
+}
+.btn--secondary { /* What: Secondary Button. Why: Some actions need a clear but outlined button. How: This gives it a surface fill, a hairline border, and the full text color. */
+
+
+	background : var(--surface);
+	border     : 0.5px solid var(--border);
+	color      : var(--text);
+
+
+}
+.btn--secondary:hover { /* What: Hovered Secondary Button. Why: An outlined button should respond to the pointer. How: This darkens its border to the muted color. */
+
+
+	border-color : var(--muted);
+
+
+}
+
+

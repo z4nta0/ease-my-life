@@ -329,7 +329,7 @@
   60%  { transform: scale(1.12); }
   100% { transform: scale(1); }
 }
-.btn.is-sent { animation: sentBtnPop 360ms cubic-bezier(.22,1.5,.36,1); }
+.pv-act--send.is-sent { animation: sentBtnPop 360ms cubic-bezier(.22,1.5,.36,1); }
 @keyframes sentBtnPop {
   0%   { transform: scale(1); }
   40%  { transform: scale(1.06); }
@@ -520,7 +520,7 @@
 .today-entry-editor .entry-editor .pie-rows { border-top: 0; }
 /* A brand-new item is discarded via Cancel, so the footer Delete button is
    redundant here — hide it (this UI only). */
-.pv-newitem .rd-edit-foot > .btn--danger { display: none; }
+.pv-newitem .rd-edit-foot { --btn-danger-display: none; }
 .pv-newitem .rd-edit-foot { justify-content: flex-end; }
 .pv-newitem .rd-row { cursor: default; }
 .pv-newitem .rd-edit { border-top: 0.5px solid var(--border); }
@@ -1584,6 +1584,7 @@ button.cat-h-l {
 @media (prefers-reduced-motion: reduce) { .bd-list-fade { animation: none; } }
 .set-data-row .set-time-input { flex: 0 0 130px; width: 130px; font-variant-numeric: tabular-nums; }
 .set-data-row .btn { flex: 0 0 auto; white-space: nowrap; }
+.set-data-row { --btn-flex: 0 0 auto; --btn-white-space: nowrap; }
 .set-data-row .switch { flex: 0 0 auto; }
 .set-reset-confirm { display: flex; gap: 8px; flex: 0 0 auto; animation: footSwapIn .16s ease both; }
 .set-disabled-btn { flex: 0 0 auto; display: inline-flex; }
@@ -2154,7 +2155,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   animation: np-row-in .16s ease;
 }
 .rem-quickadd .np-input { flex: 1; max-width: none; margin-top: 0; }
-.rem-quickadd .btn { flex: 0 0 auto; }
 
 /* Inline editor shown under a Today card when its pencil is toggled. This
    sits inside a <ColDisCom> (collapse.jsx), whose .collapse-inner has a permanent
@@ -3828,7 +3828,7 @@ body.ob-touring .tab{padding-bottom:200px}
      so these must be pinned visible or the confirmation never appears. */
   .stage-sent,
   .stage-sent-check,
-  .btn.is-sent {
+  .pv-act--send.is-sent {
     animation: none;
     opacity: 1;
     transform: none;
