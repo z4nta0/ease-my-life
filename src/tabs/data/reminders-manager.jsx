@@ -9,14 +9,14 @@ import React from 'react'; // What: React. Why: Every component in this file is 
 import { ButBasCom   } from '../../ui/button.jsx';                 // What: Button Base Component. Why: The add form and each open reminder's own actions need consistently-styled buttons. How: This is rendered throughout RemManCom.
 import { ColDisCom   } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Each reminder row and the add form need to animate open and closed instead of snapping. How: This wraps each of those bodies in RemManCom, driven by its own open state.
 import { EdiFooCom   } from '../../ui/editor-footer.jsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
-import { freEdiFun   } from '../../ui/list-sorting.js';            // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
+import { freEdiFun   } from './list-sorting.js';                   // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
 import { IcoSvgCom   } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: Every reminder row and button needs a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
 import { InfTipCom   } from '../../ui/info-tip.jsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemManCom.
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Adding a reminder must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun helper in RemManCom.
 import { redMotFun   } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before every staged animation in RemManCom.
 import { SchEdiCom   } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own name, repeat, and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
-import { sorEntFun   } from '../../ui/list-sorting.js';            // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
-import { SorSelCom   } from '../../ui/sort-select.jsx';            // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
+import { sorEntFun   } from './list-sorting.js';                   // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
+import { SorSelCom   } from './sort-select.jsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
 import { TAS_NAM_OBJ } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Every reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
 
 // #endregion Imports
@@ -56,7 +56,7 @@ import { TAS_NAM_OBJ } from '../../core/tasks.js';                 // What: Task
  * @summary
  * Item-list sort options for the Data tab's Reminders section,
  * extrapolated from the same vocabulary as the Data tab's own
- * section/item sorts (see sorEntFun in ui.jsx). Reminders
+ * section/item sorts (see sorEntFun in list-sorting.js). Reminders
  * have no per-item Active/Inactive concept (no enabled/disabled
  * toggle, only a schedule and a today's-completion state, which isn't
  * the same thing) and no Group, so only Name and Type (One-time vs

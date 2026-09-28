@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: TabSetCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
-import { annStaFun    } from '../../ui/announce.js';                // What: Announce Status Function. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.
+import { annStaFun    } from './announce.js';                       // What: Announce Status Function. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.
 import { APP_VER_STR  } from '../../constants.js';                  // What: App Version String. Why: The About section shows the real build version. How: This is rendered in the About section's version row.
 import { ButBasCom    } from '../../ui/button.jsx';                 // What: Button Base Component. Why: Nearly every action in this tab (install, export/import/reset, replay tour, view legal docs) is triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
 import { CarSurCom    } from '../../ui/card-surface.jsx';           // What: Card Surface Component. Why: Every section's own controls sit inside this shared bordered container. How: This wraps the contents of nearly every set-subsection and set-section below.

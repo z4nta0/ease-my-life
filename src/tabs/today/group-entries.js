@@ -118,7 +118,7 @@ function groEntFun ( staAppObj ) {
 	// #region Mini-Tour Launcher Card Injection
 
 	/**
-	 * tab-today.jsx = Mini-Tour Launcher Card Injection
+	 * group-entries.js = Mini-Tour Launcher Card Injection
 	 *
 	 * @summary
 	 * One launcher card per sample picker, slotted into its normal group

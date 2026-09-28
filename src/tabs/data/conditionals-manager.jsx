@@ -16,8 +16,8 @@ import { norConFun    } from '../../core/pickers.js';               // What: Nor
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Adding a conditional must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun in ConManCom.
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see this section's own row open, close, save, or delete animations. How: This is checked before each of those animations in ConManCom.
 import { SED_NAM_OBJ  } from '../../state/seed.js';                 // What: Seed Namespace Object. Why: Each conditional mode's own label comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in ConManCom for each row's type label.
-import { sorEntFun    } from '../../ui/list-sorting.js';            // What: Sort Entries Function. Why: The conditional list shares the app's own sort-key vocabulary. How: This is called once per comparison inside ConManCom's own sort.
-import { SorSelCom    } from '../../ui/sort-select.jsx';            // What: Sort Select Component. Why: The conditional list needs the same sort control every other list uses. How: This is rendered in ConManCom's header with CIS_OPT_ARR as its options.
+import { sorEntFun    } from './list-sorting.js';                   // What: Sort Entries Function. Why: The conditional list shares the app's own sort-key vocabulary. How: This is called once per comparison inside ConManCom's own sort.
+import { SorSelCom    } from './sort-select.jsx';                   // What: Sort Select Component. Why: The conditional list needs the same sort control every other list uses. How: This is rendered in ConManCom's header with CIS_OPT_ARR as its options.
 import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use Escape Cancel Function. Why: ConEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside ConEdiCom.
 
 // #endregion Imports

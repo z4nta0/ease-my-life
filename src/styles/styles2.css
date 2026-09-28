@@ -665,7 +665,7 @@
 /* width: 80px — a fixed size for the pill itself, not just a max, so its
    own text ("not yet" / "spent" / "inactive") never wraps onto a second
    line inside it. justify-content: center, not text-align: center — .pill
-   is display:inline-flex (ui.jsx), so its text is a flex item rather than
+   is display:inline-flex (pill-tag.jsx), so its text is a flex item rather than
    plain inline content; text-align has no effect on a flex item's position
    along the main axis, justify-content does. Holds regardless of viewport. */
 .pool-name .pill { width: 80px; flex: 0 0 80px; justify-content: center; }
@@ -2613,7 +2613,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-quickadd .btn { flex: 0 0 auto; }
 
 /* Inline editor shown under a Today card when its pencil is toggled. This
-   sits inside a <Collapse> (ui.jsx), whose .collapse-inner has a permanent
+   sits inside a <ColDisCom> (collapse.jsx), whose .collapse-inner has a permanent
    overflow: hidden — a negative top margin here pulls the border above that
    boundary and gets clipped, cutting off the top border. Every other
    consumer (.rd-edit, .rem-quickadd-wrap) already resets margin-top to 0 for

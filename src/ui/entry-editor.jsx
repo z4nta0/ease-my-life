@@ -392,7 +392,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 					// #region Ease Direction Split
 
 					/**
-					 * tab-today.jsx = Ease Direction Split
+					 * entry-editor.jsx = Ease Direction Split
 					 *
 					 * @summary
 					 * pie-ease-up-row/pie-ease-down-row (on every relevant row

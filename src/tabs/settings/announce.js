@@ -34,7 +34,7 @@ let annStaFun; // What: Announce Status Function. Why: The real implementation i
 // #region Announce Status Setup
 
 /**
- * ui.jsx = Announce Status Setup
+ * announce.js = Announce Status Setup
  *
  * @summary
  * Builds the one screen-reader live region the whole app announces

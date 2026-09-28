@@ -736,7 +736,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 	// #region Reroll Eligibility
 
 	/**
-	 * tab-today.jsx = Reroll Eligibility
+	 * entry-card.jsx = Reroll Eligibility
 	 *
 	 * @summary
 	 * Re-roll needs at least two candidates to land on a DIFFERENT item;
@@ -763,7 +763,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 	// #region Completed Row Lockout
 
 	/**
-	 * tab-today.jsx = Completed Row Lockout
+	 * entry-card.jsx = Completed Row Lockout
 	 *
 	 * @summary
 	 * A completed entry can't be rolled away or skipped: re-roll would
