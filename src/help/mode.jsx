@@ -628,7 +628,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		const hitTarFun = ( cliEveObj ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook="helBadBut"], [data-element-name-hook="helTipDiv"], [data-element-name-hook="helTogBut"], [data-element-name-hook="appTabNav"], [data-element-name-hook="touOveDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
+			if ( cliEveObj.target.closest( '[data-element-name-hook="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook="helTogBut"], [data-element-name-hook="appTabNav"], [data-element-name-hook="touOveDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
 
 
 
