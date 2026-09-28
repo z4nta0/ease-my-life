@@ -55,58 +55,19 @@ import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip 
  * maintained module) render as sibling sections above the picker cards.
  * The global "days off" holiday list itself still lives in Settings.
  *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-
-
-// #region SEC_SOR_ARR
-
-/**
- * SEC_SOR_ARR = Section Sort Array
- *
- * @summary
- * Every entry below shares this exact shape, passed as SorSelCom's own
- * options prop from TabDatCom's own data-sort-bar; none of the 10
- * entries repeat these same fields' own boilerplate comments (see the
- * "Repeated-shape object literals" comment exception in CLAUDE.md).
- * Each entry's own trailing comment instead just names which specific
- * sort option it represents.
- *
- * - `keyStr` (String): Key String is the sort key TabDatCom compares
- *   against its own persisted secSorStr and writes back on selection;
- *   SorSelCom reads this against its own value prop and passes it to
- *   onChange, and sorEntFun reads its field/direction halves to order
- *   the list.
- *
- * - `labStr` (String): Label String is the option's own visible menu
- *   text, rendered by SorSelCom as the option's own text content.
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Components
+ *  - Exports
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditionals/Reminders/picker-card list needs one sort entry per supported key. How: This is passed as SorSelCom's own options prop in TabDatCom's own data-sort-bar.
 
 
-	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)'               }, // What: Name Ascending Option. Why: This is the section list's own default sort. How: This orders sections by name, A to Z.
-	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)'               }, // What: Name Descending Option. Why: This is the reverse of the default sort. How: This orders sections by name, Z to A.
-	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)'               }, // What: Type Ascending Option. Why: Type is each section's own mode or kind label. How: This orders sections by that label, A to Z.
-	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)'               }, // What: Type Descending Option. Why: This is the reverse of the type sort. How: This orders sections by type label, Z to A.
-	{ keyStr : 'group-asc',   labStr : 'Group (A–Z)'              }, // What: Group Ascending Option. Why: Group only applies to a picker card, not to Conditionals or Reminders as a whole. How: This orders picker cards by group, A to Z, with the group-less sections last.
-	{ keyStr : 'group-desc',  labStr : 'Group (Z–A)'              }, // What: Group Descending Option. Why: This is the reverse of the group sort. How: This orders picker cards by group, Z to A, with the group-less sections still last.
-	{ keyStr : 'count-asc',   labStr : 'Item Count (Low to High)' }, // What: Count Ascending Option. Why: Every section (Conditionals, Reminders, or a picker) holds some number of entries. How: This orders sections from fewest entries to most.
-	{ keyStr : 'count-desc',  labStr : 'Item Count (High to Low)' }, // What: Count Descending Option. Why: This is the reverse of the item-count sort. How: This orders sections from most entries to fewest.
-	{ keyStr : 'active-asc',  labStr : 'Active to Inactive'       }, // What: Active Ascending Option. Why: Only a picker card has a meaningful active/inactive state. How: This lists active picker cards before inactive ones.
-	{ keyStr : 'active-desc', labStr : 'Inactive to Active'       }  // What: Active Descending Option. Why: This is the reverse of the active sort. How: This lists inactive picker cards before active ones.
-
-
-];
-
-// #endregion SEC_SOR_ARR
-
-
+// #region Constants
 
 // #region CIS_OPT_ARR
 
@@ -169,6 +130,57 @@ const CIS_OPT_ARR = [ // What: Conditional-Item-Sort Options Array. Why: ConManC
 // #endregion CIS_OPT_ARR
 
 
+
+// #region SEC_SOR_ARR
+
+/**
+ * SEC_SOR_ARR = Section Sort Array
+ *
+ * @summary
+ * Every entry below shares this exact shape, passed as SorSelCom's own
+ * options prop from TabDatCom's own data-sort-bar; none of the 10
+ * entries repeat these same fields' own boilerplate comments (see the
+ * "Repeated-shape object literals" comment exception in CLAUDE.md).
+ * Each entry's own trailing comment instead just names which specific
+ * sort option it represents.
+ *
+ * - `keyStr` (String): Key String is the sort key TabDatCom compares
+ *   against its own persisted secSorStr and writes back on selection;
+ *   SorSelCom reads this against its own value prop and passes it to
+ *   onChange, and sorEntFun reads its field/direction halves to order
+ *   the list.
+ *
+ * - `labStr` (String): Label String is the option's own visible menu
+ *   text, rendered by SorSelCom as the option's own text content.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditionals/Reminders/picker-card list needs one sort entry per supported key. How: This is passed as SorSelCom's own options prop in TabDatCom's own data-sort-bar.
+
+
+	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)'               }, // What: Name Ascending Option. Why: This is the section list's own default sort. How: This orders sections by name, A to Z.
+	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)'               }, // What: Name Descending Option. Why: This is the reverse of the default sort. How: This orders sections by name, Z to A.
+	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)'               }, // What: Type Ascending Option. Why: Type is each section's own mode or kind label. How: This orders sections by that label, A to Z.
+	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)'               }, // What: Type Descending Option. Why: This is the reverse of the type sort. How: This orders sections by type label, Z to A.
+	{ keyStr : 'group-asc',   labStr : 'Group (A–Z)'              }, // What: Group Ascending Option. Why: Group only applies to a picker card, not to Conditionals or Reminders as a whole. How: This orders picker cards by group, A to Z, with the group-less sections last.
+	{ keyStr : 'group-desc',  labStr : 'Group (Z–A)'              }, // What: Group Descending Option. Why: This is the reverse of the group sort. How: This orders picker cards by group, Z to A, with the group-less sections still last.
+	{ keyStr : 'count-asc',   labStr : 'Item Count (Low to High)' }, // What: Count Ascending Option. Why: Every section (Conditionals, Reminders, or a picker) holds some number of entries. How: This orders sections from fewest entries to most.
+	{ keyStr : 'count-desc',  labStr : 'Item Count (High to Low)' }, // What: Count Descending Option. Why: This is the reverse of the item-count sort. How: This orders sections from most entries to fewest.
+	{ keyStr : 'active-asc',  labStr : 'Active to Inactive'       }, // What: Active Ascending Option. Why: Only a picker card has a meaningful active/inactive state. How: This lists active picker cards before inactive ones.
+	{ keyStr : 'active-desc', labStr : 'Inactive to Active'       }  // What: Active Descending Option. Why: This is the reverse of the active sort. How: This lists inactive picker cards before active ones.
+
+
+];
+
+// #endregion SEC_SOR_ARR
+
+// #endregion Constants
+
+
+
+// #region Helpers
 
 // #region pisOptFun
 
@@ -265,6 +277,1031 @@ function pisOptFun ( picModStr ) {
 
 // #endregion pisOptFun
 
+// #endregion Helpers
+
+
+
+// #region Components
+
+// #region ConEdiCom
+
+/**
+ * ConEdiCom = Conditional Editor Component
+ *
+ * @summary
+ * The editor body for one conditional, rendered inside ConManCom's own
+ * collapsible row. The draft itself is owned by ConManCom (so the row
+ * can host the inline name input the same way a picker item's own row
+ * does); this component just renders CodConCom against it and
+ * supplies Save/Cancel/Delete. Save normalizes the name (Title Case
+ * tidy) and is blocked on a collision, mirroring the Pickers
+ * create-flow's own guard. Cancel discards a brand-new conditional or
+ * simply closes an existing one.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.actStoObj    - Action Store Object: {@link useAppStaFun}
+ * @param props.conDraObj    - Conditional Draft Object: The in-progress, not-
+ *                             yet-committed field values for this conditional.
+ * @param props.curConObj    - Current Conditional Object: The conditional
+ *                             record this row belongs to.
+ * @param props.isaNewBoo    - Is-A New Boolean: Whether this conditional is a
+ *                             brand-new, not-yet-saved draft.
+ * @param props.namErrStr    - Name Error String: The current validation
+ *                             message for the draft's own name, or null when
+ *                             it's valid.
+ * @param props.onCloEdiFun  - On Close Editor Function: Closes this row
+ *                             without discarding an existing conditional's
+ *                             edits.
+ * @param props.onDelConFun  - On Delete Conditional Function: Deletes this
+ *                             existing conditional.
+ * @param props.onDisDraFun  - On Discard Draft Function: Discards a brand-new
+ *                             conditional entirely.
+ * @param props.onSavNewFun  - On Save New Function: Commits a brand-new
+ *                             conditional, when set; undefined for an existing
+ *                             one.
+ * @param props.setConDraObj - Set Conditional Draft Object: Replaces the in-
+ *                             progress draft object.
+ * @param props.tidNamStr    - Tidied Name String: The draft's own name,
+ *                             already normalized to the app's tidy-casing
+ *                             rule.
+ *
+ * @returns This conditional's own editor body: any name error, the
+ * shared CodConCom fields, and the footer.
+ *
+ * @example
+ * ```tsx
+ * ConEdiCom({ actStoObj, conDraObj, curConObj, ... }) // => <ConEdiCom />
+ * ```
+ *
+*/
+
+function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, onCloEdiFun, onDelConFun, onDisDraFun, onSavNewFun, setConDraObj, tidNamStr } ) {
+
+
+	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting an existing conditional needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read below to swap in the confirm row.
+
+
+	const savConFun = () => { // What: Save Conditional Function. Why: Save must normalize the name and route through whichever commit path applies (a brand-new conditional vs. an existing one). How: This blocks on a name error, delegates to onSavNewFun for a brand-new conditional, otherwise updates the existing one directly.
+
+
+		if ( namErrStr ) return; // What: Name Error Guard. Why: An invalid or colliding name must never be committed. How: This bails out of Save entirely while namErrStr holds a message.
+
+
+
+		if ( onSavNewFun ) { onSavNewFun(); return; } // What: New Save Guard. Why: A brand-new conditional's own commit (including its animated collapse+add) is owned by ConManCom, not this component. How: This delegates to onSavNewFun and returns early when it's set.
+
+
+
+		actStoObj.updConFun( curConObj.id, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's edits only take effect once actually committed. How: This writes every draft field, with name replaced by its tidied form.
+
+		onCloEdiFun(); // What: Close Call. Why: A successful save should also close this row. How: This calls onCloEdiFun after the update above.
+
+
+	};
+
+
+	const canConFun = () => { // What: Cancel Controls Function. Why: Cancelling a brand-new conditional must discard it entirely, while cancelling an existing one just closes without saving. How: This calls onDisDraFun when isaNewBoo, otherwise onCloEdiFun.
+
+
+		if ( isaNewBoo ) onDisDraFun(); // What: Discard Branch. Why: A brand-new, not-yet-saved conditional has nothing worth keeping, so cancelling it should discard it entirely. How: This calls onDisDraFun.
+
+		else onCloEdiFun(); // What: Close Branch. Why: An existing conditional's edits should simply be dropped, leaving the saved version untouched. How: This calls onCloEdiFun.
+
+
+	};
+
+
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should back out of the delete confirm if it's showing, otherwise cancel the edit itself. How: This is always active while this row is mounted.
+
+
+		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is showing, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
+
+		else canConFun(); // What: Cancel Edit Branch. Why: With no confirm prompt up, Escape should cancel the edit like canConFun's own explicit Cancel button. How: This calls canConFun.
+
+
+	} );
+
+
+
+	return (
+
+
+		<div className='rd-edit rd-edit--cnd'>{ /* What: Editor Div Element. Why: This is ConEdiCom's own root element. How: This wraps the rd-ctl-body div below. */ }
+
+
+			<div className='rd-ctl-body'>{ /* What: Controls Body Div Element. Why: The name error, the shared Controls fields, and the footer all belong in one grouped body. How: This wraps the 3 pieces below. */ }
+
+
+				{ namErrStr && <p className='np-error rd-cnd-name-err'>{ namErrStr }</p> }{ /* What: Name Error Check. Why: An invalid/colliding name needs an inline warning right above the fields. How: This renders the message only while namErrStr holds one. */ }
+
+
+
+				<CodConCom
+					conDraObj={ conDraObj }
+					hidNamBoo
+					layVarStr='inline'
+
+					onChange={ setConDraObj }
+				/>{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setConDraObj. */ }
+
+
+
+				<div className='rd-ctl-group rd-ctl-group--foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. */ }
+
+
+					{ conDelBoo ? ( // What: Confirm Delete Check. Why: Delete morphs the footer into an inline confirm before actually deleting. How: This renders the confirm row while conDelBoo is true.
+
+
+						<div
+							key='confirm'
+
+							className='rd-ctl-confirm'
+						>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the rem-del-actions row below. */ }
+
+
+							<div className='confirm-msg'>Delete the &ldquo;{ curConObj.name }&rdquo; conditional? Pickers using it will be detached. This can&rsquo;t be undone.</div>{ /* What: Confirm Msg Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the conditional and states that any picker using it will be detached. */ }
+
+							<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both ButBasCom instances below. */ }
+
+
+								<ButBasCom
+									kinValStr='ghost'
+									sizValStr='sm'
+
+									onClick={ () => setConDelBoo( false ) }
+								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
+
+
+
+								<ButBasCom
+									kinValStr='danger'
+									sizValStr='sm'
+
+									onClick={ () => onDelConFun() }
+								>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onDelConFun on click. */ }
+
+
+							</div>
+
+
+						</div>
+
+
+					) : ( // What: Plain Foot Branch. Why: With no delete confirmation pending, the normal Delete/Cancel/Save footer belongs here instead. How: This renders the else branch, taken while conDelBoo is false.
+
+
+						<div
+							key='foot'
+
+							className='rd-ctl-foot-row'
+						>{ /* What: Foot Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete ButBasCom, then the rem-foot-right div below. */ }
+
+
+							{ !isaNewBoo && ( // What: Existing Conditional Check. Why: A brand-new conditional has nothing saved to delete. How: This renders the Delete button only while isaNewBoo is false.
+
+
+								<ButBasCom
+									icoNamStr='traEle'
+									kinValStr='danger'
+									sizValStr='sm'
+
+									onClick={ () => setConDelBoo( true ) }
+								>Delete</ButBasCom> // What: Button Base Component. Why: A brand-new, not-yet-saved conditional has nothing to delete yet. How: This opens the inline delete confirm, rendered only while isaNewBoo is false.
+
+
+							) }
+
+
+
+							<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both ButBasCom instances below. */ }
+
+
+								<ButBasCom
+									kinValStr='ghost'
+									sizValStr='sm'
+
+									onClick={ canConFun }
+								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards a brand-new conditional or closes an existing one's edits. How: This calls canConFun on click. */ }
+
+
+
+								<ButBasCom
+									disabled={ !!namErrStr }
+									kinValStr='ghost'
+									sizValStr='sm'
+
+									onClick={ savConFun }
+								>Save</ButBasCom>{ /* What: Button Base Component. Why: This commits the draft's own fields. How: This calls savConFun on click, disabled while namErrStr holds a message. */ }
+
+
+							</div>
+
+
+						</div>
+
+
+					) }
+
+
+				</div>
+
+
+			</div>
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion ConEdiCom
+
+
+
+// #region ConManCom
+
+/**
+ * ConManCom = Conditionals Manager Component
+ *
+ * @summary
+ * Lists every conditional as a collapsible card whose body is ConEdiCom.
+ * Edits are live (updConFun). A brand-new conditional is held
+ * LOCALLY (not written to the store) until Save, so a reload or
+ * tab-switch mid-create discards it, mirroring the "nothing committed
+ * until Save" contract TabDatCom's own new-picker draft flow uses (that
+ * one is backed by a real hidden picker instead, since PicConCom's own
+ * fields already write straight to the store). Delete detaches the
+ * conditional from any pickers that reference it (the store itself
+ * handles that cleanup).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
+ *
+ * @returns The Conditionals section: its own header, the "Add a
+ * conditional" control, and every conditional's own collapsible row.
+ *
+ * @example
+ * ```tsx
+ * ConManCom({ actStoObj, staAppObj }) // => <ConManCom />
+ * ```
+ *
+*/
+
+function ConManCom ( { actStoObj, staAppObj } ) {
+
+
+	// #region List Data
+
+	const conIteArr = staAppObj.conditionals || []; // What: Conditional Item Array. Why: Every render needs the current list of conditionals to display. How: This reads staAppObj.conditionals, falling back to an empty array.
+	const allPicArr = staAppObj.pickers || [];      // What: All Picker Array. Why: The "N pickers" usage count per conditional needs every picker to check against. How: This reads staAppObj.pickers, falling back to an empty array.
+
+	// #endregion List Data
+
+
+
+	// #region Editor State
+
+	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: Only one conditional's own row can be expanded for editing at a time. How: This holds whichever conditional's own id is currently open, or null.
+	const [ conDraObj, setConDraObj ] = React.useState( null ); // What: Conditional Draft Object And Setter. Why: The open row's own in-progress, not-yet-committed field values need somewhere to live. How: This is populated by opeEdiFun and cleared by cloEdiFun.
+	const [ penConObj, setPenConObj ] = React.useState( null ); // What: Pending Conditional Object And Setter. Why: A brand-new conditional is held locally, not written to the store, until Save. How: This holds the brand-new conditional's own object while it's still unsaved.
+	const [ cloIdeStr, setCloIdeStr ] = React.useState( null ); // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
+
+	// #endregion Editor State
+
+
+
+	// #region Row Values And Sorting
+
+	const useCouFun = ( conIdeStr ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Use Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches conIdeStr.
+
+
+	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: The section's own collapse state is persisted the same way every picker card's own Controls/Items disclosures are. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
+	const secOpeBoo = colMapObj[ '__conditionals' ] === false;                  // What: Section Open Boolean. Why: This section defaults COLLAPSED (absent means collapsed), unlike its own nested disclosures. How: This is true only when the persisted entry is explicitly false.
+
+
+	const conRanFun = ( conCurObj ) => ( conCurObj.mode === 'ease-up' || conCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
+		? Math.max( 1, Math.round( ( conCurObj.threshold ?? 100 ) / ( conCurObj.easeMax ?? 14 ) ) ) // What: Ease Range Branch. Why: An ease-mode conditional's range is roughly how many days it takes to fully charge. How: This divides threshold by easeMax, never below 1.
+		: null;                                                                                     // What: No Range Branch. Why: Every other mode has no range to sort by. How: This returns null.
+
+
+	const conOddFun = ( conCurObj ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.
+	const conBooFun = ( conCurObj ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                     // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
+
+	const iteSorStr = staAppObj.ui?.dataSort?.conditionals || 'name-asc'; // What: Item Sort String. Why: This section's own list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.conditionals, falling back to 'name-asc'.
+
+
+	const sorConArr = [ ...conIteArr ].sort( ( conOneObj, conTwoObj ) => sorEntFun( // What: Sorted Conditional Array. Why: The rendered list needs to actually be in iteSorStr's own order. How: This builds a matching sort-entry shape for both sides and delegates the comparison to sorEntFun.
+
+		{ // What: First Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the left-hand conditional onto that shape.
+
+
+			boost    : conBooFun( conOneObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
+			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
+			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
+			isActive : conOneObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
+			name     : conOneObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
+			odds     : conOddFun( conOneObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
+			range    : conRanFun( conOneObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
+			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conOneObj.mode ] || {} ).labStr || conOneObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
+
+
+		},
+
+		{ // What: Second Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the right-hand conditional onto that shape.
+
+
+			boost    : conBooFun( conTwoObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
+			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
+			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
+			isActive : conTwoObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
+			name     : conTwoObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
+			odds     : conOddFun( conTwoObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
+			range    : conRanFun( conTwoObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
+			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conTwoObj.mode ] || {} ).labStr || conTwoObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
+
+
+		},
+
+		iteSorStr // What: Item Sort String Argument. Why: sorEntFun needs to know which sort is active. How: This passes iteSorStr straight through.
+
+
+	) );
+
+	// #endregion Row Values And Sorting
+
+
+
+	// #region Row Open And Close
+
+	const opeEdiFun = ( conCurObj ) => { // What: Open Editor Function. Why: Opening an existing conditional's row needs a fresh draft copy and no pending flag. How: This seeds conDraObj from conCurObj and opens its own row.
+
+
+		setPenConObj( null );             // What: Pending Clear Call. Why: Opening an existing conditional abandons any pending new one. How: This resets penConObj to null.
+		setConDraObj( { ...conCurObj } ); // What: Draft Seed Call. Why: The editor works on a copy so edits stay uncommitted until kept. How: This sets conDraObj to a shallow copy of conCurObj.
+		setOpeIdeStr( conCurObj.id );     // What: Open Set Call. Why: The chosen row must expand. How: This sets opeIdeStr to conCurObj.id.
+
+
+	};
+
+
+	const cloEdiFun = () => { // What: Close Editor Function. Why: Closing a row (without any special animation) just clears every piece of open-row state. How: This clears penConObj, conDraObj, and opeIdeStr together.
+
+
+		setPenConObj( null ); // What: Pending Clear Call. Why: A closed row has no pending new conditional. How: This resets penConObj to null.
+		setConDraObj( null ); // What: Draft Clear Call. Why: A closed row has no editor draft. How: This resets conDraObj to null.
+		setOpeIdeStr( null ); // What: Open Clear Call. Why: No row stays open. How: This resets opeIdeStr to null.
+
+
+	};
+
+
+	// #region cloAniFun
+
+	/**
+	 * cloAniFun = Close Animated Function
+	 *
+	 * @summary
+	 * Cancels a brand-new conditional so its row visibly collapses before the
+	 * draft is dropped: it closes the row at once, then clears the draft and
+	 * pending state 300ms later, once the collapse animation has finished. Under
+	 * reduced motion it clears everything immediately.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * cloAniFun() // => void
+	 * ```
+	 *
+	*/
+
+	const cloAniFun = () => { // What: Close Animated Function. Why: Cancelling a brand-new conditional should collapse its row first (so it visibly animates shut) before actually dropping it, rather than unmounting it instantly. How: This closes the row immediately when motion is reduced, otherwise defers the state drop by 300ms.
+
+
+		if ( redMotFun() ) { // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly, not mid-animation. How: This clears every piece of state synchronously and returns early.
+
+
+			setOpeIdeStr( null ); // What: Open Clear Call. Why: The row closes at once. How: This resets opeIdeStr to null.
+			setConDraObj( null ); // What: Draft Clear Call. Why: The draft is dropped at once too. How: This resets conDraObj to null.
+			setPenConObj( null ); // What: Pending Clear Call. Why: The pending new conditional is dropped at once too. How: This resets penConObj to null.
+
+
+
+			return; // What: Early Return. Why: Nothing is left to animate. How: This skips the deferred drop below.
+
+
+		}
+
+
+
+		setOpeIdeStr( null ); // What: Row Collapse Call. Why: The editor itself must stay mounted (still holding conDraObj/penConObj) so its own ColDisCom can actually animate shut. How: This only closes the row's own open flag, not the draft/pending state yet.
+
+		setTimeout( () => { // What: Deferred Drop Call. Why: The draft/pending state must survive until the collapse animation actually finishes. How: This clears both 300ms later, matching the collapse animation's own duration.
+
+
+			setConDraObj( null ); // What: Draft Clear Call. Why: The draft only goes away once the collapse has finished. How: This resets conDraObj to null.
+			setPenConObj( null ); // What: Pending Clear Call. Why: The pending new conditional goes away at the same moment. How: This resets penConObj to null.
+
+
+		}, 300 ); // What: Collapse Animation Delay. Why: The draft must outlive the row's own collapse. How: This 300ms matches the collapse animation's duration.
+
+
+	};
+
+	// #endregion cloAniFun
+
+
+	// #region delAniFun
+
+	/**
+	 * delAniFun = Delete Animated Function
+	 *
+	 * @summary
+	 * Deletes an existing conditional after its row collapses: it marks the row
+	 * as closing so the editor stays mounted through its own collapse, then
+	 * removes the conditional from the store and clears every piece of open-row
+	 * state 300ms later. Under reduced motion it removes it immediately.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param conIdeStr - Conditional Identifier String: The id of the conditional
+	 *                    to delete.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * delAniFun( conIdeStr ) // => void
+	 * ```
+	 *
+	*/
+
+	const delAniFun = ( conIdeStr ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by 300ms while the row plays its own collapse.
+
+
+		const delFinFun = () => { // What: Delete Finish Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
+
+
+			actStoObj.delConFun( conIdeStr ); // What: Remove Conditional Call. Why: This is the actual store removal. How: This calls delConFun with conIdeStr.
+
+			setCloIdeStr( null ); // What: Closing Clear Call. Why: The closing animation is over. How: This resets cloIdeStr to null.
+			setConDraObj( null ); // What: Draft Clear Call. Why: The removed conditional's draft is no longer needed. How: This resets conDraObj to null.
+			setOpeIdeStr( null ); // What: Open Clear Call. Why: No row stays open after the removal. How: This resets opeIdeStr to null.
+
+
+		};
+
+
+
+		if ( redMotFun() ) { delFinFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This calls delFinFun synchronously and returns early.
+
+
+
+		setCloIdeStr( conIdeStr ); // What: Closing Id Set. Why: The editor must stay mounted (via closingId) through its own collapse animation instead of unmounting immediately. How: This flags conIdeStr as the row currently mid-delete-animation.
+
+		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut. How: This clears opeIdeStr.
+
+		setTimeout( delFinFun, 300 ); // What: Deferred Removal Call. Why: The actual store removal must wait until the collapse animation finishes. How: This calls delFinFun 300ms later, matching the collapse animation's own duration.
+
+
+	};
+
+	// #endregion delAniFun
+
+
+	// #region savAniFun
+
+	/**
+	 * savAniFun = Save Animated Function
+	 *
+	 * @summary
+	 * Commits a brand-new conditional after its row collapses, so the row stays
+	 * in place with the same id and name rather than visibly jumping: it closes
+	 * the row at once, then adds the conditional to the store under its tidied
+	 * final name and clears the draft and pending state 300ms later. Under
+	 * reduced motion it commits immediately.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param finNamStr - Final Name String: The tidied name the conditional is
+	 *                    saved under.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * savAniFun( finNamStr ) // => void
+	 * ```
+	 *
+	*/
+
+	const savAniFun = ( finNamStr ) => { // What: Save Animated Function. Why: Committing a brand-new conditional to the store should happen after the row's own collapse, so the row stays in place (same id/name) rather than visibly jumping. How: This commits immediately when motion is reduced, otherwise defers the commit by 300ms.
+
+
+		const finDraObj = { ...conDraObj, name : finNamStr }; // What: Final Draft Object. Why: The committed conditional needs its own name replaced by the freshly-tidied final one. How: This spreads conDraObj with name overridden by finNamStr.
+
+
+		const wriConFun = () => { // What: Write Conditional Function. Why: The actual store write and clearing the local-only draft/pending state need to happen together. How: This is called either immediately or after the deferred timeout below.
+
+
+			actStoObj.addConFun( finDraObj ); // What: Add Conditional Call. Why: This is the actual store write of the new conditional. How: This calls addConFun with finDraObj.
+
+			setConDraObj( null ); // What: Draft Clear Call. Why: The saved draft is no longer needed. How: This resets conDraObj to null.
+			setPenConObj( null ); // What: Pending Clear Call. Why: The conditional is real now, not pending. How: This resets penConObj to null.
+
+
+		};
+
+
+
+		if ( redMotFun() ) { // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This closes the row and commits synchronously, then returns early.
+
+
+			setOpeIdeStr( null ); // What: Open Clear Call. Why: The row closes at once. How: This resets opeIdeStr to null.
+
+			wriConFun(); // What: Write Conditional Call. Why: The commit happens at once too. How: This calls wriConFun synchronously.
+
+
+
+			return; // What: Early Return. Why: Nothing is left to animate. How: This skips the deferred commit below.
+
+
+		}
+
+
+
+		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut before the commit below lands. How: This clears opeIdeStr.
+
+		setTimeout( wriConFun, 300 ); // What: Deferred Commit Call. Why: The actual store write must wait until the collapse animation finishes. How: This calls wriConFun 300ms later, matching the collapse animation's own duration.
+
+
+	};
+
+	// #endregion savAniFun
+
+
+	const tidNamStr = ( conDraObj && norConFun( conDraObj.name ) ) || ''; // What: Tidy Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls norConFun on conDraObj.name when a draft exists, empty string otherwise.
+
+
+	const namErrStr = conDraObj && !tidNamStr // What: Name Error String. Why: The open row's own editor needs a specific validation message whenever its name is empty or collides with another conditional. How: This checks emptiness first, then a case-insensitive collision against every OTHER conditional, null when the name is valid.
+		? 'Enter a name for this conditional.'                                            // What: Empty Name Message. Why: A blank name can't be saved. How: This asks for a name.
+		: conDraObj && conIteArr.some( ( conCurObj ) => conCurObj.id !== opeIdeStr && ( conCurObj.name || '' ).toLowerCase() === tidNamStr.toLowerCase() ) // What: Duplicate Name Check. Why: A name matching another conditional (ignoring case) can't be saved either. How: This compares tidNamStr against every other conditional's name.
+		? `A conditional named “${ tidNamStr }” already exists. Choose a different name.` // What: Duplicate Name Message. Why: The user needs to know why the name was rejected. How: This names the colliding value.
+		: null;                                                                           // What: Valid Name Branch. Why: A unique, non-empty name has no error. How: This returns null.
+
+
+	const keeCloFun = () => { // What: Keep Close Function. Why: The row's own collapse chevron is a deliberate close, not an accidental one; a plain cloEdiFun there would discard a brand-new conditional or revert an edited existing one back to its pre-edit values. How: This commits the current draft (new or existing) unless the name itself is invalid, in which case it falls back to a plain (discarding) close.
+
+
+		if ( namErrStr ) { cloEdiFun(); return; } // What: Invalid Name Guard. Why: An empty or colliding name can't be committed at all. How: This falls back to a plain close when namErrStr holds a message.
+
+
+
+		if ( penConObj ) { savAniFun( tidNamStr ); return; } // What: Pending Guard. Why: A brand-new conditional's own "keep" means actually saving it, the animated way. How: This delegates to savAniFun and returns early when penConObj is set.
+
+
+
+		actStoObj.updConFun( opeIdeStr, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form.
+
+		cloEdiFun(); // What: Close Editor Call. Why: A successful keep should also close the row. How: This calls cloEdiFun after the update above.
+
+
+	};
+
+	// #endregion Row Open And Close
+
+
+
+	// #region New Row Scroll
+
+	const opeRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new conditional's own "+ Add a conditional" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
+
+
+	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created conditional's own form should scroll into view once its ColDisCom has actually finished opening. How: This waits 300ms (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
+
+
+		const notOpeBoo = !opeIdeStr;         // What: Not Open Boolean. Why: No row is open, so there is nothing to scroll to. How: This negates opeIdeStr.
+		const notPenBoo = !penConObj;         // What: Not Pending Boolean. Why: Only a brand-new pending row needs this scroll. How: This negates penConObj.
+		const notRowBoo = !opeRowRef.current; // What: Not Row Boolean. Why: The row's node must be mounted before it can scroll. How: This negates opeRowRef.current.
+
+		const skiScrBoo = notOpeBoo || notPenBoo || notRowBoo; // What: Skip Scroll Boolean. Why: Any one missing piece means this effect has nothing to do. How: This ORs the 3 checks above.
+
+
+		if ( skiScrBoo ) return; // What: Not Applicable Guard. Why: Only a brand-new (pending), currently-open row with a mounted ref needs this scroll. How: This bails out whenever any of the 3 conditions isn't met.
+
+
+
+		const rowCurEle = opeRowRef.current; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opeRowRef.current once and reuses it.
+
+
+
+		if ( redMotFun() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this scroll happen instantly, not after a delay. How: This scrolls immediately and returns early.
+
+
+
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s) needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll 300ms out.
+
+
+
+		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs (e.g. a different row opens) or the component unmounts. How: This cancels scrTimNum.
+
+
+	}, [ opeIdeStr ] ); // What: Effect Dependency Array. Why: This scroll only ever needs to reconsider itself when which row is open actually changes. How: opeIdeStr is the single value this effect's own guard is built around.
+
+	// #endregion New Row Scroll
+
+
+
+	const focInpRef = React.useRef( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (below, inline) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
+
+
+
+	return (
+
+
+		<section className='cat cat--enter cnd-manager'>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
+
+
+			<header className='cat-h'>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. */ }
+
+
+				<button
+					className='cat-h-l'
+
+					type='button'
+
+					aria-expanded={ secOpeBoo }
+
+					onClick={ () => actStoObj.togColFun( '__conditionals', true ) }
+				>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. */ }
+
+
+					<span className={ ` chev   ${ secOpeBoo ? 'is-open' : '' } ` }>{ /* What: Chevron Span Element. Why: The section's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
+
+
+						<IcoSvgCom
+							icoNamStr='chvEle'
+							sizValNum={ 14 }
+						/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+
+
+					</span>
+
+					<span className='cat-h-main'>{ /* What: Header Main Span Element. Why: The section's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
+
+
+						<h2 className='cat-name'>Conditionals</h2>{ /* What: Category Name Element. Why: Every section needs its own visible name. How: This renders the literal text "Conditionals". */ }
+
+						<span className='cat-count'>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see styles2.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
+
+
+							<span className='cat-count-n'>{ conIteArr.filter( ( conCurObj ) => conCurObj.active !== false ).length }</span>{ /* What: Count N Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }
+
+							<span className='cat-count-of'>of</span>{ /* What: Count Of Span Element. Why: The separator between the active and total counts needs its own element. How: This renders the literal text "of". */ }
+
+							<span className='cat-count-n'>{ conIteArr.length }</span>{ /* What: Count N Span Element. Why: The total conditional count needs its own element. How: This renders conIteArr's own length. */ }
+
+
+						</span>
+
+
+					</span>
+
+
+				</button>
+
+
+			</header>
+
+
+
+			<ColDisCom open={ secOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The whole section's own body only needs to exist while it's actually expanded. How: This opens only while secOpeBoo is true. */ }
+
+
+				<div className='cat-body'>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. */ }
+
+
+					{ ONB_CHE_OBJ.tutProFun( staAppObj ) ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfTipCom-wrapped control in that state, otherwise the real button.
+
+
+						<InfTipCom
+							className='rd-add is-tour-disabled'
+
+							actNamStr='Add a conditional'
+							labTexStr='This button is disabled until all tutorials are completed.'
+						>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. */ }
+
+
+							<IcoSvgCom
+								icoNamStr='pluEle'
+								sizValNum={ 13 }
+							/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
+
+
+						</InfTipCom>
+
+
+					) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add control belongs here instead. How: This renders the else branch, taken while the checklist isn't in progress.
+
+
+						<button
+							className='rd-add'
+
+							onClick={ () => { // What: On Click Handler. Why: Adding a conditional starts a local-only draft that nothing else sees until Save. How: This builds a draft with a fresh id, then holds it as pending, as the editor draft, and as the open row.
+
+
+								if ( penConObj ) return; // What: One Draft Guard. Why: Only one brand-new conditional can be in progress at a time. How: This bails out of the click entirely while penConObj already holds one.
+
+
+
+								const basDraObj = conDraFun( '', conIteArr.map( ( conCurObj ) => conCurObj.name ) ); // What: Base Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conDraFun helper.
+								const nexIdeStr = 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 );               // What: Next Identifier String. Why: The brand-new draft needs its own id immediately, even before it's ever written to the store. How: This generates a short random id with a 'cnd_' prefix.
+								const nexDraObj = { ...basDraObj, id : nexIdeStr };                                  // What: Next Draft Object. Why: The draft object itself needs to carry its own freshly-generated id. How: This spreads basDraObj with id set to nexIdeStr.
+
+
+								setPenConObj( nexDraObj ); // What: Pending Set Call. Why: This is held locally, not written to the store, until Save. How: This sets penConObj to nexDraObj.
+								setConDraObj( nexDraObj ); // What: Draft Set Call. Why: The editor below needs the same object as its own in-progress draft. How: This sets conDraObj to the same nexDraObj.
+								setOpeIdeStr( nexIdeStr ); // What: Open Set Call. Why: The brand-new row must open immediately so its own editor is visible. How: This sets opeIdeStr to nexIdeStr.
+
+
+							} }
+						>{ /* What: Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row. */ }
+
+
+							<IcoSvgCom
+								icoNamStr='pluEle'
+								sizValNum={ 13 }
+							/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
+
+
+						</button>
+
+
+					) }
+
+
+
+					{ !conIteArr.length && !penConObj && ( // What: Empty State Check. Why: A genuinely empty list needs its own explanatory message instead of an empty body. How: This renders only while there are no conditionals at all and none is currently being created.
+
+
+						<p className='rd-cnd-empty'>No conditionals yet. Add one here, then attach it to any picker.</p> // What: Empty List Paragraph Element. Why: A genuinely empty list needs its own explanatory message. How: This renders a fixed message.
+
+
+					) }
+
+
+
+					{ conIteArr.length > 1 && ( // What: Multiple Conditionals Check. Why: A sort control is only useful once there's more than one conditional to sort. How: This renders SorSelCom only while conIteArr has 2 or more entries.
+
+
+						<SorSelCom
+							labTexStr='Sort'
+							optLisArr={ CIS_OPT_ARR }
+							selIdeStr='cnd-item-sort'
+							value={ iteSorStr }
+
+							onChange={ ( keyValStr ) => actStoObj.setSorFun( 'conditionals', keyValStr ) }
+						/> // What: Sort Select Component. Why: This is the actual control for reordering the conditional list. How: This commits the chosen key as this section's own persisted conditionals sort.
+
+
+					) }
+
+
+
+					{ ( penConObj ? [ penConObj, ...sorConArr ] : sorConArr ).map( ( conCurObj ) => { // What: Conditional Row Map. Why: A brand-new pending conditional renders first, ahead of every sorted existing one. How: This maps the combined list to one collapsible row each.
+
+
+						const isaPenBoo = !!penConObj && conCurObj.id === penConObj.id; // What: Is-A Pending Boolean. Why: The pending row needs slightly different editor treatment (isaNewBoo) than an existing one. How: This is true only for the one row matching penConObj's own id.
+						const isaOpeBoo = opeIdeStr === conCurObj.id;                   // What: Is-An Open Boolean. Why: Every row needs to know whether IT SPECIFICALLY is the currently-open one. How: This compares conCurObj.id against opeIdeStr.
+						const useCouNum = useCouFun( conCurObj.id );                    // What: Use Count Number. Why: Every row's own closed-state summary shows how many pickers currently use it. How: This calls useCouFun for conCurObj.id.
+
+
+
+						return (
+
+
+							<div
+								key={ conCurObj.id }
+								ref={ isaOpeBoo ? opeRowRef : undefined }
+
+								className={ ` rd-item   ${ isaOpeBoo ? 'is-editing' : '' } ` }
+							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. */ }
+
+
+								{ isaOpeBoo && conDraObj ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input (interactive-in-interactive) and would otherwise lose its own accessible name. How: This renders the editing header while isaOpeBoo is true and a draft exists, otherwise the normal clickable row.
+
+
+									<div className='rd-row'>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. */ }
+
+
+										<span className='rd-main'>{ /* What: Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
+
+
+											<input
+												ref={ ( inpCurEle ) => { // What: Focus Reference Callback. Why: The input should focus once when it mounts, without the page jumping. How: This focuses a newly attached input with preventScroll and remembers it in focInpRef so re-renders don't refocus it.
+
+
+													if ( inpCurEle && focInpRef.current !== inpCurEle ) { // What: New Input Guard. Why: Only a freshly attached input should take focus. How: This skips null detaches and the input already focused before.
+
+
+														inpCurEle.focus( { preventScroll : true } ); // What: Focus Call. Why: The user can type the name right away. How: This focuses inpCurEle without scrolling the page.
+
+														focInpRef.current = inpCurEle; // What: Focused Input Record. Why: A later re-render must not steal focus back. How: This stores inpCurEle in focInpRef.
+
+
+													}
+
+
+												} }
+
+												className={ ` rd-name-input   ${ namErrStr ? 'is-error' : '' } ` }
+
+												maxLength={ 40 }
+												placeholder='Conditional name'
+												type='text'
+												value={ conDraObj.name }
+
+												aria-invalid={ !!namErrStr }
+												aria-label='Conditional name'
+
+												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } }
+												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
+												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
+											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. */ }
+
+
+										</span>
+
+										<button
+											className='rd-chev'
+
+											type='button'
+
+											aria-label='Collapse'
+
+											onClick={ keeCloFun }
+										>{ /* What: Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler used elsewhere. */ }
+
+
+											<span className='chev is-open'>{ /* What: Chevron Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via its own is-open class. */ }
+
+
+												<IcoSvgCom
+													icoNamStr='chvEle'
+													sizValNum={ 14 }
+												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+
+
+											</span>
+
+
+										</button>
+
+
+									</div>
+
+
+								) : ( // What: Normal Row Branch. Why: A closed row just needs the plain clickable header instead. How: This renders the else branch, taken while isaOpeBoo is false or conDraObj is missing.
+
+
+									<button
+										className='rd-row'
+
+										type='button'
+
+										aria-expanded={ isaOpeBoo }
+
+										onClick={ () => { // What: On Click Handler. Why: A row click toggles its own editor open or closed. How: This calls cloEdiFun when the row is open, otherwise opeEdiFun.
+
+
+											if ( isaOpeBoo ) cloEdiFun(); // What: Close Branch. Why: An already-open row's own click should collapse it back down. How: This calls cloEdiFun.
+
+											else opeEdiFun( conCurObj ); // What: Open Branch. Why: A closed row's own click should expand its editor. How: This calls opeEdiFun with conCurObj.
+
+
+										} }
+									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. */ }
+
+
+										<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and sched spans below. */ }
+
+
+											<span className='rd-name'>{ conCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. */ }
+
+											<span className='rd-sched'>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
+
+
+												{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).labStr || conCurObj.mode }{ /* What: Mode Label Expression. Why: The summary leads with the conditional's mode. How: This renders the mode's label, falling back to its raw id. */ }
+
+												{ ' · ' }{ useCouNum } { useCouNum === 1 ? 'picker' : 'pickers' }{ /* What: Usage Count Expression. Why: The summary says how many pickers use this conditional. How: This renders useCouNum with a singular or plural noun. */ }
+
+												{ conCurObj.active === false ? ' · inactive' : '' }{ /* What: Inactive Flag Expression. Why: An inactive conditional says so in its summary. How: This appends ' · inactive' only when active is false. */ }
+
+
+											</span>
+
+
+										</span>
+
+										<span className='rd-chev'>{ /* What: Chevron Holder Span Element. Why: The row's chevron needs its own fixed-width slot at the row's end. How: This wraps the rotating chevron span. */ }
+
+
+											<span className={ ` chev   ${ isaOpeBoo ? 'is-open' : '' } ` }>{ /* What: Chevron Span Element. Why: The closed row's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
+
+
+												<IcoSvgCom
+													icoNamStr='chvEle'
+													sizValNum={ 14 }
+												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
+
+
+											</span>
+
+
+										</span>
+
+
+									</button>
+
+
+								) }
+
+
+
+								<ColDisCom open={ isaOpeBoo }>{ /* What: Collapse Disclosure Component. Why: This row's own editor only needs to exist while it's actually open (or animating shut). How: This opens only while isaOpeBoo is true. */ }
+
+
+									{ conDraObj && ( isaOpeBoo || isaPenBoo || cloIdeStr === conCurObj.id ) && ( // What: Editor Mount Check. Why: The editor must also stay mounted while pending or mid-delete-animation, not only while strictly open. How: This renders ConEdiCom only while a draft exists and one of the 3 conditions holds.
+
+
+										<ConEdiCom
+											actStoObj={ actStoObj }
+											conDraObj={ conDraObj }
+											curConObj={ conCurObj }
+											isaNewBoo={ isaPenBoo }
+											namErrStr={ namErrStr }
+											setConDraObj={ setConDraObj }
+											tidNamStr={ tidNamStr }
+
+											onCloEdiFun={ cloEdiFun }
+											onDelConFun={ () => delAniFun( conCurObj.id ) }
+											onDisDraFun={ isaPenBoo ? cloAniFun : ( () => { // What: On Discard Draft Handler. Why: A pending row discards with its collapse animation, while any other row just closes and removes the conditional. How: This passes cloAniFun for a pending row, otherwise an arrow that closes the editor and deletes by id.
+
+
+												const rmvIdeStr = conCurObj.id; // What: Remove Identifier String. Why: The removal below needs a stable copy of this row's id. How: This reads conCurObj.id once.
+
+
+												cloEdiFun(); // What: Close Editor Call. Why: The row closes before its conditional goes away. How: This calls cloEdiFun.
+
+												actStoObj.delConFun( rmvIdeStr ); // What: Remove Conditional Call. Why: This is the actual store removal. How: This calls delConFun with rmvIdeStr.
+
+
+											} ) }
+											onSavNewFun={ isaPenBoo ? ( () => savAniFun( tidNamStr ) ) : undefined }
+										/> // What: Conditional Editor Component. Why: This is the actual editor body for this one conditional. How: This is passed the live conditional, its draft, and every handler this row needs.
+
+
+									) }
+
+
+								</ColDisCom>
+
+
+							</div>
+
+
+						);
+
+
+					} ) }
+
+
+				</div>
+
+
+			</ColDisCom>
+
+
+		</section>
+
+
+	);
+
+
+}
+
+// #endregion ConManCom
+
 
 
 // #region PicConCom
@@ -285,50 +1322,52 @@ function pisOptFun ( picModStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.picDatObj   - Picker Data Object: The picker record this
- *                            Controls body edits.
- * @param props.picIteArr   - Picker Item Array: This picker's own items.
- * @param props.incDaiBoo   - Included Daily Boolean: Whether this picker is
- *                            currently a member of the daily generator.
- * @param props.daiIdeArr   - Daily Identifier Array: Every picker id currently
- *                            in the daily generator.
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.allGroArr   - All Group Array: Every existing group name, used
  *                            to populate the Group selector.
  * @param props.conIteArr   - Conditional Item Array: Every existing
  *                            conditional, used to populate the attach-a-
  *                            conditional rail; defaults to an empty array.
- * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
- * @param props.onColConFun - On Collapse Controls Function: Collapses this
- *                            picker's own Controls disclosure.
- * @param props.onReqDelFun - On Request Delete Function: Deletes this picker,
- *                            in place of the default actStoObj.delPicFun call,
- *                            when the caller wants to animate the removal
- *                            itself.
+ * @param props.daiIdeArr   - Daily Identifier Array: Every picker id currently
+ *                            in the daily generator.
+ * @param props.hasNewBoo   - Has New Boolean: Whether a brand-new item's
+ *                            editor is still open, unsaved.
+ * @param props.incDaiBoo   - Included Daily Boolean: Whether this picker is
+ *                            currently a member of the daily generator.
  * @param props.isaNewBoo   - Is-A New Boolean: Whether this is a brand-new,
  *                            not-yet-saved draft picker.
  * @param props.iteSecBoo   - Item Section Boolean: Whether the draft's own
  *                            Items section has been revealed yet.
- * @param props.hasNewBoo   - Has New Boolean: Whether a brand-new item's
- *                            editor is still open, unsaved.
- * @param props.onOpeSecFun - On Open Section Function: Reveals the draft's own
- *                            Items section.
- * @param props.onSavNewFun - On Save New Function: Commits a brand-new draft
- *                            picker.
  * @param props.onCanNewFun - On Cancel New Function: Discards a brand-new
  *                            draft picker.
+ * @param props.onColConFun - On Collapse Controls Function: Collapses this
+ *                            picker's own Controls disclosure.
+ * @param props.onOpeSecFun - On Open Section Function: Reveals the draft's own
+ *                            Items section.
+ * @param props.onReqDelFun - On Request Delete Function: Deletes this picker,
+ *                            in place of the default actStoObj.delPicFun call,
+ *                            when the caller wants to animate the removal
+ *                            itself.
+ * @param props.onSavNewFun - On Save New Function: Commits a brand-new draft
+ *                            picker.
+ * @param props.picDatObj   - Picker Data Object: The picker record this
+ *                            Controls body edits.
+ * @param props.picIteArr   - Picker Item Array: This picker's own items.
  *
  * @returns This picker's own Controls body: Picker Details, How it
  * picks, When it runs, Item Controls, and the footer.
  *
  * @example
  * ```tsx
- * PicConCom({ picDatObj, picIteArr, incDaiBoo, ... }) // => <PicConCom />
+ * PicConCom({ actStoObj, allGroArr, conIteArr, ... }) // => <PicConCom />
  * ```
  *
 */
 
-function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, conIteArr = [], actStoObj, onColConFun, onReqDelFun, isaNewBoo, iteSecBoo, hasNewBoo, onOpeSecFun, onSavNewFun, onCanNewFun } ) {
+function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBoo, incDaiBoo, isaNewBoo, iteSecBoo, onCanNewFun, onColConFun, onOpeSecFun, onReqDelFun, onSavNewFun, picDatObj, picIteArr } ) {
 
+
+	// #region Fill Summary
 
 	const isaEasBoo = picDatObj.mode === 'ease-up' || picDatObj.mode === 'ease-down';                                        // What: Is-A Ease Boolean. Why: Several sections below (Item Controls' own Fill/Refill, the item sort options) only apply to an ease-mode picker. How: This is true whenever picDatObj.mode is 'ease-up' or 'ease-down'.
 	const isaDowBoo = picDatObj.mode === 'ease-down';                                                                        // What: Is-A Down Boolean. Why: Ease-up and ease-down share most UI but need opposite Fill/Refill wording. How: This is true only for 'ease-down'.
@@ -339,9 +1378,15 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 		? <><strong>all items</strong> are fully charged</>                                                                                 // What: All Full Branch. Why: Nothing is left to charge. How: This says every item is fully charged.
 		: <><strong>{ notFulNum } { notFulNum === 1 ? 'item' : 'items' }</strong> { notFulNum === 1 ? 'is' : 'are' } not at full charge</>; // What: Some Short Branch. Why: The user needs to know how many items still fall short. How: This names notFulNum, pluralizing item/is to match.
 
+	// #endregion Fill Summary
+
 
 
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting a real picker needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read by the footer to swap in the confirm row.
+
+
+
+	// #region Footer Button
 
 	const neeNamBoo = !picDatObj.name.trim();                                        // What: Need Name Boolean. Why: A new draft's footer must know whether the picker still lacks a name. How: This is true whenever picDatObj.name is empty once trimmed.
 	const neeGroBoo = !picDatObj.group;                                              // What: Need Group Boolean. Why: A new draft's footer must also know whether the picker still lacks a group. How: This is true whenever picDatObj.group is falsy.
@@ -367,11 +1412,43 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 	const fooActFun = shoSavBoo ? onSavNewFun : onOpeSecFun; // What: Footer Action Function. Why: The footer button's own click handler depends on whether it currently reads "Save" or "Add Items". How: This picks onSavNewFun once shoSavBoo is true, onOpeSecFun otherwise.
 
+	// #endregion Footer Button
+
+
+
+	// #region Conditional Rail
+
 	const [ conAttBoo, setConAttBoo ] = React.useState( !!picDatObj.conditionalId ); // What: Conditional Attached Boolean And Setter. Why: The "Attach a conditional" toggle needs its own on/off state, seeded from whether this picker already has one attached. How: This starts true when picDatObj.conditionalId is already set, and is flipped by the switch button below.
 
 	const raiCleRef = React.useRef( null ); // What: Rail Cleanup Reference. Why: The rail's own scroll/resize wiring needs to be torn down and rebuilt on every reattach. How: This holds whichever cleanup function the last attachment registered.
 	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The FLIP reorder effect below needs a stable handle on the rail's own live DOM node. How: This is written by raiRefFun below and read by the FLIP effect.
 
+
+	// #region raiRefFun
+
+	/**
+	 * raiRefFun = Rail Reference Function
+	 *
+	 * @summary
+	 * The callback ref for the conditional pill rail. Every attach first tears
+	 * down whatever the previous attachment wired up, then records the new node
+	 * in raiNodRef for the FLIP effect and wires the rail's edge-fade classes to
+	 * its own scroll, a ResizeObserver, and window resizes, storing the teardown
+	 * in raiCleRef. A detach (null) only runs that teardown and clears the node.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param raiCurEle - Rail Current Element: The rail's DOM node on attach, or
+	 *                    null on detach.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * raiRefFun( raiCurEle ) // => void
+	 * ```
+	 *
+	*/
 
 	const raiRefFun = React.useCallback( ( raiCurEle ) => { // What: Rail Reference Function. Why: The conditional pill rail needs its own scroll/resize wiring set up on attach and torn down on every reattach or detach. How: This is passed directly as the rail div's own ref prop.
 
@@ -438,6 +1515,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 	}, [] ); // What: Callback Dependency Array. Why: raiRefFun only closes over refs and stable functions it defines itself, none of which ever change identity. How: An empty array means React never needs to recreate this callback.
+
+	// #endregion raiRefFun
 
 
 
@@ -522,6 +1601,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 	}, [ picDatObj.conditionalId, conAttBoo, conIteArr.length ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the attached conditional changes, the toggle flips, or the available conditionals themselves change count. How: picDatObj.conditionalId is the actual reorder trigger; conAttBoo covers the rail appearing/disappearing; conIteArr.length covers a conditional being added or removed elsewhere.
 
+	// #endregion Conditional Rail
+
+
+
+	// #region Group Picker
 
 	const [ newGroBoo, setNewGroBoo ] = React.useState( false ); // What: New Group Boolean And Setter. Why: The Group selector's own inline "+ New Group" create mode needs an on/off flag. How: This is flipped true by the "+ New Group" pill and closed by closeNewGroup below.
 	const [ pilRetBoo, setPilRetBoo ] = React.useState( false ); // What: Pill Returning Boolean And Setter. Why: The "+ New Group" pill needs to know when it's mid-return-animation after the input closes. How: This is set true by cloGroFun and cleared 200ms later.
@@ -745,7 +1829,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 	const canGroFun = () => { cloGroFun(); }; // What: Cancel Group Function. Why: Escape (or the cancel button) should discard the typed text without creating anything. How: This just runs the shared close routine, with no update call.
 
+	// #endregion Group Picker
 
+
+
+	// #region Close And Revert Handling
 
 	const snaStaRef = React.useRef( { // What: Snapshot State Reference. Why: Controls opening (this component mounting) is the moment every field must be remembered, so Cancel can revert every change made while it was open. How: This freezes a shallow copy of the picker, every one of its items, and its own daily-generator membership, captured once on mount.
 
@@ -757,6 +1845,29 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 	} );
 
+
+	// #region revStaFun
+
+	/**
+	 * revStaFun = Revert State Function
+	 *
+	 * @summary
+	 * Rolls the live store back to the snapshot taken when Controls opened: the
+	 * picker itself, every one of its items, and its daily-generator membership,
+	 * which is re-added or removed to match whatever it was at that moment.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * revStaFun() // => void
+	 * ```
+	 *
+	*/
 
 	const revStaFun = () => { // What: Revert State Function. Why: Cancel must put the picker, every one of its items, and its daily-generator membership back exactly as they were when Controls opened. How: This replaces the picker and every item from snaStaRef.current, then reconciles daily-generator membership.
 
@@ -775,6 +1886,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 	};
+
+	// #endregion revStaFun
 
 
 
@@ -805,6 +1918,32 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 	};
 
 
+
+	// #region resStoFun
+
+	/**
+	 * resStoFun = Restore Storage Function
+	 *
+	 * @summary
+	 * Rewrites the localStorage warm mirror to the snapshot taken when Controls
+	 * opened, for an implicit close (a reload or tab close) where the live
+	 * store's own unsaved edits would otherwise survive in the mirror. It rolls
+	 * back the picker, its items, and its daily-generator membership the same way
+	 * revStaFun does, and silently does nothing when the mirror is missing or
+	 * unreadable.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * resStoFun() // => void
+	 * ```
+	 *
+	*/
 
 	const resStoFun = () => { // What: Restore Storage Function. Why: An implicit close (reload) must not let unsaved edits survive in the warm localStorage mirror, even though the live store already has them. How: This synchronously rewrites the mirrored picker/items/daily entry back to the snapshot taken on mount.
 
@@ -854,10 +1993,12 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 		}
 
-		catch ( errCauObj ) {} // What: Restore Error Guard. Why: A malformed or unavailable mirror must never crash the app on close. How: This silently swallows any parse/storage error, leaving the mirror as it was.
+		catch {} // What: Restore Error Guard. Why: A malformed or unavailable mirror must never crash the app on close. How: This silently swallows any parse/storage error, leaving the mirror as it was.
 
 
 	};
+
+	// #endregion resStoFun
 
 
 	React.useEffect( () => { // What: Mount Cleanup Effect. Why: Controls opening replaces whichever item editor was previously open, and closing (implicitly or not) must revert unsaved edits exactly like the item editor's own guard does. How: This disarms any pending revert from the replaced editor on mount, then arms its own revert (or restores the mirror) on unmount.
@@ -887,6 +2028,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to run its setup/teardown once, on mount and unmount. How: An empty array means it never re-subscribes.
 
+	// #endregion Close And Revert Handling
+
 
 
 	return (
@@ -907,12 +2050,14 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<input
 						className='rd-basics-name'
+
+						maxLength={ 40 }
+						placeholder='Picker name'
 						type='text'
 						value={ picDatObj.name }
-						placeholder='Picker name'
-						maxLength={ 40 }
+
 						aria-label='Picker name'
-						onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { name : chaEveObj.target.value } ) }
+
 						onBlur={ ( bluEveObj ) => { // What: On Blur Handler. Why: Leaving the name field should commit a tidied final name. How: This trims the typed value and renames the picker only when the result is non-empty.
 
 
@@ -923,11 +2068,13 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 						} }
+						onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { name : chaEveObj.target.value } ) }
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 					/>{ /* What: Name Input Element. Why: A picker's own name is edited live rather than through a separate form. How: This commits every keystroke immediately, tidies/commits the final name on blur, and blurs on Enter. */ }
 
 
 				</div>
+
 
 				<div className='rd-basics-row rd-basics-row--group'>{ /* What: Group Row Div Element. Why: The Group field needs its own labeled row. How: This wraps the label span and the group pill selector below. */ }
 
@@ -936,9 +2083,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<div
 						ref={ groPilRef }
+
 						className='rd-group-pills'
-						role='radiogroup'
+
 						aria-label='Picker group'
+						role='radiogroup'
 					>{ /* What: Group Pills Div Element. Why: This is the actual radiogroup of every existing group plus the inline "+ New Group" control. How: This maps groChoArr to one pill each, then either the inline input or the "+ New Group" pill. */ }
 
 
@@ -947,11 +2096,16 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 							<button
 								key={ groCurStr }
+
 								className={ ` picker-group-pill   ${ picDatObj.group === groCurStr ? 'is-on' : '' } ` }
+
 								data-g={ groCurStr }
+
 								type='button'
-								role='radio'
+
 								aria-checked={ picDatObj.group === groCurStr }
+								role='radio'
+
 								onClick={ () => actStoObj.updPicFun( picDatObj.id, { group : groCurStr } ) }
 							>{ groCurStr }</button> // What: Group Pill Button Element. Why: Clicking a pill selects that group for this picker. How: This marks itself checked when it matches picDatObj.group and commits groCurStr on click.
 
@@ -966,12 +2120,16 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								<input
 									ref={ newGroRef }
+
 									className='rd-group-new-input'
+
+									maxLength={ 30 }
+									placeholder='Group name'
 									type='text'
 									value={ newGroStr }
-									placeholder='Group name'
-									maxLength={ 30 }
+
 									aria-label='Group name'
+
 									onChange={ ( chaEveObj ) => setNewGroStr( chaEveObj.target.value ) }
 									onKeyDown={ ( keyEveObj ) => { // What: On Key Down Handler. Why: Enter and Escape are the keyboard shortcuts for committing or discarding the typed group name. How: This calls cmtGroFun on Enter and canGroFun on Escape.
 
@@ -986,9 +2144,12 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								<button
 									className='rd-group-new-ok'
-									type='button'
+
 									disabled={ !newGroStr.trim() }
+									type='button'
+
 									aria-label='Create group'
+
 									onClick={ cmtGroFun }
 								>{ /* What: New Group Ok Button Element. Why: This is the explicit "create this group" affordance beside the input. How: This is disabled while newGroStr is empty and calls cmtGroFun on click. */ }
 
@@ -1003,8 +2164,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								<button
 									className='rd-group-new-cancel'
+
 									type='button'
+
 									aria-label='Cancel'
+
 									onClick={ canGroFun }
 								>{ /* What: New Group Cancel Button Element. Why: This is the explicit "discard this group" affordance beside the input. How: This calls canGroFun on click. */ }
 
@@ -1026,7 +2190,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 							<button
 								className={ ` picker-group-pill   picker-group-pill--new   ${ pilRetBoo ? 'is-returning' : '' } ` }
+
 								type='button'
+
 								onClick={ () => setNewGroBoo( true ) }
 							>{ /* What: New Group Trigger Button Element. Why: This is the affordance that opens the inline create control. How: This opens newGroBoo on click, and plays its own return animation via pilRetBoo after a prior close. */ }
 
@@ -1051,6 +2217,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 			</div>
 
+
+
 			<fieldset className='rd-ctl-group rd-ctl-group--picks'>{ /* What: Picks Group Fieldset Element. Why: The mode radio group is a real form control set and belongs in a fieldset. How: This wraps the legend and the mode radio group below. */ }
 
 
@@ -1071,19 +2239,23 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 							<label
 								key={ modKeyStr }
+
 								className={ ` rd-mode-opt   ${ modSelBoo ? 'is-on' : '' } ` }
 							>{ /* What: Mode Option Label Element. Why: Each mode is a real radio option, so its own label must wrap the input for a clickable hit area. How: This marks itself "is-on" when modSelBoo is true. */ }
 
 
 								<input
 									name={ `mode_${ picDatObj.id }` }
-									type='radio'
+
 									checked={ modSelBoo }
+									type='radio'
+
 									onChange={ () => actStoObj.updPicFun( picDatObj.id, { mode : modKeyStr } ) }
 								/>{ /* What: Mode Radio Input Element. Why: This is the actual selectable control for this mode. How: This is checked when modSelBoo is true and commits modKeyStr as the picker's own mode on change. */ }
 
 								<span
 									className='rd-mode-dot'
+
 									aria-hidden='true'
 								></span>{ /* What: Mode Dot Span Element. Why: The custom radio dot is drawn purely with CSS rather than the native control. How: This is an empty, decorative, screen-reader-hidden span. */ }
 
@@ -1092,9 +2264,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<span className='rd-mode-name'>{ modValObj.labStr }</span>{ /* What: Mode Name Span Element. Why: Every mode needs its own visible name. How: This renders modValObj's own label. */ }
 
+
+
 									<ColDisCom
-										open={ modSelBoo }
 										isaInsBoo={ isaNewBoo }
+										open={ modSelBoo }
 									>{ /* What: Collapse Disclosure Component. Why: The hint expands/collapses on selection change, so the old row's hint folds away while the new one grows. How: This opens only for the currently-selected mode, instant (no animation) for a brand-new draft. */ }
 
 
@@ -1106,6 +2280,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<span
 													key={ parIndNum }
+
 													className='rd-mode-hint'
 												>{ parCurStr }</span> // What: Hint Paragraph Span Element. Why: Each paragraph renders as its own hint line. How: This renders parCurStr, keyed by its index.
 
@@ -1137,6 +2312,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 			</fieldset>
+
 
 			<div className='rd-ctl-group rd-ctl-group--sched'>{ /* What: Schedule Group Div Element. Why: Attach-a-conditional and daily-generator membership + weekday/holiday gates all describe "when it runs". How: This wraps the subhead and every schedule row below. */ }
 
@@ -1172,9 +2348,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<button
 						className={ ` switch   ${ conAttBoo ? 'is-on' : '' } ` }
-						role='switch'
+
 						aria-checked={ conAttBoo }
 						aria-label='Attach a conditional'
+						role='switch'
+
 						onClick={ () => setConAttBoo( ( preValBoo ) => { // What: On Click Handler. Why: Flipping the switch off must also detach whatever conditional is attached. How: This toggles conAttBoo through its functional setter, clearing conditionalId when the new state is off.
 
 
@@ -1194,6 +2372,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 				</div>
 
+
+
 				<ColDisCom open={ conAttBoo }>{ /* What: Collapse Disclosure Component. Why: The conditional rail only needs to exist while the toggle is on. How: This opens only while conAttBoo is true. */ }
 
 
@@ -1205,6 +2385,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 							<div
 								ref={ raiRefFun }
+
 								className='cnd-rail picker-groups'
 							>{ /* What: Conditional Rail Div Element. Why: This is the actual scrollable pill rail, alphabetical except the attached conditional pins to the front. How: This maps every conditional (sorted per pk.conditionalId first, then by name) to one pill each. */ }
 
@@ -1228,9 +2409,13 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<button
 										key={ conCurObj.id }
+
 										className={ ` cnd-pill   ${ picDatObj.conditionalId === conCurObj.id ? 'is-on' : '' } ` }
+
 										data-cid={ conCurObj.id }
+
 										type='button'
+
 										onClick={ () => actStoObj.updPicFun( picDatObj.id, { conditionalId : conCurObj.id } ) }
 									>{ /* What: Conditional Pill Button Element. Why: Clicking a pill attaches that conditional to this picker. How: This marks itself "is-on" when it matches picDatObj.conditionalId and commits conCurObj.id on click. */ }
 
@@ -1263,6 +2448,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 				</ColDisCom>
 
+
+
 				<div className='sched-line'>{ /* What: Daily Line Div Element. Why: The daily-generator membership toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. */ }
 
 
@@ -1273,6 +2460,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 						<span
 							key={ incDaiBoo ? 'on' : 'off' }
+
 							className='sched-line-sub set-sub-fade'
 						>{ /* What: Daily Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches incDaiBoo. */ }
 
@@ -1295,8 +2483,10 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<button
 						className={ ` switch   ${ incDaiBoo ? 'is-on' : '' } ` }
-						aria-pressed={ incDaiBoo }
+
 						aria-label={ `${ incDaiBoo ? 'Remove from' : 'Add to' } the daily generator` }
+						aria-pressed={ incDaiBoo }
+
 						onClick={ () => { // What: On Click Handler. Why: The switch adds or removes this picker from the daily generator. How: This builds the next membership list, then commits it through daiPicFun.
 
 
@@ -1311,6 +2501,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 				</div>
+
+
 
 				<ColDisCom open={ incDaiBoo }>{ /* What: Collapse Disclosure Component. Why: The full cadence/days/holiday schedule only makes sense while this picker is actually in the daily generator. How: This opens only while incDaiBoo is true. */ }
 
@@ -1329,6 +2521,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<InfTipCom
 										className='pie-help pie-help--sm'
+
 										labTexStr={ CAD_NAM_OBJ.tipMesFun( picDatObj.cadence ) }
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The cadence choice needs a fuller explanation available on demand. How: This shows CAD_NAM_OBJ's own tip text for the picker's current cadence. */ }
 
@@ -1337,6 +2530,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								<span
 									key={ ( picDatObj.cadence || 'daily' ) + ( picDatObj.anchorDow ?? '' ) + ( picDatObj.anchorDom ?? '' ) + ( picDatObj.anchorMonth ?? '' ) + ( picDatObj.anchorDay ?? '' ) + ( picDatObj.dateMode ?? '' ) + ( picDatObj.nthOrdinal ?? '' ) + ( picDatObj.nthWeekday ?? '' ) }
+
 									className='sched-line-sub set-sub-fade'
 								>{ /* What: Cadence Sub Span Element. Why: The row needs a live one-line summary of the exact configured schedule, cross-faded via its own composite key. How: This computes and returns the matching summary JSX for the picker's current cadence/anchor fields. */ }
 
@@ -1406,8 +2600,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								<select
 									className='np-input rd-cad-sel'
+
 									value={ picDatObj.cadence || 'daily' }
+
 									aria-label='Cadence'
+
 									onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { cadence : chaEveObj.target.value } ) }
 								>{ /* What: Cadence Select Element. Why: This is the top-level "how often" choice. How: This commits its own value directly as the picker's own cadence field. */ }
 
@@ -1428,8 +2625,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<select
 										className='np-input rd-cad-sel'
+
 										value={ picDatObj.anchorDow ?? 0 }
+
 										aria-label='Anchor weekday'
+
 										onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { anchorDow : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Anchor Weekday Select Element. Why: A weekly cadence needs exactly one weekday to anchor to. How: This commits the chosen index as picDatObj.anchorDow. */ }
 
@@ -1439,6 +2639,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 											<option
 												key={ dayIndNum }
+
 												value={ dayIndNum }
 											>{ dayNamStr }</option> // What: Weekday Option Element. Why: Each weekday needs its own selectable option. How: This renders dayNamStr, valued by its weekday index.
 
@@ -1456,8 +2657,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<select
 										className='np-input rd-cad-sel'
+
 										value={ picDatObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
+
 										aria-label='Day selection'
+
 										onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { dateMode : chaEveObj.target.value } ) }
 									>{ /* What: Date Mode Select Element. Why: This is the switch between anchoring to a fixed date vs. an nth weekday. How: This commits its own value directly as the picker's own dateMode field. */ }
 
@@ -1472,6 +2676,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								) }
 
+
+
 								{ picDatObj.cadence === 'monthly' && ( picDatObj.dateMode === 'nthWeekday' ? ( // What: Monthly Anchor Check. Why: A monthly cadence's own anchor selects differ entirely depending on dateMode. How: This renders the nth-weekday pair when dateMode is 'nthWeekday', otherwise the single date-of-month select.
 
 
@@ -1480,8 +2686,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<select
 											className='np-input rd-cad-sel'
+
 											value={ picDatObj.nthOrdinal ?? 1 }
+
 											aria-label='Week of the month'
+
 											onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 										>{ /* What: Nth Ordinal Select Element. Why: An nth-weekday monthly cadence needs its own "first/second/.../last" ordinal. How: This commits the chosen number as picDatObj.nthOrdinal. */ }
 
@@ -1491,8 +2700,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<option
 													key={ ordValNum }
+
 													value={ ordValNum }
-												>{ CAD_NAM_OBJ.sumCadFun( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option> // What: Ordinal Option Element. Why: Each week-of-month ordinal needs its own selectable option. How: This reuses sumCadFun to spell the ordinal, e.g. "2nd".
+												>{ CAD_NAM_OBJ.sumCadFun( { anchorDom : ordValNum, cadence : 'monthly' } ).split( '· ' )[ 1 ] }</option> // What: Ordinal Option Element. Why: Each week-of-month ordinal needs its own selectable option. How: This reuses sumCadFun to spell the ordinal, e.g. "2nd".
 
 
 											) ) }
@@ -1502,8 +2712,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<select
 											className='np-input rd-cad-sel'
+
 											value={ picDatObj.nthWeekday ?? 0 }
+
 											aria-label='Weekday'
+
 											onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 										>{ /* What: Nth Weekday Select Element. Why: An nth-weekday monthly cadence also needs its own target weekday. How: This commits the chosen index as picDatObj.nthWeekday. */ }
 
@@ -1513,6 +2726,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<option
 													key={ dayIndNum }
+
 													value={ dayIndNum }
 												>{ dayNamStr }</option> // What: Weekday Option Element. Why: Each weekday needs its own selectable option. How: This renders dayNamStr, valued by its weekday index.
 
@@ -1531,8 +2745,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 									<select
 										className='np-input rd-cad-sel'
+
 										value={ picDatObj.anchorDom ?? 1 }
+
 										aria-label='Anchor day of month'
+
 										onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { anchorDom : parseInt( chaEveObj.target.value ) } ) }
 									>{ /* What: Anchor Dom Select Element. Why: A date-anchored monthly cadence needs its own day-of-month. How: This commits the chosen number as picDatObj.anchorDom. */ }
 
@@ -1542,8 +2759,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 											<option
 												key={ domValNum }
+
 												value={ domValNum }
-											>{ CAD_NAM_OBJ.sumCadFun( { cadence : 'monthly', anchorDom : domValNum } ).split( '· ' )[ 1 ] }</option> // What: Day Option Element. Why: Each day of the month needs its own selectable option. How: This reuses sumCadFun to spell the ordinal day, e.g. "15th".
+											>{ CAD_NAM_OBJ.sumCadFun( { anchorDom : domValNum, cadence : 'monthly' } ).split( '· ' )[ 1 ] }</option> // What: Day Option Element. Why: Each day of the month needs its own selectable option. How: This reuses sumCadFun to spell the ordinal day, e.g. "15th".
 
 
 										) ) }
@@ -1554,6 +2772,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								) ) }
 
+
+
 								{ picDatObj.cadence === 'yearly' && ( picDatObj.dateMode === 'nthWeekday' ? ( // What: Yearly Anchor Check. Why: A yearly cadence's own anchor selects also differ entirely depending on dateMode. How: This renders the nth-weekday trio when dateMode is 'nthWeekday', otherwise the month+day pair.
 
 
@@ -1562,8 +2782,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<select
 											className='np-input rd-cad-sel'
+
 											value={ picDatObj.nthOrdinal ?? 1 }
+
 											aria-label='Week of the month'
+
 											onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 										>{ /* What: Nth Ordinal Select Element. Why: An nth-weekday yearly cadence needs its own "first/second/.../last" ordinal. How: This commits the chosen number as picDatObj.nthOrdinal. */ }
 
@@ -1573,8 +2796,9 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<option
 													key={ ordValNum }
+
 													value={ ordValNum }
-												>{ CAD_NAM_OBJ.sumCadFun( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option> // What: Ordinal Option Element. Why: Each week-of-month ordinal needs its own selectable option. How: This reuses sumCadFun to spell the ordinal, e.g. "2nd".
+												>{ CAD_NAM_OBJ.sumCadFun( { anchorDom : ordValNum, cadence : 'monthly' } ).split( '· ' )[ 1 ] }</option> // What: Ordinal Option Element. Why: Each week-of-month ordinal needs its own selectable option. How: This reuses sumCadFun to spell the ordinal, e.g. "2nd".
 
 
 											) ) }
@@ -1584,8 +2808,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<select
 											className='np-input rd-cad-sel'
+
 											value={ picDatObj.nthWeekday ?? 0 }
+
 											aria-label='Weekday'
+
 											onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 										>{ /* What: Nth Weekday Select Element. Why: An nth-weekday yearly cadence also needs its own target weekday. How: This commits the chosen index as picDatObj.nthWeekday. */ }
 
@@ -1595,6 +2822,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<option
 													key={ dayIndNum }
+
 													value={ dayIndNum }
 												>{ dayNamStr }</option> // What: Weekday Option Element. Why: Each weekday needs its own selectable option. How: This renders dayNamStr, valued by its weekday index.
 
@@ -1606,8 +2834,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<select
 											className='np-input rd-cad-sel'
+
 											value={ picDatObj.anchorMonth ?? 1 }
+
 											aria-label='Anchor month'
+
 											onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 										>{ /* What: Anchor Month Select Element. Why: An nth-weekday yearly cadence also needs its own target month. How: This commits the chosen 1-based month number as picDatObj.anchorMonth. */ }
 
@@ -1617,6 +2848,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<option
 													key={ monIndNum }
+
 													value={ monIndNum + 1 }
 												>{ monNamStr }</option> // What: Month Option Element. Why: Each month needs its own selectable option. How: This renders monNamStr, valued by its 1-based month number.
 
@@ -1638,8 +2870,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<select
 											className='np-input rd-cad-sel'
+
 											value={ picDatObj.anchorMonth ?? 1 }
+
 											aria-label='Anchor month'
+
 											onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 										>{ /* What: Anchor Month Select Element. Why: A date-anchored yearly cadence needs its own target month. How: This commits the chosen 1-based month number as picDatObj.anchorMonth. */ }
 
@@ -1649,6 +2884,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<option
 													key={ monIndNum }
+
 													value={ monIndNum + 1 }
 												>{ monNamStr }</option> // What: Month Option Element. Why: Each month needs its own selectable option. How: This renders monNamStr, valued by its 1-based month number.
 
@@ -1660,8 +2896,11 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 										<select
 											className='np-input rd-cad-sel'
+
 											value={ Math.min( picDatObj.anchorDay ?? 1, CAD_NAM_OBJ.dimCouFun( 2024, picDatObj.anchorMonth ?? 1 ) ) }
+
 											aria-label='Anchor day'
+
 											onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { anchorDay : parseInt( chaEveObj.target.value ) } ) }
 										>{ /* What: Anchor Day Select Element. Why: A date-anchored yearly cadence also needs its own day-of-month, clamped to whatever the chosen month actually allows. How: This commits the chosen number as picDatObj.anchorDay. */ }
 
@@ -1671,6 +2910,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 												<option
 													key={ domValNum }
+
 													value={ domValNum }
 												>{ domValNum }</option> // What: Day Option Element. Why: Each day of the month needs its own selectable option. How: This renders domValNum as both label and value.
 
@@ -1692,6 +2932,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 						</div>
 
+
 						<div className='sched-line'>{ /* What: Days Line Div Element. Why: The weekday multi-select needs its own labeled row. How: This wraps the label/sub text and the WeeChiCom control below. */ }
 
 
@@ -1702,6 +2943,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								<span
 									key={ ( picDatObj.daysOfWeek || [] ).join( ',' ) }
+
 									className='sched-line-sub set-sub-fade'
 								>{ /* What: Days Sub Span Element. Why: The row needs a live one-line summary of the chosen weekdays, cross-faded via its own key. How: This lists every chosen day, or a prompt when none are chosen. */ }
 
@@ -1722,11 +2964,14 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 							</span>
 
+
+
 							<WeeChiCom
 								locDayNum={ picDatObj.cadence === 'weekly' ? ( picDatObj.anchorDow ?? 0 ) : null }
 								locTipStr={ picDatObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( picDatObj.anchorDow ?? 0 ) : '' }
 								sizValStr='sm'
 								value={ picDatObj.daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ] }
+
 								onChange={ ( dayValArr ) => actStoObj.updPicFun( picDatObj.id, { daysOfWeek : dayValArr } ) }
 							/>{ /* What: Weekday Chips Component. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when picDatObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
 
@@ -1743,6 +2988,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								<span
 									key={ picDatObj.skipHolidays ? 'on' : 'off' }
+
 									className='sched-line-sub set-sub-fade'
 								>{ /* What: Holiday Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches picDatObj.skipHolidays. */ }
 
@@ -1765,8 +3011,10 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 							<button
 								className={ ` switch   ${ picDatObj.skipHolidays ? 'is-on' : '' } ` }
-								aria-pressed={ !!picDatObj.skipHolidays }
+
 								aria-label='Skip on holidays'
+								aria-pressed={ !!picDatObj.skipHolidays }
+
 								onClick={ () => actStoObj.updPicFun( picDatObj.id, { skipHolidays : !picDatObj.skipHolidays } ) }
 							><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips picDatObj.skipHolidays on click. */ }
 
@@ -1779,6 +3027,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 				</ColDisCom>
 
+
+
 				<ColDisCom open={ !incDaiBoo }>{ /* What: Collapse Disclosure Component. Why: The "runs on demand only" note only makes sense while this picker is NOT in the daily generator. How: This opens only while incDaiBoo is false. */ }
 
 
@@ -1789,6 +3039,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 			</div>
+
 
 			<div className='rd-ctl-group rd-ctl-group--items'>{ /* What: Item Controls Group Div Element. Why: Avoid-duplicates and Fill/Refill both act on this picker's ITEMS rather than its own type/schedule, so they get their own separate group. How: This wraps the subhead, the avoid-duplicates row, and the Fill/Refill row below. */ }
 
@@ -1805,6 +3056,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 						<span
 							key={ picDatObj.avoidDuplicates ? 'on' : 'off' }
+
 							className='sched-line-sub set-sub-fade'
 						>{ /* What: Duplicates Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches picDatObj.avoidDuplicates. */ }
 
@@ -1827,13 +3079,17 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<button
 						className={ ` switch   ${ picDatObj.avoidDuplicates ? 'is-on' : '' } ` }
-						aria-pressed={ !!picDatObj.avoidDuplicates }
+
 						aria-label='Avoid duplicate items'
+						aria-pressed={ !!picDatObj.avoidDuplicates }
+
 						onClick={ () => actStoObj.updPicFun( picDatObj.id, { avoidDuplicates : !picDatObj.avoidDuplicates } ) }
 					><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips picDatObj.avoidDuplicates on click. */ }
 
 
 				</div>
+
+
 
 				<ColDisCom open={ isaEasBoo }>{ /* What: Collapse Disclosure Component. Why: Fill/Refill only makes sense for an ease-mode picker. How: This opens only while isaEasBoo is true. */ }
 
@@ -1857,9 +3113,12 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								</div>
 
+
+
 								<FilButCom
-									labTexStr='Fill all'
 									isaDisBoo={ picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) ) }
+									labTexStr='Fill all'
+
 									onFilActFun={ () => actStoObj.filPicFun( picDatObj.id ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
 
@@ -1868,6 +3127,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 						) }
+
 
 						{ picDatObj.mode === 'ease-down' && ( // What: Ease Down Check. Why: Only ease-down gets the "Refill" wording and action. How: This renders the Refill row only while picDatObj.mode is 'ease-down'.
 
@@ -1885,9 +3145,12 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 								</div>
 
+
+
 								<FilButCom
-									labTexStr='Refill all'
 									isaDisBoo={ picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) ) }
+									labTexStr='Refill all'
+
 									onFilActFun={ () => actStoObj.filPicFun( picDatObj.id ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold, and calls filPicFun on click. */ }
 
@@ -1906,6 +3169,8 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 			</div>
 
+
+
 			<div className='rd-ctl-group rd-ctl-group--foot pk-ctl-foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the new-draft Cancel/Add-Items/Save variant) needs its own bottom group. How: This renders whichever of the 3 footer states below matches conDelBoo/isaNewBoo. */ }
 
 
@@ -1914,6 +3179,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<div
 						key='confirm'
+
 						className='rd-pk-del-confirm'
 					>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the rem-del-actions row below. */ }
 
@@ -1926,12 +3192,16 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 							<ButBasCom
 								kinValStr='ghost'
 								sizValStr='sm'
+
 								onClick={ () => setConDelBoo( false ) }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
+
+
 
 							<ButBasCom
 								kinValStr='danger'
 								sizValStr='sm'
+
 								onClick={ () => ( onReqDelFun ? onReqDelFun() : actStoObj.delPicFun( picDatObj.id ) ) }
 							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onReqDelFun when the caller wants to animate the removal itself, otherwise removes the picker directly. */ }
 
@@ -1947,6 +3217,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<div
 						key='foot-new'
+
 						className='rd-ctl-foot-row rd-ctl-foot-row--new'
 					>{ /* What: New Footer Row Div Element. Why: The new-draft footer's own Cancel/Save buttons need their own row. How: This wraps the rem-foot-right div below. */ }
 
@@ -1957,6 +3228,7 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 							<ButBasCom
 								kinValStr='ghost'
 								sizValStr='sm'
+
 								onClick={ () => { // What: On Click Handler. Why: Cancelling a brand-new draft must mark the close as explicit before discarding it. How: This marks cloWayRef, then calls onCanNewFun.
 
 
@@ -1968,13 +3240,16 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 								} }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: A brand-new draft's Cancel discards the whole thing rather than reverting to a blank snapshot; cloWayRef is marked first so the implicit-close guard doesn't ALSO try to revert it. How: This marks cloWayRef then calls onCanNewFun. */ }
 
+
+
 							<InfTipCom labTexStr={ fooTipStr }>{ /* What: Info Tip Component. Why: The footer button's own current disabled reason (or confirmation once ready) needs to be available on demand. How: This shows fooTipStr, wrapping the ButBasCom below. */ }
 
 
 								<ButBasCom
+									disabled={ fooDisBoo }
 									kinValStr='primary'
 									sizValStr='sm'
-									disabled={ fooDisBoo }
+
 									onClick={ fooDisBoo ? undefined : () => { // What: On Click Handler. Why: The primary footer button only acts while it's enabled. How: This is undefined while fooDisBoo, otherwise it marks cloWayRef and runs fooActFun.
 
 
@@ -2001,16 +3276,20 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 					<div
 						key='foot'
+
 						className='rd-ctl-foot-row'
 					>{ /* What: Foot Row Div Element. Why: Delete (left) and Cancel/Save (right) both belong in the same footer row. How: This wraps the Delete ButBasCom and the rem-foot-right div below. */ }
 
 
 						<ButBasCom
+							icoNamStr='traEle'
 							kinValStr='danger'
 							sizValStr='sm'
-							icoNamStr='traEle'
+
 							onClick={ () => setConDelBoo( true ) }
 						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This opens the inline delete confirm rather than deleting immediately. How: This sets conDelBoo true on click. */ }
+
+
 
 						<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both ButBasCom instances below. */ }
 
@@ -2018,12 +3297,16 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 							<ButBasCom
 								kinValStr='ghost'
 								sizValStr='sm'
+
 								onClick={ canConFun }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every change made since Controls opened. How: This calls canConFun on click. */ }
+
+
 
 							<ButBasCom
 								kinValStr='ghost'
 								sizValStr='sm'
+
 								onClick={ savCloFun }
 							>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps every change made since Controls opened. How: This calls savCloFun on click. */ }
 
@@ -2052,875 +3335,6 @@ function PicConCom ( { picDatObj, picIteArr, incDaiBoo, daiIdeArr, allGroArr, co
 
 
 
-// #region ConEdiCom
-
-/**
- * ConEdiCom = Conditional Editor Component
- *
- * @summary
- * The editor body for one conditional, rendered inside ConManCom's own
- * collapsible row. The draft itself is owned by ConManCom (so the row
- * can host the inline name input the same way a picker item's own row
- * does); this component just renders CodConCom against it and
- * supplies Save/Cancel/Delete. Save normalizes the name (Title Case
- * tidy) and is blocked on a collision, mirroring the Pickers
- * create-flow's own guard. Cancel discards a brand-new conditional or
- * simply closes an existing one.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.curConObj    - Current Conditional Object: The conditional
- *                             record this row belongs to.
- * @param props.conDraObj    - Conditional Draft Object: The in-progress, not-
- *                             yet-committed field values for this conditional.
- * @param props.setConDraObj - Set Conditional Draft Object: Replaces the in-
- *                             progress draft object.
- * @param props.actStoObj    - Action Store Object: {@link useAppStaFun}
- * @param props.isaNewBoo    - Is-A New Boolean: Whether this conditional is a
- *                             brand-new, not-yet-saved draft.
- * @param props.namErrStr    - Name Error String: The current validation
- *                             message for the draft's own name, or null when
- *                             it's valid.
- * @param props.tidNamStr    - Tidied Name String: The draft's own name,
- *                             already normalized to the app's tidy-casing
- *                             rule.
- * @param props.onCloEdiFun  - On Close Editor Function: Closes this row
- *                             without discarding an existing conditional's
- *                             edits.
- * @param props.onDisDraFun  - On Discard Draft Function: Discards a brand-new
- *                             conditional entirely.
- * @param props.onSavNewFun  - On Save New Function: Commits a brand-new
- *                             conditional, when set; undefined for an existing
- *                             one.
- * @param props.onDelConFun  - On Delete Conditional Function: Deletes this
- *                             existing conditional.
- *
- * @returns This conditional's own editor body: any name error, the
- * shared CodConCom fields, and the footer.
- *
- * @example
- * ```tsx
- * ConEdiCom({ curConObj, conDraObj, setConDraObj, ... }) // => <ConEdiCom />
- * ```
- *
-*/
-
-function ConEdiCom ( { curConObj, conDraObj, setConDraObj, actStoObj, isaNewBoo, namErrStr, tidNamStr, onCloEdiFun, onDisDraFun, onSavNewFun, onDelConFun } ) {
-
-
-	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting an existing conditional needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read below to swap in the confirm row.
-
-
-	const savConFun = () => { // What: Save Conditional Function. Why: Save must normalize the name and route through whichever commit path applies (a brand-new conditional vs. an existing one). How: This blocks on a name error, delegates to onSavNewFun for a brand-new conditional, otherwise updates the existing one directly.
-
-
-		if ( namErrStr ) return; // What: Name Error Guard. Why: An invalid or colliding name must never be committed. How: This bails out of Save entirely while namErrStr holds a message.
-
-
-
-		if ( onSavNewFun ) { onSavNewFun(); return; } // What: New Save Guard. Why: A brand-new conditional's own commit (including its animated collapse+add) is owned by ConManCom, not this component. How: This delegates to onSavNewFun and returns early when it's set.
-
-
-
-		actStoObj.updConFun( curConObj.id, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's edits only take effect once actually committed. How: This writes every draft field, with name replaced by its tidied form.
-
-		onCloEdiFun(); // What: Close Call. Why: A successful save should also close this row. How: This calls onCloEdiFun after the update above.
-
-
-	};
-
-
-	const canConFun = () => { // What: Cancel Controls Function. Why: Cancelling a brand-new conditional must discard it entirely, while cancelling an existing one just closes without saving. How: This calls onDisDraFun when isaNewBoo, otherwise onCloEdiFun.
-
-
-		if ( isaNewBoo ) onDisDraFun(); // What: Discard Branch. Why: A brand-new, not-yet-saved conditional has nothing worth keeping, so cancelling it should discard it entirely. How: This calls onDisDraFun.
-
-		else onCloEdiFun(); // What: Close Branch. Why: An existing conditional's edits should simply be dropped, leaving the saved version untouched. How: This calls onCloEdiFun.
-
-
-	};
-
-
-	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should back out of the delete confirm if it's showing, otherwise cancel the edit itself. How: This is always active while this row is mounted.
-
-
-		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is showing, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
-
-		else canConFun(); // What: Cancel Edit Branch. Why: With no confirm prompt up, Escape should cancel the edit like canConFun's own explicit Cancel button. How: This calls canConFun.
-
-
-	} );
-
-
-
-	return (
-
-
-		<div className='rd-edit rd-edit--cnd'>{ /* What: Editor Div Element. Why: This is ConEdiCom's own root element. How: This wraps the rd-ctl-body div below. */ }
-
-
-			<div className='rd-ctl-body'>{ /* What: Controls Body Div Element. Why: The name error, the shared Controls fields, and the footer all belong in one grouped body. How: This wraps the 3 pieces below. */ }
-
-
-				{ namErrStr && <p className='np-error rd-cnd-name-err'>{ namErrStr }</p> }{ /* What: Name Error Check. Why: An invalid/colliding name needs an inline warning right above the fields. How: This renders the message only while namErrStr holds one. */ }
-
-				<CodConCom
-					conDraObj={ conDraObj }
-					layVarStr='inline'
-					hidNamBoo
-					onChange={ setConDraObj }
-				/>{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setConDraObj. */ }
-
-				<div className='rd-ctl-group rd-ctl-group--foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. */ }
-
-
-					{ conDelBoo ? ( // What: Confirm Delete Check. Why: Delete morphs the footer into an inline confirm before actually deleting. How: This renders the confirm row while conDelBoo is true.
-
-
-						<div
-							key='confirm'
-							className='rd-ctl-confirm'
-						>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the rem-del-actions row below. */ }
-
-
-							<div className='confirm-msg'>Delete the &ldquo;{ curConObj.name }&rdquo; conditional? Pickers using it will be detached. This can&rsquo;t be undone.</div>{ /* What: Confirm Msg Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the conditional and states that any picker using it will be detached. */ }
-
-							<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both ButBasCom instances below. */ }
-
-
-								<ButBasCom
-									kinValStr='ghost'
-									sizValStr='sm'
-									onClick={ () => setConDelBoo( false ) }
-								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
-
-								<ButBasCom
-									kinValStr='danger'
-									sizValStr='sm'
-									onClick={ () => onDelConFun() }
-								>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onDelConFun on click. */ }
-
-
-							</div>
-
-
-						</div>
-
-
-					) : ( // What: Plain Foot Branch. Why: With no delete confirmation pending, the normal Delete/Cancel/Save footer belongs here instead. How: This renders the else branch, taken while conDelBoo is false.
-
-
-						<div
-							key='foot'
-							className='rd-ctl-foot-row'
-						>{ /* What: Foot Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete ButBasCom, then the rem-foot-right div below. */ }
-
-
-							{ !isaNewBoo && ( // What: Existing Conditional Check. Why: A brand-new conditional has nothing saved to delete. How: This renders the Delete button only while isaNewBoo is false.
-
-
-								<ButBasCom
-									kinValStr='danger'
-									sizValStr='sm'
-									icoNamStr='traEle'
-									onClick={ () => setConDelBoo( true ) }
-								>Delete</ButBasCom> // What: Button Base Component. Why: A brand-new, not-yet-saved conditional has nothing to delete yet. How: This opens the inline delete confirm, rendered only while isaNewBoo is false.
-
-
-							) }
-
-							<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both ButBasCom instances below. */ }
-
-
-								<ButBasCom
-									kinValStr='ghost'
-									sizValStr='sm'
-									onClick={ canConFun }
-								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards a brand-new conditional or closes an existing one's edits. How: This calls canConFun on click. */ }
-
-								<ButBasCom
-									kinValStr='ghost'
-									sizValStr='sm'
-									disabled={ !!namErrStr }
-									onClick={ savConFun }
-								>Save</ButBasCom>{ /* What: Button Base Component. Why: This commits the draft's own fields. How: This calls savConFun on click, disabled while namErrStr holds a message. */ }
-
-
-							</div>
-
-
-						</div>
-
-
-					) }
-
-
-				</div>
-
-
-			</div>
-
-
-		</div>
-
-
-	);
-
-
-}
-
-// #endregion ConEdiCom
-
-
-
-// #region ConManCom
-
-/**
- * ConManCom = Conditionals Manager Component
- *
- * @summary
- * Lists every conditional as a collapsible card whose body is ConEdiCom.
- * Edits are live (updConFun). A brand-new conditional is held
- * LOCALLY (not written to the store) until Save, so a reload or
- * tab-switch mid-create discards it, mirroring the "nothing committed
- * until Save" contract TabDatCom's own new-picker draft flow uses (that
- * one is backed by a real hidden picker instead, since PicConCom's own
- * fields already write straight to the store). Delete detaches the
- * conditional from any pickers that reference it (the store itself
- * handles that cleanup).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.staAppObj - State App Object: {@link useAppStaFun}
- * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
- *
- * @returns The Conditionals section: its own header, the "Add a
- * conditional" control, and every conditional's own collapsible row.
- *
- * @example
- * ```tsx
- * ConManCom({ staAppObj, actStoObj }) // => <ConManCom />
- * ```
- *
-*/
-
-function ConManCom ( { staAppObj, actStoObj } ) {
-
-
-	const conIteArr = staAppObj.conditionals || []; // What: Conditional Item Array. Why: Every render needs the current list of conditionals to display. How: This reads staAppObj.conditionals, falling back to an empty array.
-	const allPicArr = staAppObj.pickers || [];      // What: All Picker Array. Why: The "N pickers" usage count per conditional needs every picker to check against. How: This reads staAppObj.pickers, falling back to an empty array.
-
-
-	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: Only one conditional's own row can be expanded for editing at a time. How: This holds whichever conditional's own id is currently open, or null.
-	const [ conDraObj, setConDraObj ] = React.useState( null ); // What: Conditional Draft Object And Setter. Why: The open row's own in-progress, not-yet-committed field values need somewhere to live. How: This is populated by opeEdiFun and cleared by cloEdiFun.
-	const [ penConObj, setPenConObj ] = React.useState( null ); // What: Pending Conditional Object And Setter. Why: A brand-new conditional is held locally, not written to the store, until Save. How: This holds the brand-new conditional's own object while it's still unsaved.
-	const [ cloIdeStr, setCloIdeStr ] = React.useState( null ); // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
-
-
-	const useCouFun = ( conIdeStr ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Use Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches conIdeStr.
-
-
-	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: The section's own collapse state is persisted the same way every picker card's own Controls/Items disclosures are. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
-	const secOpeBoo = colMapObj[ '__conditionals' ] === false;                  // What: Section Open Boolean. Why: This section defaults COLLAPSED (absent means collapsed), unlike its own nested disclosures. How: This is true only when the persisted entry is explicitly false.
-
-
-	const conRanFun = ( conCurObj ) => ( conCurObj.mode === 'ease-up' || conCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
-		? Math.max( 1, Math.round( ( conCurObj.threshold ?? 100 ) / ( conCurObj.easeMax ?? 14 ) ) ) // What: Ease Range Branch. Why: An ease-mode conditional's range is roughly how many days it takes to fully charge. How: This divides threshold by easeMax, never below 1.
-		: null;                                                                                     // What: No Range Branch. Why: Every other mode has no range to sort by. How: This returns null.
-
-
-	const conOddFun = ( conCurObj ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.
-	const conBooFun = ( conCurObj ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                     // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
-
-	const iteSorStr = staAppObj.ui?.dataSort?.conditionals || 'name-asc'; // What: Item Sort String. Why: This section's own list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.conditionals, falling back to 'name-asc'.
-
-
-	const sorConArr = [ ...conIteArr ].sort( ( conOneObj, conTwoObj ) => sorEntFun( // What: Sorted Conditional Array. Why: The rendered list needs to actually be in iteSorStr's own order. How: This builds a matching sort-entry shape for both sides and delegates the comparison to sorEntFun.
-
-		{ // What: First Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the left-hand conditional onto that shape.
-
-
-			boost    : conBooFun( conOneObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
-			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
-			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
-			isActive : conOneObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
-			name     : conOneObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
-			odds     : conOddFun( conOneObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
-			range    : conRanFun( conOneObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
-			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conOneObj.mode ] || {} ).labStr || conOneObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
-
-
-		},
-
-		{ // What: Second Sort Entry Object. Why: sorEntFun compares 2 entries of one shared sortable shape. How: This maps the right-hand conditional onto that shape.
-
-
-			boost    : conBooFun( conTwoObj ),                                                      // What: Boost. Why: The Boost sort needs a dynamic conditional's boost value. How: This calls conBooFun.
-			count    : null,                                                                        // What: Count. Why: Conditionals have no item count to sort by. How: This is always null.
-			group    : null,                                                                        // What: Group. Why: Conditionals have no group to sort by. How: This is always null.
-			isActive : conTwoObj.active !== false,                                                  // What: Is Active. Why: The Active sort needs each conditional's on/off state. How: This treats anything but an explicit false as active.
-			name     : conTwoObj.name,                                                              // What: Name. Why: The Name sort needs each conditional's name. How: This reads the name directly.
-			odds     : conOddFun( conTwoObj ),                                                      // What: Odds. Why: The Odds sort needs a weighted/dynamic conditional's odds. How: This calls conOddFun.
-			range    : conRanFun( conTwoObj ),                                                      // What: Range. Why: The Range sort needs an ease-mode conditional's range. How: This calls conRanFun.
-			type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ conTwoObj.mode ] || {} ).labStr || conTwoObj.mode // What: Type. Why: The Type sort needs each conditional's mode label. How: This reads the mode's label, falling back to its raw id.
-
-
-		},
-
-		iteSorStr // What: Item Sort String Argument. Why: sorEntFun needs to know which sort is active. How: This passes iteSorStr straight through.
-
-
-	) );
-
-
-	const opeEdiFun = ( conCurObj ) => { // What: Open Editor Function. Why: Opening an existing conditional's row needs a fresh draft copy and no pending flag. How: This seeds conDraObj from conCurObj and opens its own row.
-
-
-		setPenConObj( null );             // What: Pending Clear Call. Why: Opening an existing conditional abandons any pending new one. How: This resets penConObj to null.
-		setConDraObj( { ...conCurObj } ); // What: Draft Seed Call. Why: The editor works on a copy so edits stay uncommitted until kept. How: This sets conDraObj to a shallow copy of conCurObj.
-		setOpeIdeStr( conCurObj.id );     // What: Open Set Call. Why: The chosen row must expand. How: This sets opeIdeStr to conCurObj.id.
-
-
-	};
-
-
-	const cloEdiFun = () => { // What: Close Editor Function. Why: Closing a row (without any special animation) just clears every piece of open-row state. How: This clears penConObj, conDraObj, and opeIdeStr together.
-
-
-		setPenConObj( null ); // What: Pending Clear Call. Why: A closed row has no pending new conditional. How: This resets penConObj to null.
-		setConDraObj( null ); // What: Draft Clear Call. Why: A closed row has no editor draft. How: This resets conDraObj to null.
-		setOpeIdeStr( null ); // What: Open Clear Call. Why: No row stays open. How: This resets opeIdeStr to null.
-
-
-	};
-
-
-	const cloAniFun = () => { // What: Close Animated Function. Why: Cancelling a brand-new conditional should collapse its row first (so it visibly animates shut) before actually dropping it, rather than unmounting it instantly. How: This closes the row immediately when motion is reduced, otherwise defers the state drop by 300ms.
-
-
-		if ( redMotFun() ) { // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly, not mid-animation. How: This clears every piece of state synchronously and returns early.
-
-
-			setOpeIdeStr( null ); // What: Open Clear Call. Why: The row closes at once. How: This resets opeIdeStr to null.
-			setConDraObj( null ); // What: Draft Clear Call. Why: The draft is dropped at once too. How: This resets conDraObj to null.
-			setPenConObj( null ); // What: Pending Clear Call. Why: The pending new conditional is dropped at once too. How: This resets penConObj to null.
-
-
-
-			return; // What: Early Return. Why: Nothing is left to animate. How: This skips the deferred drop below.
-
-
-		}
-
-
-
-		setOpeIdeStr( null ); // What: Row Collapse Call. Why: The editor itself must stay mounted (still holding conDraObj/penConObj) so its own ColDisCom can actually animate shut. How: This only closes the row's own open flag, not the draft/pending state yet.
-
-		setTimeout( () => { // What: Deferred Drop Call. Why: The draft/pending state must survive until the collapse animation actually finishes. How: This clears both 300ms later, matching the collapse animation's own duration.
-
-
-			setConDraObj( null ); // What: Draft Clear Call. Why: The draft only goes away once the collapse has finished. How: This resets conDraObj to null.
-			setPenConObj( null ); // What: Pending Clear Call. Why: The pending new conditional goes away at the same moment. How: This resets penConObj to null.
-
-
-		}, 300 );
-
-
-	};
-
-
-	const delAniFun = ( conIdeStr ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by 300ms while the row plays its own collapse.
-
-
-		const delFinFun = () => { // What: Delete Finish Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
-
-
-			actStoObj.delConFun( conIdeStr ); // What: Remove Conditional Call. Why: This is the actual store removal. How: This calls delConFun with conIdeStr.
-
-			setCloIdeStr( null ); // What: Closing Clear Call. Why: The closing animation is over. How: This resets cloIdeStr to null.
-			setConDraObj( null ); // What: Draft Clear Call. Why: The removed conditional's draft is no longer needed. How: This resets conDraObj to null.
-			setOpeIdeStr( null ); // What: Open Clear Call. Why: No row stays open after the removal. How: This resets opeIdeStr to null.
-
-
-		};
-
-
-
-		if ( redMotFun() ) { delFinFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This calls delFinFun synchronously and returns early.
-
-
-
-		setCloIdeStr( conIdeStr ); // What: Closing Id Set. Why: The editor must stay mounted (via closingId) through its own collapse animation instead of unmounting immediately. How: This flags conIdeStr as the row currently mid-delete-animation.
-
-		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut. How: This clears opeIdeStr.
-
-		setTimeout( delFinFun, 300 ); // What: Deferred Removal Call. Why: The actual store removal must wait until the collapse animation finishes. How: This calls delFinFun 300ms later, matching the collapse animation's own duration.
-
-
-	};
-
-
-	const savAniFun = ( finNamStr ) => { // What: Save Animated Function. Why: Committing a brand-new conditional to the store should happen after the row's own collapse, so the row stays in place (same id/name) rather than visibly jumping. How: This commits immediately when motion is reduced, otherwise defers the commit by 300ms.
-
-
-		const finDraObj = { ...conDraObj, name : finNamStr }; // What: Final Draft Object. Why: The committed conditional needs its own name replaced by the freshly-tidied final one. How: This spreads conDraObj with name overridden by finNamStr.
-
-
-		const wriConFun = () => { // What: Write Conditional Function. Why: The actual store write and clearing the local-only draft/pending state need to happen together. How: This is called either immediately or after the deferred timeout below.
-
-
-			actStoObj.addConFun( finDraObj ); // What: Add Conditional Call. Why: This is the actual store write of the new conditional. How: This calls addConFun with finDraObj.
-
-			setConDraObj( null ); // What: Draft Clear Call. Why: The saved draft is no longer needed. How: This resets conDraObj to null.
-			setPenConObj( null ); // What: Pending Clear Call. Why: The conditional is real now, not pending. How: This resets penConObj to null.
-
-
-		};
-
-
-
-		if ( redMotFun() ) { // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This closes the row and commits synchronously, then returns early.
-
-
-			setOpeIdeStr( null ); // What: Open Clear Call. Why: The row closes at once. How: This resets opeIdeStr to null.
-
-			wriConFun(); // What: Write Conditional Call. Why: The commit happens at once too. How: This calls wriConFun synchronously.
-
-
-
-			return; // What: Early Return. Why: Nothing is left to animate. How: This skips the deferred commit below.
-
-
-		}
-
-
-
-		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut before the commit below lands. How: This clears opeIdeStr.
-
-		setTimeout( wriConFun, 300 ); // What: Deferred Commit Call. Why: The actual store write must wait until the collapse animation finishes. How: This calls wriConFun 300ms later, matching the collapse animation's own duration.
-
-
-	};
-
-
-	const tidNamStr = ( conDraObj && norConFun( conDraObj.name ) ) || ''; // What: Tidy Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls norConFun on conDraObj.name when a draft exists, empty string otherwise.
-
-
-	const namErrStr = conDraObj && !tidNamStr // What: Name Error String. Why: The open row's own editor needs a specific validation message whenever its name is empty or collides with another conditional. How: This checks emptiness first, then a case-insensitive collision against every OTHER conditional, null when the name is valid.
-		? 'Enter a name for this conditional.'                                            // What: Empty Name Message. Why: A blank name can't be saved. How: This asks for a name.
-		: conDraObj && conIteArr.some( ( conCurObj ) => conCurObj.id !== opeIdeStr && ( conCurObj.name || '' ).toLowerCase() === tidNamStr.toLowerCase() ) // What: Duplicate Name Check. Why: A name matching another conditional (ignoring case) can't be saved either. How: This compares tidNamStr against every other conditional's name.
-		? `A conditional named “${ tidNamStr }” already exists. Choose a different name.` // What: Duplicate Name Message. Why: The user needs to know why the name was rejected. How: This names the colliding value.
-		: null;                                                                           // What: Valid Name Branch. Why: A unique, non-empty name has no error. How: This returns null.
-
-
-	const keeCloFun = () => { // What: Keep Close Function. Why: The row's own collapse chevron is a deliberate close, not an accidental one; a plain cloEdiFun there would discard a brand-new conditional or revert an edited existing one back to its pre-edit values. How: This commits the current draft (new or existing) unless the name itself is invalid, in which case it falls back to a plain (discarding) close.
-
-
-		if ( namErrStr ) { cloEdiFun(); return; } // What: Invalid Name Guard. Why: An empty or colliding name can't be committed at all. How: This falls back to a plain close when namErrStr holds a message.
-
-
-
-		if ( penConObj ) { savAniFun( tidNamStr ); return; } // What: Pending Guard. Why: A brand-new conditional's own "keep" means actually saving it, the animated way. How: This delegates to savAniFun and returns early when penConObj is set.
-
-
-
-		actStoObj.updConFun( opeIdeStr, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form.
-
-		cloEdiFun(); // What: Close Editor Call. Why: A successful keep should also close the row. How: This calls cloEdiFun after the update above.
-
-
-	};
-
-
-	const opeRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new conditional's own "+ Add a conditional" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
-
-
-	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created conditional's own form should scroll into view once its ColDisCom has actually finished opening. How: This waits 300ms (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
-
-
-		const notOpeBoo = !opeIdeStr;         // What: Not Open Boolean. Why: No row is open, so there is nothing to scroll to. How: This negates opeIdeStr.
-		const notPenBoo = !penConObj;         // What: Not Pending Boolean. Why: Only a brand-new pending row needs this scroll. How: This negates penConObj.
-		const notRowBoo = !opeRowRef.current; // What: Not Row Boolean. Why: The row's node must be mounted before it can scroll. How: This negates opeRowRef.current.
-
-		const skiScrBoo = notOpeBoo || notPenBoo || notRowBoo; // What: Skip Scroll Boolean. Why: Any one missing piece means this effect has nothing to do. How: This ORs the 3 checks above.
-
-
-		if ( skiScrBoo ) return; // What: Not Applicable Guard. Why: Only a brand-new (pending), currently-open row with a mounted ref needs this scroll. How: This bails out whenever any of the 3 conditions isn't met.
-
-
-
-		const rowCurEle = opeRowRef.current; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opeRowRef.current once and reuses it.
-
-
-
-		if ( redMotFun() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this scroll happen instantly, not after a delay. How: This scrolls immediately and returns early.
-
-
-
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s) needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll 300ms out.
-
-
-
-		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs (e.g. a different row opens) or the component unmounts. How: This cancels scrTimNum.
-
-
-	}, [ opeIdeStr ] ); // What: Effect Dependency Array. Why: This scroll only ever needs to reconsider itself when which row is open actually changes. How: opeIdeStr is the single value this effect's own guard is built around.
-
-
-	const focInpRef = React.useRef( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (below, inline) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
-
-
-
-	return (
-
-
-		<section className='cat cat--enter cnd-manager'>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
-
-
-			<header className='cat-h'>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. */ }
-
-
-				<button
-					className='cat-h-l'
-					type='button'
-					aria-expanded={ secOpeBoo }
-					onClick={ () => actStoObj.togColFun( '__conditionals', true ) }
-				>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. */ }
-
-
-					<span className={ ` chev   ${ secOpeBoo ? 'is-open' : '' } ` }>{ /* What: Chevron Span Element. Why: The section's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
-
-
-						<IcoSvgCom
-							icoNamStr='chvEle'
-							sizValNum={ 14 }
-						/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
-
-
-					</span>
-
-					<span className='cat-h-main'>{ /* What: Header Main Span Element. Why: The section's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
-
-
-						<h2 className='cat-name'>Conditionals</h2>{ /* What: Category Name Element. Why: Every section needs its own visible name. How: This renders the literal text "Conditionals". */ }
-
-						<span className='cat-count'>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see styles2.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
-
-
-							<span className='cat-count-n'>{ conIteArr.filter( ( conCurObj ) => conCurObj.active !== false ).length }</span>{ /* What: Count N Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }
-
-							<span className='cat-count-of'>of</span>{ /* What: Count Of Span Element. Why: The separator between the active and total counts needs its own element. How: This renders the literal text "of". */ }
-
-							<span className='cat-count-n'>{ conIteArr.length }</span>{ /* What: Count N Span Element. Why: The total conditional count needs its own element. How: This renders conIteArr's own length. */ }
-
-
-						</span>
-
-
-					</span>
-
-
-				</button>
-
-
-			</header>
-
-			<ColDisCom open={ secOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The whole section's own body only needs to exist while it's actually expanded. How: This opens only while secOpeBoo is true. */ }
-
-
-				<div className='cat-body'>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. */ }
-
-
-					{ ONB_CHE_OBJ.tutProFun( staAppObj ) ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfTipCom-wrapped control in that state, otherwise the real button.
-
-
-						<InfTipCom
-							className='rd-add is-tour-disabled'
-							actNamStr='Add a conditional'
-							labTexStr='This button is disabled until all tutorials are completed.'
-						>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='pluEle'
-								sizValNum={ 13 }
-							/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
-
-
-						</InfTipCom>
-
-
-					) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add control belongs here instead. How: This renders the else branch, taken while the checklist isn't in progress.
-
-
-						<button
-							className='rd-add'
-							onClick={ () => { // What: On Click Handler. Why: Adding a conditional starts a local-only draft that nothing else sees until Save. How: This builds a draft with a fresh id, then holds it as pending, as the editor draft, and as the open row.
-
-
-								if ( penConObj ) return; // What: One Draft Guard. Why: Only one brand-new conditional can be in progress at a time. How: This bails out of the click entirely while penConObj already holds one.
-
-
-
-								const basDraObj = conDraFun( '', conIteArr.map( ( conCurObj ) => conCurObj.name ) ); // What: Base Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conDraFun helper.
-								const nexIdeStr = 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 );               // What: Next Identifier String. Why: The brand-new draft needs its own id immediately, even before it's ever written to the store. How: This generates a short random id with a 'cnd_' prefix.
-								const nexDraObj = { ...basDraObj, id : nexIdeStr };                                  // What: Next Draft Object. Why: The draft object itself needs to carry its own freshly-generated id. How: This spreads basDraObj with id set to nexIdeStr.
-
-
-								setPenConObj( nexDraObj ); // What: Pending Set Call. Why: This is held locally, not written to the store, until Save. How: This sets penConObj to nexDraObj.
-								setConDraObj( nexDraObj ); // What: Draft Set Call. Why: The editor below needs the same object as its own in-progress draft. How: This sets conDraObj to the same nexDraObj.
-								setOpeIdeStr( nexIdeStr ); // What: Open Set Call. Why: The brand-new row must open immediately so its own editor is visible. How: This sets opeIdeStr to nexIdeStr.
-
-
-							} }
-						>{ /* What: Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='pluEle'
-								sizValNum={ 13 }
-							/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
-
-
-						</button>
-
-
-					) }
-
-					{ !conIteArr.length && !penConObj && ( // What: Empty State Check. Why: A genuinely empty list needs its own explanatory message instead of an empty body. How: This renders only while there are no conditionals at all and none is currently being created.
-
-
-						<p className='rd-cnd-empty'>No conditionals yet. Add one here, then attach it to any picker.</p> // What: Empty List Paragraph Element. Why: A genuinely empty list needs its own explanatory message. How: This renders a fixed message.
-
-
-					) }
-
-					{ conIteArr.length > 1 && ( // What: Multiple Conditionals Check. Why: A sort control is only useful once there's more than one conditional to sort. How: This renders SorSelCom only while conIteArr has 2 or more entries.
-
-
-						<SorSelCom
-							selIdeStr='cnd-item-sort'
-							labTexStr='Sort'
-							optLisArr={ CIS_OPT_ARR }
-							value={ iteSorStr }
-							onChange={ ( keyValStr ) => actStoObj.setSorFun( 'conditionals', keyValStr ) }
-						/> // What: Sort Select Component. Why: This is the actual control for reordering the conditional list. How: This commits the chosen key as this section's own persisted conditionals sort.
-
-
-					) }
-
-					{ ( penConObj ? [ penConObj, ...sorConArr ] : sorConArr ).map( ( conCurObj ) => { // What: Conditional Row Map. Why: A brand-new pending conditional renders first, ahead of every sorted existing one. How: This maps the combined list to one collapsible row each.
-
-
-						const isaPenBoo = !!penConObj && conCurObj.id === penConObj.id; // What: Is-A Pending Boolean. Why: The pending row needs slightly different editor treatment (isaNewBoo) than an existing one. How: This is true only for the one row matching penConObj's own id.
-						const isaOpeBoo = opeIdeStr === conCurObj.id;                   // What: Is-An Open Boolean. Why: Every row needs to know whether IT SPECIFICALLY is the currently-open one. How: This compares conCurObj.id against opeIdeStr.
-						const useCouNum = useCouFun( conCurObj.id );                    // What: Use Count Number. Why: Every row's own closed-state summary shows how many pickers currently use it. How: This calls useCouFun for conCurObj.id.
-
-
-
-						return (
-
-
-							<div
-								key={ conCurObj.id }
-								ref={ isaOpeBoo ? opeRowRef : undefined }
-								className={ ` rd-item   ${ isaOpeBoo ? 'is-editing' : '' } ` }
-							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. */ }
-
-
-								{ isaOpeBoo && conDraObj ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input (interactive-in-interactive) and would otherwise lose its own accessible name. How: This renders the editing header while isaOpeBoo is true and a draft exists, otherwise the normal clickable row.
-
-
-									<div className='rd-row'>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. */ }
-
-
-										<span className='rd-main'>{ /* What: Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
-
-
-											<input
-												ref={ ( inpCurEle ) => { // What: Focus Reference Callback. Why: The input should focus once when it mounts, without the page jumping. How: This focuses a newly attached input with preventScroll and remembers it in focInpRef so re-renders don't refocus it.
-
-
-													if ( inpCurEle && focInpRef.current !== inpCurEle ) { // What: New Input Guard. Why: Only a freshly attached input should take focus. How: This skips null detaches and the input already focused before.
-
-
-														inpCurEle.focus( { preventScroll : true } ); // What: Focus Call. Why: The user can type the name right away. How: This focuses inpCurEle without scrolling the page.
-
-														focInpRef.current = inpCurEle; // What: Focused Input Record. Why: A later re-render must not steal focus back. How: This stores inpCurEle in focInpRef.
-
-
-													}
-
-
-												} }
-												className={ ` rd-name-input   ${ namErrStr ? 'is-error' : '' } ` }
-												type='text'
-												value={ conDraObj.name }
-												placeholder='Conditional name'
-												maxLength={ 40 }
-												aria-label='Conditional name'
-												aria-invalid={ !!namErrStr }
-												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
-												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } }
-												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. */ }
-
-
-										</span>
-
-										<button
-											className='rd-chev'
-											type='button'
-											aria-label='Collapse'
-											onClick={ keeCloFun }
-										>{ /* What: Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler used elsewhere. */ }
-
-
-											<span className='chev is-open'>{ /* What: Chevron Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via its own is-open class. */ }
-
-
-												<IcoSvgCom
-													icoNamStr='chvEle'
-													sizValNum={ 14 }
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
-
-
-											</span>
-
-
-										</button>
-
-
-									</div>
-
-
-								) : ( // What: Normal Row Branch. Why: A closed row just needs the plain clickable header instead. How: This renders the else branch, taken while isaOpeBoo is false or conDraObj is missing.
-
-
-									<button
-										className='rd-row'
-										type='button'
-										aria-expanded={ isaOpeBoo }
-										onClick={ () => { // What: On Click Handler. Why: A row click toggles its own editor open or closed. How: This calls cloEdiFun when the row is open, otherwise opeEdiFun.
-
-
-											if ( isaOpeBoo ) cloEdiFun(); // What: Close Branch. Why: An already-open row's own click should collapse it back down. How: This calls cloEdiFun.
-
-											else opeEdiFun( conCurObj ); // What: Open Branch. Why: A closed row's own click should expand its editor. How: This calls opeEdiFun with conCurObj.
-
-
-										} }
-									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. */ }
-
-
-										<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and sched spans below. */ }
-
-
-											<span className='rd-name'>{ conCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. */ }
-
-											<span className='rd-sched'>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
-
-
-												{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).labStr || conCurObj.mode }{ /* What: Mode Label Expression. Why: The summary leads with the conditional's mode. How: This renders the mode's label, falling back to its raw id. */ }
-
-												{ ' · ' }{ useCouNum } { useCouNum === 1 ? 'picker' : 'pickers' }{ /* What: Usage Count Expression. Why: The summary says how many pickers use this conditional. How: This renders useCouNum with a singular or plural noun. */ }
-
-												{ conCurObj.active === false ? ' · inactive' : '' }{ /* What: Inactive Flag Expression. Why: An inactive conditional says so in its summary. How: This appends ' · inactive' only when active is false. */ }
-
-
-											</span>
-
-
-										</span>
-
-										<span className='rd-chev'>{ /* What: Chevron Holder Span Element. Why: The row's chevron needs its own fixed-width slot at the row's end. How: This wraps the rotating chevron span. */ }
-
-
-											<span className={ ` chev   ${ isaOpeBoo ? 'is-open' : '' } ` }>{ /* What: Chevron Span Element. Why: The closed row's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
-
-
-												<IcoSvgCom
-													icoNamStr='chvEle'
-													sizValNum={ 14 }
-												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
-
-
-											</span>
-
-
-										</span>
-
-
-									</button>
-
-
-								) }
-
-								<ColDisCom open={ isaOpeBoo }>{ /* What: Collapse Disclosure Component. Why: This row's own editor only needs to exist while it's actually open (or animating shut). How: This opens only while isaOpeBoo is true. */ }
-
-
-									{ conDraObj && ( isaOpeBoo || isaPenBoo || cloIdeStr === conCurObj.id ) && ( // What: Editor Mount Check. Why: The editor must also stay mounted while pending or mid-delete-animation, not only while strictly open. How: This renders ConEdiCom only while a draft exists and one of the 3 conditions holds.
-
-
-										<ConEdiCom
-											curConObj={ conCurObj }
-											conDraObj={ conDraObj }
-											setConDraObj={ setConDraObj }
-											actStoObj={ actStoObj }
-											isaNewBoo={ isaPenBoo }
-											namErrStr={ namErrStr }
-											tidNamStr={ tidNamStr }
-											onCloEdiFun={ cloEdiFun }
-											onDelConFun={ () => delAniFun( conCurObj.id ) }
-											onSavNewFun={ isaPenBoo ? ( () => savAniFun( tidNamStr ) ) : undefined }
-											onDisDraFun={ isaPenBoo ? cloAniFun : ( () => { // What: On Discard Draft Handler. Why: A pending row discards with its collapse animation, while any other row just closes and removes the conditional. How: This passes cloAniFun for a pending row, otherwise an arrow that closes the editor and deletes by id.
-
-
-												const rmvIdeStr = conCurObj.id; // What: Remove Identifier String. Why: The removal below needs a stable copy of this row's id. How: This reads conCurObj.id once.
-
-
-												cloEdiFun(); // What: Close Editor Call. Why: The row closes before its conditional goes away. How: This calls cloEdiFun.
-
-												actStoObj.delConFun( rmvIdeStr ); // What: Remove Conditional Call. Why: This is the actual store removal. How: This calls delConFun with rmvIdeStr.
-
-
-											} ) }
-										/> // What: Conditional Editor Component. Why: This is the actual editor body for this one conditional. How: This is passed the live conditional, its draft, and every handler this row needs.
-
-
-									) }
-
-
-								</ColDisCom>
-
-
-							</div>
-
-
-						);
-
-
-					} ) }
-
-
-				</div>
-
-
-			</ColDisCom>
-
-
-		</section>
-
-
-	);
-
-
-}
-
-// #endregion ConManCom
-
-
-
 // #region TabDatCom
 
 /**
@@ -2936,25 +3350,27 @@ function ConManCom ( { staAppObj, actStoObj } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
  * @param props.onNavTabFun - On Navigate Tab Function: Switches to another tab
  *                            by id.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns The Data tab's entire rendered content: its header, its
  * filters, the section sort bar, and the list of sections.
  *
  * @example
  * ```tsx
- * TabDatCom({ staAppObj, actStoObj, onNavHomFun, ... }) // => <TabDatCom />
+ * TabDatCom({ actStoObj, onNavHomFun, onNavTabFun, ... }) // => <TabDatCom />
  * ```
  *
 */
 
-function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
+function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
+
+	// #region Tour Gating
 
 	const touBusObj = useEmlTouFun();                                                   // What: Tour Bus Object. Why: Several controls below must disable themselves or highlight during specific onboarding tour steps. How: This reads the shared tour event bus's own touPhaStr/touIdeStr/touSteNum fields.
 	const touActBoo = touBusObj.touPhaStr === 'tour';                                   // What: Tour Active Boolean. Why: Every tour-driven flag below only applies while a tour is actually running. How: This checks touBusObj.touPhaStr.
@@ -2979,6 +3395,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 	const hetIteBoo = ediTouBoo && touBusObj.touSteNum === 4; // What: Highlight-Edit-Tour Items Boolean. Why: Step 5 targets a single Items header. How: This is true only during Step 4.
 	const hetRowBoo = ediTouBoo && touBusObj.touSteNum === 5; // What: Highlight-Edit-Tour Row Boolean. Why: Step 6 targets each item row's own .rd-item wrapper, using per-side borders rather than a shared outline. How: This is true only during Step 5.
 
+	// #endregion Tour Gating
+
+
+
+	// #region Help Mode
 
 	const [ helOpeBoo, setHelOpeBoo ] = React.useState( false ); // What: Help Open Boolean And Setter. Why: Help mode needs its own on/off state, matching every other tab's own help toggle. How: This is flipped by HelButCom and read by HelOveCom/the seed effect below.
 
@@ -3019,6 +3440,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	}, [] ); // What: Effect Dependency Array. Why: This cleanup only needs to run once, on unmount. How: An empty array means the returned cleanup runs only when the tab goes away.
 
+	// #endregion Help Mode
+
+
+
+	// #region Item Editor State
 
 	const [ opeIteStr, setOpeIteStr ] = React.useState( null ); // What: Open Item String And Setter. Why: Only one picker item across the whole page can be expanded for editing at a time, mirroring the Reminders list. How: This holds whichever item's own id is currently open, or null.
 	const [ insIteStr, setInsIteStr ] = React.useState( null ); // What: Insert Item String And Setter. Why: A just-inserted row needs to play its own slide-in entrance exactly once. How: This holds whichever item's own id should currently play that entrance.
@@ -3086,6 +3512,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	const focInpRef = React.useRef( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (inline, below) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
 
+	// #endregion Item Editor State
+
+
+
+	// #region Filter State
 
 	const [ filGroStr, setFilGroStr ] = React.useState( 'all' ); // What: Filter Group String And Setter. Why: The Group filter row narrows which pickers appear below, mirroring the Pickers + Stats tabs; both default to "All". How: This is committed by the Group pill row and read throughout this component.
 	const [ filTypStr, setFilTypStr ] = React.useState( 'all' ); // What: Filter Type String And Setter. Why: The Type filter row narrows by picker mode, and also carries the Conditionals/Reminders sentinel scope values. How: This is committed by the Type pill row and read throughout this component.
@@ -3094,8 +3525,39 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	const allPicArr = staAppObj.pickers || []; // What: All Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, falling back to an empty array.
 
+	// #endregion Filter State
+
+
+
+	// #region Picker Removal
+
 	const [ rmvPicStr, setRmvPicStr ] = React.useState( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
 
+
+	// #region delPicFun
+
+	/**
+	 * delPicFun = Delete Picker Function
+	 *
+	 * @summary
+	 * Deletes a picker from the Data list. Under reduced motion it removes the
+	 * picker from the store immediately; otherwise it only flags the card as
+	 * removing, and the card's own onAnimationEnd does the actual removal once
+	 * its exit animation has played.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param picIdeStr - Picker Identifier String: The id of the picker to
+	 *                    delete.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * delPicFun( picIdeStr ) // => void
+	 * ```
+	 *
+	*/
 
 	const delPicFun = ( picIdeStr ) => { // What: Delete Picker Function. Why: A user who prefers reduced motion should see the removal happen instantly instead of animating. How: This removes the picker directly under reduced motion, otherwise just flags it for the animated removal (finished by the card's own onAnimationEnd below).
 
@@ -3109,6 +3571,13 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	};
 
+	// #endregion delPicFun
+
+	// #endregion Picker Removal
+
+
+
+	// #region Picker Draft
 
 	const [ newDraStr, setNewDraStr ] = React.useState( null );  // What: New Draft String And Setter. Why: The "Create Picker" trigger creates a REAL (but hidden) picker immediately; only its id is held here, since the card below always reads the LIVE picker from staAppObj.pickers, same as any other card. How: This is set by staNewFun and cleared by canNewFun/savNewFun.
 	const [ draIteBoo, setDraIteBoo ] = React.useState( false ); // What: Draft Items Boolean And Setter. Why: The draft's own Items section starts closed, unlike a real picker's default-open one, since there's nothing to add to yet. How: This is toggled by the footer's "Add Items" button or the Items section's own header.
@@ -3143,6 +3612,31 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 	}, [ penAutBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to run when the one-shot flag itself is set. How: penAutBoo is the single value this effect's own guard is built around.
 
 
+	// #region staNewFun
+
+	/**
+	 * staNewFun = Start New Function
+	 *
+	 * @summary
+	 * Starts a new picker draft from the Create Picker button. It creates a real
+	 * but hidden picker right away, pre-filled from whichever Group, Type, and
+	 * Conditionals filters are active (a Type filter only counts when it names a
+	 * real picker mode), then marks it as the in-progress draft with its Items
+	 * section closed.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * staNewFun() // => void
+	 * ```
+	 *
+	*/
+
 	const staNewFun = () => { // What: Start New Function. Why: The "Create Picker" button creates a real, hidden picker immediately, pre-filled from whichever Group/Type/Conditional filter is currently active. How: This calls addPicFun with those defaults and opens the resulting id as the new draft.
 
 
@@ -3169,6 +3663,31 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	};
 
+	// #endregion staNewFun
+
+
+	// #region canNewFun
+
+	/**
+	 * canNewFun = Cancel New Function
+	 *
+	 * @summary
+	 * Discards the in-progress picker draft. It deletes the hidden draft picker,
+	 * which already cascades to its items and daily-generator membership, then
+	 * clears the draft state so the draft card disappears.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * canNewFun() // => void
+	 * ```
+	 *
+	*/
 
 	const canNewFun = () => { // What: Cancel New Function. Why: Cancel discards the whole draft; delPicFun already cascades to its own items and daily-generator membership, so there's nothing else to clean up. How: This removes the draft picker (if one exists) and clears both draft-tracking states.
 
@@ -3183,6 +3702,31 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	};
 
+	// #endregion canNewFun
+
+
+	// #region savNewFun
+
+	/**
+	 * savNewFun = Save New Function
+	 *
+	 * @summary
+	 * Saves the in-progress picker draft. Every field was already written live
+	 * while editing, so saving only clears the picker's hidden flag to reveal it
+	 * on every other tab, then clears the draft state.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * savNewFun() // => void
+	 * ```
+	 *
+	*/
 
 	const savNewFun = () => { // What: Save New Function. Why: Save reveals the picker everywhere else by clearing its own hidden flag; every other field was already committed live via the same actStoObj.updPicFun calls a real picker's own Controls uses. How: This clears hidden on the draft picker and clears both draft-tracking states.
 
@@ -3196,6 +3740,8 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 	};
+
+	// #endregion savNewFun
 
 
 
@@ -3221,11 +3767,17 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	}, [ newDraStr ] ); // What: Effect Dependency Array. Why: This only ever needs to run when a brand-new draft actually appears. How: newDraStr is the single value this effect's own guard is built around.
 
+	// #endregion Picker Draft
+
+
 
 	const IteEdiCom = EntEdiCom; // What: Item Editor Component. Why: This scopes EntEdiCom under a name matching this file's own component-naming convention, without renaming the actual import. How: This is reused so Today and Data stay exact copies, same pattern as the Reminders editor.
 
 	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: Every picker card's own open/closed state, plus its nested Controls/Items disclosures, are all persisted through this one map. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
 
+
+
+	// #region Filter Rows
 
 	const exiGroArr = React.useMemo( () => { // What: Existing Group Array. Why: The Group filter row needs every distinct, non-hidden group name, alphabetical. How: This walks allPicArr once, collecting each group name the first time it's seen.
 
@@ -3410,9 +3962,15 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	}, [ allPicArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, conIteArr.length, filConStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.
 
+	// #endregion Filter Rows
+
+
 
 	const togSecFun = ( secIdeStr ) => actStoObj.togColFun( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls togColFun with defaultCollapsed true.
 
+
+
+	// #region Section List
 
 	const remTypBoo = filTypStr === 'all' || filTypStr === 'reminders'; // What: Reminders Type Boolean. Why: The Type filter must allow reminders. How: This passes 'all' and 'reminders'.
 	const allConBoo = filConStr === 'all';                              // What: All Conditionals Boolean. Why: Reminders and the Conditionals manager both hide while a single conditional is filtered. How: This checks the Conditionals filter is at its default.
@@ -3569,6 +4127,8 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	const shoCreBoo = notDraBoo && nonConBoo && nonRemBoo; // What: Show Create Boolean. Why: The Create Picker button only shows when a new draft makes sense. How: This ANDs the 3 checks above.
 
+	// #endregion Section List
+
 
 
 	return (
@@ -3580,8 +4140,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 			<HelOveCom
 				actModBoo={ helOpeBoo }
 				helIteArr={ DAT_HEL_ARR }
+
 				onCloAllFun={ helExiFun }
 			/>{ /* What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is driven by helOpeBoo and this tab's own DAT_HEL_ARR catalog. */ }
+
+
 
 			<header className='stat-h'>{ /* What: Header Element. Why: This tab's own kicker, brand link, and lead paragraphs all belong in one landmark. How: This wraps the kicker row and the lead/warning paragraphs below. */ }
 
@@ -3591,21 +4154,29 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					<div className='kicker stat-h-kicker'>Data</div>{ /* What: Kicker Div Element. Why: Every tab needs its own small kicker label above the title. How: This renders the literal text "Data". */ }
 
+
+
 					<HelButCom
 						actModBoo={ helOpeBoo }
+
 						onClick={ () => setHelOpeBoo( ( preOpeBoo ) => !preOpeBoo ) }
 					/>{ /* What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This flips helOpeBoo on click. */ }
 
 
 				</div>
 
+
+
 				<div className='stat-h-lead'>{ /* What: Lead Div Element. Why: The brand link and the page title belong together at the top of the header. How: This wraps the brand button and the section-h div below. */ }
 
 
 					<button
 						className='brand-mark'
+
 						type='button'
+
 						aria-label='Ease My Life link to go to the Today page'
+
 						onClick={ onNavHomFun }
 					>{ /* What: Brand Button Element. Why: The logo/wordmark also works as a shortcut back to the Today tab. How: This wraps the theme-wired logo svg below and jumps to Today on click. */ }
 
@@ -3613,6 +4184,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 						<svg
 							fill='none'
 							viewBox='8 8 528 528'
+
 							aria-hidden='true'
 						>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark, matching the Today/Stats headers (currentColor to accent, grid lines to accent-soft) so every tab reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
 
@@ -3622,6 +4194,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<clipPath
 									id='braMarCli--dat'
+
 									clipPathUnits='userSpaceOnUse'
 								>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, given a unique id so it can be referenced via url(#...). */ }
 
@@ -3668,8 +4241,6 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							</g>
 
-
-
 							<rect
 								style={{
 									stroke         : 'currentColor',
@@ -3677,6 +4248,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 									strokeLinejoin : 'round',
 									strokeWidth    : 16
 								}}
+
 								height='512'
 								rx='75'
 								ry='75'
@@ -3685,12 +4257,12 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 								y='16'
 							/>{ /* What: Badge Rect Element. Why: The logo needs a visible rounded-square border/badge behind the glyph. How: This draws the same rounded-square shape as the clip rect above, but stroked and visible instead of hidden in defs. */ }
 
-
 							<path
 								style={{
 									fill   : 'currentColor',
 									stroke : 'currentColor'
 								}}
+
 								clipPath='url(#braMarCli--dat)'
 								d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'
 								strokeLinecap='round'
@@ -3704,6 +4276,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					</button>
 
+
 					<div className='section-h'>{ /* What: Section Header Div Element. Why: The page's own title needs its own wrapper. How: This wraps the h1 below. */ }
 
 
@@ -3715,12 +4288,16 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				</div>
 
+
+
 				<p className='section-sub'>All your created items can be edited here, including conditionals, reminders, pickers and all of their items. You can use the <button className='sub-tablink' type='button' onClick={ () => onNavTabFun && onNavTabFun( 'stats' ) }>Stats page</button> to view how they are performing and then adjust their numbers here to get them exactly where you want them.</p>{ /* What: Lead Paragraph Element. Why: The header needs a short explanation of what this tab is for, plus a shortcut to Stats. How: This renders the lead text with an inline link that switches to the Stats tab when onNavTabFun is available. */ }
 
 				<p className='section-sub'><strong>WARNING:</strong> Manually changing any of these values will affect the Stats page's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats page's accuracy.</p>{ /* What: Warning Paragraph Element. Why: Manually editing these values has a real, disclosed side effect on Stats. How: This renders the literal warning text. */ }
 
 
 			</header>
+
+
 
 			<div className='stat-filters'>{ /* What: Filters Div Element. Why: The Group/Type/Conditionals/Show filter rows all belong in one wrapper. How: This conditionally renders each row below, per whether it has more than one real choice. */ }
 
@@ -3735,18 +4312,23 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						<div
 							ref={ groRowRef }
+
 							className='picker-groups stat-scope-groups'
-							role='tablist'
+
 							aria-label='Filter pickers by group'
+							role='tablist'
 						>{ /* What: Group Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every existing group. How: This renders the All pill, then maps exiGroArr to one pill each. */ }
 
 
 							<button
 								className={ ` picker-group-pill   ${ filGroStr === 'all' ? 'is-on' : '' } ` }
-								type='button'
+
 								disabled={ disGroBoo }
-								role='tab'
+								type='button'
+
 								aria-selected={ filGroStr === 'all' }
+								role='tab'
+
 								onClick={ () => setFilGroStr( 'all' ) }
 							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the group filter entirely. How: This sets filGroStr to 'all' on click, disabled during the matching tour step. */ }
 
@@ -3763,11 +4345,15 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<button
 									key={ groCurStr }
+
 									className={ ` picker-group-pill   ${ filGroStr === groCurStr ? 'is-on' : '' } ` }
-									type='button'
+
 									disabled={ disGroBoo }
-									role='tab'
+									type='button'
+
 									aria-selected={ filGroStr === groCurStr }
+									role='tab'
+
 									onClick={ () => setFilGroStr( groCurStr ) }
 								>{ /* What: Group Pill Button Element. Why: Clicking a pill narrows the list to just that group. How: This sets filGroStr to groCurStr on click, disabled during the matching tour step. */ }
 
@@ -3791,6 +4377,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				) }
 
+
 				{ ( exiModArr.length > 1 || conIteArr.length > 0 ) && ( // What: Type Row Check. Why: A single-mode app with no conditionals has nothing meaningful to filter by type. How: This renders the Type row only while there's more than one mode or at least one conditional.
 
 
@@ -3801,18 +4388,23 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						<div
 							ref={ typRowRef }
+
 							className='picker-groups stat-scope-groups stat-scope-groups--type'
-							role='tablist'
+
 							aria-label='Filter pickers by type'
+							role='tablist'
 						>{ /* What: Type Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every mode/Conditionals/Reminders pill, sorted together alphabetically. How: This renders the All pill, then maps the combined, sorted entry list to one pill each. */ }
 
 
 							<button
 								className={ ` picker-group-pill   ${ filTypStr === 'all' ? 'is-on' : '' } ` }
-								type='button'
+
 								disabled={ disGroBoo }
-								role='tab'
+								type='button'
+
 								aria-selected={ filTypStr === 'all' }
+								role='tab'
+
 								onClick={ () => setFilTypStr( 'all' ) }
 							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the type filter entirely. How: This sets filTypStr to 'all' on click, disabled during the matching tour step. */ }
 
@@ -3887,11 +4479,15 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<button
 										key={ filEntObj.keyStr }
+
 										className={ ` picker-group-pill   ${ filEntObj.selBoo ? 'is-on' : '' } ` }
-										type='button'
+
 										disabled={ disGroBoo }
-										role='tab'
+										type='button'
+
 										aria-selected={ filEntObj.selBoo }
+										role='tab'
+
 										onClick={ filEntObj.cliFun }
 									>{ /* What: Type Pill Button Element. Why: Clicking a pill narrows the list to that type. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. */ }
 
@@ -3915,6 +4511,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				) }
 
+
 				{ conIteArr.length > 0 && ( // What: Conditional Row Check. Why: A conditional-free app has nothing to filter by conditional. How: This renders the Conditionals row only while conIteArr has at least one entry.
 
 
@@ -3925,18 +4522,23 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						<div
 							ref={ conRowRef }
+
 							className='picker-groups stat-scope-groups stat-scope-groups--cond'
-							role='tablist'
+
 							aria-label='Filter pickers by conditional'
+							role='tablist'
 						>{ /* What: Conditional Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every conditional. How: This renders the All pill, then maps the alphabetized conditional list to one pill each. */ }
 
 
 							<button
 								className={ ` picker-group-pill   ${ filConStr === 'all' ? 'is-on' : '' } ` }
-								type='button'
+
 								disabled={ disGroBoo }
-								role='tab'
+								type='button'
+
 								aria-selected={ filConStr === 'all' }
+								role='tab'
+
 								onClick={ () => setFilConStr( 'all' ) }
 							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the conditional filter entirely. How: This sets filConStr to 'all' on click, disabled during the matching tour step. */ }
 
@@ -3953,11 +4555,15 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<button
 									key={ conCurObj.id }
+
 									className={ ` picker-group-pill   ${ filConStr === conCurObj.id ? 'is-on' : '' } ` }
-									type='button'
+
 									disabled={ disGroBoo }
-									role='tab'
+									type='button'
+
 									aria-selected={ filConStr === conCurObj.id }
+									role='tab'
+
 									onClick={ () => { // What: On Click Handler. Why: Picking a conditional pill switches the list to that conditional alone. How: This sets the conditional filter and resets the group and type filters.
 
 
@@ -3989,6 +4595,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				) }
 
+
 				<div className='stat-filter-row'>{ /* What: Show Filter Row Div Element. Why: The Show label and its own box rail belong together. How: This wraps the lbl span and the box rail below. */ }
 
 
@@ -3997,6 +4604,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 					<div
 						key={ filGroStr + '|' + filTypStr }
 						ref={ scoRowRef }
+
 						className='picker-tabs stat-scope-tabs'
 					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shoEntArr's own remaining entries to one box each. */ }
 
@@ -4006,9 +4614,12 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<button
 								className={ ` picker-tab   picker-tab--enter   ${ curScoStr === 'all' ? 'is-on' : '' } ` }
+
 								style={{ animationDelay : '0ms' }}
-								type='button'
+
 								disabled={ disShoBoo }
+								type='button'
+
 								onClick={ () => selScoFun( 'all' ) }
 							>{ /* What: All Box Button Element. Why: Selecting this box shows every visible section at once. How: This calls selScoFun('all') on click, disabled during the matching tour step. */ }
 
@@ -4071,11 +4682,16 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<button
 									key={ filEntObj.keyStr }
+
 									className={ ` picker-tab   picker-tab--enter   ${ filEntObj.selBoo ? 'is-on' : '' } ` }
+
 									style={{ animationDelay : ( filIndNum + 1 ) * 40 + 'ms' }}
+
 									data-picker-id={ filEntObj.ideStr }
-									type='button'
+
 									disabled={ disShoBoo }
+									type='button'
+
 									onClick={ filEntObj.cliFun }
 								>{ /* What: Picker Tab Button Element. Why: Each tab narrows the list to one picker. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. */ }
 
@@ -4099,22 +4715,28 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 			</div>
 
+
+
 			<div className='data-sort-bar'>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SorSelCom below. */ }
 
 
 				<SorSelCom
-					selIdeStr='data-section-sort'
 					labTexStr='Sort'
 					optLisArr={ SEC_SOR_ARR }
+					selIdeStr='data-section-sort'
 					value={ secSorStr }
+
 					onChange={ ( keyValStr ) => actStoObj.setSorFun( 'sections', keyValStr ) }
 				/>{ /* What: Sort Select Component. Why: This is the actual control for reordering Conditionals/Reminders/every picker card below. How: This commits the chosen key as this page's own persisted sections sort. */ }
 
 
 			</div>
 
+
+
 			<div
 				key={ filGroStr + '::' + curScoStr + '::' + filConStr }
+
 				className='data-list'
 			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. */ }
 
@@ -4135,6 +4757,8 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				) }
 
+
+
 				{ shoSecArr.map( ( entCurObj, entIndNum ) => { // What: Shown Section Map. Why: One card is needed per section entry, plus (last) the in-progress draft. How: This branches on entCurObj.kinStr, rendering ConManCom/RemManCom directly or a full picker card otherwise.
 
 
@@ -4146,8 +4770,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<ConManCom
 								key='cnd-shown'
-								staAppObj={ staAppObj }
+
 								actStoObj={ actStoObj }
+								staAppObj={ staAppObj }
 							/> // What: Conditional Manager Component. Why: The Conditionals section renders as its own manager card. How: This is passed the app state and actions.
 
 
@@ -4166,8 +4791,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<RemManCom
 								key='rem-shown'
-								staAppObj={ staAppObj }
+
 								actStoObj={ actStoObj }
+								staAppObj={ staAppObj }
 							/> // What: Reminder Manager Component. Why: The Reminders section renders as its own manager card. How: This is passed the app state and actions.
 
 
@@ -4274,12 +4900,16 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 						<section
 							key={ picCurObj.id }
 							ref={ isaDraBoo ? draCarRef : undefined }
+
 							className={ ` cat cat--enter   ${ allVacBoo ? 'is-vac' : '' }   ${ rmvPicStr === picCurObj.id ? 'cat--removing' : '' }   ${ hetPicBoo ? 'ob-tour-pulse' : '' } ` }
+
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
 								...( isaDraBoo ? { scrollMarginTop : 14 } : {} )
 							}}
+
 							data-picker-id={ picCurObj.id }
+
 							onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: A removed picker must leave the store only after its exit animation has played. How: This deletes the picker and clears rmvPicStr once the card itself (not a child) finishes animating while marked for removal.
 
 
@@ -4299,6 +4929,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<header
 								className='cat-h'
+
 								onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: Clicking anywhere on the header outside a real button toggles the card. How: This toggles the section unless it's a draft, the tour is guarding the header, or the click landed on a button.
 
 
@@ -4318,9 +4949,12 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<button
 									className='cat-h-l'
-									type='button'
+
 									disabled={ isaDraBoo || detPicBoo }
+									type='button'
+
 									aria-expanded={ secOpeBoo }
+
 									onClick={ () => togSecFun( picCurObj.id ) }
 								>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the card. How: This is disabled for a draft (always expanded) or during the guarded tour step. */ }
 
@@ -4367,12 +5001,16 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<InfTipCom
 											className='cat-mode-label'
+
 											labTexStr={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }
 											trnOnlBoo
 										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
 
+
+
 										<InfTipCom
 											className='cat-group'
+
 											labTexStr={ picCurObj.group }
 											trnOnlBoo
 										>{ picCurObj.group }</InfTipCom>{ /* What: Info Tip Component. Why: A long group name can also still truncate at this width. How: This reveals the full name on demand only when it's actually truncated. */ }
@@ -4382,9 +5020,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<button
 										className='vac-toggle'
-										aria-pressed={ !!allVacBoo }
+
 										aria-label={ `${ allVacBoo ? 'Activate' : 'Deactivate' } all items in ${ picCurObj.name }` }
+										aria-pressed={ !!allVacBoo }
 										title='Active toggle for all items in this picker'
+
 										onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: The vacation button sits inside the clickable header, so it must act alone. How: This stops propagation, then toggles the picker's vacation.
 
 
@@ -4404,6 +5044,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<span
 											key={ allVacBoo ? 'inactive' : 'active' }
+
 											className='set-sub-fade'
 										>{ allVacBoo ? 'Inactive' : 'Active' }</span>{ /* What: Toggle Label Span Element. Why: The toggle also needs its own live text, cross-faded via its own key change. How: This renders "Inactive" while allVacBoo, "Active" otherwise. */ }
 
@@ -4416,9 +5057,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							</header>
 
+
+
 							<ColDisCom
-								open={ secOpeBoo }
 								isaInsBoo={ isaDraBoo }
+								open={ secOpeBoo }
 							>{ /* What: Collapse Disclosure Component. Why: The card's own body (Controls + Items) only needs to exist while it's actually expanded, instant (no animation) for a brand-new draft. How: This opens per secOpeBoo. */ }
 
 
@@ -4427,9 +5070,12 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<button
 										className={ ` rd-ctl   ${ hetConBoo ? 'ob-tour-pulse' : '' } ` }
-										type='button'
+
 										disabled={ detConBoo }
+										type='button'
+
 										aria-expanded={ !conColBoo }
+
 										onClick={ () => actStoObj.togColFun( picCurObj.id + ':controls' ) }
 									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. */ }
 
@@ -4458,25 +5104,28 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									</button>
 
+
+
 									<ColDisCom
-										open={ !conColBoo }
 										isaInsBoo={ isaDraBoo }
+										open={ !conColBoo }
 									>{ /* What: Collapse Disclosure Component. Why: PicConCom itself is expensive/stateful enough that it only needs to exist while the Controls disclosure is actually open. How: This opens per !conColBoo. */ }
 
 
 										<PicConCom
-											picDatObj={ picCurObj }
-											picIteArr={ picIteArr }
-											incDaiBoo={ incDaiBoo }
+											actStoObj={ actStoObj }
 											allGroArr={ exiGroArr }
 											conIteArr={ staAppObj.conditionals || [] }
 											daiIdeArr={ staAppObj.daily.pickerIds }
-											actStoObj={ actStoObj }
+											hasNewBoo={ ownNewBoo }
+											incDaiBoo={ incDaiBoo }
 											isaNewBoo={ isaDraBoo }
 											iteSecBoo={ draIteBoo }
-											hasNewBoo={ ownNewBoo }
+											picDatObj={ picCurObj }
+											picIteArr={ picIteArr }
+
+											onCanNewFun={ canNewFun }
 											onColConFun={ () => actStoObj.togColFun( picCurObj.id + ':controls' ) }
-											onReqDelFun={ () => delPicFun( picCurObj.id ) }
 											onOpeSecFun={ () => { // What: On Open Section Handler. Why: The draft's first "Add Items" click must open the Items section and also queue a ready-to-type new item. How: This opens draIteBoo and arms penAutBoo together.
 
 
@@ -4485,18 +5134,23 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 											} }
+											onReqDelFun={ () => delPicFun( picCurObj.id ) }
 											onSavNewFun={ savNewFun }
-											onCanNewFun={ canNewFun }
 										/>{ /* What: Picker Controls Component. Why: This is this picker's own full Controls body. How: This is passed the live picker/items/schedule fields and every handler this card's own draft lifecycle needs. */ }
 
 
 									</ColDisCom>
 
+
+
 									<button
 										className={ ` rd-ctl   ${ hetIteBoo ? 'ob-tour-pulse' : '' } ` }
-										type='button'
+
 										disabled={ detIteBoo }
+										type='button'
+
 										aria-expanded={ !iteColBoo }
+
 										onClick={ () => isaDraBoo ? setDraIteBoo( ( preOpeBoo ) => !preOpeBoo ) : actStoObj.togColFun( picCurObj.id + ':items' ) }
 									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. */ }
 
@@ -4525,6 +5179,8 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									</button>
 
+
+
 									<ColDisCom open={ !iteColBoo }>{ /* What: Collapse Disclosure Component. Why: The item rows themselves only need to exist while the Items disclosure is actually open. How: This opens per !iteColBoo. */ }
 
 
@@ -4536,6 +5192,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 												<InfTipCom
 													className='rd-add is-tour-disabled'
+
 													actNamStr={ `Add to ${ picCurObj.name.toLowerCase() }` }
 													labTexStr='This button is disabled until all tutorials are completed.'
 												>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. */ }
@@ -4555,7 +5212,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 												<button
 													className='rd-add'
+
 													disabled={ detAddBoo }
+
 													onClick={ staAddFun }
 												>{ /* What: Add Button Element. Why: This is the actual "create a brand-new item" affordance. How: This calls staAddFun on click, disabled during the guarded tour step. */ }
 
@@ -4571,19 +5230,24 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 											) }
 
+
+
 											{ picIteArr.length > 1 && ( // What: Multiple Items Check. Why: A sort control is only useful once there's more than one item to sort. How: This renders SorSelCom only while picIteArr has 2 or more entries.
 
 
 												<SorSelCom
-													selIdeStr={ `item-sort-${ picCurObj.id }` }
 													labTexStr='Sort'
 													optLisArr={ pisOptFun( picCurObj.mode ) }
+													selIdeStr={ `item-sort-${ picCurObj.id }` }
 													value={ iteSorStr }
+
 													onChange={ ( keyValStr ) => actStoObj.setSorFun( picCurObj.id, keyValStr ) }
 												/> // What: Sort Select Component. Why: This is the actual control for reordering this picker's own item list, mode-dependent per pisOptFun. How: This commits the chosen key as this picker's own persisted item sort.
 
 
 											) }
+
+
 
 											{ disIteArr.map( ( iteCurObj ) => { // What: Item Row Map. Why: One collapsible row is needed per item, in disIteArr's own (freeze-aware) order. How: This computes this item's own meta text, then renders its closed/open row and editor below.
 
@@ -4611,7 +5275,9 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 													<div
 														key={ iteCurObj.id }
 														ref={ iteOpeBoo ? opeRowRef : undefined }
+
 														className={ ` rd-item   ${ iteCurObj.vacation ? 'is-vac' : '' }   ${ iteOpeBoo ? 'is-editing' : '' }   ${ insIteStr === iteCurObj.id ? 'rd-item--insert' : '' }   ${ hetRowBoo ? 'is-tour-target ob-tour-pulse' : '' } ` }
+
 														onAnimationEnd={ () => { if ( insIteStr === iteCurObj.id ) setInsIteStr( null ); } }
 													>{ /* What: Row Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. */ }
 
@@ -4641,13 +5307,16 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 																		} }
+
 																		className='rd-name-input'
+
+																		maxLength={ 60 }
+																		placeholder='Item name'
 																		type='text'
 																		value={ iteCurObj.name }
-																		placeholder='Item name'
-																		maxLength={ 60 }
+
 																		aria-label='Item name'
-																		onChange={ ( chaEveObj ) => actStoObj.updIteFun( iteCurObj.id, { name : chaEveObj.target.value } ) }
+
 																		onBlur={ ( bluEveObj ) => { // What: On Blur Handler. Why: Leaving the name field should commit a tidied final name. How: This trims the typed value and renames the item only when the result is non-empty.
 
 
@@ -4658,6 +5327,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 																		} }
+																		onChange={ ( chaEveObj ) => actStoObj.updIteFun( iteCurObj.id, { name : chaEveObj.target.value } ) }
 																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 																	/>{ /* What: Name Input Element. Why: An item's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. */ }
 
@@ -4666,8 +5336,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 																<button
 																	className='rd-chev chev is-open'
+
 																	type='button'
+
 																	aria-label='Collapse'
+
 																	onClick={ () => keeCloFun( iteCurObj.id ) }
 																>{ /* What: Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler IteEdiCom's own Save uses. */ }
 
@@ -4689,8 +5362,11 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 															<button
 																className='rd-row'
+
 																type='button'
+
 																aria-expanded={ iteOpeBoo }
+
 																onClick={ () => setOpeIteStr( iteOpeBoo ? null : iteCurObj.id ) }
 															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles opeIteStr between null and iteCurObj.id. */ }
 
@@ -4707,6 +5383,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 																<span
 																	className='rd-chev chev'
+
 																	aria-hidden='true'
 																>{ /* What: Chevron Span Element. Why: The open row shows a decorative chevron at its end. How: This is hidden from screen readers and wraps the chev icon. */ }
 
@@ -4725,6 +5402,8 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 														) }
 
+
+
 														<ColDisCom open={ iteOpeBoo }>{ /* What: Collapse Disclosure Component. Why: This row's own editor only needs to exist while it's actually open. How: This opens only while iteOpeBoo is true. */ }
 
 
@@ -4733,13 +5412,14 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 																<IteEdiCom
 																	ref={ iteOpeBoo ? opeEdiRef : undefined }
-																	iteDatObj={ iteCurObj }
-																	picDatObj={ picCurObj }
+
 																	actStoObj={ actStoObj }
-																	picIteArr={ picIteArr }
 																	isaNewBoo={ newIteRef.current === iteCurObj.id }
 																	iteCouNum={ picIteArr.length }
-																	onCloEdiFun={ () => keeCloFun( iteCurObj.id ) }
+																	iteDatObj={ iteCurObj }
+																	picDatObj={ picCurObj }
+																	picIteArr={ picIteArr }
+
 																	onCanEdiFun={ ( snaIteObj ) => { // What: On Cancel Handler. Why: Cancelling a brand-new item discards it, while cancelling an existing one reverts it. How: This removes a new item after its collapse animation, otherwise restores the pre-edit snapshot, closing the row either way.
 
 
@@ -4771,6 +5451,7 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 																	} }
+																	onCloEdiFun={ () => keeCloFun( iteCurObj.id ) }
 																	onDelIteFun={ () => { // What: On Delete Handler. Why: Deleting an item should let its row collapse before the store drops it. How: This closes the row, then removes the item right away under reduced motion or after the 280ms collapse otherwise.
 
 
@@ -4831,13 +5512,17 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				} ) }
 
+
+
 				{ shoCreBoo && ( // What: Create Picker Check. Why: A new PICKER draft has nothing to belong to while Type is filtered to Conditionals/Reminders, and only one draft can be in progress at a time. How: This renders the trigger only while neither condition applies.
 
 
 					<button
 						className='cat-create-btn'
-						type='button'
+
 						disabled={ disCreBoo }
+						type='button'
+
 						onClick={ staNewFun }
 					>{ /* What: Create Button Element. Why: This is the only place a brand-new picker can be started from this tab. How: This calls staNewFun on click, disabled during the guarded tour step. */ }
 
@@ -4867,8 +5552,14 @@ function TabDatCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 // #endregion TabDatCom
 
+// #endregion Components
 
 
-export { TabDatCom }; // What: Named Exports. Why: app.jsx imports this by this exact name; every other binding in this file is internal-only. How: This re-exports the TabDatCom function declared above, unrenamed since app.jsx already depends on it.
+
+// #region Exports
+
+export { TabDatCom }; // What: Named Export. Why: app.jsx renders this as the Data tab itself. How: This exports TabDatCom by name; every other binding in this file is internal-only.
+
+// #endregion Exports
 
 
