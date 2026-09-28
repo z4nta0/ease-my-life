@@ -1,0 +1,498 @@
+
+
+
+/**
+ * group-header.module.css = Group Header Module
+ *
+ * @summary
+ * Styles for GroHeaCom, the header over each group on the Today tab: the
+ * name with its done count and Day Log chip on one line, and a row of
+ * progress dashes that fill as the group's rows are done, the freshest one
+ * sweeping in. In Edit Mode the header adds a drag grip and turns the name
+ * into a button that opens an inline rename field. Below the header, a
+ * banner confirms merging two groups, or warns in warm tones when a rename
+ * collides with an existing name.
+ *
+ * The header, count, confirm message, and action row declarations are copied
+ * from shared classes the Reminders section still uses, until the
+ * design-system pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region group-h */
+
+.group-h { /* What: Group Header. Why: The name cluster and the progress dashes share one row, pushed to opposite ends. How: This spreads them apart in a centered flex row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 16px;
+	justify-content : space-between;
+
+
+}
+
+
+
+/* #region group-h-l */
+
+.group-h-l { /* What: Group Header Left. Why: The grip, name, count, and Day Log chip read as one left cluster. How: This lines them up on their text baseline, allowing the cluster to shrink. */
+
+
+	align-items : baseline;
+	display     : flex;
+	gap         : 10px;
+	min-width   : 0;
+
+
+}
+
+.group-grip { /* What: Group Grip. Why: In Edit Mode a handle lets the whole group be dragged to a new spot. How: This draws a small muted square handle with a grab cursor that owns the touch gesture and tints on hover. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	cursor          : grab;
+	display         : inline-flex;
+	height          : 26px;
+	justify-content : center;
+	margin-left     : -4px;
+	touch-action    : none; /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
+	transition      : color .12s, background .12s;
+	width           : 26px;
+
+
+}
+.group-grip:hover { /* What: Hovered Group Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its glyph. */
+
+
+	background : var(--accent-soft);
+	color      : var(--text);
+
+
+}
+.group-grip:active { /* What: Pressed Group Grip. Why: A press on the handle starts a drag. How: This switches to the grabbing cursor. */
+
+
+	cursor : grabbing;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Grip. Why: Someone who asked for less motion shouldn't see the handle's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-grip { /* What: Still Group Grip. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.group-name-input { /* What: Group Name Input. Why: Renaming happens in place, in a field that matches the name it replaces. How: This styles an accent-framed field in the name's own type and slides it in from the left. */
+
+
+	animation        : groupNameIn .16s cubic-bezier(0.4, 0, 0.2, 1) both;
+	background       : var(--surface);
+	border           : 1px solid var(--accent);
+	border-radius    : 8px;
+	color            : var(--text);
+	font-family      : inherit;
+	font-size        : 18px;
+	font-weight      : 500;
+	letter-spacing   : -0.015em;
+	margin           : -3px 0;
+	max-width        : 240px;
+	min-width        : 0;
+	outline          : none;
+	padding          : 2px 8px;
+	transform-origin : left center;
+	width            : auto;
+
+
+}
+.group-name-input[data-name-invalid-active] { /* What: Invalid Group Name Input. Why: A name that collides with another group should be flagged as it's typed. How: This switches the frame to the warm color. */
+
+
+	border-color : var(--warm);
+
+
+}
+.group-name-input.is-closing { /* What: Closing Group Name Input. Why: Closing the field should ease away rather than vanish. How: This slides it back out to the left. */
+
+
+	animation : groupNameOut .15s cubic-bezier(0.4, 0, 0.2, 1) both;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Name Input. Why: Someone who asked for less motion shouldn't see the field slide in or out. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-name-input,
+	.group-name-input.is-closing { /* What: Still Group Name Input. Why: The field should simply appear and disappear. How: This turns both slides off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes groupNameIn { /* What: Group Name In. Why: A short slide reads as the name turning into a field. How: This fades the field in from slightly left. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX(-5px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes groupNameOut { /* What: Group Name Out. Why: The field should leave the way it came. How: This fades the field out toward the left. */
+
+
+	from {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateX(-5px);
+
+
+	}
+
+
+}
+
+.group-name { /* What: Group Name. Why: The group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
+
+
+	font-size      : 18px;
+	font-weight    : 500;
+	letter-spacing : -0.015em;
+	margin         : 0;
+	text-wrap      : pretty;
+
+
+}
+.group-name--editable { /* What: Editable Group Name. Why: In Edit Mode the name is a button that opens the rename field, and should look like the name with a hint of interactivity. How: This resets the button to the name's type, pads it without shifting the layout, and tints it on hover. */
+
+
+	align-items    : center;
+	background     : none;
+	border         : 0;
+	border-radius  : 7px;
+	color          : var(--text);
+	cursor         : text;
+	display        : inline-flex;
+	font-family    : inherit;
+	font-size      : 18px;
+	font-weight    : 500;
+	gap            : 7px;
+	letter-spacing : -0.015em;
+	margin         : -2px -6px;
+	padding        : 2px 6px;
+	transition     : background .12s, color .12s;
+
+
+}
+.group-name--editable:hover { /* What: Hovered Editable Group Name. Why: The name should show it can be clicked. How: This gives it the accent tint. */
+
+
+	background : var(--accent-soft);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Editable Group Name. Why: Someone who asked for less motion shouldn't see the tint fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-name--editable { /* What: Still Editable Group Name. Why: The tint should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.group-name--editable svg { /* What: Editable Group Name Pencil. Why: The pencil should only appear on hover, so the name reads normally at rest. How: This hides the muted glyph until hover, fading it in. */
+
+
+	color      : var(--muted);
+	opacity    : 0;
+	transition : opacity .12s;
+
+
+}
+.group-name--editable:hover svg { /* What: Hovered Editable Group Name Pencil. Why: Hover reveals the edit affordance. How: This fades the pencil in. */
+
+
+	opacity : 0.8;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Editable Group Name Pencil. Why: Someone who asked for less motion shouldn't see the pencil fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-name--editable svg { /* What: Still Editable Group Name Pencil. Why: The pencil should simply appear. How: This turns the fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region group-count */
+
+.group-count { /* What: Group Count. Why: The done and total counts read as one small figure beside the name. How: This sets them in small muted mono with steady-width digits, on the name's baseline. */
+
+
+	align-items          : baseline;
+	color                : var(--muted);
+	display              : inline-flex;
+	font-family          : var(--font-mono);
+	font-size            : 11.5px;
+	font-variant-numeric : tabular-nums;
+	gap                  : 4px;
+	letter-spacing       : 0.02em;
+
+
+}
+
+.group-done { /* What: Group Done Count. Why: The done count is the figure that changes, so it leads. How: This sets it in the full text color. */
+
+
+	color : var(--text);
+
+
+}
+
+.group-of { /* What: Group Total Count. Why: The "of total" part should sit quieter than the done count. How: This fades it. */
+
+
+	opacity : 0.7;
+
+
+}
+
+/* #endregion group-count */
+
+/* #endregion group-h-l */
+
+
+
+/* #region group-progress */
+
+.group-progress { /* What: Group Progress. Why: One dash per row shows the group's progress at a glance. How: This lays the dashes out in a tight row. */
+
+
+	display : flex;
+	gap     : 4px;
+
+
+}
+
+.group-progress i { /* What: Group Progress Dash. Why: Each row gets a small dash that fills when it's done. How: This draws a small rounded grey bar that fades its fill and clips the sweep overlay. */
+
+
+	background    : var(--border);
+	border-radius : 2px;
+	height        : 4px;
+	overflow      : hidden;
+	position      : relative;
+	transition    : background .25s ease;
+	width         : 14px;
+
+
+}
+.group-progress i[data-dash-done-active] { /* What: Done Group Progress Dash. Why: A done row's dash should read as filled. How: This fills it with the accent. */
+
+
+	background : var(--accent);
+
+
+}
+.group-progress i.is-fresh { /* What: Fresh Group Progress Dash. Why: The dash for the row just done should sweep full rather than snap. How: This keeps the base grey while the overlay sweeps across it, and must stay after the done rule so it wins. */
+
+
+	background : var(--border);
+
+
+}
+.group-progress i.is-fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
+
+
+	animation        : global(dashSweep) 480ms cubic-bezier(.4,.6,.3,1) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background       : var(--accent);
+	border-radius    : inherit;
+	content          : '';
+	inset            : 0;
+	position         : absolute;
+	transform        : scaleX(0);
+	transform-origin : left center;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Progress Dash. Why: Someone who asked for less motion shouldn't see the dash fade or sweep; the done fill already shows the state. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-progress i { /* What: Still Group Progress Dash. Why: The fill should simply switch. How: This turns the fade off. */
+
+
+		transition : none;
+
+
+	}
+
+	.group-progress i.is-fresh::after { /* What: Hidden Group Progress Dash Sweep. Why: Without its sweep the overlay adds nothing. How: This turns the sweep off and hides the overlay. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+/* #endregion group-progress */
+
+/* #endregion group-h */
+
+
+
+/* #region group-merge-confirm */
+
+.group-merge-confirm { /* What: Group Merge Confirm. Why: Merging two groups needs a confirmation bar right under the header, like the app's other inline confirms. How: This lays out the message and actions in a wrapping accent-tinted bar that drops in. */
+
+
+	align-items     : center;
+	animation       : groupMergeIn .18s ease-out both;
+	background      : var(--accent-soft);
+	border          : 1px solid oklch(from var(--accent) l c h / 0.3);
+	border-radius   : var(--r-md, 12px);
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : 14px;
+	justify-content : space-between;
+	margin-top      : 4px;
+	padding         : 12px 14px;
+
+
+}
+.group-name-conflict { /* What: Group Name Conflict Banner. Why: A rename that collides with an existing name has nothing to confirm, only an error to fix. How: This recolors the same bar in warm tones. */
+
+
+	background   : oklch(from var(--warm) l c h / 0.08);
+	border-color : oklch(from var(--warm) l c h / 0.35);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Merge Confirm. Why: Someone who asked for less motion shouldn't see the bar drop in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-merge-confirm { /* What: Still Group Merge Confirm. Why: The bar should simply appear. How: This turns the drop-in off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes groupMergeIn { /* What: Group Merge In. Why: A short drop reads as the bar arriving under its header. How: This fades the bar in from slightly above. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-4px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.confirm-msg { /* What: Group Confirm Message. Why: The message explains what the bar is asking or warning about. How: This sets it in body text that takes the bar's free width and wraps cleanly. */
+
+
+	color       : var(--text);
+	flex        : 1;
+	font-size   : 13px;
+	line-height : 1.45;
+	min-width   : 180px;
+	text-wrap   : pretty;
+
+
+}
+.group-name-conflict .confirm-msg { /* What: Group Name Conflict Message. Why: The warning's text should match its warm bar. How: This sets it in a darkened warm color. */
+
+
+	color : oklch(0.45 0.13 50);
+
+
+}
+
+.rem-del-actions { /* What: Group Confirm Actions. Why: The Cancel and Merge buttons stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+
+
+	display : flex;
+	flex    : 0 0 auto;
+	gap     : 8px;
+
+
+}
+
+/* #endregion group-merge-confirm */
+
+
