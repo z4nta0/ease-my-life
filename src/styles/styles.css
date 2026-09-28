@@ -640,13 +640,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 
 .today-h-lead .today-title { flex: 1 1 auto; min-width: 0; }
 .today-h-lead .ring { margin-left: auto; flex: 0 0 auto; }
-
-.today-counter {
-  display: flex; flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
-}
 /* Sized to match the brand-mark's height so the title row reads as a
    logo / title / ring triad of equal vertical weight. */
 .ring { position: relative; width: calc(34px * 1.1 * 2); height: calc(34px * 1.1 * 2); }
@@ -1351,7 +1344,6 @@ button.check { cursor: pointer; }
 .today-foot-actions { display: flex; gap: 10px; align-items: center; justify-content: center; }
 .today-foot-actions + .today-foot-sub { margin-top: 8px; }
 .today-footer .btn { font-variant-numeric: tabular-nums; }
-.foot-sep { color: var(--border); margin: 0 2px; }
 .today-foot-sub { font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* Inline "regenerate" confirmation that replaces the footer button, matching the

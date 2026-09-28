@@ -1,36 +1,3 @@
-/* Tweaks panel — palette swatches */
-.palette-swatches {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-}
-.pal-swatch {
-  position: relative;
-  height: 38px;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.08);
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 14px 14px;
-  padding: 0;
-  cursor: default;
-  transition: border-color .12s, transform .08s;
-}
-.pal-swatch:hover { transform: translateY(-1px); }
-.pal-swatch.is-on { border-color: rgba(0,0,0,.7); border-width: 1.5px; }
-.pal-swatch i { display: block; height: 100%; }
-.pal-swatch span {
-  position: absolute;
-  bottom: 2px; left: 4px;
-  font-size: 9.5px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: rgba(0,0,0,.45);
-  text-shadow: 0 1px 0 rgba(255,255,255,.5);
-}
-.pal-swatch[title="night"] span { color: rgba(255,255,255,.6); text-shadow: none; }
-.pal-swatch[title="night"] i:first-child { border-color: transparent !important; }
-
 /* ─── Tab: Picker ────────────────────────────────────────────────────────── */
 
 .tab--picker {
@@ -177,7 +144,6 @@
 .cnd-pill--new.is-on { color: var(--accent); }
 .cnd-pill--new.is-on .cnd-pill-name { color: var(--accent); }
 .cnd-controls { display: flex; flex-direction: column; gap: 20px; padding-top: 4px; }
-.cnd-random-note { margin: 0; }
 .cnd-typectl { margin-top: 4px; display: flex; flex-direction: column; gap: 0; }
 /* Group the mode radio + its per-type controls tighter than the surrounding
    conditional fields, so they read as one related cluster. */
@@ -1320,16 +1286,6 @@ button.heat-cell.is-sel {
   white-space: nowrap;
 }
 .rank-freq-val.is-dim { color: oklch(from var(--muted) l c h / 0.7); }
-.rank-suffix { color: var(--muted); font-size: 0.92em; white-space: nowrap; }
-.rank-reroll {
-  flex: 0 0 auto;
-  display: inline-flex; align-items: center; gap: 2px;
-  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
-  font-size: 11px; color: var(--muted);
-  border: 0.5px solid var(--border); border-radius: 999px;
-  padding: 1px 6px 1px 5px;
-}
-.rank-reroll svg { opacity: 0.75; }
 .rank--breakdown.rank--breakdown { margin-top: 14px; }
 
 /* ─── Tab: Data ──────────────────────────────────────────────────────────── */
@@ -1513,18 +1469,6 @@ button.cat-h-l {
   background: oklch(from var(--surface) calc(l - 0.005) c h);
 }
 
-.item-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  border-bottom: 0.5px solid var(--border);
-}
-.item-row:last-child { border-bottom: 0; }
-.item-row.is-vac { opacity: 0.45; }
-.item-name { font-size: 14px; }
-
 .weight-stepper {
   display: inline-flex; align-items: center;
   border: 0.5px solid var(--border);
@@ -1547,109 +1491,24 @@ button.cat-h-l {
   font-variant-numeric: tabular-nums;
 }
 
-.item-vac, .item-del {
+.item-del {
   width: 28px; height: 28px;
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 8px;
   color: var(--muted);
   transition: background .12s, color .12s;
 }
-.item-vac:hover, .item-del:hover { background: var(--bg); color: var(--text); }
+.item-del:hover { background: var(--bg); color: var(--text); }
 .item-del:hover { color: oklch(0.5 0.18 25); }
 
-.item-row--add {
-  display: block;
-  padding: 8px 16px;
-}
-.add-input {
-  width: 100%;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
-  outline: none;
-  font-size: 14px;
-}
-.add-input:focus { border-color: var(--accent); }
-
-.add-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 10px 16px;
-  width: 100%;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-align: left;
-}
-.add-btn:hover { color: var(--accent); }
-
 /* Inline delete confirmation — shared by item rows and picker rows. */
-.item-row--confirm, .pm-row--confirm {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap;
-  background: oklch(from var(--warm) l c h / 0.08);
-}
 .confirm-msg {
   font-size: 13px; color: var(--text); text-wrap: pretty;
-}
-.confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
-.confirm-cancel, .confirm-go {
-  height: 30px; padding: 0 14px;
-  border-radius: var(--r-sm);
-  font-family: var(--font-sans); font-size: 13px; font-weight: 500;
-  cursor: pointer;
-  border: 0.5px solid var(--border);
-  transition: background .12s, color .12s, border-color .12s;
-}
-.confirm-cancel { background: var(--bg); color: var(--text); }
-.confirm-cancel:hover { border-color: var(--muted); }
-.confirm-go {
-  background: oklch(0.5 0.18 25); color: #fff; border-color: transparent;
-}
-.confirm-go:hover { background: oklch(0.45 0.19 25); }
-
-/* Picker management list (delete pickers). */
-.data-pickers { display: flex; flex-direction: column; gap: 12px; }
-.data-sub { display: flex; flex-direction: column; gap: 4px; }
-.data-sub-h {
-  margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
-  color: var(--text);
-}
-.data-sub-p {
-  margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted);
-  max-width: 60ch; text-wrap: pretty;
-}
-.pm-list {
-  display: flex; flex-direction: column;
-  border: 0.5px solid var(--border); border-radius: var(--r-md, 12px);
-  overflow: hidden;
-  background: var(--surface);
-}
-.pm-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 0.5px solid var(--border);
-}
-.pm-row:last-child { border-bottom: 0; }
-.pm-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.pm-name { font-size: 14px; font-weight: 500; color: var(--text); }
-.pm-meta {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
-  color: var(--muted);
 }
 
 /* ─── Tab: Settings ──────────────────────────────────────────────────────── */
 
 .tab--settings { gap: 24px; }
-.settings-group { display: flex; flex-direction: column; gap: 10px; }
-.settings-h {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-}
 .settings-sub { margin: 0; color: var(--muted); font-size: 14px; }
 
 /* ── Settings: two-column layout (sticky section nav + scrolling sections) ────
@@ -1736,7 +1595,7 @@ button.cat-h-l {
    keep both blue so the check stays visible on its white disc. */
 .theme-row.is-dark .theme-row-check,
 .theme-row.is-dark .theme-row-check span { color: oklch(0.5 0.14 250); }
-.theme-row + .theme-row, .theme-row + .theme-custom { margin-top: 8px; }
+.theme-row + .theme-row { margin-top: 8px; }
 /* Custom row: dashed frame; its 3 segments are live color inputs rather than
    a static preview, but the shape (height/radius/name label) matches the
    preset rows above it. */
@@ -1772,21 +1631,6 @@ button.cat-h-l {
 .theme-row--custom.is-dark .theme-custom-name::placeholder { color: rgba(255,255,255,.5); }
 .theme-custom-name:focus { background: white; color: #111; }
 .theme-row--custom.is-dark .theme-custom-name:focus { background: #111; color: white; }
-
-/* Daily-generator roster: full-bleed rows inside the card. */
-.set-daily-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
-.set-daily-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 0; min-height: 44px;
-  border-bottom: 0.5px solid var(--border);
-}
-.set-daily-row:last-child { border-bottom: 0; }
-.set-daily-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.set-daily-name { font-size: 14px; font-weight: 500; }
-.set-daily-group {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em;
-  text-transform: uppercase; color: var(--muted);
-}
 
 /* Data control + Account: label/description left, action button right. */
 .set-data-row {
@@ -1844,7 +1688,6 @@ button.cat-h-l {
 .legal-modal-body h1 { font-size: 26px; letter-spacing: -0.02em; margin: 16px 0 0; }
 .legal-modal-body h2 { font-size: 17px; margin: 1.6em 0 0.4em; }
 .legal-modal-body p, .legal-modal-body li { line-height: 1.6; color: oklch(from var(--text) l c h / 0.88); font-size: 14.5px; }
-.legal-modal-body .legal-meta { color: var(--muted); font-size: 12.5px; }
 @keyframes legalBackdropIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes legalBackdropOut { from { opacity: 1; } to { opacity: 0; } }
 @keyframes legalPanelIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -1857,7 +1700,6 @@ button.cat-h-l {
 .set-sub-fade { animation: setSubFade .6s ease; }
 @keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .set-sub-fade { animation: none; } }
-.set-empty { color: var(--muted); font-size: 14px; padding: 4px 0; }
 /* Fill / Refill lever: one-shot icon spin on click. */
 @keyframes fillSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 .btn.is-spinning svg { animation: fillSpin .5s cubic-bezier(.4,0,.2,1); }
@@ -1883,7 +1725,6 @@ button.cat-h-l {
 /* Contact support form (About section) — the form now lives in its own Card
    below the "Having problems?" row, padded normally (no rd-ctl bleed needed). */
 .support-form { display: flex; flex-direction: column; gap: 14px; }
-.support-form-intro { padding-top: 8px; }
 .support-field { display: flex; flex-direction: column; gap: 6px; }
 .support-flabel {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
@@ -1997,25 +1838,6 @@ button.cat-h-l {
   .settings-rail .rail-btn.is-on { border-color: var(--accent); background: var(--accent-soft); }
 }
 
-.picker-cards { display: flex; flex-direction: column; gap: 8px; }
-
-.pkr-card { padding: 0; }
-.pkr-card-h {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 18px;
-  cursor: pointer;
-}
-.pkr-card-name { font-weight: 500; font-size: 15px; }
-.pkr-card-mode { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.03em; text-transform: uppercase; }
-
-.pkr-card-body {
-  padding: 0 18px 18px;
-  border-top: 0.5px solid var(--border);
-  padding-top: 16px;
-  display: flex; flex-direction: column; gap: 14px;
-}
-.pkr-card-hint { color: var(--muted); font-size: 13px; margin: 0; }
-
 .mode-radio { display: flex; flex-direction: column; gap: 4px; }
 .mode-opt {
   display: flex; align-items: flex-start; gap: 10px;
@@ -2055,22 +1877,6 @@ button.cat-h-l {
   border: 0.5px solid var(--border);
   border-radius: var(--r-md);
 }
-.ease-row { display: flex; flex-direction: column; gap: 6px; }
-.ease-row label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
-.range-pair { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-.range-pair input {
-  width: 64px;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  outline: none;
-}
-.range-pair input:focus { border-color: var(--accent); }
-.ease-unit { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* Data picker Controls: the ease drift default renders as full-bleed rows
    (label + explanation left, day stepper right — matching the item editor).
@@ -2104,8 +1910,6 @@ button.cat-h-l {
   border-bottom: 0.5px solid var(--border);
 }
 .daily-list li:last-child { border-bottom: 0; }
-.daily-name { font-size: 14px; font-weight: 500; }
-.daily-mode { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
 
 .switch {
   position: relative;
@@ -2261,14 +2065,8 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .np-step.is-done .np-step-num { border-color: var(--accent); color: var(--accent); }
 .np-step-line { flex: 0 0 28px; height: 1px; background: var(--border); }
 
-/* Add-item row — text field + Add button, like the Data tab's quick-add. */
-.np-additem { display: flex; gap: 8px; align-items: stretch; margin-top: 2px; }
-.np-additem .np-input { flex: 1; max-width: none; margin-top: 0; }
-.np-additem .btn { flex: 0 0 auto; align-self: stretch; }
-
 /* The growing pool list. */
 .np-pool { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
-.np-pool-h { display: flex; align-items: center; justify-content: space-between; }
 .np-pool-empty {
   padding: 18px 16px;
   border: 1px dashed var(--border); border-radius: var(--r-sm);
@@ -2276,27 +2074,9 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   color: var(--muted); font-size: 13px; line-height: 1.5;
   text-wrap: pretty;
 }
-.np-pool-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-.np-pool-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 9px 12px;
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-sm);
-  animation: np-row-in .16s ease;
-}
 @keyframes np-row-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
-.np-pool-name { font-size: 14px; }
-.np-pool-controls { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 
 /* Per-item weight stepper — only rendered for weighted / dynamic modes. */
-.np-weight {
-  display: inline-flex; align-items: center; gap: 2px;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 999px;
-  padding: 2px;
-}
 .np-weight-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 22px; height: 22px; flex: 0 0 auto;
@@ -2307,44 +2087,14 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 .np-weight-btn:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); }
 .np-weight-btn:disabled { opacity: 0.35; cursor: default; }
-.np-weight-val {
-  min-width: 26px; text-align: center;
-  font-family: var(--font-mono); font-size: 12px; font-weight: 600;
-  color: var(--text);
-}
 .np-weight-note { margin-top: -2px; }
 
-/* Per-item ease cadence controls (ease-up / ease-down). Each pool row stacks:
-   name + actions on top, the cadence steppers/inputs below. */
-.np-pool-row--ease { flex-direction: column; align-items: stretch; gap: 10px; }
-.np-pool-main { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.np-pool-ease {
-  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px;
-  padding-top: 10px;
-  border-top: 0.5px dashed var(--border);
-}
-.np-ease-mini { display: flex; flex-direction: column; gap: 4px; }
-.np-ease-mini .np-stepper, .np-ease-mini .np-input--num { margin-top: 0; }
-.np-ease-mini-readout {
-  margin-left: auto; align-self: center;
-  font-size: 12px; color: var(--muted); font-style: italic;
-  text-align: right;
-}
-.np-mini-lbl {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em;
-  text-transform: uppercase; color: var(--muted);
-}
 .np-stepper {
   display: inline-flex; align-items: center; gap: 4px;
   background: var(--bg);
   border: 0.5px solid var(--border);
   border-radius: 999px;
   padding: 3px;
-}
-.np-stepper-val {
-  min-width: 26px; text-align: center;
-  font-family: var(--font-mono); font-size: 14px; font-weight: 600;
-  color: var(--text);
 }
 /* Editable stepper value — same look as .np-stepper-val, borderless input. */
 .np-stepper-input {
@@ -2357,24 +2107,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .np-stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .np-stepper-input:focus { background: var(--surface); border-radius: 5px; }
 .np-ease-unit { font-size: 13px; color: var(--muted); align-self: center; }
-.np-input--num { width: 84px; max-width: 84px; margin-top: 0; }
-.np-ease-toggle {
-  background: none; border: none; padding: 2px 0;
-  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
-  color: var(--accent); cursor: pointer;
-  text-decoration: underline; text-underline-offset: 2px;
-  text-decoration-color: oklch(from var(--accent) l c h / 0.4);
-}
-.np-ease-toggle:hover { text-decoration-color: var(--accent); }
-
-.np-pool-rm {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; flex: 0 0 auto;
-  background: none; border: none; border-radius: var(--r-sm);
-  color: var(--muted); cursor: pointer;
-  transition: color .12s, background .12s;
-}
-.np-pool-rm:hover { color: var(--warm); background: oklch(from var(--warm) l c h / 0.1); }
 
 /* ─── Weekday chips (shared: new-picker form + Data schedule) ─────────────── */
 .dow-chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -2428,24 +2160,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .np-sched-toggle .switch { flex-shrink: 0; margin-top: 2px; cursor: pointer; }
 
 /* ─── Data tab: schedule section ──────────────────────────────────────────── */
-.data-schedule { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
-.sched-list { display: flex; flex-direction: column; gap: 10px; }
-.sched-row {
-  border: 0.5px solid var(--border); border-radius: var(--r-md, 12px);
-  background: var(--surface);
-  padding: 14px 16px;
-  display: flex; flex-direction: column; gap: 12px;
-}
-.sched-row.is-off { opacity: 0.72; }
-.sched-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.sched-id { display: flex; flex-direction: column; gap: 2px; }
-.sched-name { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
-.sched-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.sched-head .switch { flex-shrink: 0; cursor: pointer; }
-.sched-controls {
-  display: flex; flex-direction: column; gap: 12px;
-  padding-top: 12px; border-top: 0.5px solid var(--border);
-}
 .sched-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .sched-line-lbl { font-size: 13.5px; color: var(--muted); }
 .sched-line .switch { cursor: pointer; }
@@ -2596,13 +2310,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .entry-editor .pie-reset:disabled { opacity: 0.4; cursor: default; }
 /* Data picker items: dim an inactive item's name in the resting row. */
 .rd-item.is-vac .rd-name { color: var(--muted); }
-.entry-edit-foot {
-  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
-  margin-top: 14px;
-}
-.entry-edit-confirm { display: flex; flex-direction: column; gap: 12px; }
-.entry-edit-confirm .confirm-msg { font-size: 13.5px; color: var(--text); }
-.entry-edit-confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
 .rem-quickadd {
   display: flex; gap: 8px; align-items: center;
@@ -2839,15 +2546,11 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 
 /* ── Data tab: reminder manager ── */
-.data-reminders { display: flex; flex-direction: column; gap: 12px; margin: 12px 0 32px; }
-.data-sub--row { flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.data-sub--row .btn { flex: 0 0 auto; margin-top: 2px; }
 .data-empty {
   padding: 18px 16px; border: 1px dashed var(--border); border-radius: var(--r-md);
   background: oklch(from var(--surface) l c h / 0.5);
   color: var(--muted); font-size: 13px;
 }
-.rem-manage-list { display: flex; flex-direction: column; gap: 10px; }
 
 /* ── Data tab: Reminders section (finalized) ──────────────────────────────────
    One collapsible .cat section. Inside: a nested "Controls" disclosure + a
@@ -2899,7 +2602,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rd-mx-cell .switch { cursor: pointer; }
 
 /* Items zone */
-.rd-items-label { display: block; padding: 14px 16px 10px; }
 .rd-add {
   display: flex; align-items: center; gap: 7px; width: 100%;
   padding: 13px 16px; border-bottom: 0.5px solid var(--border);
@@ -3007,7 +2709,6 @@ button.rd-chev {
   padding: 14px 16px;
   display: flex; flex-direction: column; gap: 0;
 }
-.rd-ctl-body .pkr-card-hint { margin: 0; }
 /* Full-bleed picker-type radio (Data controls). Edge-to-edge rows with hairline
    dividers instead of card-in-card boxes; the selected row gets an accent tint +
    left bar and reveals its hint, unselected rows show the name only. The bottom
@@ -3064,38 +2765,11 @@ button.rd-chev {
 .celeb-preview-cards { position: relative; display: flex; flex-direction: column; gap: 10px; }
 .celeb-preview-card { cursor: default; }
 .celeb-preview-card .check { background: var(--accent); border-color: var(--accent); color: #fff; }
-.celeb-preview-ring { position: relative; width: 96px; height: 96px; }
-.ring--preview { position: relative; width: 96px; height: 96px; }
-.ring--preview svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.ring--preview .ring-track { fill: none; stroke: var(--border); stroke-width: 5; }
-.ring--preview .ring-fill { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
-.ring--preview .ring-center {
-  position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; gap: 1px;
-  font-family: var(--font-mono);
-}
-.ring--preview .ring-num { font-size: 26px; font-weight: 600; color: var(--text); }
-.ring--preview .ring-den { font-size: 12px; color: var(--muted); }
 .celeb-preview-particles { position: absolute; inset: 0; pointer-events: none; }
 .celeb-preview-particles .confetti-piece { top: 50%; left: 50%; }
-.celeb-preview-cap {
-  position: absolute; bottom: 12px; left: 0; right: 0; text-align: center;
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--muted);
-}
-/* Picker-animation preview — reuses the selector's own box: fade the list out,
-   show the strip over it, fade back. */
-.pickanim-swap { position: relative; }
-.pickanim-swap-list { transition: opacity .32s ease; }
-.pickanim-swap.is-previewing .pickanim-swap-list { opacity: 0; pointer-events: none; }
-.pickanim-swap-stage {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  animation: setSubFade .32s ease;
-}
 .pickanim-preview-stage { width: 100%; display: flex; align-items: center; justify-content: center; min-height: 180px; }
 .pickanim-preview-stage .spot-row { text-align: center; }
 .pickanim-preview-pick { font-family: var(--font-mono); font-size: 16px; color: var(--accent); font-weight: 600; }
-@media (prefers-reduced-motion: reduce) {
-  .pickanim-swap-list, .pickanim-swap.is-previewing .pickanim-swap-list { transition: none; }
-}
 .rd-mode-opt.is-on::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
   background: var(--accent);
@@ -3134,7 +2808,7 @@ button.rd-chev {
    gap removed, each border touches its neighbour's for the subtle doubled-line
    separator (matching the Reminders controls → footer divider). */
 .rd-ctl-group { display: flex; flex-direction: column; gap: 12px; }
-.rd-ctl-group--sched, .rd-ctl-group--items, .rd-ctl-group--foot, .rd-ctl-group--danger {
+.rd-ctl-group--sched, .rd-ctl-group--items, .rd-ctl-group--foot {
   margin: 0 -16px; padding: 16px; border-top: 0.5px solid var(--border);
 }
 /* Picker Details: subhead, then each control row (Name, Group) carries a
@@ -3309,8 +2983,6 @@ button.rd-chev {
 .rd-ctl-group .sched-line-label { display: flex; flex-direction: column; gap: 1px; flex: 1 1 0; min-width: 130px; }
 .rd-ctl-group .sched-line-sub { font-size: 11px; line-height: 1.35; color: var(--muted); }
 .rd-ctl-group .sched-off-note { font-size: 12.5px; color: var(--muted); font-style: italic; }
-/* Delete-picker control lives in the Controls footer now. */
-.rd-ctl-group--danger { align-items: flex-start; }
 .rd-ctl-foot-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 /* The "Create Picker" draft's own footer has no Delete button on the left —
    .rd-ctl-foot-row's own space-between would otherwise leave its one
@@ -3371,36 +3043,6 @@ button.rd-chev {
 @media (prefers-reduced-motion: reduce) {
   .rem-foot-confirm, .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .rd-edit-foot, .pool-confirm { animation: none; }
 }
-.rem-manage {
-  border: 0.5px solid var(--border); border-radius: var(--r-md);
-  background: var(--surface); overflow: hidden;
-}
-.rem-manage.is-open { border-color: var(--accent); }
-.rem-manage-head {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px 10px 14px;
-}
-.rem-name-input {
-  flex: 1 1 auto; min-width: 0;
-  border: none; background: none; padding: 4px 0;
-  font-family: var(--font-sans); font-size: 15px; font-weight: 500; color: var(--text);
-  border-bottom: 1px solid transparent;
-  transition: border-color .12s;
-}
-.rem-name-input:focus { outline: none; border-bottom-color: var(--accent); }
-.rem-manage-sched {
-  flex: 0 0 auto;
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
-  text-transform: uppercase; color: var(--muted);
-  padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
-}
-.rem-manage-actions { display: flex; gap: 4px; flex: 0 0 auto; }
-.icon-btn--danger:hover { background: oklch(from var(--warm) l c h / 0.12); color: var(--warm); }
-.rem-manage .rem-manage-editor {
-  padding: 16px; border-top: 0.5px solid var(--border);
-  background: oklch(from var(--surface) calc(l - 0.006) c h);
-}
-.rem-manage .rem-manage-editor .rem-editor { padding: 0; border-top: 0; background: none; }
 
 /* ── Data reminder editor: match the picker item editor ──────────────────────
    One setting per full-bleed row (label left / control right), a hairline
@@ -3442,22 +3084,6 @@ button.rd-chev {
 
 /* Rail entry for Reminders — subtle accent tint to set it apart as pinned. */
 .rail-btn--rem.is-on .rail-name { color: var(--accent); }
-
-/* Settings → Reminders: two participation panels (one-time / recurring). */
-.rem-opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.rem-opts-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
-.rem-opts-icon {
-  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; border-radius: 999px;
-  background: oklch(from var(--accent-soft) l c h); color: var(--accent);
-}
-.rem-opts-title { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-.rem-opts-blurb { margin: 2px 0 0; font-size: 12px; line-height: 1.45; color: var(--muted); }
-.opt-list { border-top: 0.5px solid var(--border); margin-top: 6px; }
-.opt-list .daily-name { font-weight: 450; }
-@container app (max-width: 640px) {
-  .rem-opts-grid { grid-template-columns: 1fr; }
-}
 
 /* Stats → Reminders completed (separate additive metric, not in the heatmap). */
 .rem-stats-head {
@@ -3515,7 +3141,6 @@ button.rd-chev {
 .rem-log-empty { font-size: 13px; color: var(--muted); padding: 6px 0; }
 
 /* ─── Conditionals stats ─────────────────────────────────────────────────── */
-.stat-num--sm { font-size: 0.62em; letter-spacing: -0.01em; }
 /* All-view summary card (mirrors .rem-stats-card layout) */
 .cnd-sum-list { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; }
 .cnd-sum-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--border); }
@@ -3539,20 +3164,6 @@ button.rd-chev {
    enough in practice not to guard against here. */
 .cnd-sum-frac { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; width: 66px; text-align: right; }
 .cnd-sum-rate { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
-/* Dedicated scope: per-conditional rows with a fire-rate bar */
-.cnd-stat-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-.cnd-stat { display: flex; flex-direction: column; gap: 7px; padding-top: 14px; border-top: 1px solid var(--border); }
-.cnd-stat:first-child { padding-top: 0; border-top: 0; }
-.cnd-stat.is-deleted { opacity: 0.6; }
-.cnd-stat-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.cnd-stat-name { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; min-width: 0; }
-.cnd-stat-mode { flex: 0 0 auto; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
-.cnd-stat-bar-row { display: flex; align-items: center; gap: 10px; }
-.cnd-stat-bar { flex: 1 1 auto; height: 7px; border-radius: 4px; background: oklch(from var(--muted) l c h / 0.16); overflow: hidden; }
-.cnd-stat-bar span { display: block; height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.3s ease; }
-.cnd-stat-rate { flex: 0 0 auto; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 42px; text-align: right; }
-.cnd-stat-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
-.cnd-stat-meta strong { color: var(--text); font-weight: 600; }
 /* Conditionals breakdown: mode pill sits with the row's value column on the
    right, same grouping as the Everything view's .cnd-sum-meta (pill next to
    the frac/rate) and Reminders' .rem-log-meta (pill next to the date) —
@@ -4445,19 +4056,10 @@ body.ob-touring .tab{padding-bottom:200px}
     animation: none;
     opacity: 0;
   }
-  /* Pick-animation preview stage (Settings) — .pickanim-swap-list was already
-     covered; this is its missing counterpart. */
-  .pickanim-swap-stage {
-    animation: none;
-    opacity: 1;
-  }
-  /* New-item pool rows and the inline editors: all entrance fades. */
+  /* The inline editors: all entrance fades. */
   /* .rem-quickadd-wrap was already covered; this is the inner row, which has its
      own np-row-in fade. */
-  .np-pool-row,
-  .rem-quickadd,
-  .rem-inline-editor,
-  .rem-skip-confirm {
+  .rem-quickadd, .rem-inline-editor, .rem-skip-confirm {
     animation: none;
     opacity: 1;
     transform: none;
