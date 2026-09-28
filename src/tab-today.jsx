@@ -68,141 +68,32 @@ import { useEscCanFun } from './ui.jsx';                        // What: Use Esc
  * name.
  *
  * GroHeaCom is a group's own header (progress bar, Edit Mode grip/rename);
- * merOrdFun/groEntFun build the day's own group/entry structure. TabTodCom ties
- * every section together as the tab, and EntEdiCom (this file's own
+ * merOrdFun/groEntFun build the day's own group/entry structure. TabTodCom
+ * ties every section together as the tab, and EntEdiCom (this file's own
  * item-editing row) is exported for reuse by tab-picker.jsx and tab-data.jsx,
  * so all 3 tabs edit an item through the exact same component.
  *
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Components
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
+
+// #region Constants
 
 const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease drift/day conversion and charge check in this file shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax to get a day count, and compared against an item's own charge value.
 
-
-
-// #region merOrdFun
-
-/**
- * merOrdFun = Merge Order Function
- *
- * @summary
- * Merges a reordered subset of *present* keys back into a fuller
- * ordering that may also contain absent keys (groups/pickers with no
- * entries today). Present keys are dropped into their existing slots in
- * the new relative order; absent keys keep their positions; brand-new
- * present keys append at the end.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param fulOrdArr - Full Ordinal Array: The fuller, previously-saved
- *                    ordering, which may hold keys that are absent from
- *                    preNewArr entirely.
- * @param preNewArr - Previous New Array: The subset of keys that are present
- *                    today, already in their new, just-dragged relative order.
- *
- * @returns A single merged ordering array combining both inputs, per the
- * rule described above.
- *
- * @example
- * ```ts
- * merOrdFun(fulOrdArr, preNewArr) // => merged ordering array
- * ```
- *
-*/
-
-function merOrdFun ( fulOrdArr, preNewArr ) {
-
-
-	// #region Dedupe Present Keys
-
-	const preKeyArr = [];        // What: Present Key Array. Why: A synthetic day-off/charging id could otherwise be reintroduced twice by preNewArr; this collects each one only once. How: This is pushed to by the loop below, in first-seen order, which becomes the new order.
-	const seeKeySet = new Set(); // What: Seen Key Set. Why: The loop below needs a fast way to tell whether a key was already collected. How: This is checked and added to by that same loop.
-
-
-	for ( const curKeyStr of ( preNewArr || [] ) ) { // What: Present Key Dedupe Loop. Why: preNewArr may repeat a key; only its first occurrence should count. How: This walks every candidate key, skipping any already seen.
-
-
-		if ( seeKeySet.has( curKeyStr ) ) continue; // What: Already Seen Guard. Why: A repeated key must not be collected a second time. How: This skips straight to the next candidate once curKeyStr is already in seeKeySet.
+// #endregion Constants
 
 
 
-		seeKeySet.add( curKeyStr );  // What: Seen Key Record. Why: Every later occurrence of this same key must now read as a repeat. How: This adds curKeyStr to seeKeySet.
-		preKeyArr.push( curKeyStr ); // What: Present Key Collect. Why: This key's own first-seen position is exactly where it belongs in the new order. How: This appends curKeyStr to preKeyArr.
-
-
-	}
-
-	// #endregion Dedupe Present Keys
-
-
-
-	const preKeySet = new Set( preKeyArr ); // What: Present Key Set. Why: The splice loop below needs a fast membership check against every present key. How: This wraps preKeyArr in a Set.
-	const resKeyArr = preKeyArr.slice();    // What: Result Key Array. Why: The final merged order starts as a copy of the present keys' own new order; absent keys are spliced back into this same array below. How: This copies preKeyArr so the splices below never mutate preKeyArr itself.
-
-
-	// #region Splice Back Absent Keys
-
-	const fulDefArr = fulOrdArr || []; // What: Full Default Array. Why: The caller may pass a nullish saved order. How: This falls back to an empty array so the loop below always has something safe to iterate.
-	const offAncMap = new Map();       // What: Offset Anchor Map. Why: Several sibling absent keys can share the same preceding anchor, and each one must land right after the one before it, not all at the same spot. How: This tracks, per anchor, how many absent keys have already been spliced in after it.
-
-
-	for ( let curIndNum = 0; curIndNum < fulDefArr.length; curIndNum++ ) { // What: Full Order Walk Loop. Why: Every key in the previously-saved order needs a chance to be restored if it is not already present. How: This walks fulDefArr by index so bacIndNum below can look backward from the same position.
-
-
-		const basKeyStr = fulDefArr[ curIndNum ]; // What: Base Key String. Why: This is the specific saved-order key this iteration considers restoring. How: This reads fulDefArr at curIndNum.
-
-
-		if ( preKeySet.has( basKeyStr ) || resKeyArr.includes( basKeyStr ) ) continue; // What: Already Placed Guard. Why: A present key was already collected above, and an absent key already spliced back in by an earlier iteration must not be duplicated. How: This skips basKeyStr once it is already accounted for either way.
-
-
-
-		let ancKeyStr = null; // What: Anchor Key String. Why: An absent key is restored relative to the nearest PRESENT key before it in the saved order, not an absolute index. How: This starts null (meaning "insert at the very front") and is set by the backward walk just below.
-
-
-		for ( let bacIndNum = curIndNum - 1; bacIndNum >= 0; bacIndNum-- ) { // What: Anchor Search Loop. Why: The nearest preceding present key is found by walking backward from this position. How: This walks bacIndNum down from curIndNum - 1 until a present key is found or the start is reached.
-
-
-			if ( !preKeySet.has( fulDefArr[ bacIndNum ] ) ) continue; // What: Non-Present Skip Guard. Why: Only a PRESENT key can serve as an anchor. How: This keeps walking backward past any key that isn't in preKeySet.
-
-
-
-			ancKeyStr = fulDefArr[ bacIndNum ]; // What: Anchor Key Assignment. Why: The nearest present predecessor has just been found. How: This records it into ancKeyStr.
-			break;                              // What: Anchor Search Break. Why: Only the NEAREST anchor matters, so the walk stops as soon as one is found. How: This exits the backward loop immediately.
-
-
-		}
-
-
-
-		const curOffNum = offAncMap.get( ancKeyStr ) || 0; // What: Current Offset Number. Why: A second sibling sharing the same anchor must land one slot further along than the first, not on top of it. How: This reads however many keys have already been spliced in after ancKeyStr so far, defaulting to 0.
-
-
-		if ( ancKeyStr === null ) resKeyArr.splice( curOffNum, 0, basKeyStr ); // What: Front Insert Branch. Why: No present key precedes this one at all, so it belongs at the very front (plus whatever offset its own siblings already claimed there). How: This splices basKeyStr into resKeyArr at index curOffNum.
-
-		else resKeyArr.splice( resKeyArr.indexOf( ancKeyStr ) + 1 + curOffNum, 0, basKeyStr ); // What: Anchored Insert Branch. Why: This key belongs right after its nearest present anchor, offset past any sibling already placed there. How: This splices basKeyStr into resKeyArr right after ancKeyStr's own current position plus curOffNum.
-
-
-
-		offAncMap.set( ancKeyStr, curOffNum + 1 ); // What: Offset Advance. Why: The NEXT sibling sharing this same anchor must land one slot further along still. How: This overwrites offAncMap's own entry for ancKeyStr with curOffNum plus 1.
-
-
-	}
-
-	// #endregion Splice Back Absent Keys
-
-
-
-	return resKeyArr; // What: Merged Order Return. Why: The caller needs the final combined ordering. How: This returns the same array built by the dedupe and splice steps above.
-
-
-}
-
-// #endregion merOrdFun
-
-
+// #region Helpers
 
 // #region groEntFun
 
@@ -432,665 +323,362 @@ function groEntFun ( staAppObj ) {
 
 
 
-// #region GroHeaCom
+// #region merOrdFun
 
 /**
- * GroHeaCom = Group Header Component
+ * merOrdFun = Merge Order Function
  *
  * @summary
- * Renders one group's own sticky header: its name (plain text, or an
- * inline-editable field/button while Edit Mode is on), its done/total
- * count, the dash-bar progress row, and (outside Edit Mode) its own Day
- * Log toggle chip. Also renders the group-merge confirm prompt and any
- * name-collision error banner beneath the header itself.
+ * Merges a reordered subset of *present* keys back into a fuller
+ * ordering that may also contain absent keys (groups/pickers with no
+ * entries today). Present keys are dropped into their existing slots in
+ * the new relative order; absent keys keep their positions; brand-new
+ * present keys append at the end.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.donCouNum   - Done Count Number: How many of this group's own
- *                            rows are done.
- * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
- *                            on.
- * @param props.groNamStr   - Group Name String: The group's own current
- *                            display name.
- * @param props.logOpeBoo   - Log Open Boolean: Whether this group's own Day
- *                            Log panel is open.
- * @param props.merPenObj   - Merge Pending Object: A pending rename that would
- *                            merge into an existing group, or null.
- * @param props.onCanMerFun - On Cancel Merge Function: Cancels the pending
- *                            merge in merPenObj.
- * @param props.onConMerFun - On Confirm Merge Function: Confirms the pending
- *                            merge in merPenObj.
- * @param props.onGriDowFun - On Grip Down Function: Starts a group-reorder
- *                            drag from this header's own grip handle.
- * @param props.onRenGroFun - On Rename Group Function: Commits a typed rename
- *                            of this group.
- * @param props.onTogLogFun - On Toggle Log Function: Toggles this group's own
- *                            Day Log panel.
- * @param props.totCouNum   - Total Count Number: How many rows this group has
- *                            in total.
- * @param props.valNamFun   - Validate Name Function: Validates a typed rename,
- *                            returning an error string on collision or null
- *                            when it is fine.
+ * @param fulOrdArr - Full Ordinal Array: The fuller, previously-saved
+ *                    ordering, which may hold keys that are absent from
+ *                    preNewArr entirely.
+ * @param preNewArr - Previous New Array: The subset of keys that are present
+ *                    today, already in their new, just-dragged relative order.
  *
- * @returns This group's own header element, plus any merge-confirm or
- * name-error banner beneath it.
+ * @returns A single merged ordering array combining both inputs, per the
+ * rule described above.
  *
  * @example
- * ```tsx
- * GroHeaCom({ donCouNum, ediModBoo, groNamStr, logOpeBoo, ... }) // => <GroHeaCom />
+ * ```ts
+ * merOrdFun(fulOrdArr, preNewArr) // => merged ordering array
  * ```
  *
 */
 
-function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, onCanMerFun, onConMerFun, onGriDowFun, onRenGroFun, onTogLogFun, totCouNum, valNamFun } ) {
+function merOrdFun ( fulOrdArr, preNewArr ) {
 
 
-	// #region Cascade Dash Animation
+	// #region Dedupe Present Keys
 
-	const preDonRef = React.useRef( donCouNum ); // What: Previous Done Reference. Why: The effect below needs last render's own donCouNum to detect a genuine increase, not just react to any change. How: This starts at the initial donCouNum and is overwritten at the end of that same effect.
-
-	const [ freIndNum, setFreIndNum ] = React.useState( -1 ); // What: Fresh Index Number And Setter. Why: The dash that JUST turned on needs a brief animated cue, keyed by its own index. How: This is set by the effect below and read by the dash-row map further down.
-
-
-	React.useEffect( () => { // What: Cascade Dash Effect. Why: A group's own done count climbing needs to animate the specific dash that just turned on, not the whole row at once. How: This detects donCouNum rising past preDonRef's own last value, flags the newly-lit dash, then clears that flag shortly after.
+	const preKeyArr = [];        // What: Present Key Array. Why: A synthetic day-off/charging id could otherwise be reintroduced twice by preNewArr; this collects each one only once. How: This is pushed to by the loop below, in first-seen order, which becomes the new order.
+	const seeKeySet = new Set(); // What: Seen Key Set. Why: The loop below needs a fast way to tell whether a key was already collected. How: This is checked and added to by that same loop.
 
 
-		if ( donCouNum > preDonRef.current ) { // What: Done Increase Branch. Why: Only a genuine rise in donCouNum should trigger the cascade cue, never a drop (an uncheck) or a no-op re-render. How: This compares the fresh donCouNum against preDonRef's own remembered prior value.
+	for ( const curKeyStr of ( preNewArr || [] ) ) { // What: Present Key Dedupe Loop. Why: preNewArr may repeat a key; only its first occurrence should count. How: This walks every candidate key, skipping any already seen.
 
 
-			const curIndNum = donCouNum - 1; // What: Current Index Number. Why: The freshly-lit dash is always the one at this position. How: This is one less than the new donCouNum.
-
-
-			setFreIndNum( curIndNum ); // What: Fresh Index Set. Why: The dash-row map below needs to know which single dash to flag as freshly lit. How: This publishes curIndNum into freIndNum.
-
-			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), 520 ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself shortly after lighting, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after 520ms, guarded so a stale timeout can't stomp a fresher one.
-
-
-			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
+		if ( seeKeySet.has( curKeyStr ) ) continue; // What: Already Seen Guard. Why: A repeated key must not be collected a second time. How: This skips straight to the next candidate once curKeyStr is already in seeKeySet.
 
 
 
-			return () => clearTimeout( freTimNum ); // What: Effect Cleanup Return. Why: A stale fresh-cue timeout must not fire after a newer effect run has already begun. How: This cancels freTimNum.
+		seeKeySet.add( curKeyStr );  // What: Seen Key Record. Why: Every later occurrence of this same key must now read as a repeat. How: This adds curKeyStr to seeKeySet.
+		preKeyArr.push( curKeyStr ); // What: Present Key Collect. Why: This key's own first-seen position is exactly where it belongs in the new order. How: This appends curKeyStr to preKeyArr.
+
+
+	}
+
+	// #endregion Dedupe Present Keys
+
+
+
+	const preKeySet = new Set( preKeyArr ); // What: Present Key Set. Why: The splice loop below needs a fast membership check against every present key. How: This wraps preKeyArr in a Set.
+	const resKeyArr = preKeyArr.slice();    // What: Result Key Array. Why: The final merged order starts as a copy of the present keys' own new order; absent keys are spliced back into this same array below. How: This copies preKeyArr so the splices below never mutate preKeyArr itself.
+
+
+	// #region Splice Back Absent Keys
+
+	const fulDefArr = fulOrdArr || []; // What: Full Default Array. Why: The caller may pass a nullish saved order. How: This falls back to an empty array so the loop below always has something safe to iterate.
+	const offAncMap = new Map();       // What: Offset Anchor Map. Why: Several sibling absent keys can share the same preceding anchor, and each one must land right after the one before it, not all at the same spot. How: This tracks, per anchor, how many absent keys have already been spliced in after it.
+
+
+	for ( let curIndNum = 0; curIndNum < fulDefArr.length; curIndNum++ ) { // What: Full Order Walk Loop. Why: Every key in the previously-saved order needs a chance to be restored if it is not already present. How: This walks fulDefArr by index so bacIndNum below can look backward from the same position.
+
+
+		const basKeyStr = fulDefArr[ curIndNum ]; // What: Base Key String. Why: This is the specific saved-order key this iteration considers restoring. How: This reads fulDefArr at curIndNum.
+
+
+		if ( preKeySet.has( basKeyStr ) || resKeyArr.includes( basKeyStr ) ) continue; // What: Already Placed Guard. Why: A present key was already collected above, and an absent key already spliced back in by an earlier iteration must not be duplicated. How: This skips basKeyStr once it is already accounted for either way.
+
+
+
+		let ancKeyStr = null; // What: Anchor Key String. Why: An absent key is restored relative to the nearest PRESENT key before it in the saved order, not an absolute index. How: This starts null (meaning "insert at the very front") and is set by the backward walk just below.
+
+
+		for ( let bacIndNum = curIndNum - 1; bacIndNum >= 0; bacIndNum-- ) { // What: Anchor Search Loop. Why: The nearest preceding present key is found by walking backward from this position. How: This walks bacIndNum down from curIndNum - 1 until a present key is found or the start is reached.
+
+
+			if ( !preKeySet.has( fulDefArr[ bacIndNum ] ) ) continue; // What: Non-Present Skip Guard. Why: Only a PRESENT key can serve as an anchor. How: This keeps walking backward past any key that isn't in preKeySet.
+
+
+
+			ancKeyStr = fulDefArr[ bacIndNum ]; // What: Anchor Key Assignment. Why: The nearest present predecessor has just been found. How: This records it into ancKeyStr.
+			break;                              // What: Anchor Search Break. Why: Only the NEAREST anchor matters, so the walk stops as soon as one is found. How: This exits the backward loop immediately.
 
 
 		}
 
 
 
-		preDonRef.current = donCouNum; // What: Previous Done Update. Why: Even a non-increase (a drop, or a no-op re-render) still needs preDonRef to track the latest value for next time. How: This overwrites preDonRef with the current donCouNum.
+		const curOffNum = offAncMap.get( ancKeyStr ) || 0; // What: Current Offset Number. Why: A second sibling sharing the same anchor must land one slot further along than the first, not on top of it. How: This reads however many keys have already been spliced in after ancKeyStr so far, defaulting to 0.
 
 
-	}, [ donCouNum ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when donCouNum itself changes. How: donCouNum is the exact value preDonRef is compared against.
+		if ( ancKeyStr === null ) resKeyArr.splice( curOffNum, 0, basKeyStr ); // What: Front Insert Branch. Why: No present key precedes this one at all, so it belongs at the very front (plus whatever offset its own siblings already claimed there). How: This splices basKeyStr into resKeyArr at index curOffNum.
 
-	// #endregion Cascade Dash Animation
-
-
-
-	// #region Inline Name Edit
-
-	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false );     // What: Editing Open Boolean And Setter. Why: Edit Mode only, this tracks whether the inline name field currently replaces the plain heading/rename button. How: This is toggled by staEdiFun and finCloFun below.
-	const [ cloOutBoo, setCloOutBoo ] = React.useState( false );     // What: Closing Out Boolean And Setter. Why: Closing the inline field plays a brief out-animation before it actually unmounts. How: This is toggled true right before that animation, then false once it finishes.
-	const [ draNamStr, setDraNamStr ] = React.useState( groNamStr ); // What: Draft Name String And Setter. Why: The inline field edits a local draft, never groNamStr directly, until it is explicitly committed. How: This starts at groNamStr and is freely typed into while ediOpeBoo is true.
-	const [ namErrStr, setNamErrStr ] = React.useState( '' );        // What: Name Error String And Setter. Why: Only set when valNamFun rejects a commit (e.g. a Page Tours rename colliding with an existing group name), since it has nothing to merge into, unlike onRenGroFun, so it blocks instead of offering a merge. How: This keeps the field open, un-committed, until the user edits again or cancels.
-
-	const namInpRef = React.useRef( null ); // What: Name Input Reference. Why: Opening the field needs to both focus and select its own text. How: This is attached to the input's own ref prop below.
-
-
-	React.useEffect( () => { // What: Explicit Focus Effect. Why: autoFocus's own default scroll-into-view would fight a guided-tour spotlight already mid-positioning this same input, since the tour's own scroll-to-target math runs a tick later and sees this as a moving target. How: This focuses namInpRef with preventScroll instead of relying on autoFocus, then selects its text.
-
-
-		if ( !ediOpeBoo || !namInpRef.current ) return; // What: Not Editing Guard. Why: There is nothing to focus while the field isn't even open. How: This bails out early unless both ediOpeBoo is true and namInpRef is attached.
+		else resKeyArr.splice( resKeyArr.indexOf( ancKeyStr ) + 1 + curOffNum, 0, basKeyStr ); // What: Anchored Insert Branch. Why: This key belongs right after its nearest present anchor, offset past any sibling already placed there. How: This splices basKeyStr into resKeyArr right after ancKeyStr's own current position plus curOffNum.
 
 
 
-		namInpRef.current.focus( { preventScroll : true } ); // What: Explicit Focus Call. Why: preventScroll avoids fighting a tour's own scroll positioning, unlike the input's own autoFocus attribute would. How: This focuses namInpRef's own current node without letting the browser auto-scroll to it.
-		namInpRef.current.select();                          // What: Text Select Call. Why: Opening the field should offer the whole current name ready to overtype, not just a caret. How: This selects namInpRef's own current text content.
+		offAncMap.set( ancKeyStr, curOffNum + 1 ); // What: Offset Advance. Why: The NEXT sibling sharing this same anchor must land one slot further along still. How: This overwrites offAncMap's own entry for ancKeyStr with curOffNum plus 1.
 
 
-	}, [ ediOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when ediOpeBoo itself changes. How: ediOpeBoo is the exact transition this effect reacts to.
+	}
 
-	React.useEffect( () => { if ( !ediModBoo ) setEdiOpeBoo( false ); }, [ ediModBoo ] ); // What: Edit Mode Exit Effect. Why: Leaving Edit Mode entirely must cancel any in-progress name edit. How: This forces ediOpeBoo back to false whenever ediModBoo itself goes false.
-
-
-	const staEdiFun = () => { // What: Start Edit Function. Why: Opening the field should always begin from the real current name, with any stale error cleared. How: This resets draNamStr and namErrStr, then opens ediOpeBoo.
+	// #endregion Splice Back Absent Keys
 
 
-		setDraNamStr( groNamStr ); // What: Draft Name Reset. Why: The field must open on the group's real current name, not a stale earlier draft. How: This copies groNamStr into draNamStr.
-		setNamErrStr( '' );        // What: Name Error Clear. Why: A leftover error from an earlier attempt must not greet a fresh edit. How: This empties namErrStr.
-		setEdiOpeBoo( true );      // What: Editing Open. Why: The inline field itself now needs to replace the rename button. How: This flips ediOpeBoo to true.
+
+	return resKeyArr; // What: Merged Order Return. Why: The caller needs the final combined ordering. How: This returns the same array built by the dedupe and splice steps above.
+
+
+}
+
+// #endregion merOrdFun
+
+// #endregion Helpers
+
+
+
+// #region Components
+
+// #region AppFeaCom
+
+/**
+ * AppFeaCom = App Feature Card Component
+ *
+ * @summary
+ * An "App Features" launcher card: same shape/behavior as a PagTouCom
+ * card above, but backed by its own staAppObj.onboarding.appFeatures map
+ * instead of the checklist, and with no cheExiBoo celebration-exit
+ * animation to key off (App Features isn't part of that "closing card"
+ * flow at all, see shoFeaBoo's own comment in TabTodCom for why).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.actStoObj   - Action Store Object: The shared app actions.
+ * @param props.feaRecObj   - Feature Record Object: The App Features manifest
+ *                            entry this card offers.
+ * @param props.onPlaTutFun - On Play Tutorial Function: Starts this App
+ *                            Feature's own tutorial.
+ * @param props.onUncFeaFun - On Uncheck Feature Function: Un-resolves this
+ *                            App Feature.
+ * @param props.staAppObj   - State App Object: The shared app state.
+ *
+ * @returns This card's own article element.
+ *
+ * @example
+ * ```tsx
+ * AppFeaCom({ actStoObj, feaRecObj, onPlaTutFun, ... }) // => <AppFeaCom />
+ * ```
+ *
+*/
+
+function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj } ) {
+
+
+	const tutDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own ideStr.
+	const bloReaStr = !tutDonBoo ? bloReaFun( feaRecObj.ideStr, staAppObj ) : null;                                                           // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
+
+
+	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.
+
+
+		if ( cliEveObj.target.closest( '.today-card-actions' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside .today-card-actions.
+
+
+
+		if ( bloReaStr ) return; // What: Blocked Guard. Why: A feature whose tutorial can't run yet must not start from a row click. How: This bails out while bloReaStr holds a reason.
+
+
+
+		if ( tutDonBoo ) onUncFeaFun( feaRecObj.ideStr ); // What: Done Dispatch Branch. Why: A finished App Features card's row click un-resolves it. How: This calls onUncFeaFun with the feature's own id.
+
+		else onPlaTutFun( 'appFeature', feaRecObj.ideStr ); // What: Not-Done Dispatch Branch. Why: An unfinished App Features card's row click starts its tutorial. How: This calls onPlaTutFun with the appFeature kind and id.
 
 
 	};
-
-
-
-	// #region finCloFun
-
-	/**
-	 * finCloFun = Finish Close Function
-	 *
-	 * @summary
-	 * Plays the out animation (is-closing) for ~150ms, then unmounts the
-	 * field and, for a real change, commits the rename. Guarded so the
-	 * blur that Enter triggers can't double-fire alongside an explicit
-	 * commit/cancel already in flight.
-	 *
-	 * @author z4nta0 <https://github.com/z4nta0>
-	 *
-	*/
-
-	const finCloFun = ( chaValBoo, newValStr ) => { // What: Finish Close Function. Why: See the doc comment just above. How: This stages cloOutBoo, then after 150ms closes ediOpeBoo and either commits newValStr or reverts draNamStr.
-
-
-		setCloOutBoo( true ); // What: Closing Flag Set. Why: The field's own out-animation needs to start immediately. How: This flips cloOutBoo to true.
-
-		setTimeout( () => { // What: Close Settle Timeout. Why: The field must stay mounted through its own out-animation before this actually closes it. How: This runs 150ms later, matching that animation's own duration.
-
-
-			setEdiOpeBoo( false ); // What: Editing Close. Why: The field itself is done animating out and can now unmount. How: This flips ediOpeBoo back to false.
-			setCloOutBoo( false ); // What: Closing Flag Clear. Why: The out-animation flag must not persist once the field is already gone. How: This flips cloOutBoo back to false.
-
-			if ( chaValBoo ) onRenGroFun( newValStr ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr.
-
-			else setDraNamStr( groNamStr ); // What: Revert Branch. Why: A cancel, or a no-op commit, should leave the draft matching the real name again for next time. How: This resets draNamStr back to groNamStr.
-
-
-		}, 150 );
-
-
-	};
-
-	// #endregion finCloFun
-
-
-	const comEdiFun = () => { // What: Commit Edit Function. Why: Both blur (Enter blurs the input) and an explicit commit path need this exact same validation-then-close sequence. How: This trims the draft, checks whether it actually changed, validates it, and either stages an error or finishes closing.
-
-
-		if ( cloOutBoo ) return; // What: Already Closing Guard. Why: A commit already in flight must not be re-triggered by a second event (e.g. Enter's own blur firing after the click that started this). How: This bails out while cloOutBoo is already true.
-
-
-
-		const newValStr = draNamStr.trim();                       // What: New Value String. Why: A typed name needs its surrounding whitespace trimmed before it is compared or saved. How: This trims draNamStr.
-		const chaValBoo = !!newValStr && newValStr !== groNamStr; // What: Changed Value Boolean. Why: An empty or unchanged draft should just close quietly rather than commit anything. How: This is true only when newValStr is non-empty and differs from groNamStr.
-
-
-		if ( chaValBoo && valNamFun ) { // What: Validation Branch. Why: A real change needs to be checked against valNamFun before committing, since a collision should block rather than merge (Page Tours has nothing to merge into). How: This runs valNamFun against newValStr only when there is an actual change to validate.
-
-
-			const errMesStr = valNamFun( newValStr ); // What: Error Message String. Why: This is the actual collision message, or null when newValStr is fine. How: This calls valNamFun with newValStr.
-
-
-			if ( errMesStr ) { // What: Collision Branch. Why: A collision must keep the field open, un-committed, rather than close it. How: This stages namErrStr and reclaims focus instead of falling through to finCloFun below.
-
-
-				setNamErrStr( errMesStr );  // What: Name Error Stage. Why: The banner beneath the header needs this exact message to display. How: This publishes errMesStr into namErrStr.
-				namInpRef.current?.focus(); // What: Focus Reclaim. Why: commit() runs from onBlur too (Enter blurs the input), so focus may already be gone; reclaiming it lets the user just keep typing to fix the collision. How: This focuses namInpRef's own current node, if it still exists.
-
-
-
-				return; // What: Validation Return. Why: A collision must not fall through to finCloFun below. How: This exits comEdiFun immediately.
-
-
-			}
-
-
-		}
-
-
-
-		finCloFun( chaValBoo, newValStr ); // What: Finish Close Call. Why: Either an unvalidated no-op close or a validated real change needs to run the same close sequence. How: This calls finCloFun with the values computed above.
-
-
-	};
-
-
-	const canEdiFun = () => { // What: Cancel Edit Function. Why: Escape should discard the draft and any staged error without committing anything. How: This clears namErrStr then calls finCloFun with chaValBoo false.
-
-
-		if ( cloOutBoo ) return; // What: Already Closing Guard. Why: A close already in flight must not be started a second time. How: This bails out while cloOutBoo is already true.
-
-
-
-		setNamErrStr( '' ); // What: Name Error Clear. Why: A cancelled edit must not leave its staged error behind. How: This empties namErrStr.
-		finCloFun( false ); // What: Finish Close Call. Why: The field still needs its own out-animation and revert. How: This calls finCloFun with chaValBoo false, so nothing is committed.
-
-
-	};
-
-	// #endregion Inline Name Edit
 
 
 
 	return (
 
 
-		<React.Fragment>{ /* What: Group Header Fragment Element. Why: The header itself and its own merge/error banners are true siblings with no shared wrapper of their own. How: This groups the header, the merge-confirm banner, and the name-error banner without adding an extra DOM node. */ }
+		<article
+			className={ ` today-card   today-card--tutorial   ${ tutDonBoo ? 'is-done' : '' }   ${ bloReaStr ? 'is-needed' : '' } ` }
 
+			onClick={ onRowCliFun }
+		>{ /* What: App Feature Card Article Element. Why: This is AppFeaCom's own root. How: This renders a Play/Undo/blocked check button, the meta/name body, and (while unresolved) a Cancel action. */ }
 
-			<header className={ ` group-h   ${ ediModBoo ? 'is-reorderable' : '' } ` }>{ /* What: Group Header Header Element. Why: This is GroHeaCom's own root landmark, holding the name/count row and the progress dash row beneath it. How: This renders as a semantic <header>, tagged is-reorderable while Edit Mode is on. */ }
 
+			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved App Feature card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, otherwise one of the 2 branches below.
 
-				<div className='group-h-l'>{ /* What: Header Left Div Element. Why: The name, count, and Day Log chip read as one left-aligned cluster. How: This wraps the grip (Edit Mode only), the name/rename control, the count, and the Day Log chip. */ }
 
+				<button
+					className='check'
 
-					{ ediModBoo && ( // What: Grip Visibility Check. Why: The drag handle only makes sense while Edit Mode is on. How: This renders the grip span only while ediModBoo is true.
+					type='button'
 
+					aria-label={ `Undo ${ feaRecObj.labStr } tutorial` }
+					aria-pressed='true'
 
-						<span
-							className='group-grip'
+					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
-							draggable={ false }
 
-							aria-label='Drag to reorder group'
-							role='button'
-							tabIndex={ 0 }
+						cliEveObj.stopPropagation();     // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+						onUncFeaFun( feaRecObj.ideStr ); // What: Uncheck Feature Call. Why: This App Features card should go back to unresolved. How: This calls onUncFeaFun with the feature's own id.
 
-							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
-							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. */ }
 
+					} }
+				>{ /* What: Undo Check Button Element. Why: A resolved App Feature card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncFeaFun. */ }
 
-							<IcoSvgCom
-								icoNamStr='griEle'
-								sizValNum={ 16 }
-							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
+					<span
+						className='check-ripple'
 
-						</span>
+						aria-hidden='true'
+					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
+					<IcoSvgCom
+						icoNamStr='cheEle'
+						sizValNum={ 14 }
+					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
-					) }
 
-					{ ediModBoo && ediOpeBoo ? ( // What: Editing Field Branch. Why: While Edit Mode is on AND the field is open, the group's own name renders as an editable input instead of plain text or the rename button. How: This renders the inline input, wired to draNamStr/comEdiFun/canEdiFun.
+				</button>
 
 
-						<input
-							ref={ namInpRef }
+			) : bloReaStr ? ( // What: Blocked Feature Check. Why: A pending, blocked feature needs an explained disabled control instead of a working one. How: This renders the disabled InfTipCom while bloReaStr holds a reason, the real play-check button otherwise.
 
-							className={ ` group-name-input   group-name-slot   ${ cloOutBoo ? 'is-closing' : '' }   ${ namErrStr ? 'is-invalid' : '' } ` }
 
-							maxLength={ 30 }
-							type='text'
-							value={ draNamStr }
+				<InfTipCom
+					className='check is-disabled'
 
-							aria-label='Group name'
+					actNamStr={ `Start the ${ feaRecObj.labStr } tutorial` }
+					labTexStr={ bloReaStr }
+				>{ /* What: Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with bloReaStr. */ }
 
-							onBlur={ comEdiFun }
-							onChange={ ( chaEveObj ) => { // What: Change Handler. Why: Typing both updates the draft and clears any staged collision error, since the user is now fixing it. How: This copies the input's value into draNamStr, then clears namErrStr if one is set.
 
+					<IcoSvgCom
+						icoNamStr='plaEle'
+						sizValNum={ 13 }
+					/>{ /* What: Icon Svg Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'plaEle' icon at a fixed size. */ }
 
-								setDraNamStr( chaEveObj.target.value ); // What: Draft Name Update. Why: The field is controlled, so every keystroke must land in draNamStr. How: This copies the input's own current value.
 
+				</InfTipCom>
 
 
-								if ( namErrStr ) setNamErrStr( '' ); // What: Error Clear Check. Why: A collision error no longer applies once the user starts editing the name again. How: This clears namErrStr only when one is set.
+			) : ( // What: Play Check Branch. Why: A pending, unblocked feature needs its own real play-to-start checkbox instead. How: This renders the else branch, taken while bloReaStr is falsy.
 
 
-							} }
-							onKeyDown={ ( keyEveObj ) => { // What: Key Down Handler. Why: Enter should commit (via a blur) and Escape should cancel, mirroring every other inline editor in the app. How: This blurs the input on Enter and calls canEdiFun on Escape.
+				<button
+					className='check'
 
+					type='button'
 
-								if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); // What: Enter Branch. Why: Enter commits the rename, which happens through the input's own onBlur. How: This blurs the input, firing comEdiFun.
+					aria-label={ `Start the ${ feaRecObj.labStr } tutorial` }
 
-								else if ( keyEveObj.key === 'Escape' ) { // What: Escape Branch. Why: Escape cancels the rename. How: This stops the key's default behavior, then calls canEdiFun.
+					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
 
 
-									keyEveObj.preventDefault(); // What: Default Prevention. Why: Escape must not also trigger any browser-level default (such as leaving a fullscreen view). How: This calls preventDefault on the key event.
-									canEdiFun();                // What: Cancel Edit Call. Why: This is the actual cancel. How: This calls canEdiFun.
+						cliEveObj.stopPropagation();                   // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+						onPlaTutFun( 'appFeature', feaRecObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
 
 
-								}
+					} }
+				>{ /* What: Play Check Button Element. Why: A pending, unblocked App Feature card's own check button starts its tutorial instead of toggling done. How: This calls onPlaTutFun, scoped to 'appFeature'. */ }
 
 
-							} }
-						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape.
+					<IcoSvgCom
+						icoNamStr='plaEle'
+						sizValNum={ 13 }
+					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
-					) : ediModBoo ? ( // What: Rename Button Branch. Why: While Edit Mode is on but the field is closed, the name itself acts as a button that opens it. How: This renders a button showing groNamStr plus an edit glyph, wired to staEdiFun.
-
-
-						<button
-							className='group-name group-name--editable group-name-slot'
-
-							type='button'
-
-							aria-label={ `Rename group ${ groNamStr }` }
-
-							onClick={ staEdiFun }
-						>{ /* What: Group Rename Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. */ }
-
-
-							{ groNamStr }
-							<IcoSvgCom
-								icoNamStr='ediEle'
-								sizValNum={ 13 }
-							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
-
-
-						</button>
-
-
-					) : ( // What: Plain Heading Branch. Why: Outside Edit Mode the group's own name is just a plain, non-interactive heading. How: This renders a bare <h2> showing groNamStr.
-
-
-						<h2 className='group-name'>{ groNamStr }</h2> // What: Group Name Heading Element. Why: This is the group's own plain, non-editable display name. How: This renders groNamStr directly.
-
-
-					) }
-
-					<span className='group-count'>{ /* What: Group Count Span Element. Why: The done/total pair reads as one small cluster next to the name. How: This wraps the done and "of total" spans below. */ }
-
-
-						<span className='group-done'>{ donCouNum }</span>{ /* What: Group Done Span Element. Why: This is the group's own current done count. How: This renders donCouNum directly. */ }
-
-						<span className='group-of'>of { totCouNum }</span>{ /* What: Group Of Span Element. Why: The done count alone is meaningless without the total it is out of. How: This renders the literal word "of" plus totCouNum. */ }
-
-
-					</span>
-
-					{ !ediModBoo && onTogLogFun && ( // What: Log Chip Check. Why: The chip only makes sense outside Edit Mode and only when a caller actually wired up onTogLogFun. How: This renders LogChiCom only while both conditions hold.
-
-
-						<LogChiCom
-							open={ logOpeBoo }
-
-							onTogLogFun={ onTogLogFun }
-						/> // What: Log Chip Component. Why: Outside Edit Mode, this group's own Day Log panel needs a visible toggle. How: This is passed logOpeBoo and onTogLogFun directly.
-
-
-					) }
-
-
-				</div>
-
-
-				<div className='group-progress'>{ /* What: Group Progress Div Element. Why: The dash-bar row is its own visual band beneath the name/count row. How: This maps one dash per row in the group, flagging the done ones and whichever one just turned fresh. */ }
-
-
-					{ [ ...Array( totCouNum ).keys() ].map( ( curIndNum ) => ( // What: Dash Row Map. Why: One dash is needed per row in this group, regardless of what data backs it. How: This maps every index from 0 to totCouNum - 1 (Array.keys yields the indices themselves) to one <i>.
-
-
-						<i
-							key={ curIndNum }
-
-							className={ ` ${ curIndNum < donCouNum ? 'is-done' : '' }   ${ curIndNum === freIndNum ? 'is-fresh' : '' } ` }
-						/> // What: Progress Dash Element. Why: This is one single dash in the group's own progress bar. How: This flags itself is-done once its own index falls under donCouNum, and is-fresh for exactly one tick when it is the dash freIndNum names.
-
-
-					) ) }
-
-
-				</div>
-
-
-			</header>
-
-
-			{ merPenObj && ( // What: Merge Confirm Visibility Check. Why: The merge-confirm banner only exists while a same-name rename is actually pending. How: This renders the banner only while merPenObj holds a value.
-
-
-				<div className='group-merge-confirm'>{ /* What: Merge Confirm Div Element. Why: This is the confirm-before-merging prompt's own root. How: This renders the explanatory message plus its own Cancel/Merge actions. */ }
-
-
-					<span className='confirm-msg'>{ /* What: Confirm Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own to/from names inside the fixed explanatory copy. */ }
-
-
-						A group named &ldquo;{ merPenObj.to }&rdquo; already exists. Merge
-						&ldquo;{ merPenObj.from }&rdquo;&rsquo;s pickers into it? This can&rsquo;t be undone.
-
-
-					</span>
-
-					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both ButBasCom elements below. */ }
-
-
-						<ButBasCom
-							kinValStr='ghost'
-							sizValStr='sm'
-
-							onClick={ onCanMerFun }
-						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the pending merge without changing anything. How: This calls onCanMerFun. */ }
-
-						<ButBasCom
-							kinValStr='primary'
-							sizValStr='sm'
-
-							onClick={ onConMerFun }
-						>Merge</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed merge trigger. How: This calls onConMerFun. */ }
-
-
-					</div>
-
-
-				</div>
-
-
-			) }
-
-			{ ediOpeBoo && namErrStr && ( // What: Name Error Visibility Check. Why: The collision banner only exists while the field is open AND an error is actually staged. How: This renders the banner only while both conditions hold.
-
-
-				<div className='group-merge-confirm group-name-conflict'>{ /* What: Name Conflict Div Element. Why: A rename collision needs the same visual treatment as the merge-confirm banner above. How: This renders namErrStr as the banner's own message. */ }
-
-
-					<span className='confirm-msg'>{ namErrStr }</span>{ /* What: Confirm Message Span Element. Why: This is the actual collision message text. How: This renders namErrStr directly. */ }
-
-
-				</div>
+				</button>
 
 
 			) }
 
 
-		</React.Fragment>
 
+			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
-	);
 
+				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
 
-}
 
-// #endregion GroHeaCom
+					<span className='meta-picker'>{ PAG_LAB_OBJ[ feaRecObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own pagStr in PAG_LAB_OBJ. */ }
 
 
 
-// #region Regeneration Loader Components
+					{ feaRecObj.timStr && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRecObj's own timStr is set.
 
-/**
- * tab-today.jsx = Regeneration Loader Components
- *
- * @summary
- * The two components below stand in for a picker's own daily slot while
- * a new list is being generated. LoaReeCom rapidly cycles item names in
- * place; LoaCarCom wraps it in a card that moves from pending to active
- * to settled, and unmounts the reel from the outside once it settles, so
- * the reel itself just keeps cycling until that happens.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
 
+						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
-// #region LoaReeCom
+							<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-/**
- * LoaReeCom = Loader Reel Component
- *
- * @summary
- * Cycles through canIteArr's own names at a fixed interval, advancing by
- * 1 or 2 each tick so the cycling reads as a genuine shuffle rather than
- * a plain round-robin.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.canIteArr - Candidate Item Array: The candidate pool this picker's
- *                          own slot is drawing from, cycled purely for visual
- *                          effect.
- *
- * @returns The currently-shown candidate's own name, in a span keyed by
- * its own index so each tick replays a fade.
- *
- * @example
- * ```tsx
- * LoaReeCom({ canIteArr }) // => <LoaReeCom />
- * ```
- *
-*/
+							<span className='meta-time'>{ feaRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
 
-function LoaReeCom ( { canIteArr } ) {
 
-
-	const [ curIndNum, setCurIndNum ] = React.useState( 0 ); // What: Current Index Number And Setter. Why: This tracks which candidate is currently shown. How: This starts at 0 and is advanced by the cycling effect below.
-
-
-	React.useEffect( () => { // What: Cycle Effect. Why: The reel needs to keep advancing on its own for as long as it is mounted. How: This starts an interval advancing curIndNum by 1 or 2 (wrapping) every 90ms, and clears it on unmount.
-
-
-		if ( !canIteArr || canIteArr.length < 2 ) return; // What: Too Few Candidates Guard. Why: Cycling makes no sense with fewer than 2 candidates to alternate between. How: This skips starting the interval at all when canIteArr is missing or too short.
-
-
-
-		const cycTimNum = setInterval( () => { // What: Cycle Timer Number. Why: This is the actual recurring advance. How: This holds the interval id so the cleanup below can clear it.
-
-
-			setCurIndNum( ( preIndNum ) => ( preIndNum + 1 + Math.floor( Math.random() * 2 ) ) % canIteArr.length ); // What: Current Index Advance. Why: Advancing by a random 1 or 2 (rather than a flat 1) reads as a shuffle instead of a mechanical round-robin. How: This computes the next index modulo canIteArr's own length.
-
-
-		}, 90 );
-
-
-
-		return () => clearInterval( cycTimNum ); // What: Effect Cleanup Return. Why: The interval must not keep firing after this reel unmounts. How: This clears cycTimNum.
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: canIteArr is fixed for the reel's whole lifetime, and restarting the interval on a new array reference would visibly stutter the cycle. How: This keeps the dependency array empty so the interval starts once, on mount.
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to start once, on mount; canIteArr itself is fixed for the reel's whole lifetime. How: An empty array means this never re-subscribes.
-
-
-
-	return (
-
-
-		<span
-			key={ curIndNum }
-
-			className='loader-reel-name'
-		>{ /* What: Loader Reel Name Span Element. Why: The key on curIndNum forces a fresh mount every tick, replaying the fade-in. How: This renders the current candidate's own name, or a non-breaking space while none exists yet. */ }
-
-
-			{ canIteArr[ curIndNum ]?.name || ' ' }{ /* What: Candidate Name Expression. Why: The reel shows whichever candidate the current index points at. How: This renders that candidate's own name, or a non-breaking space while none exists yet. */ }
-
-
-		</span>
-
-
-	);
-
-
-}
-
-// #endregion LoaReeCom
-
-
-
-// #region LoaCarCom
-
-/**
- * LoaCarCom = Loader Card Component
- *
- * @summary
- * Renders one picker's own regeneration slot: a pending dots state, an
- * active cycling-reel (or dots, for a non-pick slot) state, and a
- * settled state showing the final picked/fixed name.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.infRecObj - Info Record Object: The slot's own
- *                          generation-in-progress record: { canArr, ideStr,
- *                          kinStr, staStr, texStr }, built up in TabTodCom's
- *                          own genLisFun.
- * @param props.picRecObj - Picker Record Object: The picker this loader slot
- *                          belongs to.
- *
- * @returns This slot's own loader card, whose visible state follows
- * infRecObj.staStr.
- *
- * @example
- * ```tsx
- * LoaCarCom({ infRecObj, picRecObj }) // => <LoaCarCom />
- * ```
- *
-*/
-
-function LoaCarCom ( { infRecObj, picRecObj } ) {
-
-
-	const sloStaStr = infRecObj?.staStr || 'pending'; // What: Slot Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRecObj's own staStr, defaulting to 'pending' before the generator even sets one.
-	const sloKinStr = infRecObj?.kinStr || 'pick';    // What: Slot Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRecObj's own kinStr, defaulting to 'pick'.
-	const canIteArr = infRecObj?.canArr || [];        // What: Candidate Item Array. Why: Both the settled name lookup and the reel below read this slot's own candidate pool. How: This reads infRecObj's own canArr, defaulting to an empty array.
-
-
-	const finNamStr = sloKinStr === 'dayoff' // What: Final Name String. Why: The settled state needs one final display name, computed differently per kind. How: This resolves a day-off's own card text (or the picker's own name), a fixed charging message, or the actually-picked candidate's own name.
-		? ( infRecObj.texStr || picRecObj.name )                                            // What: Day-Off Name Branch. Why: A day-off slot settles on its own card text. How: This falls back to the picker's own name when the card has no text.
-		: sloKinStr === 'charging'                                                          // What: Charging Check. Why: A charging slot has no candidate to settle on. How: This tests for the charging kind next.
-		? 'No eligible items for today'                                                     // What: Charging Name Branch. Why: A charging slot settles on a fixed explanation instead of an item. How: This returns the same text a real charging card shows.
-		: canIteArr.find( ( canCurObj ) => canCurObj.id === infRecObj.ideStr )?.name ?? ''; // What: Picked Name Branch. Why: A pick slot settles on whichever candidate the generator actually chose. How: This finds that candidate by infRecObj's own ideStr, falling back to an empty string.
-
-
-	const hasReeBoo = sloKinStr === 'pick' && canIteArr.length > 0; // What: Has Reel Boolean. Why: Only an actual pick slot with real candidates gets the cycling reel; day-off/charging slots just show dots while active. How: This is true only when this is a pick slot with at least one candidate.
-
-
-
-	return (
-
-
-		<article className={ ` today-card   today-card--loader   is-${ sloStaStr } ` }>{ /* What: Loader Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. */ }
-
-
-			<span
-				className='check'
-
-				aria-hidden='true'
-			/>{ /* What: Check Span Element. Why: A loader card still needs the same layout slot a real card's check button occupies. How: This renders an inert, unclickable placeholder. */ }
-
-
-			<div className='today-card-body'>{ /* What: Loader Card Body Div Element. Why: The meta row and name row read as one grouped block, matching a real card's own layout. How: This wraps the meta row and the name row below. */ }
-
-
-				<div className='today-card-meta'>{ /* What: Loader Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
-
-
-					<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRecObj's own name. */ }
-
-
-				</div>
-
-
-				<div className='today-card-name'>{ /* What: Loader Card Name Div Element. Why: This is where the slot's own pending/active/settled visual actually renders. How: This renders exactly one of the three branches below, gated on staStr. */ }
-
-
-					{ sloStaStr === 'pending' && <span className='loader-pending'>·  ·  ·</span> }{ /* What: Pending Dots Span Element. Why: A slot not yet reached by the cascade shows plain waiting dots. How: This renders only while sloStaStr is 'pending'. */ }
-
-					{ sloStaStr === 'active' && hasReeBoo && <LoaReeCom canIteArr={ canIteArr } /> }{ /* What: Loader Reel Component. Why: An active pick slot with real candidates cycles through them. How: This renders only while sloStaStr is 'active' and hasReeBoo is true. */ }
-
-					{ sloStaStr === 'active' && !hasReeBoo && <span className='loader-pending'>·  ·  ·</span> }{ /* What: Active Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
-
-					{ sloStaStr === 'settled' && ( // What: Settled State Check. Why: Once this slot's own cascade step finishes, it shows the final resolved name instead of any dots/reel. How: This renders finNamStr only while sloStaStr is 'settled'.
-
-
-						<span className='loader-reel-name loader-settled'>{ finNamStr }</span> // What: Loader Reel Name Span Element. Why: This is the slot's own final, settled display name. How: This renders finNamStr directly.
+						</React.Fragment>
 
 
 					) }
 
 
 				</div>
+
+				<div className='today-card-name'>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
 
 
 			</div>
 
 
-			<div className='today-card-actions' />{ /* What: Loader Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. */ }
+			{ !tutDonBoo && ( // What: Cancel Action Visibility Check. Why: A resolved card has nothing left to cancel. How: This renders the Cancel action only while tutDonBoo is false.
+
+
+				<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. */ }
+
+
+					<button
+						className='icon-btn'
+
+						aria-label='Cancel tutorial'
+						title='Cancel'
+
+						onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
+
+
+							cliEveObj.stopPropagation();                                       // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
+							actStoObj.setFeaFun( feaRecObj.ideStr, { status : 'cancelled' } ); // What: Cancel Feature Call. Why: The user is dismissing this App Features card entirely. How: This marks the feature cancelled via actStoObj.setFeaFun.
+
+
+						} }
+					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setFeaFun with a 'cancelled' status. */ }
+
+
+						<IcoSvgCom
+							icoNamStr='croEle'
+							sizValNum={ 15 }
+						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
+
+
+					</button>
+
+
+				</div>
+
+
+			) }
 
 
 		</article>
@@ -1101,781 +689,7 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 
 }
 
-// #endregion LoaCarCom
-
-// #endregion Regeneration Loader Components
-
-
-
-// #region EntEdiCom
-
-/**
- * EntEdiCom = Entry Editor Component
- *
- * @summary
- * The shared inline editor for a picker item, reused by the Today, Pickers,
- * and Data tabs so every one of them edits an item identically: a weight
- * stepper for weighted/dynamic pickers, a cadence range for ease-up/
- * ease-down, a Boost row for dynamic, an Active/Inactive toggle, and a
- * confirm-gated Delete. Every edit is applied to the real item as it
- * happens; the item is snapshotted on mount so Cancel, Escape, or an
- * implicit close (a tab switch or reload) can put it back exactly as it
- * was, while Save or the exposed keeSavFun handle keeps the edits.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}, or a
- *                            caller's own actions-shaped stand-in for a
- *                            draft item.
- * @param props.isaNewBoo   - Is-A New Boolean: Whether the item is a
- *                            brand-new, unsaved draft, which hides the
- *                            Delete button.
- * @param props.iteCouNum   - Item Count Number: The picker's own current item
- *                            total, used to refuse a delete below 2 items.
- * @param props.iteDatObj   - Item Data Object: The item being edited.
- * @param props.onCanEdiFun - On Cancel Edit Function: An optional revert
- *                            handler for a caller that owns the item itself.
- * @param props.onCloEdiFun - On Close Edit Function: Closes the editor.
- * @param props.onDelIteFun - On Delete Item Function: An optional delete
- *                            handler, otherwise actStoObj.delIteFun is used.
- * @param props.picDatObj   - Picker Data Object: The item's own picker, read
- *                            for its mode, cadence, and threshold.
- * @param props.picIteArr   - Picker Item Array: Every item, used to average
- *                            a fallback ease band for an unstamped item.
- * @param forRefObj         - Forward Reference Object: The caller's own ref,
- *                            which receives the keeSavFun handle.
- *
- * @returns The editor's rows and footer, or the delete confirm prompt
- * while one is showing.
- *
- * @example
- * ```tsx
- * EntEdiCom({ actStoObj, isaNewBoo, iteCouNum, iteDatObj, ... }) // => <EntEdiCom />
- * ```
- *
-*/
-
-const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onCloEdiFun, onDelIteFun, picDatObj, picIteArr }, forRefObj ) { // What: Entry Editor Component. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: mirrors the Pickers-tab per-item controls (a weight stepper for weighted/dynamic, cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete). How: This snapshots item on mount so Cancel/an implicit close can revert it, stages every live edit directly onto the real item via actStoObj.updIteFun, and exposes a keeSavFun() imperative handle so an external close affordance can mark a save as already-handled.
-
-
-	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Delete is confirm-gated, morphing the footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt below.
-
-	const minIteBoo = iteCouNum != null && iteCouNum <= 2; // What: Minimum Item Boolean. Why: A picker needs at least 2 items for a pick to be a real choice, so this one must be refused if deleting it would drop below that; iteCouNum is the picker's CURRENT total including this item, and a caller that never wires it up (undefined) is treated as unrestricted rather than silently blocking. How: This is true only when iteCouNum is actually known and already at or under 2.
-
-
-	const oriIteRef = React.useRef( iteDatObj ); // What: Original Item Reference. Why: Cancel (or an implicit close) needs to restore the item exactly as it was when this editor opened. How: This snapshots item once, on mount, never updated afterward.
-	const cloWayRef = React.useRef( null );      // What: Close Way Reference. Why: A caller with its OWN close affordance outside this component (e.g. the Data tab row's own collapse chevron) can call the exposed keeSavFun() first so that affordance reads as "done, keep this" rather than an implicit close; this distinguishes 'saved'/'cancel' (closed explicitly) from null (still open, so an implicit close such as a tab switch or reload should discard the unsaved live edits). How: This is written by every explicit action below and read by the pagehide/unmount effect further down.
-
-
-	React.useImperativeHandle( forRefObj, () => ( { keeSavFun : () => { cloWayRef.current = 'saved'; } } ) ); // What: Imperative Handle Publish. Why: An external close affordance needs a way to mark this editor's own edits as already-handled before it closes. How: This exposes a single keeSavFun (Keep Saved Function) method that just flips cloWayRef to 'saved'.
-
-
-	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCanEdiFun with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actStoObj.revIteFun.
-
-
-		if ( onCanEdiFun ) onCanEdiFun( oriIteRef.current ); // What: Caller Revert Branch. Why: A caller that owns the item (a draft not yet in the store) must restore it itself. How: This hands oriIteRef's own snapshot to onCanEdiFun.
-
-		else actStoObj.revIteFun( oriIteRef.current.id, oriIteRef.current ); // What: Store Revert Branch. Why: A real, stored item is restored through the store itself. How: This writes oriIteRef's own snapshot back via actStoObj.revIteFun.
-
-
-	};
-
-
-	const canEdiFun = () => { // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCanEdiFun) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onCloEdiFun.
-
-
-		cloWayRef.current = 'cancel'; // What: Close Way Cancel. Why: The unmount guard below must not treat this close as an implicit one. How: This marks cloWayRef as 'cancel'.
-		revStaFun();                  // What: Revert State Call. Why: Cancel must restore the item to its pre-edit snapshot. How: This calls revStaFun.
-
-
-
-		if ( !onCanEdiFun ) onCloEdiFun(); // What: Close Editor Check. Why: A caller that owns its own close affordance (onCanEdiFun) closes the editor itself. How: This calls onCloEdiFun only when no onCanEdiFun was supplied.
-
-
-	};
-
-
-	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
-
-
-		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
-
-		else canEdiFun(); // What: Cancel Edits Branch. Why: With no confirm prompt up, Escape should cancel the live edits like an explicit Cancel click. How: This calls canEdiFun.
-
-
-	} );
-
-
-	const savCloFun = () => { // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips cloWayRef, then calls onCloEdiFun.
-
-
-		cloWayRef.current = 'saved'; // What: Close Way Saved. Why: The unmount guard below must keep these live edits rather than revert them. How: This marks cloWayRef as 'saved'.
-		onCloEdiFun();               // What: Close Editor Call. Why: Save also closes the editor. How: This calls onCloEdiFun.
-
-
-	};
-
-
-
-	// #region resStoFun
-
-	/**
-	 * resStoFun = Restore Storage Function
-	 *
-	 * @summary
-	 * A same-tick localStorage warm mirror (see storage.js) can otherwise
-	 * go stale for the exact instant between a live edit and the next
-	 * debounced save, so an implicit close restores it directly: either
-	 * dropping a brand-new item entirely, or writing the pre-edit
-	 * snapshot back over whatever live edits already landed.
-	 *
-	 * @author z4nta0 <https://github.com/z4nta0>
-	 *
-	*/
-
-	const resStoFun = () => { // What: Restore Storage Function. Why: See the doc comment just above. How: This reads the warm-mirror key directly, patches its own items array, and writes it straight back, swallowing any error since a failed restore must never break the close itself.
-
-
-		try { // What: Mirror Restore Attempt. Why: Reading or writing the localStorage mirror can throw (malformed JSON, disabled or full storage). How: This wraps the whole restore so the catch below can swallow any failure.
-
-
-			const rawJsoStr = localStorage.getItem( 'easemylife.v2' ); // What: Raw Json String. Why: The warm mirror's own persisted blob needs to be read before it can be patched. How: This reads the fixed 'easemylife.v2' storage key.
-
-
-			if ( !rawJsoStr ) return; // What: No Mirror Guard. Why: A brand-new install (or a cleared mirror) has nothing to patch. How: This bails out early when rawJsoStr is empty.
-
-
-
-			const rawStaObj = JSON.parse( rawJsoStr ); // What: Raw State Object. Why: The mirror's own items array needs to be reachable as real data before it can be patched. How: This parses rawJsoStr.
-
-
-			if ( !Array.isArray( rawStaObj.items ) ) return; // What: No Items Array Guard. Why: A malformed or very old mirror shape has nothing safe to patch. How: This bails out unless rawStaObj.items is a real array.
-
-
-
-			rawStaObj.items = onCanEdiFun // What: Items Patch. Why: A brand-new item (onCanEdiFun supplied) never belonged in the mirror at all, while an existing one just needs its pre-edit snapshot restored. How: This filters the new item out entirely, or maps the existing one back to oriIteRef's own snapshot.
-				? rawStaObj.items.filter( ( curIteObj ) => curIteObj.id !== oriIteRef.current.id )                               // What: New Item Drop Branch. Why: A brand-new item was never saved, so it must vanish from the mirror entirely. How: This keeps every item except the one being edited.
-				: rawStaObj.items.map( ( curIteObj ) => curIteObj.id === oriIteRef.current.id ? oriIteRef.current : curIteObj ); // What: Snapshot Restore Branch. Why: An existing item must go back to exactly how it was before this edit. How: This swaps the edited item for oriIteRef's own snapshot.
-
-			localStorage.setItem( 'easemylife.v2', JSON.stringify( rawStaObj ) ); // What: Mirror Write Back. Why: The patched snapshot needs to actually replace the stale mirror. How: This writes rawStaObj back under the same fixed key.
-
-
-		}
-
-		catch { } // What: Restore Failure Swallow. Why: A failed restore (a full/blocked storage quota, a private window, ...) must never break the close itself. How: This intentionally does nothing.
-
-
-	};
-
-	// #endregion resStoFun
-
-
-	React.useEffect( () => { // What: Discard Guard Effect. Why: An editor left open through a tab switch or reload should discard its own unsaved live edits, matching the "nothing changes until you actually save" expectation every other inline editor in the app follows. How: This disarms window.__editGuard on mount, restores the warm mirror directly on pagehide, and arms __editGuard to revert on an ordinary unmount, in both cases only when cloWayRef is still null (nothing explicit already handled the close).
-
-
-		window.__editGuard.disFun(); // What: Edit Guard Disarm. Why: A stale armed guard from a PREVIOUS editor instance must not fire against this fresh one. How: This clears whatever revert thunk __editGuard was last armed with.
-
-		const onPagHidFun = () => { if ( !cloWayRef.current ) resStoFun(); }; // What: On Page Hide Function. Why: A pagehide (the tab closing or backgrounding) needs its own direct storage restore, since a React unmount effect may not get to run in time. How: This calls resStoFun only when cloWayRef is still null.
-
-
-		window.addEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Subscribe Call. Why: The discard needs to happen the moment the page is actually hidden, not on some later tick. How: This registers onPagHidFun to run on that event.
-
-
-
-		return () => { // What: Effect Cleanup Function. Why: An ordinary unmount (navigating within the app, e.g. switching tabs) needs its own revert path, distinct from the pagehide case above. How: This removes the pagehide listener and arms __editGuard with revStaFun when nothing explicit already handled the close.
-
-
-			window.removeEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPagHidFun reference that was added above.
-
-			if ( !cloWayRef.current ) window.__editGuard.armFun( revStaFun ); // What: Edit Guard Arm. Why: The NEXT editor instance's own disarm (above) is what actually cancels this, so arming here is what makes an ordinary unmount revert at all. How: This arms __editGuard with revStaFun only when cloWayRef is still null.
-
-
-		};
-
-
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to run once, on mount, since cloWayRef/oriIteRef/revStaFun are all stable for this editor instance's whole lifetime. How: An empty array means this never re-subscribes.
-
-
-	// #region Mode-Derived Display Values
-
-	const picModStr = picDatObj ? picDatObj.mode : 'random';                // What: Picker Mode String. Why: Nearly every row below renders differently depending on the picker's own mode. How: This reads picker.mode, falling back to 'random' when no picker was passed at all.
-	const isaEasBoo = picModStr === 'ease-up' || picModStr === 'ease-down'; // What: Is-A Ease Boolean. Why: Ease-up/ease-down show a cadence range instead of a weight stepper, since weight is irrelevant to those modes. How: This is true for either ease mode.
-	const hasWeiBoo = picModStr === 'weighted' || picModStr === 'dynamic';  // What: Has Weight Boolean. Why: Weight is only a real lever for weighted/dynamic; random picks uniformly and ease modes ignore it entirely. How: This is true for either of those two modes.
-	const isaDynBoo = picModStr === 'dynamic';                              // What: Is-A Dynamic Boolean. Why: Only dynamic mode also shows the Boost row beneath its weight stepper. How: This is true only when picModStr is 'dynamic'.
-
-	// #endregion Mode-Derived Display Values
-
-
-
-	// #region Ease Band Resolution
-
-	const driSooFun = ( maxValNum ) => Math.max( 1, Math.round( THR_VAL_NUM / ( maxValNum || 1 ) ) ); // What: Drift Soonest Function. Why: A "Soonest" day count is the human face of an item's own ease-max drift value. How: This converts maxValNum into a day count, matching the exact conversion the new-picker form itself uses.
-	const driLatFun = ( minValNum ) => Math.max( 1, Math.round( THR_VAL_NUM / ( minValNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts minValNum into a day count, the same conversion as driSooFun, mirrored for the opposite bound.
-	const dayDriFun = ( dayCouNum ) => THR_VAL_NUM / Math.max( 1, dayCouNum );                        // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of driSooFun/driLatFun.
-
-	const falEasObj = picDatObj ? PIC_NAM_OBJ.aveEasFun( picIteArr, picDatObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PIC_NAM_OBJ.aveEasFun against this picker's own items.
-	const easMinNum = iteDatObj.easeMin ?? falEasObj?.easeMin ?? 10;                       // What: Ease Minimum Number. Why: This is the item's own resolved lower drift bound, read once and reused throughout this region. How: This reads item.easeMin, falling back to falEasObj's own easeMin, then a fixed 10.
-	const easMaxNum = iteDatObj.easeMax ?? falEasObj?.easeMax ?? 20;                       // What: Ease Maximum Number. Why: This is the item's own resolved upper drift bound, read once and reused throughout this region. How: This reads item.easeMax, falling back to falEasObj's own easeMax, then a fixed 20.
-	const sooDayNum = driSooFun( easMaxNum );                                              // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts easMaxNum via driSooFun.
-	const latDayNum = driLatFun( easMinNum );                                              // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts easMinNum via driLatFun.
-
-
-	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
-
-
-		const newMaxNum = dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDriFun.
-
-
-		actStoObj.updIteFun( iteDatObj.id, { // What: Update Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax, clamping easeMin down to match if it would otherwise exceed the new easeMax.
-
-
-			easeMax : newMaxNum,                       // What: Ease Max. Why: This is the new upper drift bound the user just typed. How: This writes newMaxNum.
-			easeMin : Math.min( easMinNum, newMaxNum ) // What: Ease Min. Why: The band must never invert. How: This keeps the current easeMin unless it now exceeds newMaxNum.
-
-
-		} );
-
-
-	};
-
-
-	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
-
-
-		const newMinNum = dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDriFun.
-
-
-		actStoObj.updIteFun( iteDatObj.id, { // What: Update Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin, clamping easeMax up to match if it would otherwise fall under the new easeMin.
-
-
-			easeMax : Math.max( easMaxNum, newMinNum ), // What: Ease Max. Why: The band must never invert. How: This keeps the current easeMax unless it now falls under newMinNum.
-			easeMin : newMinNum                         // What: Ease Min. Why: This is the new lower drift bound the user just typed. How: This writes newMinNum.
-
-
-		} );
-
-
-	};
-
-
-	const isaDowBoo = picModStr === 'ease-down';          // What: Is-A Down Boolean. Why: Ease-down uses different row labels/phrasing (Shortest/Longest/Refill) than ease-up (Soonest/Latest/Fill). How: This is true only when picModStr is 'ease-down'.
-	const sooLabStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
-	const latLabStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
-
-	const uniWorFun = ( valCouNum ) => CAD_NAM_OBJ.uniWorFun( picDatObj && picDatObj.cadence, valCouNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and valCouNum.
-
-
-	const sooSubEle = isaDowBoo // What: Soonest Sub Element. Why: The Soonest/Shortest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days minimum" for ease-down, or "N days until pickable again" otherwise.
-		? <>stays picked <strong>{ sooDayNum } { uniWorFun( sooDayNum ) }</strong> minimum</>  // What: Ease-Down Soonest Branch. Why: Ease-down's lower bound is a minimum stay. How: This phrases it as "stays picked N days minimum".
-		: <><strong>{ sooDayNum } { uniWorFun( sooDayNum ) }</strong> until pickable again</>; // What: Ease-Up Soonest Branch. Why: Ease-up's lower bound is a cooldown before the item can return. How: This phrases it as "N days until pickable again".
-
-
-	const latSubEle = isaDowBoo // What: Latest Sub Element. Why: The Latest/Longest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days maximum" for ease-down, or "N days until pick is mandatory" otherwise.
-		? <>stays picked <strong>{ latDayNum } { uniWorFun( latDayNum ) }</strong> maximum</>     // What: Ease-Down Latest Branch. Why: Ease-down's upper bound is a maximum stay. How: This phrases it as "stays picked N days maximum".
-		: <><strong>{ latDayNum } { uniWorFun( latDayNum ) }</strong> until pick is mandatory</>; // What: Ease-Up Latest Branch. Why: Ease-up's upper bound is when the item is forced back in. How: This phrases it as "N days until pick is mandatory".
-
-	// #endregion Ease Band Resolution
-
-
-	return (
-
-
-		<div className='rem-inline-editor entry-editor'>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. */ }
-
-
-			<div className='pie-rows'>{ /* What: Pie Rows Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
-
-
-				{ isaEasBoo ? ( // What: Ease Rows Branch. Why: Ease-up/ease-down show a cadence range instead of a weight stepper.
-
-
-					// #region Ease Direction Split
-
-					/**
-					 * tab-today.jsx = Ease Direction Split
-					 *
-					 * @summary
-					 * pie-ease-up-row/pie-ease-down-row (on every relevant row
-					 * below, alongside the row's own shared pie-row class) are
-					 * pure selector hooks for help mode (see help-content.jsx's
-					 * itemChargeRangeUp/Down), split by direction rather than one
-					 * shared pie-ease-row, since Soonest/Latest/Fill (ease-up) and
-					 * Shortest/Longest/Refill (ease-down) get entirely different
-					 * tip copy, not just relabeled headings. FilButCom (ui.jsx)
-					 * has no class of its own to distinguish it by, and it only
-					 * renders for ONE direction at a time, so there is no existing
-					 * class shared by exactly "this direction's ease rows" other
-					 * than this pair.
-					 *
-					 * @author z4nta0 <https://github.com/z4nta0>
-					 *
-					*/
-
-					<React.Fragment>{ /* What: Ease Rows Fragment Element. Why: The Soonest/Latest rows plus one direction-specific Fill/Refill row are true siblings with no shared wrapper of their own. How: This groups all 3 without adding an extra DOM node. */ }
-
-
-						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. */ }
-
-
-							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
-
-
-								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
-
-
-									<span className='pie-lbl'>{ sooLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLabStr directly. */ }
-
-
-									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
-
-
-										<InfTipCom
-											className='pie-help'
-
-											labTexStr={ EUR_WAR_STR }
-										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
-
-
-									) }
-
-
-								</span>
-
-								<span
-									key={ `${ isaDowBoo }-${ sooDayNum }-${ uniWorFun( sooDayNum ) }` }
-
-									className='pie-sub set-sub-fade'
-								>{ sooSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders sooSubEle, keyed by direction/value/unit-word together. */ }
-
-
-							</div>
-
-
-							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
-
-
-								<NumSteCom
-									maxValNum={ 60 }
-									minValNum={ 1 }
-									value={ sooDayNum }
-
-									ariLabStr={ `${ sooLabStr } for ${ iteDatObj.name }` }
-
-									onSetValFun={ setSooFun }
-								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
-
-								<span className='np-ease-unit'>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. */ }
-
-
-							</div>
-
-
-						</div>
-
-						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. */ }
-
-
-							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
-
-
-								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
-
-
-									<span className='pie-lbl'>{ latLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLabStr directly. */ }
-
-
-									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
-
-
-										<InfTipCom
-											className='pie-help'
-
-											labTexStr={ EUR_WAR_STR }
-										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
-
-
-									) }
-
-
-								</span>
-
-								<span
-									key={ `${ isaDowBoo }-${ latDayNum }-${ uniWorFun( latDayNum ) }` }
-
-									className='pie-sub set-sub-fade'
-								>{ latSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders latSubEle, keyed by direction/value/unit-word together. */ }
-
-
-							</div>
-
-
-							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
-
-
-								<NumSteCom
-									maxValNum={ 90 }
-									minValNum={ 1 }
-									value={ latDayNum }
-
-									ariLabStr={ `${ latLabStr } for ${ iteDatObj.name }` }
-
-									onSetValFun={ setLatFun }
-								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
-
-								<span className='np-ease-unit'>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. */ }
-
-
-							</div>
-
-
-						</div>
-
-						{ picModStr === 'ease-up' && ( // What: Fill Row Visibility Check. Why: Only ease-up offers an instant-fill shortcut for its own charge. How: This renders the Fill row only while picModStr is 'ease-up'.
-
-
-							<div className='pie-row pie-ease-up-row'>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FilButCom. */ }
-
-
-								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-									<span className='pie-lbl'>Fill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Fill". */ }
-
-									<span
-										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
-
-										className='pie-sub set-sub-fade'
-									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong> at { Math.round( iteDatObj.value ?? 0 ) }</> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
-
-
-								</div>
-
-
-								<FilButCom
-									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
-									labTexStr='Fill'
-
-									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
-								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
-
-
-							</div>
-
-
-						) }
-
-						{ picModStr === 'ease-down' && ( // What: Refill Row Visibility Check. Why: Only ease-down offers an instant-refill shortcut for its own charge. How: This renders the Refill row only while picModStr is 'ease-down'.
-
-
-							<div className='pie-row pie-ease-down-row'>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FilButCom. */ }
-
-
-								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-									<span className='pie-lbl'>Refill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Refill". */ }
-
-									<span
-										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
-
-										className='pie-sub set-sub-fade'
-									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
-
-
-								</div>
-
-
-								<FilButCom
-									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
-									labTexStr='Refill'
-
-									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
-								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
-
-
-							</div>
-
-
-						) }
-
-
-					</React.Fragment>
-
-					// #endregion Ease Direction Split
-
-
-				) : hasWeiBoo ? ( // What: Weight Row Branch. Why: Weighted/dynamic show an editable weight stepper instead. How: This renders the weight label/subtitle plus a plain plus/minus control.
-
-
-					<div className='pie-row'>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight-stepper below. */ }
-
-
-						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-							<span className='pie-lbl'>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
-
-							<span
-								key={ iteDatObj.weight }
-
-								className='pie-sub set-sub-fade'
-							>{ iteDatObj.weight === 1 ? <><strong>baseline</strong> pick chance</> : <><strong>{ iteDatObj.weight }&times;</strong> more likely than w1</> }</span>{ /* What: Subtitle Span Element. Why: The live weight subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.weight is the baseline 1, keyed by weight. */ }
-
-
-						</div>
-
-
-						<div className='weight-stepper'>{ /* What: Weight Stepper Div Element. Why: The minus/value/plus trio reads as one compact control. How: This wraps both plus/minus buttons around the current weight display. */ }
-
-
-							<button
-								disabled={ iteDatObj.weight <= 1 }
-
-								aria-label='Less weight'
-
-								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.max( 1, iteDatObj.weight - 1 ) ) }
-							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps item.weight down to a minimum of 1 via actStoObj.setWeiFun. */ }
-
-							<span className='weight-val'>w{ iteDatObj.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
-
-							<button
-								disabled={ iteDatObj.weight >= 9 }
-
-								aria-label='More weight'
-
-								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.min( 9, iteDatObj.weight + 1 ) ) }
-							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps item.weight up to a maximum of 9 via actStoObj.setWeiFun. */ }
-
-
-						</div>
-
-
-					</div>
-
-
-				) : ( // What: No-Weight Row Branch. Why: Random mode ignores weight entirely (it picks uniformly), so this row is purely informational.
-
-
-					<div className='pie-row'>{ /* What: No Weight Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. */ }
-
-
-						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-							<span className='pie-lbl'>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
-
-							<span className='pie-sub'>truly random items have equal chance</span>{ /* What: Subtitle Span Element. Why: The user still deserves an explanation for why no weight control appears. How: This renders a fixed explanatory sentence. */ }
-
-
-						</div>
-
-
-						<span className='pie-note'>No weight</span>{ /* What: Note Span Element. Why: This row still needs SOME visible content where a control would otherwise sit. How: This renders the literal phrase "No weight". */ }
-
-
-					</div>
-
-
-				) }
-
-				{ isaDynBoo && ( // What: Boost Row Visibility Check. Why: Only dynamic mode has a boost value worth showing/resetting. How: This renders the Boost row only while isaDynBoo is true.
-
-
-					<div className='pie-row'>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. */ }
-
-
-						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-							<span className='pie-lbl'>Boost</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Boost". */ }
-
-							<span
-								key={ ( iteDatObj.value || 0 ) > 0 ? 'boost' : 'none' }
-
-								className='pie-sub set-sub-fade'
-							>{ ( iteDatObj.value || 0 ) > 0 ? <><strong>+{ iteDatObj.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Subtitle Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
-
-
-						</div>
-
-
-						<div className='pie-ctl'>{ /* What: Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BooResCom below. */ }
-
-
-							<BooResCom
-								booValNum={ iteDatObj.value || 0 }
-
-								onResBooFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : 0 } ) }
-							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actStoObj.updIteFun on reset. */ }
-
-
-						</div>
-
-
-					</div>
-
-
-				) }
-
-				<div className='pie-row'>{ /* What: Active Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. */ }
-
-
-					<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
-
-
-						<span
-							key={ `lbl-${ !!iteDatObj.vacation }` }
-
-							className='pie-lbl set-sub-fade'
-						>{ iteDatObj.vacation ? 'Inactive' : 'Active' }</span>{ /* What: Label Span Element. Why: The row's own heading text itself flips with the item's own current state. How: This renders "Inactive" or "Active" depending on item.vacation, keyed so the flip fades. */ }
-
-						<span
-							key={ `sub-${ !!iteDatObj.vacation }` }
-
-							className='pie-sub set-sub-fade'
-						>{ iteDatObj.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</> }</span>{ /* What: Subtitle Span Element. Why: The live eligibility subtitle needs its own fade-replace key so a toggle visibly refreshes it. How: This renders one of two phrasings depending on item.vacation, keyed the same way as the label above. */ }
-
-
-					</div>
-
-
-					<button
-						className={ ` switch   ${ !iteDatObj.vacation ? 'is-on' : '' } ` }
-
-						aria-label={ iteDatObj.vacation ? 'Activate' : 'Deactivate' }
-						aria-pressed={ !iteDatObj.vacation }
-
-						onClick={ () => actStoObj.togVacFun( iteDatObj.id, 'item' ) }
-					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actStoObj.togVacFun, scoped to 'item'. */ }
-
-
-				</div>
-
-
-			</div>
-
-
-			{ conDelBoo ? ( // What: Confirm Delete Branch. Why: The delete confirm prompt replaces the plain footer entirely while it is up.
-
-
-				<div
-					key='confirm'
-
-					className='rem-inline-foot rem-foot-confirm'
-				>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. */ }
-
-
-					<span className='rem-del-msg'>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
-
-					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
-
-
-						<ButBasCom
-							kinValStr='ghost'
-							sizValStr='sm'
-
-							onClick={ () => setConDelBoo( false ) }
-						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the delete confirm without changing anything. How: This closes conDelBoo, returning to the plain footer. */ }
-
-						<ButBasCom
-							kinValStr='danger'
-							sizValStr='sm'
-
-							onClick={ () => ( onDelIteFun ? onDelIteFun() : actStoObj.delIteFun( iteDatObj.id ) ) }
-						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun when supplied, otherwise removes the item directly via actStoObj.delIteFun. */ }
-
-
-					</div>
-
-
-				</div>
-
-
-			) : ( // What: Plain Foot Branch. Why: The normal, non-confirming footer shows whenever conDelBoo is false.
-
-
-				<div
-					key='foot'
-
-					className='rem-inline-foot rd-edit-foot'
-				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. */ }
-
-
-					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.
-
-
-						<InfTipCom
-							className='rd-del-disabled-tip'
-
-							labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
-						>{ /* What: Info Tip Component. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text. */ }
-
-
-							<ButBasCom
-								disabled
-								icoNamStr='traEle'
-								kinValStr='danger'
-								sizValStr='sm'
-							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This shows the disabled Delete control the wrapping InfTipCom explains. How: This never fires, since disabled is always set in this branch. */ }
-
-
-						</InfTipCom>
-
-
-					) : ( // What: Working Delete Branch. Why: With more than 2 items still in the pool, a real working Delete button belongs here instead. How: This renders the else branch, taken while minIteBoo is false.
-
-
-						<ButBasCom
-							icoNamStr='traEle'
-							kinValStr='danger'
-							sizValStr='sm'
-
-							onClick={ () => setConDelBoo( true ) }
-						>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conDelBoo to true.
-
-
-					) ) }
-
-					<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
-
-
-						<ButBasCom
-							className='ob-item-cancel'
-
-							kinValStr='ghost'
-							sizValStr='sm'
-
-							onClick={ canEdiFun }
-						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. */ }
-
-						<ButBasCom
-							className='ob-item-save'
-
-							kinValStr='ghost'
-							sizValStr='sm'
-
-							onClick={ savCloFun }
-						>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls savCloFun. */ }
-
-
-					</div>
-
-
-				</div>
-
-
-			) }
-
-
-		</div>
-
-
-	);
-
-
-} );
-
-// #endregion EntEdiCom
+// #endregion AppFeaCom
 
 
 
@@ -1937,7 +751,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
  *
  * @example
  * ```tsx
- * EntCarCom({ actStoObj, cheExiBoo, ediModBoo, entRecObj, ... }) // => <EntCarCom />
+ * EntCarCom({ actStoObj, cheExiBoo, ediModBoo, ... }) // => <EntCarCom />
  * ```
  *
 */
@@ -2049,6 +863,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 				) }
 
+
 				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
@@ -2056,6 +871,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which sample picker this card offers. How: This renders picRecObj's own name. */ }
+
 
 
 						{ ONB_PCT_OBJ[ picRecObj.id ] && ( // What: Time Estimate Check. Why: Not every sample picker card has a manually-timed estimate. How: This renders the dot/time pair only while ONB_PCT_OBJ has an entry for picRecObj's own id.
@@ -2077,11 +893,11 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					</div>
 
-
 					<div className='today-card-name'>Set up a { picRecObj.name } picker</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with picRecObj's own name interpolated. */ }
 
 
 				</div>
+
 
 				{ !tutDonBoo && ( // What: Cancel Action Visibility Check. Why: A resolved card has nothing left to cancel. How: This renders the Cancel action only while tutDonBoo is false.
 
@@ -2225,7 +1041,6 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 							aria-hidden='true'
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
-
 						{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed day-off card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
 
 
@@ -2242,6 +1057,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 				) }
+
 
 				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
@@ -2265,11 +1081,11 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					</div>
 
-
 					<div className='today-card-name'>{ entRecObj.cardText || 'Enjoy your day off' }</div>{ /* What: Card Name Div Element. Why: This is the day-off card's own main display text. How: This renders entRecObj's own cardText, falling back to a fixed friendly phrase. */ }
 
 
 				</div>
+
 
 				{ !ediModBoo && ( // What: Card Actions Visibility Check. Why: Edit Mode replaces the whole actions strip with the drag grip above, so it has nothing left to show here. How: This renders the actions strip only while ediModBoo is false.
 
@@ -2292,6 +1108,8 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						</InfTipCom>
+
+
 
 						<button
 							className='icon-btn'
@@ -2317,6 +1135,8 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						</button>
+
+
 
 						<InfTipCom
 							className='icon-btn is-disabled'
@@ -2444,7 +1264,6 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 							aria-hidden='true'
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
-
 						{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed charging card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
 
 
@@ -2462,6 +1281,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 				) }
 
+
 				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
@@ -2473,11 +1293,11 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					</div>
 
-
 					<div className='today-card-name'>No eligible items for today</div>{ /* What: Card Name Div Element. Why: This is the fixed explanatory text for a charging row. How: This renders a literal, fixed phrase. */ }
 
 
 				</div>
+
 
 				{ !ediModBoo && ( // What: Card Actions Visibility Check. Why: Edit Mode replaces the whole actions strip with the drag grip above, so it has nothing left to show here. How: This renders the actions strip only while ediModBoo is false.
 
@@ -2501,6 +1321,8 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 						</InfTipCom>
 
+
+
 						<InfTipCom
 							className='icon-btn is-disabled'
 
@@ -2516,6 +1338,8 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						</InfTipCom>
+
+
 
 						<InfTipCom
 							className='icon-btn is-disabled'
@@ -2712,7 +1536,6 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
-
 					{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed pick card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
 
 
@@ -2730,6 +1553,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 			) }
 
+
 			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row (or its editable field) read as one grouped block. How: This wraps the meta row and either the name field or the plain name div below. */ }
 
 
@@ -2740,7 +1564,6 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 				</div>
-
 
 				{ isaEdiBoo ? ( // What: Name Editing Check. Why: The name area swaps between a live input and plain text depending on whether the row is being renamed. How: This renders the input while isaEdiBoo is true, the plain name div otherwise.
 
@@ -2773,6 +1596,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 			</div>
+
 
 			{ !ediModBoo && ( // What: Card Actions Visibility Check. Why: Edit Mode replaces the whole actions strip with the drag grip above, so it has nothing left to show here. How: This renders the actions strip only while ediModBoo is false.
 
@@ -2831,6 +1655,8 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					) }
 
+
+
 					{ entDonBoo ? ( // What: Entry Done Check. Why: Skip only makes sense while the row isn't already completed. How: This renders an explained disabled Skip while entDonBoo is true, the working button otherwise.
 
 
@@ -2882,6 +1708,8 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					) }
 
+
+
 					<button
 						className={ ` icon-btn   ${ isaEdiBoo ? 'is-on' : '' } ` }
 
@@ -2929,6 +1757,688 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 
+// #region GroHeaCom
+
+/**
+ * GroHeaCom = Group Header Component
+ *
+ * @summary
+ * Renders one group's own sticky header: its name (plain text, or an
+ * inline-editable field/button while Edit Mode is on), its done/total
+ * count, the dash-bar progress row, and (outside Edit Mode) its own Day
+ * Log toggle chip. Also renders the group-merge confirm prompt and any
+ * name-collision error banner beneath the header itself.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.donCouNum   - Done Count Number: How many of this group's own
+ *                            rows are done.
+ * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
+ *                            on.
+ * @param props.groNamStr   - Group Name String: The group's own current
+ *                            display name.
+ * @param props.logOpeBoo   - Log Open Boolean: Whether this group's own Day
+ *                            Log panel is open.
+ * @param props.merPenObj   - Merge Pending Object: A pending rename that would
+ *                            merge into an existing group, or null.
+ * @param props.onCanMerFun - On Cancel Merge Function: Cancels the pending
+ *                            merge in merPenObj.
+ * @param props.onConMerFun - On Confirm Merge Function: Confirms the pending
+ *                            merge in merPenObj.
+ * @param props.onGriDowFun - On Grip Down Function: Starts a group-reorder
+ *                            drag from this header's own grip handle.
+ * @param props.onRenGroFun - On Rename Group Function: Commits a typed rename
+ *                            of this group.
+ * @param props.onTogLogFun - On Toggle Log Function: Toggles this group's own
+ *                            Day Log panel.
+ * @param props.totCouNum   - Total Count Number: How many rows this group has
+ *                            in total.
+ * @param props.valNamFun   - Validate Name Function: Validates a typed rename,
+ *                            returning an error string on collision or null
+ *                            when it is fine.
+ *
+ * @returns This group's own header element, plus any merge-confirm or
+ * name-error banner beneath it.
+ *
+ * @example
+ * ```tsx
+ * GroHeaCom({ donCouNum, ediModBoo, groNamStr, ... }) // => <GroHeaCom />
+ * ```
+ *
+*/
+
+function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, onCanMerFun, onConMerFun, onGriDowFun, onRenGroFun, onTogLogFun, totCouNum, valNamFun } ) {
+
+
+	// #region Cascade Dash Animation
+
+	const preDonRef = React.useRef( donCouNum ); // What: Previous Done Reference. Why: The effect below needs last render's own donCouNum to detect a genuine increase, not just react to any change. How: This starts at the initial donCouNum and is overwritten at the end of that same effect.
+
+	const [ freIndNum, setFreIndNum ] = React.useState( -1 ); // What: Fresh Index Number And Setter. Why: The dash that JUST turned on needs a brief animated cue, keyed by its own index. How: This is set by the effect below and read by the dash-row map further down.
+
+
+	React.useEffect( () => { // What: Cascade Dash Effect. Why: A group's own done count climbing needs to animate the specific dash that just turned on, not the whole row at once. How: This detects donCouNum rising past preDonRef's own last value, flags the newly-lit dash, then clears that flag shortly after.
+
+
+		if ( donCouNum > preDonRef.current ) { // What: Done Increase Branch. Why: Only a genuine rise in donCouNum should trigger the cascade cue, never a drop (an uncheck) or a no-op re-render. How: This compares the fresh donCouNum against preDonRef's own remembered prior value.
+
+
+			const curIndNum = donCouNum - 1; // What: Current Index Number. Why: The freshly-lit dash is always the one at this position. How: This is one less than the new donCouNum.
+
+
+			setFreIndNum( curIndNum ); // What: Fresh Index Set. Why: The dash-row map below needs to know which single dash to flag as freshly lit. How: This publishes curIndNum into freIndNum.
+
+			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), 520 ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself shortly after lighting, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after 520ms, guarded so a stale timeout can't stomp a fresher one.
+
+
+			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
+
+
+
+			return () => clearTimeout( freTimNum ); // What: Effect Cleanup Return. Why: A stale fresh-cue timeout must not fire after a newer effect run has already begun. How: This cancels freTimNum.
+
+
+		}
+
+
+
+		preDonRef.current = donCouNum; // What: Previous Done Update. Why: Even a non-increase (a drop, or a no-op re-render) still needs preDonRef to track the latest value for next time. How: This overwrites preDonRef with the current donCouNum.
+
+
+	}, [ donCouNum ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when donCouNum itself changes. How: donCouNum is the exact value preDonRef is compared against.
+
+	// #endregion Cascade Dash Animation
+
+
+
+	// #region Inline Name Edit
+
+	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false );     // What: Editing Open Boolean And Setter. Why: Edit Mode only, this tracks whether the inline name field currently replaces the plain heading/rename button. How: This is toggled by staEdiFun and finCloFun below.
+	const [ cloOutBoo, setCloOutBoo ] = React.useState( false );     // What: Closing Out Boolean And Setter. Why: Closing the inline field plays a brief out-animation before it actually unmounts. How: This is toggled true right before that animation, then false once it finishes.
+	const [ draNamStr, setDraNamStr ] = React.useState( groNamStr ); // What: Draft Name String And Setter. Why: The inline field edits a local draft, never groNamStr directly, until it is explicitly committed. How: This starts at groNamStr and is freely typed into while ediOpeBoo is true.
+	const [ namErrStr, setNamErrStr ] = React.useState( '' );        // What: Name Error String And Setter. Why: Only set when valNamFun rejects a commit (e.g. a Page Tours rename colliding with an existing group name), since it has nothing to merge into, unlike onRenGroFun, so it blocks instead of offering a merge. How: This keeps the field open, un-committed, until the user edits again or cancels.
+
+	const namInpRef = React.useRef( null ); // What: Name Input Reference. Why: Opening the field needs to both focus and select its own text. How: This is attached to the input's own ref prop below.
+
+
+	React.useEffect( () => { // What: Explicit Focus Effect. Why: autoFocus's own default scroll-into-view would fight a guided-tour spotlight already mid-positioning this same input, since the tour's own scroll-to-target math runs a tick later and sees this as a moving target. How: This focuses namInpRef with preventScroll instead of relying on autoFocus, then selects its text.
+
+
+		if ( !ediOpeBoo || !namInpRef.current ) return; // What: Not Editing Guard. Why: There is nothing to focus while the field isn't even open. How: This bails out early unless both ediOpeBoo is true and namInpRef is attached.
+
+
+
+		namInpRef.current.focus( { preventScroll : true } ); // What: Explicit Focus Call. Why: preventScroll avoids fighting a tour's own scroll positioning, unlike the input's own autoFocus attribute would. How: This focuses namInpRef's own current node without letting the browser auto-scroll to it.
+		namInpRef.current.select();                          // What: Text Select Call. Why: Opening the field should offer the whole current name ready to overtype, not just a caret. How: This selects namInpRef's own current text content.
+
+
+	}, [ ediOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when ediOpeBoo itself changes. How: ediOpeBoo is the exact transition this effect reacts to.
+
+	React.useEffect( () => { if ( !ediModBoo ) setEdiOpeBoo( false ); }, [ ediModBoo ] ); // What: Edit Mode Exit Effect. Why: Leaving Edit Mode entirely must cancel any in-progress name edit. How: This forces ediOpeBoo back to false whenever ediModBoo itself goes false.
+
+
+	const staEdiFun = () => { // What: Start Edit Function. Why: Opening the field should always begin from the real current name, with any stale error cleared. How: This resets draNamStr and namErrStr, then opens ediOpeBoo.
+
+
+		setDraNamStr( groNamStr ); // What: Draft Name Reset. Why: The field must open on the group's real current name, not a stale earlier draft. How: This copies groNamStr into draNamStr.
+		setNamErrStr( '' );        // What: Name Error Clear. Why: A leftover error from an earlier attempt must not greet a fresh edit. How: This empties namErrStr.
+		setEdiOpeBoo( true );      // What: Editing Open. Why: The inline field itself now needs to replace the rename button. How: This flips ediOpeBoo to true.
+
+
+	};
+
+
+
+	// #region finCloFun
+
+	/**
+	 * finCloFun = Finish Close Function
+	 *
+	 * @summary
+	 * Plays the out animation (is-closing) for ~150ms, then unmounts the
+	 * field and, for a real change, commits the rename. Guarded so the
+	 * blur that Enter triggers can't double-fire alongside an explicit
+	 * commit/cancel already in flight.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	*/
+
+	const finCloFun = ( chaValBoo, newValStr ) => { // What: Finish Close Function. Why: See the doc comment just above. How: This stages cloOutBoo, then after 150ms closes ediOpeBoo and either commits newValStr or reverts draNamStr.
+
+
+		setCloOutBoo( true ); // What: Closing Flag Set. Why: The field's own out-animation needs to start immediately. How: This flips cloOutBoo to true.
+
+		setTimeout( () => { // What: Close Settle Timeout. Why: The field must stay mounted through its own out-animation before this actually closes it. How: This runs 150ms later, matching that animation's own duration.
+
+
+			setEdiOpeBoo( false ); // What: Editing Close. Why: The field itself is done animating out and can now unmount. How: This flips ediOpeBoo back to false.
+			setCloOutBoo( false ); // What: Closing Flag Clear. Why: The out-animation flag must not persist once the field is already gone. How: This flips cloOutBoo back to false.
+
+			if ( chaValBoo ) onRenGroFun( newValStr ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr.
+
+			else setDraNamStr( groNamStr ); // What: Revert Branch. Why: A cancel, or a no-op commit, should leave the draft matching the real name again for next time. How: This resets draNamStr back to groNamStr.
+
+
+		}, 150 ); // What: Close Settle Delay. Why: The field stays mounted through its out-animation first. How: This 150ms matches that animation's duration.
+
+
+	};
+
+	// #endregion finCloFun
+
+
+	const comEdiFun = () => { // What: Commit Edit Function. Why: Both blur (Enter blurs the input) and an explicit commit path need this exact same validation-then-close sequence. How: This trims the draft, checks whether it actually changed, validates it, and either stages an error or finishes closing.
+
+
+		if ( cloOutBoo ) return; // What: Already Closing Guard. Why: A commit already in flight must not be re-triggered by a second event (e.g. Enter's own blur firing after the click that started this). How: This bails out while cloOutBoo is already true.
+
+
+
+		const newValStr = draNamStr.trim();                       // What: New Value String. Why: A typed name needs its surrounding whitespace trimmed before it is compared or saved. How: This trims draNamStr.
+		const chaValBoo = !!newValStr && newValStr !== groNamStr; // What: Changed Value Boolean. Why: An empty or unchanged draft should just close quietly rather than commit anything. How: This is true only when newValStr is non-empty and differs from groNamStr.
+
+
+		if ( chaValBoo && valNamFun ) { // What: Validation Branch. Why: A real change needs to be checked against valNamFun before committing, since a collision should block rather than merge (Page Tours has nothing to merge into). How: This runs valNamFun against newValStr only when there is an actual change to validate.
+
+
+			const errMesStr = valNamFun( newValStr ); // What: Error Message String. Why: This is the actual collision message, or null when newValStr is fine. How: This calls valNamFun with newValStr.
+
+
+			if ( errMesStr ) { // What: Collision Branch. Why: A collision must keep the field open, un-committed, rather than close it. How: This stages namErrStr and reclaims focus instead of falling through to finCloFun below.
+
+
+				setNamErrStr( errMesStr );  // What: Name Error Stage. Why: The banner beneath the header needs this exact message to display. How: This publishes errMesStr into namErrStr.
+				namInpRef.current?.focus(); // What: Focus Reclaim. Why: commit() runs from onBlur too (Enter blurs the input), so focus may already be gone; reclaiming it lets the user just keep typing to fix the collision. How: This focuses namInpRef's own current node, if it still exists.
+
+
+
+				return; // What: Validation Return. Why: A collision must not fall through to finCloFun below. How: This exits comEdiFun immediately.
+
+
+			}
+
+
+		}
+
+
+
+		finCloFun( chaValBoo, newValStr ); // What: Finish Close Call. Why: Either an unvalidated no-op close or a validated real change needs to run the same close sequence. How: This calls finCloFun with the values computed above.
+
+
+	};
+
+
+	const canEdiFun = () => { // What: Cancel Edit Function. Why: Escape should discard the draft and any staged error without committing anything. How: This clears namErrStr then calls finCloFun with chaValBoo false.
+
+
+		if ( cloOutBoo ) return; // What: Already Closing Guard. Why: A close already in flight must not be started a second time. How: This bails out while cloOutBoo is already true.
+
+
+
+		setNamErrStr( '' ); // What: Name Error Clear. Why: A cancelled edit must not leave its staged error behind. How: This empties namErrStr.
+		finCloFun( false ); // What: Finish Close Call. Why: The field still needs its own out-animation and revert. How: This calls finCloFun with chaValBoo false, so nothing is committed.
+
+
+	};
+
+	// #endregion Inline Name Edit
+
+
+
+	return (
+
+
+		<React.Fragment>{ /* What: Group Header Fragment Element. Why: The header itself and its own merge/error banners are true siblings with no shared wrapper of their own. How: This groups the header, the merge-confirm banner, and the name-error banner without adding an extra DOM node. */ }
+
+
+			<header className={ ` group-h   ${ ediModBoo ? 'is-reorderable' : '' } ` }>{ /* What: Group Header Header Element. Why: This is GroHeaCom's own root landmark, holding the name/count row and the progress dash row beneath it. How: This renders as a semantic <header>, tagged is-reorderable while Edit Mode is on. */ }
+
+
+				<div className='group-h-l'>{ /* What: Header Left Div Element. Why: The name, count, and Day Log chip read as one left-aligned cluster. How: This wraps the grip (Edit Mode only), the name/rename control, the count, and the Day Log chip. */ }
+
+
+					{ ediModBoo && ( // What: Grip Visibility Check. Why: The drag handle only makes sense while Edit Mode is on. How: This renders the grip span only while ediModBoo is true.
+
+
+						<span
+							className='group-grip'
+
+							draggable={ false }
+
+							aria-label='Drag to reorder group'
+							role='button'
+							tabIndex={ 0 }
+
+							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
+							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
+						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. */ }
+
+
+							<IcoSvgCom
+								icoNamStr='griEle'
+								sizValNum={ 16 }
+							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
+
+
+						</span>
+
+
+					) }
+
+					{ ediModBoo && ediOpeBoo ? ( // What: Editing Field Branch. Why: While Edit Mode is on AND the field is open, the group's own name renders as an editable input instead of plain text or the rename button. How: This renders the inline input, wired to draNamStr/comEdiFun/canEdiFun.
+
+
+						<input
+							ref={ namInpRef }
+
+							className={ ` group-name-input   group-name-slot   ${ cloOutBoo ? 'is-closing' : '' }   ${ namErrStr ? 'is-invalid' : '' } ` }
+
+							maxLength={ 30 }
+							type='text'
+							value={ draNamStr }
+
+							aria-label='Group name'
+
+							onBlur={ comEdiFun }
+							onChange={ ( chaEveObj ) => { // What: Change Handler. Why: Typing both updates the draft and clears any staged collision error, since the user is now fixing it. How: This copies the input's value into draNamStr, then clears namErrStr if one is set.
+
+
+								setDraNamStr( chaEveObj.target.value ); // What: Draft Name Update. Why: The field is controlled, so every keystroke must land in draNamStr. How: This copies the input's own current value.
+
+
+
+								if ( namErrStr ) setNamErrStr( '' ); // What: Error Clear Check. Why: A collision error no longer applies once the user starts editing the name again. How: This clears namErrStr only when one is set.
+
+
+							} }
+							onKeyDown={ ( keyEveObj ) => { // What: Key Down Handler. Why: Enter should commit (via a blur) and Escape should cancel, mirroring every other inline editor in the app. How: This blurs the input on Enter and calls canEdiFun on Escape.
+
+
+								if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); // What: Enter Branch. Why: Enter commits the rename, which happens through the input's own onBlur. How: This blurs the input, firing comEdiFun.
+
+								else if ( keyEveObj.key === 'Escape' ) { // What: Escape Branch. Why: Escape cancels the rename. How: This stops the key's default behavior, then calls canEdiFun.
+
+
+									keyEveObj.preventDefault(); // What: Default Prevention. Why: Escape must not also trigger any browser-level default (such as leaving a fullscreen view). How: This calls preventDefault on the key event.
+									canEdiFun();                // What: Cancel Edit Call. Why: This is the actual cancel. How: This calls canEdiFun.
+
+
+								}
+
+
+							} }
+						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape.
+
+
+					) : ediModBoo ? ( // What: Rename Button Branch. Why: While Edit Mode is on but the field is closed, the name itself acts as a button that opens it. How: This renders a button showing groNamStr plus an edit glyph, wired to staEdiFun.
+
+
+						<button
+							className='group-name group-name--editable group-name-slot'
+
+							type='button'
+
+							aria-label={ `Rename group ${ groNamStr }` }
+
+							onClick={ staEdiFun }
+						>{ /* What: Group Rename Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. */ }
+
+
+							{ groNamStr }
+							<IcoSvgCom
+								icoNamStr='ediEle'
+								sizValNum={ 13 }
+							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
+
+
+						</button>
+
+
+					) : ( // What: Plain Heading Branch. Why: Outside Edit Mode the group's own name is just a plain, non-interactive heading. How: This renders a bare <h2> showing groNamStr.
+
+
+						<h2 className='group-name'>{ groNamStr }</h2> // What: Group Name Heading Element. Why: This is the group's own plain, non-editable display name. How: This renders groNamStr directly.
+
+
+					) }
+
+					<span className='group-count'>{ /* What: Group Count Span Element. Why: The done/total pair reads as one small cluster next to the name. How: This wraps the done and "of total" spans below. */ }
+
+
+						<span className='group-done'>{ donCouNum }</span>{ /* What: Group Done Span Element. Why: This is the group's own current done count. How: This renders donCouNum directly. */ }
+
+						<span className='group-of'>of { totCouNum }</span>{ /* What: Group Of Span Element. Why: The done count alone is meaningless without the total it is out of. How: This renders the literal word "of" plus totCouNum. */ }
+
+
+					</span>
+
+
+
+					{ !ediModBoo && onTogLogFun && ( // What: Log Chip Check. Why: The chip only makes sense outside Edit Mode and only when a caller actually wired up onTogLogFun. How: This renders LogChiCom only while both conditions hold.
+
+
+						<LogChiCom
+							open={ logOpeBoo }
+
+							onTogLogFun={ onTogLogFun }
+						/> // What: Log Chip Component. Why: Outside Edit Mode, this group's own Day Log panel needs a visible toggle. How: This is passed logOpeBoo and onTogLogFun directly.
+
+
+					) }
+
+
+				</div>
+
+				<div className='group-progress'>{ /* What: Group Progress Div Element. Why: The dash-bar row is its own visual band beneath the name/count row. How: This maps one dash per row in the group, flagging the done ones and whichever one just turned fresh. */ }
+
+
+					{ [ ...Array( totCouNum ).keys() ].map( ( curIndNum ) => ( // What: Dash Row Map. Why: One dash is needed per row in this group, regardless of what data backs it. How: This maps every index from 0 to totCouNum - 1 (Array.keys yields the indices themselves) to one <i>.
+
+
+						<i
+							key={ curIndNum }
+
+							className={ ` ${ curIndNum < donCouNum ? 'is-done' : '' }   ${ curIndNum === freIndNum ? 'is-fresh' : '' } ` }
+						/> // What: Progress Dash Element. Why: This is one single dash in the group's own progress bar. How: This flags itself is-done once its own index falls under donCouNum, and is-fresh for exactly one tick when it is the dash freIndNum names.
+
+
+					) ) }
+
+
+				</div>
+
+
+			</header>
+
+
+			{ merPenObj && ( // What: Merge Confirm Visibility Check. Why: The merge-confirm banner only exists while a same-name rename is actually pending. How: This renders the banner only while merPenObj holds a value.
+
+
+				<div className='group-merge-confirm'>{ /* What: Merge Confirm Div Element. Why: This is the confirm-before-merging prompt's own root. How: This renders the explanatory message plus its own Cancel/Merge actions. */ }
+
+
+					<span className='confirm-msg'>{ /* What: Confirm Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own to/from names inside the fixed explanatory copy. */ }
+
+
+						A group named &ldquo;{ merPenObj.to }&rdquo; already exists. Merge
+						&ldquo;{ merPenObj.from }&rdquo;&rsquo;s pickers into it? This can&rsquo;t be undone.
+
+
+					</span>
+
+					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both ButBasCom elements below. */ }
+
+
+						<ButBasCom
+							kinValStr='ghost'
+							sizValStr='sm'
+
+							onClick={ onCanMerFun }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the pending merge without changing anything. How: This calls onCanMerFun. */ }
+
+
+
+						<ButBasCom
+							kinValStr='primary'
+							sizValStr='sm'
+
+							onClick={ onConMerFun }
+						>Merge</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed merge trigger. How: This calls onConMerFun. */ }
+
+
+					</div>
+
+
+				</div>
+
+
+			) }
+
+
+			{ ediOpeBoo && namErrStr && ( // What: Name Error Visibility Check. Why: The collision banner only exists while the field is open AND an error is actually staged. How: This renders the banner only while both conditions hold.
+
+
+				<div className='group-merge-confirm group-name-conflict'>{ /* What: Name Conflict Div Element. Why: A rename collision needs the same visual treatment as the merge-confirm banner above. How: This renders namErrStr as the banner's own message. */ }
+
+
+					<span className='confirm-msg'>{ namErrStr }</span>{ /* What: Confirm Message Span Element. Why: This is the actual collision message text. How: This renders namErrStr directly. */ }
+
+
+				</div>
+
+
+			) }
+
+
+		</React.Fragment>
+
+
+	);
+
+
+}
+
+// #endregion GroHeaCom
+
+
+
+// #region Regeneration Loader Components
+
+/**
+ * tab-today.jsx = Regeneration Loader Components
+ *
+ * @summary
+ * The two components below stand in for a picker's own daily slot while
+ * a new list is being generated. LoaReeCom rapidly cycles item names in
+ * place; LoaCarCom wraps it in a card that moves from pending to active
+ * to settled, and unmounts the reel from the outside once it settles, so
+ * the reel itself just keeps cycling until that happens.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+// #region LoaReeCom
+
+/**
+ * LoaReeCom = Loader Reel Component
+ *
+ * @summary
+ * Cycles through canIteArr's own names at a fixed interval, advancing by
+ * 1 or 2 each tick so the cycling reads as a genuine shuffle rather than
+ * a plain round-robin.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.canIteArr - Candidate Item Array: The candidate pool this
+ *                          picker's own slot is drawing from, cycled purely
+ *                          for visual effect.
+ *
+ * @returns The currently-shown candidate's own name, in a span keyed by
+ * its own index so each tick replays a fade.
+ *
+ * @example
+ * ```tsx
+ * LoaReeCom({ canIteArr }) // => <LoaReeCom />
+ * ```
+ *
+*/
+
+function LoaReeCom ( { canIteArr } ) {
+
+
+	const [ curIndNum, setCurIndNum ] = React.useState( 0 ); // What: Current Index Number And Setter. Why: This tracks which candidate is currently shown. How: This starts at 0 and is advanced by the cycling effect below.
+
+
+	React.useEffect( () => { // What: Cycle Effect. Why: The reel needs to keep advancing on its own for as long as it is mounted. How: This starts an interval advancing curIndNum by 1 or 2 (wrapping) every 90ms, and clears it on unmount.
+
+
+		if ( !canIteArr || canIteArr.length < 2 ) return; // What: Too Few Candidates Guard. Why: Cycling makes no sense with fewer than 2 candidates to alternate between. How: This skips starting the interval at all when canIteArr is missing or too short.
+
+
+
+		const cycTimNum = setInterval( () => { // What: Cycle Timer Number. Why: This is the actual recurring advance. How: This holds the interval id so the cleanup below can clear it.
+
+
+			setCurIndNum( ( preIndNum ) => ( preIndNum + 1 + Math.floor( Math.random() * 2 ) ) % canIteArr.length ); // What: Current Index Advance. Why: Advancing by a random 1 or 2 (rather than a flat 1) reads as a shuffle instead of a mechanical round-robin. How: This computes the next index modulo canIteArr's own length.
+
+
+		}, 90 ); // What: Cycle Interval. Why: The loader reel advances at a steady quick pace. How: This ticks every 90ms.
+
+
+
+		return () => clearInterval( cycTimNum ); // What: Effect Cleanup Return. Why: The interval must not keep firing after this reel unmounts. How: This clears cycTimNum.
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: canIteArr is fixed for the reel's whole lifetime, and restarting the interval on a new array reference would visibly stutter the cycle. How: This keeps the dependency array empty so the interval starts once, on mount.
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to start once, on mount; canIteArr itself is fixed for the reel's whole lifetime. How: An empty array means this never re-subscribes.
+
+
+
+	return (
+
+
+		<span
+			key={ curIndNum }
+
+			className='loader-reel-name'
+		>{ /* What: Loader Reel Name Span Element. Why: The key on curIndNum forces a fresh mount every tick, replaying the fade-in. How: This renders the current candidate's own name, or a non-breaking space while none exists yet. */ }
+
+
+			{ canIteArr[ curIndNum ]?.name || ' ' }{ /* What: Candidate Name Expression. Why: The reel shows whichever candidate the current index points at. How: This renders that candidate's own name, or a non-breaking space while none exists yet. */ }
+
+
+		</span>
+
+
+	);
+
+
+}
+
+// #endregion LoaReeCom
+
+
+
+// #region LoaCarCom
+
+/**
+ * LoaCarCom = Loader Card Component
+ *
+ * @summary
+ * Renders one picker's own regeneration slot: a pending dots state, an
+ * active cycling-reel (or dots, for a non-pick slot) state, and a
+ * settled state showing the final picked/fixed name.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.infRecObj - Info Record Object: The slot's own
+ *                          generation-in-progress record: { canArr, ideStr,
+ *                          kinStr, staStr, texStr }, built up in TabTodCom's
+ *                          own genLisFun.
+ * @param props.picRecObj - Picker Record Object: The picker this loader slot
+ *                          belongs to.
+ *
+ * @returns This slot's own loader card, whose visible state follows
+ * infRecObj.staStr.
+ *
+ * @example
+ * ```tsx
+ * LoaCarCom({ infRecObj, picRecObj }) // => <LoaCarCom />
+ * ```
+ *
+*/
+
+function LoaCarCom ( { infRecObj, picRecObj } ) {
+
+
+	const sloStaStr = infRecObj?.staStr || 'pending'; // What: Slot Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRecObj's own staStr, defaulting to 'pending' before the generator even sets one.
+	const sloKinStr = infRecObj?.kinStr || 'pick';    // What: Slot Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRecObj's own kinStr, defaulting to 'pick'.
+	const canIteArr = infRecObj?.canArr || [];        // What: Candidate Item Array. Why: Both the settled name lookup and the reel below read this slot's own candidate pool. How: This reads infRecObj's own canArr, defaulting to an empty array.
+
+
+	const finNamStr = sloKinStr === 'dayoff' // What: Final Name String. Why: The settled state needs one final display name, computed differently per kind. How: This resolves a day-off's own card text (or the picker's own name), a fixed charging message, or the actually-picked candidate's own name.
+		? ( infRecObj.texStr || picRecObj.name )                                            // What: Day-Off Name Branch. Why: A day-off slot settles on its own card text. How: This falls back to the picker's own name when the card has no text.
+		: sloKinStr === 'charging'                                                          // What: Charging Check. Why: A charging slot has no candidate to settle on. How: This tests for the charging kind next.
+		? 'No eligible items for today'                                                     // What: Charging Name Branch. Why: A charging slot settles on a fixed explanation instead of an item. How: This returns the same text a real charging card shows.
+		: canIteArr.find( ( canCurObj ) => canCurObj.id === infRecObj.ideStr )?.name ?? ''; // What: Picked Name Branch. Why: A pick slot settles on whichever candidate the generator actually chose. How: This finds that candidate by infRecObj's own ideStr, falling back to an empty string.
+
+
+	const hasReeBoo = sloKinStr === 'pick' && canIteArr.length > 0; // What: Has Reel Boolean. Why: Only an actual pick slot with real candidates gets the cycling reel; day-off/charging slots just show dots while active. How: This is true only when this is a pick slot with at least one candidate.
+
+
+
+	return (
+
+
+		<article className={ ` today-card   today-card--loader   is-${ sloStaStr } ` }>{ /* What: Loader Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. */ }
+
+
+			<span
+				className='check'
+
+				aria-hidden='true'
+			/>{ /* What: Check Span Element. Why: A loader card still needs the same layout slot a real card's check button occupies. How: This renders an inert, unclickable placeholder. */ }
+
+
+			<div className='today-card-body'>{ /* What: Loader Card Body Div Element. Why: The meta row and name row read as one grouped block, matching a real card's own layout. How: This wraps the meta row and the name row below. */ }
+
+
+				<div className='today-card-meta'>{ /* What: Loader Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
+
+
+					<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRecObj's own name. */ }
+
+
+				</div>
+
+				<div className='today-card-name'>{ /* What: Loader Card Name Div Element. Why: This is where the slot's own pending/active/settled visual actually renders. How: This renders exactly one of the three branches below, gated on staStr. */ }
+
+
+					{ sloStaStr === 'pending' && <span className='loader-pending'>·  ·  ·</span> }{ /* What: Pending Dots Span Element. Why: A slot not yet reached by the cascade shows plain waiting dots. How: This renders only while sloStaStr is 'pending'. */ }
+
+
+
+					{ sloStaStr === 'active' && hasReeBoo && <LoaReeCom canIteArr={ canIteArr } /> }{ /* What: Loader Reel Component. Why: An active pick slot with real candidates cycles through them. How: This renders only while sloStaStr is 'active' and hasReeBoo is true. */ }
+
+
+
+					{ sloStaStr === 'active' && !hasReeBoo && <span className='loader-pending'>·  ·  ·</span> }{ /* What: Active Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
+
+					{ sloStaStr === 'settled' && ( // What: Settled State Check. Why: Once this slot's own cascade step finishes, it shows the final resolved name instead of any dots/reel. How: This renders finNamStr only while sloStaStr is 'settled'.
+
+
+						<span className='loader-reel-name loader-settled'>{ finNamStr }</span> // What: Loader Reel Name Span Element. Why: This is the slot's own final, settled display name. How: This renders finNamStr directly.
+
+
+					) }
+
+
+				</div>
+
+
+			</div>
+
+
+			<div className='today-card-actions' />{ /* What: Loader Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. */ }
+
+
+		</article>
+
+
+	);
+
+
+}
+
+// #endregion LoaCarCom
+
+// #endregion Regeneration Loader Components
+
+
+
 // #region PagTouCom
 
 /**
@@ -2944,8 +2454,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actStoObj   - Action Store Object: The shared app actions.
- * @param props.cheExiBoo   - Checklist Exiting Boolean: Whether the checklist's
- *                            own closing exit animation is currently playing.
+ * @param props.cheExiBoo   - Checklist Exiting Boolean: Whether the
+ *                            checklist's own closing exit animation is
+ *                            currently playing.
  * @param props.onPlaTutFun - On Play Tutorial Function: Starts this page tour.
  * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
  *                            page tour's own checklist entry.
@@ -3063,6 +2574,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 			) }
 
+
 			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
@@ -3070,6 +2582,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 					<span className='meta-picker'>{ touRecObj.labStr } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRecObj's own label plus the literal word "Tour". */ }
+
 
 
 					{ touRecObj.timStr && ( // What: Time Estimate Check. Why: Not every page-tour card has a manually-timed estimate. How: This renders the dot/time pair only while touRecObj's own time is set.
@@ -3091,11 +2604,11 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 				</div>
 
-
 				<div className='today-card-name'>Take a quick tour of the { touRecObj.labStr } page</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with touRecObj's own label interpolated. */ }
 
 
 			</div>
+
 
 			{ !tutDonBoo && ( // What: Cancel Action Visibility Check. Why: A resolved card has nothing left to cancel. How: This renders the Cancel action only while tutDonBoo is false.
 
@@ -3147,228 +2660,831 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 
-// #region AppFeaCom
+// #region EntEdiCom
 
 /**
- * AppFeaCom = App Feature Card Component
+ * EntEdiCom = Entry Editor Component
  *
  * @summary
- * An "App Features" launcher card: same shape/behavior as a PagTouCom
- * card above, but backed by its own staAppObj.onboarding.appFeatures map
- * instead of the checklist, and with no cheExiBoo celebration-exit
- * animation to key off (App Features isn't part of that "closing card"
- * flow at all, see shoFeaBoo's own comment in TabTodCom for why).
+ * The shared inline editor for a picker item, reused by the Today, Pickers,
+ * and Data tabs so every one of them edits an item identically: a weight
+ * stepper for weighted/dynamic pickers, a cadence range for ease-up/
+ * ease-down, a Boost row for dynamic, an Active/Inactive toggle, and a
+ * confirm-gated Delete. Every edit is applied to the real item as it
+ * happens; the item is snapshotted on mount so Cancel, Escape, or an
+ * implicit close (a tab switch or reload) can put it back exactly as it
+ * was, while Save or the exposed keeSavFun handle keeps the edits.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: The shared app actions.
- * @param props.feaRecObj   - Feature Record Object: The App Features manifest
- *                            entry this card offers.
- * @param props.onPlaTutFun - On Play Tutorial Function: Starts this App
- *                            Feature's own tutorial.
- * @param props.onUncFeaFun - On Uncheck Feature Function: Un-resolves this
- *                            App Feature.
- * @param props.staAppObj   - State App Object: The shared app state.
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}, or a
+ *                            caller's own actions-shaped stand-in for a
+ *                            draft item.
+ * @param props.isaNewBoo   - Is-A New Boolean: Whether the item is a
+ *                            brand-new, unsaved draft, which hides the
+ *                            Delete button.
+ * @param props.iteCouNum   - Item Count Number: The picker's own current item
+ *                            total, used to refuse a delete below 2 items.
+ * @param props.iteDatObj   - Item Data Object: The item being edited.
+ * @param props.onCanEdiFun - On Cancel Edit Function: An optional revert
+ *                            handler for a caller that owns the item itself.
+ * @param props.onCloEdiFun - On Close Edit Function: Closes the editor.
+ * @param props.onDelIteFun - On Delete Item Function: An optional delete
+ *                            handler, otherwise actStoObj.delIteFun is used.
+ * @param props.picDatObj   - Picker Data Object: The item's own picker, read
+ *                            for its mode, cadence, and threshold.
+ * @param props.picIteArr   - Picker Item Array: Every item, used to average
+ *                            a fallback ease band for an unstamped item.
+ * @param forRefObj         - Forward Reference Object: The caller's own ref,
+ *                            which receives the keeSavFun handle.
  *
- * @returns This card's own article element.
+ * @returns The editor's rows and footer, or the delete confirm prompt
+ * while one is showing.
  *
  * @example
  * ```tsx
- * AppFeaCom({ actStoObj, feaRecObj, onPlaTutFun, ... }) // => <AppFeaCom />
+ * EntEdiCom({ actStoObj, isaNewBoo, iteCouNum, ... }) // => <EntEdiCom />
  * ```
  *
 */
 
-function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj } ) {
+const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onCloEdiFun, onDelIteFun, picDatObj, picIteArr }, forRefObj ) { // What: Entry Editor Component. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: mirrors the Pickers-tab per-item controls (a weight stepper for weighted/dynamic, cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete). How: This snapshots item on mount so Cancel/an implicit close can revert it, stages every live edit directly onto the real item via actStoObj.updIteFun, and exposes a keeSavFun() imperative handle so an external close affordance can mark a save as already-handled.
 
 
-	const tutDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own ideStr.
-	const bloReaStr = !tutDonBoo ? bloReaFun( feaRecObj.ideStr, staAppObj ) : null;                                                           // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
+	// #region Delete Confirm
 
+	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Delete is confirm-gated, morphing the footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt below.
 
-	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.
+	const minIteBoo = iteCouNum != null && iteCouNum <= 2; // What: Minimum Item Boolean. Why: A picker needs at least 2 items for a pick to be a real choice, so this one must be refused if deleting it would drop below that; iteCouNum is the picker's CURRENT total including this item, and a caller that never wires it up (undefined) is treated as unrestricted rather than silently blocking. How: This is true only when iteCouNum is actually known and already at or under 2.
 
-
-		if ( cliEveObj.target.closest( '.today-card-actions' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside .today-card-actions.
-
-
-
-		if ( bloReaStr ) return; // What: Blocked Guard. Why: A feature whose tutorial can't run yet must not start from a row click. How: This bails out while bloReaStr holds a reason.
+	// #endregion Delete Confirm
 
 
 
-		if ( tutDonBoo ) onUncFeaFun( feaRecObj.ideStr ); // What: Done Dispatch Branch. Why: A finished App Features card's row click un-resolves it. How: This calls onUncFeaFun with the feature's own id.
+	// #region Close And Revert Handling
 
-		else onPlaTutFun( 'appFeature', feaRecObj.ideStr ); // What: Not-Done Dispatch Branch. Why: An unfinished App Features card's row click starts its tutorial. How: This calls onPlaTutFun with the appFeature kind and id.
+	const oriIteRef = React.useRef( iteDatObj ); // What: Original Item Reference. Why: Cancel (or an implicit close) needs to restore the item exactly as it was when this editor opened. How: This snapshots item once, on mount, never updated afterward.
+	const cloWayRef = React.useRef( null );      // What: Close Way Reference. Why: A caller with its OWN close affordance outside this component (e.g. the Data tab row's own collapse chevron) can call the exposed keeSavFun() first so that affordance reads as "done, keep this" rather than an implicit close; this distinguishes 'saved'/'cancel' (closed explicitly) from null (still open, so an implicit close such as a tab switch or reload should discard the unsaved live edits). How: This is written by every explicit action below and read by the pagehide/unmount effect further down.
+
+
+	React.useImperativeHandle( forRefObj, () => ( { keeSavFun : () => { cloWayRef.current = 'saved'; } } ) ); // What: Imperative Handle Publish. Why: An external close affordance needs a way to mark this editor's own edits as already-handled before it closes. How: This exposes a single keeSavFun (Keep Saved Function) method that just flips cloWayRef to 'saved'.
+
+
+	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCanEdiFun with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actStoObj.revIteFun.
+
+
+		if ( onCanEdiFun ) onCanEdiFun( oriIteRef.current ); // What: Caller Revert Branch. Why: A caller that owns the item (a draft not yet in the store) must restore it itself. How: This hands oriIteRef's own snapshot to onCanEdiFun.
+
+		else actStoObj.revIteFun( oriIteRef.current.id, oriIteRef.current ); // What: Store Revert Branch. Why: A real, stored item is restored through the store itself. How: This writes oriIteRef's own snapshot back via actStoObj.revIteFun.
+
+
+	};
+
+
+	const canEdiFun = () => { // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCanEdiFun) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onCloEdiFun.
+
+
+		cloWayRef.current = 'cancel'; // What: Close Way Cancel. Why: The unmount guard below must not treat this close as an implicit one. How: This marks cloWayRef as 'cancel'.
+		revStaFun();                  // What: Revert State Call. Why: Cancel must restore the item to its pre-edit snapshot. How: This calls revStaFun.
+
+
+
+		if ( !onCanEdiFun ) onCloEdiFun(); // What: Close Editor Check. Why: A caller that owns its own close affordance (onCanEdiFun) closes the editor itself. How: This calls onCloEdiFun only when no onCanEdiFun was supplied.
+
+
+	};
+
+
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
+
+
+		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
+
+		else canEdiFun(); // What: Cancel Edits Branch. Why: With no confirm prompt up, Escape should cancel the live edits like an explicit Cancel click. How: This calls canEdiFun.
+
+
+	} );
+
+
+	const savCloFun = () => { // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips cloWayRef, then calls onCloEdiFun.
+
+
+		cloWayRef.current = 'saved'; // What: Close Way Saved. Why: The unmount guard below must keep these live edits rather than revert them. How: This marks cloWayRef as 'saved'.
+		onCloEdiFun();               // What: Close Editor Call. Why: Save also closes the editor. How: This calls onCloEdiFun.
 
 
 	};
 
 
 
+	// #region resStoFun
+
+	/**
+	 * resStoFun = Restore Storage Function
+	 *
+	 * @summary
+	 * A same-tick localStorage warm mirror (see storage.js) can otherwise
+	 * go stale for the exact instant between a live edit and the next
+	 * debounced save, so an implicit close restores it directly: either
+	 * dropping a brand-new item entirely, or writing the pre-edit
+	 * snapshot back over whatever live edits already landed.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	*/
+
+	const resStoFun = () => { // What: Restore Storage Function. Why: See the doc comment just above. How: This reads the warm-mirror key directly, patches its own items array, and writes it straight back, swallowing any error since a failed restore must never break the close itself.
+
+
+		try { // What: Mirror Restore Attempt. Why: Reading or writing the localStorage mirror can throw (malformed JSON, disabled or full storage). How: This wraps the whole restore so the catch below can swallow any failure.
+
+
+			const rawJsoStr = localStorage.getItem( 'easemylife.v2' ); // What: Raw Json String. Why: The warm mirror's own persisted blob needs to be read before it can be patched. How: This reads the fixed 'easemylife.v2' storage key.
+
+
+			if ( !rawJsoStr ) return; // What: No Mirror Guard. Why: A brand-new install (or a cleared mirror) has nothing to patch. How: This bails out early when rawJsoStr is empty.
+
+
+
+			const rawStaObj = JSON.parse( rawJsoStr ); // What: Raw State Object. Why: The mirror's own items array needs to be reachable as real data before it can be patched. How: This parses rawJsoStr.
+
+
+			if ( !Array.isArray( rawStaObj.items ) ) return; // What: No Items Array Guard. Why: A malformed or very old mirror shape has nothing safe to patch. How: This bails out unless rawStaObj.items is a real array.
+
+
+
+			rawStaObj.items = onCanEdiFun // What: Items Patch. Why: A brand-new item (onCanEdiFun supplied) never belonged in the mirror at all, while an existing one just needs its pre-edit snapshot restored. How: This filters the new item out entirely, or maps the existing one back to oriIteRef's own snapshot.
+				? rawStaObj.items.filter( ( curIteObj ) => curIteObj.id !== oriIteRef.current.id )                               // What: New Item Drop Branch. Why: A brand-new item was never saved, so it must vanish from the mirror entirely. How: This keeps every item except the one being edited.
+				: rawStaObj.items.map( ( curIteObj ) => curIteObj.id === oriIteRef.current.id ? oriIteRef.current : curIteObj ); // What: Snapshot Restore Branch. Why: An existing item must go back to exactly how it was before this edit. How: This swaps the edited item for oriIteRef's own snapshot.
+
+			localStorage.setItem( 'easemylife.v2', JSON.stringify( rawStaObj ) ); // What: Mirror Write Back. Why: The patched snapshot needs to actually replace the stale mirror. How: This writes rawStaObj back under the same fixed key.
+
+
+		}
+
+		catch { } // What: Restore Failure Swallow. Why: A failed restore (a full/blocked storage quota, a private window, ...) must never break the close itself. How: This intentionally does nothing.
+
+
+	};
+
+	// #endregion resStoFun
+
+
+	React.useEffect( () => { // What: Discard Guard Effect. Why: An editor left open through a tab switch or reload should discard its own unsaved live edits, matching the "nothing changes until you actually save" expectation every other inline editor in the app follows. How: This disarms window.__editGuard on mount, restores the warm mirror directly on pagehide, and arms __editGuard to revert on an ordinary unmount, in both cases only when cloWayRef is still null (nothing explicit already handled the close).
+
+
+		window.__editGuard.disFun(); // What: Edit Guard Disarm. Why: A stale armed guard from a PREVIOUS editor instance must not fire against this fresh one. How: This clears whatever revert thunk __editGuard was last armed with.
+
+		const onPagHidFun = () => { if ( !cloWayRef.current ) resStoFun(); }; // What: On Page Hide Function. Why: A pagehide (the tab closing or backgrounding) needs its own direct storage restore, since a React unmount effect may not get to run in time. How: This calls resStoFun only when cloWayRef is still null.
+
+
+		window.addEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Subscribe Call. Why: The discard needs to happen the moment the page is actually hidden, not on some later tick. How: This registers onPagHidFun to run on that event.
+
+
+
+		return () => { // What: Effect Cleanup Function. Why: An ordinary unmount (navigating within the app, e.g. switching tabs) needs its own revert path, distinct from the pagehide case above. How: This removes the pagehide listener and arms __editGuard with revStaFun when nothing explicit already handled the close.
+
+
+			window.removeEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPagHidFun reference that was added above.
+
+			if ( !cloWayRef.current ) window.__editGuard.armFun( revStaFun ); // What: Edit Guard Arm. Why: The NEXT editor instance's own disarm (above) is what actually cancels this, so arming here is what makes an ordinary unmount revert at all. How: This arms __editGuard with revStaFun only when cloWayRef is still null.
+
+
+		};
+
+
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to run once, on mount, since cloWayRef/oriIteRef/revStaFun are all stable for this editor instance's whole lifetime. How: An empty array means this never re-subscribes.
+
+	// #endregion Close And Revert Handling
+
+
+
+	// #region Mode-Derived Display Values
+
+	const picModStr = picDatObj ? picDatObj.mode : 'random';                // What: Picker Mode String. Why: Nearly every row below renders differently depending on the picker's own mode. How: This reads picker.mode, falling back to 'random' when no picker was passed at all.
+	const isaEasBoo = picModStr === 'ease-up' || picModStr === 'ease-down'; // What: Is-A Ease Boolean. Why: Ease-up/ease-down show a cadence range instead of a weight stepper, since weight is irrelevant to those modes. How: This is true for either ease mode.
+	const hasWeiBoo = picModStr === 'weighted' || picModStr === 'dynamic';  // What: Has Weight Boolean. Why: Weight is only a real lever for weighted/dynamic; random picks uniformly and ease modes ignore it entirely. How: This is true for either of those two modes.
+	const isaDynBoo = picModStr === 'dynamic';                              // What: Is-A Dynamic Boolean. Why: Only dynamic mode also shows the Boost row beneath its weight stepper. How: This is true only when picModStr is 'dynamic'.
+
+	// #endregion Mode-Derived Display Values
+
+
+
+	// #region Ease Band Resolution
+
+	const driSooFun = ( maxValNum ) => Math.max( 1, Math.round( THR_VAL_NUM / ( maxValNum || 1 ) ) ); // What: Drift Soonest Function. Why: A "Soonest" day count is the human face of an item's own ease-max drift value. How: This converts maxValNum into a day count, matching the exact conversion the new-picker form itself uses.
+	const driLatFun = ( minValNum ) => Math.max( 1, Math.round( THR_VAL_NUM / ( minValNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts minValNum into a day count, the same conversion as driSooFun, mirrored for the opposite bound.
+	const dayDriFun = ( dayCouNum ) => THR_VAL_NUM / Math.max( 1, dayCouNum );                        // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of driSooFun/driLatFun.
+
+	const falEasObj = picDatObj ? PIC_NAM_OBJ.aveEasFun( picIteArr, picDatObj.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PIC_NAM_OBJ.aveEasFun against this picker's own items.
+	const easMinNum = iteDatObj.easeMin ?? falEasObj?.easeMin ?? 10;                       // What: Ease Minimum Number. Why: This is the item's own resolved lower drift bound, read once and reused throughout this region. How: This reads item.easeMin, falling back to falEasObj's own easeMin, then a fixed 10.
+	const easMaxNum = iteDatObj.easeMax ?? falEasObj?.easeMax ?? 20;                       // What: Ease Maximum Number. Why: This is the item's own resolved upper drift bound, read once and reused throughout this region. How: This reads item.easeMax, falling back to falEasObj's own easeMax, then a fixed 20.
+	const sooDayNum = driSooFun( easMaxNum );                                              // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts easMaxNum via driSooFun.
+	const latDayNum = driLatFun( easMinNum );                                              // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts easMinNum via driLatFun.
+
+
+	// #region setSooFun
+
+	/**
+	 * setSooFun = Set Soonest Function
+	 *
+	 * @summary
+	 * NumSteCom's handler for the Soonest (or Shortest) day count. It clamps the
+	 * typed count, converts it back to a drift value and writes it to the item's
+	 * easeMax field.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param dayCouNum - Day Count Number: The typed Soonest day count.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * setSooFun( 3 ) // => void
+	 * ```
+	 *
+	*/
+
+	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
+
+
+		const newMaxNum = dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDriFun.
+
+
+		actStoObj.updIteFun( iteDatObj.id, { // What: Update Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax, clamping easeMin down to match if it would otherwise exceed the new easeMax.
+
+
+			easeMax : newMaxNum,                       // What: Ease Max. Why: This is the new upper drift bound the user just typed. How: This writes newMaxNum.
+			easeMin : Math.min( easMinNum, newMaxNum ) // What: Ease Min. Why: The band must never invert. How: This keeps the current easeMin unless it now exceeds newMaxNum.
+
+
+		} );
+
+
+	};
+
+	// #endregion setSooFun
+
+
+	// #region setLatFun
+
+	/**
+	 * setLatFun = Set Latest Function
+	 *
+	 * @summary
+	 * NumSteCom's handler for the Latest (or Longest) day count. It clamps the
+	 * typed count, converts it back to a drift value and writes it to the item's
+	 * easeMin field.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param dayCouNum - Day Count Number: The typed Latest day count.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * setLatFun( 7 ) // => void
+	 * ```
+	 *
+	*/
+
+	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
+
+
+		const newMinNum = dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDriFun.
+
+
+		actStoObj.updIteFun( iteDatObj.id, { // What: Update Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin, clamping easeMax up to match if it would otherwise fall under the new easeMin.
+
+
+			easeMax : Math.max( easMaxNum, newMinNum ), // What: Ease Max. Why: The band must never invert. How: This keeps the current easeMax unless it now falls under newMinNum.
+			easeMin : newMinNum                         // What: Ease Min. Why: This is the new lower drift bound the user just typed. How: This writes newMinNum.
+
+
+		} );
+
+
+	};
+
+	// #endregion setLatFun
+
+
+	const isaDowBoo = picModStr === 'ease-down';          // What: Is-A Down Boolean. Why: Ease-down uses different row labels/phrasing (Shortest/Longest/Refill) than ease-up (Soonest/Latest/Fill). How: This is true only when picModStr is 'ease-down'.
+	const sooLabStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
+	const latLabStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
+
+	const uniWorFun = ( valCouNum ) => CAD_NAM_OBJ.uniWorFun( picDatObj && picDatObj.cadence, valCouNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and valCouNum.
+
+
+	const sooSubEle = isaDowBoo // What: Soonest Sub Element. Why: The Soonest/Shortest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days minimum" for ease-down, or "N days until pickable again" otherwise.
+		? <>stays picked <strong>{ sooDayNum } { uniWorFun( sooDayNum ) }</strong> minimum</>  // What: Ease-Down Soonest Branch. Why: Ease-down's lower bound is a minimum stay. How: This phrases it as "stays picked N days minimum".
+		: <><strong>{ sooDayNum } { uniWorFun( sooDayNum ) }</strong> until pickable again</>; // What: Ease-Up Soonest Branch. Why: Ease-up's lower bound is a cooldown before the item can return. How: This phrases it as "N days until pickable again".
+
+
+	const latSubEle = isaDowBoo // What: Latest Sub Element. Why: The Latest/Longest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days maximum" for ease-down, or "N days until pick is mandatory" otherwise.
+		? <>stays picked <strong>{ latDayNum } { uniWorFun( latDayNum ) }</strong> maximum</>     // What: Ease-Down Latest Branch. Why: Ease-down's upper bound is a maximum stay. How: This phrases it as "stays picked N days maximum".
+		: <><strong>{ latDayNum } { uniWorFun( latDayNum ) }</strong> until pick is mandatory</>; // What: Ease-Up Latest Branch. Why: Ease-up's upper bound is when the item is forced back in. How: This phrases it as "N days until pick is mandatory".
+
+	// #endregion Ease Band Resolution
+
+
 	return (
 
 
-		<article
-			className={ ` today-card   today-card--tutorial   ${ tutDonBoo ? 'is-done' : '' }   ${ bloReaStr ? 'is-needed' : '' } ` }
-
-			onClick={ onRowCliFun }
-		>{ /* What: App Feature Card Article Element. Why: This is AppFeaCom's own root. How: This renders a Play/Undo/blocked check button, the meta/name body, and (while unresolved) a Cancel action. */ }
+		<div className='rem-inline-editor entry-editor'>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. */ }
 
 
-			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved App Feature card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, otherwise one of the 2 branches below.
+			<div className='pie-rows'>{ /* What: Pie Rows Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
 
 
-				<button
-					className='check'
-
-					type='button'
-
-					aria-label={ `Undo ${ feaRecObj.labStr } tutorial` }
-					aria-pressed='true'
-
-					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
+				{ isaEasBoo ? ( // What: Ease Rows Branch. Why: Ease-up/ease-down show a cadence range instead of a weight stepper.
 
 
-						cliEveObj.stopPropagation();     // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onUncFeaFun( feaRecObj.ideStr ); // What: Uncheck Feature Call. Why: This App Features card should go back to unresolved. How: This calls onUncFeaFun with the feature's own id.
+					// #region Ease Direction Split
+
+					/**
+					 * tab-today.jsx = Ease Direction Split
+					 *
+					 * @summary
+					 * pie-ease-up-row/pie-ease-down-row (on every relevant row
+					 * below, alongside the row's own shared pie-row class) are
+					 * pure selector hooks for help mode (see help-content.jsx's
+					 * itemChargeRangeUp/Down), split by direction rather than one
+					 * shared pie-ease-row, since Soonest/Latest/Fill (ease-up) and
+					 * Shortest/Longest/Refill (ease-down) get entirely different
+					 * tip copy, not just relabeled headings. FilButCom (ui.jsx)
+					 * has no class of its own to distinguish it by, and it only
+					 * renders for ONE direction at a time, so there is no existing
+					 * class shared by exactly "this direction's ease rows" other
+					 * than this pair.
+					 *
+					 * @author z4nta0 <https://github.com/z4nta0>
+					 *
+					*/
+
+					<React.Fragment>{ /* What: Ease Rows Fragment Element. Why: The Soonest/Latest rows plus one direction-specific Fill/Refill row are true siblings with no shared wrapper of their own. How: This groups all 3 without adding an extra DOM node. */ }
 
 
-					} }
-				>{ /* What: Undo Check Button Element. Why: A resolved App Feature card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncFeaFun. */ }
+						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. */ }
 
 
-					<span
-						className='check-ripple'
-
-						aria-hidden='true'
-					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
-
-					<IcoSvgCom
-						icoNamStr='cheEle'
-						sizValNum={ 14 }
-					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
+							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
 
 
-				</button>
+								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
 
 
-			) : bloReaStr ? ( // What: Blocked Feature Check. Why: A pending, blocked feature needs an explained disabled control instead of a working one. How: This renders the disabled InfTipCom while bloReaStr holds a reason, the real play-check button otherwise.
+									<span className='pie-lbl'>{ sooLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLabStr directly. */ }
 
 
-				<InfTipCom
-					className='check is-disabled'
 
-					actNamStr={ `Start the ${ feaRecObj.labStr } tutorial` }
-					labTexStr={ bloReaStr }
-				>{ /* What: Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with bloReaStr. */ }
+									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
 
 
-					<IcoSvgCom
-						icoNamStr='plaEle'
-						sizValNum={ 13 }
-					/>{ /* What: Icon Svg Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'plaEle' icon at a fixed size. */ }
+										<InfTipCom
+											className='pie-help'
+
+											labTexStr={ EUR_WAR_STR }
+										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
 
 
-				</InfTipCom>
+									) }
 
 
-			) : ( // What: Play Check Branch. Why: A pending, unblocked feature needs its own real play-to-start checkbox instead. How: This renders the else branch, taken while bloReaStr is falsy.
+								</span>
+
+								<span
+									key={ `${ isaDowBoo }-${ sooDayNum }-${ uniWorFun( sooDayNum ) }` }
+
+									className='pie-sub set-sub-fade'
+								>{ sooSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders sooSubEle, keyed by direction/value/unit-word together. */ }
 
 
-				<button
-					className='check'
+							</div>
 
-					type='button'
-
-					aria-label={ `Start the ${ feaRecObj.labStr } tutorial` }
-
-					onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
+							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
 
 
-						cliEveObj.stopPropagation();                   // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-						onPlaTutFun( 'appFeature', feaRecObj.ideStr ); // What: Play Tutorial Call. Why: This card's own tutorial should start playing. How: This calls onPlaTutFun with the tutorial kind and id.
+								<NumSteCom
+									ariLabStr={ `${ sooLabStr } for ${ iteDatObj.name }` }
+									maxValNum={ 60 }
+									minValNum={ 1 }
+									value={ sooDayNum }
+
+									onSetValFun={ setSooFun }
+								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
 
 
-					} }
-				>{ /* What: Play Check Button Element. Why: A pending, unblocked App Feature card's own check button starts its tutorial instead of toggling done. How: This calls onPlaTutFun, scoped to 'appFeature'. */ }
+
+								<span className='np-ease-unit'>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. */ }
 
 
-					<IcoSvgCom
-						icoNamStr='plaEle'
-						sizValNum={ 13 }
-					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
+							</div>
 
 
-				</button>
+						</div>
 
 
-			) }
-
-			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
+						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. */ }
 
 
-				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
+							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
 
 
-					<span className='meta-picker'>{ PAG_LAB_OBJ[ feaRecObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own pagStr in PAG_LAB_OBJ. */ }
+								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
 
 
-					{ feaRecObj.timStr && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRecObj's own timStr is set.
+									<span className='pie-lbl'>{ latLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLabStr directly. */ }
 
 
-						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
+
+									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
 
 
-							<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
+										<InfTipCom
+											className='pie-help'
 
-							<span className='meta-time'>{ feaRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
+											labTexStr={ EUR_WAR_STR }
+										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
 
 
-						</React.Fragment>
+									) }
 
 
-					) }
+								</span>
+
+								<span
+									key={ `${ isaDowBoo }-${ latDayNum }-${ uniWorFun( latDayNum ) }` }
+
+									className='pie-sub set-sub-fade'
+								>{ latSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders latSubEle, keyed by direction/value/unit-word together. */ }
+
+
+							</div>
+
+							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
+
+
+								<NumSteCom
+									ariLabStr={ `${ latLabStr } for ${ iteDatObj.name }` }
+									maxValNum={ 90 }
+									minValNum={ 1 }
+									value={ latDayNum }
+
+									onSetValFun={ setLatFun }
+								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
+
+
+
+								<span className='np-ease-unit'>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. */ }
+
+
+							</div>
+
+
+						</div>
+
+
+						{ picModStr === 'ease-up' && ( // What: Fill Row Visibility Check. Why: Only ease-up offers an instant-fill shortcut for its own charge. How: This renders the Fill row only while picModStr is 'ease-up'.
+
+
+							<div className='pie-row pie-ease-up-row'>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FilButCom. */ }
+
+
+								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+
+
+									<span className='pie-lbl'>Fill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Fill". */ }
+
+									<span
+										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
+
+										className='pie-sub set-sub-fade'
+									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong> at { Math.round( iteDatObj.value ?? 0 ) }</> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
+
+
+								</div>
+
+
+
+								<FilButCom
+									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									labTexStr='Fill'
+
+									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
+
+
+							</div>
+
+
+						) }
+
+
+						{ picModStr === 'ease-down' && ( // What: Refill Row Visibility Check. Why: Only ease-down offers an instant-refill shortcut for its own charge. How: This renders the Refill row only while picModStr is 'ease-down'.
+
+
+							<div className='pie-row pie-ease-down-row'>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FilButCom. */ }
+
+
+								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+
+
+									<span className='pie-lbl'>Refill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Refill". */ }
+
+									<span
+										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
+
+										className='pie-sub set-sub-fade'
+									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
+
+
+								</div>
+
+
+
+								<FilButCom
+									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
+									labTexStr='Refill'
+
+									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
+
+
+							</div>
+
+
+						) }
+
+
+					</React.Fragment>
+
+					// #endregion Ease Direction Split
+
+
+				) : hasWeiBoo ? ( // What: Weight Row Branch. Why: Weighted/dynamic show an editable weight stepper instead. How: This renders the weight label/subtitle plus a plain plus/minus control.
+
+
+					<div className='pie-row'>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight-stepper below. */ }
+
+
+						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+
+
+							<span className='pie-lbl'>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
+
+							<span
+								key={ iteDatObj.weight }
+
+								className='pie-sub set-sub-fade'
+							>{ iteDatObj.weight === 1 ? <><strong>baseline</strong> pick chance</> : <><strong>{ iteDatObj.weight }&times;</strong> more likely than w1</> }</span>{ /* What: Subtitle Span Element. Why: The live weight subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.weight is the baseline 1, keyed by weight. */ }
+
+
+						</div>
+
+						<div className='weight-stepper'>{ /* What: Weight Stepper Div Element. Why: The minus/value/plus trio reads as one compact control. How: This wraps both plus/minus buttons around the current weight display. */ }
+
+
+							<button
+								disabled={ iteDatObj.weight <= 1 }
+
+								aria-label='Less weight'
+
+								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.max( 1, iteDatObj.weight - 1 ) ) }
+							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps item.weight down to a minimum of 1 via actStoObj.setWeiFun. */ }
+
+							<span className='weight-val'>w{ iteDatObj.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
+
+							<button
+								disabled={ iteDatObj.weight >= 9 }
+
+								aria-label='More weight'
+
+								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.min( 9, iteDatObj.weight + 1 ) ) }
+							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps item.weight up to a maximum of 9 via actStoObj.setWeiFun. */ }
+
+
+						</div>
+
+
+					</div>
+
+
+				) : ( // What: No-Weight Row Branch. Why: Random mode ignores weight entirely (it picks uniformly), so this row is purely informational.
+
+
+					<div className='pie-row'>{ /* What: No Weight Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. */ }
+
+
+						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+
+
+							<span className='pie-lbl'>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
+
+							<span className='pie-sub'>truly random items have equal chance</span>{ /* What: Subtitle Span Element. Why: The user still deserves an explanation for why no weight control appears. How: This renders a fixed explanatory sentence. */ }
+
+
+						</div>
+
+						<span className='pie-note'>No weight</span>{ /* What: Note Span Element. Why: This row still needs SOME visible content where a control would otherwise sit. How: This renders the literal phrase "No weight". */ }
+
+
+					</div>
+
+
+				) }
+
+
+
+				{ isaDynBoo && ( // What: Boost Row Visibility Check. Why: Only dynamic mode has a boost value worth showing/resetting. How: This renders the Boost row only while isaDynBoo is true.
+
+
+					<div className='pie-row'>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. */ }
+
+
+						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+
+
+							<span className='pie-lbl'>Boost</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Boost". */ }
+
+							<span
+								key={ ( iteDatObj.value || 0 ) > 0 ? 'boost' : 'none' }
+
+								className='pie-sub set-sub-fade'
+							>{ ( iteDatObj.value || 0 ) > 0 ? <><strong>+{ iteDatObj.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Subtitle Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
+
+
+						</div>
+
+						<div className='pie-ctl'>{ /* What: Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BooResCom below. */ }
+
+
+							<BooResCom
+								booValNum={ iteDatObj.value || 0 }
+
+								onResBooFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : 0 } ) }
+							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actStoObj.updIteFun on reset. */ }
+
+
+						</div>
+
+
+					</div>
+
+
+				) }
+
+
+				<div className='pie-row'>{ /* What: Active Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. */ }
+
+
+					<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+
+
+						<span
+							key={ `lbl-${ !!iteDatObj.vacation }` }
+
+							className='pie-lbl set-sub-fade'
+						>{ iteDatObj.vacation ? 'Inactive' : 'Active' }</span>{ /* What: Label Span Element. Why: The row's own heading text itself flips with the item's own current state. How: This renders "Inactive" or "Active" depending on item.vacation, keyed so the flip fades. */ }
+
+						<span
+							key={ `sub-${ !!iteDatObj.vacation }` }
+
+							className='pie-sub set-sub-fade'
+						>{ iteDatObj.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</> }</span>{ /* What: Subtitle Span Element. Why: The live eligibility subtitle needs its own fade-replace key so a toggle visibly refreshes it. How: This renders one of two phrasings depending on item.vacation, keyed the same way as the label above. */ }
+
+
+					</div>
+
+					<button
+						className={ ` switch   ${ !iteDatObj.vacation ? 'is-on' : '' } ` }
+
+						aria-label={ iteDatObj.vacation ? 'Activate' : 'Deactivate' }
+						aria-pressed={ !iteDatObj.vacation }
+
+						onClick={ () => actStoObj.togVacFun( iteDatObj.id, 'item' ) }
+					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actStoObj.togVacFun, scoped to 'item'. */ }
 
 
 				</div>
-
-
-				<div className='today-card-name'>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
 
 
 			</div>
 
-			{ !tutDonBoo && ( // What: Cancel Action Visibility Check. Why: A resolved card has nothing left to cancel. How: This renders the Cancel action only while tutDonBoo is false.
 
 
-				<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. */ }
+			{ conDelBoo ? ( // What: Confirm Delete Branch. Why: The delete confirm prompt replaces the plain footer entirely while it is up.
 
 
-					<button
-						className='icon-btn'
+				<div
+					key='confirm'
 
-						aria-label='Cancel tutorial'
-						title='Cancel'
-
-						onClick={ ( cliEveObj ) => { // What: Click Handler. Why: This button's own action must not also trigger the card's own row click. How: This stops the click's propagation, then runs the button's own action.
+					className='rem-inline-foot rem-foot-confirm'
+				>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. */ }
 
 
-							cliEveObj.stopPropagation();                                       // What: Propagation Stop. Why: The card's own onRowCliFun would otherwise also fire for this click. How: This stops the event from bubbling up to the article.
-							actStoObj.setFeaFun( feaRecObj.ideStr, { status : 'cancelled' } ); // What: Cancel Feature Call. Why: The user is dismissing this App Features card entirely. How: This marks the feature cancelled via actStoObj.setFeaFun.
+					<span className='rem-del-msg'>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
+
+					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
 
 
-						} }
-					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setFeaFun with a 'cancelled' status. */ }
+						<ButBasCom
+							kinValStr='ghost'
+							sizValStr='sm'
+
+							onClick={ () => setConDelBoo( false ) }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the delete confirm without changing anything. How: This closes conDelBoo, returning to the plain footer. */ }
 
 
-						<IcoSvgCom
-							icoNamStr='croEle'
-							sizValNum={ 15 }
-						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
+
+						<ButBasCom
+							kinValStr='danger'
+							sizValStr='sm'
+
+							onClick={ () => ( onDelIteFun ? onDelIteFun() : actStoObj.delIteFun( iteDatObj.id ) ) }
+						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun when supplied, otherwise removes the item directly via actStoObj.delIteFun. */ }
 
 
-					</button>
+					</div>
+
+
+				</div>
+
+
+			) : ( // What: Plain Foot Branch. Why: The normal, non-confirming footer shows whenever conDelBoo is false.
+
+
+				<div
+					key='foot'
+
+					className='rem-inline-foot rd-edit-foot'
+				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. */ }
+
+
+					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.
+
+
+						<InfTipCom
+							className='rd-del-disabled-tip'
+
+							labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
+						>{ /* What: Info Tip Component. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text. */ }
+
+
+							<ButBasCom
+								disabled
+								icoNamStr='traEle'
+								kinValStr='danger'
+								sizValStr='sm'
+							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This shows the disabled Delete control the wrapping InfTipCom explains. How: This never fires, since disabled is always set in this branch. */ }
+
+
+						</InfTipCom>
+
+
+					) : ( // What: Working Delete Branch. Why: With more than 2 items still in the pool, a real working Delete button belongs here instead. How: This renders the else branch, taken while minIteBoo is false.
+
+
+						<ButBasCom
+							icoNamStr='traEle'
+							kinValStr='danger'
+							sizValStr='sm'
+
+							onClick={ () => setConDelBoo( true ) }
+						>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conDelBoo to true.
+
+
+					) ) }
+
+
+
+					<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
+
+
+						<ButBasCom
+							className='ob-item-cancel'
+
+							kinValStr='ghost'
+							sizValStr='sm'
+
+							onClick={ canEdiFun }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. */ }
+
+
+
+						<ButBasCom
+							className='ob-item-save'
+
+							kinValStr='ghost'
+							sizValStr='sm'
+
+							onClick={ savCloFun }
+						>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls savCloFun. */ }
+
+
+					</div>
 
 
 				</div>
@@ -3377,15 +3493,15 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 			) }
 
 
-		</article>
+		</div>
 
 
 	);
 
 
-}
+} );
 
-// #endregion AppFeaCom
+// #endregion EntEdiCom
 
 
 
@@ -3424,7 +3540,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
  *
  * @example
  * ```tsx
- * TabTodCom({ actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, ... }) // => <TabTodCom />
+ * TabTodCom({ actStoObj, onNavHomFun, onNavTabFun, ... }) // => <TabTodCom />
  * ```
  *
 */
@@ -3596,8 +3712,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+	// #region Checklist Visibility
+
 	/**
-	 * cheDonBoo = Checklist Done Boolean
+	 * tab-today.jsx = Checklist Visibility
 	 *
 	 * @summary
 	 * Mini-tour launcher cards (pickers + reminders + Page Tours + the
@@ -3617,6 +3735,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const tasHidBoo = ( staAppObj.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) ); // What: Task Hidden Boolean. Why: Sample reminders flip hidden at that same moment. How: This is true once any sample task is hidden.
 	const maiEndBoo = picHidBoo || tasHidBoo;                                                                                      // What: Main Tour Ended Boolean. Why: Whether the main Welcome Tour has concluded decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once either kind of sample has flipped hidden.
 	const shoCheBoo = maiEndBoo && !cheDonBoo;                                                                                     // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines maiEndBoo with the negation of cheDonBoo.
+
+	// #endregion Checklist Visibility
 
 
 
@@ -3716,6 +3836,31 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const pagNamStr = ( staAppObj.onboarding && staAppObj.onboarding.pageToursName ) || 'Page Tours'; // What: Page Name String. Why: The Page Tours section header needs its own, possibly user-renamed, display name. How: This reads staAppObj.onboarding.pageToursName, falling back to the fixed default.
 
 
+	// #region pagColFun
+
+	/**
+	 * pagColFun = Page Collision Function
+	 *
+	 * @summary
+	 * GroHeaCom's rename validator for the Page Tours section. Page Tours has no
+	 * pickers to merge on a name collision, so a collision blocks the rename
+	 * outright: the trimmed, normalized name is checked case-insensitively
+	 * against every real group name and the fixed Reminders label.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param rawValStr - Raw Value String: The typed rename.
+	 *
+	 * @returns An error message naming the colliding group, or null when the name
+	 * is empty or free.
+	 *
+	 * @example
+	 * ```ts
+	 * pagColFun( rawValStr ) // => message or null
+	 * ```
+	 *
+	*/
+
 	const pagColFun = ( rawValStr ) => { // What: Page Collision Function. Why: Page Tours has no pickers to merge into on a name collision (unlike a real group's own rename), so a collision just blocks the rename outright, checked against every real group name plus the fixed "Reminders" label, the other section header that isn't itself a real group. How: This normalizes rawValStr and checks it against every existing group/Reminders name, case-insensitively.
 
 
@@ -3740,6 +3885,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	};
+
+	// #endregion pagColFun
 
 
 
@@ -3838,9 +3985,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #endregion Replay-Continuation Counts
 
+
+
+	// #region Completion Counts
+
 	const entDonNum = todEntArr.filter( ( curEntObj ) => curEntObj.done ).length;                          // What: Entry Done Number. Why: Done picker and day-off entries are the ring's main source of progress. How: This counts todEntArr's own done entries.
 	const donCouNum = entDonNum + remDonNum + picDonNum + tasDonNum + pagDonNum + genDonNum;               // What: Done Count Number. Why: This is the ring's own numerator, combining every countable source of "done" on the page. How: This sums done entries, done ring reminders, and every tutorial-card category's own done count.
 	const totCouNum = todEntArr.length + rinTasArr.length + picCarNum + tasCarNum + pagCarNum + genCarNum; // What: Total Count Number. Why: This is the ring's own denominator, combining every countable source on the page. How: This sums every category's own total count, mirroring donCouNum's own structure.
+
+	// #endregion Completion Counts
 
 
 
@@ -3866,7 +4019,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			ticIntNum = setInterval( ticCloFun, 60000 ); // What: Minute Interval Start. Why: Every later minute should tick on its own. How: This starts a 60 second interval, stored in ticIntNum for the cleanup below.
 
 
-		}, minDelNum );
+		}, minDelNum ); // What: Align Delay. Why: The first clock tick lands on the next minute boundary. How: This waits minDelNum before the regular cadence starts.
 
 
 
@@ -3886,11 +4039,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+	// #region Editor And Log State
+
 	const [ actEdiStr, setActEdiStr ] = React.useState( null ); // What: Active Editor String And Setter. Why: Only one inline editor on this tab should be open at a time. How: This is read/written by every inline editor this tab renders, directly or via RemSecCom. // actEdiStr/setActEdiStr: a picker item's inline editor (`item:<eid>`), a reminder's inline editor, or its quick-add form (owned by RemSecCom, passed down below) all read/write this same lifted slot, so opening any one of them collapses whichever of the others was open (each already discards its own unsaved edits on collapse/unmount, see EntEdiCom's own discard-guard effect and RemSecCom's own plain local draft state).
 
 	const [ opeLogStr, setOpeLogStr ] = React.useState( null ); // What: Open Log String And Setter. Why: Only one group's (or the Reminders block's) Day Log panel may be open at a time. How: This holds whichever single key is currently open, or null.
 
 	const togLogFun = ( logKeyStr ) => setOpeLogStr( ( curKeyStr ) => curKeyStr === logKeyStr ? null : logKeyStr ); // What: Toggle Log Function. Why: Clicking an already-open group's own chip should close it, not just re-open it. How: This flips opeLogStr to null when logKeyStr is already open, otherwise to logKeyStr.
+
+	// #endregion Editor And Log State
 
 
 
@@ -4113,7 +4270,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				setCelRecObj( null ); // What: Overlay Rect Clear. Why: The portal overlay should unmount once the particles are gone. How: This resets celRecObj to null.
 
 
-			}, Math.max( 1600, celTotNum + 100 ) );
+			}, Math.max( 1600, celTotNum + 100 ) ); // What: Celebration End Delay. Why: Cleanup waits for the longest celebration effect to finish. How: This waits the total particle time plus a margin, at least 1600ms.
 
 			// #endregion Celebration Fire Sequence
 
@@ -4285,6 +4442,29 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+	// #region hanCheFun
+
+	/**
+	 * hanCheFun = Handle Check Function
+	 *
+	 * @summary
+	 * EntCarCom's done toggle. It toggles the entry through togDonFun and, only
+	 * when the entry goes from not done to done, stages the brief fresh cue on
+	 * that card; unchecking never shows it.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param entRecObj - Entry Record Object: The Today entry being toggled.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * hanCheFun( entRecObj ) // => void
+	 * ```
+	 *
+	*/
+
 	const hanCheFun = ( entRecObj ) => { // What: Handle Check Function. Why: Toggling done also needs to stage the brief "fresh" cue, but only on a genuine not-done-to-done transition, never on an uncheck. How: This calls actStoObj.togDonFun, then stages jusCheStr only when wasDonBoo was false.
 
 
@@ -4305,6 +4485,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	};
+
+	// #endregion hanCheFun
 
 
 
@@ -4328,6 +4510,30 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ rmvIdeSet, setRmvIdeSet ] = React.useState( () => new Set() ); // What: Removing Identifier Set And Setter. Why: A skipped or deleted row needs to know it is mid-removal so it can play its own collapse animation. How: This is added to right before the animation starts and cleared once the underlying data actually changes.
 
 
+	// #region hanSkiFun
+
+	/**
+	 * hanSkiFun = Handle Skip Function
+	 *
+	 * @summary
+	 * EntCarCom's skip action. It flags the entry as removing so the card plays
+	 * its collapse animation, then skips the entry in the store once that
+	 * animation has finished.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param entIdeStr - Entry Identifier String: The id of the Today entry to
+	 *                    skip.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * hanSkiFun( entIdeStr ) // => void
+	 * ```
+	 *
+	*/
+
 	const hanSkiFun = ( entIdeStr ) => { // What: Handle Skip Function. Why: This is the actual skip trigger, shared by every EntCarCom's own onSkiEntFun prop. How: This stages entIdeStr as removing, then calls actStoObj.skiEntFun after skiAniNum.
 
 
@@ -4345,11 +4551,39 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
 
 
-		}, skiAniNum );
+		}, skiAniNum ); // What: Skip Settle Delay. Why: The removal waits for the collapse animation. How: This waits skiAniNum, matching the animation's duration.
 
 
 	};
 
+	// #endregion hanSkiFun
+
+
+	// #region hanDelFun
+
+	/**
+	 * hanDelFun = Handle Delete Function
+	 *
+	 * @summary
+	 * EntEdiCom's delete action on the Today tab. It closes the item's editor,
+	 * then deletes the item, which drops its Today entry too, either at once
+	 * under reduced motion or after the same collapse animation skip uses.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param entIdeStr - Entry Identifier String: The id of the Today entry
+	 *                    showing the item.
+	 * @param iteIdeStr - Item Identifier String: The id of the picker item to
+	 *                    delete.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * hanDelFun( entIdeStr, iteIdeStr ) // => void
+	 * ```
+	 *
+	*/
 
 	const hanDelFun = ( entIdeStr, iteIdeStr ) => { // What: Handle Delete Function. Why: Deleting a picker item from its Today editor should play the same card slide-out as skip, then remove the item (which drops the entry too). How: This closes the item's own editor, then either removes immediately (reduced motion) or stages the same removal animation skip uses.
 
@@ -4376,10 +4610,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			setRmvIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entIdeStr ) ) ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of rmvIdeSet.
 
 
-		}, skiAniNum );
+		}, skiAniNum ); // What: Delete Settle Delay. Why: The removal waits for the collapse animation. How: This waits skiAniNum, matching the animation's duration.
 
 
 	};
+
+	// #endregion hanDelFun
 
 	// #endregion Skip Animation
 
@@ -4412,6 +4648,31 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const [ rolIdeSet, setRolIdeSet ] = React.useState( () => new Set() ); // What: Rolling Identifier Set And Setter. Why: A re-rolling row needs to know it is mid-flip so it can play its own animation class. How: This is added to right before the flip starts and cleared once it finishes.
 
+
+	// #region hanRerFun
+
+	/**
+	 * hanRerFun = Handle Reroll Function
+	 *
+	 * @summary
+	 * EntCarCom's re-roll action. It flags the card as rolling so it plays its
+	 * flip, computes and stages a new pending pick at the flip's midpoint so the
+	 * new item rolls in mid-turn, then clears the rolling flag once the flip
+	 * finishes.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param entRecObj - Entry Record Object: The Today entry being re-rolled.
+	 * @param picRecObj - Picker Record Object: The picker the entry came from.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * hanRerFun( entRecObj, picRecObj ) // => void
+	 * ```
+	 *
+	*/
 
 	const hanRerFun = ( entRecObj, picRecObj ) => { // What: Handle Reroll Function. Why: This is the actual re-roll trigger, shared by every EntCarCom's own onRerEntFun prop. How: This stages entRecObj's own eid as rolling, computes and stages a new pending pick at the flip's own apex, then clears the rolling flag once the flip finishes.
 
@@ -4508,7 +4769,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			}
 
 
-		}, rolAniNum / 2 );
+		}, rolAniNum / 2 ); // What: Flip Apex Delay. Why: The new pick lands at the flip's midpoint. How: This waits half of rolAniNum.
 
 		setTimeout( () => { // What: Flip End Timeout. Why: The rolling flag must clear once the flip's own full animation has actually finished, not just at its apex. How: This runs after the full rolAniNum, clearing entRecObj's own eid from rolIdeSet.
 
@@ -4516,10 +4777,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			setRolIdeSet( ( curSetObj ) => new Set( [ ...curSetObj ].filter( ( setIdeStr ) => setIdeStr !== entRecObj.eid ) ) ); // What: Rolling Id Delete. Why: The flip has finished, so the rolling flag must clear. How: This removes entRecObj's own eid from a fresh copy of rolIdeSet.
 
 
-		}, rolAniNum );
+		}, rolAniNum ); // What: Flip End Delay. Why: The rolling flag clears once the whole flip finishes. How: This waits the full rolAniNum.
 
 
 	};
+
+	// #endregion hanRerFun
 
 	// #endregion Reroll Card-Flip Animation
 
@@ -4859,6 +5122,31 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const ordSnaRef = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by opeModFun and read/cleared by cloModFun.
 
 
+	// #region reqRenFun
+
+	/**
+	 * reqRenFun = Request Rename Function
+	 *
+	 * @summary
+	 * GroHeaCom's rename request for a real group. It normalizes the typed name;
+	 * when that resolves to a different existing group it stages a merge
+	 * confirmation instead of renaming, otherwise it renames the group straight
+	 * away.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param oldNamStr - Old Name String: The group's current name.
+	 * @param rawNewStr - Raw New String: The typed new name.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * reqRenFun( oldNamStr, rawNewStr ) // => void
+	 * ```
+	 *
+	*/
+
 	const reqRenFun = ( oldNamStr, rawNewStr ) => { // What: Request Rename Function. Why: A group header's own rename entry point needs to normalize the typed name and, if it resolves to a DIFFERENT existing group, defer to a merge confirm rather than rename straight away. How: This normalizes rawNewStr, then either stages merProObj or calls actStoObj.renGroFun directly.
 
 
@@ -4876,6 +5164,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	};
+
+	// #endregion reqRenFun
 
 
 	const opeModFun = () => { // What: Open Mode Function. Why: Entering Edit Mode needs to snapshot the current order first, so a later Cancel/Escape has something to revert to, and should close any open editor/confirm along the way. How: This stages ordSnaRef, then clears actEdiStr/conGenBoo before flipping ediModBoo on.
@@ -4947,6 +5237,29 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	}, [ ediModBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when ediModBoo itself changes. How: ediModBoo is exactly what gates whether the listener should even be subscribed.
 
 
+	// #region groDraFun
+
+	/**
+	 * groDraFun = Group Drag Function
+	 *
+	 * @summary
+	 * The pointerdown handler behind every group header's grip in Edit Mode. It
+	 * resolves the drag container and handle, then starts REO_NAM_OBJ.staDraFun
+	 * with a drop callback that merges the new group order into the saved one.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param poiEveObj - Pointer Event Object: The grip's pointerdown event.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * groDraFun( poiEveObj ) // => void
+	 * ```
+	 *
+	*/
+
 	const groDraFun = ( poiEveObj ) => { // What: Group Drag Function. Why: This is the actual pointerdown handler behind every GroHeaCom's own grip. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the group-specific drop callback.
 
 
@@ -4988,6 +5301,34 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	};
 
+	// #endregion groDraFun
+
+
+	// #region iteDraFun
+
+	/**
+	 * iteDraFun = Item Drag Function
+	 *
+	 * @summary
+	 * The pointerdown handler behind every card's grip within a group in Edit
+	 * Mode. It resolves the drag container and handle, then starts
+	 * REO_NAM_OBJ.staDraFun with a drop callback that merges the new card order
+	 * into that group's saved picker order.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param poiEveObj - Pointer Event Object: The grip's pointerdown event.
+	 * @param curGroObj - Current Group Object: The group the dragged card belongs
+	 *                    to.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * iteDraFun( poiEveObj, curGroObj ) // => void
+	 * ```
+	 *
+	*/
 
 	const iteDraFun = ( poiEveObj, curGroObj ) => { // What: Item Drag Function. Why: This is the actual pointerdown handler behind every EntCarCom's own grip within a group. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the item-specific drop callback.
 
@@ -5028,6 +5369,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	};
+
+	// #endregion iteDraFun
 
 	// #endregion Edit Mode
 
@@ -5761,6 +6104,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
+	// #region Generation Slot Order
+
 	const sloGroObj = React.useMemo( () => { // What: Slot Group Object. Why: While generating, a group with no entries yet but an incoming slot still needs somewhere to host its own placeholder loader, or the card would only pop in at commit. How: This is only ever populated while genActBoo/genMapObj hold, keyed by group name.
 
 
@@ -5825,6 +6170,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	shoOrdRef.current = genOrdArr; // What: Shown Order Set. Why: groDraFun's own onDroOrdFun needs to resolve a drop's own DOM-position indices against whatever order was ACTUALLY rendered, which is genOrdArr, not the unpadded bloOrdArr. How: This overwrites shoOrdRef on every render.
+
+	// #endregion Generation Slot Order
 
 
 
@@ -5987,6 +6334,32 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	} );
 
 
+	// #region staTouFun
+
+	/**
+	 * staTouFun = Start Mini-Tour Function
+	 *
+	 * @summary
+	 * The single dispatcher behind every launcher card's Play button and row
+	 * click. Picker, page and app-feature tours are started at the app level
+	 * through their own props; a reminder mini-tour is staged locally on this tab
+	 * instead.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param touKinStr - Tour Kind String: Which kind of tour to start, e.g.
+	 *                    'picker' or 'pageTour'.
+	 * @param touIdeStr - Tour Identifier String: The id of the tour to start.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * staTouFun( 'pageTour', touIdeStr ) // => void
+	 * ```
+	 *
+	*/
+
 	const staTouFun = ( touKinStr, touIdeStr ) => { // What: Start Mini-Tour Function. Why: Every launcher card's own Play button (or row click) funnels through this one dispatcher, since which state it actually starts depends on touKinStr. How: This dispatches picker/pageTour/appFeature tours up to the app level, otherwise stages a local reminder mini-tour.
 
 
@@ -6001,11 +6374,18 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	};
 
+	// #endregion staTouFun
+
 	// #endregion Mini-Tour Launch State
 
 
+
+	// #region Launcher Uncheck Handlers
+
 	const uncTutFun = ( touIdeStr ) => actStoObj.setCarFun( touIdeStr, null ); // What: Uncheck Tutorial Function. Why: This un-resolves an already-resolved launcher card (skipped/cancelled/finished) back to pending, so its mini-tour can be redone; it never touches the sample itself, see onboarding-checklist.js. How: This calls actStoObj.setCarFun with a null patch.
 	const uncFeaFun = ( feaIdeStr ) => actStoObj.setFeaFun( feaIdeStr, null ); // What: Uncheck Feature Function. Why: Same idea as uncTutFun, but for App Features, which live in their own map rather than the checklist, see onboarding-app-features.jsx's own header comment for why. How: This calls actStoObj.setFeaFun with a null patch.
+
+	// #endregion Launcher Uncheck Handlers
 
 
 
@@ -6294,7 +6674,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				// #endregion Deferred Regenerate
 
 
-			}, celDelNum + exiDelNum );
+			}, celDelNum + exiDelNum ); // What: Purge Delay. Why: The conclusion waits for both the celebration and the exit animation. How: This waits celDelNum plus exiDelNum.
 
 
 			preResRef.current = genResBoo; // What: Previous Generate Resolved Update. Why: The next run of this effect must compare against the state that is current now. How: This overwrites preResRef with genResBoo.
@@ -6336,6 +6716,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 				onCloAllFun={ helExiFun }
 			/>{ /* What: Help Overlay Component. Why: Today needs its own coach-mark overlay driven by TOD_HEL_ARR. How: This is rendered whenever helModBoo is true, closed via helExiFun. */ }
+
 
 
 			<header
@@ -6383,6 +6764,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								</div>
 
+
+
 								<HelButCom
 									actModBoo={ helModBoo }
 
@@ -6394,6 +6777,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 						</div>
+
 
 
 						<div className='today-h-lead'>{ /* What: Header Lead Div Element. Why: The brand mark, the title, and the completion ring read as one shared row beneath the kicker. How: This wraps all 3 below. */ }
@@ -6443,8 +6827,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									</defs>
 
-
-
 									<g
 										style={{
 											stroke      : 'var(--accent-soft)',
@@ -6472,8 +6854,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									</g>
 
-
-
 									<rect
 										style={{
 											stroke         : 'currentColor',
@@ -6489,7 +6869,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										x='16'
 										y='16'
 									/>{ /* What: Badge Rect Element. Why: The logo needs a visible rounded-square border/badge behind the glyph. How: This draws the same rounded-square shape as the clip rect above, but stroked and visible instead of hidden in defs. */ }
-
 
 									<path
 										style={{
@@ -6509,7 +6888,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 							</button>
-
 
 
 							<h1 className='today-title'>{ /* What: Today Title Heading Element. Why: The default hero line and the "all done" celebratory line swap visibility based on isaFulBoo, but both stay mounted so the swap can animate. How: This renders both title-state spans below, keyed so the done state re-plays its per-word reveal on every fresh completion. */ }
@@ -6579,7 +6957,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								</svg>
 
-
 								<div className='ring-text'>{ /* What: Ring Text Div Element. Why: The numeric label needs to sit centered over the ring itself. How: This renders donCouNum and totCouNum as a fraction. */ }
 
 
@@ -6589,7 +6966,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 								</div>
-
 
 								<i
 									className='ring-glow'
@@ -6624,6 +7000,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			</header>
 
+
+
 			<div
 				ref={ todBodRef }
 
@@ -6632,9 +7010,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 				<BacFloCom
-					tabIdeStr='today'
-
 					meaEleRef={ todBodRef }
+					tabIdeStr='today'
 				/>{ /* What: Background Flourish Component. Why: Today needs the same decorative background glyphs every other tab renders behind its own centered column. How: This is passed the fixed 'today' tab id and todBodRef. */ }
 
 
@@ -6672,6 +7049,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								onClick={ () => cloModFun( false ) }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). */ }
 
+
+
 							<ButBasCom
 								icoNamStr='cheEle'
 								kinValStr='primary'
@@ -6688,6 +7067,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 				) }
+
+
 
 				<div
 					ref={ maiScrRef }
@@ -6706,6 +7087,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 						<div className='kicker rail-kicker'>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
+
 
 
 						<ul>{ /* What: Rail List Element. Why: Every rail button is one list item in this shared list. How: This maps bloOrdArr to one <li> per entry, dispatching by sentinel/real-group id. */ }
@@ -6847,6 +7229,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 							} ) }
+
+
 							{ shoFeaBoo && ( // What: App Features Rail Visibility Check. Why: Pinned last always, not part of bloOrdArr/staAppObj.groupOrder, so it can't be dragged around in Edit Mode and always renders after every real group; see shoFeaBoo's own doc comment above for the render gate. How: This renders the App Features rail entry only while shoFeaBoo is true.
 
 
@@ -6883,6 +7267,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						</ul>
 
 
+
 						<div className='rail-editmode'>{ /* What: Rail Edit Mode Div Element. Why: The Edit Mode toggle sits pinned at the rail's own bottom. How: This wraps the toggle button below. */ }
 
 
@@ -6911,6 +7296,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 					</aside>
+
+
 
 					<div
 						ref={ carAreRef }
@@ -7001,6 +7388,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						) }
 
+
+
 						<div
 							ref={ groDndRef }
 
@@ -7022,6 +7411,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 											actEdiStr={ actEdiStr }
 											actStoObj={ actStoObj }
+											ariTasSet={ ariTasSet }
 											cheExiBoo={ cheExiBoo }
 											ediModBoo={ ediModBoo }
 											leaTasSet={ leaTasSet }
@@ -7029,8 +7419,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											secRefFun={ ( secCurEle ) => { secRefObj.current[ '__reminders' ] = secCurEle; } }
 											setActEdiStr={ setActEdiStr }
 											staAppObj={ staAppObj }
-
-											ariTasSet={ ariTasSet }
 
 											onGriDowFun={ groDraFun }
 											onPlaTutFun={ staTouFun }
@@ -7082,6 +7470,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												onGriDowFun={ groDraFun }
 												onRenGroFun={ ( newNamStr ) => actStoObj.renTouFun( newNamStr ) }
 											/>{ /* What: Group Header Component. Why: Page Tours shares the exact same header chrome (name/rename, count, progress dashes) as a real group. How: This is passed pagNamStr as its own editable name, wired to actStoObj.renTouFun and pagColFun's own collision check. */ }
+
 
 
 											<div className='today-list'>{ /* What: Page Tours List Div Element. Why: Every visible tour card shares this one list column. How: This maps visTouArr to one PagTouCom per entry. */ }
@@ -7164,6 +7553,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										/>{ /* What: Group Header Component. Why: Every group needs its own name/rename, count, and progress dashes. How: This is passed curGroObj's own name/counts plus every rename/merge/log handler. */ }
 
 
+
 										<ColDisCom open={ opeLogStr === curGroObj.namStr && !ediModBoo }>{ /* What: Collapse Disclosure Component. Why: This group's own Day Log panel should only mount while it is actually open, outside Edit Mode. How: This wraps GroLogCom below. */ }
 
 
@@ -7176,6 +7566,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 										</ColDisCom>
+
 
 
 										<div className='today-list'>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. */ }
@@ -7236,6 +7627,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 														/>{ /* What: Entry Card Component. Why: This is the actual row: a real pick, a day-off/charging card, or a mini-tour launcher, depending on entRecObj's own kind. How: This is passed entRecObj/picRecObj plus every shared handler/animation-state flag. */ }
 
 
+
 														<ColDisCom open={ actEdiStr === `item:${ entRecObj.eid }` && !!curIteObj }>{ /* What: Collapse Disclosure Component. Why: This row's own inline editor should only mount while it is actually open AND a real item still exists to edit. How: This wraps the editor wrapper div below. */ }
 
 
@@ -7273,6 +7665,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 											} ) }
+
+
+
 											{ genActBoo && sloGroObj[ curGroObj.namStr ] && sloGroObj[ curGroObj.namStr ].map( ( curPicObj ) => ( // What: New Slot Loader List Render. Why: A group with no entries yet, but an incoming pending slot mid-generation, still needs its own placeholder loader cards. How: This maps sloGroObj's own entry for curGroObj's name to one LoaCarCom per pending picker, only while genActBoo is true and a slot list actually exists.
 
 
@@ -7302,6 +7697,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						</div>
 
 
+
 						{ shoFeaBoo && ( // What: App Features Section Visibility Check. Why: Pinned last always, see shoFeaBoo's own doc comment above and the matching rail entry above for why this isn't part of genOrdArr/staAppObj.groupOrder. How: This renders the whole App Features section only while shoFeaBoo is true.
 
 
@@ -7318,6 +7714,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									groNamStr='App Features'
 									totCouNum={ APP_FEA_ARR.length }
 								/>{ /* What: Group Header Component. Why: App Features shares the exact same header chrome as a real group, but is never itself reorderable. How: This is passed a fixed name plus its own live done/total counts. */ }
+
 
 
 								<div className='today-list'>{ /* What: App Features List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. */ }
@@ -7349,6 +7746,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						) }
 
+
 						{ shoCheBoo && ( // What: Generate Card Visibility Check. Why: The closing checklist card only belongs while the guided checklist is still showing. How: This renders the Generate card only while shoCheBoo is true.
 
 
@@ -7373,6 +7771,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<b>Generate your real list</b>{ /* What: Card Heading Element. Why: This is the card's own fixed heading. How: This renders the literal phrase directly. */ }
 
 								<p>{ genExpStr }</p>{ /* What: Card Explanation Element. Why: The user needs to know exactly what's still missing (or that everything is ready). How: This renders genExpStr directly. */ }
+
 
 
 								{ onbReaBoo ? ( // What: Generate Ready Check. Why: Generate's own trigger swaps between a real working button and an explained disabled one depending on readiness. How: This renders the working ButBasCom while onbReaBoo is true, the disabled InfTipCom otherwise.
@@ -7406,6 +7805,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						) }
 
+
 						{ onbEmpBoo && ( // What: Empty State Visibility Check. Why: This CTA only belongs to a brand-new user with no pickers at all. How: This renders the empty-state card only while onbEmpBoo is true.
 
 
@@ -7428,6 +7828,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<p>At least one picker is required for any items to show up here. You will need to create one with at least two items for it to choose from.</p>{ /* What: Card Explanation Element. Why: The user needs to understand why the list is empty and what to do about it. How: This renders a fixed explanatory sentence. */ }
 
 
+
 								<ButBasCom
 									icoNamStr='pluEle'
 									kinValStr='primary'
@@ -7441,6 +7842,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 						) }
+
 
 						{ shoIdlBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while shoIdlBoo is true.
 
@@ -7485,6 +7887,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						) }
 
+
+
 						<div className='today-footer'>{ /* What: Today Footer Div Element. Why: The footer's own content swaps between the confirm prompt, Edit Mode actions, and the normal Regenerate/generated-on pair. How: This renders exactly one of the 3 branches below. */ }
 
 
@@ -7505,6 +7909,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 											onClick={ () => setConGenBoo( false ) }
 										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the confirm without regenerating anything. How: This clears conGenBoo. */ }
+
+
 
 										<ButBasCom
 											className='gen-confirm-continue'
@@ -7535,6 +7941,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										onClick={ () => cloModFun( false ) }
 									>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). */ }
 
+
+
 									<ButBasCom
 										icoNamStr='cheEle'
 										kinValStr='primary'
@@ -7564,6 +7972,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 											onClick={ togModFun }
 										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togModFun, disabled while a generation is in flight. */ }
+
+
 
 										{ shoCheBoo ? ( // What: Checklist-Gated Regenerate Branch. Why: Every picker (sample AND any real one already created mid-checklist, see genResBoo's own comment on why those stay hidden too) is hidden until the closing Generate card runs, and genLisFun's own picker loop skips anything hidden, so this would always produce an empty list while still updating today.generatedAt, misleadingly showing a fresh "List generated on..." timestamp for a regenerate that couldn't actually draw anything. How: This renders a real, disabled-and-explained Regenerate instead of a working one.
 
@@ -7604,7 +8014,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									</div>
 
-
 									<div className='today-foot-sub'>List generated on { forLonFun( staAppObj.today.generatedAt ) } at { forTimFun( staAppObj.today.generatedAt ) }</div>{ /* What: Foot Sub Div Element. Why: The user still deserves to know exactly when the current list was built. How: This renders staAppObj.today.generatedAt formatted 2 ways. */ }
 
 
@@ -7626,6 +8035,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			</div>
 
 
+
 			{ minTouObj && minTouObj.kinStr === 'reminder' && ( // What: Reminder Mini-Tour Check. Why: A running mini-tour only mounts RemTouCom when it's actually a reminder-kind tour. How: This renders RemTouCom only while minTouObj holds a value and its own kind is 'reminder'.
 
 
@@ -7640,6 +8050,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			) }
+
+
 
 			{ shoIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders FeaTipCom only while shoIntBoo is true.
 
@@ -7660,8 +8072,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 // #endregion TabTodCom
 
+// #endregion Components
 
+
+
+// #region Exports
 
 export { EntEdiCom, TabTodCom }; // What: Named Exports. Why: app.jsx renders TabTodCom as the Today tab itself, and tab-picker.jsx/tab-data.jsx both reuse EntEdiCom as the shared item-editing row. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
+
+// #endregion Exports
 
 
