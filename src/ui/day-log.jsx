@@ -12,6 +12,7 @@ import { CON_NAM_OBJ } from '../core/conditionals.js'; // What: Conditional Name
 import { InfTipCom   } from './ui.jsx';                // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
 import { SED_NAM_OBJ } from '../state/seed.js';        // What: Seed Namespace Object. Why: PicBloCom and ConSecCom label a mode with the same display names the mode radios use. How: This reads MOD_DEF_OBJ's own labStr for a picker's or conditional's mode.
 import { TAS_NAM_OBJ } from '../core/tasks.js';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
+import { THR_VAL_NUM } from '../constants.js';         // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 
 // #endregion Imports
 
@@ -36,7 +37,6 @@ import { TAS_NAM_OBJ } from '../core/tasks.js';        // What: Tasks Namespace 
  * at state.today.genLog.
  *
  * Sections:
- *  - Constants
  *  - Helpers
  *  - Components
  *  - Exports
@@ -44,14 +44,6 @@ import { TAS_NAM_OBJ } from '../core/tasks.js';        // What: Tasks Namespace 
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Constants
-
-const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease-mode range shown in this file (item and conditional sublines alike) is relative to this same full-charge ceiling. How: This is divided into below wherever a soonest/latest day count is derived from an ease-min/ease-max pair.
-
-// #endregion Constants
 
 
 

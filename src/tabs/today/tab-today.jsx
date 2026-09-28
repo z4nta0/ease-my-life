@@ -45,6 +45,7 @@ import { RemSecCom    } from '../../ui/reminders.jsx';              // What: Rem
 import { RemTouCom    } from '../../onboarding/reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while minTouObj holds a 'reminder' kind entry.
 import { REO_NAM_OBJ  } from '../../ui/reorder.js';                 // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside groDraFun/iteDraFun.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
+import { THR_VAL_NUM  } from '../../constants.js';                  // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 import { TOD_HEL_ARR  } from '../../help/content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useEscCanFun } from '../../ui/ui.jsx';                     // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
@@ -74,7 +75,6 @@ import { useEscCanFun } from '../../ui/ui.jsx';                     // What: Use
  * so all 3 tabs edit an item through the exact same component.
  *
  * Sections:
- *  - Constants
  *  - Helpers
  *  - Components
  *  - Exports
@@ -82,14 +82,6 @@ import { useEscCanFun } from '../../ui/ui.jsx';                     // What: Use
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
-
-
-
-// #region Constants
-
-const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease drift/day conversion and charge check in this file shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax to get a day count, and compared against an item's own charge value.
-
-// #endregion Constants
 
 
 

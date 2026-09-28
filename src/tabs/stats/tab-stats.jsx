@@ -17,6 +17,7 @@ import { PilTagCom    } from '../../ui/ui.jsx';           // What: Pill Tag Comp
 import { SED_NAM_OBJ  } from '../../state/seed.js';       // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
 import { STA_HEL_ARR  } from '../../help/content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';       // What: Tasks Namespace Object. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TAS_NAM_OBJ.norOptFun on the raw persisted reminderOpts.
+import { THR_VAL_NUM  } from '../../constants.js';        // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 import { unhHisFun    } from '../../help/sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
 import { useEmlTouFun } from '../../state/tour-bus.js';   // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
 
@@ -148,10 +149,6 @@ const STA_RAN_ARR = [ // What: Stat Range Array. Why: This defines the fixed set
 ];
 
 // #endregion STA_RAN_ARR
-
-
-
-const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease-mode drift/day-band computation shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
 
 
 
