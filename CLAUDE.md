@@ -1935,7 +1935,9 @@ still passes.
   (Heading), `ul` → `Uno` (Unordered list), `ol` → `Ord` (Ordered list),
   `li` → `Ite` (list Item), `img` → `Ima` (Image), `svg` → `Svg`, `g` →
   `Gro` (Group), `tr` → `Row`, `td` → `Cel` (Cell), and `th` → `Hce`
-  (Header cell, since `Hea` already means Heading). Existing classes
+  (Header cell, since `Hea` already means Heading). A modifier (variant)
+  class is its base class's name, then `--`, then the variant (the
+  existing `.prog--warm` form). Existing classes
   keep their current names while they move into modules; renaming them
   to this rule belongs to the design-system pass.
 - **CSS file boundaries and header**: the same as a JS file: exactly 3
@@ -1949,7 +1951,10 @@ still passes.
   `style={{ ... }}` objects under "### Arrays and objects", since a later
   shorthand would wipe out the longhand). Within each rule, pad every
   property name so the `:` lines up in one column, computed from that
-  rule's longest property name, e.g. `border-radius : 999px;`.
+  rule's longest property name, e.g. `border-radius : 999px;`. Like a
+  JS block, every rule's declarations get exactly 2 blank lines after
+  the rule's opening `{` line and 2 before its closing `}`. See
+  `tabs/pickers/progress-bar.module.css` for the reference example.
 - **CSS comments**: every rule gets one What/Why/How comment, written as
   `/* What: ... Why: ... How: ... */` one space after its own opening
   `{`, the same as any multi-line construct. Declarations get no comment
