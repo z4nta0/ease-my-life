@@ -2043,8 +2043,6 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 	}, [ perIteArr, effMetStr, sorDirStr ] ); // What: Effect Dependency Array. Why: This list only ever needs resorting when the underlying rows, the active metric, or the sort direction changes. How: perIteArr supplies the rows, effMetStr/sorDirStr together determine the comparator branch and direction.
 
-
-
 	// #endregion Per-Item Breakdown List
 
 
