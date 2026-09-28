@@ -3,6 +3,9 @@
 
 // #region Imports
 
+import cssModObj from './content.module.css'; // What: CSS Module Object. Why: The tip bodies' button blocks and inline icons are styled from their own module. How: This maps each class name in content.module.css to its hashed module class.
+
+
 import { IcoSvgCom } from '../ui/icon.jsx'; // What: Icon Svg Component. Why: Several items' own body copy renders a small inline icon next to a button's own label, so a reader can match the tip back to the real control. How: This is rendered inside body JSX throughout this file's own catalogs (e.g. Card Actions, Picker Items).
 
 // #endregion Imports
@@ -1308,7 +1311,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle : (
 
 
-			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className='help-inline-icon'><IcoSvgCom icoNamStr='calEle' sizValNum={ 13 } /></span> Send to Today button will send the item to your todo list on the Today page, the <span className='help-inline-icon'><IcoSvgCom icoNamStr='ediEle' sizValNum={ 13 } /></span> Edit button will allow you to edit the item's properties and the <span className='help-inline-icon'><IcoSvgCom icoNamStr='traEle' sizValNum={ 13 } /></span> Delete button will delete the item after asking for confirmation.</> // What: Body Fragment. Why: This tip's own body mixes text with inline icons. How: This wraps the whole run as one element.
+			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className={ cssModObj.helpInlineIcon }><IcoSvgCom icoNamStr='calEle' sizValNum={ 13 } /></span> Send to Today button will send the item to your todo list on the Today page, the <span className={ cssModObj.helpInlineIcon }><IcoSvgCom icoNamStr='ediEle' sizValNum={ 13 } /></span> Edit button will allow you to edit the item's properties and the <span className={ cssModObj.helpInlineIcon }><IcoSvgCom icoNamStr='traEle' sizValNum={ 13 } /></span> Delete button will delete the item after asking for confirmation.</> // What: Body Fragment. Why: This tip's own body mixes text with inline icons. How: This wraps the whole run as one element.
 
 
 		),
@@ -2907,10 +2910,10 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 			<>{ /* What: Body Fragment. Why: This tip's own body groups several lines as one element. How: This wraps them without adding a wrapper element to the tip. */ }
 
 
-				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.helpNavItem }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className='help-nav-label'><IcoSvgCom icoNamStr='refEle' sizValNum={ 14 } /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr='refEle' sizValNum={ 14 } /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -2918,10 +2921,10 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 				</div>
 
 
-				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.helpNavItem }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className='help-nav-label'><IcoSvgCom icoNamStr='skiEle' sizValNum={ 14 } /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr='skiEle' sizValNum={ 14 } /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -2929,10 +2932,10 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 				</div>
 
 
-				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.helpNavItem }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className='help-nav-label'><IcoSvgCom icoNamStr='ediEle' sizValNum={ 14 } /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr='ediEle' sizValNum={ 14 } /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -2962,10 +2965,10 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 			<>{ /* What: Body Fragment. Why: This tip's own body groups several lines as one element. How: This wraps them without adding a wrapper element to the tip. */ }
 
 
-				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.helpNavItem }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className='help-nav-label'><IcoSvgCom icoNamStr='skiEle' sizValNum={ 14 } /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr='skiEle' sizValNum={ 14 } /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -2973,10 +2976,10 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 				</div>
 
 
-				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+				<div className={ cssModObj.helpNavItem }>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
 
 
-					<div className='help-nav-label'><IcoSvgCom icoNamStr='ediEle' sizValNum={ 14 } /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr='ediEle' sizValNum={ 14 } /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 

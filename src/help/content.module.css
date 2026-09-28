@@ -1,0 +1,65 @@
+
+
+
+/**
+ * content.module.css = Help Content Module
+ *
+ * @summary
+ * Styles for the few elements the help catalog's own tip bodies draw: the
+ * icon-and-label blocks a tip uses to explain several buttons one by one, and
+ * the small icons dropped straight into a tip's flowing prose. The tip card
+ * around them, its paragraphs included, is styled by help/tooltip.module.css.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region help-nav-item */
+
+.help-nav-item + .help-nav-item { /* What: Following Help Nav Item. Why: Each button's block in a tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
+
+
+	margin-top : 10px;
+
+
+}
+
+/* #region help-nav-label */
+
+.help-nav-label { /* What: Help Nav Label. Why: A button's icon and bold name read together as the block's heading. How: This lines them up in a centered row above the block's description. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 6px;
+	margin      : 0 0 3px;
+
+
+}
+
+.help-nav-label svg { /* What: Help Nav Label Icon. Why: The icon should keep its size however long the name beside it gets. How: This stops the icon from shrinking in the row. */
+
+
+	flex : 0 0 auto;
+
+
+}
+
+/* #endregion help-nav-label */
+
+/* #endregion help-nav-item */
+
+
+
+.help-inline-icon { /* What: Help Inline Icon. Why: An icon dropped into a tip's prose should sit neatly among the words around it. How: This wraps the icon in an inline box that centers it within its own height. */
+
+
+	align-items : center;
+	display     : inline-flex;
+
+
+}
+
+
