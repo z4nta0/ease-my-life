@@ -1,0 +1,64 @@
+
+
+
+/**
+ * fill-button.module.css = Fill Button Module
+ *
+ * @summary
+ * Styles for FilButCom's one-shot icon spin: clicking a Fill or Refill lever
+ * turns its refresh icon once, as purely decorative feedback, unless reduced
+ * motion is requested.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region is-spinning */
+
+.is-spinning svg { /* What: Spinning Fill Icon. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: This turns the button's icon once while FilButCom's spin class is on. */
+
+
+	animation : fillSpin .5s cubic-bezier(.4,0,.2,1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fill Icon. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
+
+
+	.is-spinning svg { /* What: Still Fill Icon. Why: The icon should stay put. How: This turns the spin off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes fillSpin { /* What: Fill Icon Spin. Why: One full turn reads as a refresh. How: This rotates the icon a full circle. */
+
+
+	from {
+
+
+		transform : rotate(0);
+
+
+	}
+
+	to {
+
+
+		transform : rotate(360deg);
+
+
+	}
+
+
+}
+
+/* #endregion is-spinning */
+
+

@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: FilButCom is built directly on React's own APIs. How: This is used directly (React.useState) instead of importing individual named hooks.
+import cssModObj from './fill-button.module.css'; // What: CSS Module Object. Why: The lever's icon spin lives in its own module. How: This maps each class name in fill-button.module.css to its hashed module class.
+import React     from 'react';                    // What: React. Why: FilButCom is built directly on React's own APIs. How: This is used directly (React.useState) instead of importing individual named hooks.
 
 
 import { ButBasCom } from './button.jsx';       // What: Button Base Component. Why: The Fill lever is a ghost-styled shared button. How: This renders the lever with its refresh icon and label.
@@ -76,7 +77,7 @@ function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } ) {
 
 
 		<ButBasCom
-			className={ spiAniBoo ? 'is-spinning' : '' }
+			className={ spiAniBoo ? cssModObj.isSpinning : '' }
 
 			disabled={ isaDisBoo }
 			icoNamStr='refEle'

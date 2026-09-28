@@ -1636,10 +1636,6 @@ button.cat-h-l {
 .set-sub-fade { animation: setSubFade .6s ease; }
 @keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .set-sub-fade { animation: none; } }
-/* Fill / Refill lever: one-shot icon spin on click. */
-@keyframes fillSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-.btn.is-spinning svg { animation: fillSpin .5s cubic-bezier(.4,0,.2,1); }
-@media (prefers-reduced-motion: reduce) { .btn.is-spinning svg { animation: none; } }
 /* Breakdown lists (conditionals / reminders / pick breakdown): fade+rise when
    the metric pill or sort direction changes (keyed remount). */
 .bd-list-fade { animation: setSubFade .3s ease, bdListRise .3s cubic-bezier(.2,.7,.3,1); }
