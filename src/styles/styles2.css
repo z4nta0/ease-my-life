@@ -1329,6 +1329,8 @@ button.cat-h-l {
 .rd-mode-opt .collapse { transition: grid-template-rows .8s cubic-bezier(.4,0,.2,1); }
 .rd-mode-opt .collapse:not(.is-open) > .collapse-inner { transform: translateY(-8px); }
 @media (prefers-reduced-motion: reduce) { .rd-mode-opt .collapse-inner { transition: none; } }
+/* ColDisCom's own module reads these to match the style-radio collapse's slower hint swap above. */
+.rd-mode-opt { --collapse-row-duration: .8s; --collapse-inner-transition: opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s; --collapse-inner-offset: translateY(-8px); }
 @media (prefers-reduced-motion: reduce) {
   .collapse, .collapse-inner { transition: none; }
 }

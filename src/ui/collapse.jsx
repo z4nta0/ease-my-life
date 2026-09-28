@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: ColDisCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
+import cssModObj from './collapse.module.css'; // What: CSS Module Object. Why: The disclosure's grid and content styles live in its own module. How: This maps each class name in collapse.module.css to its hashed module class.
+import React     from 'react';                 // What: React. Why: ColDisCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
 
 
 import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function. Why: Under reduced motion the closed panel unmounts at once instead of waiting for a transition that never fires. How: This is checked when the panel closes.
@@ -82,7 +83,7 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
 
 
 
-		setExpStaBoo( false ); // What: Expand State Clear Call. Why: Closing must animate the grid row back to 0fr before anything unmounts. How: This flips expStaBoo false, which the JSX below reflects as the "is-open" class being removed.
+		setExpStaBoo( false ); // What: Expand State Clear Call. Why: Closing must animate the grid row back to 0fr before anything unmounts. How: This flips expStaBoo false, which the JSX below reflects by dropping its data-collapse-open-active attribute.
 
 
 		if ( redMotFun() ) setChiMouBoo( false ); // What: Reduced Motion Unmount Guard. Why: transitionend never fires without a real transition, so nothing else would ever unmount the child. How: This unmounts the child immediately when the user prefers reduced motion.
@@ -143,13 +144,15 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
 
 
 		<div
-			className={ ` collapse   ${ expStaBoo ? 'is-open' : '' }   ${ className } ` }
+			className={` ${ cssModObj.collapse }   ${ className } `}
+
+			data-collapse-open-active={ expStaBoo || undefined } // What: Collapse Open Active Attribute. Why: The disclosure's open state drives its CSS row and fade transitions. How: This is present only while expStaBoo is true, since undefined drops the attribute entirely.
 
 			onTransitionEnd={ onTraEndFun }
-		>{ /* What: Disclosure Div Element. Why: This is ColDisCom's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This toggles the "is-open" class per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
+		>{ /* What: Disclosure Div Element. Why: This is ColDisCom's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This sets its data-collapse-open-active attribute per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
 
 
-			<div className='collapse-inner'>{ children }</div>{ /* What: Disclosure Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
+			<div className={ cssModObj.collapseInner }>{ children }</div>{ /* What: Disclosure Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
 
 
 		</div>
