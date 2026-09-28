@@ -1,27 +1,5 @@
 /* ─── Tab: Picker ────────────────────────────────────────────────────────── */
 
-.tab--picker {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-/* Wraps everything below the page header (group filters, picker strip, and
-   the active picker's detail view / create form) as a single unit — mirrors
-   .tab--picker's own flex/gap so wrapping these two previously-direct
-   children doesn't change spacing. Exists specifically so the Welcome Tour
-   has a container to reserve top-space on (see onboarding.jsx's reserve-space
-   effect) without pushing the page header itself down too. The tour's own
-   highlight target is `.ob-picker-content` on this element's two children,
-   NOT this element — highlighting .picker-body itself would include its own
-   reserved padding as empty space at the top of the spotlight. */
-.picker-body {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  min-width: 0;
-}
-
 .picker-tabs {
   display: flex; gap: 8px;
   overflow-x: auto;
@@ -227,20 +205,6 @@
    above and below. Mirrors .picker-view's own flex/gap so wrapping these
    two doesn't change their spacing. */
 .picker-run { display: flex; flex-direction: column; gap: 18px; }
-
-/* Picker header — kicker, then logo + centered title (mirrors Today + Stats).
-   The sub sits on its own line below; its larger top margin pulls it visually
-   closer to the picker-groups it explains than to the title above. */
-.picker-h-head { display: flex; flex-direction: column; gap: 18px; }
-.picker-h-lead { display: flex; align-items: center; gap: 16px; }
-.picker-h-lead .section-h { flex: 1 1 auto; min-width: 0; justify-content: center; }
-.picker-h-lead .brand-mark { height: 68px; width: 68px; aspect-ratio: auto; align-self: center; }
-.picker-title-accent { color: var(--accent); }
-.picker-h-sub { margin: 18px 0 0; }
-@media (max-width: 640px) {
-  .picker-h-lead { gap: 12px; }
-  .picker-h-lead .brand-mark { height: 56px; width: 56px; }
-}
 
 .picker-h {
   display: flex; justify-content: space-between; align-items: flex-start;
@@ -1559,36 +1523,7 @@ button.cat-h-l {
 .switch.is-on { background: var(--accent); }
 .switch.is-on i { transform: translateX(16px); }
 
-/* ─── Add-picker chip + new-picker form ──────────────────────────────────── */
-/* The trailing chip in .picker-tabs that opens the create flow. Dashed + muted
-   so it reads as an action, not another saved picker; solid accent when on. */
-.picker-tab--add {
-  flex-direction: row; align-items: center; justify-content: center;
-  gap: 8px;
-  border-style: dashed;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-}
-.picker-tab--add:hover { border-color: var(--accent); color: var(--accent); }
-.picker-tab--add.is-on {
-  border-style: solid;
-  border-color: var(--accent);
-  background: oklch(from var(--accent-soft) l c h);
-  color: var(--accent);
-}
-.picker-tab--add .picker-tab-name { font-size: 13px; color: inherit; }
-/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
-   pointer-events:none here — this instance is an InfoTip span (see
-   tab-picker.jsx), not a real <button>, whenever it's tutProFun,
-   and InfoTip needs real hover/tap events to reach it to show its tooltip
-   at all (see .btn.is-disabled in styles.css, the same InfoTip pattern
-   used by the Generate card, which omits it for the same reason). Nothing
-   unsafe fires either way: the real onClick isn't wired to this element in
-   the first place while disabled. */
-.picker-tab--add.is-tour-disabled { opacity: 0.5; cursor: default; }
-.picker-tab--add .picker-tab-add-icon { display: inline-flex; }
-
+/* ─── New-picker form ───────────────────────────────────────────────────────  */
 .np-fields { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
 .np-field { display: flex; flex-direction: column; gap: 8px; }
 /* .np-field also renders as a <fieldset> (the picker-mode radio group, for a

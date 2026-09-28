@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: TabPicCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useRef, React.useState) instead of importing individual named hooks.
+import cssModObj from './tab-picker.module.css'; // What: CSS Module Object. Why: The Pickers tab's header, filter rails, and picker strip are styled from their own module. How: This maps each class name in tab-picker.module.css to its hashed module class.
+import React     from 'react';                   // What: React. Why: TabPicCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useRef, React.useState) instead of importing individual named hooks.
 
 
 import { clePicFun    } from '../../help/sample-data.js';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicCom's own help-mode effect and its unmount cleanup.
@@ -402,7 +403,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	return (
 
 
-		<div className='tab tab--picker'>{ /* What: Tab Picker Div Element. Why: This is TabPicCom's own root, holding the help overlay, the header, and the body (filters, Show row, and the active create/view content). How: This wraps every piece of the whole Pickers page. */ }
+		<div className={ cssModObj.tabPicker }>{ /* What: Tab Picker Div Element. Why: This is TabPicCom's own root, holding the help overlay, the header, and the body (filters, Show row, and the active create/view content). How: This wraps every piece of the whole Pickers page. */ }
 
 
 			<HelOveCom
@@ -414,13 +415,13 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			<header className='picker-h-head'>{ /* What: Header Element. Why: The kicker/help row, the brand lead, and the intro paragraph form one page header. How: This wraps those three pieces. */ }
+			<header className={ cssModObj.pickerHHead }>{ /* What: Header Element. Why: The kicker/help row, the brand lead, and the intro paragraph form one page header. How: This wraps those three pieces. */ }
 
 
-				<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The page kicker and the Help toggle sit side by side. How: This wraps those two pieces. */ }
+				<div className={ cssModObj.kickerRow }>{ /* What: Kicker Row Div Element. Why: The page kicker and the Help toggle sit side by side. How: This wraps those two pieces. */ }
 
 
-					<div className='kicker'>Pickers</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the page's own heading below. How: This renders the literal word "Pickers". */ }
+					<div className={ cssModObj.kicker }>Pickers</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the page's own heading below. How: This renders the literal word "Pickers". */ }
 
 
 
@@ -436,14 +437,14 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 				<div
-					className='picker-h-lead'
+					className={ cssModObj.pickerHLead }
 
 					data-element-name-hook='heaLeaDiv'
 				>{ /* What: Lead Div Element. Why: The brand mark and the page's own main heading sit side by side. How: This wraps those two pieces. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<button
-						className='brand-mark'
+						className={ cssModObj.brandMark }
 
 						data-element-name-hook='braMarBut'
 
@@ -543,10 +544,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					</button>
 
 
-					<div className='section-h'>{ /* What: Section Header Div Element. Why: The page's own main heading needs its own wrapper for layout. How: This wraps section-title. */ }
+					<div className={ cssModObj.sectionH }>{ /* What: Section Header Div Element. Why: The page's own main heading needs its own wrapper for layout. How: This wraps section-title. */ }
 
 
-						<h1 className='section-title'><span className='picker-title-accent'>Easing</span> your life, one pick at a time.</h1>{ /* What: Title Heading Element. Why: Every tab needs its own main heading. How: This renders a fixed heading with its first word given its own accent-colored span. */ }
+						<h1 className={ cssModObj.sectionTitle }><span className={ cssModObj.pickerTitleAccent }>Easing</span> your life, one pick at a time.</h1>{ /* What: Title Heading Element. Why: Every tab needs its own main heading. How: This renders a fixed heading with its first word given its own accent-colored span. */ }
 
 
 					</div>
@@ -556,7 +557,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				<p className='section-sub picker-h-sub'>Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items&rsquo; settings. Conditionals and reminders can be managed in the <button type='button' className='sub-tablink' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Intro Paragraph Element. Why: A first-time user needs a plain-language orientation to the whole page before touching anything. How: This renders a fixed explanatory sentence with an inline link that switches to the Data tab. */ }
+				<p className={ cssModObj.pickerHSub }>Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items&rsquo; settings. Conditionals and reminders can be managed in the <button type='button' className='sub-tablink' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Intro Paragraph Element. Why: A first-time user needs a plain-language orientation to the whole page before touching anything. How: This renders a fixed explanatory sentence with an inline link that switches to the Data tab. */ }
 
 
 			</header>
@@ -564,27 +565,27 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 			<div
-				className='picker-body'
+				className={ cssModObj.pickerBody }
 
 				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
 			>{ /* What: Body Div Element. Why: A running tour can reserve extra top padding to keep its own coach clear of the header. How: This wraps every filter row, the Show row, and the active create/view content below. */ }
 
 
-				<div className='stat-filters ob-picker-content'>{ /* What: Filters Div Element. Why: The Group row, the Type row, and the Show row all belong to one shared filter block the Pickers page tour can target together. How: This wraps every stat-filter-row below. */ }
+				<div className={ cssModObj.statFilters }>{ /* What: Filters Div Element. Why: The Group row, the Type row, and the Show row all belong to one shared filter block the Pickers page tour can target together. How: This wraps every stat-filter-row below. */ }
 
 
 					{ exiGroArr.length > 1 && ( // What: Group Row Check. Why: A single-group install has nothing to actually filter by. How: This renders the whole Group filter row only once more than one distinct group exists.
 
 
-						<div className='stat-filter-row'>{ /* What: Group Filter Row Div Element. Why: The "Group" label and its own pill rail sit side by side. How: This wraps stat-filter-lbl and the picker-groups rail. */ }
+						<div className={ cssModObj.statFilterRow }>{ /* What: Group Filter Row Div Element. Why: The "Group" label and its own pill rail sit side by side. How: This wraps stat-filter-lbl and the picker-groups rail. */ }
 
 
-							<span className='stat-filter-lbl'>Group</span>{ /* What: Group Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Group". */ }
+							<span className={ cssModObj.statFilterLbl }>Group</span>{ /* What: Group Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Group". */ }
 
 							<div
 								ref={ groRaiRef }
 
-								className='picker-groups'
+								className={ cssModObj.pickerGroups }
 
 								data-element-name-hook='groFilDiv'
 
@@ -594,7 +595,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<button
-									className={ ` picker-group-pill   ${ groFilStr === 'all' ? 'is-on' : '' } ` }
+									className={ cssModObj.pickerGroupPill }
 
 									data-element-name-hook='filPilBut'
 
@@ -617,7 +618,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 									All
 
-									<span className='picker-group-count'>{ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Count Span Element. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of group. */ }
+									<span className={ cssModObj.pickerGroupCount }>{ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Count Span Element. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of group. */ }
 
 
 								</button>
@@ -635,7 +636,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 										<button
 											key={ curGroStr }
 
-											className={ ` picker-group-pill   ${ groFilStr === curGroStr ? 'is-on' : '' } ` }
+											className={ cssModObj.pickerGroupPill }
 
 											data-element-name-hook='filPilBut'
 
@@ -650,7 +651,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 											{ curGroStr }{ /* What: Pill Name Expression. Why: Every group pill needs its own visible label. How: This renders curGroStr. */ }
 
-											<span className='picker-group-count'>{ picCouNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many pickers it holds. How: This renders picCouNum. */ }
+											<span className={ cssModObj.pickerGroupCount }>{ picCouNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many pickers it holds. How: This renders picCouNum. */ }
 
 
 										</button>
@@ -674,15 +675,15 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					{ exiModArr.length > 1 && ( // What: Type Row Check. Why: A single-mode install has nothing to actually filter by. How: This renders the whole Type filter row only once more than one distinct mode exists.
 
 
-						<div className='stat-filter-row'>{ /* What: Type Filter Row Div Element. Why: The "Type" label and its own pill rail sit side by side. How: This wraps stat-filter-lbl and the picker-groups--type rail. */ }
+						<div className={ cssModObj.statFilterRow }>{ /* What: Type Filter Row Div Element. Why: The "Type" label and its own pill rail sit side by side. How: This wraps stat-filter-lbl and the picker-groups--type rail. */ }
 
 
-							<span className='stat-filter-lbl'>Type</span>{ /* What: Type Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Type". */ }
+							<span className={ cssModObj.statFilterLbl }>Type</span>{ /* What: Type Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Type". */ }
 
 							<div
 								ref={ typRaiRef }
 
-								className='picker-groups picker-groups--type'
+								className={ cssModObj.pickerGroups }
 
 								data-element-name-hook='typFilDiv'
 
@@ -692,7 +693,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<button
-									className={ ` picker-group-pill   ${ typFilStr === 'all' ? 'is-on' : '' } ` }
+									className={ cssModObj.pickerGroupPill }
 
 									data-element-name-hook='filPilBut'
 
@@ -715,7 +716,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 									All
 
-									<span className='picker-group-count'>{ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Count Span Element. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of mode. */ }
+									<span className={ cssModObj.pickerGroupCount }>{ staAppObj.pickers.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Count Span Element. Why: The "All" pill needs its own total count. How: This counts every visible picker regardless of mode. */ }
 
 
 								</button>
@@ -733,7 +734,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 										<button
 											key={ curModStr }
 
-											className={ ` picker-group-pill   ${ typFilStr === curModStr ? 'is-on' : '' } ` }
+											className={ cssModObj.pickerGroupPill }
 
 											data-element-name-hook='filPilBut'
 
@@ -748,7 +749,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 											{ SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].labStr }{ /* What: Pill Name Expression. Why: Every type pill needs its mode's visible label. How: This renders the mode's label. */ }
 
-											<span className='picker-group-count'>{ picCouNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many pickers it holds. How: This renders picCouNum. */ }
+											<span className={ cssModObj.pickerGroupCount }>{ picCouNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many pickers it holds. How: This renders picCouNum. */ }
 
 
 										</button>
@@ -770,17 +771,17 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-					<div className='stat-filter-row'>{ /* What: Show Filter Row Div Element. Why: The "Show" label and the actual per-picker tab rail sit side by side. How: This wraps stat-filter-lbl and the picker-tabs rail. */ }
+					<div className={ cssModObj.statFilterRow }>{ /* What: Show Filter Row Div Element. Why: The "Show" label and the actual per-picker tab rail sit side by side. How: This wraps stat-filter-lbl and the picker-tabs rail. */ }
 
 
-						<span className='stat-filter-lbl'>Show</span>{ /* What: Show Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Show". */ }
+						<span className={ cssModObj.statFilterLbl }>Show</span>{ /* What: Show Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Show". */ }
 
 
 						<div
 							key={ groFilStr + '|' + typFilStr }
 							ref={ tabRaiRef }
 
-							className='picker-tabs'
+							className={ cssModObj.pickerTabs }
 
 							data-element-name-hook='picTabDiv'
 						>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
@@ -790,9 +791,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<InfTipCom
-									className={ ` picker-tab   picker-tab--add   picker-tab--enter   is-tour-disabled   ${ creOpeBoo ? 'is-on' : '' } ` }
+									className={` ${ cssModObj.pickerTab }   ${ cssModObj.pickerTabAdd } `}
 
 									data-element-name-hook='picAddSpa'
+									data-tab-select-active={ creOpeBoo || undefined } // What: Tab Select Active Attribute. Why: While the create form is open, its add tab reads as selected. How: This sets the presence-only attribute, which InfTipCom forwards to its trigger, while creOpeBoo is true.
 
 									actNamStr='Add New Picker'
 									labTexStr='This button is disabled until all tutorials are completed.'
@@ -800,7 +802,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									<span
-										className='picker-tab-add-icon'
+										className={ cssModObj.pickerTabAddIcon }
 
 										aria-hidden='true'
 									>{ /* What: Add Icon Span Element. Why: The add tab leads with a decorative plus glyph. How: This is hidden from screen readers and wraps the icon. */ }
@@ -814,7 +816,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 									</span>
 
-									<span className='picker-tab-name'>Add New Picker</span>{ /* What: Tab Name Span Element. Why: The add tab needs its own visible label. How: This renders the literal text "Add New Picker". */ }
+									<span className={ cssModObj.pickerTabName }>Add New Picker</span>{ /* What: Tab Name Span Element. Why: The add tab needs its own visible label. How: This renders the literal text "Add New Picker". */ }
 
 
 								</InfTipCom>
@@ -824,11 +826,12 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<button
-									className={ ` picker-tab   picker-tab--add   picker-tab--enter   ${ creOpeBoo ? 'is-on' : '' } ` }
+									className={` ${ cssModObj.pickerTab }   ${ cssModObj.pickerTabAdd } `}
 
 									style={{ animationDelay : '0ms' }}
 
 									data-element-name-hook='picAddBut'
+									data-tab-select-active={ creOpeBoo || undefined } // What: Tab Select Active Attribute. Why: While the create form is open, its add tab reads as selected. How: This sets the presence-only attribute while creOpeBoo is true.
 
 									disabled={ disAddBoo }
 									type='button'
@@ -838,7 +841,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									<span
-										className='picker-tab-add-icon'
+										className={ cssModObj.pickerTabAddIcon }
 
 										aria-hidden='true'
 									>{ /* What: Add Icon Span Element. Why: The add tab leads with a decorative plus glyph. How: This is hidden from screen readers and wraps the icon. */ }
@@ -852,7 +855,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 									</span>
 
-									<span className='picker-tab-name'>Add New Picker</span>{ /* What: Tab Name Span Element. Why: The add tab needs its own visible label. How: This renders the literal text "Add New Picker". */ }
+									<span className={ cssModObj.pickerTabName }>Add New Picker</span>{ /* What: Tab Name Span Element. Why: The add tab needs its own visible label. How: This renders the literal text "Add New Picker". */ }
 
 
 								</button>
@@ -868,11 +871,12 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 								<button
 									key={ curPicObj.id }
 
-									className={ ` picker-tab   picker-tab--enter   ${ !creOpeBoo && curPicObj.id === actPicStr ? 'is-on' : '' } ` }
+									className={ cssModObj.pickerTab }
 
 									style={{ animationDelay : ( ( picIndNum + 1 ) * 40 ) + 'ms' }}
 
 									data-element-name-hook='picTabBut'
+									data-tab-select-active={ ( !creOpeBoo && curPicObj.id === actPicStr ) || undefined } // What: Tab Select Active Attribute. Why: The picker showing below reads as selected in the strip, unless the create form has taken over. How: This sets the presence-only attribute while this tab's picker is the active one and the form is closed.
 
 									onClick={ () => { // What: On Click Handler. Why: Tapping a picker's tab shows that picker. How: This closes the create form and selects the picker.
 
@@ -885,9 +889,9 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 								>{ /* What: Picker Tab Button Element. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
-									<span className='picker-tab-name'>{ curPicObj.name }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own picker name. How: This renders curPicObj.name. */ }
+									<span className={ cssModObj.pickerTabName }>{ curPicObj.name }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own picker name. How: This renders curPicObj.name. */ }
 
-									<span className='picker-tab-mode'>{ SED_NAM_OBJ.MOD_DEF_OBJ[ curPicObj.mode ].labStr }</span>{ /* What: Tab Mode Span Element. Why: Every tab also names its picker's mode. How: This renders the mode's label. */ }
+									<span className={ cssModObj.pickerTabMode }>{ SED_NAM_OBJ.MOD_DEF_OBJ[ curPicObj.mode ].labStr }</span>{ /* What: Tab Mode Span Element. Why: Every tab also names its picker's mode. How: This renders the mode's label. */ }
 
 
 								</button>
@@ -909,7 +913,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 				<div
 					key={ creOpeBoo ? '__new' : ( actPicStr || '__none' ) }
 
-					className='tab-fade ob-picker-content'
+					className={ cssModObj.tabFade }
 				>{ /* What: Content Fade Div Element. Why: Switching between create/view (or between two different pickers) should play a fade transition, and React needs a stable key to treat each as a distinct mounted instance. How: This wraps whichever of PicForCom/PicVieCom currently applies. */ }
 
 
