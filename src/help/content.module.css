@@ -53,11 +53,12 @@
 
 
 
-.help-inline-icon { /* What: Help Inline Icon. Why: An icon dropped into a tip's prose should sit neatly among the words around it. How: This wraps the icon in an inline box that centers it within its own height. */
+.help-inline-icon { /* What: Help Inline Icon. Why: An icon dropped into a tip's prose should sit neatly among the words around it. How: This wraps the icon in an inline box that centers it within its own height, then centers that box on the surrounding text's line. */
 
 
-	align-items : center;
-	display     : inline-flex;
+	align-items    : center;
+	display        : inline-flex;
+	vertical-align : middle; /* What: Middle Alignment. Why: Firefox accepts a nonstandard vertical-align of center, but Chrome drops it and falls back to baseline. How: middle is the standard value closest to it, so both browsers center the icon on the line. */
 
 
 }
