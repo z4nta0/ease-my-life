@@ -1934,8 +1934,11 @@ still passes.
   `p` → `Par` (Paragraph), `a` → `Anc` (Anchor), `h1`-`h6` → `Hea`
   (Heading), `ul` → `Uno` (Unordered list), `ol` → `Ord` (Ordered list),
   `li` → `Ite` (list Item), `img` → `Ima` (Image), `svg` → `Svg`, `g` →
-  `Gro` (Group), `tr` → `Row`, `td` → `Cel` (Cell), and `th` → `Hce`
-  (Header cell, since `Hea` already means Heading). A modifier (variant)
+  `Gro` (Group), `tr` → `Row`, `td` → `Cel` (Cell), `th` → `Hce`
+  (Header cell, since `Hea` already means Heading), and `i` → `Ita`
+  (Italic). A tag not listed here is always expanded to its full name
+  the same way; one that can't be expanded is raised with the user
+  rather than guessed. A modifier (variant)
   class is its base class's name, then `--`, then the variant (the
   existing `.prog--warm` form). Existing classes
   keep their current names while they move into modules; renaming them
