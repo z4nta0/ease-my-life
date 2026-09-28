@@ -1,0 +1,293 @@
+
+
+
+/**
+ * legal-docs.module.css = Legal Docs Module
+ *
+ * @summary
+ * Styles for the Settings legal modal: a dimmed backdrop that fades in and
+ * out, the panel that rises into place with its title row and close button,
+ * and the scrollable body the Privacy Policy or Terms of Service render into.
+ * A modal suits this rare, self-contained content since the user opens it on
+ * purpose.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region legal-modal-backdrop */
+
+.legal-modal-backdrop { /* What: Legal Modal Backdrop. Why: The document should sit over a dimmed page that makes it clear the rest is inactive. How: This covers the viewport, centers the panel, and fades in. */
+
+
+	align-items     : center;
+	animation       : legalBackdropIn .2s ease both;
+	background      : oklch(0 0 0 / 0.42);
+	display         : flex;
+	inset           : 0;
+	justify-content : center;
+	padding         : 24px;
+	position        : fixed;
+	z-index         : 100;
+
+
+}
+.legal-modal-backdrop.is-closing { /* What: Closing Legal Modal Backdrop. Why: The dim should fade away with the panel rather than vanish. How: This plays the fade-out while the modal's closing class is on. */
+
+
+	animation : legalBackdropOut .2s ease both;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Legal Modal Backdrop. Why: Someone who asked for less motion shouldn't see the dim fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.legal-modal-backdrop,
+	.legal-modal-backdrop.is-closing { /* What: Motionless Legal Modal Backdrop. Why: The dim should simply appear and disappear. How: This turns both fades off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes legalBackdropIn { /* What: Legal Backdrop Fade In. Why: The dim should ease in. How: This fades the backdrop from transparent. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+@keyframes legalBackdropOut { /* What: Legal Backdrop Fade Out. Why: The dim should ease out. How: This fades the backdrop to transparent. */
+
+
+	from {
+
+
+		opacity : 1;
+
+
+	}
+
+	to {
+
+
+		opacity : 0;
+
+
+	}
+
+
+}
+
+/* #region legal-modal */
+
+.legal-modal { /* What: Legal Modal Panel. Why: The document needs a contained, readable panel whose body scrolls on its own. How: This sizes a rounded column panel to the screen and rises it into place. */
+
+
+	animation      : legalPanelIn .24s cubic-bezier(.2,.8,.3,1) both;
+	background     : var(--surface, var(--bg));
+	border         : 0.5px solid var(--border);
+	border-radius  : 16px;
+	box-shadow     : 0 24px 60px oklch(0 0 0 / 0.28);
+	color          : var(--text);
+	display        : flex;
+	flex-direction : column;
+	max-height     : 85vh;
+	max-width      : 680px;
+	outline        : none;
+	overflow       : hidden;
+	width          : 100%;
+
+
+}
+.legal-modal.is-closing { /* What: Closing Legal Modal Panel. Why: The panel should drop away rather than vanish. How: This plays the panel's exit while the modal's closing class is on. */
+
+
+	animation : legalPanelOut .18s ease both;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Legal Modal Panel. Why: Someone who asked for less motion shouldn't see the panel move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.legal-modal,
+	.legal-modal.is-closing { /* What: Motionless Legal Modal Panel. Why: The panel should simply appear and disappear. How: This turns its entrance and exit off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes legalPanelIn { /* What: Legal Panel Rise. Why: A panel that rises a little reads as arriving rather than blinking in. How: This fades the panel in from slightly lower and smaller. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(12px) scale(.98);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes legalPanelOut { /* What: Legal Panel Drop. Why: The panel should leave the way it came. How: This fades the panel out while it drops slightly and shrinks. */
+
+
+	from {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY(8px) scale(.98);
+
+
+	}
+
+
+}
+
+/* #region legal-modal-head */
+
+.legal-modal-head { /* What: Legal Modal Head. Why: The document's name and the close button share one fixed row above the scrolling body. How: This spreads them across a bordered row that never shrinks. */
+
+
+	align-items     : center;
+	border-bottom   : 0.5px solid var(--border);
+	display         : flex;
+	flex            : 0 0 auto;
+	gap             : 12px;
+	justify-content : space-between;
+	padding         : 14px 16px 14px 20px;
+
+
+}
+
+.legal-modal-note { /* What: Legal Modal Title. Why: The head names which document is open. How: This sets the name in bold, slightly larger text. */
+
+
+	color       : var(--text);
+	font-size   : 15px;
+	font-weight : 600;
+
+
+}
+
+.legal-modal-close { /* What: Legal Modal Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : 0;
+	border-radius   : 8px;
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	height          : 32px;
+	justify-content : center;
+	width           : 32px;
+
+
+}
+.legal-modal-close:hover { /* What: Hovered Legal Modal Close Button. Why: The close button should respond to the pointer. How: This gives it the hover tint and full text color. */
+
+
+	background : var(--hover, oklch(0 0 0 / 0.05));
+	color      : var(--text);
+
+
+}
+
+/* #endregion legal-modal-head */
+
+
+/* #region legal-modal-body */
+
+.legal-modal-body { /* What: Legal Modal Body. Why: A long document has to scroll inside the panel while the head stays put. How: This pads the body and lets it scroll on its own, with momentum on iOS. */
+
+
+	-webkit-overflow-scrolling : touch;
+	overflow-y                 : auto;
+	padding                    : 8px 28px 28px;
+
+
+}
+
+.legal-modal-body h1 { /* What: Legal Document Title. Why: The document opens with its own name. How: This sets it large and tight. */
+
+
+	font-size      : 26px;
+	letter-spacing : -0.02em;
+	margin         : 16px 0 0;
+
+
+}
+
+.legal-modal-body h2 { /* What: Legal Document Section Heading. Why: Section headings break the document into scannable parts. How: This sizes them and spaces them from the text around them. */
+
+
+	font-size : 17px;
+	margin    : 1.6em 0 0.4em;
+
+
+}
+
+.legal-modal-body p,
+.legal-modal-body li { /* What: Legal Document Text. Why: Long legal prose needs a comfortable reading rhythm. How: This sets paragraphs and list items at a relaxed line height in slightly softened text. */
+
+
+	color       : oklch(from var(--text) l c h / 0.88);
+	font-size   : 14.5px;
+	line-height : 1.6;
+
+
+}
+
+/* #endregion legal-modal-body */
+
+/* #endregion legal-modal */
+
+/* #endregion legal-modal-backdrop */
+
+

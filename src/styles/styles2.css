@@ -1573,47 +1573,6 @@ button.cat-h-l {
    advisories rather than the red of an error. */
 .set-import-msg.is-warn { color: oklch(0.45 0.13 50); max-width: 52ch; line-height: 1.45; }
 
-/* Legal modal (Settings → Legal). User-initiated, so a modal is acceptable for
-   this rare, self-contained content. Backdrop fades in; panel rises + scales. */
-.legal-modal-backdrop {
-  position: fixed; inset: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px; background: oklch(0 0 0 / 0.42);
-  animation: legalBackdropIn .2s ease both;
-}
-.legal-modal-backdrop.is-closing { animation: legalBackdropOut .2s ease both; }
-.legal-modal {
-  width: 100%; max-width: 680px; max-height: 85vh;
-  display: flex; flex-direction: column;
-  background: var(--surface, var(--bg)); color: var(--text);
-  border: 0.5px solid var(--border); border-radius: 16px;
-  box-shadow: 0 24px 60px oklch(0 0 0 / 0.28); outline: none; overflow: hidden;
-  animation: legalPanelIn .24s cubic-bezier(.2,.8,.3,1) both;
-}
-.legal-modal.is-closing { animation: legalPanelOut .18s ease both; }
-.legal-modal-head {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 14px 16px 14px 20px; border-bottom: 0.5px solid var(--border); flex: 0 0 auto;
-}
-.legal-modal-note { font-size: 15px; font-weight: 600; color: var(--text); }
-.legal-modal-close {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px; border-radius: 8px; border: 0; background: transparent;
-  color: var(--muted); cursor: pointer; flex: 0 0 auto;
-}
-.legal-modal-close:hover { background: var(--hover, oklch(0 0 0 / 0.05)); color: var(--text); }
-.legal-modal-body { padding: 8px 28px 28px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.legal-modal-body h1 { font-size: 26px; letter-spacing: -0.02em; margin: 16px 0 0; }
-.legal-modal-body h2 { font-size: 17px; margin: 1.6em 0 0.4em; }
-.legal-modal-body p, .legal-modal-body li { line-height: 1.6; color: oklch(from var(--text) l c h / 0.88); font-size: 14.5px; }
-@keyframes legalBackdropIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes legalBackdropOut { from { opacity: 1; } to { opacity: 0; } }
-@keyframes legalPanelIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
-@keyframes legalPanelOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(8px) scale(.98); } }
-@media (prefers-reduced-motion: reduce) {
-  .legal-modal-backdrop, .legal-modal-backdrop.is-closing,
-  .legal-modal, .legal-modal.is-closing { animation: none; }
-}
 /* Quick fade when a dynamic explanation swaps (keyed remount on value change). */
 .set-sub-fade { animation: setSubFade .6s ease; }
 @keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }

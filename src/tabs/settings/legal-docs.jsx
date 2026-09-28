@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
+import cssModObj from './legal-docs.module.css'; // What: CSS Module Object. Why: The legal modal's backdrop, panel, head, and body styles live in its own module. How: This maps each class name in legal-docs.module.css to its hashed module class.
+import React     from 'react';                   // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
 import { IcoSvgCom } from '../../ui/icon.jsx';     // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
@@ -1070,7 +1071,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 		<div
-			className={ ` legal-modal-backdrop   ${ modCloBoo ? 'is-closing' : '' } ` }
+			className={` ${ cssModObj.legalModalBackdrop }   ${ modCloBoo ? cssModObj.isClosing : '' } `}
 
 			onMouseDown={ ( mouDowObj ) => { if ( mouDowObj.target === mouDowObj.currentTarget ) modDisFun(); } } // What: Backdrop Dismiss Handler. Why: Only a press on the scrim itself, not one inside the panel, should close the modal. How: This calls modDisFun only when the mousedown target is the backdrop element.
 		>{ /* What: Container Backdrop Div Element. Why: This is the modal's own full-viewport scrim, and a direct click on it (not on the panel inside it) should dismiss the modal. How: This wraps the panel below and calls modDisFun only when the mousedown target is the backdrop itself. */ }
@@ -1079,7 +1080,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 			<div
 				ref={ panEleRef }
 
-				className={ ` legal-modal   ${ modCloBoo ? 'is-closing' : '' } ` }
+				className={` ${ cssModObj.legalModal }   ${ modCloBoo ? cssModObj.isClosing : '' } `}
 
 				aria-label={ modTitStr }
 				aria-modal='true'
@@ -1088,13 +1089,13 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 			>{ /* What: Container Panel Div Element. Why: This is the actual visible, scrollable, focusable dialog panel. How: This is focused on open via panEleRef and swaps to its own "is-closing" class while modCloBoo is true. */ }
 
 
-				<div className='legal-modal-head'>{ /* What: Container Head Div Element. Why: This groups the panel's own title and close button on one row. How: This renders the title span followed by the close button below. */ }
+				<div className={ cssModObj.legalModalHead }>{ /* What: Container Head Div Element. Why: This groups the panel's own title and close button on one row. How: This renders the title span followed by the close button below. */ }
 
 
-					<span className='legal-modal-note'>{ modTitStr }</span>{ /* What: Title Note Span Element. Why: This shows which document (Privacy Policy or Terms of Service) is currently open. How: This renders modTitStr as the panel's own visible heading text. */ }
+					<span className={ cssModObj.legalModalNote }>{ modTitStr }</span>{ /* What: Title Note Span Element. Why: This shows which document (Privacy Policy or Terms of Service) is currently open. How: This renders modTitStr as the panel's own visible heading text. */ }
 
 					<button
-						className='legal-modal-close'
+						className={ cssModObj.legalModalClose }
 
 						type='button'
 
@@ -1115,7 +1116,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 				</div>
 
-				<div className='legal-modal-body'>{ /* What: Container Body Div Element. Why: This is the actual scrollable area the chosen document's own body renders into. How: This renders PriPolCom or TerSerCom below, chosen by legDocStr. */ }
+				<div className={ cssModObj.legalModalBody }>{ /* What: Container Body Div Element. Why: This is the actual scrollable area the chosen document's own body renders into. How: This renders PriPolCom or TerSerCom below, chosen by legDocStr. */ }
 
 
 					{ legDocStr === 'privacy' ? <PriPolCom /> : <TerSerCom /> }{ /* What: Document Choice Expression. Why: Only one of the two documents is ever shown at a time. How: This renders PriPolCom while legDocStr is 'privacy', otherwise TerSerCom. */ }
