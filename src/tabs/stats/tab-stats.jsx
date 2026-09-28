@@ -2425,7 +2425,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					className='stat-h-lead'
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, and help mode's Today catalog. */ }
+				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
 
 
 					<button
@@ -2438,7 +2438,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, and help mode's Today catalog. */ }
+					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
 
 
 						<svg
@@ -2600,7 +2600,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								aria-label='Filter pickers by group'
 								role='tablist'
-							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 								<button
@@ -2621,7 +2621,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 									All
@@ -2647,7 +2647,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										role='tab'
 
 										onClick={ () => setStaGroStr( groCurStr ) }
-									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 										{ groCurStr }{ /* What: Group Name Expression. Why: The pill shows its own group name. How: This renders groCurStr. */ }
@@ -2687,7 +2687,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								aria-label='Filter pickers by type'
 								role='tablist'
-							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 								<button
@@ -2708,7 +2708,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 									All
@@ -2792,7 +2792,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											role='tab'
 
 											onClick={ entCurObj.cliFun }
-										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 											{ entCurObj.namStr }{ /* What: Type Name Expression. Why: The pill shows its own mode or sentinel name. How: This renders the entry's own namStr. */ }
@@ -2984,7 +2984,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								className='picker-title'
 
 								data-element-name-hook='picTitHea'
-							>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+							>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
 
 
 
@@ -2992,7 +2992,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								data-element-name-hook='modPilSpa'
 
 								tonValStr='mode'
-							>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).labStr || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+							>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).labStr || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
 
 
 
@@ -3012,7 +3012,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											className='picker-hint'
 
 											data-element-name-hook='picHinPar'
-										>{ modHinVal }</p> // What: Picker Hint Paragraph Element. Why: A plain-string hint needs just one paragraph element. How: This renders modHinVal. Its data-element-name-hook is read by help mode's Stats catalog.
+										>{ modHinVal }</p> // What: Picker Hint Paragraph Element. Why: A plain-string hint needs just one paragraph element. How: This renders modHinVal. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
 
 
 									);
@@ -3031,7 +3031,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										className='picker-hint'
 
 										data-element-name-hook='picHinPar'
-									>{ parCurStr }</p> // What: Picker Hint Paragraph Element. Why: Each hint paragraph needs its own element. How: This renders parCurStr. Its data-element-name-hook is read by help mode's Stats catalog.
+									>{ parCurStr }</p> // What: Picker Hint Paragraph Element. Why: Each hint paragraph needs its own element. How: This renders parCurStr. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
 
 
 								) );

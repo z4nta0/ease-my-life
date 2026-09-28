@@ -2162,7 +2162,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 														data-element-name-hook='lisIteDiv'
 
 														onAnimationEnd={ () => { if ( insIteStr === iteCurObj.id ) setInsIteStr( null ); } }
-													>{ /* What: Row Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the App Features tours. */ }
+													>{ /* What: Row Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
 
 
 														{ iteOpeBoo ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input. How: This renders the editing header while iteOpeBoo is true, otherwise the normal clickable row.
@@ -2218,7 +2218,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 																		} }
 																		onChange={ ( chaEveObj ) => actStoObj.updIteFun( iteCurObj.id, { name : chaEveObj.target.value } ) }
 																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-																	/>{ /* What: Name Input Element. Why: An item's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
+																	/>{ /* What: Name Input Element. Why: An item's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 																</span>

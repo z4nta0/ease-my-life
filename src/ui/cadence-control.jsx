@@ -220,7 +220,11 @@ function CadConCom ( { onChange, value } ) {
 	return (
 
 
-		<div className='cad-ctl'>{ /* What: Controls Container Div Element. Why: This is CadConCom's own root element, holding the cadence picker and, for every mode but daily, the matching anchor subsection. How: This renders as a plain div; every field below commits through setPatFun. */ }
+		<div
+			className='cad-ctl'
+
+			data-element-name-hook='cadConDiv'
+		>{ /* What: Controls Container Div Element. Why: This is CadConCom's own root element, holding the cadence picker and, for every mode but daily, the matching anchor subsection. How: This renders as a plain div; every field below commits through setPatFun. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 			<div className='rem-field'>{ /* What: Cadence Field Div Element. Why: This groups the cadence picker's own label and its own SegConCom control as one field, matching the Reminders editor's own field layout. How: This wraps the flabel-wrap block and the top SegConCom below. */ }

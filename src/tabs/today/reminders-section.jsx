@@ -1300,7 +1300,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 								className='rem-inline-foot'
 
 								data-element-name-hook='ediFooDiv'
-							>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+							>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 								<ButBasCom

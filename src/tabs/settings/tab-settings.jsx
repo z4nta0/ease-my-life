@@ -1124,7 +1124,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					className='stat-h-lead'
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Stat H Lead Div Element. Why: The brand mark and the page title sit side by side in this same lead row on every tab. How: This wraps the brand-mark button and the section title. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, and help mode's Today catalog. */ }
+				>{ /* What: Stat H Lead Div Element. Why: The brand mark and the page title sit side by side in this same lead row on every tab. How: This wraps the brand-mark button and the section title. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
 
 
 					<button
@@ -1137,7 +1137,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Mark Button Element. Why: The logo doubles as a shortcut back to the Today tab, same as every other header. How: This calls onNavHomFun when clicked. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, and help mode's Today catalog. */ }
+					>{ /* What: Brand Mark Button Element. Why: The logo doubles as a shortcut back to the Today tab, same as every other header. How: This calls onNavHomFun when clicked. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
 
 
 						<svg
@@ -1399,7 +1399,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										aria-pressed={ !!appCurObj.autoSystem }
 
 										onClick={ () => actStoObj.setSysFun( !appCurObj.autoSystem ) }
-									>{ /* What: System Pref Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actStoObj.setSysFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog. */ }
+									>{ /* What: System Pref Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actStoObj.setSysFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 										<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1699,7 +1699,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									aria-pressed={ daiModStr === 'auto' }
 
 									onClick={ () => actStoObj.daiModFun( daiModStr === 'auto' ? 'manual' : 'auto' ) }
-								>{ /* What: Auto Run Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Auto Run Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }

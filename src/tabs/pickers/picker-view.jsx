@@ -1007,7 +1007,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	return (
 
 
-		<div className='picker-view'>{ /* What: Picker View Div Element. Why: This is PicVieCom's own root, holding the header, the run stage/actions, and the pool. How: This wraps every piece of the selected picker's own live view. */ }
+		<div
+			className='picker-view'
+
+			data-element-name-hook='picVieDiv'
+		>{ /* What: Picker View Div Element. Why: This is PicVieCom's own root, holding the header, the run stage/actions, and the pool. How: This wraps every piece of the selected picker's own live view. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 			<header className='picker-h'>{ /* What: Picker Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
@@ -1018,11 +1022,19 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 					<div className='kicker'>Picker</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the picker's own name. How: This renders the literal word "Picker". */ }
 
-					<h2 className='picker-title'>{ picDatObj.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. */ }
+					<h2
+						className='picker-title'
+
+						data-element-name-hook='picTitHea'
+					>{ picDatObj.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
 
 
 
-					<PilTagCom tonValStr='mode'>{ modInfObj.labStr }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.labStr inside the shared PilTagCom component. */ }
+					<PilTagCom
+						data-element-name-hook='modPilSpa'
+
+						tonValStr='mode'
+					>{ modInfObj.labStr }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.labStr inside the shared PilTagCom component. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
 
 
 				</div>
@@ -1039,7 +1051,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 					sizValStr='sm'
 
 					onClick={ () => setEdiOpeBoo( true ) }
-				>Edit</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpeBoo true on click. Its data-element-name-hook is read by the Pickers page tour. */ }
+				>Edit</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpeBoo true on click. Its data-element-name-hook is read by the Pickers page tour and help mode's Pickers catalog. */ }
 
 
 			</header>
@@ -1055,17 +1067,33 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 						key={ parIndNum }
 
 						className='picker-hint'
-					>{ parTexStr }</p> // What: Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index.
+
+						data-element-name-hook='picHinPar'
+					>{ parTexStr }</p> // What: Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
 
 
 				) )
 
-				: <p className='picker-hint'>{ modInfObj.hinArr }</p> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hinArr directly when it's a plain string.
+				: ( // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hinArr directly when it's a plain string.
+
+
+					<p
+						className='picker-hint'
+
+						data-element-name-hook='picHinPar'
+					>{ modInfObj.hinArr }</p> // What: Hint Paragraph Element. Why: A single-paragraph hint renders as one hint line. How: This renders modInfObj.hinArr directly. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
+
+
+				)
 
 
 			}
 
-			<p className='picker-hint'>Please note that any items in this picker&rsquo;s pool that are already included in the Today tab will be excluded from being selected.</p>{ /* What: Exclusion Hint Paragraph Element. Why: The pool's own eligible count can otherwise look wrong to someone who doesn't know Today-listed items are excluded from picking. How: This renders a fixed explanatory sentence under every mode's own hint. */ }
+			<p
+				className='picker-hint'
+
+				data-element-name-hook='picHinPar'
+			>Please note that any items in this picker&rsquo;s pool that are already included in the Today tab will be excluded from being selected.</p>{ /* What: Exclusion Hint Paragraph Element. Why: The pool's own eligible count can otherwise look wrong to someone who doesn't know Today-listed items are excluded from picking. How: This renders a fixed explanatory sentence under every mode's own hint. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
 
 
 
@@ -1073,7 +1101,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 				className='picker-run'
 
 				data-element-name-hook='picRunDiv'
-			>{ /* What: Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picker-stage and picker-actions together. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
+			>{ /* What: Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picker-stage and picker-actions together. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
 				<div className='picker-stage'>{ /* What: Stage Div Element. Why: Exactly one of five states (idle/running-or-done/sent/empty) is showing at any moment. How: This wraps whichever of the branches below currently matches runPhaStr. */ }
@@ -1302,7 +1330,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 					className='pool-items'
 
 					data-element-name-hook='pooIteDiv'
-				>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pool-h and pool-list. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see .pv-additem-wrap further down). How: This mirrors .picker-pool's own flex/gap so wrapping these two doesn't change their spacing. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
+				>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pool-h and pool-list. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see .pv-additem-wrap further down). How: This mirrors .picker-pool's own flex/gap so wrapping these two doesn't change their spacing. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
 					<div className='pool-h'>{ /* What: Pool Header Div Element. Why: The eligible-count kicker and the drift-toggle link sit on one row. How: This wraps those two pieces. */ }
@@ -1699,6 +1727,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 								<div
 									className={ ` pv-newitem   rd-item   is-editing   ${ ediCloBoo ? 'is-closing' : '' } ` }
 
+									data-element-name-hook='lisIteDiv'
+
 									onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: The item editor's own close animation must finish before its state clears. How: This clears the closing and open flags, then opens any editor requested meanwhile.
 
 
@@ -1724,7 +1754,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 									} }
-								>{ /* What: Editing Item Wrap Div Element. Why: This is the whole existing-item editor slot, playing its own closing animation before actually unmounting. How: This reopens whatever edit staEdiFun staged in penEdiRef once its own closing keyframe finishes. */ }
+								>{ /* What: Editing Item Wrap Div Element. Why: This is the whole existing-item editor slot, playing its own closing animation before actually unmounting. How: This reopens whatever edit staEdiFun staged in penEdiRef once its own closing keyframe finishes. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
 
 
 									<div
@@ -1762,7 +1792,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 												} }
 												onChange={ ( chaEveObj ) => setEdiNamStr( chaEveObj.target.value ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renIteFun on blur, and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours. */ }
+											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renIteFun on blur, and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 										</span>
@@ -1812,7 +1842,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 								type='button'
 
 								onClick={ addIteFun }
-							>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour and the picker mini-tours. */ }
+							>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
 
 
 								<IcoSvgCom
@@ -1833,6 +1863,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 							<div
 								className={ ` pv-newitem   rd-item   is-editing   ${ newCloStr ? 'is-closing' : '' } ` }
+
+								data-element-name-hook='lisIteDiv'
 
 								onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: The new-item editor's own close animation must finish before the add is committed or dropped. How: This commits a saved draft, clears the draft state, then opens any editor requested meanwhile.
 
@@ -1863,7 +1895,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 								} }
-							>{ /* What: New Item Wrap Div Element. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This commits the draft via cmtDraFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef. */ }
+							>{ /* What: New Item Wrap Div Element. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This commits the draft via cmtDraFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
 
 
 								<div
@@ -1901,7 +1933,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 											} }
 											onChange={ ( chaEveObj ) => draActObj.updIteFun( newIteObj.id, { name : chaEveObj.target.value } ) }
 											onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into draActObj (not the real store) on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
+										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into draActObj (not the real store) on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 									</span>

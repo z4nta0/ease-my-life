@@ -381,7 +381,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 									aria-pressed={ swtEnaBoo }
 
 									onClick={ () => actStoObj.setOptFun( tasClaStr, optDefObj.keyStr, !swtEnaBoo ) }
-								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setOptFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setOptFun. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 									<i />{ /* What: Switch Thumb Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
@@ -919,7 +919,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 												data-element-name-hook='lisIteDiv'
 
 												onAnimationEnd={ () => { if ( insIdeStr === curTasObj.id ) setInsIdeStr( null ); } } // What: Insert Flag Clear. Why: The entrance animation must play only once. How: This clears insIdeStr when this row's own animation ends while it still matches.
-											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the App Features tours. */ }
+											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
 
 
 												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
@@ -986,7 +986,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 																} }
 																onChange={ ( chaEveObj ) => actStoObj.updTasFun( curTasObj.id, { name : chaEveObj.target.value } ) }
 																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish the name the same way leaving the field does. How: This blurs the input on Enter, which runs onBlur's own commit.
-															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This commits every keystroke, re-trims and re-commits (only if non-empty) on blur, and blurs itself on Enter; its own ref callback suppresses the browser's native focus-scroll so it doesn't fight opeRowRef's own smooth scroll. Its data-element-name-hook is read by the picker mini-tours. */ }
+															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This commits every keystroke, re-trims and re-commits (only if non-empty) on blur, and blurs itself on Enter; its own ref callback suppresses the browser's native focus-scroll so it doesn't fight opeRowRef's own smooth scroll. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 														</span>

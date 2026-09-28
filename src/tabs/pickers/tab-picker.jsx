@@ -435,18 +435,24 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				<div className='picker-h-lead'>{ /* What: Lead Div Element. Why: The brand mark and the page's own main heading sit side by side. How: This wraps those two pieces. */ }
+				<div
+					className='picker-h-lead'
+
+					data-element-name-hook='heaLeaDiv'
+				>{ /* What: Lead Div Element. Why: The brand mark and the page's own main heading sit side by side. How: This wraps those two pieces. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
 
 
 					<button
 						className='brand-mark'
+
+						data-element-name-hook='braMarBut'
 
 						type='button'
 
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Button Element. Why: The logo also works as a shortcut back to the Today tab. How: This wraps the logo svg and calls onHome on click. */ }
+					>{ /* What: Brand Button Element. Why: The logo also works as a shortcut back to the Today tab. How: This wraps the logo svg and calls onHome on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
 
 
 						<svg
@@ -584,7 +590,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 								aria-label='Filter pickers by group'
 								role='tablist'
-							>{ /* What: Group Rail Div Element. Why: Every distinct group plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiGroArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+							>{ /* What: Group Rail Div Element. Why: Every distinct group plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiGroArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 								<button
@@ -606,7 +612,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									} }
-								>{ /* What: All Group Pill Button Element. Why: The user needs a way to clear the Group filter back to unfiltered. How: This resets groFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+								>{ /* What: All Group Pill Button Element. Why: The user needs a way to clear the Group filter back to unfiltered. How: This resets groFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 									All
@@ -639,7 +645,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 											role='tab'
 
 											onClick={ () => setGroFilStr( curGroStr ) }
-										>{ /* What: Group Pill Button Element. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGroStr into groFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+										>{ /* What: Group Pill Button Element. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGroStr into groFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 											{ curGroStr }{ /* What: Pill Name Expression. Why: Every group pill needs its own visible label. How: This renders curGroStr. */ }
@@ -682,7 +688,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 								aria-label='Filter pickers by type'
 								role='tablist'
-							>{ /* What: Type Rail Div Element. Why: Every distinct mode plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiModArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+							>{ /* What: Type Rail Div Element. Why: Every distinct mode plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiModArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 								<button
@@ -704,7 +710,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									} }
-								>{ /* What: All Type Pill Button Element. Why: The user needs a way to clear the Type filter back to unfiltered. How: This resets typFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+								>{ /* What: All Type Pill Button Element. Why: The user needs a way to clear the Type filter back to unfiltered. How: This resets typFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 									All
@@ -737,7 +743,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 											role='tab'
 
 											onClick={ () => setTypFilStr( curModStr ) }
-										>{ /* What: Type Pill Button Element. Why: Tapping a type pill should narrow the Show row down to just that mode. How: This writes curModStr into typFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
+										>{ /* What: Type Pill Button Element. Why: Tapping a type pill should narrow the Show row down to just that mode. How: This writes curModStr into typFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
 
 
 											{ SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].labStr }{ /* What: Pill Name Expression. Why: Every type pill needs its mode's visible label. How: This renders the mode's label. */ }
@@ -777,7 +783,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							className='picker-tabs'
 
 							data-element-name-hook='picTabDiv'
-						>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
+						>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
 							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: Distinct from disAddBoo below, this tooltip's wording ("until all tutorials are completed") would be misleading during a Replay of the Pickers page tour, which runs AFTER the checklist finishes, when tutProBoo is always false, so that case still falls through to the plain disabled button with no tooltip. How: This renders a disabled, explanatory InfTipCom instead of the real button while the guided checklist is still in progress.
@@ -790,7 +796,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 									actNamStr='Add New Picker'
 									labTexStr='This button is disabled until all tutorials are completed.'
-								>{ /* What: Info Tip Component. Why: A disabled add tab still needs to explain why it can't be clicked yet. How: This wraps the same visible label the real tab uses. Its data-element-name-hook is read by the Pickers page tour and the picker mini-tours. */ }
+								>{ /* What: Info Tip Component. Why: A disabled add tab still needs to explain why it can't be clicked yet. How: This wraps the same visible label the real tab uses. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
 
 
 									<span
@@ -828,7 +834,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 									type='button'
 
 									onClick={ () => setCreOpeBoo( true ) }
-								>{ /* What: Add Picker Tab Button Element. Why: This is the real entry point into PicForCom's own create flow. How: This opens creOpeBoo, disabled only during the page tour's own intercepted step. Its data-element-name-hook is read by the Pickers page tour and the picker mini-tours. */ }
+								>{ /* What: Add Picker Tab Button Element. Why: This is the real entry point into PicForCom's own create flow. How: This opens creOpeBoo, disabled only during the page tour's own intercepted step. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
 
 
 									<span
@@ -876,7 +882,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									} }
-								>{ /* What: Picker Tab Button Element. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
+								>{ /* What: Picker Tab Button Element. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
 									<span className='picker-tab-name'>{ curPicObj.name }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own picker name. How: This renders curPicObj.name. */ }

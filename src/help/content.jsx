@@ -989,7 +989,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		selStr    : '.entry-editor .pie-ease-up-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1028,7 +1028,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		selStr    : '.entry-editor .pie-ease-down-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1166,7 +1166,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
 		ideStr : 'brandMark',
-		selStr : '.picker-h-lead .brand-mark',
+		selStr : '[data-element-name-hook="heaLeaDiv"] [data-element-name-hook="braMarBut"]',
 		titStr : 'Home Link'
 
 
@@ -1177,7 +1177,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
 		ideStr : 'groupFilter',
-		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill',
+		selStr : '[data-element-name-hook="groFilDiv"] [data-element-name-hook="filPilBut"]',
 		titStr : 'Group Filter'
 
 
@@ -1188,7 +1188,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This filters the pickers row below by picker type (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), independent of the Group filter above with both narrowing the row together.</>,
 		ideStr : 'typeFilter',
-		selStr : '.picker-groups--type .picker-group-pill',
+		selStr : '[data-element-name-hook="typFilDiv"] [data-element-name-hook="filPilBut"]',
 		titStr : 'Type Filter'
 
 
@@ -1206,7 +1206,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This selects a specific picker, in order to initiate a manual picker generation down below as well as edit or delete its items.</>,
 		ideStr    : 'pickerSelection',
 		padXcoNum : 3, // padXcoNum: 3, the add button sits right before the first tab in the same 8px-gap scrollable row; the default 8px pad on each side would overlap by 8px otherwise (same bleed as Today's Edit Mode/Regenerate).
-		selStr    : '.picker-tabs .picker-tab:not(.picker-tab--add)',
+		selStr    : '[data-element-name-hook="picTabDiv"] [data-element-name-hook="picTabBut"]',
 		titStr    : 'Picker Selection'
 
 
@@ -1218,7 +1218,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This is where you can create new pickers. This button will open up a full page form with 2 parts, picker settings and picker items.</>,
 		ideStr    : 'createNewPickers',
 		padXcoNum : 3, // padXcoNum: 3, see pickerSelection's own comment, same gap, same fix.
-		selStr    : '.picker-tab--add',
+		selStr    : ':is([data-element-name-hook="picAddBut"], [data-element-name-hook="picAddSpa"])',
 		titStr    : 'Create New Pickers'
 
 
@@ -1230,7 +1230,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
 		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see styles2.css's .picker-h > div > .pill rule); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
-		selStr    : '.picker-view:not(.np-form) .picker-title',
+		selStr    : '[data-element-name-hook="picVieDiv"] [data-element-name-hook="picTitHea"]',
 		titStr    : 'Picker Name'
 
 
@@ -1242,7 +1242,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
 		ideStr    : 'pickerTypePill',
 		padYcoNum : 2, // padYcoNum: 2, see pickerName's own comment, same 6px gap, same fix.
-		selStr    : '.picker-view:not(.np-form) .pill--mode',
+		selStr    : '[data-element-name-hook="picVieDiv"] [data-element-name-hook="modPilSpa"]',
 		titStr    : 'Picker Type'
 
 
@@ -1253,7 +1253,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can adjust its name, group, type, daily generator schedule, or conditional attachment. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
 		ideStr : 'editPicker',
-		selStr : '.picker-edit-btn',
+		selStr : '[data-element-name-hook="picEdiBut"]',
 		titStr : 'Edit Picker'
 
 
@@ -1264,7 +1264,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This explains the currently selected picker's ruleset, including how it chooses an item and why you might pick this type over another.</>,
 		ideStr : 'pickerExplanation',
-		selStr : '.picker-view:not(.np-form) .picker-hint',
+		selStr : '[data-element-name-hook="picVieDiv"] [data-element-name-hook="picHinPar"]',
 		titStr : 'Picker Explanation'
 
 
@@ -1274,7 +1274,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 
 		ideStr : 'manualGeneration',
-		selStr : '.picker-run',
+		selStr : '[data-element-name-hook="picRunDiv"]',
 		titStr : 'Manual Generation',
 
 		bodEle : (
@@ -1315,7 +1315,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		ideStr    : 'pickerItems',
 		padYcoNum : 4, // padYcoNum: 4, .picker-pool (the shared flex-column parent) only has a 10px gap to the Add Picker Item button below; the default 8px pad on each side would overlap by 6px otherwise.
-		selStr    : '.pool-items',
+		selStr    : '[data-element-name-hook="pooIteDiv"]',
 		titStr    : 'Picker Items'
 
 
@@ -1327,7 +1327,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This button will open a form that allows you to add a new item to the selected picker's pool.</>,
 		ideStr    : 'addPickerItem',
 		padYcoNum : 4, // padYcoNum: 4, see pickerItems' own comment, same gap, same fix.
-		selStr    : '.pv-additem-btn',
+		selStr    : '[data-element-name-hook="iteAddBut"]',
 		titStr    : 'Add Picker Item'
 
 
@@ -1339,7 +1339,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This is the name field for your new item, give it a short, descriptive name. This is what will show up on your todo list.</>,
 		ideStr : 'itemName',
-		selStr : '.rd-item:has(.entry-editor) .rd-name-input',
+		selStr : '[data-element-name-hook="lisIteDiv"]:has([data-element-name-hook="entEdiDiv"]) [data-element-name-hook="rowNamInp"]',
 		titStr : 'Item Name'
 
 
@@ -1350,10 +1350,10 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		ideStr    : 'itemChargeRangeUp',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-ease-up-row',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active]',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1389,10 +1389,10 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		ideStr    : 'itemChargeRangeDown',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-ease-down-row',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active]',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1429,7 +1429,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This adjusts the item's pick chance relative to the picker's other items. For example, an item with a weight of w2 is twice as likely to be picked as an item with a weight of w1.</>,
 		ideStr    : 'itemWeight',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.weight-stepper)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="weiSteDiv"])',
 		titStr    : 'Item Weight'
 
 
@@ -1441,7 +1441,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
 		ideStr    : 'itemBoost',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.pie-boost-val)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="booValSpa"])',
 		titStr    : 'Item Boost'
 
 
@@ -1453,7 +1453,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
 		ideStr    : 'itemActive',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.switch)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="togSwiBut"])',
 		titStr    : 'Item Active Toggle'
 
 
@@ -1463,7 +1463,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 
 		ideStr : 'itemFoot',
-		selStr : '.entry-editor .rd-edit-foot .btn',
+		selStr : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediFooDiv"] button',
 		titStr : 'Cancel / Save',
 
 		bodEle : (
@@ -1496,7 +1496,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This is the name field for your new picker, and it should have a short, descriptive name.</>,
 		ideStr : 'newPickerName',
-		selStr : '.np-field:has(#np-name)',
+		selStr : ':is([data-element-name-hook="forFieDiv"], [data-element-name-hook="forFieFie"]):has(#np-name)',
 		titStr : 'Picker Name'
 
 
@@ -1507,7 +1507,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This will let you choose which group this new picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
 		ideStr : 'newPickerGroup',
-		selStr : '.np-field:has(.np-groups)',
+		selStr : ':is([data-element-name-hook="forFieDiv"], [data-element-name-hook="forFieFie"]):has([data-element-name-hook="forGroDiv"])',
 		titStr : 'Picker Group'
 
 
@@ -1518,7 +1518,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
 		ideStr : 'newPickerMode',
-		selStr : '.np-field:has(.mode-radio)',
+		selStr : ':is([data-element-name-hook="forFieDiv"], [data-element-name-hook="forFieFie"]):has([data-element-name-hook="modRadDiv"])',
 		titStr : 'Picker Type'
 
 
@@ -1529,7 +1529,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach an existing conditional or create a new one.</>,
 		ideStr : 'newPickerConditional',
-		selStr : '.np-cond .np-field--toggle',
+		selStr : '[data-element-name-hook="conTogDiv"]',
 		titStr : 'Picker Conditional'
 
 
@@ -1540,7 +1540,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add New Conditional button to build one inline.</>,
 		ideStr : 'newPickerConditionalRail',
-		selStr : '.cnd-rail',
+		selStr : '[data-element-name-hook="conRaiDiv"]',
 		titStr : 'Select a Conditional'
 
 
@@ -1551,7 +1551,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This is the name field for your new conditional, and it should have a short, descriptive name.</>,
 		ideStr : 'newCondName',
-		selStr : '.cnd-controls .np-field:has(input[placeholder="Conditional name"])',
+		selStr : '[data-element-name-hook="conConDiv"] :is([data-element-name-hook="forFieDiv"], [data-element-name-hook="forFieFie"]):has(input[placeholder="Conditional name"])',
 		titStr : 'Conditional Name'
 
 
@@ -1562,7 +1562,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
 		ideStr : 'newCondCardText',
-		selStr : '.np-field--cardtext',
+		selStr : '[data-element-name-hook="forFieDiv"]:has(> [data-element-name-hook="carTexDiv"])',
 		titStr : 'Conditional Card Text'
 
 
@@ -1575,7 +1575,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
 		ideStr    : 'newCondType',
 		padYcoNum : 0,
-		selStr    : '.cnd-controls .np-field:has(.rd-mode-radio)',
+		selStr    : '[data-element-name-hook="conConDiv"] :is([data-element-name-hook="forFieDiv"], [data-element-name-hook="forFieFie"]):has([data-element-name-hook="conModDiv"])',
 		titStr    : 'Conditional Type'
 
 
@@ -1587,7 +1587,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
 		ideStr    : 'newCondRandom',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl:has(.pie-noweight)',
+		selStr    : '[data-element-name-hook="conTypDiv"]:has([data-element-name-hook="weiNonSpa"])',
 		titStr    : 'Conditional Weight'
 
 
@@ -1599,7 +1599,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
 		ideStr    : 'newCondOdds',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .pie-row:has(.weight-stepper)',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="weiSteDiv"])',
 		titStr    : 'Conditional Trigger Odds'
 
 
@@ -1611,19 +1611,19 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
 		ideStr    : 'newCondBoost',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .pie-row:has(.pie-boost-val)',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="booValSpa"])',
 		titStr    : 'Conditional Boost'
 
 
 	},
 
-	// cnd-ease-up-row / cnd-ease-down-row, see ui/conditional-controls.jsx's own comment; same split-by-direction pattern as EntEdiCom's itemChargeRangeUp/Down.
+	// The ease rows are told apart by their own data-ease-up-active/data-ease-down-active state (see ui/conditional-controls.jsx), the same split-by-direction pattern as EntEdiCom's itemChargeRangeUp/Down.
 	{ // What: Conditional Charge Controls Help Item. Why: This is the on-demand help tip for the Conditional Charge Controls element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
 		ideStr    : 'newCondEaseUp',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .cnd-ease-up-row',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active]',
 		titStr    : 'Conditional Charge Controls',
 
 		bodEle : (
@@ -1652,7 +1652,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		ideStr    : 'newCondEaseDown',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .cnd-ease-down-row',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active]',
 		titStr    : 'Conditional Charge Controls',
 
 		bodEle : (
@@ -1682,7 +1682,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle    : <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
 		ideStr    : 'newCondActive',
 		padYcoNum : 3, // padYcoNum: 3, opens a gap against whichever zero-pad block sits above it (Weight/Odds/Boost/Charge Controls all now padYcoNum: 0, see their own comment), while staying comfortably under the real 6px gap so it can't reach up into that block's own content.
-		selStr    : '.cnd-controls .pie-row:has(.switch)',
+		selStr    : '[data-element-name-hook="conConDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="togSwiBut"])',
 		titStr    : 'Conditional Active Toggle'
 
 
@@ -1693,7 +1693,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from this tab.</>,
 		ideStr : 'newPickerDaily',
-		selStr : '.np-daily-group .np-field--toggle',
+		selStr : '[data-element-name-hook="daiTogDiv"]',
 		titStr : 'Daily Generator Toggle'
 
 
@@ -1703,7 +1703,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 
 		ideStr : 'newPickerCadence',
-		selStr : '.cad-ctl',
+		selStr : '[data-element-name-hook="cadConDiv"]',
 		titStr : 'Picker Cadence',
 
 		bodEle : (
@@ -1734,7 +1734,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off, or use the Every day/Weekdays/Weekends presets to quickly set a common pattern.</>,
 		ideStr : 'newPickerWhichDays',
-		selStr : '.np-sched-block:has(.np-sched-row)',
+		selStr : '[data-element-name-hook="schBloDiv"]:has([data-element-name-hook="schRowDiv"])',
 		titStr : 'Picker Day Selection'
 
 
@@ -1745,7 +1745,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
 		ideStr : 'newPickerSkipHolidays',
-		selStr : '.np-sched-toggle:has(#np-skiphol)',
+		selStr : '[data-element-name-hook="schTogDiv"]:has(#np-skiphol)',
 		titStr : 'Picker Holidays Toggle'
 
 
@@ -1756,7 +1756,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
 		ideStr : 'newPickerAvoidDuplicates',
-		selStr : '.np-sched-toggle:has(#np-avoiddupes)',
+		selStr : '[data-element-name-hook="schTogDiv"]:has(#np-avoiddupes)',
 		titStr : 'Picker Duplicate Items Toggle'
 
 
@@ -1767,7 +1767,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This area lets you know if anything still needs to be filled out before you can advance to the next step, or confirms that you're ready to move on.</>,
 		ideStr : 'newPickerFooterNote',
-		selStr : '.np-footer--step1 .np-footer-note',
+		selStr : '[data-element-name-hook="detFooDiv"] [data-element-name-hook="fooNotDiv"]',
 		titStr : 'Picker Form Status'
 
 
@@ -1777,7 +1777,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 
 		ideStr : 'newPickerFooterActions',
-		selStr : '.np-footer--step1 .np-footer-actions .btn',
+		selStr : '[data-element-name-hook="detFooDiv"] [data-element-name-hook="forActDiv"] button',
 		titStr : 'Cancel / Add Items',
 
 		bodEle : (
@@ -1810,7 +1810,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle : <>This area lets you know if anything still needs to be filled out before you can submit the form, or confirms that the picker is ready to be created.</>,
 		ideStr : 'newPickerItemsFooterNote',
-		selStr : '.np-footer:not(.np-footer--step1) .np-footer-note',
+		selStr : '[data-element-name-hook="iteFooDiv"] [data-element-name-hook="fooNotDiv"]',
 		titStr : 'Add Items Form Status'
 
 
@@ -1820,7 +1820,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 
 		ideStr : 'newPickerItemsFooterActions',
-		selStr : '.np-footer:not(.np-footer--step1) .np-footer-actions .btn',
+		selStr : '[data-element-name-hook="iteFooDiv"] [data-element-name-hook="forActDiv"] button',
 		titStr : 'Back / Create Picker',
 
 		bodEle : (
@@ -3030,7 +3030,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active]',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -3069,7 +3069,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active]',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active] [data-element-name-hook="easUniSpa"]' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.

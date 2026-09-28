@@ -1177,7 +1177,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className='np-field'
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Name Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Name Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 							<label
@@ -1212,14 +1212,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className='np-field'
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Group Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Group Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 							<span className='np-label'>Group</span>{ /* What: Group Label Span Element. Why: The controls below need a readable label. How: This renders the literal word "Group". */ }
 
 							<p className='np-help'>Pickers are clustered into groups on your todo list, like &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks sit together. You may choose an existing group or create a new one.</p>{ /* What: Group Help Paragraph Element. Why: A first-time user needs to understand what a group actually does before choosing one. How: This renders a fixed explanatory sentence. */ }
 
-							<div className='np-groups'>{ /* What: Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. */ }
+							<div
+								className='np-groups'
+
+								data-element-name-hook='forGroDiv'
+							>{ /* What: Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 								{ exiGroArr.map( ( curGroStr ) => ( // What: Group Chip List Render. Why: Every existing group needs its own selectable chip. How: This maps exiGroArr to one button per curGroStr.
@@ -1302,14 +1306,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className='np-field'
 
 							data-element-name-hook='forFieFie'
-						>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 							<legend className='np-label'>Picker type</legend>{ /* What: Mode Legend Element. Why: A fieldset needs its own accessible legend. How: This renders the literal text "Picker type". */ }
 
 							<p className='np-help'>This is the ruleset that the picker follows each time it runs. &ldquo;Truly Random&rdquo; is the simplest where every item has an equal chance. The others nudge the odds in different ways. Not sure? We recommend the Dynamic Weighted type but you can change a picker&rsquo;s type at any time.</p>{ /* What: Mode Help Paragraph Element. Why: A first-time user needs to understand what a "mode" even means before picking one. How: This renders a fixed explanatory sentence with a recommendation. */ }
 
-							<div className='mode-radio'>{ /* What: Mode Radio Div Element. Why: Every mode in SED_NAM_OBJ.MOD_DEF_OBJ needs its own selectable radio row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label per entry. */ }
+							<div
+								className='mode-radio'
+
+								data-element-name-hook='modRadDiv'
+							>{ /* What: Mode Radio Div Element. Why: Every mode in SED_NAM_OBJ.MOD_DEF_OBJ needs its own selectable radio row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label per entry. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 								{ Object.entries( SED_NAM_OBJ.MOD_DEF_OBJ ).map( ( [ modKeyStr, modInfObj ] ) => ( // What: Mode Option List Render. Why: The picker's own mode choice must be built from the shared SED_NAM_OBJ.MOD_DEF_OBJ table, not hardcoded. How: This maps each [key, info] pair to one radio label.
@@ -1380,10 +1388,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className='np-field np-cond'
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
-							<div className='np-field--toggle'>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. */ }
+							<div
+								className='np-field--toggle'
+
+								data-element-name-hook='conTogDiv'
+							>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 								<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The label and its two help paragraphs read as one block. How: This wraps those three pieces. */ }
@@ -1410,7 +1422,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									role='switch'
 
 									onClick={ () => setConAttBoo( ( preValBoo ) => !preValBoo ) }
-								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1433,7 +1445,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										ref={ raiCalFun }
 
 										className='cnd-rail picker-groups at-start at-end'
-									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. */ }
+
+										data-element-name-hook='conRaiDiv'
+									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 										{ [ ...conObjArr ].sort( ( conOneObj, conTwoObj ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except a or b matching conSelStr is forced to the very front. // What: Conditional Sort Design Note. Why: The rail reads alphabetically, except the currently-selected conditional (once the user has picked one) pins to the front. How: This is the same "selected stays first" convention as the Data tab's own rail.
@@ -1533,10 +1547,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className='np-field np-daily-group'
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
-							<div className='np-field--toggle'>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. */ }
+							<div
+								className='np-field--toggle'
+
+								data-element-name-hook='daiTogDiv'
+							>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 								<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The label and its own live-updating help text read as one block. How: This wraps those two pieces. */ }
@@ -1593,7 +1611,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									} }
-								>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This marks daiTogRef true (so the reveal effect above knows this was a genuine user toggle) and flips incDaiBoo. Its data-element-name-hook is read by help mode's Today catalog. */ }
+								>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This marks daiTogRef true (so the reveal effect above knows this was a genuine user toggle) and flips incDaiBoo. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1616,7 +1634,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								>{ /* What: Schedule Div Element. Why: The cadence control, the weekday picker, and the two schedule toggles form one collapsible block. How: This wraps np-sched-block/np-sched-toggle sections below. */ }
 
 
-									<div className='np-sched-block'>{ /* What: Cadence Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. */ }
+									<div
+										className='np-sched-block'
+
+										data-element-name-hook='schBloDiv'
+									>{ /* What: Cadence Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 										<CadConCom
@@ -1630,7 +1652,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-									<div className='np-sched-block'>{ /* What: Days Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. */ }
+									<div
+										className='np-sched-block'
+
+										data-element-name-hook='schBloDiv'
+									>{ /* What: Days Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 										<span className='np-label'>Which days?</span>{ /* What: Days Label Span Element. Why: The weekday picker below needs a readable label. How: This renders the literal text. */ }
@@ -1638,7 +1664,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<p className='np-help'>Pick the days that this picker is allowed to run on. Tap a day to turn it off. This is handy for things like chores, that you&rsquo;d rather not see on weekends.</p>{ /* What: Days Help Paragraph Element. Why: A first-time user needs to understand what tapping a day chip actually does. How: This renders a fixed explanatory sentence. */ }
 
 
-										<div className='np-sched-row'>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeeChiCom and np-sched-presets. */ }
+										<div
+											className='np-sched-row'
+
+											data-element-name-hook='schRowDiv'
+										>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeeChiCom and np-sched-presets. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 											<WeeChiCom
@@ -1689,7 +1719,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-									<div className='np-sched-toggle'>{ /* What: Skip Holidays Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps np-toggle-text and the switch button. */ }
+									<div
+										className='np-sched-toggle'
+
+										data-element-name-hook='schTogDiv'
+									>{ /* What: Skip Holidays Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 										<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
@@ -1739,7 +1773,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											role='switch'
 
 											onClick={ () => setSkiHolBoo( ( preValBoo ) => !preValBoo ) }
-										>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips skiHolBoo on click. Its data-element-name-hook is read by help mode's Today catalog. */ }
+										>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips skiHolBoo on click. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1752,7 +1786,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-									<div className='np-sched-toggle'>{ /* What: Avoid Duplicates Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps np-toggle-text and the switch button. */ }
+									<div
+										className='np-sched-toggle'
+
+										data-element-name-hook='schTogDiv'
+									>{ /* What: Avoid Duplicates Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 										<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
@@ -1802,7 +1840,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											role='switch'
 
 											onClick={ () => setAvoDupBoo( ( preValBoo ) => !preValBoo ) }
-										>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips avoDupBoo on click. Its data-element-name-hook is read by help mode's Today catalog. */ }
+										>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips avoDupBoo on click. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
@@ -1827,10 +1865,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-					<div className='np-footer np-footer--step1'>{ /* What: Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps np-footer-note and np-footer-actions. */ }
+					<div
+						className='np-footer np-footer--step1'
+
+						data-element-name-hook='detFooDiv'
+					>{ /* What: Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps np-footer-note and np-footer-actions. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-						<div className='np-footer-note'>{ /* What: Footer Note Div Element. Why: The Step 1 footer explains what's still missing before Next works. How: This renders the note text below. */ }
+						<div
+							className='np-footer-note'
+
+							data-element-name-hook='fooNotDiv'
+						>{ /* What: Footer Note Div Element. Why: The Step 1 footer explains what's still missing before Next works. How: This renders the note text below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 							{ ( () => { // What: Footer Note Render. Why: The exact guidance sentence depends on which required field (if any) is still missing, and whether this is a create or an edit. How: This checks name/group completeness first, branching separately for edit versus create phrasing.
@@ -1882,7 +1928,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 						</div>
 
-						<div className='np-footer-actions'>{ /* What: Footer Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. */ }
+						<div
+							className='np-footer-actions'
+
+							data-element-name-hook='forActDiv'
+						>{ /* What: Footer Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 							<ButBasCom
@@ -2003,7 +2053,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className='np-field np-tour-name'
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Tour Name Field Div Element. Why: The label and input form one field unit. How: This wraps those two pieces. Its data-element-name-hook is read by the picker mini-tours. */ }
+						>{ /* What: Tour Name Field Div Element. Why: The label and input form one field unit. How: This wraps those two pieces. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 							<label
@@ -2270,6 +2320,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<div
 											className={ ` pv-newitem   rd-item   is-editing   ${ ediCloBoo ? 'is-closing' : '' } ` }
 
+											data-element-name-hook='lisIteDiv'
+
 											onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: The draft item editor's own close animation must finish before its state clears. How: This clears the closing and open flags, then opens any editor requested meanwhile.
 
 
@@ -2295,7 +2347,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 											} }
-										>{ /* What: Editing Item Wrap Div Element. Why: This is the whole committed-item editor slot, playing its own closing animation before actually unmounting. How: This reopens whatever edit staDraFun staged in penEdiRef once its own closing keyframe finishes. */ }
+										>{ /* What: Editing Item Wrap Div Element. Why: This is the whole committed-item editor slot, playing its own closing animation before actually unmounting. How: This reopens whatever edit staDraFun staged in penEdiRef once its own closing keyframe finishes. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
 
 
 											<div
@@ -2333,7 +2385,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 														} }
 														onChange={ ( chaEveObj ) => draActObj.updIteFun( ediLivObj.id, { name : chaEveObj.target.value } ) }
 														onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-													/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes into draActObj on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
+													/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes into draActObj on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 												</span>
@@ -2383,7 +2435,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										type='button'
 
 										onClick={ addDraFun }
-									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour and the picker mini-tours. */ }
+									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
 
 
 										<IcoSvgCom
@@ -2404,6 +2456,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 									<div
 										className={ ` pv-newitem   rd-item   is-editing   ${ actCloStr ? 'is-closing' : '' } ` }
+
+										data-element-name-hook='lisIteDiv'
 
 										onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: The new draft item's own close animation must finish before the add is kept or dropped. How: This keeps or discards the draft, clears the add state, then opens any editor requested meanwhile.
 
@@ -2439,7 +2493,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 										} }
-									>{ /* What: New Item Wrap Div Element. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually keeping or discarding it. How: This flags the row for its own insert animation only when actCloStr is 'save', otherwise removes it, then reopens whatever staDraFun staged in penEdiRef. */ }
+									>{ /* What: New Item Wrap Div Element. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually keeping or discarding it. How: This flags the row for its own insert animation only when actCloStr is 'save', otherwise removes it, then reopens whatever staDraFun staged in penEdiRef. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
 
 
 										<div
@@ -2477,7 +2531,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													} }
 													onChange={ ( chaEveObj ) => draActObj.updIteFun( newIteObj.id, { name : chaEveObj.target.value } ) }
 													onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-												/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being newly added. How: This writes into draActObj on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
+												/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being newly added. How: This writes into draActObj on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 											</span>
@@ -2518,10 +2572,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-					<div className='np-footer'>{ /* What: Footer Div Element. Why: The step's own guidance note and its Back/Create actions sit in one footer row. How: This wraps np-footer-note and np-footer-actions. */ }
+					<div
+						className='np-footer'
+
+						data-element-name-hook='iteFooDiv'
+					>{ /* What: Footer Div Element. Why: The step's own guidance note and its Back/Create actions sit in one footer row. How: This wraps np-footer-note and np-footer-actions. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-						<div className='np-footer-note'>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise counting toward the 2-item minimum. */ }
+						<div
+							className='np-footer-note'
+
+							data-element-name-hook='fooNotDiv'
+						>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise counting toward the 2-item minimum. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 							{ !enoIteBoo // What: Not Enough Items Check. Why: The footer note either says how many more items are needed or confirms the minimum is met. How: This picks the add-more message first, then the weight or minimum message.
@@ -2541,7 +2603,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 						</div>
 
-						<div className='np-footer-actions'>{ /* What: Footer Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. */ }
+						<div
+							className='np-footer-actions'
+
+							data-element-name-hook='forActDiv'
+						>{ /* What: Footer Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 							<ButBasCom

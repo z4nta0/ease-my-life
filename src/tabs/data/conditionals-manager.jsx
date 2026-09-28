@@ -936,7 +936,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 								className={ ` rd-item   ${ isaOpeBoo ? 'is-editing' : '' } ` }
 
 								data-element-name-hook='lisIteDiv'
-							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. Its data-element-name-hook is read by the App Features tours. */ }
+							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
 
 
 								{ isaOpeBoo && conDraObj ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input (interactive-in-interactive) and would otherwise lose its own accessible name. How: This renders the editing header while isaOpeBoo is true and a draft exists, otherwise the normal clickable row.
@@ -984,7 +984,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } }
 												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
+											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
 
 
 										</span>

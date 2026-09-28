@@ -384,7 +384,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 			className='rem-inline-editor entry-editor'
 
 			data-element-name-hook='entEdiDiv'
-		>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. Its data-element-name-hook is read by help mode's Today catalog and the help items' own unit-word lookups. */ }
+		>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. Its data-element-name-hook is read by help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 			<div className='pie-rows'>{ /* What: Pie Rows Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
@@ -424,7 +424,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
 							data-element-name-hook='ediRowDiv'
-						>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+						>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
@@ -494,7 +494,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
 							data-element-name-hook='ediRowDiv'
-						>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+						>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
@@ -566,7 +566,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 								data-ease-up-active // What: Ease Up Active Attribute. Why: Help mode finds this Fill row as an ease-up row without reading its classes. How: This is always present, since Fill only ever renders for an ease-up picker.
 								data-element-name-hook='ediRowDiv'
-							>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+							>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -607,7 +607,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 								data-ease-down-active // What: Ease Down Active Attribute. Why: Help mode finds this Refill row as an ease-down row without reading its classes. How: This is always present, since Refill only ever renders for an ease-down picker.
 								data-element-name-hook='ediRowDiv'
-							>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+							>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -652,7 +652,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						className='pie-row'
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight-stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+					>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight-stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -673,7 +673,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 							className='weight-stepper'
 
 							data-element-name-hook='weiSteDiv'
-						>{ /* What: Weight Stepper Div Element. Why: The minus/value/plus trio reads as one compact control. How: This wraps both plus/minus buttons around the current weight display. Its data-element-name-hook is read by help mode's Today catalog. */ }
+						>{ /* What: Weight Stepper Div Element. Why: The minus/value/plus trio reads as one compact control. How: This wraps both plus/minus buttons around the current weight display. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 							<button
@@ -708,7 +708,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						className='pie-row'
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: No Weight Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+					>{ /* What: No Weight Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -738,7 +738,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						className='pie-row'
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+					>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -778,7 +778,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 					className='pie-row'
 
 					data-element-name-hook='ediRowDiv'
-				>{ /* What: Active Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, and the help items' own unit-word lookups. */ }
+				>{ /* What: Active Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
 
 
 					<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -808,7 +808,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						aria-pressed={ !iteDatObj.vacation }
 
 						onClick={ () => actStoObj.togVacFun( iteDatObj.id, 'item' ) }
-					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actStoObj.togVacFun, scoped to 'item'. Its data-element-name-hook is read by help mode's Today catalog. */ }
+					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actStoObj.togVacFun, scoped to 'item'. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 				</div>
@@ -827,7 +827,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 					className='rem-inline-foot rem-foot-confirm'
 
 					data-element-name-hook='ediFooDiv'
-				>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 					<span className='rem-del-msg'>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
@@ -867,7 +867,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 					className='rem-inline-foot rd-edit-foot'
 
 					data-element-name-hook='ediFooDiv'
-				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.

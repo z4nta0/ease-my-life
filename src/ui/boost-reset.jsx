@@ -151,7 +151,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
 				className='pie-boost-val'
 
 				data-element-name-hook='booValSpa'
-			>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 			<button
 				className='pie-reset'

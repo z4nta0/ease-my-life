@@ -145,7 +145,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 				className='rem-inline-foot rem-foot-confirm'
 
 				data-element-name-hook='ediFooDiv'
-			>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 				<span className='rem-del-msg'>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
@@ -192,7 +192,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 			className='rem-inline-foot rd-edit-foot'
 
 			data-element-name-hook='ediFooDiv'
-		>{ /* What: Plain Foot Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Plain Foot Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
 
 
 			{ !isaNewBoo && ( // What: Delete Visibility Check. Why: A brand-new, not-yet-kept reminder has nothing to delete yet, only to discard via Cancel/implicit-close. How: This renders the Delete button only for an already-existing reminder.
