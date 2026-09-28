@@ -2009,6 +2009,12 @@ still passes.
   on its own `@keyframes` line. Its steps (`from`, `to`, `50%`, ...) get
   no comment of their own, are indented one tab, get the usual 2 blank
   lines of padding, aligned colons, and 1 blank line between steps.
+  A module exports its keyframe names on `cssModObj` alongside its class
+  keys, so a keyframe whose name equals a class's camelCase key (e.g.
+  keyframes `holidayRowEnter` beside the class `.holiday-row--enter`)
+  shadows that class, and the element silently gets a class with no
+  rule. Such a keyframe is renamed right away under the keyframe naming
+  rule below (`holidayRowEnterFadeIn`), even during the module move.
 - **Keyframe names** follow the 3-segment naming rule with no fixed
   character count (within reason): segment 1 identifies what animates
   (the element's own class when it's for one specific element, or the
