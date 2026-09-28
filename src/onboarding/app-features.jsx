@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This file's own FeaTouCom and FeaTipCom components need React in scope to compile their JSX and to call React.useState/React.useEffect. How: This is used directly (React.useState, React.useEffect) below, instead of importing individual named hooks.
+import cssModObj from './app-features.module.css'; // What: CSS Module Object. Why: The highlight feature's own intro icon style lives in this file's module. How: This maps each class name in app-features.module.css to its hashed module class.
+import React     from 'react';                     // What: React. Why: This file's own FeaTouCom and FeaTipCom components need React in scope to compile their JSX and to call React.useState/React.useEffect. How: This is used directly (React.useState, React.useEffect) below, instead of importing individual named hooks.
 
 
 import { buiTs1Fun } from './page-steps.jsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
@@ -1071,7 +1072,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 		);
 
 
-		const intIcoEle = feaIdeStr === 'feat_highlights' ? <span className='ob-wmark-help'>i</span> : pagIcoEle; // What: Intro Icon Element. Why: The highlight feature has no page of its own, so it shows the help mark instead. How: This picks the help glyph for feat_highlights, otherwise pagIcoEle.
+		const intIcoEle = feaIdeStr === 'feat_highlights' ? <span className={ cssModObj.obWmarkHelp }>i</span> : pagIcoEle; // What: Intro Icon Element. Why: The highlight feature has no page of its own, so it shows the help mark instead. How: This picks the help glyph for feat_highlights, otherwise pagIcoEle.
 
 
 

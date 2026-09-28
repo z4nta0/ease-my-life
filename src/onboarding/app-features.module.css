@@ -1,0 +1,35 @@
+
+
+
+/**
+ * app-features.module.css = App Features Module
+ *
+ * @summary
+ * Styles for the one element the App Feature tutorials draw themselves: the
+ * highlight feature's intro-modal icon, a scaled-up lookalike of the help
+ * button, since that feature has no page icon of its own to show.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.ob-wmark-help { /* What: Highlight Feature Icon. Why: The highlight tutorial's intro modal needs an icon that reads as the help button, and the modal's icon box only sizes real svg icons. How: This fills the icon box with a circled "i" in the help button's style. */
+
+
+	align-items     : center;
+	border          : 3px solid currentColor;
+	border-radius   : 50%;
+	display         : flex;
+	font-size       : 28px;
+	font-weight     : 700;
+	height          : 100%;
+	justify-content : center;
+	line-height     : 1;
+	width           : 100%;
+
+
+}
+
+
