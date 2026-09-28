@@ -484,6 +484,14 @@ can move code between files rather than just within one.
    *
    * @author z4nta0 <https://github.com/z4nta0>
   ```
+  - **A section-intro spanning more than one section** (decided
+    2026-09-27): when a section-intro block introduces declarations that
+    belong to different sections (e.g. `tab-settings.jsx`'s own "Theme
+    Picker Interface", which introduced 2 theme arrays and 3 theme
+    components), the block and its region stay with the components it
+    introduces, wrapping only those, and the other declarations move to
+    their own sections (the arrays to Constants). The block's prose may
+    still name the declarations that moved.
 - **Generated files.** Decided 2026-09-27. A file written by a script
   (so far only `src/onboarding-stats-data.js`, from
   `scripts/build-onboarding-stats.mjs`) gets its formatting from the
