@@ -1874,11 +1874,30 @@ still passes.
   class name verbatim; renaming classes belongs to the design-system pass
   that follows it.
 - **One class per element is preferred.** When an element genuinely needs
-  more than one, they follow the className template rule under "###
-  Quotes", every token a module interpolation:
+  more than one, each is its own module interpolation inside one template
+  literal: the `{` and the backtick sit together with no space, a single
+  space follows the opening backtick and precedes the closing one, and 3
+  spaces separate each interpolation from the next (the same 3-space
+  spacing as the className template rule under "### Quotes"):
   ```
-  className={ ` ${ cssModObj.namDesEle1 }   ${ cssModObj.namDesEle2 }   ${ cssModObj.namDesEle3 } ` }
+  className={` ${ cssModObj.namDesBut }   ${ cssModObj.namDesSpa } `}
   ```
+- **Class names** follow the JS naming rules (3 segments, 9 characters,
+  each segment the first 3 letters of its word, camelCase, every Known
+  miscorrection and project-scoped override applying), except the type
+  segment names the element's own type rather than a JS type: `<button>`
+  → `But`, `<section>` → `Sec`, `<div>` → `Div`, `<span>` → `Spa`, and so
+  on (e.g. `.groHeaSec`, read as `cssModObj.groHeaSec`). Existing classes
+  keep their current names while they move into modules; renaming them
+  to this rule belongs to the design-system pass.
+- **CSS file order follows the cascade**: a parent element's rules come
+  first, then its first child's, then the next child's, and so on, in the
+  same order the elements appear in the component's own markup, each
+  child's own descendants following it before its next sibling.
+- **Sectioning in CSS**: an element that contains child elements gets a
+  `/* #region <Name> */` / `/* #endregion <Name> */` pair (the CSS form
+  VS Code folds), whose start and end contain its children's rules. An
+  element with no child elements gets no region.
 - **What moves into a module.** Everything that can, even at the cost of
   temporary duplication, which the design-system pass cleans up:
   - Every rule styling the file's own elements moves (cut, never copied,
