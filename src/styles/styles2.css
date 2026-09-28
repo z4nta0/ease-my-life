@@ -2504,20 +2504,20 @@ button.rd-chev {
 }
 
 /* The row/section actively under the pointer: lifted, scaled, above the rest. */
-.today-card.is-dragging {
+.today-card[data-item-drag-active] {
   cursor: grabbing;
   border-style: solid;
   border-color: oklch(from var(--accent) l c h / 0.55);
   box-shadow: 0 18px 40px -12px oklch(0 0 0 / 0.34), 0 6px 14px -4px oklch(0 0 0 / 0.18);
   transform: scale(1.015);
 }
-.group-section.is-dragging {
+.group-section[data-item-drag-active] {
   box-shadow: 0 20px 46px -14px oklch(0 0 0 / 0.32);
   background: var(--surface);
   border-radius: var(--r-lg, 16px);
 }
 /* A dragged group section shouldn't show its top divider while lifted. */
-.group-section.is-dragging { border-top: 0 !important; padding-top: 0 !important; }
+.group-section[data-item-drag-active] { border-top: 0 !important; padding-top: 0 !important; }
 
 /* While a drag is in progress, kill the grab-hover text-selection everywhere. */
 body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-select: none !important; }

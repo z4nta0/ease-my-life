@@ -214,9 +214,9 @@ function staDraFun ( dowEveObj, draConObj ) {
 		if ( iteIndNum === oriIndNum ) { // What: Origin Sibling Check. Why: Only the dragged element itself gets lifted and floated; every other sibling gets the ordinary shift transition instead. How: This compares the current loop index against oriIndNum.
 
 
-			iteCurEle.classList.add( 'is-dragging' ); // What: Dragging Class Add. Why: This is the CSS hook the app's stylesheet uses to visually lift the dragged element. How: This adds the class to the dragged element only.
-			iteCurEle.style.transition = 'none';      // What: Transition Disable. Why: The dragged element is translated directly by the pointer every frame and must never animate that, unlike its siblings. How: This clears any transition on the dragged element specifically.
-			iteCurEle.style.zIndex = '50';            // What: Z Index Raise. Why: The dragged element must render above every sibling it passes over while floating. How: This raises its stacking order via an inline z-index.
+			iteCurEle.setAttribute( 'data-item-drag-active', '' ); // What: Drag Active Attribute Set. Why: This is the hook the dragged element's own stylesheet uses to visually lift it, whichever module it belongs to. How: This adds the presence-only attribute to the dragged element only.
+			iteCurEle.style.transition = 'none';                   // What: Transition Disable. Why: The dragged element is translated directly by the pointer every frame and must never animate that, unlike its siblings. How: This clears any transition on the dragged element specifically.
+			iteCurEle.style.zIndex = '50';                         // What: Z Index Raise. Why: The dragged element must render above every sibling it passes over while floating. How: This raises its stacking order via an inline z-index.
 			iteCurEle.style.position = 'relative';    // What: Position Relative. Why: The z-index raise above only takes effect on a positioned element. How: This gives the dragged element a relative position context.
 
 
@@ -567,12 +567,12 @@ function staDraFun ( dowEveObj, draConObj ) {
 		iteEleArr.forEach( ( iteCurEle ) => { // What: Sibling Restore Loop. Why: Every inline style/class the prep loop and appShiFun added must be fully reverted, or a sibling could be left visually stuck. How: This clears every property staDraFun's own setup wrote, on every sibling.
 
 
-			iteCurEle.classList.remove( 'is-dragging' ); // What: Dragging Class Remove. Why: Only the dragged element ever received this class, but removing it unconditionally here is harmless and keeps this loop uniform. How: This removes the class from every sibling.
-			iteCurEle.style.transition = '';             // What: Transition Clear. Why: A lingering transition value would affect this element's very next unrelated style change. How: This clears the inline transition set by the prep loop.
-			iteCurEle.style.transform = '';              // What: Transform Clear. Why: The final shift/drag transform must not persist once the gesture ends. How: This clears whatever transform appShiFun last wrote.
-			iteCurEle.style.zIndex = '';                 // What: Z Index Clear. Why: The dragged element's raised stacking order was only meant for the gesture's own duration. How: This clears the inline z-index set by the prep loop.
-			iteCurEle.style.position = '';               // What: Position Clear. Why: The dragged element's forced relative positioning was only needed to make the z-index raise above take effect. How: This clears the inline position set by the prep loop.
-			iteCurEle.style.willChange = '';             // What: Will Change Clear. Why: The optimization hint given to every sibling is no longer useful once no animation is pending. How: This clears the inline will-change set by the prep loop.
+			iteCurEle.removeAttribute( 'data-item-drag-active' ); // What: Drag Active Attribute Remove. Why: Only the dragged element ever received this attribute, but removing it unconditionally here is harmless and keeps this loop uniform. How: This removes the attribute from every element.
+			iteCurEle.style.transition = '';                      // What: Transition Clear. Why: A lingering transition value would affect this element's very next unrelated style change. How: This clears the inline transition set by the prep loop.
+			iteCurEle.style.transform = '';                       // What: Transform Clear. Why: The final shift/drag transform must not persist once the gesture ends. How: This clears whatever transform appShiFun last wrote.
+			iteCurEle.style.zIndex = '';                          // What: Z Index Clear. Why: The dragged element's raised stacking order was only meant for the gesture's own duration. How: This clears the inline z-index set by the prep loop.
+			iteCurEle.style.position = '';                        // What: Position Clear. Why: The dragged element's forced relative positioning was only needed to make the z-index raise above take effect. How: This clears the inline position set by the prep loop.
+			iteCurEle.style.willChange = '';                      // What: Will Change Clear. Why: The optimization hint given to every sibling is no longer useful once no animation is pending. How: This clears the inline will-change set by the prep loop.
 
 
 		} );
