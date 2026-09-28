@@ -1,0 +1,299 @@
+
+
+
+/**
+ * cadence-control.module.css = Cadence Control Module
+ *
+ * @summary
+ * Styles for CadConCom, the "How often?" editor in the new-picker form: the
+ * cadence field with its label, help bubble, and live summary above the
+ * segmented control, and, for a non-daily cadence, the anchor field that
+ * fades in below it with its inline selects and clamp hints.
+ *
+ * Its fields share their look with the reminder schedule editor and the
+ * app's other forms, so their declarations are copied here from those shared
+ * classes until the design-system pass merges them. The segmented controls
+ * inside it get their extra bottom space through --seg-margin-bottom rather
+ * than being styled from here.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region cad-ctl */
+
+.cad-ctl { /* What: Cadence Control. Why: Every segmented control inside the cadence editor needs a little room below it before the next line. How: This sets the property the segmented control reads for its bottom margin. */
+
+
+	--seg-margin-bottom : 10px; /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
+
+
+}
+
+/* #region rem-field */
+
+.rem-field { /* What: Cadence Field. Why: A field's label sits above its control. How: This stacks the label block and the control in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 8px;
+
+
+}
+
+/* #region rem-flabel-wrap */
+
+.rem-flabel-wrap { /* What: Cadence Field Label Block. Why: The field's label and its live summary read as one unit. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+
+
+}
+
+/* #region rem-flabel */
+
+.rem-flabel { /* What: Cadence Field Label. Why: Field labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.05em;
+	text-transform : uppercase;
+
+
+}
+
+.pie-lbl-row { /* What: Cadence Field Label Row. Why: The label and its help bubble sit on one line. How: This lines them up in a centered inline row. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	gap         : 6px;
+
+
+}
+
+.pie-help { /* What: Cadence Help Bubble. Why: A small circled "?" beside the label opens its explanation without competing with the label. How: This draws a muted round badge that brightens on hover. */
+
+
+	align-items     : center;
+	border          : 1px solid var(--muted);
+	border-radius   : 50%;
+	color           : var(--muted);
+	cursor          : help;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : 11px;
+	font-weight     : 700;
+	height          : 16px;
+	justify-content : center;
+	line-height     : 1;
+	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	width           : 16px;
+
+
+}
+.pie-help:hover { /* What: Hovered Cadence Help Bubble. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.pie-help--sm { /* What: Small Cadence Help Bubble. Why: The standard bubble reads oversized beside the cadence field's short caption. How: This shrinks it slightly. */
+
+
+	height : 14.5px;
+	width  : 14.5px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Help Bubble. Why: Someone who asked for less motion shouldn't see the bubble's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pie-help { /* What: Still Cadence Help Bubble. Why: The hover colors should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rem-flabel */
+
+
+.rem-flabel-sub { /* What: Cadence Field Summary. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
+
+
+	color       : var(--muted);
+	font-size   : 11px;
+	line-height : 1.35;
+
+
+}
+
+.set-sub-fade { /* What: Fading Cadence Field Summary. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
+
+
+	animation : global(setSubFade) .6s ease; /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Field Summary. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-sub-fade { /* What: Still Cadence Field Summary. Why: The new summary should simply appear. How: This turns the fade off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion rem-flabel-wrap */
+
+
+
+/* #region rem-inline */
+
+.rem-inline { /* What: Cadence Inline Row. Why: An anchor's selects read as a sentence with their leading words. How: This lines the words and selects up in a centered row of muted text. */
+
+
+	align-items : center;
+	color       : var(--muted);
+	display     : flex;
+	font-size   : 13.5px;
+	gap         : 8px;
+
+
+}
+@container app (max-width: 400px) { /* What: Narrow Cadence Inline Row. Why: On an iPhone SE-width screen the yearly nth-weekday row's three selects clip at the normal gap. How: This applies only when the app container is 400px wide or less. */
+
+
+	.rem-inline { /* What: Tight Cadence Inline Row. Why: The three selects need just enough room to fit. How: This shaves the gap down. */
+
+
+		gap : 4px;
+
+
+	}
+
+
+}
+
+.np-input { /* What: Cadence Select. Why: The anchor selects should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
+
+
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-sm);
+	color         : var(--text);
+	font-family   : var(--font-sans);
+	font-size     : 14px;
+	margin-top    : 2px;
+	max-width     : 360px;
+	outline       : none;
+	padding       : 10px 12px;
+	transition    : border-color .12s;
+	width         : 100%;
+
+
+}
+.np-input::placeholder { /* What: Cadence Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.np-input:focus { /* What: Focused Cadence Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-input { /* What: Still Cadence Select. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rem-sel { /* What: Cadence Inline Select. Why: A select inside a sentence should size to its content rather than fill the row. How: This lets it take its natural width, drops the field's top margin, and shows a pointer. */
+
+
+	cursor     : pointer;
+	margin-top : 0;
+	max-width  : none;
+	width      : auto;
+
+
+}
+
+/* #endregion rem-inline */
+
+
+
+.rem-hint { /* What: Cadence Clamp Hint. Why: A date that some months or years don't have needs a quiet note on where it lands instead. How: This sets the note small and muted with no margin. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.5;
+	margin      : 0;
+
+
+}
+
+/* #endregion rem-field */
+
+
+
+.cad-anchor-fade { /* What: Cadence Anchor Block. Why: Switching cadence swaps the anchor field below, which should ease in rather than snap. How: This fades the block in each time it remounts. */
+
+
+	animation : global(setSubFade) .3s ease; /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Anchor Block. Why: Someone who asked for less motion shouldn't see the block fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cad-anchor-fade { /* What: Still Cadence Anchor Block. Why: The new block should simply appear. How: This turns the fade off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion cad-ctl */
+
+

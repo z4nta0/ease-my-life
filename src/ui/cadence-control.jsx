@@ -3,6 +3,9 @@
 
 // #region Imports
 
+import cssModObj from './cadence-control.module.css'; // What: CSS Module Object. Why: The cadence editor's fields and anchor block are styled from their own module. How: This maps each class name in cadence-control.module.css to its hashed module class.
+
+
 import { CAD_NAM_OBJ } from '../core/cadence.js';      // What: Cadence Namespace Object. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
 import { ColDisCom   } from './collapse.jsx';          // What: Collapse Disclosure Component. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
 import { InfTipCom   } from './info-tip.jsx';          // What: Info Tip Component. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
@@ -221,19 +224,19 @@ function CadConCom ( { onChange, value } ) {
 
 
 		<div
-			className='cad-ctl'
+			className={ cssModObj.cadCtl }
 
 			data-element-name-hook='cadConDiv'
 		>{ /* What: Controls Container Div Element. Why: This is CadConCom's own root element, holding the cadence picker and, for every mode but daily, the matching anchor subsection. How: This renders as a plain div; every field below commits through setPatFun. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-			<div className='rem-field'>{ /* What: Cadence Field Div Element. Why: This groups the cadence picker's own label and its own SegConCom control as one field, matching the Reminders editor's own field layout. How: This wraps the flabel-wrap block and the top SegConCom below. */ }
+			<div className={ cssModObj.remField }>{ /* What: Cadence Field Div Element. Why: This groups the cadence picker's own label and its own SegConCom control as one field, matching the Reminders editor's own field layout. How: This wraps the flabel-wrap block and the top SegConCom below. */ }
 
 
-				<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The field's own label and live summary need to sit together as one visual unit. How: This wraps the label span and the fading summary span below. */ }
+				<div className={ cssModObj.remFlabelWrap }>{ /* What: Flabel Wrap Div Element. Why: The field's own label and live summary need to sit together as one visual unit. How: This wraps the label span and the fading summary span below. */ }
 
 
-					<span className='rem-flabel pie-lbl-row'>{ /* What: How Often Label Span Element. Why: This is the cadence field's own plain label, with an inline "?" help bubble on the daily mode. How: This renders the literal text "How often?" followed by the conditional InfTipCom below. */ }
+					<span className={` ${ cssModObj.remFlabel }   ${ cssModObj.pieLblRow } `}>{ /* What: How Often Label Span Element. Why: This is the cadence field's own plain label, with an inline "?" help bubble on the daily mode. How: This renders the literal text "How often?" followed by the conditional InfTipCom below. */ }
 
 
 						How often?
@@ -241,7 +244,7 @@ function CadConCom ( { onChange, value } ) {
 
 
 							<InfTipCom
-								className='pie-help pie-help--sm'
+								className={` ${ cssModObj.pieHelp }   ${ cssModObj.pieHelpSm } `}
 
 								labTexStr={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the daily cadence.
 							>?</InfTipCom> // What: Info Tip Component. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy.
@@ -255,7 +258,7 @@ function CadConCom ( { onChange, value } ) {
 					<span
 						key={ norCadObj.cadence }
 
-						className='rem-flabel-sub set-sub-fade'
+						className={` ${ cssModObj.remFlabelSub }   ${ cssModObj.setSubFade } `}
 					>{ curSubEle }</span>{ /* What: Cadence Sub Span Element. Why: This is the live human-readable summary of the currently-selected cadence. How: This re-keys, and so re-fades, whenever norCadObj.cadence changes, rendering curSubEle. */ }
 
 
@@ -283,25 +286,25 @@ function CadConCom ( { onChange, value } ) {
 				<div
 					key={ norCadObj.cadence }
 
-					className='cad-anchor-fade'
+					className={ cssModObj.cadAnchorFade }
 				>{ /* What: Anchor Fade Div Element. Why: The anchor subsection should fade in and out as a unit whenever the selected cadence itself changes. How: This re-keys, and so re-fades, whenever norCadObj.cadence changes, wrapping whichever of the 3 subsections below actually matches it. */ }
 
 
 					{ norCadObj.cadence === 'weekly' && ( // What: Weekly Visibility Check. Why: Only the weekly cadence's own anchor-weekday subsection belongs here. How: This renders it only while norCadObj.cadence is 'weekly'.
 
 
-						<div className='rem-field'>{ /* What: Weekly Field Div Element. Why: This groups every weekly-specific control as one anchor subsection. How: This renders the field label/summary and the anchor-weekday select below. */ }
+						<div className={ cssModObj.remField }>{ /* What: Weekly Field Div Element. Why: This groups every weekly-specific control as one anchor subsection. How: This renders the field label/summary and the anchor-weekday select below. */ }
 
 
-							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the plain summary span below. */ }
+							<div className={ cssModObj.remFlabelWrap }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the plain summary span below. */ }
 
 
-								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Day Label Span Element. Why: This is the weekly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
+								<span className={` ${ cssModObj.remFlabel }   ${ cssModObj.pieLblRow } `}>{ /* What: On Which Day Label Span Element. Why: This is the weekly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
 
 
 									On which day?
 									<InfTipCom
-										className='pie-help'
+										className={ cssModObj.pieHelp }
 
 										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the weekly cadence.
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
@@ -309,18 +312,18 @@ function CadConCom ( { onChange, value } ) {
 
 								</span>
 
-								<span className='rem-flabel-sub'>surfaces <strong>every { DAY_FUL_ARR[ norCadObj.anchorDow ] }</strong></span>{ /* What: Weekly Sub Span Element. Why: This is the plain summary of which weekday the picker surfaces on. How: This names norCadObj's own anchorDow, looked up in DAY_FUL_ARR. */ }
+								<span className={ cssModObj.remFlabelSub }>surfaces <strong>every { DAY_FUL_ARR[ norCadObj.anchorDow ] }</strong></span>{ /* What: Weekly Sub Span Element. Why: This is the plain summary of which weekday the picker surfaces on. How: This names norCadObj's own anchorDow, looked up in DAY_FUL_ARR. */ }
 
 
 							</div>
 
-							<div className='rem-inline'>{ /* What: Weekly Inline Div Element. Why: The anchor-weekday select reads best inline with its own leading word. How: This wraps the "Every" span and the weekday select below. */ }
+							<div className={ cssModObj.remInline }>{ /* What: Weekly Inline Div Element. Why: The anchor-weekday select reads best inline with its own leading word. How: This wraps the "Every" span and the weekday select below. */ }
 
 
 								<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
 
 								<select
-									className='np-input rem-sel'
+									className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 									value={ norCadObj.anchorDow }
 
@@ -358,18 +361,18 @@ function CadConCom ( { onChange, value } ) {
 					{ norCadObj.cadence === 'monthly' && ( // What: Monthly Visibility Check. Why: Only the monthly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'monthly'.
 
 
-						<div className='rem-field'>{ /* What: Monthly Field Div Element. Why: This groups every monthly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
+						<div className={ cssModObj.remField }>{ /* What: Monthly Field Div Element. Why: This groups every monthly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
 
 
-							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
+							<div className={ cssModObj.remFlabelWrap }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
 
 
-								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Day Label Span Element. Why: This is the monthly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
+								<span className={` ${ cssModObj.remFlabel }   ${ cssModObj.pieLblRow } `}>{ /* What: On Which Day Label Span Element. Why: This is the monthly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
 
 
 									On which day?
 									<InfTipCom
-										className='pie-help'
+										className={ cssModObj.pieHelp }
 
 										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the monthly cadence.
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
@@ -380,7 +383,7 @@ function CadConCom ( { onChange, value } ) {
 								<span
 									key={ norCadObj.dateMode }
 
-									className='rem-flabel-sub set-sub-fade'
+									className={` ${ cssModObj.remFlabelSub }   ${ cssModObj.setSubFade } `}
 								>{ norCadObj.dateMode === 'nthWeekday' ? <>surfaces on the <strong>{ ordSufFun( norCadObj.nthOrdinal ) } { DAY_FUL_ARR[ norCadObj.nthWeekday ] }</strong> of every month</> : <>surfaces the <strong>{ ordSufFun( norCadObj.anchorDom ) } of every month</strong></> }</span>{ /* What: Monthly Sub Span Element. Why: This is the live summary of which day (or nth weekday) the picker surfaces on. How: This re-keys, and so re-fades, whenever norCadObj.dateMode changes, rendering one of the 2 branches. */ }
 
 
@@ -402,13 +405,13 @@ function CadConCom ( { onChange, value } ) {
 							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The monthly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday selects while norCadObj.dateMode is 'nthWeekday', the plain day-of-month select otherwise.
 
 
-								<div className='rem-inline'>{ /* What: Monthly Nth-Weekday Inline Div Element. Why: The ordinal and weekday selects read best inline with their own leading word. How: This wraps the "On the" span and the 2 selects below. */ }
+								<div className={ cssModObj.remInline }>{ /* What: Monthly Nth-Weekday Inline Div Element. Why: The ordinal and weekday selects read best inline with their own leading word. How: This wraps the "On the" span and the 2 selects below. */ }
 
 
 									<span>On the</span>{ /* What: On The Span Element. Why: This is the inline control's own leading words. How: This renders the literal text "On the". */ }
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ norCadObj.nthOrdinal }
 
@@ -434,7 +437,7 @@ function CadConCom ( { onChange, value } ) {
 									</select>
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ norCadObj.nthWeekday }
 
@@ -466,13 +469,13 @@ function CadConCom ( { onChange, value } ) {
 							) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain day-of-month select instead. How: This renders the else branch, taken while norCadObj.dateMode isn't 'nthWeekday'.
 
 
-								<div className='rem-inline'>{ /* What: Monthly Date Inline Div Element. Why: The anchor-day-of-month select reads best inline with its own leading word. How: This wraps the "On the" span and the day-of-month select below. */ }
+								<div className={ cssModObj.remInline }>{ /* What: Monthly Date Inline Div Element. Why: The anchor-day-of-month select reads best inline with its own leading word. How: This wraps the "On the" span and the day-of-month select below. */ }
 
 
 									<span>On the</span>{ /* What: On The Span Element. Why: This is the inline control's own leading words. How: This renders the literal text "On the". */ }
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ norCadObj.anchorDom }
 
@@ -504,8 +507,8 @@ function CadConCom ( { onChange, value } ) {
 							) }
 
 							{ norCadObj.dateMode === 'nthWeekday' // What: Clamp Hint Mode Check. Why: Each date mode has its own clamp edge case to warn about. How: This picks the nth-weekday hint while norCadObj.dateMode is 'nthWeekday', the plain-date hint otherwise.
-								? norCadObj.nthOrdinal === 5 && <p className='rem-hint'>In months without a 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
-								: norCadObj.anchorDom > 28 && <p className='rem-hint'>In shorter months this falls on the last day.</p>             // What: Plain-Date Clamp Hint Paragraph Element. Why: A day past 28 can silently clamp in a shorter month, which the user needs to know about. How: This renders only while norCadObj.anchorDom is past 28.
+								? norCadObj.nthOrdinal === 5 && <p className={ cssModObj.remHint }>In months without a 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
+								: norCadObj.anchorDom > 28 && <p className={ cssModObj.remHint }>In shorter months this falls on the last day.</p>             // What: Plain-Date Clamp Hint Paragraph Element. Why: A day past 28 can silently clamp in a shorter month, which the user needs to know about. How: This renders only while norCadObj.anchorDom is past 28.
 							}
 
 
@@ -518,18 +521,18 @@ function CadConCom ( { onChange, value } ) {
 					{ norCadObj.cadence === 'yearly' && ( // What: Yearly Visibility Check. Why: Only the yearly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'yearly'.
 
 
-						<div className='rem-field'>{ /* What: Yearly Field Div Element. Why: This groups every yearly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
+						<div className={ cssModObj.remField }>{ /* What: Yearly Field Div Element. Why: This groups every yearly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
 
 
-							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
+							<div className={ cssModObj.remFlabelWrap }>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
 
 
-								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Date Label Span Element. Why: This is the yearly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which date?" followed by the InfTipCom below. */ }
+								<span className={` ${ cssModObj.remFlabel }   ${ cssModObj.pieLblRow } `}>{ /* What: On Which Date Label Span Element. Why: This is the yearly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which date?" followed by the InfTipCom below. */ }
 
 
 									On which date?
 									<InfTipCom
-										className='pie-help'
+										className={ cssModObj.pieHelp }
 
 										labTexStr={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) } // What: Cadence Tip Copy. Why: The tip names the picker's own days control, whose visible label on the schedule editor is 'Which days?'. How: This passes that label as tipMesFun's own second argument, alongside the yearly cadence.
 									>?</InfTipCom>{ /* What: Info Tip Component. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
@@ -540,7 +543,7 @@ function CadConCom ( { onChange, value } ) {
 								<span
 									key={ norCadObj.dateMode }
 
-									className='rem-flabel-sub set-sub-fade'
+									className={` ${ cssModObj.remFlabelSub }   ${ cssModObj.setSubFade } `}
 								>{ norCadObj.dateMode === 'nthWeekday' ? <>surfaces the <strong>{ ordSufFun( norCadObj.nthOrdinal ) } { DAY_FUL_ARR[ norCadObj.nthWeekday ] }</strong> of <strong>{ MON_FUL_ARR[ norCadObj.anchorMonth - 1 ] }</strong>, every year</> : <>surfaces <strong>every { MON_FUL_ARR[ norCadObj.anchorMonth - 1 ] } { ordSufFun( Math.min( norCadObj.anchorDay, dayCouFun( norCadObj.anchorMonth ) ) ) }</strong></> }</span>{ /* What: Yearly Sub Span Element. Why: This is the live summary of which date (or nth weekday of month) the picker surfaces on. How: This re-keys, and so re-fades, whenever norCadObj.dateMode changes, rendering one of the 2 branches. */ }
 
 
@@ -562,11 +565,11 @@ function CadConCom ( { onChange, value } ) {
 							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The yearly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday-plus-month selects while norCadObj.dateMode is 'nthWeekday', the plain month-plus-day selects otherwise.
 
 
-								<div className='rem-inline'>{ /* What: Yearly Nth-Weekday Inline Div Element. Why: The ordinal, weekday, and month selects read best inline together. How: This wraps all 3 selects below. */ }
+								<div className={ cssModObj.remInline }>{ /* What: Yearly Nth-Weekday Inline Div Element. Why: The ordinal, weekday, and month selects read best inline together. How: This wraps all 3 selects below. */ }
 
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ norCadObj.nthOrdinal }
 
@@ -592,7 +595,7 @@ function CadConCom ( { onChange, value } ) {
 									</select>
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ norCadObj.nthWeekday }
 
@@ -620,7 +623,7 @@ function CadConCom ( { onChange, value } ) {
 									<span>of</span>{ /* What: Of Span Element. Why: This is the inline control's own connecting word between the weekday and month selects. How: This renders the literal text "of". */ }
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ norCadObj.anchorMonth }
 
@@ -652,13 +655,13 @@ function CadConCom ( { onChange, value } ) {
 							) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain month-and-day selects instead. How: This renders the else branch, taken while norCadObj.dateMode isn't 'nthWeekday'.
 
 
-								<div className='rem-inline'>{ /* What: Yearly Date Inline Div Element. Why: The anchor-month and anchor-day selects read best inline with their own leading word. How: This wraps the "Every" span and the 2 selects below. */ }
+								<div className={ cssModObj.remInline }>{ /* What: Yearly Date Inline Div Element. Why: The anchor-month and anchor-day selects read best inline with their own leading word. How: This wraps the "Every" span and the 2 selects below. */ }
 
 
 									<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ norCadObj.anchorMonth }
 
@@ -684,7 +687,7 @@ function CadConCom ( { onChange, value } ) {
 									</select>
 
 									<select
-										className='np-input rem-sel'
+										className={` ${ cssModObj.npInput }   ${ cssModObj.remSel } `}
 
 										value={ Math.min( norCadObj.anchorDay, dayCouFun( norCadObj.anchorMonth ) ) } // What: Clamped Anchor Day Value. Why: A stored anchor day can outlast a month change (e.g. the 31st after switching to April), which would leave the select with no matching option. How: This shows the anchor day capped at the anchor month's own day count.
 
@@ -716,8 +719,8 @@ function CadConCom ( { onChange, value } ) {
 							) }
 
 							{ norCadObj.dateMode === 'nthWeekday' // What: Clamp Hint Mode Check. Why: Each date mode has its own clamp edge case to warn about. How: This picks the nth-weekday hint while norCadObj.dateMode is 'nthWeekday', the leap-day hint otherwise.
-								? norCadObj.nthOrdinal === 5 && <p className='rem-hint'>In years where that month has no 5th, this falls on the 4th instead.</p>            // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
-								: norCadObj.anchorMonth === 2 && norCadObj.anchorDay === 29 && <p className='rem-hint'>In common (non-leap) years this falls on Feb 28.</p> // What: Leap-Day Clamp Hint Paragraph Element. Why: Feb 29 silently clamps to Feb 28 in a common year, which the user needs to know about. How: This renders only while the anchor month and day are exactly Feb 29.
+								? norCadObj.nthOrdinal === 5 && <p className={ cssModObj.remHint }>In years where that month has no 5th, this falls on the 4th instead.</p>            // What: Nth-Weekday Clamp Hint Paragraph Element. Why: A requested 5th occurrence silently falls back to the 4th, which the user needs to know about. How: This renders only while norCadObj.nthOrdinal is exactly 5.
+								: norCadObj.anchorMonth === 2 && norCadObj.anchorDay === 29 && <p className={ cssModObj.remHint }>In common (non-leap) years this falls on Feb 28.</p> // What: Leap-Day Clamp Hint Paragraph Element. Why: Feb 29 silently clamps to Feb 28 in a common year, which the user needs to know about. How: This renders only while the anchor month and day are exactly Feb 29.
 							}
 
 

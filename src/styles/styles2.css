@@ -1959,8 +1959,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 /* Daily-generator toggle + its cadence/schedule refinement share one field with a
    tighter internal gap than the form's section gap, so they read as one group. */
 .np-daily-group { display: flex; flex-direction: column; gap: 4px; }
-/* Cadence selector: a little breathing room below the segmented control. */
-.np-sched .cad-ctl .seg { margin-bottom: 10px; }
 .np-sched-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .np-sched-presets { display: flex; gap: 6px; flex-wrap: wrap; }
 .np-preset {
@@ -2247,6 +2245,8 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   background: var(--bg); padding: 4px;
   border: 0.5px solid var(--border); border-radius: 20px;
   position: relative;
+  /* Parents that want space below the control (the cadence editor) set --seg-margin-bottom. */
+  margin-bottom: var(--seg-margin-bottom, 0);
 }
 /* Repeat (5 options) is the only segmented control long enough to wrap on
    narrow viewports — flex-wrap's space-between spread the wrapped row's
