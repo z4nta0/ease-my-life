@@ -387,7 +387,7 @@ function tutProFun ( appStaObj ) {
 
 // #region Exports
 
-const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.js/reminders.jsx/tab-today.jsx/tab-picker.jsx/tab-data.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
+const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.js, the reminders files, tab-today.jsx, tab-picker.jsx, and tab-data.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
 
 
 	cheStaFun : cheStaFun, // What: Checklist Status Function. Why: tab-today.jsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete, by this exact name. How: This re-exports cheStaFun under its own matching name.
@@ -395,7 +395,7 @@ const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.js/remind
 	othRemFun : othRemFun, // What: Others Remaining Function. Why: tab-today.jsx reads this for the Generate card's own dynamic explanation text, by this exact name. How: This re-exports othRemFun under its own matching name.
 	reaGenFun : reaGenFun, // What: Ready Generate Function. Why: store.js and tab-today.jsx both gate the Generate card's own actionability on this, by this exact name. How: This re-exports reaGenFun under its own matching name.
 	reaPicFun : reaPicFun, // What: Real Picker Function. Why: store.js and tab-today.jsx both gate real-data-exists checks on this, by this exact name. How: This re-exports reaPicFun under its own matching name.
-	tutProFun : tutProFun  // What: Tutorials Progress Function. Why: reminders.jsx/tab-picker.jsx/tab-data.jsx all gate their own "add new X" controls on this, by this exact name. How: This re-exports tutProFun under its own matching name.
+	tutProFun : tutProFun  // What: Tutorials Progress Function. Why: the reminders files, tab-picker.jsx, and tab-data.jsx all gate their own "add new X" controls on this, by this exact name. How: This re-exports tutProFun under its own matching name.
 
 
 };

@@ -1822,7 +1822,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 // #region Exports
 
-export { GroLogCom, LogChiCom, RemLogCom }; // What: Named Exports. Why: tab-today.jsx renders GroLogCom and LogChiCom, and reminders.jsx renders LogChiCom and RemLogCom. How: This exports the three components by name.
+export { GroLogCom, LogChiCom, RemLogCom }; // What: Named Exports. Why: tab-today.jsx renders GroLogCom and LogChiCom, and reminders-section.jsx renders LogChiCom and RemLogCom. How: This exports the three components by name.
 
 // #endregion Exports
 

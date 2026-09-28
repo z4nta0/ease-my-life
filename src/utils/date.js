@@ -212,6 +212,60 @@ const isoDayFun = ( datInpObj = new Date() ) => { // What: Iso Day Function. Why
 
 
 
+// #region nexDatFun
+
+/**
+ * nexDatFun = Next Date Function
+ *
+ * @summary
+ * Formats a next-eligible date as a full prose label, not a compact
+ * one. The year is included whenever the date falls outside the
+ * current year, and ALWAYS for a yearly reminder, where "Monday,
+ * January 25" would otherwise read like a date days away rather than
+ * next year's occurrence.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param nexDatObj - Next Date Object: The next-eligible date to format, or a
+ *                    falsy value when there is none.
+ * @param alwYeaBoo - Always Year Boolean: Whether the year must always be
+ *                    included, regardless of whether nexDatObj falls in the
+ *                    current year (true for a yearly reminder).
+ *
+ * @returns The full prose date label, or null when nexDatObj is falsy.
+ *
+ * @example
+ * ```ts
+ * nexDatFun(nexDatObj, alwYeaBoo) // => 'Monday, January 25, 2027'
+ * ```
+ *
+*/
+
+function nexDatFun ( nexDatObj, alwYeaBoo ) {
+
+
+	if ( !nexDatObj ) return null; // What: Missing Date Guard. Why: A caller with no next-eligible date at all still needs a defined, safe return value. How: This returns null outright when nexDatObj is falsy.
+
+
+
+	const shoYeaBoo = alwYeaBoo || nexDatObj.getFullYear() !== new Date().getFullYear(); // What: Show Year Boolean. Why: The year clutters a same-year date but is essential context for a yearly reminder or a date in a different year. How: This is true when alwYeaBoo was passed, or when nexDatObj's own year differs from the current year.
+
+
+	const forOptObj = shoYeaBoo // What: Format Options Object. Why: The date's own locale format depends on whether the year shows. How: This picks one of the two options objects below based on shoYeaBoo.
+		? { day : 'numeric', month : 'long', weekday : 'long', year : 'numeric' } // What: With-Year Format Object. Why: This is the full "Weekday, Month Day, Year" format used whenever shoYeaBoo is true. How: This is passed as toLocaleDateString's own options argument.
+		: { day : 'numeric', month : 'long', weekday : 'long' };                  // What: Without-Year Format Object. Why: This is the shorter "Weekday, Month Day" format used for a same-year date on a non-yearly reminder. How: This is passed as toLocaleDateString's own options argument.
+
+
+
+	return nexDatObj.toLocaleDateString( [], forOptObj ); // What: Next Date Return. Why: The caller needs the formatted label itself. How: This formats nexDatObj with forOptObj in the user's own locale.
+
+
+}
+
+// #endregion nexDatFun
+
+
+
 // #region nwmDayFun
 
 /**
@@ -310,7 +364,7 @@ function ordSufFun( ordValNum ) {
 
 // #region Exports
 
-export { dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, nwmDayFun, ordSufFun }; // What: Named Exports. Why: Core schedules, state, and UI all format and compute dates the same way. How: This exports every helper above by name.
+export { dimCouFun, forDatFun, forLonFun, forTimFun, isoDayFun, nexDatFun, nwmDayFun, ordSufFun }; // What: Named Exports. Why: Core schedules, state, and UI all format and compute dates the same way. How: This exports every helper above by name.
 
 // #endregion Exports
 

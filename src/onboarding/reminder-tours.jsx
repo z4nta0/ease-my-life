@@ -23,7 +23,7 @@ import { useEmlTouFun } from '../state/tour-bus.js';             // What: Use Ea
  * @summary
  * Content for the two Reminders mini-tours ("Set up a one-time reminder" /"Set
  * up a recurring reminder"), launched by Play on their sample launcher cards
- * on Today (see reminders.jsx's own RemCarCom, whose tutorial card calls
+ * on Today (see reminders-section.jsx's own RemCarCom, whose tutorial card calls
  * onPlaTutFun). Both share the same intro-modal structure and first paragraph
  * (FIR_PAR_ELE below); only the icon, title, and second paragraph differ by
  * varKeyStr (VAR_COP_OBJ below), matching the two sample reminders seeded by
@@ -73,9 +73,9 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
  * @summary
  * Step 4 highlights whichever schedule control Step 3's own pill choice
  * reveals below it, the same container ('.rem-extra-fade') regardless of which
- * one that is, since reminders.jsx's own SchEdiCom only ever renders one
+ * one that is, since schedule-editor.jsx's own SchEdiCom only ever renders one
  * at a time. Only the copy needs to track the live selection, keyed by
- * reminders.jsx's own REP_OPT_ARR keys (interval/weekly/monthly/annual, "Once"
+ * schedule-editor.jsx's own REP_OPT_ARR keys (interval/weekly/monthly/annual, "Once"
  * never reaches this tour at all).
  *
  * Every entry shares this exact shape, and none of the entries below repeat
@@ -162,7 +162,7 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
  * The recurring tour's own Step 3: all 4 non-"Once" pills of the Repeat
  * segmented control, highlighted together as one combined region. '.seg-btn ~
  * .seg-btn' matches every pill after the first, that is every option except
- * "Once", since reminders.jsx's own REP_OPT_ARR always lists "Once" first.
+ * "Once", since schedule-editor.jsx's own REP_OPT_ARR always lists "Once" first.
  *
  * Also scoped to '.seg[aria-label="Repeat"]' specifically, not just
  * '.rem-quickadd-wrap', since Monthly/Yearly's own Date/Weekday toggle below
@@ -242,7 +242,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
  * Requires the user to actually click the "+" button themselves (Next stays
  * disabled): the click is not just a gate, it is the thing being taught, and
  * it also opens the real add-reminder form. runFun publishes the sample's
- * prefill data onto the emlTouObj bus (read by reminders.jsx's own staAddFun)
+ * prefill data onto the emlTouObj bus (read by reminders-section.jsx's own staAddFun)
  * in the click-guard's capture phase, ahead of staAddFun's own bubble-phase
  * handler, using the same ordering trick as the Picker tour's own Step 2.
  *
@@ -296,10 +296,10 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
 			const samTasObj = ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ) || ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ); // What: Sample Task Object. Why: The Welcome Tour seeds the recurring sample with today's real weekday (see onboarding/welcome-tour.jsx's own Generate step), which the static ONB_TAS_ARR template does not know, so the live one must win whenever it exists. How: This reads the live sample off staAppObj.tasks first, falling back to ONB_TAS_ARR only when no live one exists yet.
 
 
-			emlTouObj.set({ // What: Prefill Publish Call. Why: reminders.jsx's own staAddFun reads this to prefill the real add-reminder form. How: This builds the prefill shape from the resolved samTasObj above.
+			emlTouObj.set({ // What: Prefill Publish Call. Why: reminders-section.jsx's own staAddFun reads this to prefill the real add-reminder form. How: This builds the prefill shape from the resolved samTasObj above.
 
 
-				preFilObj : { // What: Prefill Object. Why: reminders.jsx's own staAddFun reads this nested shape directly as the real form's own prefill payload. How: This is built from samTasObj's own resolved fields below.
+				preFilObj : { // What: Prefill Object. Why: reminders-section.jsx's own staAddFun reads this nested shape directly as the real form's own prefill payload. How: This is built from samTasObj's own resolved fields below.
 
 
 					createdFromSample : varCopObj.ideStr, // What: Created From Sample Field. Why: A future Replay needs to find and update this same reminder instead of creating a duplicate. How: This tags the prefill with the sample task's own id.
@@ -337,7 +337,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
  * control the draft's repeat kind reveals below the Repeat pills
  * (.rem-extra-fade, the same container for every kind). Its title and body
  * come from REP_COP_OBJ for that kind, falling back to the weekly copy for the
- * one frame before reminders.jsx's own draft has published a real repeat kind
+ * one frame before reminders-section.jsx's own draft has published a real repeat kind
  * onto the bus.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -354,7 +354,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
  *
 */
 
-const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders.jsx's own staAddFun/draActObj have published a real value onto the bus yet.
+const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders-section.jsx's own staAddFun/draActObj have published a real value onto the bus yet.
 
 
 	const repCopObj = REP_COP_OBJ[ repValStr ] || REP_COP_OBJ.weekly; // What: Repeat Copy Object. Why: The step's own titStr/bodEle below need this repeat kind's own copy. How: This looks up REP_COP_OBJ by repValStr, falling back to weekly.

@@ -2527,7 +2527,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-add-btn:hover { border-color: var(--accent); color: var(--accent); background: oklch(from var(--accent-soft) l c h / 0.5); }
 /* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
    pointer-events:none here — this instance is an InfoTip span (see
-   reminders.jsx's tutProFun), not a real <button>, whenever
+   reminders-section.jsx's tutProFun), not a real <button>, whenever
    ONB_CHE_OBJ.tutProFun is true, and InfoTip needs real
    hover/tap events reaching it to show its tooltip at all (see
    .btn.is-disabled in styles.css, the same InfoTip pattern used by the

@@ -41,7 +41,7 @@ import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.js'; // What: Onb
 import { PagTouCom    } from './page-tour-card.jsx';                // What: Page Tour Card Component. Why: Each page tour gets a launcher card in the Page Tours group. How: This is rendered once per page tour.
 import { PIC_NAM_OBJ  } from '../../core/pickers.js';               // What: Pickers Namespace Object. Why: Picking, re-rolling, and ease eligibility all funnel through this shared namespace. How: This is called for picIteFun/easEliFun throughout generate() and hanRerFun.
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
-import { RemSecCom    } from '../../ui/reminders.jsx';              // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genOrdArr.
+import { RemSecCom    } from './reminders-section.jsx';             // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genOrdArr.
 import { RemTouCom    } from '../../onboarding/reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while minTouObj holds a 'reminder' kind entry.
 import { REO_NAM_OBJ  } from '../../ui/reorder.js';                 // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside groDraFun/iteDraFun.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
@@ -408,7 +408,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-	React.useEffect( () => { emlTouObj.set( { shoCheBoo : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's staAddFun needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own shoCheBoo field.
+	React.useEffect( () => { emlTouObj.set( { shoCheBoo : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders-section.jsx's staAddFun needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own shoCheBoo field.
 
 	const pagNamStr = ( staAppObj.onboarding && staAppObj.onboarding.pageToursName ) || 'Page Tours'; // What: Page Name String. Why: The Page Tours section header needs its own, possibly user-renamed, display name. How: This reads staAppObj.onboarding.pageToursName, falling back to the fixed default.
 
@@ -474,7 +474,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @summary
 	 * Mirrors rptVisBoo: once cheDonBoo, mini-tour picker/task cards keep
-	 * offering themselves (per groEntFun's and reminders.jsx's own
+	 * offering themselves (per groEntFun's and reminders-section.jsx's own
 	 * collision-filtered checks) even though shoCheBoo itself has gone
 	 * false, so these ring/rail counts need to keep counting them too, or
 	 * the ring and the Reminders rail pill (which reuses these) would
@@ -3193,15 +3193,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				 * tab-today.jsx = Unhide Real Items
 				 *
 				 * @summary
-				 * Any real reminder OR picker created while the checklist
-				 * was up, whether by finishing a mini-tour or just the
-				 * user clicking "+"/"Add New Picker" themselves (see
-				 * reminders.jsx's staAddFun and tab-picker.jsx's onCrePicFun,
-				 * both gated on the shoCheBoo bus field), was seeded
-				 * hidden so it didn't clutter the list alongside the
+				 * Any real reminder OR picker created while the checklist was
+				 * up, whether by finishing a mini-tour or just the user
+				 * clicking "+"/"Add New Picker" themselves (see
+				 * reminders-section.jsx's staAddFun and tab-picker.jsx's
+				 * onCrePicFun, both gated on the shoCheBoo bus field), was
+				 * seeded hidden so it didn't clutter the list alongside the
 				 * still-open launcher cards. Surfaces them all now, right
-				 * before genLisFun actually runs. Excludes the eternal
-				 * samples themselves by id, which stay hidden forever.
+				 * before genLisFun actually runs. Excludes the eternal samples
+				 * themselves by id, which stay hidden forever.
 				 *
 				 * @author z4nta0 <https://github.com/z4nta0>
 				 *

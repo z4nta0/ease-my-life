@@ -3923,12 +3923,12 @@ function useAppStaFun( optArgObj ) {
 		 *
 		 * @summary
 		 * Statically-scheduled tasks shown atop Today, distinct from the
-		 * randomly-picked items above. fields.replaceId updates THIS
-		 * existing task in place (same id) instead of prepending a new
-		 * one, mirroring addPicFun's own replaceId, used when a reminder
-		 * mini-tour is replayed after already finishing once (see
-		 * reminders.jsx's own commit(), which looks up the prior real task
-		 * via createdFromSample).
+		 * randomly-picked items above. fields.replaceId updates THIS existing
+		 * task in place (same id) instead of prepending a new one, mirroring
+		 * addPicFun's own replaceId, used when a reminder mini-tour is
+		 * replayed after already finishing once (see reminders-section.jsx's
+		 * own comAddFun, which looks up the prior real task via
+		 * createdFromSample).
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -4583,7 +4583,7 @@ function useAppStaFun( optArgObj ) {
 				easeMax         : picArgObj.easeMax ?? 20,                                        // What: Ease Max. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMax, defaulting to 20.
 				easeMin         : picArgObj.easeMin ?? 10,                                        // What: Ease Min. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMin, defaulting to 10.
 				group           : picArgObj.group,                                                // What: Group. Why: The picker must land in the group chosen in the form. How: This is picArgObj.group.
-				hidden          : picArgObj.hidden === undefined ? false : picArgObj.hidden,      // What: Hidden Flag. Why: tab-picker.jsx passes true while the mini-tour checklist is up (mirrors reminders.jsx's own startAdd) so a picker created during onboarding stays out of the real list until the closing Generate step. How: This copies picArgObj.hidden, defaulting to false when it was never given.
+				hidden          : picArgObj.hidden === undefined ? false : picArgObj.hidden,      // What: Hidden Flag. Why: tab-picker.jsx passes true while the mini-tour checklist is up (mirrors reminders-section.jsx's own staAddFun) so a picker created during onboarding stays out of the real list until the closing Generate step. How: This copies picArgObj.hidden, defaulting to false when it was never given.
 				id              : picIdeStr,                                                      // What: Id. Why: The picker keeps whichever id was resolved above (replaceId, a given id, or a fresh one). How: This is picIdeStr.
 				mode            : picArgObj.mode,                                                 // What: Mode. Why: The mode decides which selection algorithm this picker uses. How: This is picArgObj.mode.
 				name            : picArgObj.name,                                                 // What: Name. Why: This is the raw name; the de-duplicated one replaces it below, once state is available. How: This is picArgObj.name.

@@ -424,11 +424,11 @@ const ONB_PCT_OBJ = { // What: Onboarding Picker-Card-Time Object. Why: This is 
  *
 */
 
-const ONB_RCT_OBJ = { // What: Onboarding Reminder-Card-Text Object. Why: This is the mini-tour launcher card copy override table described above, keyed by sample task id. How: This is read by reminders.jsx wherever a still-hidden sample task's own launcher card is rendered.
+const ONB_RCT_OBJ = { // What: Onboarding Reminder-Card-Text Object. Why: This is the mini-tour launcher card copy override table described above, keyed by sample task id. How: This is read by reminders-section.jsx wherever a still-hidden sample task's own launcher card is rendered.
 
 
-	tk_ob_meds  : { kicStr : 'One-Time',                    namStr : 'Set up a one time reminder', timStr : '< 1 min' }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own launcher-card copy. How: This is looked up by reminders.jsx keyed by tk_ob_meds, this sample task's own id.
-	tk_ob_trash : { namStr : 'Set up a recurring reminder', timStr : '1 min'                                          }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own launcher-card copy. How: This is looked up by reminders.jsx keyed by tk_ob_trash, this sample task's own id.
+	tk_ob_meds  : { kicStr : 'One-Time',                    namStr : 'Set up a one time reminder', timStr : '< 1 min' }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own launcher-card copy. How: This is looked up by reminders-section.jsx keyed by tk_ob_meds, this sample task's own id.
+	tk_ob_trash : { namStr : 'Set up a recurring reminder', timStr : '1 min'                                          }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own launcher-card copy. How: This is looked up by reminders-section.jsx keyed by tk_ob_trash, this sample task's own id.
 
 
 };
@@ -499,7 +499,7 @@ const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-re
  * Every sample picker/task id in one place, used to hide them once the
  * Welcome Tour ends (see onboarding/welcome-tour.jsx) and to recognize a
  * still-hidden one as a mini-tour launcher card on Today (see
- * tab-today.jsx / reminders.jsx).
+ * tab-today.jsx / reminders-section.jsx).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

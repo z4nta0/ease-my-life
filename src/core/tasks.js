@@ -1247,7 +1247,7 @@ function visTodFun( tasLisArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 // #region Exports
 
-const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.js, reminders.jsx, day-log.jsx, tab-today.jsx, tab-stats.jsx, seed.js, and the onboarding modules all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
+const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.js, the reminders UI files, day-log.jsx, tab-today.jsx, tab-stats.jsx, seed.js, and the onboarding modules all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own internal implementations onto an external property name matching it exactly, swept everywhere at once so external and internal names never drift apart.
 
 
 	ancDatFun : ancDatFun, // What: Anchor Date Function. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its own matching name.
