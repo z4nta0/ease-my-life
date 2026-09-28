@@ -1968,7 +1968,10 @@ still passes.
   `ui/info-tip.module.css`.
 - **`@keyframes`**: a keyframe only one module uses moves into that
   module (Vite scopes its name and rewrites the `animation` reference);
-  one several modules share stays global. It sits directly after the
+  one several modules share stays global. A module that plays a global
+  keyframe writes its name as `global(obFade)`: CSS modules rename every
+  bare keyframe name in a module to a scoped one, so a plain `obFade`
+  would point at a keyframe that doesn't exist and silently not animate. It sits directly after the
   variants of the element that uses it, with one What/Why/How comment
   on its own `@keyframes` line. Its steps (`from`, `to`, `50%`, ...) get
   no comment of their own, are indented one tab, get the usual 2 blank
