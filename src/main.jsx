@@ -31,11 +31,17 @@ import './styles2.css'; // What: Styles2 Stylesheet Import. Why: This is the app
  * CSS/inline-JS overlay, not React) once the first paint has had a chance to
  * settle.
  *
+ * Sections:
+ *  - Helpers
+ *  - Module Init
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
+
+// #region Helpers
 
 // #region booAppFun
 
@@ -59,7 +65,7 @@ import './styles2.css'; // What: Styles2 Stylesheet Import. Why: This is the app
  *
  * @example
  * ```ts
- * booAppFun() // => undefined
+ * booAppFun() // => void
  * ```
  *
 */
@@ -78,16 +84,21 @@ function booAppFun () {
 
 // #endregion booAppFun
 
+// #endregion Helpers
 
+
+
+// #region Module Init
 
 Promise.race( [ // What: Boot Race Array. Why: Gating the mount on storage init lets store.js's own loaStaFun() stay synchronous, but a hung IndexedDB open must never block the app from booting at all. How: This races STG_NAM_OBJ.iniStoFun() against a fixed 3500ms timeout and calls booAppFun either way, once whichever settles first.
 
 
-	STG_NAM_OBJ.iniStoFun(), // What: Storage Init Call. Why: This is the real, awaited condition: persisted state finishing its load. How: This resolves once storage.js has parked the loaded state in memory for store.js to read synchronously.
-
-	new Promise( ( resRacFun ) => setTimeout( resRacFun, 3500 ) ), // What: Storage Timeout Fallback Promise. Why: The mount must never wait forever on a hung IndexedDB open. How: This resolves on its own after 3500ms regardless of whether STG_NAM_OBJ.iniStoFun() has settled.
+	STG_NAM_OBJ.iniStoFun(),                                       // What: Storage Init Call. Why: This is the real, awaited condition: persisted state finishing its load. How: This resolves once storage.js has parked the loaded state in memory for store.js to read synchronously.
+	new Promise( ( resRacFun ) => setTimeout( resRacFun, 3500 ) )  // What: Storage Timeout Fallback Promise. Why: The mount must never wait forever on a hung IndexedDB open. How: This resolves on its own after 3500ms regardless of whether STG_NAM_OBJ.iniStoFun() has settled.
 
 
 ] ).then( booAppFun, booAppFun ); // What: Boot Promise Then Call. Why: booAppFun must run exactly once no matter which side of the race settled first. How: This passes booAppFun as both the fulfillment and rejection handler, treating a hung/slow IndexedDB the same as a successful init.
+
+// #endregion Module Init
 
 
