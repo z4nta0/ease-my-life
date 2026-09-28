@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This is the UI library both of t
 
 
 import { IcoSvgCom } from '../../ui/ui.jsx';           // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'cheEle' icon name.
-import { PicStrCom } from '../pickers/tab-picker.jsx'; // What: Picker Strip Component. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
+import { PicStrCom } from '../../ui/picker-strip.jsx'; // What: Picker Strip Component. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
 
 // #endregion Imports
 
