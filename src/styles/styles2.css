@@ -3053,7 +3053,12 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   .ob-tour-pulse{animation:none;outline-color:var(--accent)}
   .rd-item.ob-tour-pulse{animation:none;border-color:var(--accent)}
 }
-body.ob-touring .tab{padding-bottom:200px}
+/* While a tour runs, every tab gets room to scroll a bottom-anchored target
+   clear of the tab bar; each tab's root reads the property (see CLAUDE.md's
+   body-level state rule), with this plain .tab read covering the tabs still
+   styled from this sheet. */
+body[data-tour-active]{--tab-tour-padding:200px}
+.tab{padding-bottom:var(--tab-tour-padding,0)}
 .np-tour-name{margin:16px 0 16px}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */

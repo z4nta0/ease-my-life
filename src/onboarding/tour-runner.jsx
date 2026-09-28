@@ -646,17 +646,17 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	React.useEffect( () => { // What: Touring Body Class Effect. Why: While a tour runs, the scrollable content needs padding so bottom-anchored targets can scroll clear of the floating tab bar. How: This adds a body class on mount and removes it on unmount.
+	React.useEffect( () => { // What: Touring Body Attribute Effect. Why: While a tour runs, the scrollable content needs padding so bottom-anchored targets can scroll clear of the floating tab bar. How: This sets a body attribute on mount and removes it on unmount.
 
 
-		document.body.classList.add( 'ob-touring' ); // What: Touring Class Add. Why: The app's own stylesheet reads this class to add the bottom padding described above. How: This adds 'ob-touring' to document.body.
+		document.body.setAttribute( 'data-tour-active', '' ); // What: Tour Active Attribute Set. Why: The global stylesheet sets the tabs' bottom padding property under this attribute. How: This adds the presence-only data-tour-active attribute to document.body.
 
 
 
-		return () => document.body.classList.remove( 'ob-touring' ); // What: Touring Class Cleanup Return. Why: The padding must not linger once the tour is over, however it ends. How: This returns a cleanup that removes the same class.
+		return () => document.body.removeAttribute( 'data-tour-active' ); // What: Tour Active Cleanup Return. Why: The padding must not linger once the tour is over, however it ends. How: This returns a cleanup that removes the same attribute.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This class should only ever be added once for this component's own mounted lifetime. How: An empty array means there is no dependency that could ever change to trigger a re-run.
+	}, [] ); // What: Effect Dependency Array. Why: This attribute should only ever be set once for this component's own mounted lifetime. How: An empty array means there is no dependency that could ever change to trigger a re-run.
 
 
 
