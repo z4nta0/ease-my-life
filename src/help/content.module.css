@@ -53,6 +53,8 @@
 
 
 
+/* #region help-inline-icon */
+
 .help-inline-icon { /* What: Help Inline Icon. Why: An icon dropped into a tip's prose should sit neatly among the words around it. How: This wraps the icon in an inline box that centers it within its own height, then centers that box on the surrounding text's line. */
 
 
@@ -62,5 +64,15 @@
 
 
 }
+
+.help-inline-icon svg { /* What: Help Inline Icon Glyph. Why: Even centered on the line, the glyph reads slightly low against the text beside it. How: This nudges the icon up a few pixels inside its box. */
+
+
+	margin-top : -3px;
+
+
+}
+
+/* #endregion help-inline-icon */
 
 
