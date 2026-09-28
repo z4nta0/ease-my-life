@@ -1032,12 +1032,14 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 				<ButBasCom
 					className='picker-edit-btn'
 
+					data-element-name-hook='picEdiBut'
+
 					icoNamStr='ediEle'
 					kinValStr='secondary'
 					sizValStr='sm'
 
 					onClick={ () => setEdiOpeBoo( true ) }
-				>Edit</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpeBoo true on click. */ }
+				>Edit</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpeBoo true on click. Its data-element-name-hook is read by the Pickers page tour. */ }
 
 
 			</header>
@@ -1067,7 +1069,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-			<div className='picker-run'>{ /* What: Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picker-stage and picker-actions together. */ }
+			<div
+				className='picker-run'
+
+				data-element-name-hook='picRunDiv'
+			>{ /* What: Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picker-stage and picker-actions together. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
 
 
 				<div className='picker-stage'>{ /* What: Stage Div Element. Why: Exactly one of five states (idle/running-or-done/sent/empty) is showing at any moment. How: This wraps whichever of the branches below currently matches runPhaStr. */ }
@@ -1197,11 +1203,14 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								style={{ animationDelay : '0ms' }}
 
+								data-element-name-hook='picSenBut'
+								data-pick-sent-active={ runPhaStr === 'sent' || undefined } // What: Pick Sent Active Attribute. Why: The tours need to know whether this pick has already been sent to Today without reading the button's own classes. How: This is present only while runPhaStr is 'sent', since undefined drops the attribute entirely.
+
 								icoNamStr='cheEle'
 								kinValStr='primary'
 
 								onClick={ senTodFun }
-							>{ /* What: Button Base Component. Why: This is the primary confirm action for a settled pick. How: This calls senTodFun, then re-labels itself "Sent!" once runPhaStr flips to 'sent'. */ }
+							>{ /* What: Button Base Component. Why: This is the primary confirm action for a settled pick. How: This calls senTodFun, then re-labels itself "Sent!" once runPhaStr flips to 'sent'. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
 
 
 								<span
@@ -1226,12 +1235,14 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								style={{ animationDelay : '60ms' }}
 
+								data-element-name-hook='picRerBut'
+
 								disabled={ intSenBoo }
 								icoNamStr='refEle'
 								kinValStr='ghost'
 
 								onClick={ () => aftExiFun( rerActFun ) }
-							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Classname Design Note. Why: The pv-act--reroll class lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.jsx) without also matching Send to Today or Done. How: disabled/is-tour-disabled below still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. */ }
+							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Classname Design Note. Why: The pv-act--reroll class lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.jsx) without also matching Send to Today or Done. How: disabled/is-tour-disabled below still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 
@@ -1264,12 +1275,14 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 						<ButBasCom
 							className={ ` pv-act   pv-act--pick   ${ busPicBoo ? 'is-busy' : '' } ` }
 
+							data-element-name-hook='picOneBut'
+
 							disabled={ busPicBoo }
 							icoNamStr='plaEle'
 							kinValStr='primary'
 
 							onClick={ runPicFun }
-						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button Base Component. Why: This is the sole entry point into a fresh cycle. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true.
+						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button Base Component. Why: This is the sole entry point into a fresh cycle. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true. Its data-element-name-hook is read by the Pickers page tour and the App Features tours.
 
 
 					) }
@@ -1285,7 +1298,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 			<div className='picker-pool'>{ /* What: Pool Div Element. Why: The item list and the add/edit slot below it form one visual section. How: This wraps pool-items and pv-additem-wrap. */ }
 
 
-				<div className='pool-items'>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pool-h and pool-list. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see .pv-additem-wrap further down). How: This mirrors .picker-pool's own flex/gap so wrapping these two doesn't change their spacing. */ }
+				<div
+					className='pool-items'
+
+					data-element-name-hook='pooIteDiv'
+				>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pool-h and pool-list. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see .pv-additem-wrap further down). How: This mirrors .picker-pool's own flex/gap so wrapping these two doesn't change their spacing. Its data-element-name-hook is read by the Pickers page tour and the App Features tours. */ }
 
 
 					<div className='pool-h'>{ /* What: Pool Header Div Element. Why: The eligible-count kicker and the drift-toggle link sit on one row. How: This wraps those two pieces. */ }
@@ -1658,7 +1675,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 					ref={ addWraRef }
 
 					className='pv-additem-wrap'
-				>{ /* What: Add Item Wrap Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. */ }
+
+					data-element-name-hook='iteAddDiv'
+				>{ /* What: Add Item Wrap Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 					{ ( () => { // What: Additem Slot Render. Why: Exactly one of three things belongs in this slot at a time (an open existing-item editor, an open new-item draft editor, or the plain add button), and that choice is easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then newDraObj, falling back to the plain button.
@@ -1721,6 +1740,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 											<input
 												className='rd-name-input'
 
+												data-element-name-hook='rowNamInp'
+
 												autoFocus
 												maxLength={ 60 }
 												placeholder='Item name'
@@ -1741,7 +1762,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 												} }
 												onChange={ ( chaEveObj ) => setEdiNamStr( chaEveObj.target.value ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renIteFun on blur, and blurs itself on Enter. */ }
+											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renIteFun on blur, and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 										</span>
@@ -1785,11 +1806,13 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 							<button
 								className='pv-additem-btn'
 
+								data-element-name-hook='iteAddBut'
+
 								disabled={ disAddBoo }
 								type='button'
 
 								onClick={ addIteFun }
-							>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. */ }
+							>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour and the picker mini-tours. */ }
 
 
 								<IcoSvgCom
@@ -1856,6 +1879,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 										<input
 											className='rd-name-input'
 
+											data-element-name-hook='rowNamInp'
+
 											autoFocus
 											maxLength={ 60 }
 											placeholder='Item name'
@@ -1876,7 +1901,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 											} }
 											onChange={ ( chaEveObj ) => draActObj.updIteFun( newIteObj.id, { name : chaEveObj.target.value } ) }
 											onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into draActObj (not the real store) on every change, and commits the rename on blur. */ }
+										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into draActObj (not the real store) on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 									</span>

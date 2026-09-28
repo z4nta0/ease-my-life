@@ -1035,8 +1035,8 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 			className='group-section rem-section'
 
-			data-element-name-hook='todGroSec'
-		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code. */ }
+			data-element-name-hook='todGroSec remGroSec'
+		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and the Today page tour. */ }
 
 
 			<header className={ ` group-h   ${ ediModBoo ? 'is-reorderable' : '' } ` }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders group-h-l and rem-h-r below, marking itself reorderable while ediModBoo is on. */ }
@@ -1051,6 +1051,8 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 						<span
 							className='group-grip'
 
+							data-element-name-hook='groGriSpa'
+
 							draggable={ false }
 
 							aria-label='Drag to reorder group'
@@ -1059,7 +1061,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() } // What: Native Drag Block. Why: The grip uses its own pointer-driven reorder, so the browser's HTML5 drag must never start. How: This cancels dragstart.
 							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGriDowFun. */ }
+						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGriDowFun. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 							<IcoSvgCom
@@ -1135,9 +1137,11 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							<InfTipCom
 								className='rem-add-btn is-tour-disabled'
 
+								data-element-name-hook='remAddSpa'
+
 								actNamStr='Add a Reminder'
 								labTexStr='This button is disabled until all tutorials are completed.'
-							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. */ }
+							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 								<IcoSvgCom
@@ -1155,11 +1159,13 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							<button
 								className='rem-add-btn'
 
+								data-element-name-hook='remAddBut'
+
 								aria-label='Add a Reminder'
 								title='Add a Reminder'
 
 								onClick={ () => { addOpeBoo ? canAddFun() : staAddFun(); } } // What: Add Toggle Click. Why: The same button opens the quick-add form or cancels it when already open. How: This calls canAddFun while addOpeBoo, staAddFun otherwise.
-							>{ /* What: Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. */ }
+							>{ /* What: Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 								<IcoSvgCom
@@ -1228,10 +1234,18 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 				{ visForBoo && draTasObj && ( // What: Quick-Add Visibility Check. Why: The whole quick-add form only exists while it's visible AND a draft has actually been built. How: This renders the form only while both conditions hold.
 
 
-					<div className={ ` rem-quickadd-wrap   ${ addCloBoo ? 'is-closing' : '' } ` }>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. */ }
+					<div
+						className={ ` rem-quickadd-wrap   ${ addCloBoo ? 'is-closing' : '' } ` }
+
+						data-element-name-hook='remAddDiv'
+					>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
-						<div className='rem-quickadd'>{ /* What: Quick-Add Div Element. Why: The name input needs its own row above the schedule editor. How: This wraps the single name input below. */ }
+						<div
+							className='rem-quickadd'
+
+							data-element-name-hook='remFieDiv'
+						>{ /* What: Quick-Add Div Element. Why: The name input needs its own row above the schedule editor. How: This wraps the single name input below. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 							<input
@@ -1279,12 +1293,14 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 								<ButBasCom
+									data-element-name-hook='remSavBut'
+
 									disabled={ !draTasObj.name.trim() }
 									kinValStr='primary'
 									sizValStr='sm'
 
 									onClick={ comAddFun }
-								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls comAddFun, disabled while the name is blank. */ }
+								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls comAddFun, disabled while the name is blank. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 							</div>

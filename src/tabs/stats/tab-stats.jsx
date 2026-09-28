@@ -2578,13 +2578,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								className='picker-groups stat-scope-groups'
 
+								data-element-name-hook='groFilDiv'
+
 								aria-label='Filter pickers by group'
 								role='tablist'
-							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. */ }
+							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
 
 
 								<button
 									className={ ` picker-group-pill   ${ staGroStr === 'all' ? 'is-on' : '' } ` }
+
+									data-element-name-hook='filPilBut'
 
 									type='button'
 
@@ -2599,7 +2603,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. */ }
+								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
 
 
 									All
@@ -2617,13 +2621,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										className={ ` picker-group-pill   ${ staGroStr === groCurStr ? 'is-on' : '' } ` }
 
+										data-element-name-hook='filPilBut'
+
 										type='button'
 
 										aria-selected={ staGroStr === groCurStr }
 										role='tab'
 
 										onClick={ () => setStaGroStr( groCurStr ) }
-									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. */ }
+									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
 
 
 										{ groCurStr }{ /* What: Group Name Expression. Why: The pill shows its own group name. How: This renders groCurStr. */ }
@@ -2659,13 +2665,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								className='picker-groups stat-scope-groups stat-scope-groups--type'
 
+								data-element-name-hook='typFilDiv'
+
 								aria-label='Filter pickers by type'
 								role='tablist'
-							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. */ }
+							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
 
 
 								<button
 									className={ ` picker-group-pill   ${ typFilStr === 'all' ? 'is-on' : '' } ` }
+
+									data-element-name-hook='filPilBut'
 
 									type='button'
 
@@ -2680,7 +2690,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. */ }
+								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
 
 
 									All
@@ -2756,13 +2766,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											className={ ` picker-group-pill   ${ entCurObj.selBoo ? 'is-on' : '' } ` }
 
+											data-element-name-hook='filPilBut'
+
 											type='button'
 
 											aria-selected={ entCurObj.selBoo }
 											role='tab'
 
 											onClick={ entCurObj.cliFun }
-										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. */ }
+										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
 
 
 											{ entCurObj.namStr }{ /* What: Type Name Expression. Why: The pill shows its own mode or sentinel name. How: This renders the entry's own namStr. */ }
@@ -2808,10 +2820,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									style={{ animationDelay : '0ms' }}
 
+									data-element-name-hook='scoTabBut'
+
 									type='button'
 
 									onClick={ () => setScoValStr( 'all' ) }
-								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. */ }
+								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour. */ }
 
 
 									<span className='picker-tab-name'>All</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the literal word "All". */ }
@@ -2895,7 +2909,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							ref={ ranRowRef }
 
 							className='stat-filter-pills stat-filter-pills--seg'
-						>{ /* What: Range Pill List Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. */ }
+
+							data-element-name-hook='ranPilDiv'
+						>{ /* What: Range Pill List Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. Its data-element-name-hook is read by the Stats page tour. */ }
 
 
 							{ STA_RAN_ARR.map( ( ranCurObj ) => ( // What: Range Pill Render. Why: Every configured lookback window needs its own selectable pill. How: This maps STA_RAN_ARR to one button per range.
@@ -2906,10 +2922,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									className={ ` stat-pill   ${ ranValStr === ranCurObj.keyStr ? 'is-on' : '' } ` }
 
+									data-element-name-hook='ranPilBut'
+
 									type='button'
 
 									onClick={ () => setRanValStr( ranCurObj.keyStr ) }
-								>{ ranCurObj.labStr }</button> // What: Range Pill Button Element. Why: The user needs a way to switch the whole page over to this specific lookback window. How: This sets ranValStr to this pill's own keyStr when clicked.
+								>{ ranCurObj.labStr }</button> // What: Range Pill Button Element. Why: The user needs a way to switch the whole page over to this specific lookback window. How: This sets ranValStr to this pill's own keyStr when clicked. Its data-element-name-hook is read by the Stats page tour.
 
 
 							))}
@@ -3414,7 +3432,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ !isaConBoo && ( // What: Heatmap Visibility Check. Why: The Conditionals scope has no day-by-day heatmap of its own to show. How: This renders the whole heatmap card only while isaConBoo is false.
 
 
-						<CarSurCom className='stat-heatmap-card'>{ /* What: Card Surface Component. Why: The heatmap shares the same card chrome as every other stat card. How: This wraps the heat header, the optional year pager, and either the grid+detail or an empty state. */ }
+						<CarSurCom
+							className='stat-heatmap-card'
+
+							data-element-name-hook='heaMapDiv'
+						>{ /* What: Card Surface Component. Why: The heatmap shares the same card chrome as every other stat card. How: This wraps the heat header, the optional year pager, and either the grid+detail or an empty state. Its data-element-name-hook is read by the Stats page tour. */ }
 
 
 							<div className='heat-h'>{ /* What: Heat Header Div Element. Why: The heatmap's own kicker and legend sit together in one row. How: This wraps the kicker div and the HeaLegCom legend. */ }
@@ -4151,7 +4173,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ isaPicBoo && ( // What: Pick Breakdown Visibility Check. Why: This entire card only belongs while a single real picker is the active scope. How: This renders it only while isaPicBoo is true.
 
 
-						<CarSurCom className='stat-breakdown-card'>{ /* What: Card Surface Component. Why: The Pick breakdown shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, the active metric's own note, and the sorted list itself. */ }
+						<CarSurCom
+							className='stat-breakdown-card'
+
+							data-element-name-hook='breCarDiv'
+						>{ /* What: Card Surface Component. Why: The Pick breakdown shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, the active metric's own note, and the sorted list itself. Its data-element-name-hook is read by the Stats page tour. */ }
 
 
 							<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }

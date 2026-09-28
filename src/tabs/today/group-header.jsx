@@ -281,6 +281,8 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 						<span
 							className='group-grip'
 
+							data-element-name-hook='groGriSpa'
+
 							draggable={ false }
 
 							aria-label='Drag to reorder group'
@@ -289,7 +291,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
 							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
-						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. */ }
+						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 							<IcoSvgCom

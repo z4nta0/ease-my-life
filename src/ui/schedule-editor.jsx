@@ -1470,7 +1470,9 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, staAppObj, tasRcdObj } ) {
 						key={ tasRcdObj.repeat === 'once' ? lasExtRef.current : tasRcdObj.repeat } // What: Extra Kind Key. Why: A genuine kind switch should remount the subsection, but collapsing back to 'once' should not. How: This keys on the remembered last kind while repeat is 'once', the real repeat otherwise.
 
 						className='rem-extra-fade'
-					>{ extFieEle }</div>{ /* What: Extra Fade Div Element. Why: The extra-fields subsection needs to re-key on a genuine kind switch, so its own internal ColDisCom states reset cleanly instead of carrying over stale open/closed state. How: This keys on lasExtRef's own remembered kind while collapsing back to 'once', otherwise the task's own real repeat. */ }
+
+						data-element-name-hook='remExtDiv'
+					>{ extFieEle }</div>{ /* What: Extra Fade Div Element. Why: The extra-fields subsection needs to re-key on a genuine kind switch, so its own internal ColDisCom states reset cleanly instead of carrying over stale open/closed state. How: This keys on lasExtRef's own remembered kind while collapsing back to 'once', otherwise the task's own real repeat. Its data-element-name-hook is read by the reminder mini-tours. */ }
 
 
 				</ColDisCom>

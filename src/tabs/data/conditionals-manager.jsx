@@ -762,7 +762,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 			className='cat cat--enter cnd-manager'
 
 			data-element-name-hook='datCatSec'
-		>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours. */ }
+		>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours and the Data page tour. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. */ }
@@ -942,7 +942,11 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 								{ isaOpeBoo && conDraObj ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input (interactive-in-interactive) and would otherwise lose its own accessible name. How: This renders the editing header while isaOpeBoo is true and a draft exists, otherwise the normal clickable row.
 
 
-									<div className='rd-row'>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. */ }
+									<div
+										className='rd-row'
+
+										data-element-name-hook='lisRowDiv'
+									>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 										<span className='rd-main'>{ /* What: Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
@@ -967,6 +971,8 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 												className={ ` rd-name-input   ${ namErrStr ? 'is-error' : '' } ` }
 
+												data-element-name-hook='rowNamInp'
+
 												maxLength={ 40 }
 												placeholder='Conditional name'
 												type='text'
@@ -978,7 +984,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } }
 												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. */ }
+											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 										</span>

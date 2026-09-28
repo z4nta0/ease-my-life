@@ -73,16 +73,24 @@ import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfTipCom
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actNamStr - Action Name String: The disabled action this tip
- *                          stands in for, defaulting to null.
- * @param props.children  - Children: The trigger content the tip is attached
- *                          to.
- * @param props.className - Class Name: Extra classes for the trigger,
- *                          defaulting to an empty string.
- * @param props.labTexStr - Label Text String: The tooltip's text.
- * @param props.trnOnlBoo - Truncated Only Boolean: Whether the tip only
- *                          activates when the trigger text is truncated,
- *                          defaulting to false.
+ * @param props.actNamStr              - Action Name String: The disabled
+ *                                       action this tip stands in for,
+ *                                       defaulting to null.
+ * @param props.children               - Children: The trigger content the tip
+ *                                       is attached to.
+ * @param props.className              - Class Name: Extra classes for the
+ *                                       trigger, defaulting to an empty
+ *                                       string.
+ * @param props.data-element-name-hook - Data Element Name Hook: The trigger's
+ *                                       own identity hook, forwarded onto
+ *                                       whichever trigger span renders, so
+ *                                       code can find the trigger without its
+ *                                       classes.
+ * @param props.labTexStr              - Label Text String: The tooltip's text.
+ * @param props.trnOnlBoo              - Truncated Only Boolean: Whether the
+ *                                       tip only activates when the trigger
+ *                                       text is truncated, defaulting to
+ *                                       false.
  *
  * @returns The trigger, plus the tooltip portal while open.
  *
@@ -93,7 +101,7 @@ import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfTipCom
  *
 */
 
-const InfTipCom = ( { actNamStr = null, children, className = '', labTexStr, trnOnlBoo = false } ) => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
+const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false } ) => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
 
 
 	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                      // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
@@ -285,6 +293,8 @@ const InfTipCom = ( { actNamStr = null, children, className = '', labTexStr, trn
 			ref={ trgEleRef }
 
 			className={ className }
+
+			data-element-name-hook={ hooNamStr }
 		>{ children }</span> // What: Inert Trigger Span Element. Why: With nothing to reveal, this must still keep the ref attached so a later resize can re-measure and flip actTipBoo. How: This renders only the ref and the caller's own className, no interactive attributes at all.
 
 
@@ -299,6 +309,8 @@ const InfTipCom = ( { actNamStr = null, children, className = '', labTexStr, trn
 			ref={ trgEleRef }
 
 			className={ ` infotip-trigger   ${ className } ` }
+
+			data-element-name-hook={ hooNamStr }
 
 			aria-disabled={ actNamStr ? 'true' : undefined }                                     // What: Disabled Action Flag. Why: A tip standing in for a disabled control must announce that state without losing focusability. How: This sets aria-disabled only when actNamStr names an action.
 			aria-label={ actNamStr ? `${ actNamStr }, unavailable. ${ labTexStr }` : labTexStr } // What: Accessible Name Pick. Why: A tip standing in for a disabled control must name the action and say it's unavailable. How: This prefixes the tip text with that when actNamStr is set, else uses the tip text alone.

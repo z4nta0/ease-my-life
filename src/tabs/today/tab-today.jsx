@@ -3504,7 +3504,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								ref={ rinEleRef }
 
 								className='ring'
-							>{ /* What: Ring Div Element. Why: This is the completion ring the celebration effect above targets directly. How: This renders the SVG ring itself, its numeric label, and 3 purely decorative overlay elements the celebration effect's own CSS classes animate. */ }
+
+								data-element-name-hook='proRinDiv'
+							>{ /* What: Ring Div Element. Why: This is the completion ring the celebration effect above targets directly. How: This renders the SVG ring itself, its numeric label, and 3 purely decorative overlay elements the celebration effect's own CSS classes animate. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 								<svg viewBox='0 0 36 36'>{ /* What: Ring Svg Element. Why: This draws the actual ring shape. How: This renders a background circle plus a foreground circle whose dash array reflects donCouNum over totCouNum. */ }
@@ -3980,7 +3982,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							ref={ groDndRef }
 
 							className='groups-dnd'
-						>{ /* What: Groups Dnd Div Element. Why: This is the actual drag container REO_NAM_OBJ scopes group drags to. How: This maps genOrdArr to one Reminders/Page-Tours/group section per entry. */ }
+
+							data-element-name-hook='groDraDiv'
+						>{ /* What: Groups Dnd Div Element. Why: This is the actual drag container REO_NAM_OBJ scopes group drags to. How: This maps genOrdArr to one Reminders/Page-Tours/group section per entry. Its data-element-name-hook is read by the Welcome Tour. */ }
 
 
 							{ genOrdArr.map( ( curIdeStr ) => { // What: Content Column Map. Why: One section is needed per block, dispatched by whichever sentinel or real group id curIdeStr holds. How: This returns the Reminders section, the Page Tours section (when relevant), or a real group's own section.
@@ -4045,7 +4049,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											className='group-section pt-section'
 
 											data-element-name-hook='pagTouSec todGroSec'
-										>{ /* What: Page Tours Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the page tours' own group-rename steps and by Today's own drag-to-reorder and scroll code. */ }
+										>{ /* What: Page Tours Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the page tours' own group-rename steps, Today's own drag-to-reorder and scroll code, and the Welcome Tour. */ }
 
 
 											<GroHeaCom
@@ -4121,7 +4125,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										className='group-section'
 
 										data-element-name-hook='todGroSec'
-									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code. */ }
+									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code and the Welcome Tour. */ }
 
 
 										<GroHeaCom
@@ -4304,8 +4308,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								className='group-section af-section'
 
-								data-element-name-hook='todGroSec'
-							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code. */ }
+								data-element-name-hook='todGroSec appFeaSec'
+							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and the App Features tours. */ }
 
 
 								<GroHeaCom
@@ -4499,7 +4503,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							{ conGenBoo && !genActBoo ? ( // What: Confirm Gated Check. Why: The footer's own content depends on which of 3 mutually-exclusive states currently applies. How: This renders the regenerate-confirm prompt while conGenBoo is true and no generation is in flight, otherwise one of the 2 branches below.
 
 
-								<div className='gen-confirm'>{ /* What: Generate Confirm Div Element. Why: Regenerate is confirm-gated since it replaces any completed items. How: This renders the fixed warning message plus a Cancel/Continue pair. */ }
+								<div
+									className='gen-confirm'
+
+									data-element-name-hook='genConDiv'
+								>{ /* What: Generate Confirm Div Element. Why: Regenerate is confirm-gated since it replaces any completed items. How: This renders the fixed warning message plus a Cancel/Continue pair. Its data-element-name-hook is read by the Welcome Tour. */ }
 
 
 									<p className='gen-confirm-msg'>This will replace any items marked as completed and these will not show up in the Stats tab. Continue?</p>{ /* What: Confirm Message Element. Why: The user needs to understand the real consequence before confirming. How: This renders a fixed warning sentence. */ }
@@ -4519,12 +4527,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										<ButBasCom
 											className='gen-confirm-continue'
 
+											data-element-name-hook='genConBut'
+
 											icoNamStr='refEle'
 											kinValStr='primary'
 											sizValStr='sm'
 
 											onClick={ () => genLisFun() }
-										>Continue</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed regeneration trigger. How: This calls genLisFun with no options (a manual, non-auto run). */ }
+										>Continue</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed regeneration trigger. How: This calls genLisFun with no options (a manual, non-auto run). Its data-element-name-hook is read by the Welcome Tour. */ }
 
 
 									</div>
@@ -4580,12 +4590,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										<ButBasCom
 											className='foot-editmode'
 
+											data-element-name-hook='fooEdiBut'
+
 											disabled={ genActBoo }
 											icoNamStr='griEle'
 											kinValStr='secondary'
 
 											onClick={ togModFun }
-										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togModFun, disabled while a generation is in flight. */ }
+										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togModFun, disabled while a generation is in flight. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 
@@ -4595,9 +4607,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											<InfTipCom
 												className='btn btn--secondary btn--md ob-generate is-disabled'
 
+												data-element-name-hook='genLisSpa'
+
 												actNamStr='Regenerate'
 												labTexStr='Complete every tutorial above and generate your real list first.'
-											>{ /* What: Info Tip Component. Why: A blocked Regenerate still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation. */ }
+											>{ /* What: Info Tip Component. Why: A blocked Regenerate still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation. Its data-element-name-hook is read by the Welcome Tour. */ }
 
 
 												<IcoSvgCom
@@ -4615,12 +4629,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											<ButBasCom
 												className='ob-generate'
 
+												data-element-name-hook='genLisBut'
+
 												disabled={ genActBoo }
 												icoNamStr='refEle'
 												kinValStr='secondary'
 
 												onClick={ () => setConGenBoo( true ) }
-											>{ genActBoo ? 'Generating…' : 'Regenerate' }</ButBasCom> // What: Button Base Component. Why: This is the actual working Regenerate trigger, opening the confirm prompt above. How: This sets conGenBoo, disabled and relabeled while a cascade is already in flight.
+											>{ genActBoo ? 'Generating…' : 'Regenerate' }</ButBasCom> // What: Button Base Component. Why: This is the actual working Regenerate trigger, opening the confirm prompt above. How: This sets conGenBoo, disabled and relabeled while a cascade is already in flight. Its data-element-name-hook is read by the Welcome Tour.
 
 
 										) }

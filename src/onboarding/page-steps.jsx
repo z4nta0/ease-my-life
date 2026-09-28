@@ -84,7 +84,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. This concludes the Data page tutorial, click Done when you are ready.</>,
-		selStr : '.cat-create-btn', // What: Selector String. Why: This step highlights the real Create Picker button at the bottom of the list. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="datCreBut"]', // What: Selector String. Why: This step highlights the real Create Picker button at the bottom of the list. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Create New Picker'
 
 
@@ -94,7 +94,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
-		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="scoTabDiv"] [data-element-name-hook="scoTabBut"]', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Show Filter'
 
 
@@ -104,7 +104,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="groFilDiv"] [data-element-name-hook="filPilBut"]', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Group Filter'
 
 
@@ -114,7 +114,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
-		selStr : '.data-list > .cat', // What: Selector String. Why: This step highlights every picker/Conditionals/Reminders card as one combined region. How: GuiTouCom spotlights every element this selector matches.
+		selStr : '[data-element-name-hook="datLisDiv"] > [data-element-name-hook~="datCatSec"]', // What: Selector String. Why: This step highlights every picker/Conditionals/Reminders card as one combined region. How: GuiTouCom spotlights every element this selector matches.
 		titStr : 'View and Edit Pickers'
 
 
@@ -124,7 +124,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="typFilDiv"] [data-element-name-hook="filPilBut"]', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Type Filter'
 
 
@@ -134,7 +134,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
-		selStr : '.cat--reminders', // What: Selector String. Why: This step highlights the whole Reminders manager section. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook~="remCatSec"]', // What: Selector String. Why: This step highlights the whole Reminders manager section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'View and Edit Reminders'
 
 
@@ -202,9 +202,9 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle    : <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>,
-		cliSelStr : '.pv-act--send',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to Send to Today specifically, not any disabled sibling sharing the widened box. How: This is read by the click-guard/cirBoo logic separately from selStr.
-		pulSelStr : '.pv-act--send:not(.is-sent)',
-		selStr    : '.pv-act--send:not(.is-sent), .picker-run', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuiTouCom spotlights the first alternative that matches.
+		cliSelStr : '[data-element-name-hook="picSenBut"]', // What: Click Selector String. Why: The cirBoo guard must stay scoped to Send to Today specifically, not any disabled sibling sharing the widened box. How: This is read by the click-guard/cirBoo logic separately from selStr.
+		pulSelStr : '[data-element-name-hook="picSenBut"]:not([data-pick-sent-active])',
+		selStr    : '[data-element-name-hook="picSenBut"]:not([data-pick-sent-active]), [data-element-name-hook="picRunDiv"]', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuiTouCom spotlights the first alternative that matches.
 		titStr    : 'Add to Todo List'
 
 
@@ -214,7 +214,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. This will not be included as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
-		selStr : '.picker-tab--add', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="picAddBut"], [data-element-name-hook="picAddSpa"]', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Create New Pickers'
 
 
@@ -224,7 +224,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can <b>adjust its name, group, type, daily generator schedule, or conditional attachment</b>. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
-		selStr : '.picker-edit-btn', // What: Selector String. Why: This step highlights the real Edit Picker button. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="picEdiBut"]', // What: Selector String. Why: This step highlights the real Edit Picker button. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Edit Picker'
 
 
@@ -234,9 +234,9 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle    : <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
-		cliSelStr : '.pv-act--pick',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/cirBoo logic separately from selStr.
-		pulSelStr : '.pv-act--pick:not(.is-busy)',
-		selStr    : '.pv-act--pick:not(.is-busy), .picker-run', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuiTouCom spotlights the first alternative that matches.
+		cliSelStr : '[data-element-name-hook="picOneBut"]', // What: Click Selector String. Why: The cirBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/cirBoo logic separately from selStr.
+		pulSelStr : '[data-element-name-hook="picOneBut"]:not(:disabled)',
+		selStr    : '[data-element-name-hook="picOneBut"]:not(:disabled), [data-element-name-hook="picRunDiv"]', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuiTouCom spotlights the first alternative that matches.
 		titStr    : 'Manual Generation'
 
 
@@ -246,7 +246,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="groFilDiv"] [data-element-name-hook="filPilBut"]', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Group Filter'
 
 
@@ -256,7 +256,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>,
-		selStr : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real Add Item button. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="iteAddBut"]', // What: Selector String. Why: This step highlights the real Add Item button. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Add Picker Item'
 
 
@@ -266,7 +266,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial.</>,
-		selStr : '.pool-items', // What: Selector String. Why: This step highlights the whole item pool, excluding the Add Item button. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="pooIteDiv"]', // What: Selector String. Why: This step highlights the whole item pool, excluding the Add Item button. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Picker Items'
 
 
@@ -276,7 +276,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This will allow you to <b>further filter the pickers row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.picker-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="typFilDiv"] [data-element-name-hook="filPilBut"]', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Type Filter'
 
 
@@ -286,7 +286,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
-		selStr : '.picker-tabs .picker-tab:not(.picker-tab--add)', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="picTabDiv"] [data-element-name-hook="picTabBut"]', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Picker Selection'
 
 
@@ -342,7 +342,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can find information about this app and its developer, replay the welcome tour and all of these tutorials at any time, and <b>contact the developer if you have any problems or suggestions</b>.</>,
-		selStr : '.set-section--about', // What: Selector String. Why: This step highlights the whole About section. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="setAboSec"]', // What: Selector String. Why: This step highlights the whole About section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'About Ease My Life'
 
 
@@ -352,7 +352,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>customize the app's look and feel</b>: light, dark and custom theme colors, completion celebration animations, picker pick animations, and tab bar placement.</>,
-		selStr : '.set-section--appearance', // What: Selector String. Why: This step highlights the whole Appearance section. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="setAppSec"]', // What: Selector String. Why: This step highlights the whole Appearance section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'App Customization'
 
 
@@ -362,7 +362,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>,
-		selStr : '.set-section--daily', // What: Selector String. Why: This step highlights the whole Daily Generator section. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="setDaiSec"]', // What: Selector String. Why: This step highlights the whole Daily Generator section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Daily Generator'
 
 
@@ -372,7 +372,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can protect your data from browser deletion, <b>install the app directly to your device</b>, back up your data (export), restore your data (import), or erase all of your data.</>,
-		selStr : '.set-section--data', // What: Selector String. Why: This step highlights the whole Data Control section. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="setDatSec"]', // What: Selector String. Why: This step highlights the whole Data Control section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Data Control'
 
 
@@ -382,7 +382,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>toggle which holiday observances that the pickers and reminders option uses</b>. You can even add your own custom holidays, like your birthday!</>,
-		selStr : '.set-section--holidays', // What: Selector String. Why: This step highlights the whole Holiday Controls section. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="setHolSec"]', // What: Selector String. Why: This step highlights the whole Holiday Controls section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Holiday Controls'
 
 
@@ -392,7 +392,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>,
-		selStr : '.set-section--legal', // What: Selector String. Why: This step highlights the whole Legal section. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="setLegSec"]', // What: Selector String. Why: This step highlights the whole Legal section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Legal Information'
 
 
@@ -446,7 +446,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. You can click on any day for more details. Click Next when you are ready to advance to the next step.</>,
-		selStr : '.stat-heatmap-card', // What: Selector String. Why: This step highlights the whole activity heatmap card. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="heaMapDiv"]', // What: Selector String. Why: This step highlights the whole activity heatmap card. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Activity Heatmap'
 
 
@@ -456,7 +456,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready.</>,
-		selStr : '.stat-breakdown-card', // What: Selector String. Why: This step highlights the whole picker breakdown card. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="breCarDiv"]', // What: Selector String. Why: This step highlights the whole picker breakdown card. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Picker Breakdown'
 
 
@@ -466,7 +466,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to <b>narrow your selection to specific pickers, reminders or conditionals</b>, or you can view everything all at once.</>,
-		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="scoTabDiv"] [data-element-name-hook="scoTabBut"]', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Show Filter'
 
 
@@ -476,7 +476,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="groFilDiv"] [data-element-name-hook="filPilBut"]', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Group Filter'
 
 
@@ -486,7 +486,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="typFilDiv"] [data-element-name-hook="filPilBut"]', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Type Filter'
 
 
@@ -496,7 +496,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time.</>,
-		selStr : '.stat-filter-pills--seg .stat-pill', // What: Selector String. Why: This step highlights the Range Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="ranPilDiv"] [data-element-name-hook="ranPilBut"]', // What: Selector String. Why: This step highlights the Range Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Range Filter'
 
 
@@ -555,7 +555,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>The "Edit Mode" button will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click the "Edit Mode" button now.</>,
-		selStr : '.em-rail-btn, .foot-editmode', // What: Selector String. Why: This step highlights whichever Edit Mode control is actually visible at the current width. How: GuiTouCom spotlights the first alternative that matches.
+		selStr : '[data-element-name-hook="ediRaiBut"], [data-element-name-hook="fooEdiBut"]', // What: Selector String. Why: This step highlights whichever Edit Mode control is actually visible at the current width. How: GuiTouCom spotlights the first alternative that matches.
 		titStr : 'Edit Mode'
 
 
@@ -565,7 +565,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>,
-		selStr : '.rem-section .group-grip', // What: Selector String. Why: This step highlights the Reminders section's own drag handle specifically. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook~="remGroSec"] [data-element-name-hook="groGriSpa"]', // What: Selector String. Why: This step highlights the Reminders section's own drag handle specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Movable Icon'
 
 
@@ -575,7 +575,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This is the todo list’s navigation, <b>allowing you to jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to quickly move between the different sections of your todo list.</>,
-		selStr : '.group-rail ul', // What: Selector String. Why: This step highlights the group navigation list, excluding Edit Mode. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="groRaiAsi"] ul', // What: Selector String. Why: This step highlights the group navigation list, excluding Edit Mode. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'List Navigation'
 
 
@@ -585,7 +585,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
-		selStr : '.ring', // What: Selector String. Why: This step highlights the real progress ring. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook="proRinDiv"]', // What: Selector String. Why: This step highlights the real progress ring. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Progress Ring'
 
 
@@ -595,7 +595,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will <b>allow you to change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. This concludes the Today page tutorial, click Done when you are ready.</>,
-		selStr : '.pt-section .group-name-input', // What: Selector String. Why: This step highlights the Page Tours group's own rename input. How: GuiTouCom spotlights whatever this selector matches.
+		selStr : '[data-element-name-hook~="pagTouSec"] [data-element-name-hook="groNamInp"]', // What: Selector String. Why: This step highlights the Page Tours group's own rename input. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Rename Group'
 
 

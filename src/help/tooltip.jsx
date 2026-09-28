@@ -249,7 +249,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 			data-element-name-hook='helTipDiv coaCarDiv'
 
 			role='tooltip'
-		>{ /* What: Container Help Tip Div Element. Why: This is HelTipCom's own root rendered element, positioned via tipStyObj/widStyObj and pointed via arrClaStr. How: This wraps the inner scroll-capped content below. Its data-element-name-hook is read by help mode's own outside-click check and by the tour runner's own outside-click checks, which treat it as a coach card. */ }
+		>{ /* What: Container Help Tip Div Element. Why: This is HelTipCom's own root rendered element, positioned via tipStyObj/widStyObj and pointed via arrClaStr. How: This wraps the inner scroll-capped content below. Its data-element-name-hook is read by help mode's own outside-click check and the tour runner's own outside-click checks. */ }
 
 
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }

@@ -1166,10 +1166,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-					<div className='np-fields'>{ /* What: Fields Div Element. Why: Every Details field (Name, Group, Picker type, conditional attach, daily schedule) belongs in one shared column. How: This wraps every np-field block below. */ }
+					<div
+						className='np-fields'
+
+						data-element-name-hook='picFieDiv'
+					>{ /* What: Fields Div Element. Why: Every Details field (Name, Group, Picker type, conditional attach, daily schedule) belongs in one shared column. How: This wraps every np-field block below. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
-						<div className='np-field'>{ /* What: Name Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. */ }
+						<div
+							className='np-field'
+
+							data-element-name-hook='forFieDiv'
+						>{ /* What: Name Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 							<label
@@ -1200,7 +1208,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						</div>
 
 
-						<div className='np-field'>{ /* What: Group Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. */ }
+						<div
+							className='np-field'
+
+							data-element-name-hook='forFieDiv'
+						>{ /* What: Group Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 							<span className='np-label'>Group</span>{ /* What: Group Label Span Element. Why: The controls below need a readable label. How: This renders the literal word "Group". */ }
@@ -1286,7 +1298,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						</div>
 
 
-						<fieldset className='np-field'>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. */ }
+						<fieldset
+							className='np-field'
+
+							data-element-name-hook='forFieFie'
+						>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 							<legend className='np-label'>Picker type</legend>{ /* What: Mode Legend Element. Why: A fieldset needs its own accessible legend. How: This renders the literal text "Picker type". */ }
@@ -1304,8 +1320,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										className={ ` mode-opt   ${ selModStr === modKeyStr ? 'is-on' : '' } ` }
 
+										data-element-name-hook='modOptLab'
 										data-mode={ modKeyStr }
-									>{ /* What: Mode Option Label Element. Why: The radio input and its own name/hint text must all be one clickable label. How: This wraps the radio input and its description block. */ }
+									>{ /* What: Mode Option Label Element. Why: The radio input and its own name/hint text must all be one clickable label. How: This wraps the radio input and its description block. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 										<input
@@ -1359,7 +1376,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-						<div className='np-field np-cond'>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. */ }
+						<div
+							className='np-field np-cond'
+
+							data-element-name-hook='forFieDiv'
+						>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 							<div className='np-field--toggle'>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. */ }
@@ -1506,7 +1527,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-						<div className='np-field np-daily-group'>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. */ }
+						<div
+							className='np-field np-daily-group'
+
+							data-element-name-hook='forFieDiv'
+						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 							<div className='np-field--toggle'>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. */ }
@@ -1878,12 +1903,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								<ButBasCom
 									className='ob-picker-next'
 
+									data-element-name-hook='forNexBut'
+
 									disabled={ !detReaBoo || conColBoo }
 									icoNamStr='chvEle'
 									kinValStr='primary'
 
 									onClick={ advSteFun }
-								>Add Items</ButBasCom> // What: Button Base Component. Why: Creating still has an Items step to fill in. How: This calls advSteFun to advance, disabled under the same conditions as the edit Save button above.
+								>Add Items</ButBasCom> // What: Button Base Component. Why: Creating still has an Items step to fill in. How: This calls advSteFun to advance, disabled under the same conditions as the edit Save button above. Its data-element-name-hook is read by the picker mini-tours.
 
 
 							) }
@@ -1964,7 +1991,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ iniForObj && !opeTouBoo && ( // What: Tour Name Field Check. Why: Only the empty-state quick-start prefill (not a real tour walkthrough) ever needs this redundant name field this deep into the form. How: This renders the field only when a prefill exists and it wasn't opened by a tour. // What: Tour Name Field Design Note. Why: The guided tour now walks through the Details sub-step normally (where the real name input already lives) before reaching Items, so this redundant field is only needed for the OTHER initial-prefill path. How: Today's "no pickers yet" quick-start card jumps straight here, which is the sole real remaining reason iniForObj can reach Step 2 without opeTouBoo.
 
 
-						<div className='np-field np-tour-name'>{ /* What: Tour Name Field Div Element. Why: The label and input form one field unit. How: This wraps those two pieces. */ }
+						<div
+							className='np-field np-tour-name'
+
+							data-element-name-hook='forFieDiv'
+						>{ /* What: Tour Name Field Div Element. Why: The label and input form one field unit. How: This wraps those two pieces. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 							<label
@@ -2207,7 +2238,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							ref={ addWraRef }
 
 							className='pv-additem-wrap'
-						>{ /* What: Add Item Wrap Div Element. Why: The new-item form, an already-committed item's editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. */ }
+
+							data-element-name-hook='iteAddDiv'
+						>{ /* What: Add Item Wrap Div Element. Why: The new-item form, an already-committed item's editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 							{ ( () => { // What: Additem Slot Render. Why: Exactly one of three things belongs in this slot at a time, easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then actNewStr, falling back to the plain button.
@@ -2270,6 +2303,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													<input
 														className='rd-name-input'
 
+														data-element-name-hook='rowNamInp'
+
 														autoFocus
 														maxLength={ 60 }
 														placeholder='Item name'
@@ -2290,7 +2325,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 														} }
 														onChange={ ( chaEveObj ) => draActObj.updIteFun( ediLivObj.id, { name : chaEveObj.target.value } ) }
 														onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-													/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes into draActObj on every change, and commits the rename on blur. */ }
+													/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes into draActObj on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 												</span>
@@ -2335,10 +2370,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									<button
 										className='pv-additem-btn'
 
+										data-element-name-hook='iteAddBut'
+
 										type='button'
 
 										onClick={ addDraFun }
-									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. */ }
+									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the Pickers page tour and the picker mini-tours. */ }
 
 
 										<IcoSvgCom
@@ -2410,6 +2447,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 												<input
 													className='rd-name-input'
 
+													data-element-name-hook='rowNamInp'
+
 													autoFocus
 													maxLength={ 60 }
 													placeholder='Item name'
@@ -2430,7 +2469,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													} }
 													onChange={ ( chaEveObj ) => draActObj.updIteFun( newIteObj.id, { name : chaEveObj.target.value } ) }
 													onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-												/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being newly added. How: This writes into draActObj on every change, and commits the rename on blur. */ }
+												/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being newly added. How: This writes into draActObj on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 											</span>
@@ -2508,12 +2547,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							<ButBasCom
 								className='ob-picker-create'
 
+								data-element-name-hook='forCreBut'
+
 								disabled={ !enoIteBoo || conColBoo }
 								icoNamStr='cheEle'
 								kinValStr='primary'
 
 								onClick={ subForFun }
-							>Create Picker</ButBasCom>{ /* What: Button Base Component. Why: This is the actual final commit for a brand-new picker. How: This calls subForFun, disabled until enoIteBoo holds and no conditional name collides. */ }
+							>Create Picker</ButBasCom>{ /* What: Button Base Component. Why: This is the actual final commit for a brand-new picker. How: This calls subForFun, disabled until enoIteBoo holds and no conditional name collides. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 						</div>

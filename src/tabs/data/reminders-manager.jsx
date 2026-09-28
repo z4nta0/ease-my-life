@@ -658,8 +658,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 		<section
 			className='cat cat--reminders cat--enter'
 
-			data-element-name-hook='datCatSec'
-		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours. */ }
+			data-element-name-hook='datCatSec remCatSec'
+		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours and the Data page tour. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. */ }
@@ -923,7 +923,11 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
 
 
-													<div className='rd-row'>{ /* What: Row Editing Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. */ }
+													<div
+														className='rd-row'
+
+														data-element-name-hook='lisRowDiv'
+													>{ /* What: Row Editing Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 														<span className={ ` rd-ico   ${ isaOncBoo ? 'is-once' : '' } ` }>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. */ }
@@ -959,6 +963,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 																className='rd-name-input'
 
+																data-element-name-hook='rowNamInp'
+
 																maxLength={ 60 }
 																placeholder='Reminder name'
 																type='text'
@@ -978,7 +984,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 																} }
 																onChange={ ( chaEveObj ) => actStoObj.updTasFun( curTasObj.id, { name : chaEveObj.target.value } ) }
 																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish the name the same way leaving the field does. How: This blurs the input on Enter, which runs onBlur's own commit.
-															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This commits every keystroke, re-trims and re-commits (only if non-empty) on blur, and blurs itself on Enter; its own ref callback suppresses the browser's native focus-scroll so it doesn't fight opeRowRef's own smooth scroll. */ }
+															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This commits every keystroke, re-trims and re-commits (only if non-empty) on blur, and blurs itself on Enter; its own ref callback suppresses the browser's native focus-scroll so it doesn't fight opeRowRef's own smooth scroll. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 														</span>
