@@ -1596,37 +1596,6 @@ button.cat-h-l {
 .set-data-row--sub.is-disabled { opacity: 0.45; }
 .set-data-row--sub.is-disabled .set-time-input { pointer-events: none; }
 
-/* Contact support form (About section) — the form now lives in its own Card
-   below the "Having problems?" row, padded normally (no rd-ctl bleed needed). */
-.support-form { display: flex; flex-direction: column; gap: 14px; }
-.support-field { display: flex; flex-direction: column; gap: 6px; }
-.support-flabel {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--muted);
-}
-.support-textarea { resize: vertical; min-height: 90px; font-family: inherit; line-height: 1.5; }
-/* Read-only diagnostic fields — value styled distinctly from an editable input
-   so it reads as informational, not something to type into. */
-.support-diag { display: flex; gap: 24px; flex-wrap: wrap; }
-.support-diag-field { display: flex; flex-direction: column; gap: 4px; }
-.support-diag-val { font-size: 13px; color: var(--text); }
-/* Honeypot — hidden from sight and from layout, but still a real focusable
-   field in the DOM so bots find and fill it. Not display:none, which some bots
-   skip. aria-hidden + tabindex=-1 keep it away from assistive tech. */
-.support-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-.support-form-foot {
-  display: flex; justify-content: flex-end; align-items: center; gap: 12px;
-  flex-wrap: wrap;
-  padding-top: 14px; border-top: 0.5px solid var(--border);
-}
-.support-valid-msg { margin-right: auto; font-size: 12px; color: oklch(0.5 0.18 25); animation: importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both; }
-@media (prefers-reduced-motion: reduce) { .support-valid-msg { animation: none; } }
-/* Shown when the POST didn't go through — advisory rather than an error, since
-   nothing was lost and the address is right there. */
-.support-fallback { margin-right: auto; font-size: 12px; max-width: 46ch; line-height: 1.45; color: oklch(0.45 0.13 50); animation: importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both; }
-.support-fallback-addr { font-family: var(--font-mono); font-size: 12px; color: var(--text); overflow-wrap: anywhere; }
-@media (prefers-reduced-motion: reduce) { .support-fallback { animation: none; } }
-
 /* About */
 .set-about { display: flex; flex-direction: column; gap: 10px; }
 .set-about-brand { display: flex; align-items: baseline; gap: 10px; }
