@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import { isoDayFun } from '../utils/date.js'; // What: Iso Day Function. Why: Holiday dates are matched against local-calendar YYYY-MM-DD keys. How: This formats each computed holiday date as that key.
+
+// #endregion Imports
+
+
+
 /**
  * holidays.js = Holidays
  *
@@ -230,11 +238,6 @@ function obsDatFun( actDatObj ) {
 
 // #endregion obsDatFun
 
-
-
-const padDigFun = ( digValNum ) => String( digValNum ).padStart( 2, '0' );                                                                          // What: Pad Digit Function. Why: Every ISO date string segment (month, day) needs to render as exactly 2 digits. How: This left-pads digValNum's own string form with a leading '0' when it's under 2 characters.
-const isoDatFun = ( souDatObj ) => `${ souDatObj.getFullYear() }-${ padDigFun( souDatObj.getMonth() + 1 ) }-${ padDigFun( souDatObj.getDate() ) }`; // What: Iso Date Function. Why: Every date comparison and lookup in this module needs a plain, locale-independent, comparable string key, not a Date instance. How: This formats souDatObj as YYYY-MM-DD using padDigFun for the 2-digit month/day segments.
-
 // #endregion Date Math
 
 
@@ -341,10 +344,10 @@ function comYeaFun( yeaValNum, couCodStr = 'US' ) {
 
 			actObj : actDatObj,                                        // What: Actual Object. Why: A caller wording itself around an observed shift needs the true calendar date too. How: This is actDatObj, resolved above.
 			datObj : obsDatObj,                                        // What: Date Object. Why: This is the OBSERVED day, what people actually get off, which is what most callers care about. How: This is obsDatObj, resolved above.
-			isoStr : isoDatFun( obsDatObj ),                           // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDatFun.
+			isoStr : isoDayFun( obsDatObj ),                           // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDayFun.
 			keyStr : holDefObj.keyStr,                                 // What: Key String. Why: This is the stable identifier callers use to reference this specific holiday, e.g. to disable it. How: This is copied straight from holDefObj.keyStr.
 			namStr : holDefObj.namStr,                                 // What: Name String. Why: This is the human-readable label callers display for this holiday. How: This is copied straight from holDefObj.namStr.
-			obsBoo : isoDatFun( obsDatObj ) !== isoDatFun( actDatObj ) // What: Observed Boolean. Why: A caller needs to know whether the observed and actual dates actually differ, to word itself accordingly. How: This compares the two dates' own iso strings for inequality.
+			obsBoo : isoDayFun( obsDatObj ) !== isoDayFun( actDatObj ) // What: Observed Boolean. Why: A caller needs to know whether the observed and actual dates actually differ, to word itself accordingly. How: This compares the two dates' own iso strings for inequality.
 
 
 		};
@@ -440,7 +443,7 @@ function actYeaFun( holStaObj, yeaValNum ) {
 
 			custom : true,                     // What: Custom. Why: A caller needs to tell this record apart from a computed built-in holiday. How: This is always true for a record built from the user's own custom list.
 			datObj : cusDatObj,                // What: Date Object. Why: This is the resolved concrete date for yeaValNum. How: This is cusDatObj, resolved above.
-			isoStr : isoDatFun( cusDatObj ),   // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDatFun.
+			isoStr : isoDayFun( cusDatObj ),   // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDayFun.
 			keyStr : 'custom:' + cusDefObj.id, // What: Key String. Why: This is the stable identifier for this custom day, namespaced so it can never collide with a computed holiday's own key. How: This prefixes cusDefObj.id with 'custom:'.
 			namStr : cusDefObj.name            // What: Name String. Why: This is the human-readable label callers display for this custom day. How: This is copied straight from cusDefObj.name.
 
@@ -491,7 +494,7 @@ function actYeaFun( holStaObj, yeaValNum ) {
 function holDatFun( holStaObj, cheDatObj ) {
 
 
-	const tarIsoStr = isoDatFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDatFun once, reused across every loop iteration below.
+	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
 	const curYeaNum = cheDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads cheDatObj's own calendar year.
 
 
@@ -546,7 +549,7 @@ function holDatFun( holStaObj, cheDatObj ) {
 function holInfFun( holStaObj, cheDatObj ) {
 
 
-	const tarIsoStr = isoDatFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDatFun once, reused across every loop iteration below.
+	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
 	const curYeaNum = cheDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads cheDatObj's own calendar year.
 
 

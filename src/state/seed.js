@@ -7,6 +7,7 @@
 // #region Imports
 
 import { HOL_NAM_OBJ } from '../core/holidays.js'; // What: Holidays Namespace Object. Why: The seeded demo state needs a real holidays-state shape, and the clean state needs the same canonical empty one. How: This is called (defStaFun) by both buiCleFun and buiSeeFun below.
+import { isoDayFun   } from '../utils/date.js';    // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { TAS_NAM_OBJ } from '../core/tasks.js';    // What: Tasks Namespace Object. Why: The seeded demo state needs a few real reminder task objects, built to the reminders engine's own shape. How: This is called (defTasFun/defOptFun) by buiSeeFun and buiCleFun below.
 
 // #endregion Imports
@@ -394,48 +395,6 @@ function picWeiFun( itePooArr ) {
 
 
 
-// #region seeIsoFun
-
-/**
- * seeIsoFun = Seed Iso Function
- *
- * @summary
- * Produces the same local-timezone-adjusted ISO day string as
- * store.js's own isoDay and onboarding-seed-data.js's own isoDayFun,
- * kept as a local copy since this module has no dependency on either.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param datRawObj - Date Raw Object: The date to convert.
- *
- * @returns The given date's own local calendar day, as a "YYYY-MM-DD"
- * string.
- *
- * @example
- * ```ts
- * seeIsoFun(datRawObj) // => 'YYYY-MM-DD'
- * ```
- *
-*/
-
-function seeIsoFun( datRawObj ) {
-
-
-	const datCopObj = new Date( datRawObj ); // What: Date Copy Object. Why: The given date must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datRawObj.
-
-	datCopObj.setMinutes( datCopObj.getMinutes() - datCopObj.getTimezoneOffset() ); // What: Date Copy Minutes Adjustment. Why: Shifting by the local timezone offset is what makes the ISO string below reflect the local calendar day instead of UTC's. How: This subtracts the local timezone offset, in minutes, from the copy's own minutes.
-
-
-
-	return datCopObj.toISOString().slice( 0, 10 ); // What: Iso Day String Return. Why: The caller only wants the calendar-day portion, not a full timestamp. How: This takes the shifted copy's own ISO string and slices off everything after the first 10 characters (YYYY-MM-DD).
-
-
-}
-
-// #endregion seeIsoFun
-
-
-
 const uniIdeFun = (() => { // What: Unique Identifier Function. Why: Every seeded item/vacation/pick-log/reminder-log row below needs its own distinct string id, and nothing else in this module tracks a shared counter for that. How: This is an immediately-invoked closure that captures one counter and returns the actual generator function used everywhere below.
 
 
@@ -508,7 +467,7 @@ function buiConFun() {
 
 
 			condId    : 'cnd_chorefree',                            // What: Conditional Identifier. Why: Every simulated row belongs to the demo's own Chore Free Day gate. How: This is that gate's fixed id.
-			date      : seeIsoFun( curDatObj ),                     // What: Date. Why: The Stats tab groups conditional history by day. How: This formats curDatObj as a local ISO date.
+			date      : isoDayFun( curDatObj ),                     // What: Date. Why: The Stats tab groups conditional history by day. How: This formats curDatObj as a local ISO date.
 			id        : 'clseed_' + ( seqCouNum++ ).toString( 36 ), // What: Identifier. Why: Every log row needs its own unique id. How: This appends the next base-36 sequence number to a seed prefix.
 			mode      : 'ease-up',                                  // What: Mode. Why: The demo gate charges up over time. How: This is the gate's fixed ease-up mode.
 			name      : 'Chore Free Day',                           // What: Name. Why: Log rows denormalize the gate's name so history survives a rename. How: This is the gate's fixed display name.
@@ -910,7 +869,7 @@ function buiVacFun( allIteArr ) {
 	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
 
 
-	const dayAgoFun = ( dayAgoNum ) => { // What: Day Ago Function. Why: Every row below needs to turn a plain days-back count into a real ISO date string. How: This subtracts dayAgoNum days from todMidObj and converts the result via seeIsoFun.
+	const dayAgoFun = ( dayAgoNum ) => { // What: Day Ago Function. Why: Every row below needs to turn a plain days-back count into a real ISO date string. How: This subtracts dayAgoNum days from todMidObj and converts the result via isoDayFun.
 
 
 		const offDatObj = new Date( todMidObj ); // What: Offset Date Object. Why: todMidObj itself must not be mutated by the offset below. How: This constructs a fresh copy of todMidObj to offset in place instead.
@@ -919,7 +878,7 @@ function buiVacFun( allIteArr ) {
 
 
 
-		return seeIsoFun( offDatObj ); // What: Offset Iso Day Return. Why: Every row below needs a plain ISO date string, not a Date instance. How: This converts the offset date via seeIsoFun.
+		return isoDayFun( offDatObj ); // What: Offset Iso Day Return. Why: Every row below needs a plain ISO date string, not a Date instance. How: This converts the offset date via isoDayFun.
 
 
 	};
@@ -1116,7 +1075,7 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 			id          : 'pls_' + ( seqCouNum++ ).toString( 36 ),                                    // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one from a running counter, prefixed 'pls_'.
 			eid         : null,                                                                       // What: Entry Id. Why: A simulated historical row was never a live Today entry, so it has no entry to reference. How: This is always null for a row built by this simulation.
-			date        : seeIsoFun( datValObj ),                                                     // What: Date. Why: Stats groups and filters rows by their own calendar day. How: This converts datValObj via seeIsoFun.
+			date        : isoDayFun( datValObj ),                                                     // What: Date. Why: Stats groups and filters rows by their own calendar day. How: This converts datValObj via isoDayFun.
 			pickerId    : curPicObj.id,                                                               // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPicObj's own id.
 			itemId      : curIteObj.id,                                                               // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curIteObj's own id.
 			itemName    : curIteObj.name,                                                             // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curIteObj's own name.
@@ -1161,7 +1120,7 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 
 
-			const dayIsoStr = seeIsoFun( curDatObj );                                                                               // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seeIsoFun.
+			const dayIsoStr = isoDayFun( curDatObj );                                                                               // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
 			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !isaVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible for it. How: This filters curPicObj's own pool down to items isaVacFun does not report inactive.
 
 
@@ -1250,7 +1209,7 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 
 
-			const dayIsoStr = seeIsoFun( curDatObj );                                                                               // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seeIsoFun.
+			const dayIsoStr = isoDayFun( curDatObj );                                                                               // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via isoDayFun.
 			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !isaVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible to become (or remain) active. How: This filters curPicObj's own pool down to items isaVacFun does not report inactive.
 
 
@@ -1406,7 +1365,7 @@ function buiSeeFun() {
 
 	const picIdeObj = Object.fromEntries( allPicArr.map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker Identifier Object. Why: Today's own rows below need to look a picker up by id repeatedly. How: This maps allPicArr into an id-keyed lookup object.
 	const iteNamFun = ( tarNamStr ) => allIteArr.find( ( curIteObj ) => curIteObj.name === tarNamStr );    // What: Item Named Function. Why: Today's own rows below are authored by item name for readability, not by id. How: This searches allIteArr for the first item whose own name matches tarNamStr.
-	const todIsoStr = seeIsoFun( new Date() );                                                             // What: Today Iso String. Why: Every row referencing "today" below needs the same real calendar day. How: This converts the current date via seeIsoFun.
+	const todIsoStr = isoDayFun( new Date() );                                                             // What: Today Iso String. Why: Every row referencing "today" below needs the same real calendar day. How: This converts the current date via isoDayFun.
 
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every one of today's own entries needs its own unique eid, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per call to makEidFun below.
 
@@ -1528,7 +1487,7 @@ function buiSeeFun() {
 
 
 
-		return seeIsoFun( retDatObj ); // What: Fridge Return Iso Day Return. Why: The caller only wants a plain comparable ISO date string, not a Date instance. How: This converts retDatObj via seeIsoFun.
+		return isoDayFun( retDatObj ); // What: Fridge Return Iso Day Return. Why: The caller only wants a plain comparable ISO date string, not a Date instance. How: This converts retDatObj via isoDayFun.
 
 
 	})();
@@ -1650,7 +1609,7 @@ function buiSeeFun() {
 function buiCleFun() {
 
 
-	const todIsoStr = seeIsoFun( new Date() ); // What: Today Iso String. Why: The clean state's own today.date field still needs a real calendar day, even with nothing else seeded. How: This converts the current date via seeIsoFun.
+	const todIsoStr = isoDayFun( new Date() ); // What: Today Iso String. Why: The clean state's own today.date field still needs a real calendar day, even with nothing else seeded. How: This converts the current date via isoDayFun.
 
 
 
@@ -1695,8 +1654,7 @@ const SED_NAM_OBJ = { // What: Seed Namespace Object. Why: This is the single pu
 	buiCleFun   : buiCleFun,   // What: Build Clean Function. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This re-exports buiCleFun under its own matching name.
 	buiSeeFun   : buiSeeFun,   // What: Build Seed Function. Why: This design-time demo/sample state builder is meant to be called manually during development, not imported by any live app code path. How: This re-exports buiSeeFun under its own matching name.
 	MOD_DEF_OBJ : MOD_DEF_OBJ, // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text reads this shared table. How: This re-exports MOD_DEF_OBJ under its own matching name.
-	picLogFun   : picLogFun,   // What: Pick Log Function. Why: scripts/build-onboarding-stats.mjs reuses this exact simulation to precompute the Welcome Tour's own sample history offline. How: This re-exports picLogFun under its own matching name.
-	seeIsoFun   : seeIsoFun    // What: Seed Iso Function. Why: scripts/build-onboarding-stats.mjs needs the exact same date-to-ISO-string conversion this file's own simulation uses. How: This re-exports seeIsoFun under its own matching name.
+	picLogFun   : picLogFun    // What: Pick Log Function. Why: scripts/build-onboarding-stats.mjs reuses this exact simulation to precompute the Welcome Tour's own sample history offline. How: This re-exports picLogFun under its own matching name.
 
 
 };

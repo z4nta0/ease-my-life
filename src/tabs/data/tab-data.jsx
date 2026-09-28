@@ -15,6 +15,7 @@ import { CodConCom    } from '../../ui/conditional-controls.jsx';   // What: Con
 import { ColDisCom    } from '../../ui/ui.jsx';                     // What: Collapse Disclosure Component. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
 import { conDraFun    } from '../../ui/conditional-controls.jsx';   // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { DAT_HEL_ARR  } from '../../help/content.jsx';              // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
+import { dimCouFun    } from '../../utils/date.js';                 // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
 import { EntEdiCom    } from '../../ui/entry-editor.jsx';           // What: Entry Editor Component. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
 import { FilButCom    } from '../../ui/ui.jsx';                     // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
 import { freEdiFun    } from '../../ui/ui.jsx';                     // What: Freeze Edited Function. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
@@ -25,8 +26,9 @@ import { InfTipCom    } from '../../ui/ui.jsx';                     // What: Inf
 import { norConFun    } from '../../core/pickers.js';               // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { norGroFun    } from '../../core/pickers.js';               // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun throughout TabDatCom and ConManCom.
+import { ordSufFun    } from '../../utils/date.js';                 // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { PIC_NAM_OBJ  } from '../../core/pickers.js';               // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun.
-import { redMotFun    } from '../../ui/ui.jsx';                     // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
+import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
 import { RemManCom    } from '../../ui/reminders.jsx';              // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
 import { SED_NAM_OBJ  } from '../../state/seed.js';                 // What: Seed Namespace Object. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) throughout PicConCom, ConManCom, and TabDatCom for mode labels and the mode radio group.
 import { sedPicFun    } from '../../help/sample-data.js';           // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
@@ -2897,7 +2899,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 										<select
 											className='np-input rd-cad-sel'
 
-											value={ Math.min( picDatObj.anchorDay ?? 1, CAD_NAM_OBJ.dimCouFun( 2024, picDatObj.anchorMonth ?? 1 ) ) }
+											value={ Math.min( picDatObj.anchorDay ?? 1, dimCouFun( 2024, picDatObj.anchorMonth ?? 1 ) ) }
 
 											aria-label='Anchor day'
 
@@ -2905,7 +2907,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 										>{ /* What: Anchor Day Select Element. Why: A date-anchored yearly cadence also needs its own day-of-month, clamped to whatever the chosen month actually allows. How: This commits the chosen number as picDatObj.anchorDay. */ }
 
 
-											{ Array.from( Array( CAD_NAM_OBJ.dimCouFun( 2024, picDatObj.anchorMonth ?? 1 ) ).keys(), ( arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by CAD_NAM_OBJ.dimCouFun to one option per entry, keyed by its own domValNum.
+											{ Array.from( Array( dimCouFun( 2024, picDatObj.anchorMonth ?? 1 ) ).keys(), ( arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by dimCouFun to one option per entry, keyed by its own domValNum.
 
 
 												<option

@@ -44,10 +44,11 @@ import path from 'node:path'; // What: Path. Why: This script needs to resolve t
 
 
 import { fileURLToPath } from 'node:url';                             // What: File Url To Path. Why: ESM modules have no native __dirname, so this script reconstructs an equivalent. How: This converts import.meta.url into curDirStr below.
-import { ONB_EXA_OBJ   } from '../src/state/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the Welcome Tour's own first sample picker definition. How: This is spread into PIC_DEF_ARR below alongside ONB_ESP_ARR.
+import { isoDayFun     } from '../src/utils/date.js';                 // What: Iso Day Function. Why: Today's own index needs the same local-calendar YYYY-MM-DD key the app stores. How: This formats todDatObj as that key.
 import { ONB_ESP_ARR   } from '../src/state/onboarding-seed-data.js'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the Welcome Tour's own remaining sample picker definitions. How: This is spread into PIC_DEF_ARR below alongside ONB_EXA_OBJ.
+import { ONB_EXA_OBJ   } from '../src/state/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the Welcome Tour's own first sample picker definition. How: This is spread into PIC_DEF_ARR below alongside ONB_ESP_ARR.
 import { ONB_TAS_ARR   } from '../src/state/onboarding-seed-data.js'; // What: Onboarding Task Array. Why: The sample reminder history below needs the real "Take trash out" task definition. How: This is searched by id for traTasObj below.
-import { SED_NAM_OBJ   } from '../src/state/seed.js';                 // What: Seed Namespace Object. Why: This script reuses seed.js's own pick-log simulator (picLogFun) and its date-to-ISO-string conversion (seeIsoFun) for realism/consistency with the dev SEED() build. How: This is called (picLogFun) once below with a 365-day span, and (seeIsoFun) to convert todDatObj into an ISO day string.
+import { SED_NAM_OBJ   } from '../src/state/seed.js';                 // What: Seed Namespace Object. Why: This script reuses seed.js's own pick-log simulator (picLogFun) for realism/consistency with the dev SEED() build. How: This is called once below with a 365-day span.
 import { writeFileSync } from 'node:fs';                              // What: Write File Sync. Why: The generated output must land on disk before this script can report success. How: This writes outConStr to outPatStr below.
 
 // #endregion Imports
@@ -116,7 +117,7 @@ const isoIndFun = ( isoStr ) => { // What: Iso Index Function. Why: dayAgoFun be
 	return Math.floor( Date.UTC( yeaNum, monNum - 1, dayNum ) / 86400000 ); // What: Day Index Return. Why: The caller needs one plain integer comparable across any two dates. How: This converts the UTC timestamp to whole days since the epoch.
 
 };
-const todIndNum = isoIndFun( SED_NAM_OBJ.seeIsoFun( todDatObj ) ); // What: Today Index Number. Why: dayAgoFun below needs today's own day index to subtract every row's own day index from. How: This resolves todDatObj through SED_NAM_OBJ.seeIsoFun then isoIndFun.
+const todIndNum = isoIndFun( isoDayFun( todDatObj ) ); // What: Today Index Number. Why: dayAgoFun below needs today's own day index to subtract every row's own day index from. How: This resolves todDatObj through isoDayFun then isoIndFun.
 const dayAgoFun = ( isoStr ) => todIndNum - isoIndFun( isoStr ); // What: Day Ago Function. Why: Every row below needs its own real ISO date converted into a portable daysAgo offset. How: This subtracts isoStr's own day index from todIndNum.
 
 

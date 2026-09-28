@@ -1,6 +1,17 @@
 
 
 
+// #region Imports
+
+import { dimCouFun } from '../utils/date.js'; // What: Days-In-Month Count Function. Why: Monthly and yearly anchors clamp to the month's real length. How: This is called with a year and 1-based month.
+import { isoDayFun } from '../utils/date.js'; // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+import { nwmDayFun } from '../utils/date.js'; // What: Nth Weekday Of Month Day Function. Why: An nth-weekday cadence needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
+import { ordSufFun } from '../utils/date.js'; // What: Ordinal Suffix Function. Why: Cadence summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
+
+// #endregion Imports
+
+
+
 /**
  * cadence.js = Picker Cadence
  *
@@ -27,9 +38,9 @@
  * monthly, scoped to that one anchor month.
  *
  * The dateMode/nthOrdinal/nthWeekday fields and their semantics mirror
- * tasks.js' own monthly reminders exactly, duplicated here rather than
- * shared, per this module's own isolation from tasks.js (see CLAUDE.md's
- * domain modules section).
+ * tasks.js' own monthly reminders exactly; the calendar math both share
+ * (days in a month, the nth weekday, ordinal suffixes) comes from
+ * utils/date.js, while each module keeps its own schedule logic.
  *
  * Period model: each cadence divides the calendar into consecutive
  * periods whose boundary is the anchor. The period a date falls in is
@@ -81,100 +92,7 @@ const MON_SHO_ARR = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
 
 // #region Helpers
 
-// #region Date Math
-
-// #region dimCouFun
-
-/**
- * dimCouFun = Days-In-Month Count Function
- *
- * @summary
- * The number of real days in a given month, e.g. 29 for February in a
- * leap year. Month numbers are 1-based here, unlike JS Date months.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param yeaValNum - Year Value Number: The calendar year to check.
- * @param monOneNum - Month One Number: The 1-indexed month to check (1 for
- *                    January through 12 for December).
- *
- * @returns The month's own day count, 28 through 31.
- *
- * @example
- * ```ts
- * dimCouFun(2028, 2) // => 29
- * ```
- *
-*/
-
-const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate(); // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
-
-// #endregion dimCouFun
-
-
-
 const midDatFun = ( inpDatObj ) => new Date( inpDatObj.getFullYear(), inpDatObj.getMonth(), inpDatObj.getDate() ); // What: Midnight Date Function. Why: Period-start comparisons must ignore whatever time-of-day inpDatObj carries. How: This rebuilds a Date from inpDatObj's own year/month/day alone, dropping the time component entirely.
-
-
-
-// #region nwmDayFun
-
-/**
- * nwmDayFun = Nth-Weekday-Month Day Function
- *
- * @summary
- * Day-of-month of the Nth (1 through 5) occurrence of a given weekday in
- * a given year/month. Clamps down to the 4th whenever a requested 5th
- * doesn't exist: every month has at least 4 of any weekday (the
- * shortest month is 28 days, exactly 4 weeks), so only the 5th can ever
- * be missing, and the 4th is always a valid fallback. Same logic as
- * tasks.js' own nwmDayFun, duplicated per this module's own
- * isolation from tasks.js.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param yeaValNum - Year Value Number: The calendar year to compute
- *                    against.
- * @param monOneNum - Month One Number: The 1-indexed month to compute
- *                    against (1 for January through 12 for December).
- * @param nthValNum - Nth Value Number: Which occurrence to find, 1
- *                    through 5.
- * @param weeValNum - Weekday Value Number: The target weekday, 0 for
- *                    Sunday through 6 for Saturday.
- *
- * @returns The day-of-month (1 through 31) of that Nth weekday
- * occurrence, clamped to the 4th when a requested 5th doesn't exist.
- *
- * @example
- * ```ts
- * nwmDayFun(yeaValNum, monOneNum, nthValNum, weeValNum) // => day number
- * ```
- *
-*/
-
-function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
-
-
-	const firWeeNum = new Date( yeaValNum, monOneNum - 1, 1 ).getDay();                // What: First Weekday Number. Why: Finding the Nth occurrence of weeValNum needs to know which weekday the month itself starts on. How: This reads the weekday of that month's own 1st day.
-	const firOccNum = 1 + ( ( weeValNum - firWeeNum + 7 ) % 7 );                       // What: First Occurrence Number. Why: This is the day-of-month of the VERY FIRST occurrence of weeValNum in this month, the base every later occurrence is counted from. How: This walks forward from firWeeNum to weeValNum, wrapping via modulo 7.
-	const dimValNum = dimCouFun( yeaValNum, monOneNum );                               // What: Days-In-Month Value Number. Why: The clamp below needs to know how many real days this month actually has. How: This calls dimCouFun once and reuses the result.
-	const canDayNum = firOccNum + ( Math.max( 1, Math.min( 5, nthValNum ) ) - 1 ) * 7; // What: Candidate Day Number. Why: This is the day-of-month the requested Nth occurrence would land on before any clamping. How: This adds 7 days per occurrence past the first, with nthValNum itself clamped to [1, 5].
-
-
-
-	return canDayNum > dimValNum ? canDayNum - 7 : canDayNum; // What: Nth-Weekday-Month Day Return. Why: A requested 5th occurrence that overshoots the month's own real length must fall back to the 4th instead. How: This steps canDayNum back by exactly one week whenever it lands past dimValNum.
-
-
-}
-
-// #endregion nwmDayFun
-
-
-
-const padNumFun = ( numValNum ) => String( numValNum ).padStart( 2, '0' );                                                                          // What: Pad Number Function. Why: An ISO date string needs its month and day both zero-padded to 2 digits. How: This is called twice by forIsoFun below, once for the month and once for the day.
-const forIsoFun = ( inpDatObj ) => `${ inpDatObj.getFullYear() }-${ padNumFun( inpDatObj.getMonth() + 1 ) }-${ padNumFun( inpDatObj.getDate() ) }`; // What: Format Iso Function. Why: Period keys and pick-log date comparisons both need a plain YYYY-MM-DD string, not a Date instance. How: This reads inpDatObj's own year/month/day and zero-pads the month and day via padNumFun.
-
-// #endregion Date Math
 
 
 
@@ -504,7 +422,7 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
  *
 */
 
-function perKeyFun( picCadObj, cheDatObj = new Date() ) { return forIsoFun( perStaFun( picCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via forIsoFun.
+function perKeyFun( picCadObj, cheDatObj = new Date() ) { return isoDayFun( perStaFun( picCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via isoDayFun.
 
 // #endregion perKeyFun
 
@@ -593,46 +511,6 @@ function comPerFun( picCadObj, picLogArr, cheDatObj = new Date() ) {
 const locTipFun = ( dowValNum, souLabStr = 'How often?' ) => `Because you selected ${ DAY_FUL_ARR[ dowValNum ] || 'that day' } in the ${ souLabStr } control, this day cannot be turned off.`; // What: Locked Tip Function. Why: The tip shown when a user tries to turn off the locked weekly anchor day names both the day and the control that set it. How: This looks dowValNum up in DAY_FUL_ARR and interpolates it alongside souLabStr into the message.
 
 // #endregion locTipFun
-
-
-
-// #region ordSufFun
-
-/**
- * ordSufFun = Ordinal Suffix Function
- *
- * @summary
- * Appends the correct English ordinal suffix to a number (1st, 2nd,
- * 3rd, 4th, 11th, 21st, ...).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param ordValNum - Ordinal Value Number: The number to suffix.
- *
- * @returns ordValNum followed by its correct ordinal suffix, as a
- * string.
- *
- * @example
- * ```ts
- * ordSufFun(ordValNum) // => '1st', '2nd', '3rd', '4th', ...
- * ```
- *
-*/
-
-function ordSufFun( ordValNum ) {
-
-
-	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
-	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
-
-
-
-	return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTexArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
-
-
-}
-
-// #endregion ordSufFun
 
 
 
@@ -816,7 +694,6 @@ const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: store.js, tab-toda
 
 
 	comPerFun : comPerFun, // What: Completed Period Function. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports comPerFun under its own matching name.
-	dimCouFun : dimCouFun, // What: Days-In-Month Count Function. Why: Callers need a given year/month's own real day count by this exact name. How: This re-exports dimCouFun under its own matching name.
 	enfWeeFun : enfWeeFun, // What: Enforce Weekly Function. Why: Callers need a weekly picker's own anchor day folded back into its selected days by this exact name. How: This re-exports enfWeeFun under its own matching name.
 	isaCadFun : isaCadFun, // What: Is-A Cadence Function. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its own matching name.
 	locTipFun : locTipFun, // What: Locked Tip Function. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This re-exports locTipFun under its own matching name.

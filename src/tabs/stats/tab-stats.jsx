@@ -13,6 +13,7 @@ import { HelOveCom    } from '../../help/mode.jsx';       // What: Help Overlay 
 import { hidHisFun    } from '../../help/sample-data.js'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helModBoo turns false, and again on unmount.
 import { IcoSvgCom    } from '../../ui/ui.jsx';           // What: Icon Svg Component. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
 import { InfTipCom    } from '../../ui/ui.jsx';           // What: Info Tip Component. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
+import { isoDayFun    } from '../../utils/date.js';       // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PilTagCom    } from '../../ui/ui.jsx';           // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
 import { SED_NAM_OBJ  } from '../../state/seed.js';       // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
 import { STA_HEL_ARR  } from '../../help/content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
@@ -33,7 +34,7 @@ import { useEmlTouFun } from '../../state/tour-bus.js';   // What: Use Ease My L
  * per-picker breakdown, and reminder/conditional history, all filterable by
  * Group/Type/Show and a date range, paginated (PagNavCom) once a list runs
  * long. BreBarCom renders the stacked breakdown bars, HeaLegCom their heat
- * legend, and dayIsoFun/relWheFun/couLevFun are small date/heatmap helpers
+ * legend, and isoDayFun/relWheFun/couLevFun are small date/heatmap helpers
  * the rest of the file reads from. STA_RAN_ARR, SOU_MET_ARR, and TYP_MET_ARR
  * define the range pills and breakdown segments. TabStaCom ties every
  * section together as the tab.
@@ -230,48 +231,6 @@ function couLevFun ( donCouNum ) {
 }
 
 // #endregion couLevFun
-
-
-
-// #region dayIsoFun
-
-/**
- * dayIsoFun = Day Iso Function
- *
- * @summary
- * Converts a Date into the local calendar day it falls on, as a plain
- * 'YYYY-MM-DD' string. Matches store.js's own isoDayFun and seed.js's
- * seeIsoFun, so a value produced here compares equal against a row's
- * denormalized date field without any timezone drift.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param dayDatObj - Day Date Object: The Date to convert.
- *
- * @returns The local calendar day as a 'YYYY-MM-DD' string.
- *
- * @example
- * ```ts
- * dayIsoFun( new Date() ) // => a 'YYYY-MM-DD' string
- * ```
- *
-*/
-
-function dayIsoFun ( dayDatObj ) {
-
-
-	const locDatObj = new Date( dayDatObj ); // What: Local Date Object. Why: The original Date must not be mutated by the timezone shift below. How: This clones dayDatObj before adjusting it.
-
-	locDatObj.setMinutes( locDatObj.getMinutes() - locDatObj.getTimezoneOffset() ); // What: Timezone Shift Call. Why: toISOString always renders in UTC, which would drift the calendar day near midnight in most local timezones. How: This shifts the clock by the local UTC offset so slicing the ISO string yields the correct local day.
-
-
-
-	return locDatObj.toISOString().slice( 0, 10 ); // What: Local Day Return. Why: Only the date portion, not the shifted time-of-day, is a meaningful "day" value. How: This slices the first 10 characters ('YYYY-MM-DD') off the shifted ISO string.
-
-
-}
-
-// #endregion dayIsoFun
 
 
 
@@ -742,7 +701,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	}, [] ); // What: Effect Dependency Array. Why: Today only needs computing once, on mount. How: An empty array means it never recomputes.
 
 
-	const todIsoStr = dayIsoFun( todDatObj ); // What: Today Iso String. Why: The streak, heatmap, and "last picked" math all need today's own calendar day as a plain string. How: This converts todDatObj via the shared dayIsoFun helper.
+	const todIsoStr = isoDayFun( todDatObj ); // What: Today Iso String. Why: The streak, heatmap, and "last picked" math all need today's own calendar day as a plain string. How: This converts todDatObj via the shared isoDayFun helper.
 
 
 	const cutIsoStr = React.useMemo( () => { // What: Cutoff Iso String Memo. Why: Every range-filtered query below needs one shared lower-bound date to compare a row's own date against. How: This computes today minus the active range's own day count, or null for "All time"'s no-cutoff case.
@@ -758,7 +717,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		return dayIsoFun( cutDatObj ); // What: Cutoff Iso Return. Why: Every comparison against this cutoff elsewhere compares against a plain date string, not a Date object. How: This converts cutDatObj via the shared dayIsoFun helper.
+		return isoDayFun( cutDatObj ); // What: Cutoff Iso Return. Why: Every comparison against this cutoff elsewhere compares against a plain date string, not a Date object. How: This converts cutDatObj via the shared isoDayFun helper.
 
 
 	}, [ ranDefObj, todDatObj ] ); // What: Effect Dependency Array. Why: The cutoff only ever needs recomputing when the active range definition or today's own date changes. How: ranDefObj changes the day-count subtracted, todDatObj changes the date it's subtracted from.
@@ -1340,7 +1299,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		( staAppObj.reminderLog || [] )                                                                           // What: Reminder Log Source. Why: The chain below starts from the raw completion log. How: This falls back to an empty array for a fresh install.
 			.filter( ( rowCurObj ) => enaTypArr.includes( rowCurObj.type ) )                                      // What: Enabled Type Filter. Why: Only reminder types opted into Stats count. How: This keeps rows whose own type is in enaTypArr.
 			.filter( ( rowCurObj ) => !hidTasSet.has( rowCurObj.taskId ) )                                        // What: Hidden Task Filter. Why: A hidden task's own history must not surface. How: This drops rows whose task is in hidTasSet.
-			.filter( ( rowCurObj ) => !cutIsoStr || dayIsoFun( new Date( rowCurObj.completedAt ) ) >= cutIsoStr ) // What: Range Filter. Why: Only completions inside the active range count. How: This keeps rows completed on or after cutIsoStr, or every row with no cutoff.
+			.filter( ( rowCurObj ) => !cutIsoStr || isoDayFun( new Date( rowCurObj.completedAt ) ) >= cutIsoStr ) // What: Range Filter. Why: Only completions inside the active range count. How: This keeps rows completed on or after cutIsoStr, or every row with no cutoff.
 
 
 	), [ staAppObj.reminderLog, enaTypArr.join( ',' ), cutIsoStr, hidTasSet ] ); // What: Effect Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the enabled-types set, the range cutoff, or the hidden-task set changes. How: enaTypArr is joined to a stable string since a fresh array identity would otherwise re-trigger this every render.
@@ -1357,7 +1316,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			for ( const rowCurObj of remRowArr ) { // What: Reminder Row Aggregation Loop. Why: Every completion needs folding into its own calendar day's entry. How: This looks up (or lazily creates) that day's entry, then increments it and appends the completed reminder's own name.
 
 
-				const dayKeyStr = dayIsoFun( new Date( rowCurObj.completedAt ) );                        // What: Day Key String. Why: The Map needs a plain calendar-day string to key each entry by. How: This converts the row's own completedAt timestamp via dayIsoFun.
+				const dayKeyStr = isoDayFun( new Date( rowCurObj.completedAt ) );                        // What: Day Key String. Why: The Map needs a plain calendar-day string to key each entry by. How: This converts the row's own completedAt timestamp via isoDayFun.
 				const dayEntObj = outMapObj.get( dayKeyStr ) || { donNum : 0, iteArr : [], totNum : 0 }; // What: Day Entry Object. Why: A day's own entry might already exist from an earlier completion the same day. How: This looks it up, or starts a fresh zeroed entry.
 
 
@@ -1439,7 +1398,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		for ( ;; ) { // What: Backward Walk Loop. Why: The streak must keep extending for as long as each earlier day also has done activity. How: This checks the walk cursor's own day, incrementing and stepping back while it qualifies, breaking on the first day that doesn't.
 
 
-			const dayEntObj = dayAggMap.get( dayIsoFun( walDatObj ) ); // What: Day Entry Object. Why: The current walk cursor's own day needs to be checked against the aggregate map. How: This looks up the cursor's own ISO day in dayAggMap.
+			const dayEntObj = dayAggMap.get( isoDayFun( walDatObj ) ); // What: Day Entry Object. Why: The current walk cursor's own day needs to be checked against the aggregate map. How: This looks up the cursor's own ISO day in dayAggMap.
 
 
 			if ( dayEntObj && dayEntObj.donNum > 0 ) { // What: Qualify Branch. Why: A day with at least one done item extends the streak and the walk keeps going. How: This increments stkCouNum and steps the cursor back one more day.
@@ -1547,10 +1506,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		const outDayArr = [];                                  // What: Out Day Array. Why: The finished grid needs building up one day at a time between the bounds computed above. How: This starts empty and is filled by the loop below.
 
 
-		for ( let curDatObj = new Date( staDatObj ); dayIsoFun( curDatObj ) <= endIsoStr; curDatObj.setDate( curDatObj.getDate() + 1 ) ) { // What: Day Fill Loop. Why: Every day in the window needs its own cell, whether or not anything was logged that day. How: This steps a cloned cursor forward one day at a time, stopping once it passes endIsoStr.
+		for ( let curDatObj = new Date( staDatObj ); isoDayFun( curDatObj ) <= endIsoStr; curDatObj.setDate( curDatObj.getDate() + 1 ) ) { // What: Day Fill Loop. Why: Every day in the window needs its own cell, whether or not anything was logged that day. How: This steps a cloned cursor forward one day at a time, stopping once it passes endIsoStr.
 
 
-			const dayKeyStr = dayIsoFun( curDatObj ); // What: Day Key String. Why: Both the aggregate lookup and the cell's own date field need this day's own ISO string. How: This converts the current loop cursor via dayIsoFun.
+			const dayKeyStr = isoDayFun( curDatObj ); // What: Day Key String. Why: Both the aggregate lookup and the cell's own date field need this day's own ISO string. How: This converts the current loop cursor via isoDayFun.
 
 
 			outDayArr.push( { datStr : dayKeyStr, ...( dayAggMap.get( dayKeyStr ) || { donNum : 0, iteArr : [], totNum : 0 } ) } ); // What: Day Cell Push. Why: Every cell needs its own date plus whatever aggregate data exists for it, or a zeroed placeholder when nothing was logged. How: This spreads either the real aggregate entry or a zeroed default onto the date field.
@@ -2372,7 +2331,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-			if ( cutIsoStr && dayIsoFun( new Date( rowCurObj.skippedAt ) ) < cutIsoStr ) continue; // What: Range Guard. Why: Only a skip inside the active range should count. How: This skips any row whose own skippedAt converts to a day before cutIsoStr.
+			if ( cutIsoStr && isoDayFun( new Date( rowCurObj.skippedAt ) ) < cutIsoStr ) continue; // What: Range Guard. Why: Only a skip inside the active range should count. How: This skips any row whose own skippedAt converts to a day before cutIsoStr.
 
 
 

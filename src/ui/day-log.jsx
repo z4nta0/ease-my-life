@@ -10,6 +10,7 @@ import { CAD_NAM_OBJ } from '../core/cadence.js';      // What: Cadence Namespac
 import { ColDisCom   } from './ui.jsx';                // What: Collapse Disclosure Component. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
 import { CON_NAM_OBJ } from '../core/conditionals.js'; // What: Conditional Namespace Object. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
 import { InfTipCom   } from './ui.jsx';                // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
+import { isoDayFun   } from '../utils/date.js';        // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { SED_NAM_OBJ } from '../state/seed.js';        // What: Seed Namespace Object. Why: PicBloCom and ConSecCom label a mode with the same display names the mode radios use. How: This reads MOD_DEF_OBJ's own labStr for a picker's or conditional's mode.
 import { TAS_NAM_OBJ } from '../core/tasks.js';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
 import { THR_VAL_NUM } from '../constants.js';         // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
@@ -280,22 +281,6 @@ const hasValFun = ( picModStr ) => { // What: Has Value Function. Why: PicBloCom
 
 
 	return hasValBoo; // What: Has Value Return. Why: The caller needs the combined answer back. How: This returns hasValBoo directly.
-
-
-};
-
-
-
-const isoDayFun = ( inpDatObj = new Date() ) => { // What: Iso Day Function. Why: Every log lookup below needs a plain local-timezone "YYYY-MM-DD" key to match against state.pickLog's own date field. How: This shifts a copy of inpDatObj by its own timezone offset before slicing the ISO string down to just the date.
-
-
-	const adjDatObj = new Date( inpDatObj ); // What: Adjusted Date Object. Why: The timezone shift below must never mutate the caller's own inpDatObj. How: This copies inpDatObj into a fresh, freely-mutable Date.
-
-	adjDatObj.setMinutes( adjDatObj.getMinutes() - adjDatObj.getTimezoneOffset() ); // What: Timezone Shift Call. Why: toISOString below always renders in UTC, which would silently roll the date over near local midnight without this shift. How: This subtracts adjDatObj's own timezone offset from its own minutes.
-
-
-
-	return adjDatObj.toISOString().slice( 0, 10 ); // What: Day Key Return. Why: The caller needs just the plain date portion, not a full ISO timestamp. How: This slices adjDatObj's own shifted ISO string down to its first 10 characters.
 
 
 };

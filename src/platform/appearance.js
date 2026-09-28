@@ -6,7 +6,7 @@
 
 // #region Imports
 
-import { redMotFun } from '../ui/ui.jsx'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme-animating class toggle.
+import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme-animating class toggle.
 
 // #endregion Imports
 

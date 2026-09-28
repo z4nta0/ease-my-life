@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import { isoDayFun } from '../utils/date.js'; // What: Iso Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+
+// #endregion Imports
+
+
+
 /**
  * onboarding-seed-data.js = Onboarding Seed Data
  *
@@ -505,50 +513,6 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );           
 
 
 // #region Helpers
-
-// #region isoDayFun
-
-/**
- * isoDayFun = Iso Day Function
- *
- * @summary
- * Produces the same local-timezone-adjusted ISO day string as
- * store.js's own isoDayFun and seed.js's own seeIsoFun, kept as a local
- * copy since this module has no dependency on either.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param datRawObj - Date Raw Object: The date to convert.
- *
- * @returns The given date's own local calendar day, as a "YYYY-MM-DD"
- * string.
- *
- * @example
- * ```ts
- * isoDayFun(datRawObj) // => 'YYYY-MM-DD'
- * ```
- *
-*/
-
-function isoDayFun ( datRawObj ) {
-
-
-	const datCopObj = new Date( datRawObj ); // What: Date Copy Object. Why: The given date must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datRawObj.
-
-
-
-	datCopObj.setMinutes( datCopObj.getMinutes() - datCopObj.getTimezoneOffset() ); // What: Date Copy Minutes Adjustment. Why: Shifting by the local timezone offset is what makes the ISO string below reflect the local calendar day instead of UTC's. How: This subtracts the local timezone offset, in minutes, from the copy's own minutes.
-
-
-
-	return datCopObj.toISOString().slice( 0, 10 ); // What: Iso Day String Return. Why: The caller only wants the calendar-day portion, not a full timestamp. How: This takes the shifted copy's ISO string and slices off everything after the first 10 characters (YYYY-MM-DD).
-
-
-}
-
-// #endregion isoDayFun
-
-
 
 // #region hydStaFun
 

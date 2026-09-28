@@ -6,7 +6,11 @@
 
 // #region Imports
 
-import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
+import { dimCouFun   } from '../utils/date.js'; // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
+import { HOL_NAM_OBJ } from './holidays.js';    // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.
+import { isoDayFun   } from '../utils/date.js'; // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
+import { nwmDayFun   } from '../utils/date.js'; // What: Nth Weekday Of Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
+import { ordSufFun   } from '../utils/date.js'; // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 
 // #endregion Imports
 
@@ -118,40 +122,6 @@ const ancDatFun = ( genTimStr ) => genTimStr ? new Date( genTimStr ) : new Date(
 
 
 
-const padNumFun = ( numValNum ) => String( numValNum ).padStart( 2, '0' ); // What: Pad Number Function. Why: An ISO date string needs its month and day both zero-padded to 2 digits. How: This is called twice by isoDatFun below, once for the month and once for the day.
-
-
-
-// #region isoDatFun
-
-/**
- * isoDatFun = Iso Date Function
- *
- * @summary
- * Formats a Date as a local-time YYYY-MM-DD string, the key every
- * due-ness check, lastDone stamp and skipUntil comparison in the app
- * uses. It reads the local calendar fields rather than toISOString(), so
- * a late-evening date never rolls over to the next UTC day.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param datValObj - Date Value Object: The date to format.
- *
- * @returns The date's own local YYYY-MM-DD string.
- *
- * @example
- * ```ts
- * isoDatFun(datValObj) // => '2026-09-27'
- * ```
- *
-*/
-
-const isoDatFun = ( datValObj ) => `${ datValObj.getFullYear() }-${ padNumFun( datValObj.getMonth() + 1 ) }-${ padNumFun( datValObj.getDate() ) }`; // What: Iso Date Function. Why: Every due-ness/summary/skip comparison in this file needs a plain, comparable YYYY-MM-DD string, not a Date instance. How: This reads datValObj's own year/month/day and zero-pads the month and day via padNumFun.
-
-// #endregion isoDatFun
-
-
-
 // #region curIsoFun
 
 /**
@@ -161,7 +131,7 @@ const isoDatFun = ( datValObj ) => `${ datValObj.getFullYear() }-${ padNumFun( d
  * Today's own local YYYY-MM-DD string, from the live clock. This is
  * calendar time, not the generator-anchored day ancDatFun gives, so
  * callers showing what Today currently displays should format
- * ancDatFun's date with isoDatFun instead.
+ * ancDatFun's date with isoDayFun instead.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -176,7 +146,7 @@ const isoDatFun = ( datValObj ) => `${ datValObj.getFullYear() }-${ padNumFun( d
  *
 */
 
-const curIsoFun = () => isoDatFun( new Date() ); // What: Current Iso Function. Why: A brand new task's own anchor/onceDate/createdAt fields, and every "is this in the past" comparison, need today's own date as a plain string. How: This calls isoDatFun against a freshly constructed Date.
+const curIsoFun = () => isoDayFun( new Date() ); // What: Current Iso Function. Why: A brand new task's own anchor/onceDate/createdAt fields, and every "is this in the past" comparison, need today's own date as a plain string. How: This calls isoDayFun against a freshly constructed Date.
 
 // #endregion curIsoFun
 
@@ -185,10 +155,6 @@ const curIsoFun = () => isoDatFun( new Date() ); // What: Current Iso Function. 
 
 
 // #region Date Math
-
-const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate(); // What: Days-In-Month Count Function. Why: Monthly/annual clamping and Nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
-
-
 
 // #region eveNthFun
 
@@ -219,58 +185,6 @@ const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 
 const eveNthFun = ( nthValNum, uniCouNum ) => nthValNum <= 1 || ( uniCouNum >= 0 && uniCouNum % nthValNum === 0 ); // What: Every-Nth Function. Why: Weekly/monthly/annual all share this same "every N units" check; nthValNum defaults effectively to 1 (no anchor needed, every unit always qualifies, same as before this feature existed) and only actually consults the anchor once N is greater than 1. How: This returns true outright for nthValNum of 1 or less, otherwise checks that uniCouNum is non-negative and evenly divisible by nthValNum.
 
 // #endregion eveNthFun
-
-
-
-// #region nwmDayFun
-
-/**
- * nwmDayFun = Nth-Weekday-Month Day Function
- *
- * @summary
- * Day-of-month of the Nth (1 through 5) occurrence of a given weekday
- * in a given year/month. Clamps down to the 4th whenever a requested
- * 5th doesn't exist: every month has at least 4 of any weekday (the
- * shortest month is 28 days, exactly 4 weeks), so only the 5th can
- * ever be missing, and the 4th is always a valid fallback. Same logic
- * as cadence.js's own nwmDayFun, duplicated per this module's own
- * isolation from cadence.js (see CLAUDE.md's domain modules section).
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param yeaValNum - Year Value Number: The calendar year to compute against.
- * @param monOneNum - Month One Number: The 1-indexed month to compute against
- *                    (1 for January through 12 for December).
- * @param nthValNum - Nth Value Number: Which occurrence to find, 1 through 5.
- * @param weeValNum - Weekday Value Number: The target weekday, 0 for Sunday
- *                    through 6 for Saturday.
- *
- * @returns The day-of-month (1 through 31) of that Nth weekday
- * occurrence, clamped to the 4th when a requested 5th doesn't exist.
- *
- * @example
- * ```ts
- * nwmDayFun(yeaValNum, monOneNum, nthValNum, weeValNum) // => day number
- * ```
- *
-*/
-
-function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
-
-
-	const firWeeNum = new Date( yeaValNum, monOneNum - 1, 1 ).getDay();                // What: First Weekday Number. Why: Finding the Nth occurrence of weeValNum needs to know which weekday the month itself starts on. How: This reads the weekday of that month's own 1st day.
-	const firOccNum = 1 + ( ( weeValNum - firWeeNum + 7 ) % 7 );                       // What: First Occurrence Number. Why: This is the day-of-month of the VERY FIRST occurrence of weeValNum in this month, the base every later occurrence is counted from. How: This walks forward from firWeeNum to weeValNum, wrapping via modulo 7.
-	const dimValNum = dimCouFun( yeaValNum, monOneNum );                               // What: Days-In-Month Value Number. Why: The clamp below needs to know how many real days this month actually has. How: This calls dimCouFun once and reuses the result.
-	const canDayNum = firOccNum + ( Math.max( 1, Math.min( 5, nthValNum ) ) - 1 ) * 7; // What: Candidate Day Number. Why: This is the day-of-month the requested Nth occurrence would land on before any clamping. How: This adds 7 days per occurrence past the first, with nthValNum itself clamped to [1, 5].
-
-
-
-	return canDayNum > dimValNum ? canDayNum - 7 : canDayNum; // What: Nth-Weekday-Month Day Return. Why: A requested 5th occurrence that overshoots the month's own real length must fall back to the 4th instead. How: This steps canDayNum back by exactly one week whenever it lands past dimValNum.
-
-
-}
-
-// #endregion nwmDayFun
 
 
 
@@ -452,7 +366,7 @@ function isaComFun( tasRcdObj ) { return tasRcdObj.repeat === 'once' && !!tasRcd
  *
 */
 
-function isaDonFun( tasRcdObj, cheDatObj = new Date() ) { return !!tasRcdObj.lastDone && tasRcdObj.lastDone === isoDatFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tasRcdObj's own lastDone against cheDatObj's own iso string.
+function isaDonFun( tasRcdObj, cheDatObj = new Date() ) { return !!tasRcdObj.lastDone && tasRcdObj.lastDone === isoDayFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tasRcdObj's own lastDone against cheDatObj's own iso string.
 
 // #endregion isaDonFun
 
@@ -488,7 +402,7 @@ function isaDonFun( tasRcdObj, cheDatObj = new Date() ) { return !!tasRcdObj.las
 function isaDueFun( tasRcdObj, cheDatObj = new Date() ) {
 
 
-	const todIsoStr = isoDatFun( cheDatObj ); // What: Today Iso String. Why: The 'once' case below compares tasRcdObj's own onceDate/lastDone against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
+	const todIsoStr = isoDayFun( cheDatObj ); // What: Today Iso String. Why: The 'once' case below compares tasRcdObj's own onceDate/lastDone against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 
 
@@ -713,55 +627,11 @@ const isaReuFun = ( tasRcdObj ) => tasRcdObj.repeat !== 'once'; // What: Is-A Re
  *
 */
 
-function isaStaFun( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repeat === 'once' && tasRcdObj.lastDone && tasRcdObj.lastDone !== isoDatFun( cheDatObj ); } // What: Is-A Stale Body. Why: store.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRcdObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
+function isaStaFun( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repeat === 'once' && tasRcdObj.lastDone && tasRcdObj.lastDone !== isoDayFun( cheDatObj ); } // What: Is-A Stale Body. Why: store.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRcdObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
 
 // #endregion isaStaFun
 
 // #endregion Task State
-
-
-
-// #region Display Copy
-
-// #region ordSufFun
-
-/**
- * ordSufFun = Ordinal Suffix Function
- *
- * @summary
- * Appends the correct English ordinal suffix to a number (1st, 2nd,
- * 3rd, 4th, 11th, 21st, ...). Same algorithm as cadence.js's own
- * ordSufFun, duplicated per this module's own isolation from
- * cadence.js.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param ordValNum - Ordinal Value Number: The number to suffix.
- *
- * @returns ordValNum followed by its correct ordinal suffix, as a
- * string.
- *
- * @example
- * ```ts
- * ordSufFun(ordValNum) // => '1st', '2nd', '3rd', '4th', ...
- * ```
- *
-*/
-
-function ordSufFun( ordValNum ) {
-
-
-	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
-	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
-
-
-
-	return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTexArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
-
-
-}
-
-// #endregion ordSufFun
 
 
 
@@ -946,8 +816,6 @@ function sumTasFun( tasRcdObj ) {
 }
 
 // #endregion sumTasFun
-
-// #endregion Display Copy
 
 
 
@@ -1163,7 +1031,7 @@ function nexEliFun( tasRcdObj, remOptObj, holStaObj, froDatObj = new Date(), res
 
 
 
-		if ( resSkiBoo && tasRcdObj.skipUntil && isoDatFun( curDatObj ) < tasRcdObj.skipUntil ) continue; // What: Active Skip Guard. Why: When resSkiBoo is honored, a day still inside an active skipUntil window can't be the next eligible one either. How: This skips to the next iteration when all 3 conditions hold.
+		if ( resSkiBoo && tasRcdObj.skipUntil && isoDayFun( curDatObj ) < tasRcdObj.skipUntil ) continue; // What: Active Skip Guard. Why: When resSkiBoo is honored, a day still inside an active skipUntil window can't be the next eligible one either. How: This skips to the next iteration when all 3 conditions hold.
 
 
 
@@ -1255,7 +1123,7 @@ function todVisFun( tasRcdObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 
 	const isaHolBoo = !!holInfObj;            // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
-	const cheIsoStr = isoDatFun( cheDatObj ); // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
+	const cheIsoStr = isoDayFun( cheDatObj ); // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 	const cauValArr = [];                     // What: Cause Value Array. Why: More than one exclusion can apply on the same day (e.g. both an excluded weekend and an excluded holiday), and naming only the first would leave the user turning off one setting while the task still doesn't appear. How: This starts empty and is pushed to below, one entry per applicable cause.
 
 
@@ -1339,7 +1207,7 @@ function visTodFun( tasLisArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6;               // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
 	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) ); // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This guards on HOL_NAM_OBJ existing before calling its own holDatFun, coercing the result to a real boolean.
-	const cheIsoStr = isoDatFun( cheDatObj );                                             // What: Check Iso String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
+	const cheIsoStr = isoDayFun( cheDatObj );                                             // What: Check Iso String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 
 
@@ -1392,7 +1260,6 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.js, reminders.
 	isaDueFun : isaDueFun, // What: Is-A Due Function. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its own matching name.
 	isaReuFun : isaReuFun, // What: Is-A Recurring Function. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaReuFun under its own matching name.
 	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: store.js's own migStaFun() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
-	isoDatFun : isoDatFun, // What: Iso Date Function. Why: Callers need an arbitrary date's own ISO string by this exact name. How: This re-exports isoDatFun under its own matching name.
 	nexEliFun : nexEliFun, // What: Next Eligible Function. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its own matching name.
 	norOptFun : norOptFun, // What: Normalize Options Function. Why: store.js's own migStaFun() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its own matching name.
 	optForFun : optForFun, // What: Options For Function. Why: Callers need a specific task's own governing options object by this exact name. How: This re-exports optForFun under its own matching name.

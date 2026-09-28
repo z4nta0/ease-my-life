@@ -9,7 +9,8 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, React.useCallback, React.useEffect, React.forwardRef, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfTipCom's floating tooltip must render into <body> so it is clamped to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with the tooltip's JSX and document.body inside InfTipCom's return.
+import { createPortal } from 'react-dom';          // What: Create Portal. Why: InfTipCom's floating tooltip must render into <body> so it is clamped to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with the tooltip's JSX and document.body inside InfTipCom's return.
+import { redMotFun    } from '../utils/motion.js'; // What: Reduce Motion Function. Why: The collapse, info-tip and announce animations here are skipped for a user who prefers reduced motion. How: This is checked before each of those animations plays.
 
 // #endregion Imports
 
@@ -143,128 +144,6 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
 
 
 // #region Helpers
-
-// #region Date Formatting
-
-// #region forDatFun
-
-/**
- * forDatFun = Format Date Function
- *
- * @summary
- * Formats a date the compact way the app shows dates everywhere (Today's
- * header, Stats rows, ...): short weekday, short month, day. With no
- * argument it formats right now.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param isoDatStr - Iso Date String: The date to format, or omitted for now.
- *
- * @returns The formatted date, e.g. 'Sun, Sep 27'.
- *
- * @example
- * ```ts
- * forDatFun('2026-09-27') // => 'Sun, Sep 27'
- * ```
- *
-*/
-
-const forDatFun = ( isoDatStr ) => { // What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
-
-
-	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
-
-
-
-	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ); // What: Short Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wed, May 13" via the locale API.
-
-
-};
-
-// #endregion forDatFun
-
-
-
-// #region forLonFun
-
-/**
- * forLonFun = Format Long Function
- *
- * @summary
- * The same as forDatFun, but with the full weekday name, for the few
- * long-form date displays. With no argument it formats right now.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param isoDatStr - Iso Date String: The date to format, or omitted for now.
- *
- * @returns The formatted date, e.g. 'Sunday, Sep 27'.
- *
- * @example
- * ```ts
- * forLonFun('2026-09-27') // => 'Sunday, Sep 27'
- * ```
- *
-*/
-
-const forLonFun = ( isoDatStr ) => { // What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
-
-
-	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
-
-
-
-	return parDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'long' } ); // What: Long Date Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "Wednesday, May 13" via the locale API.
-
-
-};
-
-// #endregion forLonFun
-
-
-
-// #region forTimFun
-
-/**
- * forTimFun = Format Time Function
- *
- * @summary
- * Formats a time as a plain hour and minute with no seconds. With no
- * argument it formats right now.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param isoDatStr - Iso Date String: The moment to format, or omitted for
- *                    now.
- *
- * @returns The formatted time, e.g. '3:42 PM'.
- *
- * @example
- * ```ts
- * forTimFun(isoDatStr) // => '3:42 PM'
- * ```
- *
-*/
-
-const forTimFun = ( isoDatStr ) => { // What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
-
-
-	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
-
-
-
-	return parDatObj.toLocaleTimeString( 'en-US', { hour : 'numeric', minute : '2-digit' } ); // What: Time Return. Why: The caller needs the actual formatted string, not the Date object itself. How: This formats parDatObj as e.g. "3:42 PM" via the locale API.
-
-
-};
-
-// #endregion forTimFun
-
-// #endregion Date Formatting
-
-
-
-// #region List Sorting
 
 // #region sorEntFun
 
@@ -610,38 +489,6 @@ function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, froRowRef ) {
 
 // #endregion freEdiFun
 
-// #endregion List Sorting
-
-
-
-// #region redMotFun
-
-/**
- * redMotFun = Reduce Motion Function
- *
- * @summary
- * Whether the user asked their system for reduced motion. JS-driven
- * animations (rAF tweens, Element.animate, smooth scrolls) check this,
- * since the CSS media query alone can't stop them. It reads the live
- * setting on every call, so a change takes effect immediately.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param void - This function takes no parameters.
- *
- * @returns Whether reduced motion is requested.
- *
- * @example
- * ```ts
- * redMotFun() // => true or false
- * ```
- *
-*/
-
-const redMotFun = () => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduce Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
-
-// #endregion redMotFun
-
 // #endregion Helpers
 
 
@@ -970,7 +817,7 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
 		setExpStaBoo( false ); // What: Expand State Clear Call. Why: Closing must animate the grid row back to 0fr before anything unmounts. How: This flips expStaBoo false, which the JSX below reflects as the "is-open" class being removed.
 
 
-		if ( redMotFun && redMotFun() ) setChiMouBoo( false ); // What: Reduced Motion Unmount Guard. Why: transitionend never fires without a real transition, so nothing else would ever unmount the child. How: This unmounts the child immediately when the user prefers reduced motion.
+		if ( redMotFun() ) setChiMouBoo( false ); // What: Reduced Motion Unmount Guard. Why: transitionend never fires without a real transition, so nothing else would ever unmount the child. How: This unmounts the child immediately when the user prefers reduced motion.
 
 
 	}, [ open ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when the open prop itself changes. How: open is read directly inside the guard above.
@@ -2237,7 +2084,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 // #region Exports
 
-export { annStaFun, BooResCom, ButBasCom, CarSurCom, ColDisCom, FilButCom, forDatFun, forLonFun, forTimFun, freEdiFun, IcoSvgCom, InfTipCom, NumSteCom, PilTagCom, ProBarCom, redMotFun, sorEntFun, SorSelCom, useEscCanFun, WeeChiCom }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name rather than through a namespace object. How: This exports every shared component, formatter, hook, and helper declared above in one statement; every other binding in this file is internal-only.
+export { annStaFun, BooResCom, ButBasCom, CarSurCom, ColDisCom, FilButCom, freEdiFun, IcoSvgCom, InfTipCom, NumSteCom, PilTagCom, ProBarCom, sorEntFun, SorSelCom, useEscCanFun, WeeChiCom }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name rather than through a namespace object. How: This exports every shared component, formatter, hook, and helper declared above in one statement; every other binding in this file is internal-only.
 
 // #endregion Exports
 

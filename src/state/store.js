@@ -12,6 +12,7 @@ import React from 'react'; // What: React. Why: This is the UI library the whole
 import { CAD_NAM_OBJ } from '../core/cadence.js';        // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migStaFun and from the picker-authoring actions below.
 import { CON_NAM_OBJ } from '../core/conditionals.js';   // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resConFun and from cotAplFun below.
 import { HOL_NAM_OBJ } from '../core/holidays.js';       // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defStaFun) from migStaFun and from the holiday actions below.
+import { isoDayFun   } from '../utils/date.js';          // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { norConFun   } from '../core/pickers.js';        // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicFun and savEdiFun below.
 import { norGroFun   } from '../core/pickers.js';        // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migStaFun and from renGroFun/renTouFun below.
 import { norPicFun   } from '../core/pickers.js';        // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migStaFun, addPicFun, savEdiFun, and renPicFun below.
@@ -248,49 +249,6 @@ function invColFun( hexColStr ) {
 }
 
 // #endregion invColFun
-
-
-
-// #region isoDayFun
-
-/**
- * isoDayFun = Iso Day Function
- *
- * @summary
- * Converts a Date into its own local-timezone calendar day, as a plain
- * 'YYYY-MM-DD' string. Every pick/conditional/reminder log row and
- * every day-scoped comparison in this file goes through this, so "today"
- * always means the same local calendar day everywhere.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param datInpObj - Date Input Object: The date to convert; defaults to the
- *                    current moment when omitted.
- *
- * @returns datInpObj's own local calendar day, as a 'YYYY-MM-DD' string.
- *
- * @example
- * ```ts
- * isoDayFun(new Date()) // => 'YYYY-MM-DD'
- * ```
- *
-*/
-
-const isoDayFun = ( datInpObj = new Date() ) => { // What: Iso Day Function. Why: Every dated state field (today.date, pick-log dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
-
-
-	const datCopObj = new Date( datInpObj ); // What: Date Copy Object. Why: datInpObj itself must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datInpObj.
-
-	datCopObj.setMinutes( datCopObj.getMinutes() - datCopObj.getTimezoneOffset() ); // What: Date Copy Minutes Adjustment. Why: Shifting by the local timezone offset is what makes the ISO string below reflect the local calendar day instead of UTC's. How: This subtracts the local timezone offset, in minutes, from the copy's own minutes.
-
-
-
-	return datCopObj.toISOString().slice( 0, 10 ); // What: Iso Day String Return. Why: The caller only wants the calendar-day portion, not a full timestamp. How: This takes the shifted copy's own ISO string and slices off everything after the first 10 characters.
-
-
-};
-
-// #endregion isoDayFun
 
 
 
@@ -4237,7 +4195,7 @@ function useAppStaFun( optArgObj ) {
 
 
 			const curAncObj = TAS_NAM_OBJ.ancDatFun( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Every day-comparison below must be pinned to the last generation's own day, not live "now". How: This calls TAS_NAM_OBJ.ancDatFun with today's own generatedAt.
-			const curDayStr = TAS_NAM_OBJ.isoDatFun( curAncObj );                                      // What: Current Day String. Why: Both the lastDone stamp and the completion-log row below need this exact ISO day. How: This calls TAS_NAM_OBJ.isoDatFun with curAncObj.
+			const curDayStr = isoDayFun( curAncObj );                                      // What: Current Day String. Why: Both the lastDone stamp and the completion-log row below need this exact ISO day. How: This calls isoDayFun with curAncObj.
 			const wasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, curAncObj );                           // What: Was Done Boolean. Why: Every branch below depends on which direction this toggle is heading. How: This calls TAS_NAM_OBJ.isaDonFun with curTasObj and curAncObj.
 
 			const nexTasArr = curStaObj.tasks.map( ( tasMapObj ) => // What: Next Task Array. Why: Only the toggled task's own lastDone actually changes. How: This maps curStaObj.tasks, setting lastDone to null (un-checking) or curDayStr (completing) on the one matching task.
@@ -4250,7 +4208,7 @@ function useAppStaFun( optArgObj ) {
 
 
 				nexLogArr = nexLogArr.filter( ( curRowObj ) => // What: Completion Row Void. Why: Un-checking means today's own completion never happened. How: This drops the row whose taskId matches tarIdeStr and whose completedAt falls on curDayStr.
-					!( curRowObj.taskId === tarIdeStr && TAS_NAM_OBJ.isoDatFun( new Date( curRowObj.completedAt ) ) === curDayStr ) ); // What: Today Completion Test. Why: Only today's own completion of this task is voided. How: This keeps every row except the one for tarIdeStr completed today.
+					!( curRowObj.taskId === tarIdeStr && isoDayFun( new Date( curRowObj.completedAt ) ) === curDayStr ) ); // What: Today Completion Test. Why: Only today's own completion of this task is voided. How: This keeps every row except the one for tarIdeStr completed today.
 
 
 			}
