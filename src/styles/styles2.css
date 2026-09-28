@@ -1903,24 +1903,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    sibling combinator targets the Items header alone.) */
 .cat-body .rd-ctl ~ .rd-ctl { border-top: 0.5px solid var(--border); }
 
-/* Settings matrix — 5 rows × 2 toggle columns (One-time / Recurring). */
-.rd-matrix {
-  background: oklch(from var(--surface) calc(l - 0.012) c h);
-  border-bottom: 0.5px solid var(--border);
-}
-.rd-mx-head, .rd-mx-row { display: grid; grid-template-columns: 1fr 76px 76px; align-items: center; }
-.rd-mx-head { padding: 8px 16px; }
-.rd-mx-col { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-align: center; }
-.rd-mx-row { padding: 11px 16px; border-bottom: 0.5px solid var(--border); }
-.rd-mx-row:last-child { border-bottom: 0; }
-/* Reminders Controls footer — Cancel + Save, right-aligned, above the matrix's
-   bottom edge with a separating hairline. */
-.rd-mx-foot { display: flex; justify-content: flex-end; padding: 12px 16px; border-top: 0.5px solid var(--border); }
-.rd-mx-name { font-size: 13.5px; display: flex; flex-direction: column; gap: 1px; padding-right: 12px; }
-.rd-mx-sub { font-size: 11px; color: var(--muted); line-height: 1.35; }
-.rd-mx-cell { display: flex; justify-content: center; }
-.rd-mx-cell .switch { cursor: pointer; }
-
 /* Items zone */
 .rd-add {
   display: flex; align-items: center; gap: 7px; width: 100%;
@@ -1938,7 +1920,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    unsafe fires either way: the real onClick isn't wired to these elements
    while disabled. */
 .rd-add.is-tour-disabled { opacity: 0.5; cursor: default; }
-.rd-empty { padding: 14px 16px 18px; color: var(--muted); font-size: 13px; }
 
 .rd-item { border-bottom: 0.5px solid var(--border); }
 .rd-item:last-child { border-bottom: 0; }
@@ -1993,12 +1974,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    only its .rd-chev button is actually clickable now, so the row itself
    shouldn't still look clickable everywhere via the shared .rd-row cursor. */
 .rd-item.is-editing > .rd-row { cursor: default; }
-.rd-ico {
-  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--accent-soft); color: var(--accent);
-}
-.rd-ico.is-once { background: oklch(from var(--warm) calc(l + 0.28) c h); color: var(--warm); }
 .rd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .rd-name { font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
 .rd-sched { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }

@@ -1,0 +1,852 @@
+
+
+
+/**
+ * reminders-manager.module.css = Reminders Manager Module
+ *
+ * @summary
+ * Styles for the Data tab's Reminders section: its collapsible card and
+ * header, the Controls and Items toggles, the settings matrix of switches
+ * with its footer, the Add control, the empty message, and each reminder's
+ * row (a button while closed, a live name field while open) above its inline
+ * editor. Most of these classes are shared with the Data tab's other
+ * sections, so their rules are copies of the global ones, resolved where this
+ * section's own overrides used to win on specificity. An open chevron keys off
+ * data-chevron-open-active, an open row off data-row-edit-active, a one-time
+ * reminder's icon off data-reminder-once-active, a switch off its own
+ * aria-pressed, and the disabled Add control off data-tour-disabled-active,
+ * which its info tip forwards. The inline editor's footer reads the
+ * --rem-inline-foot-* properties this section sets.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region cat */
+
+.cat { /* What: Category Card. Why: The Reminders section reads as one card among the Data tab's sections. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance each time it mounts. */
+
+
+	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var(--surface);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-md);
+	overflow      : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cat { /* What: Still Category Card. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #region cat-h */
+
+.cat-h { /* What: Category Header. Why: The header opens and closes the whole section. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
+
+
+	align-items     : center;
+	cursor          : pointer;
+	display         : flex;
+	gap             : 10px;
+	justify-content : space-between;
+	padding         : 14px 16px;
+	user-select     : none;
+
+
+}
+
+/* #region cat-h-l */
+
+.cat-h-l { /* What: Category Header Toggle. Why: The chevron and the name block read as one control. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 10px;
+
+
+}
+button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a real button but should look like the header text it holds. How: This strips the button chrome and lets it fill the header's width. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	flex               : 1 1 auto;
+	font               : inherit;
+	margin             : 0;
+	min-width          : 0;
+	padding            : 0;
+	text-align         : left;
+
+
+}
+
+/* #region chev */
+
+.chev { /* What: Chevron. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
+
+
+	color      : var(--muted);
+	display    : inline-flex;
+	transition : transform .15s;
+
+
+}
+.chev[data-chevron-open-active] { /* What: Open Chevron. Why: An open disclosure points down. How: This turns the chevron a quarter turn. */
+
+
+	transform : rotate(90deg);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.chev { /* What: Still Chevron. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion chev */
+
+
+
+/* #region cat-h-main */
+
+.cat-h-main { /* What: Category Header Main. Why: The name and count stack as the header's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.cat-name { /* What: Category Name. Why: The section's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
+
+
+	font-size      : 16px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	margin         : 0;
+	overflow       : hidden;
+	text-overflow  : ellipsis;
+	white-space    : nowrap;
+
+
+}
+
+
+/* #region cat-count */
+
+.cat-count { /* What: Category Count. Why: The section's counts read as small mono metadata under the name. How: This sets the count pieces on one baseline in muted mono type. */
+
+
+	align-items    : baseline;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 3px;
+	letter-spacing : 0.03em;
+
+
+}
+
+/* #endregion cat-count */
+
+/* #endregion cat-h-main */
+
+/* #endregion cat-h-l */
+
+/* #endregion cat-h */
+
+
+
+/* #region cat-body */
+
+.cat-body { /* What: Category Body. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
+
+
+	--data-sort-row-border-bottom : 0.5px solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--data-sort-row-padding       : 13px 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
+	border-top                    : 0.5px solid var(--border);
+
+
+}
+
+/* #region rd-ctl */
+
+.rd-ctl { /* What: Section Toggle. Why: Controls and Items each open and close under their own full-width toggle. How: This strips the button chrome down to a shaded, divided row that spreads its label and summary apart. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : oklch(from var(--surface) calc(l - 0.012) c h);
+	border-bottom      : 0.5px solid var(--border);
+	border-left        : 0;
+	border-radius      : 0;
+	border-right       : 0;
+	border-top         : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	font               : inherit;
+	justify-content    : space-between;
+	padding            : 12px 16px;
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+.rd-ctl ~ .rd-ctl { /* What: Following Section Toggle. Why: The second toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
+
+
+	border-top : 0.5px solid var(--border);
+
+
+}
+
+/* #region rd-ctl-l */
+
+.rd-ctl-l { /* What: Section Toggle Label. Why: The chevron and the label read as one. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 9px;
+
+
+}
+
+.kicker { /* What: Section Toggle Kicker. Why: The toggle's label reads as a small eyebrow. How: This sets it in small uppercase muted mono type on a tight line. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : 1;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion rd-ctl-l */
+
+
+.rd-ctl-sum { /* What: Section Toggle Summary. Why: A closed toggle says how much it hides. How: This sets the count in small muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.03em;
+
+
+}
+
+/* #endregion rd-ctl */
+
+
+
+/* #region rd-matrix */
+
+.rd-matrix { /* What: Settings Matrix. Why: The reminder settings read as a recessed table under the Controls toggle. How: This shades it and closes it with a hairline. */
+
+
+	background    : oklch(from var(--surface) calc(l - 0.012) c h);
+	border-bottom : 0.5px solid var(--border);
+
+
+}
+
+/* #region rd-mx-head */
+
+.rd-mx-head { /* What: Matrix Header. Why: The columns name the two reminder kinds. How: This lays the header out on the matrix's three-column grid. */
+
+
+	align-items           : center;
+	display               : grid;
+	grid-template-columns : 1fr 76px 76px;
+	padding               : 8px 16px;
+
+
+}
+
+.rd-mx-col { /* What: Matrix Column Label. Why: Each kind is named above its column. How: This sets it centered in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.05em;
+	text-align     : center;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion rd-mx-head */
+
+
+
+/* #region rd-mx-row */
+
+.rd-mx-row { /* What: Matrix Row. Why: Each setting is one row with a switch per kind. How: This lays it out on the three-column grid, divided from the next row. */
+
+
+	align-items           : center;
+	border-bottom         : 0.5px solid var(--border);
+	display               : grid;
+	grid-template-columns : 1fr 76px 76px;
+	padding               : 11px 16px;
+
+
+}
+.rd-mx-row:last-child { /* What: Last Matrix Row. Why: The footer's divider already closes the table. How: This drops the last row's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+/* #region rd-mx-name */
+
+.rd-mx-name { /* What: Matrix Setting Name. Why: Each setting's name sits over its live explanation. How: This stacks them in a column clear of the switches. */
+
+
+	display        : flex;
+	flex-direction : column;
+	font-size      : 13.5px;
+	gap            : 1px;
+	padding-right  : 12px;
+
+
+}
+
+.rd-mx-sub { /* What: Matrix Setting Explanation. Why: The line under each setting explains what the current switches do, fading in each time it changes. How: This sets it small and muted and plays the shared fade whenever its keyed span remounts. */
+
+
+	animation   : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var(--muted);
+	font-size   : 11px;
+	line-height : 1.35;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Matrix Setting Explanation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-mx-sub { /* What: Still Matrix Setting Explanation. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion rd-mx-name */
+
+
+
+/* #region rd-mx-cell */
+
+.rd-mx-cell { /* What: Matrix Cell. Why: Each switch sits centered in its column. How: This centers it in a flex cell. */
+
+
+	display         : flex;
+	justify-content : center;
+
+
+}
+
+
+
+/* #region switch */
+
+.switch { /* What: Setting Switch. Why: Each reminder setting turns on or off per reminder kind. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var(--border);
+	border-radius : 999px;
+	cursor        : pointer;
+	height        : 20px;
+	position      : relative;
+	transition    : background .15s;
+	width         : 36px;
+
+
+}
+.switch[aria-pressed="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+
+
+	background : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch { /* What: Still Setting Switch. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.switch i { /* What: Setting Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var(--bg);
+	border-radius : 50%;
+	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	height        : 16px;
+	left          : 2px;
+	position      : absolute;
+	top           : 2px;
+	transition    : transform .15s;
+	width         : 16px;
+
+
+}
+.switch[aria-pressed="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX(16px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch i { /* What: Still Setting Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion switch */
+
+/* #endregion rd-mx-cell */
+
+/* #endregion rd-mx-row */
+
+
+
+/* #region rd-mx-foot */
+
+.rd-mx-foot { /* What: Matrix Footer. Why: Cancel and Save end the matrix below a divider. How: This pushes them right in a padded row under a hairline. */
+
+
+	border-top      : 0.5px solid var(--border);
+	display         : flex;
+	justify-content : flex-end;
+	padding         : 12px 16px;
+
+
+}
+
+/* #region rem-foot-right */
+
+.rem-foot-right { /* What: Matrix Footer Group. Why: Cancel and Save pair up on the right. How: This lays them out in a fixed-size row pushed right. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+	margin-left : auto;
+
+
+}
+
+/* #endregion rem-foot-right */
+
+/* #endregion rd-mx-foot */
+
+/* #endregion rd-matrix */
+
+
+
+/* #region rd-add */
+
+.rd-add { /* What: Add Reminder Control. Why: Adding a reminder is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below. */
+
+
+	align-items    : center;
+	border-bottom  : 0.5px solid var(--border);
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 7px;
+	letter-spacing : 0.04em;
+	padding        : 13px 16px;
+	text-align     : left;
+	text-transform : uppercase;
+	width          : 100%;
+
+
+}
+.rd-add:hover { /* What: Hovered Add Reminder Control. Why: The control should respond to the pointer. How: This tints it in the accent color. */
+
+
+	color : var(--accent);
+
+
+}
+.rd-add[data-tour-disabled-active] { /* What: Disabled Add Reminder Control. Why: While the tutorials run, adding a reminder is unavailable and should look it. How: This dims the control and drops the pointer cursor, keying off data-tour-disabled-active, which its info tip forwards. */
+
+
+	cursor  : default;
+	opacity : 0.5;
+
+
+}
+
+/* #endregion rd-add */
+
+
+
+.rd-empty { /* What: Empty List Message. Why: An empty list explains how to start. How: This sets a muted message padded like a row. */
+
+
+	color     : var(--muted);
+	font-size : 13px;
+	padding   : 14px 16px 18px;
+
+
+}
+
+
+
+/* #region rd-item */
+
+.rd-item { /* What: Reminder Item. Why: Each reminder is divided from the next. How: This draws a hairline under every item but the last. */
+
+
+	border-bottom : 0.5px solid var(--border);
+
+
+}
+.rd-item:last-child { /* What: Last Reminder Item. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.rd-item--insert { /* What: Inserted Reminder Item. Why: A just-added reminder springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
+
+
+	animation : global(rowInsert) .32s cubic-bezier(.34,1.32,.5,1) both; /* What: Global rowInsert Keyframes. Why: The rowInsert keyframes are shared with the Data tab's item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Inserted Reminder Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-item--insert { /* What: Still Inserted Reminder Item. Why: The row should appear at once, while still ending the animation its handler waits on. How: This shortens its insert to .01ms instead of turning it off. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+
+/* #region rd-row */
+
+.rd-row { /* What: Reminder Row. Why: A closed row is one button that opens its reminder. How: This strips the button chrome and lays the row's pieces out in a padded row. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	font               : inherit;
+	gap                : 12px;
+	padding            : 11px 16px;
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+.rd-row:hover { /* What: Hovered Reminder Row. Why: The row should respond to the pointer. How: This shades it slightly darker than the surface. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.008) c h);
+
+
+}
+.rd-item[data-row-edit-active] > .rd-row:hover { /* What: Hovered Open Row. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
+
+
+	background : transparent;
+
+
+}
+.rd-item[data-row-edit-active] > .rd-row { /* What: Open Row. Why: An open row's header isn't clickable. How: This resets the cursor. */
+
+
+	cursor : default;
+
+
+}
+
+/* #region rd-ico */
+
+.rd-ico { /* What: Reminder Icon. Why: Each row leads with an icon for its reminder's kind. How: This draws a small rounded tile tinted in the accent color. */
+
+
+	align-items     : center;
+	background      : var(--accent-soft);
+	border-radius   : 9px;
+	color           : var(--accent);
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	height          : 30px;
+	justify-content : center;
+	width           : 30px;
+
+
+}
+.rd-ico[data-reminder-once-active] { /* What: One-Time Reminder Icon. Why: A one-time reminder reads warm, apart from the recurring ones. How: This tints the tile in the warm color, keying off data-reminder-once-active. */
+
+
+	background : oklch(from var(--warm) calc(l + 0.28) c h);
+	color      : var(--warm);
+
+
+}
+
+/* #endregion rd-ico */
+
+
+
+/* #region rd-main */
+
+.rd-main { /* What: Row Main. Why: The name and its summary stack as the row's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.rd-name-input { /* What: Row Name Input. Why: An open row renames its reminder in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+
+
+	background     : transparent;
+	border         : 0;
+	border-bottom  : 1px solid var(--border);
+	font           : inherit;
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+	padding        : 1px 0;
+	transition     : border-color .12s;
+	width          : 100%;
+
+
+}
+.rd-name-input:focus { /* What: Focused Row Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var(--accent);
+	outline             : none;
+
+
+}
+.rd-name-input::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Row Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-name-input { /* What: Still Row Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rd-name { /* What: Row Name. Why: A closed row leads with its reminder's name. How: This sets it in medium weight. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+.rd-sched { /* What: Row Summary. Why: The row's summary reads as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion rd-main */
+
+
+
+/* #region rd-chev */
+
+.rd-chev { /* What: Row Chevron Holder. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color. */
+
+
+	color : var(--muted);
+	flex  : 0 0 auto;
+
+
+}
+.rd-item[data-row-edit-active] .rd-chev { /* What: Open Row Chevron Holder. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
+
+
+	color : var(--accent);
+
+
+}
+button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevron is a real button that closes it. How: This strips the button chrome and gives it a small padded hit area that doesn't shift the layout. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : inline-flex;
+	font               : inherit;
+	margin             : -4px;
+	padding            : 4px;
+
+
+}
+
+/* #endregion rd-chev */
+
+/* #endregion rd-row */
+
+
+
+/* #region rd-edit */
+
+.rd-edit { /* What: Reminder Editor. Why: The editor sits under its row, and its footer runs edge to edge. How: This pads the editor and sets the --rem-inline-foot-* properties EdiFooCom reads for its full-bleed divider. */
+
+
+	--rem-inline-foot-border-top : 0.5px solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-margin     : 0 -16px; /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
+	--rem-inline-foot-padding    : 14px 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
+	padding                      : 2px 16px 14px;
+
+
+}
+
+.rem-inline-editor { /* What: Reminder Editor Body. Why: The editor body blends into its row rather than drawing its own card, and fades in as it opens. How: This clears the card chrome and plays the shared row entrance. */
+
+
+	animation     : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : none;
+	border        : 0;
+	border-radius : 0;
+	margin        : 0;
+	padding       : 0;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Reminder Editor Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-inline-editor { /* What: Still Reminder Editor Body. Why: The body should simply appear, fully shown. How: This turns its entrance off and pins it fully shown in place. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion rd-edit */
+
+/* #endregion rd-item */
+
+/* #endregion cat-body */
+
+/* #endregion cat */
+
+
