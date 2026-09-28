@@ -737,23 +737,6 @@
   .infotip { animation: none; }
 }
 
-/* Progress bar primitive */
-.prog {
-  flex: 1;
-  height: 4px;
-  border-radius: 999px;
-  background: oklch(from var(--border) calc(l + 0.03) c h);
-  overflow: hidden;
-  min-width: 60px;
-}
-.prog i {
-  display: block; height: 100%;
-  background: var(--accent);
-  border-radius: 999px;
-  transition: width .3s cubic-bezier(.4,1.2,.5,1);
-}
-.prog--warm i { background: var(--warm); }
-
 /* ─── Tab: Stats ─────────────────────────────────────────────────────────── */
 
 .tab--stats { display: flex; flex-direction: column; gap: 28px; }

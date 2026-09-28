@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import cssModObj from './progress-bar.module.css'; // What: CSS Module Object. Why: The bar's own track and fill styles live in its own module. How: This maps each class name in progress-bar.module.css to its hashed module class.
+
+// #endregion Imports
+
+
+
 /**
  * progress-bar.jsx = Progress Bar
  *
@@ -53,7 +61,7 @@
 const ProBarCom = ( { curValNum, maxValNum = 1, tonValStr = 'accent' } ) => ( // What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, whose width is the clamped curValNum/maxValNum ratio, colored by the tonValStr modifier class.
 
 
-	<div className={ ` prog   prog--${ tonValStr } ` }>{ /* What: Progress Track Div Element. Why: This is the fixed-width background track the filled bar sits inside. How: This applies the tonValStr modifier class and wraps the filled <i> below. */ }
+	<div className={` ${ cssModObj.prog }   ${ tonValStr === 'warm' ? cssModObj.progWarm : '' } `}>{ /* What: Progress Track Div Element. Why: This is the fixed-width background track the filled bar sits inside. How: This applies the tonValStr modifier class and wraps the filled <i> below. */ }
 
 
 		<i style={{ width : `${ Math.max( 0, Math.min( 1, curValNum / maxValNum ) ) * 100 }%` }} />{ /* What: Progress Fill Element. Why: This is the actual filled portion showing how far along curValNum is toward maxValNum. How: This is a self-closing <i>, purely styled via inline width, clamped to [0,100]%. */ }

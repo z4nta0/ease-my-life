@@ -1,0 +1,54 @@
+
+
+
+/**
+ * progress-bar.module.css = Progress Bar Module
+ *
+ * @summary
+ * Styles for ProBarCom's dash-bar: the rounded track and the fill inside it,
+ * whose width the component sets inline. The warm modifier recolors the fill
+ * for ease-down pickers.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region prog */
+
+.prog { /* What: Progress Track. Why: The fill needs a fixed, rounded background track to grow inside. How: This sizes the track and clips the fill to its rounded shape. */
+
+
+	background    : oklch(from var(--border) calc(l + 0.03) c h);
+	border-radius : 999px;
+	flex          : 1;
+	height        : 4px;
+	min-width     : 60px;
+	overflow      : hidden;
+
+
+}
+
+.prog i { /* What: Progress Fill. Why: This is the filled portion showing how far along the value is. How: This fills the track's height and animates the width the component sets inline. */
+
+
+	background    : var(--accent);
+	border-radius : 999px;
+	display       : block;
+	height        : 100%;
+	transition    : width .3s cubic-bezier(.4,1.2,.5,1);
+
+
+}
+.prog--warm i { /* What: Warm Progress Fill. Why: An ease-down picker's bar reads in the warm color. How: This recolors the fill under the warm modifier. */
+
+
+	background : var(--warm);
+
+
+}
+
+/* #endregion prog */
+
+

@@ -10,6 +10,10 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 
 export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  // CSS modules expose their kebab-case class names as camelCase keys only
+  // (`.prog--warm` is read as `cssModObj.progWarm`), per CLAUDE.md's
+  // "CSS modules and JS hooks" rules.
+  css: { modules: { localsConvention: 'camelCaseOnly' } },
   plugins: [
     react(),
     VitePWA({
