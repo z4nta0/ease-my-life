@@ -456,19 +456,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 .btn--secondary { color: var(--text); border: 0.5px solid var(--border); background: var(--surface); }
 .btn--secondary:hover { border-color: var(--muted); }
 
-.pill {
-  display: inline-flex; align-items: center;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-.pill--default { background: var(--surface); color: var(--muted); border: 0.5px solid var(--border); }
-.pill--mode    { background: var(--accent-soft); color: var(--accent); }
-.pill--muted   { background: transparent; color: var(--muted); border: 0.5px solid var(--border); padding: 1px 7px; font-size: 11px; }
 
 .section-h { display: flex; flex-direction: column; gap: 18px; }
 .section-title {

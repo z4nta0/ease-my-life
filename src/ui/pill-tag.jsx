@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import cssModObj from './pill-tag.module.css'; // What: CSS Module Object. Why: The pill's own base and tone styles live in its own module. How: This maps each class name in pill-tag.module.css to its hashed module class.
+
+// #endregion Imports
+
+
+
 /**
  * pill-tag.jsx = Pill Tag
  *
@@ -52,7 +60,7 @@ const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr 
 
 
 	<span
-		className={ ` pill   pill--${ tonValStr } ` }
+		className={` ${ cssModObj.pill }   ${ tonValStr === 'default' ? cssModObj.pillDefault : '' }   ${ tonValStr === 'mode' ? cssModObj.pillMode : '' }   ${ tonValStr === 'muted' ? cssModObj.pillMuted : '' } `}
 
 		data-element-name-hook={ hooNamStr }
 	>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.

@@ -265,7 +265,7 @@
 /* The mode pill now sits below the name (Edit button took its old spot on
    the right) — .pill's own inline-flex already puts it on its own line
    after the block-level .picker-title, this just adds breathing room. */
-.picker-h > div > .pill { margin-top: 6px; }
+.picker-h > div { --pill-margin-top: 6px; }
 .picker-title {
   font-size: 28px; font-weight: 500;
   letter-spacing: -0.025em;
@@ -634,7 +634,7 @@
    is display:inline-flex (pill-tag.jsx), so its text is a flex item rather than
    plain inline content; text-align has no effect on a flex item's position
    along the main axis, justify-content does. Holds regardless of viewport. */
-.pool-name .pill { width: 80px; flex: 0 0 80px; justify-content: center; }
+.pool-name { --pill-width: 80px; --pill-flex: 0 0 80px; --pill-justify-content: center; }
 /* Below 480px, push the pill onto its own line under the name instead of
    competing with it for width on a narrow row. Forcing .pool-item-name to
    flex-basis: 100% (rather than giving the pill itself width: 100%, which
@@ -652,7 +652,7 @@
      sibling to align WITH, and margin-left below needs the text flush
      against the pill's own left edge (not centered, which shifts by a
      different amount per label's own width) to reliably cancel out. */
-  .pool-name .pill { width: auto; flex: 0 0 auto; justify-content: flex-start; }
+  .pool-name { --pill-width: auto; --pill-flex: 0 0 auto; --pill-justify-content: flex-start; }
   /* -7px, not +7px — the goal is to pull the pill LEFT so its own text
      lines up with the name text above it, cancelling out .pill--muted's
      own 7px left padding (which otherwise indents the pill's visible text
@@ -660,7 +660,7 @@
      wrapped onto its own second line — inline, at wider viewports, it
      sits right after the name via .pool-name's own `gap` and needs no
      correction. */
-  .pool-name .pill { margin-left: -7px; }
+  .pool-name { --pill-margin-left: -7px; }
 }
 .pool-meta {
   display: flex; align-items: center; justify-content: flex-end; gap: 12px;
@@ -829,7 +829,7 @@
 /* align-self: flex-start — .stat-picker-id is a column flex container, whose
    default align-items: stretch otherwise stretches the pill (normally
    inline-flex, sized to its own content) to the container's full width. */
-.stat-picker-id > .pill { margin-top: 4px; align-self: flex-start; }
+.stat-picker-id { --pill-margin-top: 4px; --pill-align-self: flex-start; }
 .stat-picker-id .picker-hint { margin: 8px 0 0; }
 
 /* Breakdown: stacked proportion bar + legend (pick source, reminder type). */
