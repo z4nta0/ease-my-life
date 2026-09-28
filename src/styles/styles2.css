@@ -28,9 +28,9 @@
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   /* Fade either edge so whatever tab sits there is always partially
-     obscured — a built-in scrollability cue. JS toggles .at-start /
-     .at-end on this element so the fade only appears on the side where
-     there's actually more content. */
+     obscured, a built-in scrollability cue. JS toggles
+     [data-scroll-start-active] / [data-scroll-end-active] on this element so
+     the fade only appears on the side where there's actually more content. */
   --fade: 36px;
   --fade-l: var(--fade);
   --fade-r: var(--fade);
@@ -50,8 +50,8 @@
   );
 }
 /* Drop the matching-side fade when the row is at that edge. */
-.picker-tabs.at-start { --fade-l: 0px; }
-.picker-tabs.at-end   { --fade-r: 0px; }
+.picker-tabs[data-scroll-start-active] { --fade-l: 0px; }
+.picker-tabs[data-scroll-end-active]   { --fade-r: 0px; }
 .picker-tabs::-webkit-scrollbar { display: none; }
 /* Firefox specifically clips a sliver off the bottom edge of every card in
    this scrollable row (the SHOW cards on the Pickers/Stats/Data pages all
@@ -93,7 +93,7 @@
   overflow-x: auto;
   scrollbar-width: none;
   padding-bottom: 2px;
-  /* Same edge-fade cue as .picker-tabs; JS toggles .at-start / .at-end so a
+  /* Same edge-fade cue as .picker-tabs; JS toggles [data-scroll-start-active] / [data-scroll-end-active] so a
      side only fades when there's more content past it. */
   --fade: 28px;
   --fade-l: var(--fade);
@@ -103,8 +103,8 @@
   -webkit-mask-image: linear-gradient(to right,
     transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
-.picker-groups.at-start { --fade-l: 0px; }
-.picker-groups.at-end   { --fade-r: 0px; }
+.picker-groups[data-scroll-start-active] { --fade-l: 0px; }
+.picker-groups[data-scroll-end-active]   { --fade-r: 0px; }
 .picker-groups::-webkit-scrollbar { display: none; }
 .picker-group-pill {
   flex-shrink: 0;
@@ -633,7 +633,7 @@
   scrollbar-width: none;
   padding-bottom: 2px;
   min-width: 0;
-  /* Edge fades as a scrollability cue; JS toggles .at-start / .at-end so a side
+  /* Edge fades as a scrollability cue; JS toggles [data-scroll-start-active] / [data-scroll-end-active] so a side
      only fades when there's more content past it. */
   --fade: 28px;
   --fade-l: var(--fade);
@@ -643,8 +643,8 @@
   -webkit-mask-image: linear-gradient(to right,
     transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
-.stat-filter-pills.at-start { --fade-l: 0px; }
-.stat-filter-pills.at-end   { --fade-r: 0px; }
+.stat-filter-pills[data-scroll-start-active] { --fade-l: 0px; }
+.stat-filter-pills[data-scroll-end-active]   { --fade-r: 0px; }
 .stat-filter-pills::-webkit-scrollbar { display: none; }
 /* Stats scope selector reuses the Pickers-tab group bar + picker tabs verbatim;
    these modifiers only let them shrink & scroll inside the flex filter row. */
@@ -959,8 +959,8 @@ button.heat-cell.is-sel {
   -webkit-mask-image: linear-gradient(to right,
     transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
-.bd-metrics.at-start { --fade-l: 0px; }
-.bd-metrics.at-end   { --fade-r: 0px; }
+.bd-metrics[data-scroll-start-active] { --fade-l: 0px; }
+.bd-metrics[data-scroll-end-active]   { --fade-r: 0px; }
 .bd-metrics::-webkit-scrollbar { display: none; }
 .bd-metric {
   flex: 0 0 auto;
@@ -1455,8 +1455,8 @@ button.cat-h-l {
      aligns the fade with where the pills actually get cut off. */
   .settings-rail::before { left: 20px; background: linear-gradient(to right, var(--bg), transparent); }
   .settings-rail::after { right: 20px; background: linear-gradient(to left, var(--bg), transparent); }
-  .settings-rail.at-start::before { opacity: 0; }
-  .settings-rail.at-end::after { opacity: 0; }
+  .settings-rail[data-scroll-start-active]::before { opacity: 0; }
+  .settings-rail[data-scroll-end-active]::after { opacity: 0; }
   .settings-rail .rail-kicker { display: none; }
   .settings-rail ul {
     flex-direction: row; flex-wrap: nowrap; gap: 6px; width: max-content;
@@ -2219,15 +2219,15 @@ button.rd-chev {
     flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
     scrollbar-width: none;
     padding-bottom: 2px;
-    /* Edge-fade cue (JS toggles .at-start/.at-end) matching the filter rails. */
+    /* Edge-fade cue (JS toggles [data-scroll-start-active]/[data-scroll-end-active]) matching the filter rails. */
     --fade: 24px; --fade-l: var(--fade); --fade-r: var(--fade);
     mask-image: linear-gradient(to right,
       transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
     -webkit-mask-image: linear-gradient(to right,
       transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
   }
-  .rd-basics-row--group .rd-group-pills.at-start { --fade-l: 0px; }
-  .rd-basics-row--group .rd-group-pills.at-end   { --fade-r: 0px; }
+  .rd-basics-row--group .rd-group-pills[data-scroll-start-active] { --fade-l: 0px; }
+  .rd-basics-row--group .rd-group-pills[data-scroll-end-active]   { --fade-r: 0px; }
   .rd-basics-row--group .rd-group-pills::-webkit-scrollbar { display: none; }
   .rd-basics-row--group .picker-group-pill,
   .rd-basics-row--group .rd-group-new { flex-shrink: 0; }

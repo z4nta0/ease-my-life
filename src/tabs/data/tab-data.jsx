@@ -786,7 +786,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const conRowRef = React.useRef( null ); // What: Conditional Row Reference. Why: Same reasoning as groRowRef, for the Conditionals filter row. How: This is attached to that row's own ref prop.
 
 
-	React.useEffect( () => { // What: Filter Rows Fade Effect. Why: Every filter row shares the same scroll-edge-fade affordance as the Stats tab. How: This wires up at-start/at-end tracking for whichever of the 4 rows are currently mounted, and tears every one down on cleanup.
+	React.useEffect( () => { // What: Filter Rows Fade Effect. Why: Every filter row shares the same scroll-edge-fade affordance as the Stats tab. How: This wires up scroll-edge tracking for whichever of the 4 rows are currently mounted, and tears every one down on cleanup.
 
 
 		const rowEleArr = [ groRowRef.current, typRowRef.current, scoRowRef.current, conRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.

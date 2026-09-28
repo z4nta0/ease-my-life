@@ -1138,7 +1138,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		const cleFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Each row needs its own scroll listener and ResizeObserver, and each needs its own matching teardown. How: This maps every row element to a function that removes that specific row's own listener and observer.
 
 
-			const updFadFun = () => togFadFun( rowCurEle ); // What: Update Fade Function. Why: Both the initial state and every future scroll/resize need the same at-start/at-end recalculation. How: This calls togFadFun on rowCurEle.
+			const updFadFun = () => togFadFun( rowCurEle ); // What: Update Fade Function. Why: Both the initial state and every future scroll/resize need the same scroll-edge recalculation. How: This calls togFadFun on rowCurEle.
 
 
 			updFadFun(); // What: Initial Fade Update Call. Why: The row's own fade state must be correct immediately on mount, not only after the first scroll/resize. How: This invokes updFadFun once, synchronously.

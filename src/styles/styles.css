@@ -735,7 +735,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
     backdrop-filter: blur(18px) saturate(140%);
     border-bottom: 0.5px solid var(--border);
     /* Same edge-fade treatment as .picker-tabs — JS toggles
-       .at-start / .at-end so the fade only appears on the side that
+       [data-scroll-start-active] / [data-scroll-end-active] so the fade only appears on the side that
        has more content to scroll into. */
     --fade: 36px;
     --fade-l: var(--fade);
@@ -755,8 +755,8 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
       transparent 100%
     );
   }
-  .group-rail.at-start { --fade-l: 0px; }
-  .group-rail.at-end   { --fade-r: 0px; }
+  .group-rail[data-scroll-start-active] { --fade-l: 0px; }
+  .group-rail[data-scroll-end-active]   { --fade-r: 0px; }
   .group-rail::-webkit-scrollbar { display: none; }
   .rail-kicker { display: none; }
   .group-rail ul {

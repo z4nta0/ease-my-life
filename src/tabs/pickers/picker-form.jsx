@@ -304,7 +304,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		const updRaiFun = () => togFadFun( raiCurEle ); // What: Update Rail Function. Why: The at-start/at-end edge-fade classes need recomputing every time the rail scrolls or resizes. How: This calls togFadFun on raiCurEle.
+		const updRaiFun = () => togFadFun( raiCurEle ); // What: Update Rail Function. Why: The scroll-edge attributes need recomputing every time the rail scrolls or resizes. How: This calls togFadFun on raiCurEle.
 
 
 		updRaiFun(); // What: Initial Update Call. Why: The classes need to be correct immediately on mount, without waiting for a scroll or resize event. How: This invokes updRaiFun once, synchronously.
@@ -1444,9 +1444,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									<div
 										ref={ raiCalFun }
 
-										className='cnd-rail picker-groups at-start at-end'
+										className='cnd-rail picker-groups'
 
 										data-element-name-hook='conRaiDiv'
+										data-scroll-end-active // What: Scroll End Active Attribute. Why: The rail starts with no edge fades until edge-fade.js first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
+										data-scroll-start-active // What: Scroll Start Active Attribute. Why: The rail starts with no edge fades until edge-fade.js first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
 									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 

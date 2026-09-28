@@ -1373,8 +1373,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @summary
 	 * Scroll-aware edge fades on the mobile group rail: toggles
-	 * .at-start/.at-end so the mask gradient only fades the side that has
-	 * more content, matching .picker-tabs' own behavior.
+	 * data-scroll-start-active/data-scroll-end-active so the mask gradient
+	 * only fades the side that has more content, matching .picker-tabs' own
+	 * behavior.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

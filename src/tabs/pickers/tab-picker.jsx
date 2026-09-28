@@ -282,12 +282,12 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	}, [ groFilStr, typFilStr, visPicArr, sorPicArr, actPicStr, creOpeBoo ] ); // What: Effect Dependency Array. Why: This must re-check whenever any of these could change what "coherent" means. How: groFilStr/typFilStr are the filters themselves, visPicArr/sorPicArr are what they produce, actPicStr is the current selection, and creOpeBoo gates whether this applies at all.
 
 
-	const tabRaiRef = React.useRef( null ); // What: Tab Rail Reference. Why: The scroll-edge fade effect below needs the Show row's own element. How: This is attached to that rail's ref prop. // What: Scroll-Aware Edge Fades Design Note. Why: The tab strip, and the Group/Type filter rails, all need the same at-start/at-end mask-gradient behavior so each one's own fade only shows on the side that has more content. How: tabRaiRef/groRaiRef/typRaiRef below are attached to those three rails; the effect right after wires up a shared scroll+resize listener for whichever of them are actually mounted.
+	const tabRaiRef = React.useRef( null ); // What: Tab Rail Reference. Why: The scroll-edge fade effect below needs the Show row's own element. How: This is attached to that rail's ref prop. // What: Scroll-Aware Edge Fades Design Note. Why: The tab strip, and the Group/Type filter rails, all need the same scroll-edge mask-gradient behavior so each one's own fade only shows on the side that has more content. How: tabRaiRef/groRaiRef/typRaiRef below are attached to those three rails; the effect right after wires up a shared scroll+resize listener for whichever of them are actually mounted.
 	const groRaiRef = React.useRef( null ); // What: Group Rail Reference. Why: The scroll-edge fade effect below needs the Group rail's own element. How: This is attached to that rail's ref prop.
 	const typRaiRef = React.useRef( null ); // What: Type Rail Reference. Why: Same reasoning as groRaiRef, for the Type rail. How: This is attached to that rail's ref prop.
 
 
-	React.useEffect( () => { // What: Rail Fade Effect. Why: Every filter rail shares the same scroll-edge fade affordance. How: This wires at-start/at-end tracking for each mounted rail and tears it down on change.
+	React.useEffect( () => { // What: Rail Fade Effect. Why: Every filter rail shares the same scroll-edge fade affordance. How: This wires scroll-edge tracking for each mounted rail and tears it down on change.
 
 
 		const valRaiArr = [ tabRaiRef.current, groRaiRef.current, typRaiRef.current ].filter( Boolean ); // What: Valid Rail Array. Why: Only whichever rails are actually mounted right now (the Group/Type rows can be entirely absent) should get listeners. How: This filters out any null ref.
@@ -296,7 +296,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 		const cleFunArr = valRaiArr.map( ( curRaiEle ) => { // What: Cleanup Function Array. Why: Each rail needs its own independent listener/observer pair, and its own independent teardown. How: This maps each element to a closure removing exactly its own listener and disconnecting its own observer.
 
 
-			const updFadFun = () => togFadFun( curRaiEle ); // What: Update Fade Function. Why: The at-start/at-end classes need recomputing every time this rail scrolls or resizes. How: This calls togFadFun on curRaiEle.
+			const updFadFun = () => togFadFun( curRaiEle ); // What: Update Fade Function. Why: The scroll-edge attributes need recomputing every time this rail scrolls or resizes. How: This calls togFadFun on curRaiEle.
 
 
 			updFadFun(); // What: Initial Update Call. Why: The classes need to be correct immediately on mount, without waiting for a scroll or resize event. How: This invokes updFadFun once, synchronously.
