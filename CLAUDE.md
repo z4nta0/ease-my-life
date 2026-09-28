@@ -1884,6 +1884,14 @@ still passes.
   trigger an animation or transition (`classList.add(
   cssModObj.isCelebrating )`), since that switches styling on rather than
   recording state for something to read back.
+  - **A trigger JS applies to another file's elements** (decided
+    2026-09-28) is a presence-only `data-*` attribute instead, since a
+    file can only reach its own module's classes: e.g. `tab-today.jsx`'s
+    ripple celebration sets `data-card-exhale-active` on every card it
+    finds by hook, entry cards and reminder cards alike, and each card's
+    own module styles `.today-card[data-card-exhale-active]`. Removing and
+    re-adding the attribute restarts the animation the same way a class
+    does. A trigger that stays within one file keeps its module class.
 - **Body-level state stays global**: `body[data-palette]`,
   `body[data-placement]`, and the other attributes set on `<body>` or
   `<html>` already follow this pattern and are styled from global CSS.
