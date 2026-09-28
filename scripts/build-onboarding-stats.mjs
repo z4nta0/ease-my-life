@@ -7,8 +7,8 @@
  * @summary
  * One-off precompute script, NOT part of the app build or runtime. Run
  * it manually (`node scripts/build-onboarding-stats.mjs`) whenever the
- * sample picker/item/reminder data in src/onboarding-seed-data.js
- * changes, to regenerate src/onboarding-stats-data.js.
+ * sample picker/item/reminder data in src/state/onboarding-seed-data.js
+ * changes, to regenerate src/state/onboarding-stats-data.js.
  *
  * Why this exists: the Welcome Tour seeds sample pickers on a fresh
  * install and wants Stats to already look like a real year of history,
@@ -43,12 +43,12 @@
 import path from 'node:path'; // What: Path. Why: This script needs to resolve the output file's own absolute path. How: This is used with curDirStr to build outPatStr below.
 
 
-import { fileURLToPath } from 'node:url';                       // What: File Url To Path. Why: ESM modules have no native __dirname, so this script reconstructs an equivalent. How: This converts import.meta.url into curDirStr below.
-import { ONB_EXA_OBJ   } from '../src/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the Welcome Tour's own first sample picker definition. How: This is spread into PIC_DEF_ARR below alongside ONB_ESP_ARR.
-import { ONB_ESP_ARR   } from '../src/onboarding-seed-data.js'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the Welcome Tour's own remaining sample picker definitions. How: This is spread into PIC_DEF_ARR below alongside ONB_EXA_OBJ.
-import { ONB_TAS_ARR   } from '../src/onboarding-seed-data.js'; // What: Onboarding Task Array. Why: The sample reminder history below needs the real "Take trash out" task definition. How: This is searched by id for traTasObj below.
-import { SED_NAM_OBJ   } from '../src/seed.js';                 // What: Seed Namespace Object. Why: This script reuses seed.js's own pick-log simulator (picLogFun) and its date-to-ISO-string conversion (seeIsoFun) for realism/consistency with the dev SEED() build. How: This is called (picLogFun) once below with a 365-day span, and (seeIsoFun) to convert todDatObj into an ISO day string.
-import { writeFileSync } from 'node:fs';                        // What: Write File Sync. Why: The generated output must land on disk before this script can report success. How: This writes outConStr to outPatStr below.
+import { fileURLToPath } from 'node:url';                             // What: File Url To Path. Why: ESM modules have no native __dirname, so this script reconstructs an equivalent. How: This converts import.meta.url into curDirStr below.
+import { ONB_EXA_OBJ   } from '../src/state/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the Welcome Tour's own first sample picker definition. How: This is spread into PIC_DEF_ARR below alongside ONB_ESP_ARR.
+import { ONB_ESP_ARR   } from '../src/state/onboarding-seed-data.js'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the Welcome Tour's own remaining sample picker definitions. How: This is spread into PIC_DEF_ARR below alongside ONB_EXA_OBJ.
+import { ONB_TAS_ARR   } from '../src/state/onboarding-seed-data.js'; // What: Onboarding Task Array. Why: The sample reminder history below needs the real "Take trash out" task definition. How: This is searched by id for traTasObj below.
+import { SED_NAM_OBJ   } from '../src/state/seed.js';                 // What: Seed Namespace Object. Why: This script reuses seed.js's own pick-log simulator (picLogFun) and its date-to-ISO-string conversion (seeIsoFun) for realism/consistency with the dev SEED() build. How: This is called (picLogFun) once below with a 365-day span, and (seeIsoFun) to convert todDatObj into an ISO day string.
+import { writeFileSync } from 'node:fs';                              // What: Write File Sync. Why: The generated output must land on disk before this script can report success. How: This writes outConStr to outPatStr below.
 
 // #endregion Imports
 
@@ -65,7 +65,7 @@ const curDirStr = path.dirname( fileURLToPath( import.meta.url ) ); // What: Cur
  * @summary
  * Reconstructs the pickers/items exactly as store.js's own addPicker()
  * would create them live, so the simulated history lines up with what
- * the app actually seeds (see addPicker in src/store.js for the
+ * the app actually seeds (see addPicker in src/state/store.js for the
  * source of truth this mirrors).
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -260,7 +260,7 @@ const forArrFun = ( rowArrAny, trlStr, cmtStr ) => { // What: Format Array Funct
 
 
 const refModBoo = process.argv.includes( '--reformat' ); // What: Reformat Mode Boolean. Why: A template change should be applied to the existing data without replacing its randomly simulated history. How: This is true when the script is run with --reformat.
-const exiDatObj = refModBoo ? ( await import( '../src/onboarding-stats-data.js' ) ).ONB_STA_OBJ : null; // What: Existing Data Object. Why: Reformat mode rewrites the data already on disk instead of the fresh simulation above. How: This imports the current ONB_STA_OBJ only in reformat mode.
+const exiDatObj = refModBoo ? ( await import( '../src/state/onboarding-stats-data.js' ) ).ONB_STA_OBJ : null; // What: Existing Data Object. Why: Reformat mode rewrites the data already on disk instead of the fresh simulation above. How: This imports the current ONB_STA_OBJ only in reformat mode.
 const outPicArr = exiDatObj ? exiDatObj.pickLog : finLogArr;         // What: Output Pick Array. Why: The written pickLog comes from whichever source this run uses. How: This picks the existing rows in reformat mode, else the simulated ones.
 const outRemArr = exiDatObj ? exiDatObj.reminderLog : remLogArr;     // What: Output Reminder Array. Why: The written reminderLog comes from whichever source this run uses. How: This picks the existing rows in reformat mode, else the simulated ones.
 const outSkiArr = exiDatObj ? exiDatObj.reminderSkipLog : remSkiArr; // What: Output Skip Array. Why: The written reminderSkipLog comes from whichever source this run uses. How: This picks the existing rows in reformat mode, else the simulated ones.
@@ -273,9 +273,9 @@ const outConStr = `
  * @summary
  * AUTO-GENERATED by scripts/build-onboarding-stats.mjs, do not
  * hand-edit. Regenerate with \`node scripts/build-onboarding-stats.mjs\`
- * whenever src/onboarding-seed-data.js changes, or rewrite the existing
- * data in the script's current template with \`--reformat\`; see that
- * script for why this data is precomputed and stored as day-offsets
+ * whenever src/state/onboarding-seed-data.js changes, or rewrite the
+ * existing data in the script's current template with \`--reformat\`; see
+ * that script for why this data is precomputed and stored as day-offsets
  * rather than absolute dates.
  *
  * Sections:
@@ -345,7 +345,7 @@ export { ONB_STA_OBJ }; // What: Named Exports. Why: The Welcome Tour, the Stats
 
 
 `; // What: Output Content String. Why: This is the complete, ready-to-write source text of the generated onboarding-stats-data.js file. How: This is a template literal wrapping ONB_STA_OBJ, its shape block and its sections around the 3 forArrFun-formatted logs above.
-const outPatStr = path.join( curDirStr, '..', 'src', 'onboarding-stats-data.js' ); // What: Output Path String. Why: writeFileSync below needs the exact absolute destination path. How: This joins curDirStr with the fixed src/onboarding-stats-data.js relative path.
+const outPatStr = path.join( curDirStr, '..', 'src', 'state', 'onboarding-stats-data.js' ); // What: Output Path String. Why: writeFileSync below needs the exact absolute destination path. How: This joins curDirStr with the fixed src/state/onboarding-stats-data.js relative path.
 writeFileSync( outPatStr, outConStr ); // What: Write File Call. Why: This is the actual act of regenerating onboarding-stats-data.js on disk. How: This writes outConStr to outPatStr, overwriting whatever was there before.
 console.log( `Wrote ${ outPicArr.length } pickLog rows, ${ outRemArr.length } reminderLog rows, ${ outSkiArr.length } reminderSkipLog rows to ${ outPatStr }` ); // What: Write Report Log. Why: Running this script manually needs some confirmation of what it actually did. How: This logs the 3 row counts plus outPatStr.
 

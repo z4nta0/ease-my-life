@@ -3,15 +3,15 @@
 
 // #region Imports
 
-import { AppRooCom   } from './app.jsx';        // What: App Root Component. Why: This is the single component the whole app renders as, owning every tab and overlay. How: This is rendered into the mounted root inside booAppFun.
-import { createRoot  } from 'react-dom/client'; // What: Create Root. Why: This is the React 18 API for creating a concurrent-mode root to render into. How: This is called once against the #root DOM node inside booAppFun.
-import { STG_NAM_OBJ } from './storage.js';     // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.js's own loaStaFun() can stay synchronous. How: This is raced against a fixed timeout below so a slow or hung IndexedDB never blocks the app from booting at all.
+import { AppRooCom   } from './app.jsx';          // What: App Root Component. Why: This is the single component the whole app renders as, owning every tab and overlay. How: This is rendered into the mounted root inside booAppFun.
+import { createRoot  } from 'react-dom/client';   // What: Create Root. Why: This is the React 18 API for creating a concurrent-mode root to render into. How: This is called once against the #root DOM node inside booAppFun.
+import { STG_NAM_OBJ } from './state/storage.js'; // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.js's own loaStaFun() can stay synchronous. How: This is raced against a fixed timeout below so a slow or hung IndexedDB never blocks the app from booting at all.
 
 
-import './fonts.css'; // What: Fonts Stylesheet Import. Why: The app's own stylesheets below assume the self-hosted font faces are already registered. How: This is imported first, purely for its side effect, so its @font-face rules register before styles.css/styles2.css are parsed.
+import './styles/fonts.css'; // What: Fonts Stylesheet Import. Why: The app's own stylesheets below assume the self-hosted font faces are already registered. How: This is imported first, purely for its side effect, so its @font-face rules register before styles.css/styles2.css are parsed.
 
-import './styles.css';  // What: Styles Stylesheet Import. Why: This is the app's own primary stylesheet. How: This is imported purely for its side effect of registering its rules against the document.
-import './styles2.css'; // What: Styles2 Stylesheet Import. Why: This is the app's own secondary stylesheet, split from styles.css. How: This is imported purely for its side effect of registering its rules against the document.
+import './styles/styles.css';  // What: Styles Stylesheet Import. Why: This is the app's own primary stylesheet. How: This is imported purely for its side effect of registering its rules against the document.
+import './styles/styles2.css'; // What: Styles2 Stylesheet Import. Why: This is the app's own secondary stylesheet, split from styles.css. How: This is imported purely for its side effect of registering its rules against the document.
 
 // #endregion Imports
 

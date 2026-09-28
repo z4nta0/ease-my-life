@@ -114,13 +114,13 @@ soft-wrap it in a terminal; that's display only, not a real line break).
 `src/main.jsx` boots by racing `STORAGE.init()` against a timeout, then
 mounts `<AppRooCom />` (`src/app.jsx`). `AppRooCom` owns a single active-tab-id
 in React state and renders one of five tabs directly — there's no react-router.
-The five tabs (`src/tab-today.jsx`, `tab-picker.jsx`, `tab-stats.jsx`,
+The five tabs (`src/tabs/today/tab-today.jsx`, `tab-picker.jsx`, `tab-stats.jsx`,
 `tab-data.jsx`, `tab-settings.jsx`) are large, self-contained files (each
 ~200KB+ of JSX) that share state/actions passed down as props.
 
 ### State: one big object, one hook, no context/redux
 
-`src/store.js`'s `useAppStaFun()` hook is the entire state layer: a single
+`src/state/store.js`'s `useAppStaFun()` hook is the entire state layer: a single
 `useState` holding the whole app state object, plus a `React.useMemo`'d
 `actions` object of state-transition functions (`togDonFun`, `addPicFun`,
 `skiEntFun`, `resConFun`, ...). `AppRooCom` calls
@@ -137,7 +137,7 @@ field, add a backfill here rather than assuming fresh shape.
 
 ### Storage: IndexedDB primary, localStorage fallback + warm mirror
 
-`src/storage.js` is a separate concern from `store.js`: it's the actual
+`src/state/storage.js` is a separate concern from `store.js`: it's the actual
 persistence engine (`STORAGE.init/save/flushSync/wipe/status/...`).
 Highlights worth knowing before touching it:
 - The pick log (large, append-only) lives in its own IDB object store,
@@ -154,16 +154,16 @@ Highlights worth knowing before touching it:
 
 These encapsulate specific pieces of the scheduling/picking model and are
 imported by both `store.js` and the relevant tabs:
-- `src/pickers.js` — picker selection algorithms (random / weighted / dynamic
+- `src/core/pickers.js` — picker selection algorithms (random / weighted / dynamic
   / ease-up / ease-down); pure functions over an items snapshot.
-- `src/cadence.js` — per-picker "when do I surface" gating (daily / weekly /
+- `src/core/cadence.js` — per-picker "when do I surface" gating (daily / weekly /
   monthly / yearly) and period/anchor math.
-- `src/conditionals.js` — day-off gates that suppress dependent pickers for a
+- `src/core/conditionals.js` — day-off gates that suppress dependent pickers for a
   day (probability / ease-up / ease-down / dynamic modes).
-- `src/tasks.js` — the reminders engine (statically-scheduled one-time or
+- `src/core/tasks.js` — the reminders engine (statically-scheduled one-time or
   recurring tasks, distinct from randomly-picked items).
-- `src/holidays.js` — rule-based US holiday computation, fully offline.
-- `src/seed.js` — canonical data model comment block + `CLEAN_STATE()` (what
+- `src/core/holidays.js` — rule-based US holiday computation, fully offline.
+- `src/state/seed.js` — canonical data model comment block + `CLEAN_STATE()` (what
   a fresh install starts from) + `MODES`. Read the top comment here first
   when working on the data model — it's the closest thing to a schema doc.
 
@@ -195,19 +195,19 @@ lookups without preserving that survivability property.
 
 ### UI support modules
 
-- `src/ui.jsx` — shared primitives (`Icon`, `Btn`, `Card`, `Collapse`,
+- `src/ui/ui.jsx` — shared primitives (`Icon`, `Btn`, `Card`, `Collapse`,
   `Pill`, focus/escape helpers, live-region `announce`).
-- `src/appearance.js` — palette tokens + theme application; deliberately
+- `src/platform/appearance.js` — palette tokens + theme application; deliberately
   split out of `app.jsx` to avoid an import cycle with `tab-settings.jsx`.
-- `src/reorder.js` — hand-rolled pointer drag-to-reorder for Today's Edit
+- `src/ui/reorder.js` — hand-rolled pointer drag-to-reorder for Today's Edit
   Mode (no external DnD library).
-- `src/day-log.jsx` — per-group "what did the generator do today" audit
+- `src/ui/day-log.jsx` — per-group "what did the generator do today" audit
   panel, derived from the pick log.
 - `src/onboarding.jsx` — first-run welcome modal + a tour that drives the
   real app (not a mock overlay); coordinates with other modules via a small
   event bus (`emlTour`) and a couple of deliberate `window.__eml*` globals
   (see "Runtime globals on `window`" below).
-- `src/reminders.jsx` / `src/cadence-control.jsx` / `src/tab-conditional.jsx`
+- `src/ui/reminders.jsx` / `src/ui/cadence-control.jsx` / `src/ui/conditional-controls.jsx`
   — shared editors reused across the Today/Pickers/Data tabs.
 
 ### Runtime globals on `window`
@@ -371,7 +371,7 @@ itself gets its own mandatory self-check.
 - **Plain named exports all go in ONE `export { ... };` statement on a
   single line**, unlike the one-binding-per-`import` rule above, with
   one comment generalized to describe everything the statement exports
-  (not a separate comment per binding). See `tab-conditional.jsx`'s own
+  (not a separate comment per binding). See `ui/conditional-controls.jsx`'s own
   `export { CodConCom, conDraFun };` for the reference example.
 
 ### Indentation
@@ -493,7 +493,7 @@ can move code between files rather than just within one.
     their own sections (the arrays to Constants). The block's prose may
     still name the declarations that moved.
 - **Generated files.** Decided 2026-09-27. A file written by a script
-  (so far only `src/onboarding-stats-data.js`, from
+  (so far only `src/state/onboarding-stats-data.js`, from
   `scripts/build-onboarding-stats.mjs`) gets its formatting from the
   generator's own output template, never from hand edits: the
   file-level rules (naming, header table of contents, sections and
@@ -716,7 +716,7 @@ src/
     stays exactly where it is, since it was never the repeated
     boilerplate this exception targets. See `appearance.js`'s own
     `PAL_SET_OBJ` and `THE_PAI_OBJ` for the reference examples, and
-    `help-content.jsx`, whose "Help Catalogs Subsystem" section-intro
+    `help/content.jsx`, whose "Help Catalogs Subsystem" section-intro
     block documents its shared
     `{ bodEle, groStr?, ideStr, labStr?, mulBoo?, padXcoNum?, padYcoNum?,
     scrBoo?, selStr, shaStr?, titStr }` catalog-item shape once (its own
@@ -725,7 +725,7 @@ src/
     fields' own boilerplate comments.
     - **A shape shared by several declarations** (decided 2026-09-27):
       when more than one declaration holds literals of the same shape
-      (e.g. help-content.jsx's 5 per-page catalogs), the shape block
+      (e.g. help/content.jsx's 5 per-page catalogs), the shape block
       becomes one Section-intro block (see "### Large / design-rationale
       comments") whose region wraps every one of those declarations,
       rather than being attached to just one of them.
@@ -791,7 +791,7 @@ src/
   as the topic-splitting case above. This keeps a line's real identity
   comment easy to spot on a quick scan (it's always first, right after
   the code) while still surfacing the extra context right there instead
-  of on a separate line above it. See `onboarding-app-features.jsx`'s
+  of on a separate line above it. See `onboarding/app-features.jsx`'s
   own GuidedTour step objects in `bldSteFun` for the reference example
   (e.g. the `Your Pickers Step`/`pulSelStr`/`runFun` lines): each one's
   own What/Why/How comes first, followed by its own extra design note,
@@ -806,7 +806,7 @@ src/
     target (the free-form block case above) still collapses to one
     physical line first, exactly as that case describes, before being
     moved into its own trailing `{ /* */ }` block. See
-    `onboarding-tour-runner.jsx`'s own Spotlight Element line for the
+    `onboarding/tour-runner.jsx`'s own Spotlight Element line for the
     reference example, whose leading multi-line comment about the
     ".ob-spot" box-shadow/is-dragging behavior moved into a second
     `{ /* */ }` block right after the element's own identity comment.
@@ -823,7 +823,7 @@ src/
   explains 2+ properties at once (e.g. one explanation covering why
   BOTH `titStr` and `bodEle` are functions), copy the identical comment
   text onto each of those properties' own lines rather than picking
-  just one. See `help-content.jsx`'s own `editMode` item for the
+  just one. See `help/content.jsx`'s own `editMode` item for the
   reference example: `padXcoNum`'s own override reasoning sits after
   `padXcoNum`'s own value, and the "title/body are functions..."
   explanation is copied verbatim after both `titStr` and `bodEle`.
@@ -859,7 +859,7 @@ src/
     covers rather than once. A `See <property>` pointer instead would
     send the reader on a jump to recover context a quick scan should
     already have; the small duplication cost is worth avoiding that.
-    See `onboarding-app-features.jsx`'s own `bldSteFun`, e.g. its Picker
+    See `onboarding/app-features.jsx`'s own `bldSteFun`, e.g. its Picker
     Selection/Manual Generation/Add To Todo List/Picker Items step
     objects: each one's own "Title/body copied verbatim..." note
     explains both `titStr` and `bodEle` together, so it's merged onto
@@ -878,9 +878,9 @@ src/
     construct distinct from the properties/entries already commented
     inside it. This rule makes no exception for it: found to be a
     systemic, recurring miss across multiple already-reviewed files
-    (conditionals.js, tab-conditional.jsx, seed.js, pickers.js,
-    help-mode.jsx, tab-data.jsx, onboarding-page-tours.jsx,
-    onboarding-app-features.jsx, in one audit), the same recurring-bias
+    (conditionals.js, ui/conditional-controls.jsx, seed.js, pickers.js,
+    help/mode.jsx, tab-data.jsx, onboarding/page-tours.jsx,
+    onboarding/app-features.jsx, in one audit), the same recurring-bias
     pattern as the other "Known blind spot" notes elsewhere in this doc.
     When auditing a file for comment completeness, explicitly grep
     `^\s*return \{$` and `^\s*return \[$` for hits with no trailing
@@ -892,7 +892,7 @@ src/
     top-level `const`/`return`) is just as easy to leave uncommented,
     for the same reason as the bare-return case above: it reads as "just
     a property" rather than as its own multi-line construct. Found live
-    in `onboarding-reminder-tours.jsx`'s own `VAR_COP_OBJ`, whose
+    in `onboarding/reminder-tours.jsx`'s own `VAR_COP_OBJ`, whose
     `once`/`recurring` entries (each a nested multi-line object) had no
     comment on their own opening `{` at all. When auditing a file for
     comment completeness, explicitly check every `<key> : {`/`<key> : [`
@@ -939,9 +939,9 @@ src/
       propert(y/ies) at the end get natural one-space comment placement,
       unaligned, the same treatment the general exception above already
       gives an outlier. This was found live across the GuidedTour step
-      objects in `onboarding.jsx`/`onboarding-picker-tours.jsx`/
-      `onboarding-page-tours.jsx`/`onboarding-app-features.jsx`/
-      `onboarding-reminder-tours.jsx`, where nearly every step object's
+      objects in `onboarding.jsx`/`onboarding/picker-tours.jsx`/
+      `onboarding/page-tours.jsx`/`onboarding/app-features.jsx`/
+      `onboarding/reminder-tours.jsx`, where nearly every step object's
       own `bodEle` property was tripping the 100-char exception and
       silently killing alignment for every other property in the same
       object; reordering `bodEle` to the end and aligning the rest
@@ -953,9 +953,9 @@ src/
         A GuidedTour step object (identified by its own `bodEle`+
         `tabStr`+`titStr` trio, the shape documented in `onboarding-
         tour-runner.jsx`) is reused as dozens of near-identical sibling
-        objects across `onboarding.jsx`/`onboarding-picker-tours.jsx`/
-        `onboarding-page-tours.jsx`/`onboarding-app-features.jsx`/
-        `onboarding-reminder-tours.jsx`, and `bodEle` is inherently this
+        objects across `onboarding.jsx`/`onboarding/picker-tours.jsx`/
+        `onboarding/page-tours.jsx`/`onboarding/app-features.jsx`/
+        `onboarding/reminder-tours.jsx`, and `bodEle` is inherently this
         shape's own prose field regardless of how long any one
         instance's own copy happens to be. Measuring its comment length
         case by case (the general rule just above) produces an
@@ -1004,7 +1004,7 @@ src/
         (1 blank line on each side, since none of them is the object's
         own true first/last entry once the final outlier claims that
         spot). See `buiNewFun`'s own returned step object in
-        `onboarding-picker-tours.jsx` for the reference example:
+        `onboarding/picker-tours.jsx` for the reference example:
         `bacBoo`/`cirBoo`/`priStr`/`selStr`/`sttBoo`/`tabStr`/`titStr`
         form one tight, aligned short group, followed by `bodEle` (a
         long single-line value), followed by `runFun` (a genuinely
@@ -1170,7 +1170,7 @@ src/
     arrow function body, a multi-line array/object literal, ...) always
     gets a comment, following the ordinary "multi-line construct gets a
     comment right after its own opening bracket" treatment, the exact same
-    as anywhere else in this doc. See `onboarding-page-tours.jsx`'s own
+    as anywhere else in this doc. See `onboarding/page-tours.jsx`'s own
     `<GuidedTour>` element for the reference example: `onBacTouFun`/
     `onSkiTouFun` (each a multi-line arrow function) and `steObjArr` (a
     multi-line array literal) all carry their own comment on the
@@ -1450,7 +1450,7 @@ for a callable's signature. Applies equally whether the comment already
 existed as a large prose block being reformatted, or is being newly
 written because the file/section genuinely warrants one; see the
 file-level comment and the `COL_WID_NUM`/`MIN_COL_NUM`/`BIG_CHA_NUM`
-comments in `src/bg-flourish.jsx` for the reference examples.
+comments in `src/ui/bg-flourish.jsx` for the reference examples.
 - **Every file gets a file-level one of these, mandatory, regardless of
   whether the file's own design would otherwise "genuinely warrant" one
   under the general rule above.** This is a firm exception to that
@@ -1468,7 +1468,7 @@ comments in `src/bg-flourish.jsx` for the reference examples.
   regions" above: after the `// #endregion Imports` marker plus its own
   3-blank gap when the file has any imports, or as the very first real
   content (right after the file's own leading 3 blank lines) when it
-  has none. See `constants.js` (no imports) and `eml-tour-bus.js` (has
+  has none. See `constants.js` (no imports) and `state/tour-bus.js` (has
   imports) for the two placement variants.
 - **Name/title line**: if the comment is attached to a specific
   declaration (the thing it immediately precedes), use that
@@ -1557,7 +1557,7 @@ comments in `src/bg-flourish.jsx` for the reference examples.
 - **A comment attached to a top-level declaration gets a `#region` once
   it reaches 25 lines**, measured together (the comment's own `/** ...
   */` plus every declaration it describes). Below 25 lines, no `#region`
-  is needed; every example in `src/bg-flourish.jsx` currently falls under
+  is needed; every example in `src/ui/bg-flourish.jsx` currently falls under
   this (the longest, `COL_WID_NUM`'s, is around 20 lines total). A
   design-rationale comment inside a function body always gets one,
   regardless of length (see "### Sectioning / fold regions").
@@ -1674,7 +1674,7 @@ later, but don't invent one for anything else yet:
   "unrelated" tier as two genuinely distinct top-level topics, since
   that's exactly what two different named sections are: `},` / blank /
   `#endregion Name A` / 3 blanks / `#region Name B` / blank / `{`. See
-  `help-content.jsx`'s own
+  `help/content.jsx`'s own
   `Create A Picker Form Step 1`/`Step 2` and `Appearance`/`Daily
   Generator`/`Holidays`/`Data Control`/`Account`/`About`/`Legal` regions
   for the reference examples. Not every array needs this: only apply it
@@ -1713,7 +1713,7 @@ later, but don't invent one for anything else yet:
       region's `#endregion` and the next region's `#region`). The
       object's own opening and closing padding stays at 2 blank lines,
       like any other block. Smaller objects that merely contain a few
-      methods (e.g. `eml-tour-bus.js`'s own `emlTouObj`) aren't covered
+      methods (e.g. `state/tour-bus.js`'s own `emlTouObj`) aren't covered
       and keep the normal object-literal spacing.
 - **A section-intro design-rationale comment and everything it
   introduces**: the Section-intro variant of "### Large /
@@ -1828,7 +1828,7 @@ later, but don't invent one for anything else yet:
   individual entry is; a short entry sitting next to other short entries
   is not an exception; the byte savings of "these all clearly fit
   together" is never worth the inconsistency of some entries getting
-  their own line while others don't. See `onboarding-picker-tours.jsx`'s
+  their own line while others don't. See `onboarding/picker-tours.jsx`'s
   own `steObjArr` for a fixed reference example: what used to be 4
   entries crammed onto a shared line (`NAV_STE_OBJ, buiNewFun(...),
   NAM_STE_OBJ, GRO_STE_OBJ,`) now gets one line per entry instead, each
@@ -1954,7 +1954,7 @@ later, but don't invent one for anything else yet:
       keys every row carries come first, alphabetized, then each row's
       own optional keys, alphabetized, so an optional key never shifts
       the shared columns out of line. The same order generated data rows
-      use. See `help-sample-data.js`'s own `TAS_SAM_ARR`.
+      use. See `help/sample-data.js`'s own `TAS_SAM_ARR`.
   - **Object destructuring patterns are alphabetized the same way**,
     most commonly a component's own `function Foo ( { a, b } )` props,
     unless their order matters (a `...rest` element always stays last).
@@ -2041,7 +2041,7 @@ later, but don't invent one for anything else yet:
     the `bodEle`-always-last refinement above where relevant); only the
     spread's own slot in the sequence is pinned. This refines an
     earlier, more conservative practice of skipping such an object
-    entirely: `onboarding-page-tours.jsx`'s own `buiTs1Fun` is the
+    entirely: `onboarding/page-tours.jsx`'s own `buiTs1Fun` is the
     reference example, where `...navTarObj` opens the returned step
     object and the explicit `bacBoo`/`cirBoo`/`priStr`/`tabStr`
     properties after it are alphabetized normally, with `bodEle` still
@@ -2063,7 +2063,7 @@ later, but don't invent one for anything else yet:
       blank-line rule just below), and the CONTAINER's own close
       padding (2 blank lines) applies after it instead of that 1-blank
       rule if it lands as the object's own new last entry. See
-      `onboarding-reminder-tours.jsx`'s own `buiAddFun`, whose
+      `onboarding/reminder-tours.jsx`'s own `buiAddFun`, whose
       `emlTouObj.set()` prefill payload moved its own `daysOfWeek`-only
       conditional spread to the very end, after `createdFromSample`/
       `name`/`repeat` were alphabetized and tightly grouped, since
@@ -2151,9 +2151,9 @@ later, but don't invent one for anything else yet:
     property's own `:` just gets its ordinary single space, no padding,
     even when every property involved is plainly a field of the same
     record. E.g. `emlTouObj`'s own `get`/`set`/`subscribe` properties in
-    `eml-tour-bus.js` sit 1 blank line apart from each other and don't
+    `state/tour-bus.js` sit 1 blank line apart from each other and don't
     align with each other, and a help-catalog item's own `id`/`sel`/
-    `title` in `help-content.jsx` do NOT pad to match a blank-separated
+    `title` in `help/content.jsx` do NOT pad to match a blank-separated
     `body` below them, even though all 4 are fields of the same item.
     - **Known blind spot**: this is easy to get backwards specifically
       when the blank-separated properties are themselves EACH a
@@ -2161,7 +2161,7 @@ later, but don't invent one for anything else yet:
       nested objects sitting right next to each other can look like
       they "obviously" belong in one aligned table even though a blank
       line already separates them the same as any other multi-line
-      property. `onboarding-reminder-tours.jsx`'s own `VAR_COP_OBJ` was
+      property. `onboarding/reminder-tours.jsx`'s own `VAR_COP_OBJ` was
       found live padding its own `once`/`recurring` keys out to match
       each other's width (`once      : {` / `recurring : {`), even
       though each is its own multi-line entry separated by a blank line
@@ -2204,7 +2204,7 @@ later, but don't invent one for anything else yet:
     table, not literally aligning identical keys. Finally, pad the
     closing `}` itself to a shared column the same way, so shorter rows
     get trailing spaces before their own `}`/`},`. See
-    `help-sample-data.js`'s own `TAS_SAM_ARR` for the reference example,
+    `help/sample-data.js`'s own `TAS_SAM_ARR` for the reference example,
     where `id`/`name`/`repeat` line up across all 5 entries and each
     entry's own differently-named 4th field (`daysOfWeek`/`interval`/
     `dayOfMonth`/`day`+`month`) still lines up by position, closing `}`
@@ -2240,7 +2240,7 @@ later, but don't invent one for anything else yet:
       one whose values stay short across every row, then leave that
       long property and the closing `}` completely unaligned/natural,
       each row ending wherever its own value happens to end. See
-      `help-mode.jsx`'s own `NAV_TAB_ARR` (`icoStr`/`labStr`/`desStr`,
+      `help/mode.jsx`'s own `NAV_TAB_ARR` (`icoStr`/`labStr`/`desStr`,
       the `NAV_HEL_OBJ` tip's own tab-description catalog): `icoStr`
       and `labStr` line up across all 5 rows, but
       `desStr` (a full sentence or more per row) and the closing `}`
@@ -2507,7 +2507,7 @@ how short the body is.
   several independent `if`s specifically sitting next to EACH OTHER;
   this one is about the boundary right after ANY if/else-if/else
   construct ends, whatever comes after it. See `cloTouFun`'s own cleanup
-  dispatch for the reference example (`onboarding-page-tours.jsx`): its
+  dispatch for the reference example (`onboarding/page-tours.jsx`): its
   `if ( neeCopFun( pagIdeStr ) ) ... else if ( pagIdeStr ===
   'explore_stats' ) ...` chain is followed by a separate, standalone
   `if ( pagIdeStr === 'explore_data' ) cleTasFun( actStoObj );`, which is
@@ -2535,7 +2535,7 @@ an exemption from the "2+ properties with a non-trivial value go
 multi-line" rule under "### Arrays and objects" (decided 2026-09-27), so
 the ternary still reads as one unit; e.g. `store.js`'s own `togDonFun`
 live-row toggle. See
-`tab-conditional.jsx`'s own `sooSubStr`/`latSubStr` for the reference
+`ui/conditional-controls.jsx`'s own `sooSubStr`/`latSubStr` for the reference
 example:
 ```
 const sooSubStr = isaDowBoo // What: ...
@@ -2692,7 +2692,7 @@ while ( condition );
   worth explaining (why THIS function, why these arguments), not merely
   "returning JSX", so it still gets a normal trailing/attached comment
   like any other multi-line construct. See `HelOveCom`'s own `return
-  createPortal(` in `help-mode.jsx` for the reference example.
+  createPortal(` in `help/mode.jsx` for the reference example.
 - A single-line exit guard (`if (!btn) { setInd(null); return; }`, or the
   fused one-liner form `if (cond) return;`) skips the standalone "3
   before" rule ONLY when it is the guard half of the "declare a value,
@@ -3175,7 +3175,7 @@ chain mixing real expressions with bare names forces the reader to
 parse each real expression inline; naming them removes that burden
 without also demanding that already-simple bare identifiers get
 pointlessly wrapped in variables of their own. See `canBigBoo` and
-`diaOpeBoo` in `src/bg-flourish.jsx` for the reference examples:
+`diaOpeBoo` in `src/ui/bg-flourish.jsx` for the reference examples:
 `canBigBoo` combines 6 bare identifiers and needs no further extraction
 despite having "more than 2" operands, while `diaOpeBoo` (`rowFitBoo &&
 colFitBoo && !bloGriArr[ rowIndNum + 1 ][ colIndNum + 1 ]`) has only 1
@@ -3270,7 +3270,7 @@ Three tiers:
     and monthly-into-yearly (multi-line into multi-line) transitions, and
     `advValFun`'s
     ease-up/dynamic/ease-down (all multi-line, each gap still 2) in
-    `src/cadence.js` and `src/conditionals.js` for the reference
+    `src/core/cadence.js` and `src/core/conditionals.js` for the reference
     examples.
 - **Unrelated (3 blank lines)**: no real shared data and no real shared
   purpose — including cases that only *look* structurally parallel. Two
@@ -3331,7 +3331,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `tsk` → `tas` (Task)
   - `fmt` → `for` (Format)
   - `frm` → `for` (Form — found in `onCloFrmFun`
-    (`onboarding-reminder-tours.jsx`), fixed to `onCloForFun`; note this
+    (`onboarding/reminder-tours.jsx`), fixed to `onCloForFun`; note this
     collides with `fmt` → `for` (Format) just above, and separately with
     `for`'s own already-correct existing use for Force (e.g. `forIdeStr`
     in `pickers.js`); context disambiguates which of the three "for"
@@ -3403,13 +3403,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `bg-flourish.jsx` (`plaGriFun`), an unrelated multi-meaning segment
     in a different file with no collision risk between the two)
   - `ovf` → `ove` (Overflow — found in `ownOveStr`/`ancOveStr`/`oveRigBoo`
-    in `help-mode.jsx`, `oveBelNum`/`oveStyStr` across
+    in `help/mode.jsx`, `oveBelNum`/`oveStyStr` across
     `tab-settings.jsx` and `tab-picker.jsx`, and a third, distinct
-    recurrence in `onboarding-tour-runner.jsx`'s own `ownOveStr`/
+    recurrence in `onboarding/tour-runner.jsx`'s own `ownOveStr`/
     `ancOveStr`/`ancOveYStr`, this last one caught during an automated
     Known-miscorrections sweep rather than a full manual review pass)
-  - `clp` → `cli` (Clip — found in `cliRecObj` across `help-mode.jsx` and
-    `onboarding-tour-runner.jsx`; `cli` was already the established code
+  - `clp` → `cli` (Clip — found in `cliRecObj` across `help/mode.jsx` and
+    `onboarding/tour-runner.jsx`; `cli` was already the established code
     for Clip elsewhere in this codebase, e.g. `cliHorFun`, `cliChrFun`)
   - `clp` → `cla` (Clamp — a second, distinct miscorrection sharing the
     same wrong `clp` spelling as the Clip case above, found in
@@ -3419,41 +3419,41 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     Clause (`tutClaStr`) and Class (`extClaStr`); context disambiguates
     which of the three "cla" stands for)
   - `ovl` → `ove` (Overlap — found in `horOveBoo`/`verOveBoo`
-    (`help-mode.jsx`); note this collides with `ove` already meaning
+    (`help/mode.jsx`); note this collides with `ove` already meaning
     Overflow just above, and separately with `ove` meaning Overlay in
-    `HelOveCom` (`help-mode.jsx`, exported and used across every
+    `HelOveCom` (`help/mode.jsx`, exported and used across every
     tab-*.jsx file); context (a `Com`-suffixed component vs. a
     `Str`/`Boo`-suffixed value) disambiguates which of the three "ove"
     stands for)
   - `vp` → `vie` (Viewport — a 2-letter abbreviation rather than the
     usual wrong-3-letter case, since "vp" is the common real-world
     shorthand people reach for; found in `vpWidNum`/`vpHeiNum` across
-    `help-mode.jsx`, `ui.jsx`, and `onboarding-tour-runner.jsx`,
-    including `onboarding-tour-runner.jsx`'s own `coaLayFun` parameters)
+    `help/mode.jsx`, `ui.jsx`, and `onboarding/tour-runner.jsx`,
+    including `onboarding/tour-runner.jsx`'s own `coaLayFun` parameters)
   - `abv` → `abo` (Above — found in `aboAncNum`/`gapAboNum` in
-    `help-mode.jsx` and `ftsAboBoo` in `onboarding-tour-runner.jsx`)
+    `help/mode.jsx` and `ftsAboBoo` in `onboarding/tour-runner.jsx`)
   - `spc` → `spa` (Space — found in `spaAboNum`/`spaBelNum` across
-    `help-mode.jsx` and `onboarding-tour-runner.jsx`)
-  - `ctr` → `cen` (Center — found in `cenXNum` (`help-mode.jsx`); `cen`
+    `help/mode.jsx` and `onboarding/tour-runner.jsx`)
+  - `ctr` → `cen` (Center — found in `cenXNum` (`help/mode.jsx`); `cen`
     was already the established code for Center elsewhere in this
     codebase, e.g. `cenBadBoo`)
   - `arw` → `arr` (Arrow — found in `arrClaStr`/`arrXNum`/`arrClaVal`
-    across `help-mode.jsx` and `arrXFun`/`arrClaStr`/`arrXNum` in
-    `onboarding-tour-runner.jsx`)
+    across `help/mode.jsx` and `arrXFun`/`arrClaStr`/`arrXNum` in
+    `onboarding/tour-runner.jsx`)
   - `nxt` → `nex` (Next — a very widely recurring miscorrection, found in
-    `nexRecObj` (`help-mode.jsx`), `nexDayArr` (`tab-picker.jsx`),
+    `nexRecObj` (`help/mode.jsx`), `nexDayArr` (`tab-picker.jsx`),
     `nexSetObj` (`tab-today.jsx`), and dozens of distinct `nexXxxArr`/
     `nexXxxObj`/`nexXxxStr`/`nexXxxBoo` names throughout `store.js`,
     where it is the file's own dominant convention for "the next state"
     passed to every action's own setter; `nex` was already the
     established correct code elsewhere in this codebase, e.g.
-    `nexMapObj` (`help-mode.jsx`, sitting right next to the wrong
+    `nexMapObj` (`help/mode.jsx`, sitting right next to the wrong
     `nxtRecObj` in the same file))
   - `cnd` → `con` (Conditional — another very widely recurring
     miscorrection, touching dozens of distinct `conXxxObj`/`conXxxArr`/
     `conXxxStr`/`conXxxBoo`/`conXxxFun` names plus 2 component aliases
     across `store.js`, `tab-data.jsx`, `tab-picker.jsx`, `tab-today.jsx`,
-    `seed.js`, and `help-sample-data.js`. **Known blind spot**: a plain
+    `seed.js`, and `help/sample-data.js`. **Known blind spot**: a plain
     substring/word-boundary grep for this one is easy to under-scope,
     since a name that begins DIRECTLY with `cnd`/`Cnd` (no other segment
     before it, e.g. `cndOnBoo`, `cndCurObj`, `CndEdiCom`) doesn't match a
@@ -3483,11 +3483,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     giving `CodConCom`. `cod` is otherwise used sparingly elsewhere
     (`holidays.js`'s own `couCodStr`/`regCodStr`, meaning Code), with
     no collision risk against this file's own segments)
-  - `cpy` → `cop` (Copy — found in `cpyIdeStr` (`help-sample-data.js`)
+  - `cpy` → `cop` (Copy — found in `cpyIdeStr` (`help/sample-data.js`)
     and `cpyAdrFun`/`cpyDonFun` (`tab-settings.jsx`); `cop` was already
     the established, heavily-used code for Copy elsewhere in this
     codebase, e.g. `copIdeStr`/`neeCopFun`/`picCopFun`/`tasCopFun`
-    (`onboarding-page-tours.jsx`), `datCopObj` (`seed.js`/`store.js`),
+    (`onboarding/page-tours.jsx`), `datCopObj` (`seed.js`/`store.js`),
     and `PAG_COP_OBJ`/`PIC_COP_OBJ`/`REP_COP_OBJ`/`VAR_COP_OBJ`)
   - `boot` → `boo` (Boot — a 4-letter word left untruncated instead of
     taking its own literal first 3 letters, found in `bootAppFun`
@@ -3498,26 +3498,26 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     Boolean, versus `boo` appearing as segment 1 or 2 for Boot/Boost —
     disambiguates which of the three it stands for)
   - `hdr` → `hea` (Header — found in `opeHdrEle`/`hdrButArr`
-    (`onboarding-app-features.jsx`), `hdrEle` (`onboarding-tour-
+    (`onboarding/app-features.jsx`), `hdrEle` (`onboarding-tour-
     runner.jsx`), and `hdrEleRef`/`hdrCurEle`/`hdrHeiNum`
     (`tab-today.jsx`); `hea` was already the established, unambiguous
     code for Header elsewhere in this codebase, e.g. `TabHeaCom`,
     `GroHeaCom`, `heaLabStr`)
   - `bld` → `bui` (Build, found across 9 functions spanning
-    `onboarding-page-tours.jsx`, `onboarding-app-features.jsx`,
-    `onboarding-picker-tours.jsx`, and `onboarding-reminder-tours.jsx`,
+    `onboarding/page-tours.jsx`, `onboarding/app-features.jsx`,
+    `onboarding/picker-tours.jsx`, and `onboarding/reminder-tours.jsx`,
     e.g. `bldAddFun`, `bldNewFun`, `bldModFun`, `bldSteFun`; `bld` is a
     common real-world abbreviation for "build" (build tooling, CI
     scripts, ...) that crept in over the word's own literal first 3
     letters the same way `btn`/`cfg` did elsewhere in this list)
   - `frq` → `fre` (Frequency — found in `buiFrqFun`
-    (`onboarding-reminder-tours.jsx`), fixed to `buiFreFun`; `fre` was
+    (`onboarding/reminder-tours.jsx`), fixed to `buiFreFun`; `fre` was
     already the established, correct code for this exact word elsewhere
     in this codebase, e.g. `freModStr`/`freGapMap`/`freKeyStr`/
     `freEntObj` in `tab-stats.jsx`. Note `fre` is a heavily multi-meaning
     segment even before this fix, already carrying Fresh (dozens of
     uses, e.g. `isaFreBoo`/`freIndNum`/`freBoo` throughout
-    `reminders.jsx`/`tab-today.jsx`/`onboarding-tour-runner.jsx`) and
+    `reminders.jsx`/`tab-today.jsx`/`onboarding/tour-runner.jsx`) and
     Freeze (`freEdiFun` in `ui.jsx`) alongside Frequency; a name's own
     surrounding context disambiguates which of the three "fre" stands
     for in practice, the same reasoning already used for `con`/`sta`/
@@ -3529,9 +3529,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     this exact word right next to one of the miscorrected instances,
     `comTimStr` in `onboarding-seed-data.js`'s own `hydStaFun`)
   - `dwn` → `dow` (Down — a very widely recurring miscorrection, found in
-    `dwnGuaFun` (`onboarding-tour-runner.jsx`), `onPoiDwnFun`/
+    `dwnGuaFun` (`onboarding/tour-runner.jsx`), `onPoiDwnFun`/
     `poiDwnObj`/`onKeyDwnFun`/`keyDwnObj` (`ui.jsx`), `dwnLnkEle`
-    (`tab-settings.jsx`), `keyDwnFun`/`keyDwnObj` (`help-mode.jsx`), and
+    (`tab-settings.jsx`), `keyDwnFun`/`keyDwnObj` (`help/mode.jsx`), and
     `easDwnBoo`/`isDwnBoo` (`store.js`, 2 separate declarations), fixed
     to `dowGuaFun`/`onPoiDowFun`/`poiDowObj`/`onKeyDowFun`/`keyDowObj`/
     `dowLnkEle`/`keyDowFun`/`keyDowObj`/`easDowBoo`/`isDowBoo` across all
@@ -3545,8 +3545,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     of the two "dow" stands for in practice, the same reasoning already
     used for `con`/`sta`/`per`/`fre` elsewhere in this list)
   - `amt` → `amo` (Amount — found in `resAmtNum`/`scrAmtFun`
-    (`onboarding-tour-runner.jsx`), `easAmtNum`/`newAmtNum`
-    (`tab-conditional.jsx`, 2 separate `easSooFun`/`easLatFun`
+    (`onboarding/tour-runner.jsx`), `easAmtNum`/`newAmtNum`
+    (`ui/conditional-controls.jsx`, 2 separate `easSooFun`/`easLatFun`
     parameters and 2 separate `newAmtNum` declarations), and `offAmtNum`
     (`appearance.js`), fixed to `resAmoNum`/`scrAmoFun`/`easAmoNum`/
     `newAmoNum`/`offAmoNum` across all 3 files in one sweep; every one
@@ -3554,7 +3554,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     needed any text changes, only the identifiers themselves were
     wrong. No collision: `amo` was not already in use anywhere)
   - `fnd` → `fou` (Found — found in `notFndNum`
-    (`onboarding-tour-runner.jsx`), `fndIteObj` (`tab-picker.jsx`, 2
+    (`onboarding/tour-runner.jsx`), `fndIteObj` (`tab-picker.jsx`, 2
     separate declarations), and `curFndIndNum` (`tab-today.jsx`), fixed
     to `notFouNum`/`fouIteObj`/`curFouIndNum` across all 3 files in one
     sweep; `fou` was already the established, correct code for this
@@ -3564,9 +3564,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     themselves were wrong. No collision: none of the fixed names were
     already in use anywhere)
   - `plc` → `pla` (Place — found in `plcTarFun`
-    (`onboarding-tour-runner.jsx`), fixed to `plaTarFun`; `pla` was
+    (`onboarding/tour-runner.jsx`), fixed to `plaTarFun`; `pla` was
     already the established, heavily-used code for Place elsewhere in
-    this codebase, e.g. `plaTipFun` (`help-mode.jsx`/`ui.jsx`),
+    this codebase, e.g. `plaTipFun` (`help/mode.jsx`/`ui.jsx`),
     `plaGriFun` (`bg-flourish.jsx`), `plaThuFun` (`reminders.jsx`).
     Every comment referencing this function already spelled out
     "Place"/"placement" in full, so only the identifier itself was
@@ -3575,14 +3575,14 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     found none, so this one was an isolated fix rather than a
     multi-file sweep)
   - `stb` → `sta` (Stable — found in `stbFraNum`
-    (`onboarding-tour-runner.jsx`), fixed to `staFraNum`; `sta` was
+    (`onboarding/tour-runner.jsx`), fixed to `staFraNum`; `sta` was
     already the established code for Stable/Standard/Standalone
     elsewhere in this codebase. Every comment referencing this
     variable already spelled out "Stable"/"stability" in full, so only
     the identifier itself was wrong. No collision: `staFraNum` was not
     already in use anywhere. Note `stb` itself also appears elsewhere
-    in this codebase, in `onboarding-app-features.jsx` and
-    `onboarding-picker-tours.jsx`'s own `stbBoo` (Scroll-To-Bottom, an
+    in this codebase, in `onboarding/app-features.jsx` and
+    `onboarding/picker-tours.jsx`'s own `stbBoo` (Scroll-To-Bottom, an
     initialism-compressed name, not an abbreviation of "Stable"), which
     is unrelated and correctly left untouched, a spelling coincidence
     rather than the same miscorrection)
@@ -3596,7 +3596,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     of these same files (`weiPicFun` in `pickers.js` itself, `picResObj`
     in `tab-picker.jsx`, `picCouNum` in `tab-picker.jsx`, `picIdeStr`
     used pervasively across `day-log.jsx`/`app.jsx`/`store.js`/
-    `onboarding-picker-tours.jsx`/etc.). Since `pik`→`pic` is a
+    `onboarding/picker-tours.jsx`/etc.). Since `pik`→`pic` is a
     straight 1-for-1 letter swap, every renamed identifier stayed
     exactly the same length, so no column-alignment recalculation was
     needed anywhere. Every comment referencing these identifiers
@@ -3625,7 +3625,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `chrFreBoo`. This did NOT use the literal first-3-letters `cha`:
     that code already carries a large, heavily-established meaning
     elsewhere in this codebase (Change, dozens of uses, e.g.
-    `chaEveObj` throughout `tab-conditional.jsx`/`app.jsx`/
+    `chaEveObj` throughout `ui/conditional-controls.jsx`/`app.jsx`/
     `cadence-control.jsx`), squarely the "heavy pre-existing overload"
     case from the Naming-conflict resolution section below, not the
     few-uses case documented as an ordinary multi-meaning segment.
@@ -3645,7 +3645,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     first-3-letters `cha` directly, no escalation needed, since `cha`
     was already the established, correct code for this exact word
     elsewhere in this same codebase (`chaEveObj` already used
-    throughout `tab-conditional.jsx`/`app.jsx`/`cadence-control.jsx`,
+    throughout `ui/conditional-controls.jsx`/`app.jsx`/`cadence-control.jsx`,
     confirmed with no same-scope collision anywhere the sweep touched:
     `tab-picker.jsx`'s own pre-existing `chaEveObj` at line 131 sits in
     a completely separate function from every `chgEveObj` instance
@@ -3700,8 +3700,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     was purely an inconsistent spelling of a word already spelled
     correctly elsewhere. Note `sho` is a heavily multi-meaning segment
     even before this fix, already carrying Should (`shoDedBoo` in
-    `pickers.js`, `shoPulBoo` in `onboarding-tour-runner.jsx`), Short
-    (`shoPilNum` in `help-mode.jsx`), and Shown (`shoOrdRef`/`shoArr` in
+    `pickers.js`, `shoPulBoo` in `onboarding/tour-runner.jsx`), Short
+    (`shoPilNum` in `help/mode.jsx`), and Shown (`shoOrdRef`/`shoArr` in
     `tab-today.jsx`) alongside Show; a name's own surrounding context
     disambiguates which of the four "sho" stands for in practice, the
     same reasoning already used for `con`/`sta`/`per`/`fre`/`dow`
@@ -3714,7 +3714,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (`reminders.jsx`) and `kndStr` (`tab-today.jsx`), fixed across both
     files in one sweep; `kin` was already the established, correct code
     for this exact word elsewhere in this codebase (`kinStr` in
-    `settings-previews.jsx`), so no escalation was needed, this was
+    `tabs/settings/previews.jsx`), so no escalation was needed, this was
     purely an inconsistent spelling of a word already spelled correctly
     elsewhere. Every comment referencing these identifiers already
     spelled "Kind" out in full, so none needed text changes, only the
@@ -3728,7 +3728,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     all 4 files in one sweep; `sna` was already the established,
     correct code for this exact word in several OTHER identifiers in
     this same codebase (`genSnaObj` in `day-log.jsx`, `busSnaObj` in
-    `eml-tour-bus.js`, `recSnaArr` in `reorder.js`, `ediSnaRef`/
+    `state/tour-bus.js`, `recSnaArr` in `reorder.js`, `ediSnaRef`/
     `snaIteObj`/`iteSnaArr` in `tab-picker.jsx`), so no escalation was
     needed, this was purely an inconsistent spelling of a word already
     spelled correctly elsewhere; `tab-picker.jsx`'s own `snaIteObj` in
@@ -3744,8 +3744,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `tab-picker.jsx`), fixed across all 3 files in one sweep; `cle` was
     already the established, correct code for this exact word in
     several OTHER identifiers in this same codebase (`ripCleTmo`/
-    `ripCleFun`/`parCleTmo` in `settings-previews.jsx`, `clePicFun`/
-    `cleTasFun` in `help-sample-data.js`, `buiCleFun` in `seed.js`),
+    `ripCleFun`/`parCleTmo` in `tabs/settings/previews.jsx`, `clePicFun`/
+    `cleTasFun` in `help/sample-data.js`, `buiCleFun` in `seed.js`),
     so no escalation was needed, this was purely an inconsistent
     spelling of a word already spelled correctly elsewhere;
     `tab-stats.jsx`'s own `cleFunArr` in particular already meant the
@@ -3762,7 +3762,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (`reorder.js`, the former also in its own `#region`/`#endregion`
     markers); `loo` was already the established, correct code for this
     exact word elsewhere in this codebase (`looRafFun`/`looCanBoo` in
-    `help-mode.jsx`, `entLooFun` in `onboarding-checklist.js`), so no
+    `help/mode.jsx`, `entLooFun` in `onboarding-checklist.js`), so no
     escalation was needed, this was purely an inconsistent spelling of
     a word already spelled correctly elsewhere. Every comment
     referencing these identifiers already spelled "Loop" out in full,
@@ -3774,11 +3774,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (`skpRowObj`), `tab-settings.jsx`/`tab-today.jsx` (`skpSpyRef`,
     shared by both), `tab-picker.jsx` (`skpHolBoo`/`setSkpHolBoo`/
     `skpAutBoo`), `tab-today.jsx`'s own separate `skpAniMsNum`, and
-    `onboarding-tour-runner.jsx` (`skpTouFun`); `ski` was already the
+    `onboarding/tour-runner.jsx` (`skpTouFun`); `ski` was already the
     established, correct code for this exact word in several OTHER
     identifiers across this same codebase (`skiBoo`/`skiIdeSet` in
-    day-log.jsx, `skiLabStr`/`onSkiTouFun` in onboarding-intro-modal.jsx
-    and onboarding-welcome-tour.jsx, `skiIdeStr`/`isaSkiBoo` in
+    day-log.jsx, `skiLabStr`/`onSkiTouFun` in onboarding/intro-modal.jsx
+    and onboarding/welcome-tour.jsx, `skiIdeStr`/`isaSkiBoo` in
     reminders.jsx, `skiCouMap` in tab-stats.jsx), so no escalation was
     needed, this was purely an inconsistent spelling of a word already
     spelled correctly elsewhere. Every comment referencing these
@@ -3803,7 +3803,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `tmo` → `tim` (Timeout — a very widely recurring miscorrection,
     found across 7 files: `idlTmoRef` (`store.js`), `picPreTmo`
     (`tab-settings.jsx`), `ripCleTmo`/`parCleTmo`
-    (`settings-previews.jsx`), `pulEndTmo`/`freTmoNum`/`feaIntTmoNum`/
+    (`tabs/settings/previews.jsx`), `pulEndTmo`/`freTmoNum`/`feaIntTmoNum`/
     `celEndTmo`/`bmpEndTmo`/`purTmoNum`/`celTmoNum`/`alnTmoNum`
     (`tab-today.jsx`), `scrTmo`/`defDonTmo`/`kicOffTmo`
     (`tab-picker.jsx`), `focDelTmo` (`legal-docs.jsx`), and
@@ -3856,8 +3856,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `onCnlFun`), while the MAJORITY of this codebase's own
     "Cancel"-meaning identifiers already used `can` directly (~20
     instances across `store.js`, `tab-data.jsx`, `tab-today.jsx`,
-    `reminders.jsx`, `onboarding-page-tours.jsx`,
-    `onboarding-tour-runner.jsx`, and `help-mode.jsx`, e.g. `canGroFun`,
+    `reminders.jsx`, `onboarding/page-tours.jsx`,
+    `onboarding/tour-runner.jsx`, and `help/mode.jsx`, e.g. `canGroFun`,
     `canNewFun`, `canRenFun`, `canEdiFun`, `canPenFun`), fixed to
     `canRunBoo`/`canCnfFun`/`canCreFun`/`canFrmFun`/`canImpFun`/
     `onCanFun`. `can` was deliberately left unescalated even though it
@@ -3886,7 +3886,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     internally, only the outward-facing prop key itself was wrong)
     fixed to `donCouNum` too, collapsing to shorthand destructuring and
     rippling into its own 3 call sites plus 2 comment mentions of the
-    old prop name (`store.js`, `onboarding-app-features.jsx`). `don` was
+    old prop name (`store.js`, `onboarding/app-features.jsx`). `don` was
     already the established, heavily-used code for Done elsewhere in
     this codebase before this fix (`donCouNum`/`donNum`/`donIteNum`/
     `donNowFun`/`donValBoo` across `day-log.jsx`, `onboarding-
@@ -3914,7 +3914,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     consonant skeleton `trg` (the same style as `rcd`/`rmn`/`rmv`),
     Trimmed keeps the literal `tri` (e.g. `tab-today.jsx`'s own
     `triValStr`), and Try uses its own complete 3-letter word `try` (e.g.
-    `onboarding-app-features.jsx`'s own `tryCouNum`/`tryColFun`). Being
+    `onboarding/app-features.jsx`'s own `tryCouNum`/`tryColFun`). Being
     applied file by file as each file is next reviewed, not in one sweep.
     Scoped to ease-my-life ONLY, for the same reason as `rmn`/`rmv`.
   - **Weekend uses `wkd`, not `wee`** (a project-scoped decision): the
@@ -3975,7 +3975,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `setTypWeiFun`/`newWeiNum`/`hasWeiBoo`. `wei` was already the
     established, heavily-used code for this exact word elsewhere in
     this codebase, e.g. `seed.js`'s own `picWeiFun`/`totWeiNum`/
-    `remWeiNum`, `tab-conditional.jsx`'s own `useWeiBoo`, and even
+    `remWeiNum`, `ui/conditional-controls.jsx`'s own `useWeiBoo`, and even
     `store.js`'s own `perWeiArr`/`curWeiNum` sitting just a few lines
     from one of the fixed `wgtValNum` instances, so no escalation was
     needed, this was purely an inconsistent spelling of a word already
@@ -3991,7 +3991,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     the established, heavily-used code for this exact word elsewhere in
     this codebase, e.g. `cadence-control.jsx`'s own `norCadFun`/
     `norCadObj`, and `norNamStr`/`norOptObj` in particular already
-    existed with this exact meaning in `tab-conditional.jsx`/
+    existed with this exact meaning in `ui/conditional-controls.jsx`/
     `reminders.jsx`, so no escalation was needed, this was purely an
     inconsistent spelling of a word already spelled correctly
     elsewhere. Every comment referencing these identifiers already
@@ -4060,7 +4060,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `tab-picker.jsx` and `tab-settings.jsx` remain for their own reviews)
   - `drf` → `dra` (Draft, found across `tab-data.jsx`, e.g. `newDrfStr`/
     `isaDrfBoo`/`drfCrdRef`, plus the shared `conDrfFun` export from
-    `tab-conditional.jsx` and its `tab-picker.jsx` import, fixed to
+    `ui/conditional-controls.jsx` and its `tab-picker.jsx` import, fixed to
     `conDraFun`. `tab-today.jsx`'s own `drfSooFun`/`drfLatFun`/
     `dayDrfFun` used `drf` for Drift instead, a different word whose
     literal first 3 letters are `dri`, fixed to `driSooFun`/`driLatFun`/
@@ -4103,8 +4103,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - A third batch, found together in `tab-settings.jsx`'s own review, each
     fixed to its word's literal first 3 letters: `bra` → `bro` (Browser,
     `broNamStr`/`BRO_PAT_ARR`), `clk` → `cli` (Click, which recurred in
-    `onboarding-tour-runner.jsx`'s own step fields, now `advCliStr`/
-    `cliSelStr`, and in `help-mode.jsx`'s own `cliEveObj`/`cliCapFun`,
+    `onboarding/tour-runner.jsx`'s own step fields, now `advCliStr`/
+    `cliSelStr`, and in `help/mode.jsx`'s own `cliEveObj`/`cliCapFun`,
     and still has instances in `tab-data.jsx` and `tab-picker.jsx` for
     their own passes), `cpd` →
     `cop` (Copied), `drk` → `dar` (Dark), `jmp` → `jum` (Jump), `lnk` → `lin`
@@ -4162,7 +4162,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   well-known, generic (non-React) API shape keeps that shape's own
   conventional method names bare too, the same reasoning as the
   React-convention exemptions just applied to a different convention
-  family. Example: `eml-tour-bus.js`'s own `emlTouObj` is a minimal
+  family. Example: `state/tour-bus.js`'s own `emlTouObj` is a minimal
   observable/store (the same shape as `Map`'s `get`/`set`, or a Redux
   store's `getState`/`subscribe`), so its own `get`, `set`, and
   `subscribe` properties stay bare rather than becoming e.g. `getFun`/
@@ -4298,7 +4298,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   here, not a blanket license to drop context: it only applies to a word
   that's redundant with the DEFINING FILE's own name/purpose, never to a
   word that distinguishes this function from a sibling in the SAME file.
-  Example: `help-sample-data.js`'s own `seedHelpPickers`/`clearHelpPickers`/
+  Example: `help/sample-data.js`'s own `seedHelpPickers`/`clearHelpPickers`/
   `seedHelpTasks`/`clearHelpTasks`/`unhideHelpStatsHistory`/
   `hideHelpStatsHistory` each had a verb, "Help", and a 1-2 word target
   (Pickers/Tasks/Stats+History) — 3-4 real concepts, one segment too many.
@@ -4342,7 +4342,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   field actually DOES, the same reasoning already used to name
   `clickSel`/`pulseSel`'s own "Sel" segment after the value's real
   shape (a selector) rather than its literal old name. Example:
-  `onboarding-tour-runner.jsx`'s own `advanceOn` field (a selector
+  `onboarding/tour-runner.jsx`'s own `advanceOn` field (a selector
   where a real click ALSO counts as clicking Next) has "Advance" +
   "On" as its literal two words, but "On" is only 2 letters; since the
   field is fundamentally about a CLICK counting as advancing, it
@@ -4612,7 +4612,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     the truncated base word and before the type segment, breaking the
     strict 6-character count up to the full 9, the same way the
     Full-word variant below does, e.g. a catalog item's own
-    horizontal/vertical highlight-padding override in `help-content.jsx`
+    horizontal/vertical highlight-padding override in `help/content.jsx`
     is `padXcoNum`/`padYcoNum` (Pad + X-Coordinate/Y-Coordinate +
     Number). This is the same `Xco`/`Yco` segment variables use (see the
     axis-letter rule in the general naming rules above); it replaced an
@@ -4624,7 +4624,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     a real type. Truncate that word to its own normal 3 letters (same as
     any other segment) and keep the type segment too, breaking the
     6-character budget up to the full 9 rather than dropping the type
-    segment to force a fit. E.g. `help-mode.jsx`'s own `claPadFun` return
+    segment to force a fit. E.g. `help/mode.jsx`'s own `claPadFun` return
     shape became `padTopNum`/`padBotNum`/`padLefNum`/`padRigNum` (Pad +
     Top/Bot/Lef/Rig + Number), not a 6-char `padBot`/`padLef`/`padRig`
     missing a type segment entirely, and not a bare `topNum`/`botNum`/
@@ -4700,7 +4700,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     keys out explicitly (`streak : stkValNum`). Earlier precedents
     reached the same result before this bullet existed: `tab-today.jsx`'s
     own `GroHeaCom` prop key `doneCount` became `donCouNum` so its own
-    destructuring could collapse to shorthand, and `help-mode.jsx`'s own
+    destructuring could collapse to shorthand, and `help/mode.jsx`'s own
     `claPadFun` return shape (`padTopNum`/`padBotNum`/...) matched the
     reading local variables' own names.
     - **Large, externally constrained argument objects are read, not
