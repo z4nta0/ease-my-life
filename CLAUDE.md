@@ -549,12 +549,13 @@ src/
   constants.js           app-wide constants
   utils/                 app-agnostic pure helpers (see below)
   core/                  pure domain logic, no React
-  state/                 app state and persistence (store, storage, seed)
+  state/                 app state and persistence (store, storage, seed,
+                         the tour bus, onboarding sample data)
   platform/              browser services (notify, pwa, appearance)
   ui/                    shared primitives and shared editors
   tabs/
     today/  pickers/  stats/  data/  settings/
-  onboarding/            every onboarding file + the tour bus
+  onboarding/            every onboarding tour and modal
   help/                  help mode, its catalog, its sample data
   styles/                global CSS only (tokens, base, fonts)
   assets/                shared images, icons, fonts (imported, never public/)
@@ -583,7 +584,13 @@ src/
   (bottom). `utils/` never imports anything from `src/`; `core/` never
   imports React; no tab imports from another tab. `main.jsx`, `app.jsx`,
   and `constants.js` sit outside the order: `app.jsx` may import from any
-  folder, and `constants.js` may be imported by any.
+  folder, and `constants.js` may be imported by any. Decided 2026-09-27:
+  folders on the same tier may import each other (a tab uses `help/` and
+  `onboarding/`, `store.js` uses `pwa.js`), except that no tab imports from
+  another tab's folder. The tour bus and the onboarding sample, stats, and
+  checklist data live in `state/`, since `store.js` and the shared
+  reminders editor in `ui/` both read them, and neither may import upward
+  from `onboarding/`.
 - **No redundant prefixes.** A file inside a folder drops whatever prefix
   the folder already says (`onboarding/onboarding-tour-runner.jsx` becomes
   `onboarding/tour-runner.jsx`), the same reasoning as the naming rule that
