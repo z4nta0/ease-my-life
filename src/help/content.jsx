@@ -2247,7 +2247,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
 		ideStr : 'brandMark',
-		selStr : '.stat-h-lead .brand-mark',
+		selStr : '[data-element-name-hook="heaLeaDiv"] [data-element-name-hook="braMarBut"]',
 		titStr : 'Home Link'
 
 
@@ -2258,7 +2258,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
 		ideStr : 'groupFilter',
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill',
+		selStr : '[data-element-name-hook="groFilDiv"] [data-element-name-hook="filPilBut"]',
 		titStr : 'Group Filter'
 
 
@@ -2269,7 +2269,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This filters the pickers row below by type. You can select picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), Conditionals or Reminders, independent of the Group filter above with both narrowing the row together.</>,
 		ideStr : 'typeFilter',
-		selStr : '.stat-scope-groups--type .picker-group-pill',
+		selStr : '[data-element-name-hook="typFilDiv"] [data-element-name-hook="filPilBut"]',
 		titStr : 'Type Filter'
 
 
@@ -2280,7 +2280,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This selects what the rest of the page shows: conditionals, reminders, a specific picker, or everything all at once.</>,
 		ideStr : 'pickersFilter',
-		selStr : '.stat-scope-tabs .picker-tab',
+		selStr : '[data-element-name-hook="scoTabDiv"] [data-element-name-hook="scoTabBut"]',
 		titStr : 'Show Selector'
 
 
@@ -2291,7 +2291,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This further narrows your selection by date range, with ranges from 1 week to 1 year to all time.</>,
 		ideStr : 'rangeFilter',
-		selStr : '.stat-filter-pills--seg .stat-pill',
+		selStr : '[data-element-name-hook="ranPilDiv"] [data-element-name-hook="ranPilBut"]',
 		titStr : 'Range Filter'
 
 
@@ -2311,7 +2311,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statStreak',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-all.stat-mk-streak',
+		selStr    : '[data-element-name-hook="staStrDiv"]:not([data-picker-scope-active])',
 		titStr    : 'Day Streak'
 
 
@@ -2324,7 +2324,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statFullDays',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-all.stat-mk-fulldays',
+		selStr    : '[data-element-name-hook="staFulDiv"]:not([data-picker-scope-active])',
 		titStr    : 'Full Days'
 
 
@@ -2337,7 +2337,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statDone',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-all.stat-mk-done',
+		selStr    : '[data-element-name-hook="staDonDiv"]:not([data-picker-scope-active])',
 		titStr    : 'Items Done'
 
 
@@ -2350,7 +2350,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statRate',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-all.stat-mk-rate',
+		selStr    : '[data-element-name-hook="staRatDiv"]:not([data-picker-scope-active])',
 		titStr    : 'Completion Rate'
 
 
@@ -2363,7 +2363,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statPickerStreak',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-picker.stat-mk-streak',
+		selStr    : '[data-element-name-hook="staStrDiv"][data-picker-scope-active]',
 		titStr    : 'Picker Day Streak'
 
 
@@ -2376,7 +2376,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statPickerFullDays',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-picker.stat-mk-fulldays',
+		selStr    : '[data-element-name-hook="staFulDiv"][data-picker-scope-active]',
 		titStr    : 'Picker Full Days'
 
 
@@ -2389,7 +2389,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statPickerDone',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-picker.stat-mk-done',
+		selStr    : '[data-element-name-hook="staDonDiv"][data-picker-scope-active]',
 		titStr    : 'Picker Items Done'
 
 
@@ -2402,7 +2402,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statPickerRate',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-scope-picker.stat-mk-rate',
+		selStr    : '[data-element-name-hook="staRatDiv"][data-picker-scope-active]',
 		titStr    : 'Picker Completion Rate'
 
 
@@ -2416,7 +2416,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statRemDone',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-remdone',
+		selStr    : '[data-element-name-hook="remDonDiv"]',
 		titStr    : 'Reminders Completed'
 
 
@@ -2429,7 +2429,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statRemWeek',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-remweek',
+		selStr    : '[data-element-name-hook="remWeeDiv"]',
 		titStr    : 'Reminders This Week'
 
 
@@ -2442,7 +2442,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statRemActive',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-remactive',
+		selStr    : '[data-element-name-hook="remActDiv"]',
 		titStr    : 'Reminders Active Days'
 
 
@@ -2455,7 +2455,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statRemBusiest',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-rembusiest',
+		selStr    : '[data-element-name-hook="remBusDiv"]',
 		titStr    : 'Reminders Busiest Day'
 
 
@@ -2469,7 +2469,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statCondFired',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-condfired',
+		selStr    : '[data-element-name-hook="conFirDiv"]',
 		titStr    : 'Conditionals Triggered'
 
 
@@ -2482,7 +2482,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statCondCycles',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-condcycles',
+		selStr    : '[data-element-name-hook="conCycDiv"]',
 		titStr    : 'Conditionals Cycles'
 
 
@@ -2495,7 +2495,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statCondRate',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-condrate',
+		selStr    : '[data-element-name-hook="conRatDiv"]',
 		titStr    : 'Conditionals Fire Rate'
 
 
@@ -2508,7 +2508,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statCondLast',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-condlast',
+		selStr    : '[data-element-name-hook="conLasDiv"]',
 		titStr    : 'Conditionals Last Fired'
 
 
@@ -2519,7 +2519,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This visualizes your completed activity over time, with each day shaded by how much you got done. If you click on any day, more details for it will be shown below the heatmap.</>,
 		ideStr : 'heatmap',
-		selStr : '.stat-heatmap-card',
+		selStr : '[data-element-name-hook="heaMapDiv"]',
 		titStr : 'Activity Heatmap'
 
 
@@ -2536,7 +2536,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This summarizes your conditionals' activity for your selected range. It includes how many times they've triggered, their overall fire rate, and a per-conditional breakdown. It will only show if you have at least one conditional.</>,
 		ideStr : 'statConditionalsSummary',
-		selStr : '.cnd-sum-card',
+		selStr : '[data-element-name-hook="conSumDiv"]',
 		titStr : 'Conditional Statistics'
 
 
@@ -2547,7 +2547,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This summarizes your completed reminders' activity for your selected range, along with a short recent-activity list. It will only show if you have the "Include in Stats" toggle enabled for reminders.</>,
 		ideStr : 'statRemindersSummary',
-		selStr : '.rem-stats-card',
+		selStr : '[data-element-name-hook="remSumDiv"]',
 		titStr : 'Reminders Statistics'
 
 
@@ -2558,7 +2558,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This breaks down how your picker items made it onto your todo list. This includes auto-generated, re-rolled or hand-picked from the Pickers tab.</>,
 		ideStr : 'statSource',
-		selStr : '.stat-mk-source',
+		selStr : '[data-element-name-hook="souBreDiv"]',
 		titStr : 'Picker Items Chosen Type'
 
 
@@ -2571,7 +2571,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statMostPicked',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-mostpicked',
+		selStr    : '[data-element-name-hook="mosPicDiv"]',
 		titStr    : 'Picker Items Most Picked'
 
 
@@ -2584,7 +2584,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		ideStr    : 'statColdest',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '.stat-mk-coldest',
+		selStr    : '[data-element-name-hook="colIteDiv"]',
 		titStr    : 'Picker Items Least Picked'
 
 
@@ -2601,7 +2601,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This breaks down every conditional for your selected range individually. You can switch between fire rate, triggers, cycles, interval and last fired to see each conditional from a different angle.</>,
 		ideStr : 'statCondBreakdown',
-		selStr : '.stat-mk-condbreakdown',
+		selStr : '[data-element-name-hook="conBreDiv"]',
 		titStr : 'Conditionals Breakdown'
 
 
@@ -2618,7 +2618,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This breaks down your completed reminders by type, one-time versus recurring, for your selected range.</>,
 		ideStr : 'statRemType',
-		selStr : '.stat-mk-remtype',
+		selStr : '[data-element-name-hook="remTypDiv"]',
 		titStr : 'Reminders Completed Type'
 
 
@@ -2629,7 +2629,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This breaks down every reminder for your selected range individually. You can switch between recent completions, total completions and skips to see each reminder from a different angle.</>,
 		ideStr : 'statRemBreakdown',
-		selStr : '.stat-mk-rembreakdown',
+		selStr : '[data-element-name-hook="remBreDiv"]',
 		titStr : 'Reminders Breakdown'
 
 
@@ -2648,7 +2648,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
 		padYcoNum : 2, // padYcoNum: 2, same 6px gap to the pill below as the Pickers page (see .stat-picker-id > .pill's own margin-top in styles2.css); the default 8px pad on each side would overlap by 10px otherwise.
-		selStr    : '.stat-picker-id .picker-title',
+		selStr    : '[data-element-name-hook="picIdeDiv"] [data-element-name-hook="picTitHea"]',
 		titStr    : 'Picker Name'
 
 
@@ -2660,7 +2660,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		bodEle    : <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
 		ideStr    : 'pickerTypePill',
 		padYcoNum : 2, // padYcoNum: 2, see pickerName's own comment, same 6px gap, same fix.
-		selStr    : '.stat-picker-id .pill--mode',
+		selStr    : '[data-element-name-hook="picIdeDiv"] [data-element-name-hook="modPilSpa"]',
 		titStr    : 'Picker Type'
 
 
@@ -2671,7 +2671,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This explains the currently selected picker's ruleset, including how it chooses an item and why you might pick this type over another.</>,
 		ideStr : 'pickerExplanation',
-		selStr : '.stat-picker-id .picker-hint',
+		selStr : '[data-element-name-hook="picIdeDiv"] [data-element-name-hook="picHinPar"]',
 		titStr : 'Picker Explanation'
 
 
@@ -2682,7 +2682,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle : <>This breaks down every picker item for your selected range individually. You can switch between pick count, pick frequency, last picked date and more to see each picker item from a different angle.</>,
 		ideStr : 'pickerBreakdown',
-		selStr : '.stat-breakdown-card',
+		selStr : '[data-element-name-hook="breCarDiv"]',
 		titStr : 'Picker Breakdown'
 
 

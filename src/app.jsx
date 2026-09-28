@@ -218,7 +218,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 			aria-hidden={ tbcGhoBoo || undefined }
 			aria-label='Sections'
-		>{ /* What: Container Nav Element. Why: This is TabBarCom's own root element, holding every tab, the brand button, and the rail handle. How: This renders as an actual <nav> landmark, positioned/laid out per tabPlaStr and styled with the caller's own className. Its data-element-name-hook is read by the tour runner's and help mode's own layout math and outside-click checks, and the support form's scroll math. */ }
+		>{ /* What: Container Nav Element. Why: This is TabBarCom's own root element, holding every tab, the brand button, and the rail handle. How: This renders as an actual <nav> landmark, positioned/laid out per tabPlaStr and styled with the caller's own className. Its data-element-name-hook is read by the tour runner's and help mode's own layout math and outside-click checks, and the support form's scroll math and help mode's chrome clipping. */ }
 
 
 			{ indRecObj && ( // What: Indicator Visibility Check. Why: There is nothing to position until a measurement has actually happened. How: This renders the indicator span only while indRecObj holds a value, otherwise it renders nothing at all.
@@ -426,7 +426,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
 
 					onClick={ () => onChange( tabConObj.ideStr ) }
-				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself "is-on"/current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.jsx's own active-tab indicator.jsx's own active-tab indicator. */ }
+				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself "is-on"/current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator. */ }
 
 
 					<IcoSvgCom
@@ -446,13 +446,15 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 			<button
 				className='rail-handle'
 
+				data-element-name-hook='raiHanBut'
+
 				type='button'
 
 				aria-expanded={ raiOpeBoo }
 				aria-label={ raiOpeBoo ? 'Collapse menu' : 'Expand menu' }
 
 				onClick={ onTogRaiFun }
-			>{ /* What: Handle Button Element. Why: On small screens the rail collapses into an off-canvas drawer that needs a visible, CSS-gated pull handle to open/close, riding the rail's outer edge. How: This toggles raiOpeBoo via onTogRaiFun and flips its own chevron icon to reflect the current state. */ }
+			>{ /* What: Handle Button Element. Why: On small screens the rail collapses into an off-canvas drawer that needs a visible, CSS-gated pull handle to open/close, riding the rail's outer edge. How: This toggles raiOpeBoo via onTogRaiFun and flips its own chevron icon to reflect the current state. Its data-element-name-hook is read by help mode's own sidebar-toggle item. */ }
 
 
 				<svg

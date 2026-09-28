@@ -187,9 +187,9 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
 const RAI_HAN_OBJ = { // What: Rail Handle Object. Why: The side rail's own pull handle needs its own help item on every page. How: HelOveCom prepends this ahead of every page's own catalog, right after NAV_HEL_OBJ.
 
 
-	ideStr : '__railHandle',   // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
-	selStr : '.rail-handle',   // What: Selector String. Why: The handle is a single real button. How: finTarFun matches it only while the drawer breakpoint renders it.
-	titStr : 'Sidebar Toggle', // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
+	ideStr : '__railHandle',                         // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
+	selStr : '[data-element-name-hook="raiHanBut"]', // What: Selector String. Why: The handle is a single real button. How: finTarFun matches it only while the drawer breakpoint renders it.
+	titStr : 'Sidebar Toggle',                       // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
 
 	bodEle : <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</> // What: Body Element. Why: This is the tip's own explanatory text. How: HelTipCom renders it as the tip's body.
 
@@ -257,9 +257,21 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 		const nexMapObj = {}; // What: Next Map Object. Why: The whole rect map is rebuilt from scratch every call rather than patched incrementally. How: This starts empty and is filled in by the loops below before being committed via setRecMapObj.
 
-		const chrSelArr = [ [ '.today-h', 'top' ], [ '.group-rail', 'top' ], [ '.settings-rail', 'top' ], [ '.tabbar', 'auto' ], [ '.editmode-banner', 'top' ] ]; // What: Chrome Selector Array. Why: These are the only pieces of always-on-top chrome any highlight ever needs clipping against; '.tabbar' alone varies its own edge at runtime. How: This is mapped into real chrome items below.
 
-		const chrMatArr = chrSelArr // What: Chrome Match Array. Why: Only chrome that actually exists on the current page (e.g. '.settings-rail' only on Settings) should ever be clipped against. How: This looks each selector up once per frame and drops any that found nothing.
+		const chrSelArr = [ // What: Chrome Selector Array. Why: These are the only pieces of always-on-top chrome any highlight ever needs clipping against; the tab bar alone varies its own edge at runtime. How: This is mapped into real chrome items below.
+
+
+			[ '[data-element-name-hook="todPagHea"]', 'top'  ], // What: Today Header Entry. Why: The Today header stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook="groRaiAsi"]', 'top'  ], // What: Group Rail Entry. Why: The Today group rail stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook="setRaiAsi"]', 'top'  ], // What: Settings Rail Entry. Why: The Settings section rail stays pinned above the scrolling page. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook="appTabNav"]', 'auto' ], // What: Tab Bar Entry. Why: The tab bar's own clipped edge depends on its placement. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook="ediBanDiv"]', 'top'  ]  // What: Edit Mode Banner Entry. Why: The Edit Mode banner stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
+
+
+		];
+
+
+		const chrMatArr = chrSelArr // What: Chrome Match Array. Why: Only chrome that actually exists on the current page (e.g. the Settings rail only on Settings) should ever be clipped against. How: This looks each selector up once per frame and drops any that found nothing.
 			.map( ( [ chrSelStr, chrSidStr ] ) => { // What: Chrome Lookup Callback. Why: Each chrome selector needs its own live element found before it can be measured. How: This queries chrSelStr once and wraps the result with its own selector and side, or null when nothing matched.
 
 

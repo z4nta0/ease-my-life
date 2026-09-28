@@ -294,16 +294,24 @@ function relWheFun ( wheIsoStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.className - Class Name: Extra class name(s) to append;
- *                          defaults to an empty string.
- * @param props.empMesStr - Empty Message String: Message shown in place of
- *                          the bar when totCouNum is zero.
- * @param props.kicTexStr - Kicker Text String: The card's own kicker text.
- * @param props.segDatArr - Segment Data Array: {@link SOU_MET_ARR} or {@link
- *                          TYP_MET_ARR}, each entry already joined with its
- *                          own live couNum.
- * @param props.totCouNum - Total Count Number: The combined total every
- *                          segment's own share is computed against.
+ * @param props.className              - Class Name: Extra class name(s) to
+ *                                       append; defaults to an empty string.
+ * @param props.data-element-name-hook - Data Element Name Hook: The element's
+ *                                       own identity hook, forwarded onto its
+ *                                       root card, so code can find it without
+ *                                       its classes.
+ * @param props.empMesStr              - Empty Message String: Message shown in
+ *                                       place of the bar when totCouNum is
+ *                                       zero.
+ * @param props.kicTexStr              - Kicker Text String: The card's own
+ *                                       kicker text.
+ * @param props.segDatArr              - Segment Data Array: {@link
+ *                                       SOU_MET_ARR} or {@link TYP_MET_ARR},
+ *                                       each entry already joined with its own
+ *                                       live couNum.
+ * @param props.totCouNum              - Total Count Number: The combined total
+ *                                       every segment's own share is computed
+ *                                       against.
  *
  * @returns The card containing the stacked bar and legend, or the empty
  * state.
@@ -315,13 +323,17 @@ function relWheFun ( wheIsoStr ) {
  *
 */
 
-function BreBarCom ( { className = '', empMesStr, kicTexStr, segDatArr, totCouNum } ) {
+function BreBarCom ( { className = '', 'data-element-name-hook' : hooNamStr, empMesStr, kicTexStr, segDatArr, totCouNum } ) {
 
 
 	return (
 
 
-		<CarSurCom className={ className }>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
+		<CarSurCom
+			className={ className }
+
+			data-element-name-hook={ hooNamStr }
+		>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
 
 
 			<div className='kicker'>{ kicTexStr }</div>{ /* What: Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
@@ -2409,18 +2421,24 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-				<div className='stat-h-lead'>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. */ }
+				<div
+					className='stat-h-lead'
+
+					data-element-name-hook='heaLeaDiv'
+				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 					<button
 						className='brand-mark'
+
+						data-element-name-hook='braMarBut'
 
 						type='button'
 
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. */ }
+					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 						<svg
@@ -2582,7 +2600,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								aria-label='Filter pickers by group'
 								role='tablist'
-							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 								<button
@@ -2603,7 +2621,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 									All
@@ -2629,7 +2647,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										role='tab'
 
 										onClick={ () => setStaGroStr( groCurStr ) }
-									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 										{ groCurStr }{ /* What: Group Name Expression. Why: The pill shows its own group name. How: This renders groCurStr. */ }
@@ -2669,7 +2687,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								aria-label='Filter pickers by type'
 								role='tablist'
-							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 								<button
@@ -2690,7 +2708,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 									All
@@ -2774,7 +2792,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											role='tab'
 
 											onClick={ entCurObj.cliFun }
-										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 											{ entCurObj.namStr }{ /* What: Type Name Expression. Why: The pill shows its own mode or sentinel name. How: This renders the entry's own namStr. */ }
@@ -2809,7 +2827,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							className='picker-tabs stat-scope-tabs'
 
 							data-element-name-hook='scoTabDiv'
-						>{ /* What: Show Tab List Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the Stats page tour. */ }
+						>{ /* What: Show Tab List Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
 							{ staGroStr === 'all' && typFilStr === 'all' && ( // What: All Tab Visibility Check. Why: The "All" scope tab only makes sense while neither the Group nor Type filter has narrowed the view. How: This renders the All tab only while both filters are still 'all'.
@@ -2825,7 +2843,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									type='button'
 
 									onClick={ () => setScoValStr( 'all' ) }
-								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour. */ }
+								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
 									<span className='picker-tab-name'>All</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the literal word "All". */ }
@@ -2880,7 +2898,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										type='button'
 
 										onClick={ entCurObj.cliFun }
-									>{ /* What: Scope Tab Button Element. Why: The user needs a way to switch the whole page over to this specific Conditionals/Reminders/picker scope. How: This calls the entry's own cliFun when clicked. Its data-element-name-hook is read by the Stats page tour. */ }
+									>{ /* What: Scope Tab Button Element. Why: The user needs a way to switch the whole page over to this specific Conditionals/Reminders/picker scope. How: This calls the entry's own cliFun when clicked. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
 										<span className='picker-tab-name'>{ entCurObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the entry's own namStr field. */ }
@@ -2911,7 +2929,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							className='stat-filter-pills stat-filter-pills--seg'
 
 							data-element-name-hook='ranPilDiv'
-						>{ /* What: Range Pill List Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. Its data-element-name-hook is read by the Stats page tour. */ }
+						>{ /* What: Range Pill List Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
 							{ STA_RAN_ARR.map( ( ranCurObj ) => ( // What: Range Pill Render. Why: Every configured lookback window needs its own selectable pill. How: This maps STA_RAN_ARR to one button per range.
@@ -2927,7 +2945,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									type='button'
 
 									onClick={ () => setRanValStr( ranCurObj.keyStr ) }
-								>{ ranCurObj.labStr }</button> // What: Range Pill Button Element. Why: The user needs a way to switch the whole page over to this specific lookback window. How: This sets ranValStr to this pill's own keyStr when clicked. Its data-element-name-hook is read by the Stats page tour.
+								>{ ranCurObj.labStr }</button> // What: Range Pill Button Element. Why: The user needs a way to switch the whole page over to this specific lookback window. How: This sets ranValStr to this pill's own keyStr when clicked. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog.
 
 
 							))}
@@ -2953,16 +2971,28 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ isaPicBoo && scoPicObj && ( // What: Picker Identity Visibility Check. Why: This header block only makes sense while a single real picker is the active scope. How: This renders it only while isaPicBoo is true and scoPicObj actually resolved. // Picker identity (single-picker scope), mirrors the Pickers page header: "Picker" kicker, then name, then the mode pill below it, then the mode's own description.
 
 
-						<div className='stat-picker-id'>{ /* What: Picker Identity Div Element. Why: This groups the scoped picker's own kicker, name, mode pill, and hint text. How: This wraps those four pieces in a fixed order. */ }
+						<div
+							className='stat-picker-id'
+
+							data-element-name-hook='picIdeDiv'
+						>{ /* What: Picker Identity Div Element. Why: This groups the scoped picker's own kicker, name, mode pill, and hint text. How: This wraps those four pieces in a fixed order. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 							<span className='kicker'>Picker</span>{ /* What: Picker Kicker Span Element. Why: This block needs its own small label naming what it identifies. How: This renders the literal word "Picker". */ }
 
-							<h2 className='picker-title'>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. */ }
+							<h2
+								className='picker-title'
+
+								data-element-name-hook='picTitHea'
+							>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 
-							<PilTagCom tonValStr='mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).labStr || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. */ }
+							<PilTagCom
+								data-element-name-hook='modPilSpa'
+
+								tonValStr='mode'
+							>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).labStr || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 
@@ -2972,7 +3002,23 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								const modHinVal = ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).hinArr; // What: Mode Hint Value. Why: The render below needs this looked up once rather than twice. How: This reads the scoped picker's own mode's hint field, which may be a string or an array of strings.
 
 
-								if ( !Array.isArray( modHinVal ) ) return <p className='picker-hint'>{ modHinVal }</p>; // What: Single Hint Guard. Why: A plain-string hint is just one paragraph. How: This returns it wrapped in a single picker-hint paragraph.
+								if ( !Array.isArray( modHinVal ) ) { // What: Single Hint Guard. Why: A plain-string hint is just one paragraph. How: This returns it wrapped in a single picker-hint paragraph.
+
+
+									return (
+
+
+										<p
+											className='picker-hint'
+
+											data-element-name-hook='picHinPar'
+										>{ modHinVal }</p> // What: Picker Hint Paragraph Element. Why: A plain-string hint needs just one paragraph element. How: This renders modHinVal. Its data-element-name-hook is read by help mode's Stats catalog.
+
+
+									);
+
+
+								}
 
 
 
@@ -2983,7 +3029,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										key={ parIndNum }
 
 										className='picker-hint'
-									>{ parCurStr }</p> // What: Picker Hint Paragraph Element. Why: Each hint paragraph needs its own element. How: This renders parCurStr.
+
+										data-element-name-hook='picHinPar'
+									>{ parCurStr }</p> // What: Picker Hint Paragraph Element. Why: Each hint paragraph needs its own element. How: This renders parCurStr. Its data-element-name-hook is read by help mode's Stats catalog.
 
 
 								) );
@@ -3015,7 +3063,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<div className='stat-row'>{ /* What: Conditional Headline Row Div Element. Why: The four Conditionals headline numbers share the same row layout as every other scope's own headline cards. How: This renders one CarSurCom per headline number. */ }
 
 
-									<CarSurCom className='stat-card stat-mk-condfired'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "triggered" total. */ }
+									<CarSurCom
+										className='stat-card stat-mk-condfired'
+
+										data-element-name-hook='conFirDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "triggered" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ conTotObj.firNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.firNum. */ }
@@ -3027,7 +3079,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className='stat-card stat-mk-condcycles'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "cycles" total. */ }
+									<CarSurCom
+										className='stat-card stat-mk-condcycles'
+
+										data-element-name-hook='conCycDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "cycles" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ conTotObj.totNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.totNum. */ }
@@ -3039,7 +3095,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className='stat-card stat-mk-condrate'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "fire rate" percentage. */ }
+									<CarSurCom
+										className='stat-card stat-mk-condrate'
+
+										data-element-name-hook='conRatDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "fire rate" percentage. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ conTotObj.ratNum }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.ratNum as a percentage. */ }
@@ -3051,7 +3111,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className='stat-card stat-mk-condlast'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. */ }
+									<CarSurCom
+										className='stat-card stat-mk-condlast'
+
+										data-element-name-hook='conLasDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ conTotObj.lasStr ? conDayFun( conTotObj.lasStr ) : '—' }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large value, or a placeholder glyph when nothing has ever fired. How: This formats conTotObj.lasStr, or renders the em-dash placeholder glyph when it's null. */ }
@@ -3066,7 +3130,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-								<CarSurCom className='stat-mk-condbreakdown'>{ /* What: Card Surface Component. Why: The Conditionals breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the list itself. */ }
+								<CarSurCom
+									className='stat-mk-condbreakdown'
+
+									data-element-name-hook='conBreDiv'
+								>{ /* What: Card Surface Component. Why: The Conditionals breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the list itself. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 									<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
@@ -3308,7 +3376,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<React.Fragment>{ /* What: Reminders Headline Fragment Element. Why: The 4 Reminders-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 CarSurCom elements. */ }
 
 
-									<CarSurCom className='stat-card stat-mk-remdone'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completed" total. */ }
+									<CarSurCom
+										className='stat-card stat-mk-remdone'
+
+										data-element-name-hook='remDonDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completed" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
@@ -3320,7 +3392,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className='stat-card stat-mk-remweek'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "this week" total. */ }
+									<CarSurCom
+										className='stat-card stat-mk-remweek'
+
+										data-element-name-hook='remWeeDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "this week" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ remWeeNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders remWeeNum. */ }
@@ -3332,7 +3408,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className='stat-card stat-mk-remactive'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "active days" total. */ }
+									<CarSurCom
+										className='stat-card stat-mk-remactive'
+
+										data-element-name-hook='remActDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "active days" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ actDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders actDayNum. */ }
@@ -3344,7 +3424,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className='stat-card stat-mk-rembusiest'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "busiest day" total. */ }
+									<CarSurCom
+										className='stat-card stat-mk-rembusiest'
+
+										data-element-name-hook='remBusDiv'
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "busiest day" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ busDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders busDayNum. */ }
@@ -3364,7 +3448,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<React.Fragment>{ /* What: Pick Headline Fragment Element. Why: The 4 pick-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 CarSurCom elements. */ }
 
 
-									<CarSurCom className={ ` stat-card   stat-mk-streak   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "day streak" total, tagged with an extra scope-specific class for help mode. */ }{ /* stat-mk-scope-{all,picker}: All and a specific picker both fall into this branch and share the exact same stat-mk-* classes above, so help mode needs an extra hook to give the two scopes their own separate tooltip copy. */ }
+									<CarSurCom
+										className={ ` stat-card   stat-mk-streak   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+
+										data-element-name-hook='staStrDiv'
+										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "day streak" total, tagged with an extra scope-specific class for help mode. */ }{ /* stat-mk-scope-{all,picker}: All and a specific picker both fall into this branch and share the exact same stat-mk-* classes above, so help mode needs an extra hook to give the two scopes their own separate tooltip copy. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ stkDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders stkDayNum. */ }
@@ -3381,7 +3470,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className={ ` stat-card   stat-mk-fulldays   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "full days" total, tagged with an extra scope-specific class for help mode. */ }
+									<CarSurCom
+										className={ ` stat-card   stat-mk-fulldays   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+
+										data-element-name-hook='staFulDiv'
+										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "full days" total, tagged with an extra scope-specific class for help mode. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ fulDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders fulDayNum. */ }
@@ -3393,7 +3487,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className={ ` stat-card   stat-mk-done   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "items done" total, tagged with an extra scope-specific class for help mode. */ }
+									<CarSurCom
+										className={ ` stat-card   stat-mk-done   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+
+										data-element-name-hook='staDonDiv'
+										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "items done" total, tagged with an extra scope-specific class for help mode. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
@@ -3405,7 +3504,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-									<CarSurCom className={ ` stat-card   stat-mk-rate   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completion" percentage, tagged with an extra scope-specific class for help mode. */ }
+									<CarSurCom
+										className={ ` stat-card   stat-mk-rate   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+
+										data-element-name-hook='staRatDiv'
+										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completion" percentage, tagged with an extra scope-specific class for help mode. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 										<div className='stat-num'>{ comRatNum }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders comRatNum as a percentage. */ }
@@ -3436,7 +3540,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							className='stat-heatmap-card'
 
 							data-element-name-hook='heaMapDiv'
-						>{ /* What: Card Surface Component. Why: The heatmap shares the same card chrome as every other stat card. How: This wraps the heat header, the optional year pager, and either the grid+detail or an empty state. Its data-element-name-hook is read by the Stats page tour. */ }
+						>{ /* What: Card Surface Component. Why: The heatmap shares the same card chrome as every other stat card. How: This wraps the heat header, the optional year pager, and either the grid+detail or an empty state. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
 							<div className='heat-h'>{ /* What: Heat Header Div Element. Why: The heatmap's own kicker and legend sit together in one row. How: This wraps the kicker div and the HeaLegCom legend. */ }
@@ -3700,7 +3804,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ scoValStr === 'all' && hasConBoo && ( // What: Conditionals Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while at least one conditional exists. How: This renders it only while both conditions hold.
 
 
-						<CarSurCom className='cnd-sum-card'>{ /* What: Card Surface Component. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. */ }
+						<CarSurCom
+							className='cnd-sum-card'
+
+							data-element-name-hook='conSumDiv'
+						>{ /* What: Card Surface Component. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 							<div className='rem-stats-head'>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, sharing this class with the Reminders summary below for consistent layout. How: This wraps the kicker div and the two inline stat spans. */ }
@@ -3793,15 +3901,21 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							<BreBarCom
 								className='stat-mk-remtype'
 
+								data-element-name-hook='remTypDiv'
+
 								empMesStr={ `No reminders completed in ${ ranNouStr } yet.` }
 								kicTexStr='By reminder type'
 								segDatArr={ typSegArr }
 								totCouNum={ totDonNum }
-							/>{ /* What: Breakdown Bar Component. Why: The Reminders scope needs the same stacked-bar treatment as the pick-source split, but for the one-time/recurring type split instead. How: This is fed typSegArr and totDonNum as its own segments/total. */ }
+							/>{ /* What: Breakdown Bar Component. Why: The Reminders scope needs the same stacked-bar treatment as the pick-source split, but for the one-time/recurring type split instead. How: This is fed typSegArr and totDonNum as its own segments/total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 
-							<CarSurCom className='stat-mk-rembreakdown'>{ /* What: Card Surface Component. Why: The Reminders breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the paged list itself. */ }
+							<CarSurCom
+								className='stat-mk-rembreakdown'
+
+								data-element-name-hook='remBreDiv'
+							>{ /* What: Card Surface Component. Why: The Reminders breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the paged list itself. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 								<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
@@ -3979,7 +4093,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ shoRemBoo && ( // What: Reminders Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while reminders are enabled at all. How: This renders it only while shoRemBoo is true.
 
 
-						<CarSurCom className='rem-stats-card'>{ /* What: Card Surface Component. Why: The Reminders summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. */ }
+						<CarSurCom
+							className='rem-stats-card'
+
+							data-element-name-hook='remSumDiv'
+						>{ /* What: Card Surface Component. Why: The Reminders summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 							<div className='rem-stats-head'>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row. How: This wraps the kicker div and the two inline stat spans. */ }
@@ -4057,11 +4175,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<BreBarCom
 							className='stat-mk-source'
 
+							data-element-name-hook='souBreDiv'
+
 							empMesStr={ `Nothing picked in ${ ranNouStr } yet.` }
 							kicTexStr='How picks were chosen'
 							segDatArr={ souSegArr }
 							totCouNum={ totPosNum }
-						/> // What: Breakdown Bar Component. Why: The All and single-picker scopes need a stacked bar showing how picks came to be (auto, re-rolled, or hand picked). How: This is fed souSegArr's own per-source counts against totPosNum.
+						/> // What: Breakdown Bar Component. Why: The All and single-picker scopes need a stacked bar showing how picks came to be (auto, re-rolled, or hand picked). How: This is fed souSegArr's own per-source counts against totPosNum. Its data-element-name-hook is read by help mode's Stats catalog.
 
 
 					) }
@@ -4074,7 +4194,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<div className='stat-row stat-row--2'>{ /* What: Rankings Row Div Element. Why: The two ranking cards sit side by side in their own row. How: This wraps the Most Picked and Coldest items Cards. */ }
 
 
-							<CarSurCom className='stat-mk-mostpicked'>{ /* What: Card Surface Component. Why: The Most Picked ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
+							<CarSurCom
+								className='stat-mk-mostpicked'
+
+								data-element-name-hook='mosPicDiv'
+							>{ /* What: Card Surface Component. Why: The Most Picked ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 								<div className='kicker'>Most picked</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Most picked". */ }
@@ -4119,7 +4243,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-							<CarSurCom className='stat-mk-coldest'>{ /* What: Card Surface Component. Why: The Coldest items ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
+							<CarSurCom
+								className='stat-mk-coldest'
+
+								data-element-name-hook='colIteDiv'
+							>{ /* What: Card Surface Component. Why: The Coldest items ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 								<div className='kicker'>Coldest items</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Coldest items". */ }
@@ -4177,7 +4305,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							className='stat-breakdown-card'
 
 							data-element-name-hook='breCarDiv'
-						>{ /* What: Card Surface Component. Why: The Pick breakdown shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, the active metric's own note, and the sorted list itself. Its data-element-name-hook is read by the Stats page tour. */ }
+						>{ /* What: Card Surface Component. Why: The Pick breakdown shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, the active metric's own note, and the sorted list itself. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
 							<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }

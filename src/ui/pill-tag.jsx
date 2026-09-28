@@ -31,9 +31,13 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.children  - Children: The pill's text.
- * @param props.tonValStr - Tone Value String: The color modifier, defaulting
- *                          to 'default'.
+ * @param props.children               - Children: The pill's text.
+ * @param props.data-element-name-hook - Data Element Name Hook: The element's
+ *                                       own identity hook, forwarded onto its
+ *                                       span, so code can find it without its
+ *                                       classes.
+ * @param props.tonValStr              - Tone Value String: The color modifier,
+ *                                       defaulting to 'default'.
  *
  * @returns The pill's span.
  *
@@ -44,10 +48,14 @@
  *
 */
 
-const PilTagCom = ( { children, tonValStr = 'default' } ) => ( // What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
+const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr = 'default' } ) => ( // What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
 
 
-	<span className={ ` pill   pill--${ tonValStr } ` }>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.
+	<span
+		className={ ` pill   pill--${ tonValStr } ` }
+
+		data-element-name-hook={ hooNamStr }
+	>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.
 
 
 );

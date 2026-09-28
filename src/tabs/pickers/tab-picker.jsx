@@ -584,7 +584,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 								aria-label='Filter pickers by group'
 								role='tablist'
-							>{ /* What: Group Rail Div Element. Why: Every distinct group plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiGroArr. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+							>{ /* What: Group Rail Div Element. Why: Every distinct group plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiGroArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 								<button
@@ -606,7 +606,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									} }
-								>{ /* What: All Group Pill Button Element. Why: The user needs a way to clear the Group filter back to unfiltered. How: This resets groFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+								>{ /* What: All Group Pill Button Element. Why: The user needs a way to clear the Group filter back to unfiltered. How: This resets groFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 									All
@@ -639,7 +639,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 											role='tab'
 
 											onClick={ () => setGroFilStr( curGroStr ) }
-										>{ /* What: Group Pill Button Element. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGroStr into groFilStr. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+										>{ /* What: Group Pill Button Element. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGroStr into groFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 											{ curGroStr }{ /* What: Pill Name Expression. Why: Every group pill needs its own visible label. How: This renders curGroStr. */ }
@@ -682,7 +682,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 								aria-label='Filter pickers by type'
 								role='tablist'
-							>{ /* What: Type Rail Div Element. Why: Every distinct mode plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiModArr. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+							>{ /* What: Type Rail Div Element. Why: Every distinct mode plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiModArr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 								<button
@@ -704,7 +704,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									} }
-								>{ /* What: All Type Pill Button Element. Why: The user needs a way to clear the Type filter back to unfiltered. How: This resets typFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+								>{ /* What: All Type Pill Button Element. Why: The user needs a way to clear the Type filter back to unfiltered. How: This resets typFilStr to 'all', closes the create form, and jumps to the first visible picker. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 									All
@@ -737,7 +737,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 											role='tab'
 
 											onClick={ () => setTypFilStr( curModStr ) }
-										>{ /* What: Type Pill Button Element. Why: Tapping a type pill should narrow the Show row down to just that mode. How: This writes curModStr into typFilStr. Its data-element-name-hook is read by the Stats page tour and the Pickers page tour. */ }
+										>{ /* What: Type Pill Button Element. Why: Tapping a type pill should narrow the Show row down to just that mode. How: This writes curModStr into typFilStr. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, and help mode's Stats catalog. */ }
 
 
 											{ SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].labStr }{ /* What: Pill Name Expression. Why: Every type pill needs its mode's visible label. How: This renders the mode's label. */ }
