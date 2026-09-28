@@ -111,78 +111,85 @@ soft-wrap it in a terminal; that's display only, not a real line break).
 
 ### No router, no build-time code splitting of routes
 
-`src/main.jsx` boots by racing `STORAGE.init()` against a timeout, then
-mounts `<AppRooCom />` (`src/app.jsx`). `AppRooCom` owns a single active-tab-id
-in React state and renders one of five tabs directly — there's no react-router.
-The five tabs (`src/tabs/today/tab-today.jsx`, `tab-picker.jsx`, `tab-stats.jsx`,
-`tab-data.jsx`, `tab-settings.jsx`) are large, self-contained files (each
-~200KB+ of JSX) that share state/actions passed down as props.
+`src/main.jsx` boots by racing `STG_NAM_OBJ.iniStoFun()` against a timeout,
+then mounts `<AppRooCom />` (`src/app.jsx`). `AppRooCom` owns a single
+active-tab-id in React state and renders one of five tabs directly; there's
+no react-router. Each tab lives in its own folder under `src/tabs/`
+(`today/`, `pickers/`, `stats/`, `data/`, `settings/`): a main
+`tab-*.jsx` component plus the sub-component files only that tab uses. Every
+tab gets the shared state/actions passed down as props.
 
 ### State: one big object, one hook, no context/redux
 
-`src/state/store.js`'s `useAppStaFun()` hook is the entire state layer: a single
-`useState` holding the whole app state object, plus a `React.useMemo`'d
-`actions` object of state-transition functions (`togDonFun`, `addPicFun`,
-`skiEntFun`, `resConFun`, ...). `AppRooCom` calls
+`src/state/store.js`'s `useAppStaFun()` hook is the entire state layer: a
+single `useState` holding the whole app state object, plus a
+`React.useMemo`'d `actions` object of state-transition functions
+(`togDonFun`, `addPicFun`, `skiEntFun`, `resConFun`, ...). `AppRooCom` calls
 `useAppStaFun()` once and passes the state/actions pair down to every tab as
-props — there is no context provider and no global store singleton
-reachable from arbitrary files. Persistence is debounced via
-`requestIdleCallback` and flushed synchronously on `pagehide`/tab-hide so
-nothing is lost.
+props; there is no context provider and no global store singleton reachable
+from arbitrary files. Persistence is debounced via `requestIdleCallback` and
+flushed synchronously on `pagehide`/tab-hide so nothing is lost. The store's
+own helpers live beside it in `src/state/` (`ids.js`, `pick-log.js`,
+`pending-mutations.js`, `migrate.js`).
 
-`migStaFun(s)` in `store.js` is the schema-evolution point: every persisted
-state passes through it on load (and on import), and it backfills missing
-fields for old saves one `if` block at a time. When adding a new persisted
-field, add a backfill here rather than assuming fresh shape.
+`migStaFun(s)` in `src/state/migrate.js` is the schema-evolution point:
+every persisted state passes through it on load (and on import), and it
+backfills missing fields for old saves one `if` block at a time. When adding
+a new persisted field, add a backfill there rather than assuming fresh
+shape.
 
 ### Storage: IndexedDB primary, localStorage fallback + warm mirror
 
-`src/state/storage.js` is a separate concern from `store.js`: it's the actual
-persistence engine (`STORAGE.init/save/flushSync/wipe/status/...`).
-Highlights worth knowing before touching it:
+`src/state/storage.js` is a separate concern from `store.js`: it's the
+actual persistence engine (`STG_NAM_OBJ.iniStoFun/savStaFun/fluSynFun/
+wipDatFun/staRepFun/...`). Highlights worth knowing before touching it:
 - The pick log (large, append-only) lives in its own IDB object store,
   separate from the rest of state, specifically so writing it isn't on the
   hot path of every other save.
-- `STORAGE.init()` runs and resolves *before* React mounts (`main.jsx`), so
-  `store.js`'s `loaStaFun()` can stay synchronous.
+- `STG_NAM_OBJ.iniStoFun()` runs and resolves *before* React mounts
+  (`main.jsx`), so `store.js`'s `loaStaFun()` can stay synchronous.
 - A `localStorage` "warm mirror" (minus the pick log) exists purely as a
   same-tick fallback if IDB fails later; it is not the source of truth.
-- `wipe()` (Settings → "Delete all data") must clear every key this layer has
-  ever written, across legacy naming generations (see `OWN_KEY_REG`).
+- `wipDatFun()` (Settings → "Delete all data") must clear every key this
+  layer has ever written, across legacy naming generations (see
+  `OWN_KEY_REG`).
 
 ### Domain modules (pure logic, no React)
 
-These encapsulate specific pieces of the scheduling/picking model and are
-imported by both `store.js` and the relevant tabs:
-- `src/core/pickers.js` — picker selection algorithms (random / weighted / dynamic
-  / ease-up / ease-down); pure functions over an items snapshot.
-- `src/core/cadence.js` — per-picker "when do I surface" gating (daily / weekly /
-  monthly / yearly) and period/anchor math.
-- `src/core/conditionals.js` — day-off gates that suppress dependent pickers for a
-  day (probability / ease-up / ease-down / dynamic modes).
-- `src/core/tasks.js` — the reminders engine (statically-scheduled one-time or
-  recurring tasks, distinct from randomly-picked items).
-- `src/core/holidays.js` — rule-based US holiday computation, fully offline.
-- `src/state/seed.js` — canonical data model comment block + `CLEAN_STATE()` (what
-  a fresh install starts from) + `MODES`. Read the top comment here first
-  when working on the data model — it's the closest thing to a schema doc.
+These live in `src/core/`, encapsulate specific pieces of the
+scheduling/picking model, and are imported by both the state layer and the
+relevant tabs:
+- `src/core/pickers.js`: picker selection algorithms (random / weighted /
+  dynamic / ease-up / ease-down); pure functions over an items snapshot.
+- `src/core/cadence.js`: per-picker "when do I surface" gating (daily /
+  weekly / monthly / yearly) and period/anchor math.
+- `src/core/conditionals.js`: day-off gates that suppress dependent pickers
+  for a day (probability / ease-up / ease-down / dynamic modes).
+- `src/core/tasks.js`: the reminders engine (statically-scheduled one-time
+  or recurring tasks, distinct from randomly-picked items).
+- `src/core/holidays.js`: rule-based US holiday computation, fully offline.
 
-Each of these modules has a substantial header comment explaining its model;
-read it before modifying, since the domain logic (drift/charge values,
-weight semantics, "pending" mutations applied only on completion, etc.) is
-non-obvious from the code alone.
+`src/state/seed.js` holds the canonical data model comment block,
+`buiCleFun()` (what a fresh install starts from), and `MOD_DEF_OBJ` (the
+picker modes). Read its top comment first when working on the data model;
+it's the closest thing to a schema doc.
 
-### "Pending" pick mutations — a key invariant in store.js
+Each of these modules has a substantial header comment explaining its
+model; read it before modifying, since the domain logic (drift/charge
+values, weight semantics, "pending" mutations applied only on completion,
+etc.) is non-obvious from the code alone.
+
+### "Pending" pick mutations: a key invariant
 
 Picking/re-rolling/sending an item to Today stages its value/weight
-consequences as `entry.pending` — they are **not** applied to the picker/item
-state until the entry is marked done (`enpAplFun` /
-`enpRevFun` in `store.js`). Unchecking a done entry must exactly
+consequences as `entry.pending`; they are **not** applied to the
+picker/item state until the entry is marked done (`enpAplFun` / `enpRevFun`
+in `src/state/pending-mutations.js`). Unchecking a done entry must exactly
 revert via the `entry.revert` snapshot. If you touch `togDonFun`,
-`swaIteFun`, `addEntFun`, or `skiEntFun`, preserve this staging —
-directly mutating item state on pick (instead of on completion) breaks the
-"nothing changes until you actually do it" contract the whole ease-up/
-ease-down/dynamic system relies on.
+`swaIteFun`, `addEntFun`, or `skiEntFun` in `store.js`, preserve this
+staging: directly mutating item state on pick (instead of on completion)
+breaks the "nothing changes until you actually do it" contract the whole
+ease-up/ease-down/dynamic system relies on.
 
 ### Logs are append-only and denormalized
 
@@ -195,20 +202,27 @@ lookups without preserving that survivability property.
 
 ### UI support modules
 
-- `src/ui/ui.jsx` — shared primitives (`Icon`, `Btn`, `Card`, `Collapse`,
-  `Pill`, focus/escape helpers, live-region `announce`).
-- `src/platform/appearance.js` — palette tokens + theme application; deliberately
-  split out of `app.jsx` to avoid an import cycle with `tab-settings.jsx`.
-- `src/ui/reorder.js` — hand-rolled pointer drag-to-reorder for Today's Edit
-  Mode (no external DnD library).
-- `src/ui/day-log.jsx` — per-group "what did the generator do today" audit
-  panel, derived from the pick log.
-- `src/onboarding.jsx` — first-run welcome modal + a tour that drives the
-  real app (not a mock overlay); coordinates with other modules via a small
-  event bus (`emlTour`) and a couple of deliberate `window.__eml*` globals
-  (see "Runtime globals on `window`" below).
-- `src/ui/reminders.jsx` / `src/ui/cadence-control.jsx` / `src/ui/conditional-controls.jsx`
-  — shared editors reused across the Today/Pickers/Data tabs.
+- `src/ui/`: shared primitives and editors used by 2 or more features, one
+  component or helper family per file (`icon.jsx`, `button.jsx`,
+  `card-surface.jsx`, `collapse.jsx`, `info-tip.jsx`, `escape-cancel.js`,
+  `edge-fade.js`, ...), plus the shared editors reused across tabs
+  (`schedule-editor.jsx`, `cadence-control.jsx`,
+  `conditional-controls.jsx`, `entry-editor.jsx`).
+- `src/platform/appearance.js`: palette tokens + theme application;
+  deliberately split out of `app.jsx` to avoid an import cycle with
+  `tab-settings.jsx`.
+- `src/tabs/today/reorder.js`: hand-rolled pointer drag-to-reorder for
+  Today's Edit Mode (no external DnD library).
+- `src/tabs/today/day-log.jsx`: per-group "what did the generator do today"
+  audit panel, derived from the pick log.
+- `src/onboarding/`: the first-run welcome modal and tour
+  (`welcome-tour.jsx`), the tour engine (`tour-runner.jsx`), and the page,
+  picker, reminder, and feature mini-tours. The tours drive the real app
+  (not a mock overlay) and coordinate with other modules via a small event
+  bus (`emlTouObj` in `src/state/tour-bus.js`) and a couple of deliberate
+  `window.__eml*` globals (see "Runtime globals on `window`" below).
+- `src/help/`: the on-demand help mode (`mode.jsx`, plus its toggle, tip,
+  geometry, catalog, and sample data).
 
 ### Runtime globals on `window`
 
@@ -225,8 +239,8 @@ outside the normal React import graph.
 - Deployed to Netlify: `public/_redirects` is an SPA catch-all, `public/_headers`
   fixes the manifest's Content-Type. `index.html` contains a hidden static
   `<form name="support">` purely so Netlify's build-time form parser detects
-  it — keep its field names in sync with `ContactSupportCard`'s submit logic
-  in `tab-settings.jsx`, or submissions will be rejected.
+  it; keep its field names in sync with `ConSupCom`'s submit logic in
+  `tabs/settings/contact-support.jsx`, or submissions will be rejected.
 - `vite-plugin-pwa` is configured with `manifest: false` — `public/manifest.webmanifest`
   is hand-written and linked from `index.html`; the plugin only precaches and
   injects the notification-click handler (`public/sw-notify.js`).
@@ -448,12 +462,11 @@ can move code between files rather than just within one.
   alphabetized (case-insensitive) as the tie-break. Decided 2026-09-27:
   define-before-use also wins over the section order itself and over the
   Components section's "private first" split. A constant built by
-  calling a helper at load time (e.g. `reminders.jsx`'s own
-  `REM_MAT_ARR`, built with `paiSubFun`) sits in Helpers right after the
-  helper it calls, not in Constants, and an exported component that a
-  private one renders (e.g. `SegConCom`, rendered by `SchEdiCom`) comes
-  before it; "private first, then exported" only orders components that
-  don't depend on each other.
+  calling a helper at load time (e.g. `tabs/data/reminders-manager.jsx`'s
+  own `REM_MAT_ARR`, built with `paiSubFun`) sits in Helpers right after
+  the helper it calls, not in Constants, and an exported component that a
+  private one renders comes before it; "private first, then exported" only
+  orders components that don't depend on each other.
 - **Section regions.** A file with at least 2 of the sections above wraps
   each of them in a `// #region <Section>` / `// #endregion <Section>`
   pair, whatever the file's length, using the section's own name from the list above (`// #region
@@ -517,7 +530,7 @@ can move code between files rather than just within one.
   object, e.g. `cadence.js`) or one main component plus the private
   sub-components only it uses (e.g. a tab file). A sub-component used by 2
   or more files moves to a shared file instead of being exported from the
-  file it happens to live in, the way `ui.jsx` holds the app-wide
+  file it happens to live in, the way `ui/` holds the app-wide
   primitives. Where that shared file lives follows the directory structure
   rules.
 - **File size.** Whenever it makes logical sense for a block of code to
@@ -573,11 +586,11 @@ src/
   grouped by kind (`utils/date.js`, `utils/format.js`, ...). Something
   that merely looks generic but encodes this app's own vocabulary or
   globals goes elsewhere (e.g. `sorEntFun`, which encodes the Data tab's
-  sort keys, belongs in `tabs/data/`). In this project, the date helpers
-  duplicated between `tasks.js` and `cadence.js` (`nwmDayFun`,
-  `ordSufFun`, `dimCouFun`, the ISO date formatter) move into a shared
-  `utils/date.js` both import, and `ui.jsx`'s date formatters and
-  `redMotFun` move to `utils/` too.
+  sort keys, lives in `tabs/data/list-sorting.js`). In this project, the
+  date helpers once duplicated across `tasks.js`, `cadence.js`, and
+  several other files (`nwmDayFun`, `ordSufFun`, `dimCouFun`, the ISO date
+  formatter) live in one shared `utils/date.js`, alongside the old
+  `ui.jsx` date formatters, with `redMotFun` in `utils/motion.js`.
 - **Dependency direction.** A folder imports only from itself or from
   folders below it in this order: `tabs/`, `onboarding/`, `help/` (top);
   then `ui/`; then `state/` and `platform/`; then `core/`; then `utils/`
@@ -741,8 +754,8 @@ src/
       its enclosing scope it's hoisted to a module-level `ALL_CAPS`
       constant instead, gaining its own JSDoc shape block (and `#region`
       once it reaches 25 lines), the same treatment as any other one.
-      See `tab-settings.jsx`'s own `BRO_PAT_ARR`, moved out of
-      `detBroFun`.
+      See `tabs/settings/contact-support.jsx`'s own `BRO_PAT_ARR`, moved
+      out of `detBroFun`.
   - **Purely decorative banner comments** (e.g. `{ /* ── Appearance ──
     */ }` above a section) are deleted outright when the element they
     sit above already carries its own identity comment, since they add
@@ -792,7 +805,7 @@ src/
   comment easy to spot on a quick scan (it's always first, right after
   the code) while still surfacing the extra context right there instead
   of on a separate line above it. See `onboarding/app-features.jsx`'s
-  own GuidedTour step objects in `bldSteFun` for the reference example
+  own GuidedTour step objects in `buiTesFun` for the reference example
   (e.g. the `Your Pickers Step`/`pulSelStr`/`runFun` lines): each one's
   own What/Why/How comes first, followed by its own extra design note,
   both on the object's/property's own single line.
@@ -859,7 +872,7 @@ src/
     covers rather than once. A `See <property>` pointer instead would
     send the reader on a jump to recover context a quick scan should
     already have; the small duplication cost is worth avoiding that.
-    See `onboarding/app-features.jsx`'s own `bldSteFun`, e.g. its Picker
+    See `onboarding/app-features.jsx`'s own `buiTesFun`, e.g. its Picker
     Selection/Manual Generation/Add To Todo List/Picker Items step
     objects: each one's own "Title/body copied verbatim..." note
     explains both `titStr` and `bodEle` together, so it's merged onto
@@ -939,8 +952,8 @@ src/
       propert(y/ies) at the end get natural one-space comment placement,
       unaligned, the same treatment the general exception above already
       gives an outlier. This was found live across the GuidedTour step
-      objects in `onboarding.jsx`/`onboarding/picker-tours.jsx`/
-      `onboarding/page-tours.jsx`/`onboarding/app-features.jsx`/
+      objects in `onboarding/welcome-tour.jsx`/`onboarding/picker-tours.jsx`/
+      `onboarding/page-steps.jsx`/`onboarding/app-features.jsx`/
       `onboarding/reminder-tours.jsx`, where nearly every step object's
       own `bodEle` property was tripping the 100-char exception and
       silently killing alignment for every other property in the same
@@ -951,10 +964,10 @@ src/
         joins the outlier group, even when its own comment is short
         enough that it wouldn't otherwise trip the 100-char threshold.**
         A GuidedTour step object (identified by its own `bodEle`+
-        `tabStr`+`titStr` trio, the shape documented in `onboarding-
+        `tabStr`+`titStr` trio, the shape documented in `onboarding/
         tour-runner.jsx`) is reused as dozens of near-identical sibling
-        objects across `onboarding.jsx`/`onboarding/picker-tours.jsx`/
-        `onboarding/page-tours.jsx`/`onboarding/app-features.jsx`/
+        objects across `onboarding/welcome-tour.jsx`/`onboarding/picker-
+        tours.jsx`/`onboarding/page-steps.jsx`/`onboarding/app-features.jsx`/
         `onboarding/reminder-tours.jsx`, and `bodEle` is inherently this
         shape's own prose field regardless of how long any one
         instance's own copy happens to be. Measuring its comment length
@@ -1171,7 +1184,7 @@ src/
     gets a comment, following the ordinary "multi-line construct gets a
     comment right after its own opening bracket" treatment, the exact same
     as anywhere else in this doc. See `onboarding/page-tours.jsx`'s own
-    `<GuidedTour>` element for the reference example: `onBacTouFun`/
+    `<GuiTouCom>` element for the reference example: `onBacTouFun`/
     `onSkiTouFun` (each a multi-line arrow function) and `steObjArr` (a
     multi-line array literal) all carry their own comment on the
     attribute's own opening `{`/`[`.
@@ -1182,8 +1195,8 @@ src/
     covers any attribute or prop, function or not, on a native element or
     a custom component. Signs it qualifies:
     1. **It branches or guards**: an `if`, a ternary, or `&&` inside means
-       it only sometimes acts, or picks between values (e.g. `ui.jsx`'s
-       InfTipCom `onPointerEnter`, which only opens for a mouse, and its
+       it only sometimes acts, or picks between values (e.g.
+       `ui/info-tip.jsx`'s InfTipCom `onPointerEnter`, which only opens for a mouse, and its
        `aria-label` ternary, which changes what a screen reader announces
        when the tip stands in for a disabled action).
     2. **It does something its name doesn't suggest**: stopping
@@ -1298,8 +1311,9 @@ under the old rule keeps it only if it passes the test below.
   every component; every custom hook.
 - **Gets one when the test says yes**: any other function, named or
   anonymous, at module scope or declared inside another function or
-  component (e.g. `ui.jsx`'s own announce-status setup IIFE, which builds
-  the live region and assigns `annStaFun`'s real implementation). Typical
+  component (e.g. `tabs/settings/announce.js`'s own announce-status setup
+  IIFE, which builds the live region and assigns `annStaFun`'s real
+  implementation). Typical
   signs the test says yes: parameters, a return value, or side effects
   that aren't obvious from the name (a sentinel return like `null` meaning
   "fall through", a returned shape the caller destructures, state or DOM
@@ -1318,7 +1332,7 @@ under the old rule keeps it only if it passes the test below.
 - **Naming an anonymous function's JSDoc**: since it has no name of its
   own, its name line uses the file's own name plus a descriptive name for
   what the function does, the same form an in-function design-rationale
-  block uses (`ui.jsx = Announce Status Setup`), and its region reuses that
+  block uses (`announce.js = Announce Status Setup`), and its region reuses that
   descriptive name (`// #region Announce Status Setup`).
 - **Exception to the objects exclusion, a function-module object**: an
   object that is really a module of named functions (the themed-region
@@ -1338,8 +1352,8 @@ under the old rule keeps it only if it passes the test below.
   declaration line; the JSDoc sits between its own `// #region` marker and
   that line. A `React.forwardRef` component documents its forwarded ref as
   a bare `@param` after the `props.` lines, since it's a positional
-  parameter; see `tab-today.jsx`'s own `EntEdiCom` and `ui.jsx`'s own
-  `ButBasCom`. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the
+  parameter; see `ui/entry-editor.jsx`'s own `EntEdiCom` and
+  `ui/button.jsx`'s own `ButBasCom`. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the
   reference implementation of every rule below.
 - **Placement**: exactly 1 blank line before the opening `/**` (see
   "### Sectioning / fold regions" below for what comes before that blank
@@ -1850,7 +1864,7 @@ later, but don't invent one for anything else yet:
     own `parEleArr` body paragraphs) reads far more clearly with 1 blank
     line separating each paragraph, the same readability reasoning the
     object-property outlier exception already applies to a long `bodEle`-
-    style value. See `onboarding.jsx`'s own `parEleArr` array (passed to
+    style value. See `onboarding/welcome-tour.jsx`'s own `parEleArr` array (passed to
     `IntModCom`) for the reference example: its 3 paragraph entries each
     get 1 blank line before and after, despite each being syntactically
     one physical line, not a genuinely multi-line entry.
@@ -2041,7 +2055,7 @@ later, but don't invent one for anything else yet:
     the `bodEle`-always-last refinement above where relevant); only the
     spread's own slot in the sequence is pinned. This refines an
     earlier, more conservative practice of skipping such an object
-    entirely: `onboarding/page-tours.jsx`'s own `buiTs1Fun` is the
+    entirely: `onboarding/page-steps.jsx`'s own `buiTs1Fun` is the
     reference example, where `...navTarObj` opens the returned step
     object and the explicit `bacBoo`/`cirBoo`/`priStr`/`tabStr`
     properties after it are alphabetized normally, with `bodEle` still
@@ -2213,8 +2227,8 @@ later, but don't invent one for anything else yet:
     trailing comment for free, since each row's code then ends at the
     same column; the last row, which has no trailing comma, gets one
     space in its place (`}  //` instead of `}, //`) so its comment still
-    lands in that same column. See `tab-data.jsx`'s own `SEC_SOR_ARR`/
-    `CIS_OPT_ARR` for further examples.
+    lands in that same column. See `tab-data.jsx`'s own `SEC_SOR_ARR` and
+    `conditionals-manager.jsx`'s own `CIS_OPT_ARR` for further examples.
     - **An entry of a different shape moves to the start or end of the
       stack**, whichever reads more naturally, when the array's order
       doesn't matter: a ternary choosing between two objects, a bare
@@ -2896,8 +2910,9 @@ its own internal spacing untouched, e.g. an arrow function body's usual
 2-blank padding. The tier a prop lands in is judged by role on a custom
 component, so `name` is tier 5 only on a native element (where it's the
 real HTML `name` attribute); a custom component's own name-like prop, like
-`IcoSvgCom`'s own `icoNamStr`, is core data in tier 6. See `tab-today.jsx`'s
-own GroHeaCom name `<input>` for the reference example:
+`IcoSvgCom`'s own `icoNamStr`, is core data in tier 6. See
+`tabs/today/group-header.jsx`'s own GroHeaCom name `<input>` for the
+reference example:
 
 ```
 <input
@@ -3061,7 +3076,8 @@ own GroHeaCom name `<input>` for the reference example:
     original, unreordered sequence, and preserve each cluster's own
     internal relative order from that original sequence; don't
     introduce a new ordering within a cluster that wasn't already
-    there. See `RemManCom` in `reminders.jsx` for the reference example:
+    there. See `RemManCom` in `tabs/data/reminders-manager.jsx` for the
+    reference example:
     its own `opeIdeStr`/`newAddRef`/`insIdeStr`/`opeEdiRef`/`froIndRef`/
     `preOpeRef` declarations were originally interleaved
     useState/useRef/useState/useRef/useRef/useRef (each pair 1-blank
@@ -3101,8 +3117,8 @@ own GroHeaCom name `<input>` for the reference example:
     names at the compact standard length. Split into separate
     sub-groups the same way as the other splits above: 1 blank line
     between the sub-groups, 0-blank internally within each, each
-    sub-group's own alignment computed independently. E.g. `store.js`'s
-    own `lmsLonPriNum`/`lmsMedPriNum`/`lmsShoPriNum` (3 non-standard,
+    sub-group's own alignment computed independently. E.g.
+    `utils/color.js`'s own `lmsLonPriNum`/`lmsMedPriNum`/`lmsShoPriNum` (3 non-standard,
     12-character Initialism-compression names) sit in their own group,
     followed by a blank line, then `lmsLonNum`/`lmsMedNum`/`lmsShoNum`
     (3 standard, 9-character names) in their own separately-aligned
@@ -4510,7 +4526,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     literal first-3-letters form, with no such conflict and no reason
     to keep `cmp` unescalated.
   - **A third project-scoped override, the same shape as `cmp`**:
-    `tab-data.jsx`'s own `cmtGroFun` (Commit Group Function) keeps `cmt`
+    `picker-controls.jsx`'s own `cmtGroFun` (Commit Group Function) keeps `cmt`
     for "Commit", per the user's own explicit preference. The literal
     first-3-letters `com` is Component (the same heavy overload as the
     `cmp` case), and Phase A's own first clean candidate would have been
@@ -4528,7 +4544,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     not in one sweep: `curRecObj` and `tarRecObj` hold a record in some
     files and a rect in others, so every instance is checked by hand.
     Where a better word than Record exists, use it instead (e.g.
-    `tab-today.jsx`'s own `groBucObj`, a bucket pulled from
+    `group-entries.js`'s own `groBucObj`, a bucket pulled from
     `groBucMap`). Recurring, whose literal first 3 letters are also
     `rec`, takes Phase A's `reu` instead (Recurring's 4th letter), e.g.
     `tasks.js`'s own `isaReuFun`. Reconcile, whose Phase A letters all
@@ -4624,7 +4640,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     a real type. Truncate that word to its own normal 3 letters (same as
     any other segment) and keep the type segment too, breaking the
     6-character budget up to the full 9 rather than dropping the type
-    segment to force a fit. E.g. `help/mode.jsx`'s own `claPadFun` return
+    segment to force a fit. E.g. `help/geometry.js`'s own `claPadFun` return
     shape became `padTopNum`/`padBotNum`/`padLefNum`/`padRigNum` (Pad +
     Top/Bot/Lef/Rig + Number), not a 6-char `padBot`/`padLef`/`padRig`
     missing a type segment entirely, and not a bare `topNum`/`botNum`/
@@ -4698,9 +4714,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     function itself, and each of its 4 callers destructures it with
     shorthand, then writes the persisted `streak`/`streakClaimed` state
     keys out explicitly (`streak : stkValNum`). Earlier precedents
-    reached the same result before this bullet existed: `tab-today.jsx`'s
+    reached the same result before this bullet existed: `group-header.jsx`'s
     own `GroHeaCom` prop key `doneCount` became `donCouNum` so its own
-    destructuring could collapse to shorthand, and `help/mode.jsx`'s own
+    destructuring could collapse to shorthand, and `help/geometry.js`'s own
     `claPadFun` return shape (`padTopNum`/`padBotNum`/...) matched the
     reading local variables' own names.
     - **Large, externally constrained argument objects are read, not
