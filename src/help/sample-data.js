@@ -3,10 +3,8 @@
 
 // #region Imports
 
-import { hydStaFun   } from '../state/onboarding-seed-data.js'; // What: Hydrate Stats Function. Why: This converts the precomputed onboarding stats into real dated pickLog/reminderLog/reminderSkipLog rows. How: This is called by unhHisFun the first time help mode needs a genuine year of history to show.
-import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the real onboarding sample picker, borrowed here so help mode's own copy of it looks identical. How: This is read alongside ONB_ESP_ARR by sedPicFun/clePicFun below.
 import { ONB_ESP_ARR } from '../state/onboarding-seed-data.js'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the real onboarding sample pickers, borrowed here so help mode's own copies of them look identical. How: This is read alongside ONB_EXA_OBJ by sedPicFun/clePicFun below.
-import { ONB_SPI_ARR } from '../state/onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: Help mode's Stats page borrows the real onboarding sample pickers directly rather than seeding its own copies. How: This is read by unhHisFun/hidHisFun to (un)hide each one by id.
+import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the real onboarding sample picker, borrowed here so help mode's own copy of it looks identical. How: This is read alongside ONB_ESP_ARR by sedPicFun/clePicFun below.
 
 // #endregion Imports
 
@@ -19,10 +17,11 @@ import { ONB_SPI_ARR } from '../state/onboarding-seed-data.js'; // What: Onboard
  * Disposable sample data for the on-demand help mode (see help/mode.jsx),
  * seeded when a page's help toggle turns on so there's always something
  * concrete to point at (a real picker of each mode, a conditional-gated
- * picker, reminders covering every recurrence type, a year of pick history for
- * Stats), and torn back down the moment it turns off. Same "real, interactive,
- * but disposable" idea as onboarding/page-tours.jsx's own PAG_SAM_ARR, kept as
- * an entirely separate hlp_-prefixed id namespace (rather than reusing that
+ * picker, and reminders covering every recurrence type), and torn back down
+ * the moment it turns off. Stats borrows the real sample pickers' own year of
+ * history instead, through state/sample-history.js. Same "real, interactive,
+ * but disposable" idea as onboarding/page-samples.js's own PAG_SAM_ARR, kept
+ * as an entirely separate hlp_-prefixed id namespace (rather than reusing that
  * file's own pt_ copies) so the two features can never collide even if both
  * happened to be active at once.
  *
@@ -285,40 +284,6 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Tasks Function. Why: Every r
 
 
 
-// #region hidHisFun
-
-/**
- * hidHisFun = Hide History Function
- *
- * @summary
- * Re-hides every real onboarding sample picker unhHisFun borrowed for the
- * Stats page, the moment help mode turns off.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param actStoObj - Action Store Object: The shared app actions object.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * hidHisFun( actStoObj ) // => void
- * ```
- *
-*/
-
-const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The onboarding sample pickers borrowed by unhHisFun must be hidden again the moment help mode turns off. How: This re-hides every onboarding sample picker by id.
-
-
-	ONB_SPI_ARR.forEach( ( curIdeStr ) => actStoObj.updPicFun( curIdeStr, { hidden : true } ) ); // What: Onboarding Sample Hide Loop. Why: A picker borrowed only for help mode's own Stats display shouldn't stay visible once help mode is off. How: This re-hides every onboarding sample picker by id.
-
-
-};
-
-// #endregion hidHisFun
-
-
-
 // #region sedPicFun
 
 /**
@@ -445,71 +410,13 @@ const sedTasFun = ( staAppObj, actStoObj ) => { // What: Seed Tasks Function. Wh
 
 // #endregion sedTasFun
 
-
-
-// #region unhHisFun
-
-/**
- * unhHisFun = Unhide History Function
- *
- * @summary
- * Stats needs no disposable copy of its own (nothing there is editable), the
- * same reasoning as onboarding/page-tours.jsx's own unhHisFun. This borrows
- * the REAL hidden onboarding sample pickers directly so the heatmap/breakdown
- * have a genuine year of history to show, and hides them again once help mode
- * turns off (see hidHisFun).
- *
- * The precomputed history is lazily imported and seeded only the first time no
- * pickLog row belongs to a sample picker yet, so repeat toggles never
- * duplicate it.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    checked so nothing already seeded is added twice.
- * @param actStoObj - Action Store Object: The shared app actions object.
- *
- * @returns This function does not return anything.
- *
- * @example
- * ```ts
- * unhHisFun( staAppObj, actStoObj ) // => void
- * ```
- *
-*/
-
-const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function. Why: The Stats page needs a genuine year of history to show while help mode is on (see the comment above this declaration). How: This unhides every real onboarding sample picker, then lazily seeds their precomputed history the first time it's actually missing.
-
-
-	ONB_SPI_ARR.forEach( ( curIdeStr ) => actStoObj.updPicFun( curIdeStr, { hidden : false } ) ); // What: Onboarding Sample Unhide Loop. Why: Stats can only chart a picker's own history while that picker isn't hidden. How: This unhides every onboarding sample picker by id.
-
-
-	if ( !( staAppObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: The precomputed history only ever needs seeding once; re-toggling help mode on and off must not seed it again. How: This checks whether any existing pickLog row already belongs to an onboarding sample picker.
-
-
-		import( '../state/onboarding-stats-data.js' ).then( ( { ONB_STA_OBJ } ) => { // What: Onboarding Stats Data Import. Why: The precomputed history is large enough to load lazily rather than bundling it into every page. How: This dynamically imports onboarding-stats-data.js, resolving with its own ONB_STA_OBJ export.
-
-
-			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Stats History Seed Call. Why: The precomputed history must become real, dated pickLog/reminderLog/reminderSkipLog rows before appending. How: This hydrates ONB_STA_OBJ via hydStaFun, then appends the result via sedHisFun.
-
-
-		} );
-
-
-	}
-
-
-};
-
-// #endregion unhHisFun
-
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { clePicFun, cleTasFun, hidHisFun, sedPicFun, sedTasFun, unhHisFun }; // What: Named Exports. Why: tab-picker.jsx/tab-data.jsx/tab-stats.jsx each need to (un)seed their own slice of help-mode sample data as their own help toggle turns on/off. How: This re-exports all 6 seed/clear/unhide/hide functions declared above by name.
+export { clePicFun, cleTasFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: tab-picker.jsx and tab-data.jsx each seed and clear their own slice of help-mode sample data as their own help toggle turns on and off. How: This exports all 4 seed and clear functions by name.
 
 // #endregion Exports
 

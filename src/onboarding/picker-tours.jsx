@@ -457,7 +457,7 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: This step highlights the c
  * itself, cirBoo so Next stays disabled and the user has to actually click the
  * real icon to advance. Body copy is kept in sync with the Pickers page tour's
  * own Step 1 (NAV_TAR_OBJ.picker plus its own buiTs1Fun suffix, see
- * onboarding/page-tours.jsx) by explicit request; the step still has to stay
+ * onboarding/page-steps.jsx) by explicit request; the step still has to stay
  * on Today (tabStr: 'today') rather than pre-navigating, so there is something
  * left for the user's own click to do. Only the copy is shared, not the step
  * object itself.

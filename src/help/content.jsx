@@ -14,7 +14,7 @@ import { IcoSvgCom } from '../ui/icon.jsx'; // What: Icon Svg Component. Why: Se
  *
  * @summary
  * Per-page catalogs of help items for the on-demand help mode (see
- * help/mode.jsx). Copy is largely forked from onboarding/page-tours.jsx's own
+ * help/mode.jsx). Copy is largely forked from onboarding/page-steps.jsx's own
  * PIC_TAR_OBJ / STA_TAR_OBJ / DAT_TAR_OBJ / SET_TAR_OBJ catalogs, same
  * targets, same underlying explanation, with directive tour language ("click
  * Next", "click Done when ready", "these buttons are disabled for this
