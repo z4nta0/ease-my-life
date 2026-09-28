@@ -137,9 +137,7 @@ function fluStaFun( curStaObj ) {
  * state is sitting in memory and no component had to become async. The
  * localStorage read is kept as a fallback for the case where storage.js
  * failed to load at all. A brand-new user (nothing stored anywhere)
- * starts from SED_NAM_OBJ.buiCleFun() and is met by onboarding; the
- * demo fixture in seed.js (SED_NAM_OBJ.buiSeeFun) is design-time only
- * and deliberately not used here.
+ * starts from SED_NAM_OBJ.buiCleFun() and is met by onboarding.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

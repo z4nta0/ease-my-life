@@ -23,14 +23,14 @@
  * those back to real ISO dates relative to the ACTUAL current date at
  * seed time, a trivial, instant per-row map, not a regeneration.
  *
- * The generated file's own JS source is hand-formatted here (tabs,
- * single quotes, space-colon-space) via forValFun/forArrFun below,
- * rather than a plain JSON.stringify dump, so onboarding-stats-data.js
- * itself matches this repo's own formatting conventions even though
- * nothing ever hand-edits it. Run with `--reformat` to rewrite the
- * existing data in a changed template without re-simulating it. Individual data rows are NOT given their
- * own What/Why/How comments (unlike, say, seed.js's ITE_DEF_ARR) since
- * this file holds thousands of them and is never read row-by-row.
+ * The generated file's own JS source is hand-formatted here (tabs, single
+ * quotes, space-colon-space) via forValFun/forArrFun below, rather than a
+ * plain JSON.stringify dump, so onboarding-stats-data.js itself matches this
+ * repo's own formatting conventions even though nothing ever hand-edits it.
+ * Run with `--reformat` to rewrite the existing data in a changed template
+ * without re-simulating it. Individual data rows are NOT given their own
+ * What/Why/How comments since this file holds thousands of them and is never
+ * read row-by-row.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -164,8 +164,7 @@ const finLogArr = hisRowArr.map( ( curRowObj ) => { // What: Final Log Array. Wh
  * it's recurring (weekly, Mondays). "Pick up prescription" is one-time
  * and hasn't been completed yet in this fresh install, so it has no
  * history to seed. ~52 Mondays across a year; the large majority
- * completed, a handful skipped, matching the dev seed.js build's
- * (SED_NAM_OBJ.buiSeeFun) own realism ratio.
+ * completed, a handful skipped.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -190,7 +189,7 @@ for ( const dayAgoNum of monBacArr ) { // What: Reminder History Populate Loop. 
 
 	const houValNum = 8, minValNum = 10 + Math.floor( Math.random() * 40 ); // What: Hour Minute Values. Why: A completed reminder needs a plausible morning completion time. How: This fixes the hour at 8am, randomizing the minute across a 40-minute window.
 
-	if ( Math.random() < 0.88 ) { // What: Completed Odds Check. Why: The large majority of Mondays should read as completed, matching the dev seed.js build's (SED_NAM_OBJ.buiSeeFun) own realism ratio. How: This rolls true 88% of the time.
+	if ( Math.random() < 0.88 ) { // What: Completed Odds Check. Why: The large majority of Mondays should read as completed, with a handful skipped for realism. How: This rolls true 88% of the time.
 
 		remLogArr.push( { taskId : traTasObj.id, name : traTasObj.name, type : 'recurring', daysAgo : dayAgoNum, h : houValNum, m : minValNum } ); // What: Reminder Log Push. Why: This is one completed row, in the exact shape state.reminderLog itself expects. How: This pushes traTasObj's own id/name plus dayAgoNum/houValNum/minValNum.
 
