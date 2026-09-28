@@ -281,9 +281,8 @@ of content, not N newline characters.
 ### Undefined cases: stop and ask
 This governs every rule in this section, permanently, not just while the
 rule set is still being defined, and it covers every language this section
-applies to, including CSS and HTML (CSS so far has only the module and
-hook rules under "### CSS modules and JS hooks"; the formatting of the CSS
-files themselves, and HTML, have none yet). If a piece of code needs a formatting, naming, or comment
+applies to, including CSS and HTML (CSS rules live under "### CSS modules
+and JS hooks"; HTML has none yet). If a piece of code needs a formatting, naming, or comment
 decision that isn't already covered by an explicit rule here, stop before
 making any change and ask what to do, rather than guessing, extrapolating
 from a rule that seems "close enough," or inventing something in the
@@ -1939,6 +1938,35 @@ still passes.
   (Header cell, since `Hea` already means Heading). Existing classes
   keep their current names while they move into modules; renaming them
   to this rule belongs to the design-system pass.
+- **CSS file boundaries and header**: the same as a JS file: exactly 3
+  blank lines before the first real line, exactly 2 blank lines after the
+  last one, and a mandatory file-level `/** ... */` header comment
+  (`<filename.module.css> = <Expanded Name>`, `@summary`, `@author`), per
+  "### Large / design-rationale comments".
+- **Declarations**: one declaration per line, tab-indented, alphabetized
+  by property name (case-insensitive), except that a shorthand stays
+  before any of its own longhands in the same rule (the same exception as
+  `style={{ ... }}` objects under "### Arrays and objects", since a later
+  shorthand would wipe out the longhand). Within each rule, pad every
+  property name so the `:` lines up in one column, computed from that
+  rule's longest property name, e.g. `border-radius : 999px;`.
+- **CSS comments**: every rule gets one What/Why/How comment, written as
+  `/* What: ... Why: ... How: ... */` one space after its own opening
+  `{`, the same as any multi-line construct. Declarations get no comment
+  of their own, for the same reason `style={{ ... }}` properties don't:
+  the property name already says what the line does. The exception is a
+  declaration a reader would genuinely need explained, such as a tricky
+  or non-obvious value, or a custom property whose name doesn't make
+  clear what it is or why it's used; that one gets its own comment after
+  its `;`. Expect this exception to be refined as files get reviewed.
+- **Spacing inside a region**: exactly 1 blank line between a parent's
+  own rule and its first child's rule. A variant (see below) sits
+  directly under its base rule, 0 blank lines.
+- **Modifier classes built from a string** (`prog--${ tonValStr }`) can't
+  be looked up that way once hashed, so each one becomes its own
+  conditional interpolation (`${ tonValStr === 'warm' ?
+  cssModObj.progWarm : '' }`), and a modifier with no rule behind it
+  (e.g. `prog--accent`) is dropped.
 - **CSS file order follows the cascade**: a parent element's rules come
   first, then its first child's, then the next child's, and so on, in the
   same order the elements appear in the component's own markup, each
