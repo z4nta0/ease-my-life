@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import cssModObj from './sort-select.module.css'; // What: CSS Module Object. Why: The sort control's row, label, and select styles live in its own module. How: This maps each class name in sort-select.module.css to its hashed module class.
+
+// #endregion Imports
+
+
+
 /**
  * sort-select.jsx = Sort Select
  *
@@ -55,11 +63,11 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } ) {
 	return (
 
 
-		<div className='data-sort-row'>{ /* What: Container Sort Row Div Element. Why: This groups the label and its own select as one labeled control. How: This wraps the label below and the actual select element. */ }
+		<div className={ cssModObj.dataSortRow }>{ /* What: Container Sort Row Div Element. Why: This groups the label and its own select as one labeled control. How: This wraps the label below and the actual select element. */ }
 
 
 			<label
-				className='data-sort-lbl'
+				className={ cssModObj.dataSortLbl }
 
 				htmlFor={ selIdeStr }
 			>{ /* What: Sort Label Element. Why: The select below needs an associated visible label for accessibility. How: This is linked to the select via htmlFor/id and shows the caller's own labTexStr text. */ }
@@ -73,7 +81,7 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } ) {
 			<select
 				id={ selIdeStr }
 
-				className='np-input data-sort-sel'
+				className={ cssModObj.dataSortSel }
 
 				data-element-name-hook='sorDroSel'
 
