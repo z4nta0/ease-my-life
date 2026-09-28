@@ -54,6 +54,7 @@ import { todTopFun   } from './tour-runner.jsx';                // What: Today T
  *
  * Sections:
  *  - Constants
+ *  - Helpers
  *  - Components
  *  - Exports
  *
@@ -97,6 +98,67 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
 );
 
 // #endregion Constants
+
+
+
+// #region Helpers
+
+// #region sedTasFun
+
+/**
+ * sedTasFun = Seed Tasks Function
+ *
+ * @summary
+ * Seeds the Welcome Tour's own sample reminders (ONB_TAS_ARR) unless any of
+ * them already exist, so a repeated Skip, a Replay, or stepping back and
+ * forward again can never duplicate them. A weekly sample is pinned to
+ * today's own weekday so it actually shows up today. Called from the Generate
+ * step (hidden only on a replay, which has no review moment for them to
+ * appear alongside) and from the intro modal's own Skip (always hidden).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param staAppObj - State App Object: The entire app's own persisted state,
+ *                    checked so the sample reminders are never seeded twice.
+ * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param hidTasBoo - Hidden Tasks Boolean: Whether the seeded reminders start
+ *                    hidden.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * sedTasFun( staAppObj, actStoObj, true ) // => void
+ * ```
+ *
+*/
+
+const sedTasFun = ( staAppObj, actStoObj, hidTasBoo ) => { // What: Seed Tasks Function. Why: The Generate step and the intro modal's own Skip both seed the same sample reminders. How: This adds each ONB_TAS_ARR entry unless one already exists, pinning a weekly one to today and hiding them when hidTasBoo is true.
+
+
+	if ( staAppObj.tasks.some( ( curTasObj ) => ONB_STI_ARR.includes( curTasObj.id ) ) ) return; // What: Sample Tasks Present Guard. Why: A Skip that runs twice, a Replay that already seeded these, or a Back-then-Forward through the Generate step must never duplicate the sample reminders. How: This returns early when any sample task id already exists.
+
+
+
+	const dowValNum = new Date().getDay(); // What: Day-Of-Week Value Number. Why: A weekly sample reminder needs a real day of the week to be scheduled on. How: This reads the current local day index (0-6) from a fresh Date.
+
+
+	ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.addTasFun( { // What: Sample Task Add Call. Why: Every sample reminder is added as a real, editable task. How: This adds each ONB_TAS_ARR entry with the overrides below.
+
+
+		...curTasObj,                                                               // What: Task Spread. Why: Every one of the sample task's own fields is kept as authored. How: This spreads curTasObj's own fields first so the overrides below can still win.
+		...( curTasObj.repeat === 'weekly' ? { daysOfWeek : [ dowValNum ] } : {} ), // What: Weekly Override. Why: A weekly-repeat sample reminder should actually show up today, not on whatever day it happened to be authored for. How: This overrides daysOfWeek to [dowValNum] only when curTasObj.repeat is 'weekly'.
+		...( hidTasBoo ? { hidden : true } : {} )                                   // What: Hidden Override. Why: A path with no review moment for these to appear alongside must start them hidden. How: This overrides hidden to true only when hidTasBoo is true.
+
+
+	} ) );
+
+
+};
+
+// #endregion sedTasFun
+
+// #endregion Helpers
 
 
 
@@ -278,24 +340,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 
 
-				if ( !staAppObj.tasks.some( ( curTasObj ) => ONB_STI_ARR.includes( curTasObj.id ) ) ) { // What: Sample Tasks Missing Guard. Why: This used to sit inside the "not dismissed" branch above, which meant a replay never created the sample reminders at all, silently breaking their own two mini-tour launcher cards under Reminders on any replay. How: This seeds the sample tasks whenever none of them already exist, on a first run or a replay alike.
-
-
-					const dowValNum = new Date().getDay(); // What: Day-Of-Week Value Number. Why: A weekly sample reminder needs a real day of the week to be scheduled on. How: This reads the current local day index (0-6) from a fresh Date.
-
-
-					ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.addTasFun( { // What: Sample Task Add Call. Why: On a true first run these appear alongside the generated picks, not before; on a replay there is no such review moment, so they are seeded straight into hidden instead, same as the intro modal's own onSkiTouFun handling below. How: This adds each ONB_TAS_ARR entry, pinning a weekly one to today and hiding it outright on a replay.
-
-
-						...curTasObj, // What: Task Spread. Why: Every one of the sample task's own fields is kept as authored. How: This spreads curTasObj's own fields first so the overrides below can still win.
-						...( curTasObj.repeat === 'weekly' ? { daysOfWeek : [ dowValNum ] } : {} ), // What: Weekly Override. Why: A weekly-repeat sample reminder should actually show up today, not on whatever day it happened to be authored for. How: This overrides daysOfWeek to [dowValNum] only when curTasObj.repeat is 'weekly'.
-						...( onbStaObj.dismissed ? { hidden : true } : {} ) // What: Dismissed Override. Why: A replay has no in-between review step for these to appear alongside, so they must start hidden. How: This overrides hidden to true only when onbStaObj.dismissed is true.
-
-
-					} ) );
-
-
-				}
+				sedTasFun( staAppObj, actStoObj, onbStaObj.dismissed ); // What: Sample Tasks Seed Call. Why: On a true first run these appear alongside the generated picks, while a replay has no such review moment, so they start hidden there. This used to sit inside the "not dismissed" branch above, which meant a replay never created the sample reminders at all, silently breaking their own two mini-tour launcher cards under Reminders on any replay. How: This seeds the sample tasks whenever none of them already exist, hidden only on a replay.
 
 
 			}
@@ -514,25 +559,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 
 
-					if ( !staAppObj.tasks.some( ( curTasObj ) => ONB_STI_ARR.includes( curTasObj.id ) ) ) { // What: Sample Tasks Missing Guard. Why: A Skip that runs twice (or a Replay that already seeded these) must never duplicate the sample reminders. How: This seeds the sample tasks only when none of them already exist.
-
-
-						const dowValNum = new Date().getDay(); // What: Day-Of-Week Value Number. Why: A weekly sample reminder needs a real day of the week to be scheduled on. How: This reads the current local day index (0-6) from a fresh Date.
-
-
-						ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.addTasFun( { // What: Sample Task Add Call. Why: There is no in-between review step on this path for these to be visible during, unlike the tour's own Generate step. How: This adds each ONB_TAS_ARR entry, pinning a weekly one to today and hiding it outright.
-
-
-							...curTasObj, // What: Task Spread. Why: Every one of the sample task's own fields is kept as authored. How: This spreads curTasObj's own fields first so the overrides below can still win.
-							...( curTasObj.repeat === 'weekly' ? { daysOfWeek : [ dowValNum ] } : {} ), // What: Weekly Override. Why: A weekly-repeat sample reminder should actually show up today, not on whatever day it happened to be authored for. How: This overrides daysOfWeek to [dowValNum] only when curTasObj.repeat is 'weekly'.
-
-							hidden : true // What: Hidden Override. Why: There is no review moment on this path for these to appear alongside first. How: This always overrides hidden to true on this path.
-
-
-						} ) );
-
-
-					}
+					sedTasFun( staAppObj, actStoObj, true ); // What: Sample Tasks Seed Call. Why: There is no in-between review step on this path for these to be visible during, unlike the tour's own Generate step. How: This seeds the sample tasks whenever none of them already exist, always hidden.
 
 
 
