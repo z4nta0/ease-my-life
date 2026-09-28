@@ -336,7 +336,7 @@ function reaGenFun ( appStaObj ) { return othRemFun( appStaObj ) === 0 && reaPic
  * never had sample data seeded at all: maiTouBoo requires actual hidden
  * samples to exist, which protects that case independent of
  * checklistDone's own backfilled-false default for legacy saves (see
- * store.js's migStaFun).
+ * migrate.js's migStaFun).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

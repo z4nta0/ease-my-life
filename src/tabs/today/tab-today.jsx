@@ -249,7 +249,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const todEntArr = React.useMemo( () => { // What: Today Entry Array. Why: Every count below needs today's own entries with hidden-picker rows already excluded, matching groEntFun's own exclusion so counts and rendered rows never disagree. How: This filters staAppObj.today.entries against the current hidden-picker id set.
 
 
-		const hidPicSet = new Set( staAppObj.pickers.filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: An entry belonging to a still-hidden picker (see the hidden flag in store.js's migStaFun()) must be excluded from every count here. How: This collects every currently-hidden picker's own id.
+		const hidPicSet = new Set( staAppObj.pickers.filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: An entry belonging to a still-hidden picker (see the hidden flag in migrate.js's migStaFun()) must be excluded from every count here. How: This collects every currently-hidden picker's own id.
 
 
 

@@ -521,7 +521,7 @@ function isaDueFun( tasRcdObj, cheDatObj = new Date() ) {
  *
  * @summary
  * Every task/reminder due on cheDatObj, in a stable order (one-time
- * first, then newest-added). Hidden tasks (see the store.js migStaFun()
+ * first, then newest-added). Hidden tasks (see the migrate.js migStaFun()
  * comment on the hidden flag) are excluded here so every downstream
  * consumer (Today, Stats, streak reconciliation) never has to filter
  * them out separately.
@@ -627,7 +627,7 @@ const isaReuFun = ( tasRcdObj ) => tasRcdObj.repeat !== 'once'; // What: Is-A Re
  *
 */
 
-function isaStaFun( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repeat === 'once' && tasRcdObj.lastDone && tasRcdObj.lastDone !== isoDayFun( cheDatObj ); } // What: Is-A Stale Body. Why: store.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRcdObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
+function isaStaFun( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repeat === 'once' && tasRcdObj.lastDone && tasRcdObj.lastDone !== isoDayFun( cheDatObj ); } // What: Is-A Stale Body. Why: migrate.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRcdObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
 
 // #endregion isaStaFun
 
@@ -1259,9 +1259,9 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: store.js, the remind
 	isaDonFun : isaDonFun, // What: Is-A Done Function. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This re-exports isaDonFun under its own matching name.
 	isaDueFun : isaDueFun, // What: Is-A Due Function. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its own matching name.
 	isaReuFun : isaReuFun, // What: Is-A Recurring Function. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaReuFun under its own matching name.
-	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: store.js's own migStaFun() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
+	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: migrate.js's own migStaFun() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
 	nexEliFun : nexEliFun, // What: Next Eligible Function. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its own matching name.
-	norOptFun : norOptFun, // What: Normalize Options Function. Why: store.js's own migStaFun() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its own matching name.
+	norOptFun : norOptFun, // What: Normalize Options Function. Why: migrate.js's own migStaFun() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its own matching name.
 	optForFun : optForFun, // What: Options For Function. Why: Callers need a specific task's own governing options object by this exact name. How: This re-exports optForFun under its own matching name.
 	sumTasFun : sumTasFun, // What: Summary Task Function. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTasFun under its own matching name.
 	todVisFun : todVisFun, // What: Today Visibility Function. Why: Callers need the full visible/cause/next advisory for a single task by this exact name. How: This re-exports todVisFun under its own matching name.
