@@ -1871,6 +1871,15 @@ still passes.
   which kinds of code rely on the hook. A custom component that renders
   a hooked element accepts `data-element-name-hook` under that same name
   at its call sites and forwards it to the element.
+- **A selector's top-level commas are fallbacks, not a union.** Help mode
+  and the tour runner try a selector list's top-level alternatives in
+  order and use the first one that matches anything, splitting the list
+  with `utils/selector.js`'s own `splSelFun`, which ignores commas inside
+  `:is()`, `:not()`, `:has()`, brackets, and quotes. A selector meant to
+  match several different elements at once (e.g. a button that renders
+  as an InfTipCom trigger span while disabled) joins them with `:is( a,
+  b )` rather than a top-level comma, which would quietly turn every
+  alternative after the first into a fallback.
 - **State attributes stay separate from identity**: runtime state is an
   `aria-*` attribute where one fits, otherwise its own presence-only
   `data-*` attribute, set as `data-row-edit-active={ isaEdiBoo ||
@@ -2881,14 +2890,12 @@ while ( condition );
   runs once every one of those exits has already been ruled out, so it
   is never "related" to the guard in the ordinary tiering sense,
   regardless of what it actually does next; this overrides whatever the
-  General relatedness tiering below would otherwise assign. Examples:
+  General relatedness tiering below would otherwise assign. Example:
   `if ( logRowObj.date !== dayKeyStr || logRowObj.pickerId !==
-  picIdeStr ) continue;` in `dayFlaFun`, and `if ( !iteFlaObj ||
-  !iteFlaObj.anyBoo ) return <span
-  className='dl-none dl-mk-status'>—</span>;` in `StaChiCom` (both
-  `day-log.jsx`), each get 3 blank lines before the next line, not the 1
-  an ordinary relatedness guess might otherwise assign just because
-  neighboring lines touch the same data.
+  picIdeStr ) continue;` in `day-log.jsx`'s own `dayFlaFun` gets 3 blank
+  lines before the next line, not the 1 an ordinary relatedness guess
+  might otherwise assign just because neighboring lines touch the same
+  data.
 
 ### JSX
 - No space after `<`/`</` or before `>`/`/>` on any element, including a
