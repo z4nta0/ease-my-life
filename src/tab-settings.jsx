@@ -46,326 +46,19 @@ import { useEscCanFun } from './ui.jsx';                  // What: Use Escape Ca
  * A left-hand section rail tracks and drives scroll position across all of
  * them.
  *
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Components
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
 
-// #region forRunFun
-
-/**
- * forRunFun = Format Run Function
- *
- * @summary
- * Formats a 24-hour "HH:MM" run-time string, as persisted for the Daily
- * generator's automatic run time, into a friendly 12-hour clock label
- * such as "4:00 AM" for the Daily generator section's own copy.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param runTimStr - Run Time String: The raw 24-hour "HH:MM" string to
- *                    format; defaults to '04:00' when missing or falsy.
- *
- * @returns The formatted 12-hour clock label, such as "4:00 AM".
- *
- * @example
- * ```ts
- * forRunFun( '04:00' ) // => '4:00 AM'
- * ```
- *
-*/
-
-function forRunFun ( runTimStr ) {
-
-
-	const [ houValNum, minValNum ] = ( runTimStr || '04:00' ).split( ':' ).map( Number ); // What: Hour Value Number And Minute Value Number. Why: The raw "HH:MM" string must be split into numeric parts before it can be reformatted. How: This splits runTimStr (or the '04:00' default) on ':' and maps both halves through Number.
-
-	const merSufStr = houValNum < 12 ? 'AM' : 'PM';               // What: Meridiem Suffix String. Why: A 12-hour label needs to say whether the hour is morning or afternoon/evening. How: This reads 'AM' for any hour before noon, 'PM' otherwise.
-	const houDisNum = houValNum % 12 === 0 ? 12 : houValNum % 12; // What: Hour Display Number. Why: A 24-hour hour of 0 or 12 must read as "12" on a 12-hour clock, never "0". How: This takes the 24-hour hour modulo 12, substituting 12 whenever that remainder is 0.
-
-
-
-	return `${ houDisNum }:${ String( minValNum ).padStart( 2, '0' ) } ${ merSufStr }`; // What: Formatted Label Return. Why: This is the function's whole purpose, a friendly "H:MM AM/PM" string. How: This joins houDisNum, the zero-padded minute, and merSufStr with the literal punctuation a 12-hour clock label needs.
-
-
-}
-
-// #endregion forRunFun
-
-
-
-// #region HolEdiCom
-
-/**
- * HolEdiCom = Holiday Editor Component
- *
- * @summary
- * Renders the Holidays section's own editable list: every computed U.S.
- * holiday for the current year (each toggleable on/off via the
- * "Skip on holidays" gate every picker reads), plus any custom recurring
- * days off the user has added of their own, with a small form beneath
- * the list for adding another one.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.staAppObj - State App Object: {@link useAppStaFun}
- * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
- *
- * @returns The holiday list (computed rows plus custom rows) and the
- * "add a holiday" form beneath it, as a fragment.
- *
- * @example
- * ```tsx
- * HolEdiCom({ staAppObj, actStoObj }) // => <HolEdiCom />
- * ```
- *
-*/
-
-function HolEdiCom ( { staAppObj, actStoObj } ) {
-
-
-	const curYeaNum = new Date().getFullYear();                              // What: Current Year Number. Why: The computed U.S. holiday list is specific to a single calendar year. How: This reads the real device's current year and is passed to HOL_NAM_OBJ.comYeaFun below.
-	const holStaObj = staAppObj.holidays || HOL_NAM_OBJ.defStaFun();         // What: Holiday State Object. Why: A very old persisted state might not carry a holidays sub-object at all. How: This falls back to HOL_NAM_OBJ's own default shape when staAppObj.holidays is missing.
-	const comHolArr = HOL_NAM_OBJ.comYeaFun( curYeaNum, holStaObj.country ); // What: Computed Holiday Array. Why: The list needs every rule-computed U.S. holiday for the current year and country. How: This calls HOL_NAM_OBJ.comYeaFun with the current year and the user's saved country.
-	const disKeyArr = holStaObj.disabled || [];                              // What: Disabled Key Array. Why: A toggled-off computed holiday must still render, just marked disabled. How: This is checked per-row below via .includes to decide each row's on/off state.
-	const cusHolArr = holStaObj.custom || [];                                // What: Custom Holiday Array. Why: The user's own added recurring days off need to render in their own list, below the computed ones. How: This is mapped below into its own set of rows.
-
-	const [ draNamStr, setDraNamStr ] = React.useState( '' );   // What: Draft Name String And Setter. Why: The "add a holiday" form needs somewhere to hold the name being typed before it is actually added. How: This is bound to the name input below and read by addCusFun.
-	const [ draDatStr, setDraDatStr ] = React.useState( '' );   // What: Draft Date String And Setter. Why: The "add a holiday" form needs somewhere to hold the date being picked before it is actually added. How: This is bound to the date input below and read by addCusFun.
-	const [ exiIdeStr, setExiIdeStr ] = React.useState( null ); // What: Exiting Identifier String And Setter. Why: A removed custom holiday should play its fade-up-and-out exit before the row actually disappears. How: This holds the id currently mid-exit, checked per-row below to apply the 'is-exiting' class.
-
-
-	const rmvExiFun = ( cusIdeStr ) => { // What: Remove Exit Function. Why: Deleting a custom holiday should not simply vanish the row; it should play its own exit animation first. How: This flags cusIdeStr as exiting, then removes it from the store 300ms later, once that animation has had time to play.
-
-
-		setExiIdeStr( cusIdeStr ); // What: Exiting Identifier Set. Why: This is what actually triggers the row's own exit class below. How: This writes the removed row's own id into exiIdeStr.
-
-		setTimeout( () => { // What: Delayed Removal Timeout. Why: The store must not drop the row until the fade-up-and-out animation has actually had time to play. How: This waits 300ms, then removes the holiday from the store and clears exiIdeStr.
-
-
-			actStoObj.delHolFun( cusIdeStr ); // What: Custom Holiday Delete Call. Why: This is the actual store mutation that removes the recurring day off. How: This calls actStoObj.delHolFun with the removed row's own id.
-
-			setExiIdeStr( null ); // What: Exiting Identifier Clear. Why: The row is gone, so nothing is mid-exit anymore. How: This resets exiIdeStr back to null.
-
-
-		}, 300 );
-
-
-	};
-
-
-
-	const shoDatFun = ( holDatObj ) => holDatObj.toLocaleDateString( 'en-US', { weekday : 'short', month : 'short', day : 'numeric' } );                          // What: Short Date Function. Why: Every computed holiday row needs a compact "Weekday, Month Day" label for when it lands. How: This formats holDatObj via toLocaleDateString with short weekday/month and numeric day.
-	const reaDayFun = ( holDatObj ) => holDatObj.toLocaleDateString( 'en-US', { weekday : 'long' } );                                                             // What: Real Day Function. Why: An observed holiday (one shifted off a weekend) needs to also say which weekday it actually falls on. How: This formats holDatObj as just its own full weekday name.
-	const recDatFun = ( monValNum, dayValNum ) => new Date( 2001, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Recur Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
-
-
-
-	const addCusFun = () => { // What: Add Custom Function. Why: The "add a holiday" form's own Add button needs to turn its 2 draft fields into a real custom holiday. How: This validates both drafts are filled, parses the date input's own month/day, adds the holiday, then clears both drafts.
-
-
-		if ( !draNamStr.trim() || !draDatStr ) return; // What: Draft Validity Guard. Why: Both a name and a date are required before anything can be added. How: This bails out early whenever either draft is still empty/blank.
-
-
-
-		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value Number And Day Value Number. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft and discards the year, keeping only the numeric month and day.
-
-
-		actStoObj.addHolFun({ // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actStoObj.addHolFun with the trimmed name and the parsed month/day.
-
-
-			day   : dayValNum,       // What: Day. Why: This is the recurring day of the month. How: This passes the parsed day straight through.
-			month : monValNum,       // What: Month. Why: This is the recurring month of the year. How: This passes the parsed month straight through.
-			name  : draNamStr.trim() // What: Name. Why: This is the holiday's own display name. How: This passes the typed draft name, trimmed of stray whitespace.
-
-
-		});
-
-		setDraNamStr( '' ); // What: Draft Name Reset. Why: A successfully added holiday should leave the form empty and ready for the next one. How: This clears the name draft back to an empty string.
-		setDraDatStr( '' ); // What: Draft Date Reset. Why: A successfully added holiday should leave the form empty and ready for the next one. How: This clears the date draft back to an empty string.
-
-
-	};
-
-
-
-	return (
-
-
-		<React.Fragment>{ /* What: Holiday Editor Fragment Element. Why: The holiday list and the add form below it are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
-
-
-			<ul className='holiday-list'>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps comHolArr and then cusHolArr into their own rows below. */ }
-
-
-				{ comHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps comHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
-
-
-					const holEnaBoo = !disKeyArr.includes( holCurObj.keyStr ); // What: Holiday Enabled Boolean. Why: A row's own switch and label both depend on whether this specific holiday is currently enabled. How: This is true unless the holiday's own key appears in disKeyArr.
-
-
-
-					return (
-
-
-						<li
-							key={ holCurObj.keyStr }
-							className={ ` holiday-row   ${ holEnaBoo ? '' : 'is-off' } ` }
-						>{ /* What: Holiday Row Li Element. Why: Each computed holiday needs its own row pairing its name/date info with an on/off switch. How: This renders holCurObj's own name and date, plus a switch bound to holEnaBoo. */ }
-
-
-							<div className='holiday-info'>{ /* What: Holiday Info Div Element. Why: The name and date need their own grouping, separate from the switch. How: This wraps the name span and the date span below. */ }
-
-
-								<span className='holiday-name'>{ holCurObj.namStr }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
-
-								<span className='holiday-date'>{ /* What: Holiday Date Span Element. Why: The landing date, and (when observed) the real weekday it falls on, need their own grouping. How: This wraps the main date span and, conditionally, the observed-note span below. */ }
-
-
-									<span className='holiday-date-main'>{ shoDatFun( holCurObj.datObj ) }</span>{ /* What: Holiday Date Main Span Element. Why: Every row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shoDatFun. */ }
-
-									{ holCurObj.obsBoo && ( // What: Observed Note Check. Why: A holiday shifted off a weekend needs to also explain which real weekday it falls on. How: This renders the observed-note span only while holCurObj.obsBoo is true.
-
-
-										<span className='holiday-obs'>observed &middot; { holCurObj.namStr === 'New Year\'s Day' ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj ) }</span> // What: Holiday Obs Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun.
-
-
-									) }
-
-
-								</span>
-
-
-							</div>
-
-							<button
-								className={ ` switch   ${ holEnaBoo ? 'is-on' : '' } ` }
-								aria-pressed={ holEnaBoo }
-								aria-label={ `${ holEnaBoo ? 'Disable' : 'Enable' } ${ holCurObj.namStr }` }
-								onClick={ () => actStoObj.togHolFun( holCurObj.keyStr ) }
-							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. */ }
-
-
-								<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
-
-
-							</button>
-
-
-						</li>
-
-
-					);
-
-
-				} ) }
-
-				{ cusHolArr.map( ( cusCurObj ) => ( // What: Custom Holiday Map. Why: One row is needed per user-added recurring day off. How: This maps cusHolArr into its own rows, each flagged exiting via exiIdeStr.
-
-
-					<li
-						key={ cusCurObj.id }
-						className={ ` holiday-row   holiday-row--custom   holiday-row--enter   ${ exiIdeStr === cusCurObj.id ? 'is-exiting' : '' } ` }
-					>{ /* What: Custom Holiday Row Li Element. Why: Each custom holiday needs its own row pairing its name/recurrence info with a delete button. How: This renders cusCurObj's own name and recurring date, plus a delete button bound to rmvExiFun. */ }
-
-
-						<div className='holiday-info'>{ /* What: Holiday Info Div Element. Why: The name and recurrence need their own grouping, separate from the delete button. How: This wraps the name span and the date span below. */ }
-
-
-							<span className='holiday-name'>{ cusCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders cusCurObj's own name field. */ }
-
-							<span className='holiday-date holiday-date--custom'>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below. */ }
-
-
-								<span>{ recDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: Every custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via recDatFun. */ }
-
-								<span className='holiday-recur'>&middot; every year</span>{ /* What: Holiday Recur Span Element. Why: A custom holiday recurs annually, and that is not otherwise obvious from the date label alone. How: This renders a fixed "every year" note. */ }
-
-
-							</span>
-
-
-						</div>
-
-						<button
-							className='item-del'
-							aria-label={ `Remove ${ cusCurObj.name }` }
-							onClick={ () => rmvExiFun( cusCurObj.id ) }
-						>{ /* What: Custom Holiday Delete Button Element. Why: A user-added holiday needs its own way to be removed entirely, unlike a computed one which can only be disabled. How: This calls rmvExiFun with this row's own id when clicked. */ }
-
-
-							<IcoSvgCom
-								icoNamStr='traEle'
-								sizValNum={ 14 }
-							/>{ /* What: Icon Svg Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed small size. */ }
-
-
-						</button>
-
-
-					</li>
-
-
-				) ) }
-
-
-			</ul>
-
-			<div className='holiday-add'>{ /* What: Holiday Add Div Element. Why: Adding a custom holiday needs its own small form beneath the list. How: This wraps the name input, date input, and Add button. */ }
-
-
-				<input
-					className='np-input np-input--sm'
-					type='text'
-					value={ draNamStr }
-					placeholder='Add a holiday, e.g. Birthday'
-					autoComplete='off'
-					aria-label='Name of the day off to add'
-					onChange={ ( chaEveObj ) => setDraNamStr( chaEveObj.target.value ) }
-					onKeyDown={ ( keyEveObj ) => { // What: Name Key Down Handler. Why: The name field needs keyboard shortcuts for submitting and backing out. How: This submits on Enter and blurs on Escape.
-
-
-						if ( keyEveObj.key === 'Enter' ) addCusFun(); // What: Enter Submit Branch. Why: Enter should submit the typed name the same way clicking Add would. How: This calls addCusFun.
-
-						else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); // What: Escape Blur Branch. Why: Escape should back out of the field without submitting, matching every other text input in this tab. How: This blurs the input via keyEveObj.currentTarget.
-
-
-					} }
-				/>{ /* What: Draft Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape like every other text input in this tab. */ }
-
-				<input
-					className='np-input np-input--sm holiday-date-input'
-					type='date'
-					value={ draDatStr }
-					aria-label='Date'
-					onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
-					onChange={ ( chaEveObj ) => setDraDatStr( chaEveObj.target.value ) }
-				/>{ /* What: Draft Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like every other input in this tab. */ }
-
-				<ButBasCom
-					kinValStr='primary'
-					sizValStr='sm'
-					icoNamStr='pluEle'
-					disabled={ !draNamStr.trim() || !draDatStr }
-					onClick={ addCusFun }
-				>Add</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit submit action, disabled until both drafts are filled. How: This calls addCusFun when clicked. */ }
-
-
-			</div>
-
-
-		</React.Fragment>
-
-
-	);
-
-
-}
-
-// #endregion HolEdiCom
-
-
+// #region Constants
 
 /**
  * APP_VER_STR = App Version String
@@ -374,7 +67,7 @@ function HolEdiCom ( { staAppObj, actStoObj } ) {
  * Injected from package.json's own "version" field at build time by
  * vite.config.js (see __APP_VERSION__), so `npm version` stays the
  * single source of truth and the About section can never drift from
- * the actual build. The ?? guard keeps this rendering a sane fallback
+ * the actual build. The typeof guard keeps this rendering a sane fallback
  * if the define is ever missing, such as running a file outside the
  * real Vite build.
  *
@@ -426,6 +119,69 @@ const BRO_PAT_ARR = [ // What: Browser Pattern Array. Why: This is the ordered l
 // #endregion BRO_PAT_ARR
 
 
+
+const DAR_THE_ARR = [ 'night', 'moss', 'ember' ]; // What: Dark Theme Array. Why: This is the fixed set of built-in dark-based theme keys the Dark card renders one row per. How: This is mapped in TheSecCom's own Dark card.
+
+
+
+const FOR_NAM_STR = 'support'; // What: Form Name String. Why: Netlify matches an incoming POST to its own detected form by this exact "form-name" value. How: This is posted as the 'form-name' field and must match index.html's own static <form name="support">.
+
+
+
+const LIG_THE_ARR = [ 'ink', 'sage', 'sand' ]; // What: Light Theme Array. Why: This is the fixed set of built-in light-based theme keys the Light card renders one row per. How: This is mapped in TheSecCom's own Light card.
+
+
+
+// #region SET_SEC_ARR
+
+/**
+ * SET_SEC_ARR = Settings Section Array
+ *
+ * @summary
+ * Every entry below shares this exact shape, read by both the section
+ * rail's own links and TabSetCom's own scroll-spy/jump-to logic; none of
+ * the 7 entries repeat these same fields' own boilerplate comments (see
+ * the "Repeated-shape object literals" comment exception in CLAUDE.md).
+ * Each entry's own trailing comment instead just names which specific
+ * section it represents. Order matters: the rail renders its links in
+ * this exact order, matching the order the sections themselves render in.
+ *
+ * - `ideStr` (String): Identifier String uniquely identifies the section,
+ *   compared against actSecStr and used as the section's own secMapRef
+ *   key.
+ *
+ * - `labStr` (String): Label String names the section for the user,
+ *   rendered as the rail link's own visible text.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the left nav (in this exact order) and the scroll-spy/jump-to logic, keeping the 2 in lockstep. How: This is mapped over in the rail's own nav links and read by the scroll-spy effect and jumSecFun.
+
+
+	{ ideStr : 'appearance', labStr : 'Appearance'      }, // What: Appearance Section Object. Why: Theme, animation, and layout controls live here. How: This is the first rail link and the tab's own top section.
+	{ ideStr : 'daily',      labStr : 'Daily generator' }, // What: Daily Section Object. Why: The generator's own schedule and notifications live here. How: This is the second rail link.
+	{ ideStr : 'holidays',   labStr : 'Holidays'        }, // What: Holidays Section Object. Why: The holiday and days-off editor lives here. How: This is the third rail link.
+	{ ideStr : 'data',       labStr : 'Data control'    }, // What: Data Section Object. Why: Storage status, install, export, import, and reset live here. How: This is the fourth rail link.
+	{ ideStr : 'account',    labStr : 'Account'         }, // What: Account Section Object. Why: The future sync feature is announced here. How: This is the fifth rail link.
+	{ ideStr : 'about',      labStr : 'About'           }, // What: About Section Object. Why: App identity, the replay tour, and contact support live here. How: This is the sixth rail link.
+	{ ideStr : 'legal',      labStr : 'Legal'           }  // What: Legal Section Object. Why: The Privacy Policy and Terms of Service live here. How: This is the last rail link, given extra room below it by the Legal spacer effect so its own top can scroll up to the spy's base line.
+
+
+];
+
+// #endregion SET_SEC_ARR
+
+
+
+const SUP_EMA_STR = 'support@easemylife.app'; // What: Support Email String. Why: This is the fallback address shown when the in-app form fails to send. How: This is rendered in the failure message and copied by copAdrFun.
+
+// #endregion Constants
+
+
+
+// #region Helpers
 
 // #region detBroFun
 
@@ -480,56 +236,52 @@ function detBroFun () {
 
 
 
-// #region SET_SEC_ARR
+// #region forRunFun
 
 /**
- * SET_SEC_ARR = Settings Section Array
+ * forRunFun = Format Run Function
  *
  * @summary
- * Every entry below shares this exact shape, read by both the section
- * rail's own links and TabSetCom's own scroll-spy/jump-to logic; none of
- * the 7 entries repeat these same fields' own boilerplate comments (see
- * the "Repeated-shape object literals" comment exception in CLAUDE.md).
- * Each entry's own trailing comment instead just names which specific
- * section it represents. Order matters: the rail renders its links in
- * this exact order, matching the order the sections themselves render in.
- *
- * - `ideStr` (String): Identifier String uniquely identifies the section,
- *   compared against actSecStr and used as the section's own secMapRef
- *   key.
- *
- * - `labStr` (String): Label String names the section for the user,
- *   rendered as the rail link's own visible text.
+ * Formats a 24-hour "HH:MM" run-time string, as persisted for the Daily
+ * generator's automatic run time, into a friendly 12-hour clock label
+ * such as "4:00 AM" for the Daily generator section's own copy.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param runTimStr - Run Time String: The raw 24-hour "HH:MM" string to
+ *                    format; defaults to '04:00' when missing or falsy.
+ *
+ * @returns The formatted 12-hour clock label, such as "4:00 AM".
+ *
+ * @example
+ * ```ts
+ * forRunFun( '04:00' ) // => '4:00 AM'
+ * ```
+ *
 */
 
-const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the left nav (in this exact order) and the scroll-spy/jump-to logic, keeping the 2 in lockstep. How: This is mapped over in the rail's own nav links and read by the scroll-spy effect and jumSecFun.
+function forRunFun ( runTimStr ) {
 
 
-	{ ideStr : 'appearance', labStr : 'Appearance'      }, // What: Appearance Section Object. Why: Theme, animation, and layout controls live here. How: This is the first rail link and the tab's own top section.
-	{ ideStr : 'daily',      labStr : 'Daily generator' }, // What: Daily Section Object. Why: The generator's own schedule and notifications live here. How: This is the second rail link.
-	{ ideStr : 'holidays',   labStr : 'Holidays'        }, // What: Holidays Section Object. Why: The holiday and days-off editor lives here. How: This is the third rail link.
-	{ ideStr : 'data',       labStr : 'Data control'    }, // What: Data Section Object. Why: Storage status, install, export, import, and reset live here. How: This is the fourth rail link.
-	{ ideStr : 'account',    labStr : 'Account'         }, // What: Account Section Object. Why: The future sync feature is announced here. How: This is the fifth rail link.
-	{ ideStr : 'about',      labStr : 'About'           }, // What: About Section Object. Why: App identity, the replay tour, and contact support live here. How: This is the sixth rail link.
-	{ ideStr : 'legal',      labStr : 'Legal'           }  // What: Legal Section Object. Why: The Privacy Policy and Terms of Service live here. How: This is the last rail link, given extra room below it by the Legal spacer effect so its own top can scroll up to the spy's base line.
+	const [ houValNum, minValNum ] = ( runTimStr || '04:00' ).split( ':' ).map( Number ); // What: Hour Value Number And Minute Value Number. Why: The raw "HH:MM" string must be split into numeric parts before it can be reformatted. How: This splits runTimStr (or the '04:00' default) on ':' and maps both halves through Number.
 
-
-];
-
-// #endregion SET_SEC_ARR
+	const merSufStr = houValNum < 12 ? 'AM' : 'PM';               // What: Meridiem Suffix String. Why: A 12-hour label needs to say whether the hour is morning or afternoon/evening. How: This reads 'AM' for any hour before noon, 'PM' otherwise.
+	const houDisNum = houValNum % 12 === 0 ? 12 : houValNum % 12; // What: Hour Display Number. Why: A 24-hour hour of 0 or 12 must read as "12" on a 12-hour clock, never "0". How: This takes the 24-hour hour modulo 12, substituting 12 whenever that remainder is 0.
 
 
 
-const SUP_EMA_STR = 'support@easemylife.app'; // What: Support Email String. Why: This is the fallback address shown when the in-app form fails to send. How: This is rendered in the failure message and copied by copAdrFun.
+	return `${ houDisNum }:${ String( minValNum ).padStart( 2, '0' ) } ${ merSufStr }`; // What: Formatted Label Return. Why: This is the function's whole purpose, a friendly "H:MM AM/PM" string. How: This joins houDisNum, the zero-padded minute, and merSufStr with the literal punctuation a 12-hour clock label needs.
+
+
+}
+
+// #endregion forRunFun
+
+// #endregion Helpers
 
 
 
-const FOR_NAM_STR = 'support'; // What: Form Name String. Why: Netlify matches an incoming POST to its own detected form by this exact "form-name" value. How: This is posted as the 'form-name' field and must match index.html's own static <form name="support">.
-
-
+// #region Components
 
 // #region ConSupCom
 
@@ -572,6 +324,8 @@ const FOR_NAM_STR = 'support'; // What: Form Name String. Why: Netlify matches a
 function ConSupCom () {
 
 
+	// #region Form State
+
 	const [ forOpeBoo, setForOpeBoo ] = React.useState( false ); // What: Form Open Boolean And Setter. Why: The support form is not persisted; it always starts closed on load. How: This gates the ColDisCom below and is flipped by opeForFun/canForFun.
 	const [ draSubStr, setDraSubStr ] = React.useState( '' );    // What: Draft Subject String And Setter. Why: The subject field needs somewhere to hold its own typed value before sending. How: This is bound to the subject input below and read by senForFun.
 	const [ draMesStr, setDraMesStr ] = React.useState( '' );    // What: Draft Message String And Setter. Why: The message field needs somewhere to hold its own typed value before sending. How: This is bound to the message textarea below and read by senForFun.
@@ -587,6 +341,34 @@ function ConSupCom () {
 	const forCarRef = React.useRef( null );                      // What: Form Card Reference. Why: opeForFun needs a handle on the rendered form to scroll it into view. How: This is attached to the support-form div's own ref prop below.
 	const canSenBoo = draSubStr.trim() && draMesStr.trim();      // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
 
+	// #endregion Form State
+
+
+
+	// #region Form Actions
+
+	// #region opeForFun
+
+	/**
+	 * opeForFun = Open Form Function
+	 *
+	 * @summary
+	 * Opens the Contact Support form and brings it into view. After ColDisCom's
+	 * expand animation finishes, it scrolls the form into view only when its
+	 * bottom would otherwise sit below the fold.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * opeForFun() // => void
+	 * ```
+	 *
+	*/
 
 	const opeForFun = () => { // What: Open Form Function. Why: "Contact Support" needs to actually expand the form and bring it into view. How: This opens the form, then (after ColDisCom's own expand animation finishes) scrolls it into view if it would otherwise sit below the fold.
 
@@ -627,10 +409,12 @@ function ConSupCom () {
 			}
 
 
-		}, 360 );
+		}, 360 ); // What: Expand Animation Delay. Why: The scroll must measure the form's final height. How: This 360ms waits out ColDisCom's expand animation.
 
 
 	};
+
+	// #endregion opeForFun
 
 
 
@@ -680,6 +464,31 @@ function ConSupCom () {
 
 
 
+	// #region senForFun
+
+	/**
+	 * senForFun = Send Form Function
+	 *
+	 * @summary
+	 * Submits the support form to Netlify Forms. It ignores a second press while
+	 * a request is in flight and shows the validation message when either field
+	 * is empty. On a successful response it clears both drafts, stamps the sent
+	 * confirmation and closes the form; on any failure it keeps the drafts and
+	 * shows the fallback email row instead.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * senForFun() // => void
+	 * ```
+	 *
+	*/
+
 	const senForFun = () => { // What: Send Form Function. Why: This is the actual submit action behind the Send button. How: This validates both drafts, POSTs to Netlify Forms, and only clears the drafts once that POST actually succeeds. // POST to Netlify Forms. Netlify listens for form-encoded POSTs on any path of the site and matches them to a detected form by the `form-name` field, hence posting to '/' rather than to an endpoint of our own. // Only clear the form on success. A failed send must never eat what the user typed, which is the whole reason this waits on the response instead of optimistically confirming.
 
 
@@ -707,7 +516,7 @@ function ConSupCom () {
 			version     : appVerStr         // What: Version. Why: Bug reports need the app version they were sent from. How: This posts appVerStr.
 
 
-		}).toString();
+		}).toString(); // What: Body Encoding Call. Why: fetch needs the form fields as one encoded string. How: This serializes the URLSearchParams to a form-encoded body.
 
 
 		fetch( '/', { // What: Support Form Post Call. Why: This is the actual submission to Netlify Forms. How: This POSTs reqBodStr to the site root as a form-encoded body.
@@ -750,6 +559,10 @@ function ConSupCom () {
 
 	};
 
+	// #endregion senForFun
+
+	// #endregion Form Actions
+
 
 
 	return (
@@ -776,7 +589,9 @@ function ConSupCom () {
 
 							<span
 								key={ senTimNum }
+
 								className='set-import-msg is-ok'
+
 								role='status'
 							>Message sent, thanks! I&rsquo;ll be in touch.</span> // What: Sent Confirmation Span Element. Why: This is the actual confirmation text shown after a successful send. How: This is remounted (via its own senTimNum key) so a repeat send replays the announcement.
 
@@ -786,9 +601,12 @@ function ConSupCom () {
 
 					</div>
 
+
+
 					<ButBasCom
 						kinValStr='secondary'
 						sizValStr='sm'
+
 						onClick={ opeForFun }
 					>Contact Support</ButBasCom>{ /* What: Button Base Component. Why: This is the actual trigger that expands the support form below. How: This calls opeForFun when clicked. */ }
 
@@ -798,6 +616,8 @@ function ConSupCom () {
 
 			</CarSurCom>
 
+
+
 			<ColDisCom open={ forOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The support form itself should stay collapsed until the trigger above is pressed. How: This mounts/expands its own CarSurCom below, gated on forOpeBoo. */ }
 
 
@@ -806,6 +626,7 @@ function ConSupCom () {
 
 					<div
 						ref={ forCarRef }
+
 						className='support-form'
 					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's own footer buttons. */ }
 
@@ -817,9 +638,11 @@ function ConSupCom () {
 
 							<input
 								className='np-input'
+
+								placeholder='What’s going on?'
 								type='text'
 								value={ draSubStr }
-								placeholder='What’s going on?'
+
 								onChange={ ( chaEveObj ) => setDraSubStr( chaEveObj.target.value ) }
 							/>{ /* What: Draft Subject Input Element. Why: The user needs a text field to type the support message's own subject into. How: This is bound to draSubStr. */ }
 
@@ -831,20 +654,25 @@ function ConSupCom () {
 
 							<label
 								className='support-flabel'
+
 								htmlFor='support-message-input'
 							>Message</label>{ /* What: Message Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is "support-message-input", not "support-message", since that id is already taken by index.html's hidden static Netlify form (see its own comment above the <form name="support">), and duplicate ids on the page confused the browser's label matching (both labels applied, announcing "Message Message"). */ }
 
 							<textarea
 								id='support-message-input'
+
 								className='np-input support-textarea'
-								value={ draMesStr }
-								rows={ 5 }
+
 								placeholder='The more detail, the better.'
+								rows={ 5 }
+								value={ draMesStr }
+
 								onChange={ ( chaEveObj ) => setDraMesStr( chaEveObj.target.value ) }
 							/>{ /* What: Draft Message Textarea Element. Why: The user needs a multi-line field to type the support message's own body into. How: This is bound to draMesStr. */ }
 
 
 						</div>
+
 
 						<div className='support-diag'>{ /* What: Support Diag Div Element. Why: The 2 read-only diagnostic fields need their own grouping, separate from the editable fields above. How: This wraps the app-version field and the browser field. */ }
 
@@ -872,8 +700,10 @@ function ConSupCom () {
 
 						</div>
 
+
 						<p
 							className='support-hp'
+
 							aria-hidden='true'
 						>{ /* What: Honeypot Paragraph Element. Why: A real human never sees or fills this field, so any bot that does gives itself away. How: This wraps a label and input a screen reader never announces, hidden from assistive tech entirely. */ }
 
@@ -885,9 +715,12 @@ function ConSupCom () {
 
 								<input
 									name='bot-field'
+
 									autoComplete='off'
 									value={ botFieStr }
+
 									tabIndex={ -1 }
+
 									onChange={ ( chaEveObj ) => setBotFieStr( chaEveObj.target.value ) }
 								/>{ /* What: Bot Field Input Element. Why: A non-empty value here is the actual honeypot signal. How: This is bound to botFieStr and posted alongside the real fields. */ }
 
@@ -905,6 +738,7 @@ function ConSupCom () {
 
 								<span
 									key='verr'
+
 									className='support-valid-msg'
 								>Please fill out both form fields.</span> // What: Validation Message Span Element. Why: This is the actual validation copy shown on an empty-field send attempt. How: This renders fixed text explaining what is missing.
 
@@ -916,7 +750,9 @@ function ConSupCom () {
 
 								<span
 									key='sfail'
+
 									className='support-fallback'
+
 									role='status'
 								>{ /* What: Failure Message Span Element. Why: This is the actual fallback copy shown on a failed send. How: This explains the likely cause and surfaces the raw support address. */ }
 
@@ -929,28 +765,37 @@ function ConSupCom () {
 
 							) }
 
+
+
 							{ senFaiBoo && !shoErrBoo && ( // What: Copy Address Button Check. Why: The copy-address shortcut should only show alongside the fallback message above. How: This renders the button only while both conditions hold, same as the message above.
 
 
 								<ButBasCom
 									kinValStr='ghost'
 									sizValStr='sm'
+
 									onClick={ copAdrFun }
 								>{ adrCopBoo ? 'Copied' : 'Copy address' }</ButBasCom> // What: Button Base Component. Why: This lets the user copy the fallback address without selecting it by hand. How: This calls copAdrFun when clicked, and its own label reflects adrCopBoo.
 
 
 							) }
 
+
+
 							<ButBasCom
 								kinValStr='ghost'
 								sizValStr='sm'
+
 								onClick={ canForFun }
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit way to back out without sending. How: This calls canForFun when clicked. */ }
 
+
+
 							<ButBasCom
+								disabled={ isaSenBoo }
 								kinValStr='secondary'
 								sizValStr='sm'
-								disabled={ isaSenBoo }
+
 								onClick={ senForFun }
 							>{ isaSenBoo ? 'Sending…' : 'Send' }</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls senForFun when clicked, disabling itself and relabeling while isaSenBoo is true. */ }
 
@@ -979,6 +824,500 @@ function ConSupCom () {
 
 
 
+// #region HolEdiCom
+
+/**
+ * HolEdiCom = Holiday Editor Component
+ *
+ * @summary
+ * Renders the Holidays section's own editable list: every computed U.S.
+ * holiday for the current year (each toggleable on/off via the
+ * "Skip on holidays" gate every picker reads), plus any custom recurring
+ * days off the user has added of their own, with a small form beneath
+ * the list for adding another one.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
+ *
+ * @returns The holiday list (computed rows plus custom rows) and the
+ * "add a holiday" form beneath it, as a fragment.
+ *
+ * @example
+ * ```tsx
+ * HolEdiCom({ actStoObj, staAppObj }) // => <HolEdiCom />
+ * ```
+ *
+*/
+
+function HolEdiCom ( { actStoObj, staAppObj } ) {
+
+
+	// #region Holiday Data
+
+	const curYeaNum = new Date().getFullYear();                              // What: Current Year Number. Why: The computed U.S. holiday list is specific to a single calendar year. How: This reads the real device's current year and is passed to HOL_NAM_OBJ.comYeaFun below.
+	const holStaObj = staAppObj.holidays || HOL_NAM_OBJ.defStaFun();         // What: Holiday State Object. Why: A very old persisted state might not carry a holidays sub-object at all. How: This falls back to HOL_NAM_OBJ's own default shape when staAppObj.holidays is missing.
+	const comHolArr = HOL_NAM_OBJ.comYeaFun( curYeaNum, holStaObj.country ); // What: Computed Holiday Array. Why: The list needs every rule-computed U.S. holiday for the current year and country. How: This calls HOL_NAM_OBJ.comYeaFun with the current year and the user's saved country.
+	const disKeyArr = holStaObj.disabled || [];                              // What: Disabled Key Array. Why: A toggled-off computed holiday must still render, just marked disabled. How: This is checked per-row below via .includes to decide each row's on/off state.
+	const cusHolArr = holStaObj.custom || [];                                // What: Custom Holiday Array. Why: The user's own added recurring days off need to render in their own list, below the computed ones. How: This is mapped below into its own set of rows.
+
+	// #endregion Holiday Data
+
+
+
+	// #region Custom Holiday State
+
+	const [ draNamStr, setDraNamStr ] = React.useState( '' );   // What: Draft Name String And Setter. Why: The "add a holiday" form needs somewhere to hold the name being typed before it is actually added. How: This is bound to the name input below and read by addCusFun.
+	const [ draDatStr, setDraDatStr ] = React.useState( '' );   // What: Draft Date String And Setter. Why: The "add a holiday" form needs somewhere to hold the date being picked before it is actually added. How: This is bound to the date input below and read by addCusFun.
+	const [ exiIdeStr, setExiIdeStr ] = React.useState( null ); // What: Exiting Identifier String And Setter. Why: A removed custom holiday should play its fade-up-and-out exit before the row actually disappears. How: This holds the id currently mid-exit, checked per-row below to apply the 'is-exiting' class.
+
+
+	// #region rmvExiFun
+
+	/**
+	 * rmvExiFun = Remove Exit Function
+	 *
+	 * @summary
+	 * Deletes a custom holiday after its row plays its exit animation: it flags
+	 * the row as exiting at once, then removes the holiday from the store 300ms
+	 * later.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param cusIdeStr - Custom Identifier String: The id of the custom holiday
+	 *                    to remove.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * rmvExiFun( cusIdeStr ) // => void
+	 * ```
+	 *
+	*/
+
+	const rmvExiFun = ( cusIdeStr ) => { // What: Remove Exit Function. Why: Deleting a custom holiday should not simply vanish the row; it should play its own exit animation first. How: This flags cusIdeStr as exiting, then removes it from the store 300ms later, once that animation has had time to play.
+
+
+		setExiIdeStr( cusIdeStr ); // What: Exiting Identifier Set. Why: This is what actually triggers the row's own exit class below. How: This writes the removed row's own id into exiIdeStr.
+
+		setTimeout( () => { // What: Delayed Removal Timeout. Why: The store must not drop the row until the fade-up-and-out animation has actually had time to play. How: This waits 300ms, then removes the holiday from the store and clears exiIdeStr.
+
+
+			actStoObj.delHolFun( cusIdeStr ); // What: Custom Holiday Delete Call. Why: This is the actual store mutation that removes the recurring day off. How: This calls actStoObj.delHolFun with the removed row's own id.
+
+			setExiIdeStr( null ); // What: Exiting Identifier Clear. Why: The row is gone, so nothing is mid-exit anymore. How: This resets exiIdeStr back to null.
+
+
+		}, 300 ); // What: Exit Animation Delay. Why: The row must finish fading out before the store drops it. How: This 300ms matches the exit animation's duration.
+
+
+	};
+
+	// #endregion rmvExiFun
+
+	// #endregion Custom Holiday State
+
+
+
+	// #region Date Formatting
+
+	const shoDatFun = ( holDatObj ) => holDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } );                          // What: Short Date Function. Why: Every computed holiday row needs a compact "Weekday, Month Day" label for when it lands. How: This formats holDatObj via toLocaleDateString with short weekday/month and numeric day.
+	const reaDayFun = ( holDatObj ) => holDatObj.toLocaleDateString( 'en-US', { weekday : 'long' } );                                                             // What: Real Day Function. Why: An observed holiday (one shifted off a weekend) needs to also say which weekday it actually falls on. How: This formats holDatObj as just its own full weekday name.
+	const recDatFun = ( monValNum, dayValNum ) => new Date( 2001, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { day : 'numeric', month : 'short' } ); // What: Recur Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
+
+	// #endregion Date Formatting
+
+
+
+	const addCusFun = () => { // What: Add Custom Function. Why: The "add a holiday" form's own Add button needs to turn its 2 draft fields into a real custom holiday. How: This validates both drafts are filled, parses the date input's own month/day, adds the holiday, then clears both drafts.
+
+
+		if ( !draNamStr.trim() || !draDatStr ) return; // What: Draft Validity Guard. Why: Both a name and a date are required before anything can be added. How: This bails out early whenever either draft is still empty/blank.
+
+
+
+		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value Number And Day Value Number. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft and discards the year, keeping only the numeric month and day.
+
+
+		actStoObj.addHolFun({ // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actStoObj.addHolFun with the trimmed name and the parsed month/day.
+
+
+			day   : dayValNum,       // What: Day. Why: This is the recurring day of the month. How: This passes the parsed day straight through.
+			month : monValNum,       // What: Month. Why: This is the recurring month of the year. How: This passes the parsed month straight through.
+			name  : draNamStr.trim() // What: Name. Why: This is the holiday's own display name. How: This passes the typed draft name, trimmed of stray whitespace.
+
+
+		});
+
+		setDraNamStr( '' ); // What: Draft Name Reset. Why: A successfully added holiday should leave the form empty and ready for the next one. How: This clears the name draft back to an empty string.
+		setDraDatStr( '' ); // What: Draft Date Reset. Why: A successfully added holiday should leave the form empty and ready for the next one. How: This clears the date draft back to an empty string.
+
+
+	};
+
+
+
+	return (
+
+
+		<React.Fragment>{ /* What: Holiday Editor Fragment Element. Why: The holiday list and the add form below it are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+
+
+			<ul className='holiday-list'>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps comHolArr and then cusHolArr into their own rows below. */ }
+
+
+				{ comHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps comHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
+
+
+					const holEnaBoo = !disKeyArr.includes( holCurObj.keyStr ); // What: Holiday Enabled Boolean. Why: A row's own switch and label both depend on whether this specific holiday is currently enabled. How: This is true unless the holiday's own key appears in disKeyArr.
+
+
+
+					return (
+
+
+						<li
+							key={ holCurObj.keyStr }
+
+							className={ ` holiday-row   ${ holEnaBoo ? '' : 'is-off' } ` }
+						>{ /* What: Holiday Row Li Element. Why: Each computed holiday needs its own row pairing its name/date info with an on/off switch. How: This renders holCurObj's own name and date, plus a switch bound to holEnaBoo. */ }
+
+
+							<div className='holiday-info'>{ /* What: Holiday Info Div Element. Why: The name and date need their own grouping, separate from the switch. How: This wraps the name span and the date span below. */ }
+
+
+								<span className='holiday-name'>{ holCurObj.namStr }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
+
+								<span className='holiday-date'>{ /* What: Holiday Date Span Element. Why: The landing date, and (when observed) the real weekday it falls on, need their own grouping. How: This wraps the main date span and, conditionally, the observed-note span below. */ }
+
+
+									<span className='holiday-date-main'>{ shoDatFun( holCurObj.datObj ) }</span>{ /* What: Holiday Date Main Span Element. Why: Every row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shoDatFun. */ }
+
+									{ holCurObj.obsBoo && ( // What: Observed Note Check. Why: A holiday shifted off a weekend needs to also explain which real weekday it falls on. How: This renders the observed-note span only while holCurObj.obsBoo is true.
+
+
+										<span className='holiday-obs'>observed &middot; { holCurObj.namStr === 'New Year\'s Day' ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj ) }</span> // What: Holiday Obs Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun.
+
+
+									) }
+
+
+								</span>
+
+
+							</div>
+
+							<button
+								className={ ` switch   ${ holEnaBoo ? 'is-on' : '' } ` }
+
+								aria-label={ `${ holEnaBoo ? 'Disable' : 'Enable' } ${ holCurObj.namStr }` }
+								aria-pressed={ holEnaBoo }
+
+								onClick={ () => actStoObj.togHolFun( holCurObj.keyStr ) }
+							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. */ }
+
+
+								<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
+
+
+							</button>
+
+
+						</li>
+
+
+					);
+
+
+				} ) }
+
+
+				{ cusHolArr.map( ( cusCurObj ) => ( // What: Custom Holiday Map. Why: One row is needed per user-added recurring day off. How: This maps cusHolArr into its own rows, each flagged exiting via exiIdeStr.
+
+
+					<li
+						key={ cusCurObj.id }
+
+						className={ ` holiday-row   holiday-row--custom   holiday-row--enter   ${ exiIdeStr === cusCurObj.id ? 'is-exiting' : '' } ` }
+					>{ /* What: Custom Holiday Row Li Element. Why: Each custom holiday needs its own row pairing its name/recurrence info with a delete button. How: This renders cusCurObj's own name and recurring date, plus a delete button bound to rmvExiFun. */ }
+
+
+						<div className='holiday-info'>{ /* What: Holiday Info Div Element. Why: The name and recurrence need their own grouping, separate from the delete button. How: This wraps the name span and the date span below. */ }
+
+
+							<span className='holiday-name'>{ cusCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders cusCurObj's own name field. */ }
+
+							<span className='holiday-date holiday-date--custom'>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below. */ }
+
+
+								<span>{ recDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: Every custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via recDatFun. */ }
+
+								<span className='holiday-recur'>&middot; every year</span>{ /* What: Holiday Recur Span Element. Why: A custom holiday recurs annually, and that is not otherwise obvious from the date label alone. How: This renders a fixed "every year" note. */ }
+
+
+							</span>
+
+
+						</div>
+
+						<button
+							className='item-del'
+
+							aria-label={ `Remove ${ cusCurObj.name }` }
+
+							onClick={ () => rmvExiFun( cusCurObj.id ) }
+						>{ /* What: Custom Holiday Delete Button Element. Why: A user-added holiday needs its own way to be removed entirely, unlike a computed one which can only be disabled. How: This calls rmvExiFun with this row's own id when clicked. */ }
+
+
+							<IcoSvgCom
+								icoNamStr='traEle'
+								sizValNum={ 14 }
+							/>{ /* What: Icon Svg Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed small size. */ }
+
+
+						</button>
+
+
+					</li>
+
+
+				) ) }
+
+
+			</ul>
+
+
+
+			<div className='holiday-add'>{ /* What: Holiday Add Div Element. Why: Adding a custom holiday needs its own small form beneath the list. How: This wraps the name input, date input, and Add button. */ }
+
+
+				<input
+					className='np-input np-input--sm'
+
+					autoComplete='off'
+					placeholder='Add a holiday, e.g. Birthday'
+					type='text'
+					value={ draNamStr }
+
+					aria-label='Name of the day off to add'
+
+					onChange={ ( chaEveObj ) => setDraNamStr( chaEveObj.target.value ) }
+					onKeyDown={ ( keyEveObj ) => { // What: Name Key Down Handler. Why: The name field needs keyboard shortcuts for submitting and backing out. How: This submits on Enter and blurs on Escape.
+
+
+						if ( keyEveObj.key === 'Enter' ) addCusFun(); // What: Enter Submit Branch. Why: Enter should submit the typed name the same way clicking Add would. How: This calls addCusFun.
+
+						else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); // What: Escape Blur Branch. Why: Escape should back out of the field without submitting, matching every other text input in this tab. How: This blurs the input via keyEveObj.currentTarget.
+
+
+					} }
+				/>{ /* What: Draft Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape like every other text input in this tab. */ }
+
+				<input
+					className='np-input np-input--sm holiday-date-input'
+
+					type='date'
+					value={ draDatStr }
+
+					aria-label='Date'
+
+					onChange={ ( chaEveObj ) => setDraDatStr( chaEveObj.target.value ) }
+					onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
+				/>{ /* What: Draft Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like every other input in this tab. */ }
+
+
+
+				<ButBasCom
+					disabled={ !draNamStr.trim() || !draDatStr }
+					icoNamStr='pluEle'
+					kinValStr='primary'
+					sizValStr='sm'
+
+					onClick={ addCusFun }
+				>Add</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit submit action, disabled until both drafts are filled. How: This calls addCusFun when clicked. */ }
+
+
+			</div>
+
+
+		</React.Fragment>
+
+
+	);
+
+
+}
+
+// #endregion HolEdiCom
+
+
+
+// #region StyRadCom
+
+/**
+ * StyRadCom = Style Radio Component
+ *
+ * @summary
+ * A named-style radio list (used for both the Picker animation and
+ * Completion celebration pickers), reusing the exact same full-bleed
+ * radio rows the Data tab's picker-mode selector uses (a dot, a name,
+ * and a hint that expands only on the selected row), so Appearance's
+ * style pickers look and behave consistently with the rest of the app
+ * rather than introducing a new control pattern.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.groLabStr   - Group Label String: The group's own accessible
+ *                            name, applied to a visually-hidden legend since
+ *                            the section's real heading, just above and
+ *                            outside this component, already shows the same
+ *                            text.
+ * @param props.groNamStr   - Group Name String: The native radio group's own
+ *                            `name` attribute, keeping its rows mutually
+ *                            exclusive.
+ * @param props.onChange    - On Change: Selects a new option; the exact
+ *                            standard name, left as-is.
+ * @param props.onPreStyFun - On Preview Style Function: Plays a live preview
+ *                            of one option's own style; omit to hide every
+ *                            row's own Preview button entirely.
+ * @param props.radOptArr   - Radio Option Array: The list of { valStr,
+ *                            labStr, hinStr } options to render, one row
+ *                            each.
+ * @param props.value       - Value: The currently-selected option's own
+ *                            value.
+ *
+ * @returns A fieldset wrapping one radio row per entry in radOptArr,
+ * each with an optional Preview button.
+ *
+ * @example
+ * ```tsx
+ * StyRadCom({ groLabStr, groNamStr, ... }) // => <StyRadCom />
+ * ```
+ *
+*/
+
+function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, value } ) {
+
+
+	return (
+
+
+		<fieldset className='style-radio-fieldset'>{ /* What: Style Radio Fieldset Element. Why: A native radio group needs a real fieldset/legend pairing for assistive tech, even though the legend itself stays visually hidden. How: This wraps the visually-hidden legend and the radio rows below. */ }{ /* A dedicated wrapper fieldset (rather than making .rd-mode-radio itself a fieldset) since that class is shared with the Data tab's picker-mode list, which renders it as a plain div nested inside its own fieldset, so this reset is scoped to just this usage. The legend is visually hidden, since the section's own visible heading (just above, outside this CarSurCom) already shows this same text, and a visible legend here would just duplicate it right above the radio rows. */ }
+
+
+			<legend className='visually-hidden'>{ groLabStr }</legend>{ /* What: Style Radio Legend Element. Why: The group still needs a real accessible name, even with no visible legend text. How: This renders groLabStr, hidden visually but still exposed to assistive tech. */ }
+
+			<div className='rd-mode-radio'>{ /* What: Radio Mode Div Element. Why: The actual rows need their own shared layout wrapper, reused from the Data tab's own picker-mode selector. How: This maps radOptArr into one label/row per option. */ }
+
+
+				{ radOptArr.map( ( optCurObj ) => { // What: Radio Option Map. Why: One full-bleed row is needed per entry in radOptArr. How: This maps radOptArr, deriving each row's own selected state before rendering it.
+
+
+					const optSelBoo = optCurObj.valStr === value; // What: Option Selected Boolean. Why: A row's own selected style and its hint's expanded state both depend on whether this is the currently-chosen option. How: This is true only when this option's own value matches the selected value.
+
+
+
+					return (
+
+
+						<label
+							key={ optCurObj.valStr }
+
+							className={ ` rd-mode-opt   ${ optSelBoo ? 'is-on' : '' } ` }
+						>{ /* What: Radio Mode Opt Label Element. Why: The native radio input, the dot, and the name/hint text all need to sit inside one clickable label. How: This wraps the hidden radio input, the visual dot, the name/hint block, and (optionally) a Preview button. */ }
+
+
+							<input
+								name={ groNamStr }
+
+								checked={ optSelBoo }
+								type='radio'
+
+								onChange={ () => onChange( optCurObj.valStr ) }
+							/>{ /* What: Radio Option Input Element. Why: This is the actual native control backing the row's own selected state. How: This is checked while optSelBoo is true and selects this option's value on change. */ }
+
+							<span
+								className='rd-mode-dot'
+
+								aria-hidden='true'
+							></span>{ /* What: Radio Mode Dot Span Element. Why: The visual selected/unselected indicator is a styled dot, not the native radio's own default appearance. How: This is purely decorative, styled via CSS off the parent label's own 'is-on' class. */ }
+
+
+
+							<span className='rd-mode-text'>{ /* What: Radio Mode Text Span Element. Why: The option's own name and its expanding hint need their own grouping. How: This wraps the name span and the always-mounted hint collapse below. */ }
+
+
+								<span className='rd-mode-name'>{ optCurObj.labStr }</span>{ /* What: Radio Mode Name Span Element. Why: Every row needs its own visible option name. How: This renders optCurObj's own labStr. */ }
+
+
+								<div className={ ` collapse   ${ optSelBoo ? 'is-open' : '' } ` }>{ /* What: Collapse Div Element. Why: The hint text needs to expand/collapse in place without ever unmounting, so its own height transition can actually animate. How: This toggles its own 'is-open' class based on optSelBoo, driving a CSS grid-template-rows transition. */ }{ /* Always-mounted collapse (not <ColDisCom>, which unmounts the hint on deselect, since a freshly-inserted node can't transition its own grid-template-rows and the height would snap). Keeping it mounted lets the 0fr<->1fr glide run every time. */ }
+
+
+									<div className='collapse-inner'>{ /* What: Collapse Inner Div Element. Why: The CSS grid-row transition needs an inner wrapper to measure/clip against. How: This wraps the hint span inside the collapsing region. */ }
+
+
+										<span className='rd-mode-hint'>{ optCurObj.hinStr }</span>{ /* What: Radio Mode Hint Span Element. Why: Every row needs its own explanatory hint, shown only while selected. How: This renders optCurObj's own hinStr. */ }
+
+
+									</div>
+
+
+								</div>
+
+
+							</span>
+
+
+
+							{ onPreStyFun && ( // What: Preview Button Check. Why: Not every caller wants a Preview button on each row. How: This renders the button only while the caller actually passed an onPreStyFun handler.
+
+
+								<button
+									className='style-preview-btn'
+
+									type='button'
+
+									onClick={ ( cliEveObj ) => { // What: Preview Click Handler. Why: Pressing Preview must play the style without also selecting the radio row it sits inside. How: This cancels the click's own default label behavior, then plays the preview.
+
+
+										cliEveObj.preventDefault(); // What: Default Prevention Call. Why: A click inside the label would otherwise also toggle the radio itself. How: This cancels the click's own default action.
+
+										onPreStyFun( optCurObj.valStr ); // What: Style Preview Call. Why: This is the actual preview trigger. How: This calls onPreStyFun with this option's own valStr.
+
+
+									} }
+								>Preview</button> // What: Style Preview Button Element. Why: This is the actual control that plays a live preview of this specific option's own style. How: This prevents the click from also toggling the radio itself, then calls onPreStyFun with this option's own value.
+
+
+							) }
+
+
+						</label>
+
+
+					);
+
+
+				} ) }
+
+
+			</div>
+
+
+		</fieldset>
+
+
+	);
+
+
+}
+
+// #endregion StyRadCom
+
+
+
 // #region Theme Picker Interface
 
 /**
@@ -1000,11 +1339,144 @@ function ConSupCom () {
 
 
 
-const LIG_THE_ARR = [ 'ink', 'sage', 'sand' ]; // What: Light Theme Array. Why: This is the fixed set of built-in light-based theme keys the Light card renders one row per. How: This is mapped in TheSecCom's own Light card.
+// #region TheCusCom
+
+/**
+ * TheCusCom = Theme Custom Component
+ *
+ * @summary
+ * The "Custom…" row, styled exactly like the preset rows (the same
+ * height, border-radius, and bottom-left name label) except its 3
+ * segments ARE live `<input type="color">` swatches (50% background /
+ * 30% accent / 20% text) rather than a static preview. Changing any
+ * swatch saves and activates immediately; clicking the name label
+ * activates without opening a color picker.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
+ * @param props.actTheBoo - Active Theme Boolean: Whether this specific custom
+ *                          theme is the currently active one.
+ * @param props.cusColObj - Custom Color Object: The user's own saved custom
+ *                          colors for this mode, or null before any have been
+ *                          set.
+ * @param props.darModBoo - Dark Mode Boolean: Whether this row belongs to the
+ *                          Dark card, for its own styling hook; omitted on the
+ *                          Light card.
+ * @param props.theModStr - Theme Mode String: Either 'light' or 'dark',
+ *                          selecting which of the 2 custom themes this row
+ *                          edits.
+ *
+ * @returns One theme-row div holding 3 live color inputs, a name input,
+ * and (while active) a checkmark.
+ *
+ * @example
+ * ```tsx
+ * TheCusCom({ actStoObj, actTheBoo, ... }) // => <TheCusCom />
+ * ```
+ *
+*/
+
+function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } ) {
+
+
+	const draColObj = cusColObj || ( darModBoo // What: Draft Color Object. Why: A row with no saved custom colors yet still needs sane starting values for its own 3 live swatches. How: This falls back to a fixed dark or light starting palette when cusColObj is null.
+		? { accent : '#7da4ff', bg : '#1e2230', text : '#f2f3f6' }    // What: Dark Starting Palette. Why: The Dark card's own custom row needs dark starting colors. How: This supplies a dark background with light text.
+		: { accent : '#3360a8', bg : '#fcfbf9', text : '#242629' } ); // What: Light Starting Palette. Why: The Light card's own custom row needs light starting colors. How: This supplies a light background with dark text.
+
+
+	const setColFun = ( colKeyStr, colValStr ) => actStoObj.setCusFun( theModStr, { ...draColObj, [ colKeyStr ] : colValStr } ); // What: Set Color Function. Why: Changing any one swatch must save the FULL custom color set back to the store, not just the one changed key. How: This spreads draColObj and overwrites just the one changed key before saving.
 
 
 
-const DAR_THE_ARR = [ 'night', 'moss', 'ember' ]; // What: Dark Theme Array. Why: This is the fixed set of built-in dark-based theme keys the Dark card renders one row per. How: This is mapped in TheSecCom's own Dark card.
+	return (
+
+
+		<div className={ ` theme-row   theme-row--custom   ${ actTheBoo ? 'is-on' : '' }   ${ darModBoo ? 'is-dark' : '' } ` }>{ /* What: Theme Row Div Element. Why: This is the whole custom-theme row, styled to match the preset rows above it. How: This renders 3 live color inputs, a name input, and (while active) a checkmark. */ }
+
+
+			<input
+				className='theme-custom-swatch'
+
+				style={{ flex : '1' }}
+
+				type='color'
+				value={ draColObj.bg }
+
+				aria-label='Custom background color'
+				title='Background'
+
+				onChange={ ( chaEveObj ) => setColFun( 'bg', chaEveObj.target.value ) }
+				onClick={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+			/>{ /* What: Background Swatch Input Element. Why: This is the live control for the custom theme's own background color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
+
+			<input
+				className='theme-custom-swatch'
+
+				style={{ flex : '0 0 34%' }}
+
+				type='color'
+				value={ draColObj.accent }
+
+				aria-label='Custom accent color'
+				title='Accent'
+
+				onChange={ ( chaEveObj ) => setColFun( 'accent', chaEveObj.target.value ) }
+				onClick={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+			/>{ /* What: Accent Swatch Input Element. Why: This is the live control for the custom theme's own accent color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
+
+			<input
+				className='theme-custom-swatch'
+
+				style={{ flex : '0 0 12%' }}
+
+				type='color'
+				value={ draColObj.text }
+
+				aria-label='Custom text color'
+				title='Text'
+
+				onChange={ ( chaEveObj ) => setColFun( 'text', chaEveObj.target.value ) }
+				onClick={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+			/>{ /* What: Text Swatch Input Element. Why: This is the live control for the custom theme's own text color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
+
+			<input
+				className='theme-custom-name'
+
+				maxLength={ 18 }
+				placeholder='Custom'
+				type='text'
+				value={ draColObj.name || '' }
+
+				aria-label={ `Name for your custom ${ theModStr === 'dark' ? 'dark' : 'light' } theme` }
+
+				onChange={ ( chaEveObj ) => actStoObj.renCusFun( theModStr, chaEveObj.target.value ) }
+				onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
+				onFocus={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
+			/>{ /* What: Custom Name Input Element. Why: A custom theme can carry its own user-chosen display name instead of a fixed preset name. How: This activates this custom theme on focus and saves the typed name via actStoObj.renCusFun on change, without also re-toggling the theme on every keystroke click. */ }
+
+			{ actTheBoo && ( // What: Active Checkmark Check. Why: A checkmark should only exist while this specific custom theme is the active one. How: This renders the checkmark span only while actTheBoo is true.
+
+
+				<span
+					className='theme-row-check'
+
+					aria-hidden='true'
+				>&#10003;</span> // What: Theme Row Check Span Element. Why: This is the actual checkmark glyph confirming the active theme. How: This renders a fixed checkmark character, hidden from screen readers since the row's own state already conveys this.
+
+
+			) }
+
+
+		</div>
+
+
+	);
+
+
+}
+
+// #endregion TheCusCom
 
 
 
@@ -1020,9 +1492,6 @@ const DAR_THE_ARR = [ 'night', 'moss', 'ember' ]; // What: Dark Theme Array. Why
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.thePalObj   - Theme Palette Object: The resolved palette to
- *                            preview, read from
- *                            APP_NAM_OBJ.PAL_SET_OBJ[theKeyStr].
  * @param props.actTheBoo   - Active Theme Boolean: Whether this specific
  *                            theme is the currently active one.
  * @param props.darModBoo   - Dark Mode Boolean: Whether this row belongs to
@@ -1030,18 +1499,21 @@ const DAR_THE_ARR = [ 'night', 'moss', 'ember' ]; // What: Dark Theme Array. Why
  * @param props.onActTheFun - On Activate Theme Function: Activates this theme
  *                            when the row itself is clicked or activated via
  *                            keyboard.
+ * @param props.thePalObj   - Theme Palette Object: The resolved palette to
+ *                            preview, read from
+ *                            APP_NAM_OBJ.PAL_SET_OBJ[theKeyStr].
  *
  * @returns One theme-row div, acting as a radio option within its own
  * card's implicit radio group.
  *
  * @example
  * ```tsx
- * TheRowCom({ thePalObj, actTheBoo, darModBoo, onActTheFun }) // => <TheRowCom />
+ * TheRowCom({ actTheBoo, darModBoo, ... }) // => <TheRowCom />
  * ```
  *
 */
 
-function TheRowCom ( { thePalObj, actTheBoo, darModBoo, onActTheFun } ) {
+function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } ) {
 
 
 	return (
@@ -1049,9 +1521,11 @@ function TheRowCom ( { thePalObj, actTheBoo, darModBoo, onActTheFun } ) {
 
 		<div
 			className={ ` theme-row   ${ actTheBoo ? 'is-on' : '' }   ${ darModBoo ? 'is-dark' : '' } ` }
-			role='radio'
+
 			aria-checked={ actTheBoo }
+			role='radio'
 			tabIndex={ 0 }
+
 			onClick={ onActTheFun }
 			onKeyDown={ ( keyEveObj ) => { // What: Row Key Down Handler. Why: A div acting as a radio option must also activate from the keyboard, the way a native radio would. How: This activates the theme on Enter or Space, preventing Space's own default page scroll.
 
@@ -1094,6 +1568,7 @@ function TheRowCom ( { thePalObj, actTheBoo, darModBoo, onActTheFun } ) {
 
 				<span
 					className='theme-row-check'
+
 					aria-hidden='true'
 				>&#10003;</span> // What: Theme Row Check Span Element. Why: This is the actual checkmark glyph confirming the active theme. How: This renders a fixed checkmark character, hidden from screen readers since aria-checked already conveys this.
 
@@ -1113,131 +1588,6 @@ function TheRowCom ( { thePalObj, actTheBoo, darModBoo, onActTheFun } ) {
 
 
 
-// #region TheCusCom
-
-/**
- * TheCusCom = Theme Custom Component
- *
- * @summary
- * The "Custom…" row, styled exactly like the preset rows (the same
- * height, border-radius, and bottom-left name label) except its 3
- * segments ARE live `<input type="color">` swatches (50% background /
- * 30% accent / 20% text) rather than a static preview. Changing any
- * swatch saves and activates immediately; clicking the name label
- * activates without opening a color picker.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.theModStr - Theme Mode String: Either 'light' or 'dark',
- *                          selecting which of the 2 custom themes this row
- *                          edits.
- * @param props.cusColObj - Custom Color Object: The user's own saved custom
- *                          colors for this mode, or null before any have been
- *                          set.
- * @param props.actTheBoo - Active Theme Boolean: Whether this specific custom
- *                          theme is the currently active one.
- * @param props.darModBoo - Dark Mode Boolean: Whether this row belongs to the
- *                          Dark card, for its own styling hook; omitted on the
- *                          Light card.
- * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
- *
- * @returns One theme-row div holding 3 live color inputs, a name input,
- * and (while active) a checkmark.
- *
- * @example
- * ```tsx
- * TheCusCom({ theModStr, cusColObj, actTheBoo, ... }) // => <TheCusCom />
- * ```
- *
-*/
-
-function TheCusCom ( { theModStr, cusColObj, actTheBoo, darModBoo, actStoObj } ) {
-
-
-	const draColObj = cusColObj || ( darModBoo // What: Draft Color Object. Why: A row with no saved custom colors yet still needs sane starting values for its own 3 live swatches. How: This falls back to a fixed dark or light starting palette when cusColObj is null.
-		? { accent : '#7da4ff', bg : '#1e2230', text : '#f2f3f6' }    // What: Dark Starting Palette. Why: The Dark card's own custom row needs dark starting colors. How: This supplies a dark background with light text.
-		: { accent : '#3360a8', bg : '#fcfbf9', text : '#242629' } ); // What: Light Starting Palette. Why: The Light card's own custom row needs light starting colors. How: This supplies a light background with dark text.
-
-
-	const setColFun = ( colKeyStr, colValStr ) => actStoObj.setCusFun( theModStr, { ...draColObj, [ colKeyStr ] : colValStr } ); // What: Set Color Function. Why: Changing any one swatch must save the FULL custom color set back to the store, not just the one changed key. How: This spreads draColObj and overwrites just the one changed key before saving.
-
-
-
-	return (
-
-
-		<div className={ ` theme-row   theme-row--custom   ${ actTheBoo ? 'is-on' : '' }   ${ darModBoo ? 'is-dark' : '' } ` }>{ /* What: Theme Row Div Element. Why: This is the whole custom-theme row, styled to match the preset rows above it. How: This renders 3 live color inputs, a name input, and (while active) a checkmark. */ }
-
-
-			<input
-				className='theme-custom-swatch'
-				style={{ flex : '1' }}
-				type='color'
-				value={ draColObj.bg }
-				title='Background'
-				aria-label='Custom background color'
-				onClick={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chaEveObj ) => setColFun( 'bg', chaEveObj.target.value ) }
-			/>{ /* What: Background Swatch Input Element. Why: This is the live control for the custom theme's own background color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
-
-			<input
-				className='theme-custom-swatch'
-				style={{ flex : '0 0 34%' }}
-				type='color'
-				value={ draColObj.accent }
-				title='Accent'
-				aria-label='Custom accent color'
-				onClick={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chaEveObj ) => setColFun( 'accent', chaEveObj.target.value ) }
-			/>{ /* What: Accent Swatch Input Element. Why: This is the live control for the custom theme's own accent color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
-
-			<input
-				className='theme-custom-swatch'
-				style={{ flex : '0 0 12%' }}
-				type='color'
-				value={ draColObj.text }
-				title='Text'
-				aria-label='Custom text color'
-				onClick={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chaEveObj ) => setColFun( 'text', chaEveObj.target.value ) }
-			/>{ /* What: Text Swatch Input Element. Why: This is the live control for the custom theme's own text color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
-
-			<input
-				className='theme-custom-name'
-				type='text'
-				placeholder='Custom'
-				value={ draColObj.name || '' }
-				maxLength={ 18 }
-				aria-label={ `Name for your custom ${ theModStr === 'dark' ? 'dark' : 'light' } theme` }
-				onFocus={ () => actStoObj.setTheFun( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chaEveObj ) => actStoObj.renCusFun( theModStr, chaEveObj.target.value ) }
-				onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
-			/>{ /* What: Custom Name Input Element. Why: A custom theme can carry its own user-chosen display name instead of a fixed preset name. How: This activates this custom theme on focus and saves the typed name via actStoObj.renCusFun on change, without also re-toggling the theme on every keystroke click. */ }
-
-			{ actTheBoo && ( // What: Active Checkmark Check. Why: A checkmark should only exist while this specific custom theme is the active one. How: This renders the checkmark span only while actTheBoo is true.
-
-
-				<span
-					className='theme-row-check'
-					aria-hidden='true'
-				>&#10003;</span> // What: Theme Row Check Span Element. Why: This is the actual checkmark glyph confirming the active theme. How: This renders a fixed checkmark character, hidden from screen readers since the row's own state already conveys this.
-
-
-			) }
-
-
-		</div>
-
-
-	);
-
-
-}
-
-// #endregion TheCusCom
-
-
-
 // #region TheSecCom
 
 /**
@@ -1250,22 +1600,22 @@ function TheCusCom ( { theModStr, cusColObj, actTheBoo, darModBoo, actStoObj } )
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.staAppObj - State App Object: {@link useAppStaFun}
  * @param props.actStoObj - Actions Store Object: {@link useAppStaFun}
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns Both theme cards, Light then Dark, as a fragment.
  *
  * @example
  * ```tsx
- * TheSecCom({ staAppObj, actStoObj }) // => <TheSecCom />
+ * TheSecCom({ actStoObj, staAppObj }) // => <TheSecCom />
  * ```
  *
 */
 
-function TheSecCom ( { staAppObj, actStoObj } ) {
+function TheSecCom ( { actStoObj, staAppObj } ) {
 
 
-	const appCurObj = staAppObj.appearance || { theme : 'ink', customLight : null, customDark : null }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes object when staAppObj.appearance is missing.
+	const appCurObj = staAppObj.appearance || { customDark : null, customLight : null, theme : 'ink' }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes object when staAppObj.appearance is missing.
 
 
 
@@ -1299,6 +1649,8 @@ function TheSecCom ( { staAppObj, actStoObj } ) {
 
 				</p>
 
+
+
 				<CarSurCom>{ /* What: Card Surface Component. Why: The 3 preset rows and the custom row need a shared bordered container, matching every other picker in this tab. How: This wraps LIG_THE_ARR's own mapped rows plus the trailing TheCusCom. */ }
 
 
@@ -1307,13 +1659,17 @@ function TheSecCom ( { staAppObj, actStoObj } ) {
 
 						<TheRowCom
 							key={ theKeyStr }
+
 							actTheBoo={ appCurObj.theme === theKeyStr }
 							thePalObj={ APP_NAM_OBJ.PAL_SET_OBJ[ theKeyStr ] }
+
 							onActTheFun={ () => actStoObj.setTheFun( theKeyStr ) }
 						/> // What: Theme Row Component. Why: This previews and activates one built-in light theme. How: This is passed its own palette, whether it is the active theme, and the activation callback.
 
 
 					) ) }
+
+
 
 					<TheCusCom
 						actStoObj={ actStoObj }
@@ -1352,6 +1708,8 @@ function TheSecCom ( { staAppObj, actStoObj } ) {
 
 				</p>
 
+
+
 				<CarSurCom>{ /* What: Card Surface Component. Why: The 3 preset rows and the custom row need a shared bordered container, matching the Light card above. How: This wraps DAR_THE_ARR's own mapped rows plus the trailing TheCusCom. */ }
 
 
@@ -1360,14 +1718,18 @@ function TheSecCom ( { staAppObj, actStoObj } ) {
 
 						<TheRowCom
 							key={ theKeyStr }
+
 							actTheBoo={ appCurObj.theme === theKeyStr }
 							darModBoo
 							thePalObj={ APP_NAM_OBJ.PAL_SET_OBJ[ theKeyStr ] }
+
 							onActTheFun={ () => actStoObj.setTheFun( theKeyStr ) }
 						/> // What: Theme Row Component. Why: This previews and activates one built-in dark theme. How: This is passed its own palette, whether it is the active theme, and the activation callback.
 
 
 					) ) }
+
+
 
 					<TheCusCom
 						actStoObj={ actStoObj }
@@ -1398,163 +1760,10 @@ function TheSecCom ( { staAppObj, actStoObj } ) {
 
 
 
-// #region StyRadCom
-
-/**
- * StyRadCom = Style Radio Component
- *
- * @summary
- * A named-style radio list (used for both the Picker animation and
- * Completion celebration pickers), reusing the exact same full-bleed
- * radio rows the Data tab's picker-mode selector uses (a dot, a name,
- * and a hint that expands only on the selected row), so Appearance's
- * style pickers look and behave consistently with the rest of the app
- * rather than introducing a new control pattern.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param props.groNamStr   - Group Name String: The native radio group's own
- *                            `name` attribute, keeping its rows mutually
- *                            exclusive.
- * @param props.groLabStr   - Group Label String: The group's own accessible
- *                            name, applied to a visually-hidden legend since
- *                            the section's real heading, just above and
- *                            outside this component, already shows the same
- *                            text.
- * @param props.radOptArr   - Radio Option Array: The list of { valStr,
- *                            labStr, hinStr } options to render, one row
- *                            each.
- * @param props.value       - Value: The currently-selected option's own
- *                            value.
- * @param props.onChange    - On Change: Selects a new option; the exact
- *                            standard name, left as-is.
- * @param props.onPreStyFun - On Preview Style Function: Plays a live preview
- *                            of one option's own style; omit to hide every
- *                            row's own Preview button entirely.
- *
- * @returns A fieldset wrapping one radio row per entry in radOptArr,
- * each with an optional Preview button.
- *
- * @example
- * ```tsx
- * StyRadCom({ groNamStr, groLabStr, radOptArr, value, onChange, onPreStyFun }) // => <StyRadCom />
- * ```
- *
-*/
-
-function StyRadCom ( { groNamStr, groLabStr, radOptArr, value, onChange, onPreStyFun } ) {
-
-
-	return (
-
-
-		<fieldset className='style-radio-fieldset'>{ /* What: Style Radio Fieldset Element. Why: A native radio group needs a real fieldset/legend pairing for assistive tech, even though the legend itself stays visually hidden. How: This wraps the visually-hidden legend and the radio rows below. */ }{ /* A dedicated wrapper fieldset (rather than making .rd-mode-radio itself a fieldset) since that class is shared with the Data tab's picker-mode list, which renders it as a plain div nested inside its own fieldset, so this reset is scoped to just this usage. The legend is visually hidden, since the section's own visible heading (just above, outside this CarSurCom) already shows this same text, and a visible legend here would just duplicate it right above the radio rows. */ }
-
-
-			<legend className='visually-hidden'>{ groLabStr }</legend>{ /* What: Style Radio Legend Element. Why: The group still needs a real accessible name, even with no visible legend text. How: This renders groLabStr, hidden visually but still exposed to assistive tech. */ }
-
-			<div className='rd-mode-radio'>{ /* What: Radio Mode Div Element. Why: The actual rows need their own shared layout wrapper, reused from the Data tab's own picker-mode selector. How: This maps radOptArr into one label/row per option. */ }
-
-
-				{ radOptArr.map( ( optCurObj ) => { // What: Radio Option Map. Why: One full-bleed row is needed per entry in radOptArr. How: This maps radOptArr, deriving each row's own selected state before rendering it.
-
-
-					const optSelBoo = optCurObj.valStr === value; // What: Option Selected Boolean. Why: A row's own selected style and its hint's expanded state both depend on whether this is the currently-chosen option. How: This is true only when this option's own value matches the selected value.
-
-
-
-					return (
-
-
-						<label
-							key={ optCurObj.valStr }
-							className={ ` rd-mode-opt   ${ optSelBoo ? 'is-on' : '' } ` }
-						>{ /* What: Radio Mode Opt Label Element. Why: The native radio input, the dot, and the name/hint text all need to sit inside one clickable label. How: This wraps the hidden radio input, the visual dot, the name/hint block, and (optionally) a Preview button. */ }
-
-
-							<input
-								name={ groNamStr }
-								type='radio'
-								checked={ optSelBoo }
-								onChange={ () => onChange( optCurObj.valStr ) }
-							/>{ /* What: Radio Option Input Element. Why: This is the actual native control backing the row's own selected state. How: This is checked while optSelBoo is true and selects this option's value on change. */ }
-
-							<span
-								className='rd-mode-dot'
-								aria-hidden='true'
-							></span>{ /* What: Radio Mode Dot Span Element. Why: The visual selected/unselected indicator is a styled dot, not the native radio's own default appearance. How: This is purely decorative, styled via CSS off the parent label's own 'is-on' class. */ }
-
-							<span className='rd-mode-text'>{ /* What: Radio Mode Text Span Element. Why: The option's own name and its expanding hint need their own grouping. How: This wraps the name span and the always-mounted hint collapse below. */ }
-
-
-								<span className='rd-mode-name'>{ optCurObj.labStr }</span>{ /* What: Radio Mode Name Span Element. Why: Every row needs its own visible option name. How: This renders optCurObj's own labStr. */ }
-
-								<div className={ ` collapse   ${ optSelBoo ? 'is-open' : '' } ` }>{ /* What: Collapse Div Element. Why: The hint text needs to expand/collapse in place without ever unmounting, so its own height transition can actually animate. How: This toggles its own 'is-open' class based on optSelBoo, driving a CSS grid-template-rows transition. */ }{ /* Always-mounted collapse (not <ColDisCom>, which unmounts the hint on deselect, since a freshly-inserted node can't transition its own grid-template-rows and the height would snap). Keeping it mounted lets the 0fr<->1fr glide run every time. */ }
-
-
-									<div className='collapse-inner'>{ /* What: Collapse Inner Div Element. Why: The CSS grid-row transition needs an inner wrapper to measure/clip against. How: This wraps the hint span inside the collapsing region. */ }
-
-
-										<span className='rd-mode-hint'>{ optCurObj.hinStr }</span>{ /* What: Radio Mode Hint Span Element. Why: Every row needs its own explanatory hint, shown only while selected. How: This renders optCurObj's own hinStr. */ }
-
-
-									</div>
-
-
-								</div>
-
-
-							</span>
-
-							{ onPreStyFun && ( // What: Preview Button Check. Why: Not every caller wants a Preview button on each row. How: This renders the button only while the caller actually passed an onPreStyFun handler.
-
-
-								<button
-									className='style-preview-btn'
-									type='button'
-									onClick={ ( cliEveObj ) => { // What: Preview Click Handler. Why: Pressing Preview must play the style without also selecting the radio row it sits inside. How: This cancels the click's own default label behavior, then plays the preview.
-
-
-										cliEveObj.preventDefault(); // What: Default Prevention Call. Why: A click inside the label would otherwise also toggle the radio itself. How: This cancels the click's own default action.
-
-										onPreStyFun( optCurObj.valStr ); // What: Style Preview Call. Why: This is the actual preview trigger. How: This calls onPreStyFun with this option's own valStr.
-
-
-									} }
-								>Preview</button> // What: Style Preview Button Element. Why: This is the actual control that plays a live preview of this specific option's own style. How: This prevents the click from also toggling the radio itself, then calls onPreStyFun with this option's own value.
-
-
-							) }
-
-
-						</label>
-
-
-					);
-
-
-				} ) }
-
-
-			</div>
-
-
-		</fieldset>
-
-
-	);
-
-
-}
-
-// #endregion StyRadCom
-
-
-
 // #region TabSetCom
 
 /**
- * TabSetCom = Tab Settings
+ * TabSetCom = Tab Settings Component
  *
  * @summary
  * Renders the whole Settings tab: a left-hand section rail (scroll-spy
@@ -1567,27 +1776,27 @@ function StyRadCom ( { groNamStr, groLabStr, radOptArr, value, onChange, onPreSt
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  * @param props.actStoObj   - Actions Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
  * @param props.onNavTabFun - On Navigate Tab Function: Navigates to an
  *                            arbitrary tab by id.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns The tab's own header, the section rail, and every section's
  * content in the right-hand pane, plus the Legal modal.
  *
  * @example
  * ```tsx
- * TabSetCom({ staAppObj, actStoObj, onNavHomFun, onNavTabFun }) // => <TabSetCom />
+ * TabSetCom({ actStoObj, onNavHomFun, ... }) // => <TabSetCom />
  * ```
  *
 */
 
-function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
+function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
-	const appCurObj = staAppObj.appearance || { theme : 'ink', customLight : null, customDark : null, autoSystem : false }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes/no-auto-system object when staAppObj.appearance is missing.
+	const appCurObj = staAppObj.appearance || { autoSystem : false, customDark : null, customLight : null, theme : 'ink' }; // What: Appearance Current Object. Why: A very old/incomplete persisted state might not carry an appearance object at all. How: This falls back to a default ink/no-custom-themes/no-auto-system object when staAppObj.appearance is missing.
 
 
 
@@ -1595,17 +1804,47 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 
+	// #region Help Mode
+
 	const [ helModBoo, setHelModBoo ] = React.useState( false ); // What: Help Mode Boolean And Setter. Why: This whole tab needs one shared flag for whether help mode is currently active. How: This gates HelOveCom below and is toggled by the header's own HelButCom. // Help mode (see help-mode.jsx); every section here is static UI chrome, no data-dependent content, so unlike Pickers/Data/Stats no disposable sample data needs seeding.
 
 	const helExiFun = React.useCallback( () => setHelModBoo( false ), [] ); // What: Help Exit Function. Why: HelOveCom needs a stable callback to call when the user exits help mode from inside the overlay itself. How: This clears helModBoo; memoized with an empty dependency array since it only ever closes over a stable setter.
 
+	// #endregion Help Mode
 
+
+
+	// #region Style Previews
 
 	const [ celTokNum, setCelTokNum ] = React.useState( 0 );          // What: Celebration Token Number And Setter. Why: CelPreCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaCelFun and passed straight through as CelPreCom's own repTokNum prop. // Appearance preview stages: bumping a token replays; celStyStr/picPreStr hold which style is currently showing (null = idle, selector visible).
 	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' ); // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plaCelFun and passed straight through as CelPreCom's own styKeyStr prop.
 	const [ picTokNum, setPicTokNum ] = React.useState( 0 );          // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plaPicFun and passed straight through as PicAniCom's own repTokNum prop.
 	const [ picPreStr, setPicPreStr ] = React.useState( null );       // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plaPicFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
 
+
+	// #region plaCelFun
+
+	/**
+	 * plaCelFun = Play Celebration Function
+	 *
+	 * @summary
+	 * Plays a completion celebration style in its preview stage. It selects
+	 * newStyStr for the stage and bumps the replay token, which is what makes
+	 * CelPreCom play again even when the same style is previewed twice.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param newStyStr - New Style String: The celebration style to preview, e.g.
+	 *                    'confetti'.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * plaCelFun( 'confetti' ) // => void
+	 * ```
+	 *
+	*/
 
 	const plaCelFun = ( newStyStr ) => { // What: Play Celebration Function. Why: Pressing Preview on a celebration style option needs to both select and immediately replay that style. How: This sets celStyStr to newStyStr, then bumps celTokNum to trigger CelPreCom's own replay effect.
 
@@ -1616,6 +1855,32 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 	};
 
+	// #endregion plaCelFun
+
+
+	// #region plaPicFun
+
+	/**
+	 * plaPicFun = Play Pick Function
+	 *
+	 * @summary
+	 * Plays a picker animation style in its preview stage. It holds newStyStr as
+	 * the previewed style, which the stage keeps showing after the animation
+	 * ends, and bumps the replay token so PicAniCom remounts and plays again.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param newStyStr - New Style String: The picker animation style to preview,
+	 *                    e.g. 'reel'.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * plaPicFun( 'reel' ) // => void
+	 * ```
+	 *
+	*/
 
 	const plaPicFun = ( newStyStr ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount. // The strip runs ~2s. picPreStr keeps holding the previewed style after it ends (it never reverts to the selected style), so the stage keeps the previewed animation's final frame instead of snapping to another style.
 
@@ -1625,6 +1890,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 	};
+
+	// #endregion plaPicFun
+
+	// #endregion Style Previews
 
 
 
@@ -1882,6 +2151,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 
+	// #region Reduced Motion Note
+
 	const [ redMotBoo, setRedMotBoo ] = React.useState( () => !!( redMotFun && redMotFun() ) ); // What: Reduce Motion Boolean And Setter. Why: Both style-picker sections need to know live whether the OS currently prefers reduced motion. How: This starts from an immediate redMotFun() check, then is kept in sync by the effect below. // Both animation-choice sections are inert while the OS "reduce motion" setting is on: the app skips the pick reveal and the completion celebration entirely. The PREVIEWS still play on demand (pressing Play is explicit consent), so without this note the choice would look active when it isn't. Tracked live so the note appears/disappears if the OS setting changes mid-session.
 
 
@@ -1913,6 +2184,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 	) : null; // What: No Note Branch. Why: Nothing needs saying while motion is allowed. How: This returns null so the caller renders nothing.
+
+	// #endregion Reduced Motion Note
 
 
 
@@ -2059,7 +2332,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 
-			return samDayBoo ? `today at ${ timLabStr }` : mirDatObj.toLocaleDateString( [], { month : 'short', day : 'numeric' } ) + ` at ${ timLabStr }`; // What: Formatted When Return. Why: This is the function's whole purpose, a friendly relative-or-absolute label. How: This returns "today at TIME" for a same-day timestamp, otherwise a short locale month/day date plus "at TIME".
+			return samDayBoo ? `today at ${ timLabStr }` : mirDatObj.toLocaleDateString( [], { day : 'numeric', month : 'short' } ) + ` at ${ timLabStr }`; // What: Formatted When Return. Why: This is the function's whole purpose, a friendly relative-or-absolute label. How: This returns "today at TIME" for a same-day timestamp, otherwise a short locale month/day date plus "at TIME".
 
 
 		}
@@ -2157,7 +2430,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 			setResLeaBoo( false ); // What: Reset Leaving Clear. Why: The confirm pair is gone, so nothing is leaving anymore. How: This flips resLeaBoo back to false.
 
 
-		}, 150 );
+		}, 150 ); // What: Leave Animation Delay. Why: The confirm pair must finish leaving before it unmounts. How: This 150ms matches the leave animation's duration.
 
 
 	};
@@ -2240,7 +2513,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 			setTimeout( () => URL.revokeObjectURL( expUrlStr ), 1000 ); // What: Object Url Revoke Timeout. Why: The temporary object URL must eventually be released, but not before the browser has had time to actually start the download. How: This revokes expUrlStr 1000ms after the click.
 
 
-		}, 220 );
+		}, 220 ); // What: Announcement Head Start. Why: The screen-reader announcement should land before the download steals focus. How: This waits 220ms before clicking the link.
 
 
 	};
@@ -2343,7 +2616,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 			setImpLeaBoo( false ); // What: Import Leaving Clear. Why: The confirm pair is gone, so nothing is leaving anymore. How: This flips impLeaBoo back to false.
 
 
-		}, 150 );
+		}, 150 ); // What: Leave Animation Delay. Why: The confirm pair must finish leaving before it unmounts. How: This 150ms matches the leave animation's duration.
 
 
 	};
@@ -2404,6 +2677,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 
+	// #region Row Summary Values
+
 	const picCouNum = ( staAppObj.pickers || [] ).length; // What: Picker Count Number. Why: The export row's own description names exactly how many pickers a backup would include. How: This reads the length of staAppObj.pickers, defaulting to an empty array.
 	const iteCouNum = ( staAppObj.items || [] ).length;   // What: Item Count Number. Why: The export row's own description names exactly how many items a backup would include. How: This reads the length of staAppObj.items, defaulting to an empty array.
 	const remCouNum = ( staAppObj.tasks || [] ).length;   // What: Reminder Count Number. Why: The export row's own description names exactly how many reminders a backup would include. How: This reads the length of staAppObj.tasks, defaulting to an empty array.
@@ -2411,6 +2686,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 	const daiModStr = ( staAppObj.daily && staAppObj.daily.mode ) || 'auto'; // What: Daily Mode String. Why: The Daily generator section's own copy and controls all branch on whether the generator runs automatically or manually. How: This reads staAppObj.daily's own mode, defaulting to 'auto'.
+
+	// #endregion Row Summary Values
 
 
 
@@ -2423,6 +2700,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 		<div
 			ref={ rooEleRef }
+
 			className='tab tab--settings'
 		>{ /* What: Tab Settings Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest '.main' ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
 
@@ -2430,8 +2708,11 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 			<HelOveCom
 				actModBoo={ helModBoo }
 				helIteArr={ SET_HEL_ARR }
+
 				onCloAllFun={ helExiFun }
 			/>{ /* What: Help Overlay Component. Why: This tab needs its own help-mode overlay, like every other tab. How: This is driven by helModBoo and SET_HEL_ARR. */ }
+
+
 
 			<header className='stat-h'>{ /* What: Stat H Header Element. Why: Every tab shares this same header shape: a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
 
@@ -2441,21 +2722,29 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					<div className='kicker stat-h-kicker'>Settings</div>{ /* What: Kicker Div Element. Why: Every tab's header names itself with this same small kicker label. How: This renders the fixed text "Settings". */ }
 
+
+
 					<HelButCom
 						actModBoo={ helModBoo }
+
 						onClick={ () => setHelModBoo( ( modCurBoo ) => !modCurBoo ) }
 					/>{ /* What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode. How: This flips helModBoo when clicked. */ }
 
 
 				</div>
 
+
+
 				<div className='stat-h-lead'>{ /* What: Stat H Lead Div Element. Why: The brand mark and the page title sit side by side in this same lead row on every tab. How: This wraps the brand-mark button and the section title. */ }
 
 
 					<button
 						className='brand-mark'
+
 						type='button'
+
 						aria-label='Ease My Life link to go to the Today page'
+
 						onClick={ onNavHomFun }
 					>{ /* What: Brand Mark Button Element. Why: The logo doubles as a shortcut back to the Today tab, same as every other header. How: This calls onNavHomFun when clicked. */ }
 
@@ -2463,6 +2752,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 						<svg
 							fill='none'
 							viewBox='8 8 528 528'
+
 							aria-hidden='true'
 						>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today + Stats + Data headers. */ }
 
@@ -2472,6 +2762,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<clipPath
 									id={ bmcIdeStr }
+
 									clipPathUnits='userSpaceOnUse'
 								>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, given a unique id so it can be referenced via url(#...). */ }
 
@@ -2490,8 +2781,6 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 							</defs>
-
-
 
 							<g
 								style={{
@@ -2520,8 +2809,6 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							</g>
 
-
-
 							<rect
 								style={{
 									stroke         : 'currentColor',
@@ -2529,6 +2816,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 									strokeLinejoin : 'round',
 									strokeWidth    : 16
 								}}
+
 								height='512'
 								rx='75'
 								ry='75'
@@ -2537,12 +2825,12 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 								y='16'
 							/>{ /* What: Badge Rect Element. Why: The logo needs a visible rounded-square border/badge behind the glyph. How: This draws the same rounded-square shape as the clip rect above, but stroked and visible instead of hidden in defs. */ }
 
-
 							<path
 								style={{
 									fill   : 'currentColor',
 									stroke : 'currentColor'
 								}}
+
 								clipPath={ `url(#${ bmcIdeStr })` }
 								d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'
 								strokeLinecap='round'
@@ -2556,6 +2844,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					</button>
 
+
 					<div className='section-h'>{ /* What: Section H Div Element. Why: The page title needs its own small wrapper, matching every other tab's header. How: This wraps the h1 title below. */ }
 
 
@@ -2567,25 +2856,34 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				</div>
 
+
+
 				<p className='section-sub'>All app-wide settings can be found here relating to the app's appearance, the Daily generator, holiday preferences, app data import, export, and deletion, user account, about and legal. All conditionals, reminders, pickers and their items' settings can be found in the <button className='sub-tablink' type='button' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Section Sub Paragraph Element. Why: Every tab's header ends with this same short intro paragraph. How: This renders the fixed intro copy, with a link to the Data tab via onNavTabFun. */ }
 
 
 			</header>
+
+
 
 			<div className='settings-layout'>{ /* What: Settings Layout Div Element. Why: The section rail and the right-hand pane need to sit side by side. How: This wraps the rail aside and the settings-sections div. */ }
 
 
 				<aside
 					ref={ raiEleRef }
+
 					className='settings-rail'
+
 					aria-label='Settings sections'
 				>{ /* What: Settings Rail Aside Element. Why: This is the sticky/scrollable rail of section links tracked by scroll-spy and driven by jumSecFun. How: This wraps the rail's own kicker and its scrolling <ul> of section links. */ }
 
 
 					<div className='kicker rail-kicker'>Sections</div>{ /* What: Kicker Div Element. Why: The rail needs its own small heading, matching the kicker style used elsewhere. How: This renders the fixed text "Sections". */ }
 
+
+
 					<div
 						ref={ raiScrRef }
+
 						className='settings-rail-scroll'
 					>{ /* What: Settings Rail Scroll Div Element. Why: The rail-fade effect needs a dedicated scrolling element distinct from the non-scrolling outer rail its classes are toggled on. How: This wraps the actual <ul> of section links. */ }{ /* Own scrolling element, separate from .settings-rail itself; see the fade-edge effect's own comment for why. */ }
 
@@ -2601,6 +2899,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<button
 										className={ ` rail-btn   ${ actSecStr === secConObj.ideStr ? 'is-on' : '' } ` }
+
 										onClick={ () => jumSecFun( secConObj.ideStr ) }
 									>{ /* What: Rail Btn Button Element. Why: This is the actual clickable control that jumps to and highlights this specific section. How: This calls jumSecFun with this section's own ideStr when clicked, and marks itself "is-on" while actSecStr matches. */ }
 
@@ -2625,11 +2924,14 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 				</aside>
 
+
+
 				<div className='settings-sections'>{ /* What: Settings Sections Div Element. Why: The right-hand pane holds every section's own real content, in the same fixed order as the rail. How: This renders one <section> per entry in SET_SEC_ARR, each registering itself into secMapRef via its own ref callback. */ }
 
 
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'appearance' ] = secCurEle; } }
+
 						className='set-section set-section--appearance'
 					>{ /* What: Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. */ }
 
@@ -2660,6 +2962,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<span
 											key={ String( !!appCurObj.autoSystem ) }
+
 											className='set-data-sub set-sub-fade'
 										>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the toggle's own state, and should fade between the 2 versions. How: This remounts (via its own boolean-string key) and renders one of 2 explanatory sentences depending on appCurObj.autoSystem. */ }
 
@@ -2686,8 +2989,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<button
 										className={ ` switch   ${ appCurObj.autoSystem ? 'is-on' : '' } ` }
-										aria-pressed={ !!appCurObj.autoSystem }
+
 										aria-label='System preference'
+										aria-pressed={ !!appCurObj.autoSystem }
+
 										onClick={ () => actStoObj.setSysFun( !appCurObj.autoSystem ) }
 									>{ /* What: System Pref Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actStoObj.setSysFun with the toggled value when clicked. */ }
 
@@ -2706,10 +3011,14 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						</div>
 
+
+
 						<TheSecCom
-							staAppObj={ staAppObj }
 							actStoObj={ actStoObj }
+							staAppObj={ staAppObj }
 						/>{ /* What: Theme Section Component. Why: The Light and Dark theme cards are substantial enough to live in their own component. How: This renders both cards, driven by the same shared state/actions this whole tab receives. */ }
+
+
 
 						<div className='set-subsection set-subsection--celebration'>{ /* What: Celebration Subsection Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. */ }
 
@@ -2722,30 +3031,34 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<CarSurCom
 								className='style-radio-card'
+
 								isaPadBoo={ false }
 							>{ /* What: Card Surface Component. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and CelPreCom together. */ }
 
 
 								<StyRadCom
-									groNamStr='completionStyle'
 									groLabStr='Completion celebration'
+									groNamStr='completionStyle'
 									radOptArr={ [ // What: Celebration Option Array. Why: The celebration picker needs one row per supported completion style. How: Each entry follows StyRadCom's own { valStr, labStr, hinStr } option shape.
 
 
-										{ valStr : 'confetti', labStr : 'Confetti', hinStr : 'A burst of accent-colored confetti drifts out across your cards.' }, // What: Confetti Option Object. Why: This is the default celebration style. How: This names and describes the confetti burst.
-										{ valStr : 'ripple',   labStr : 'Ripple',   hinStr : 'The progress ring ripples, and each card exhales in turn.' },        // What: Ripple Option Object. Why: This is a quieter alternative to confetti. How: This names and describes the ring ripple.
-										{ valStr : 'sparkle',  labStr : 'Sparkle',  hinStr : 'Soft accent-colored sparkles twinkle briefly across your cards.' }   // What: Sparkle Option Object. Why: This is a softer alternative to confetti. How: This names and describes the sparkle twinkle.
+										{ labStr : 'Confetti', valStr : 'confetti', hinStr : 'A burst of accent-colored confetti drifts out across your cards.' }, // What: Confetti Option Object. Why: This is the default celebration style. How: This names and describes the confetti burst.
+										{ labStr : 'Ripple',   valStr : 'ripple',   hinStr : 'The progress ring ripples, and each card exhales in turn.' },        // What: Ripple Option Object. Why: This is a quieter alternative to confetti. How: This names and describes the ring ripple.
+										{ labStr : 'Sparkle',  valStr : 'sparkle',  hinStr : 'Soft accent-colored sparkles twinkle briefly across your cards.' }   // What: Sparkle Option Object. Why: This is a softer alternative to confetti. How: This names and describes the sparkle twinkle.
 
 
 									] }
 									value={ ( staAppObj.appearance && staAppObj.appearance.completionStyle ) || 'confetti' }
+
 									onChange={ actStoObj.setCelFun }
 									onPreStyFun={ plaCelFun }
 								/>{ /* What: Style Radio Component. Why: This is the actual celebration-style picker. How: This is bound to the persisted completionStyle, saving via actStoObj.setCelFun and previewing via plaCelFun. */ }
 
+
+
 								<CelPreCom
-									styKeyStr={ celStyStr }
 									repTokNum={ celTokNum }
+									styKeyStr={ celStyStr }
 								/>{ /* What: Celebration Preview Component. Why: The user should be able to actually watch each celebration style before committing to it. How: This plays celStyStr, replaying every time celTokNum bumps. */ }
 
 
@@ -2765,23 +3078,25 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							<CarSurCom
 								className='style-radio-card'
+
 								isaPadBoo={ false }
 							>{ /* What: Card Surface Component. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and PicAniCom together. */ }
 
 
 								<StyRadCom
-									groNamStr='pickAnim'
 									groLabStr='Picker animation'
+									groNamStr='pickAnim'
 									radOptArr={ [ // What: Picker Animation Option Array. Why: The picker-animation picker needs one row per supported reveal style. How: Each entry follows StyRadCom's own { valStr, labStr, hinStr } option shape.
 
 
-										{ valStr : 'reel',      labStr : 'Reel',      hinStr : 'Candidates cycle past like a slot-machine reel before landing on the pick.' }, // What: Reel Option Object. Why: This is the default reveal style. How: This names and describes the slot-machine reel.
-										{ valStr : 'spotlight', labStr : 'Spotlight', hinStr : 'A spotlight sweeps across the candidates and settles on the pick.' },          // What: Spotlight Option Object. Why: This is an alternative reveal that keeps every candidate in view. How: This names and describes the sweeping spotlight.
-										{ valStr : 'dissolve',  labStr : 'Dissolve',  hinStr : 'Candidates crossfade in place, dissolving into the final pick.' }              // What: Dissolve Option Object. Why: This is the calmest reveal style. How: This names and describes the in-place crossfade.
+										{ labStr : 'Reel',      valStr : 'reel',      hinStr : 'Candidates cycle past like a slot-machine reel before landing on the pick.' }, // What: Reel Option Object. Why: This is the default reveal style. How: This names and describes the slot-machine reel.
+										{ labStr : 'Spotlight', valStr : 'spotlight', hinStr : 'A spotlight sweeps across the candidates and settles on the pick.' },          // What: Spotlight Option Object. Why: This is an alternative reveal that keeps every candidate in view. How: This names and describes the sweeping spotlight.
+										{ labStr : 'Dissolve',  valStr : 'dissolve',  hinStr : 'Candidates crossfade in place, dissolving into the final pick.' }              // What: Dissolve Option Object. Why: This is the calmest reveal style. How: This names and describes the in-place crossfade.
 
 
 									] }
 									value={ ( staAppObj.appearance && staAppObj.appearance.pickAnim ) || 'reel' }
+
 									onChange={ ( newValStr ) => { // What: Picker Animation Change Handler. Why: Choosing a new style must also drop any stale preview, so the stage shows the newly selected style. How: This clears picPreStr, then saves the new style.
 
 
@@ -2794,9 +3109,11 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 									onPreStyFun={ plaPicFun }
 								/>{ /* What: Style Radio Component. Why: This is the actual picker-animation style picker. How: This is bound to the persisted pickAnim, saving via actStoObj.setAniFun (clearing any stale preview first) and previewing via plaPicFun. */ }
 
+
+
 								<PicAniCom
-									styKeyStr={ picPreStr || ( staAppObj.appearance && staAppObj.appearance.pickAnim ) || 'reel' }
 									repTokNum={ picTokNum }
+									styKeyStr={ picPreStr || ( staAppObj.appearance && staAppObj.appearance.pickAnim ) || 'reel' }
 								/>{ /* What: Picker Animation Component. Why: The user should be able to actually watch each picker-animation style before committing to it. How: This plays picPreStr while a preview is active, otherwise the selected pickAnim, replaying every time picTokNum bumps. */ }
 
 
@@ -2813,6 +3130,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 							<p className='settings-sub'>Pick where the app&rsquo;s main navigation links should be located.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the placement control. */ }
 
 
+
 							<CarSurCom>{ /* What: Card Surface Component. Why: The placement row needs the same bordered container as every other row in this tab. How: This wraps the placement row below. */ }
 
 
@@ -2826,6 +3144,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<span
 											key={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' }
+
 											className='set-data-sub set-sub-fade set-layout-sub'
 										>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. */ }
 
@@ -2856,7 +3175,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									</div>
 
+
+
 									<SegConCom
+										ariLabStr='Tab bar placement'
 										optIteArr={ [ // What: Placement Option Array. Why: The segmented control needs one button per supported tab-bar placement. How: Each entry's own keyStr is compared against the current tabPlacement and written back on selection, while its labStr is the button's own visible text.
 
 
@@ -2867,7 +3189,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										] }
 										value={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' }
-										ariLabStr='Tab bar placement'
+
 										onChange={ actStoObj.setPlaFun }
 									/>{ /* What: Segment Control Component. Why: This is the actual 3-way exclusive control for the tab-bar placement. How: This is bound to the persisted tabPlacement, saving via actStoObj.setPlaFun. */ }
 
@@ -2883,8 +3205,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					</section>
 
+
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'daily' ] = secCurEle; } }
+
 						className='set-section set-section--daily'
 					>{ /* What: Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. */ }
 
@@ -2899,6 +3223,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						<p className='settings-sub'>The Daily generator can always be run manually from the Today page regardless of this setting. Which pickers are included in the Daily generator can be found with their own settings in the Data page.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for the Daily generator. */ }
 
+
+
 						<CarSurCom>{ /* What: Card Surface Component. Why: The auto-run toggle, its run-time row, and the notify-me row all share one bordered container. How: This wraps all 3 rows below. */ }
 
 
@@ -2912,6 +3238,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<span
 										key={ daiModStr + ( staAppObj.daily && staAppObj.daily.runTime ) }
+
 										className='set-data-sub set-sub-fade'
 									>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the mode and run time, and should fade between versions. How: This remounts (via its own mode+time key) and renders one of 2 explanatory sentences depending on daiModStr. */ }
 
@@ -2938,8 +3265,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<button
 									className={ ` switch   ${ daiModStr === 'auto' ? 'is-on' : '' } ` }
-									aria-pressed={ daiModStr === 'auto' }
+
 									aria-label='Run the Daily generator automatically'
+									aria-pressed={ daiModStr === 'auto' }
+
 									onClick={ () => actStoObj.daiModFun( daiModStr === 'auto' ? 'manual' : 'auto' ) }
 								>{ /* What: Auto Run Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. */ }
 
@@ -2952,6 +3281,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							</div>
 
+
 							<div className={ ` set-data-row   set-data-row--sub   ${ daiModStr === 'auto' ? '' : 'is-disabled' } ` }>{ /* What: Run Time Row Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. */ }
 
 
@@ -2962,6 +3292,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<span
 										key={ daiModStr }
+
 										className='set-data-sub set-sub-fade'
 									>{ /* What: Set Data Sub Span Element. Why: This row's own description changes meaning based on the mode, and should fade between versions. How: This remounts (via its own mode key) and renders one of 2 explanatory sentences depending on daiModStr. */ }
 
@@ -2975,17 +3306,21 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 								</div>
 
 								<input
-									type='time'
 									className='np-input set-time-input'
-									value={ ( staAppObj.daily && staAppObj.daily.runTime ) || '04:00' }
+
 									disabled={ daiModStr !== 'auto' }
+									type='time'
+									value={ ( staAppObj.daily && staAppObj.daily.runTime ) || '04:00' }
+
 									aria-label='Daily generator run time'
-									onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
+
 									onChange={ ( chaEveObj ) => onRunChaFun( chaEveObj.target.value ) }
+									onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
 								/>{ /* What: Run Time Input Element. Why: This is the actual control for the generator's own scheduled run time. How: This is bound to the persisted runTime, saving (and asking notification permission once) via onRunChaFun. */ }
 
 
 							</div>
+
 
 							{ daiModStr === 'auto' && notPerStr !== 'unsupported' && ( // What: Notify Row Visibility Check. Why: The notify-me row only makes sense while the generator actually runs automatically, and only in an environment that supports notifications at all. How: This renders the whole row only while both conditions hold.
 
@@ -3027,17 +3362,22 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									</div>
 
+
+
 									{ notPerStr === 'default' && ( // What: Enable Button Check. Why: An Enable button only makes sense while permission has not yet been decided either way. How: This renders the ButBasCom only while notPerStr is 'default'.
 
 
 										<ButBasCom
 											kinValStr='secondary'
 											sizValStr='sm'
+
 											onClick={ enaNotFun }
 										>Enable</ButBasCom> // What: Button Base Component. Why: This is the actual explicit request for notification permission. How: This calls enaNotFun when clicked.
 
 
 									) }
+
+
 
 									{ notPerStr === 'granted' && ( // What: Granted Chip Check. Why: A granted state deserves a small positive confirmation instead of an action button. How: This renders the chip only while notPerStr is 'granted'.
 
@@ -3067,8 +3407,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					</section>
 
+
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'holidays' ] = secCurEle; } }
+
 						className='set-section set-section--holidays'
 					>{ /* What: Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own CarSurCom. */ }
 
@@ -3083,12 +3425,14 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						<p className='settings-sub'>Any pickers that are set to &ldquo;Skip on holidays&rdquo; will not be run on the days that are toggled on here. Toggle off any that you don&rsquo;t observe, or even add your own! Dates shown are for { new Date().getFullYear() }.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Holidays, inlining the real current year. */ }
 
+
+
 						<CarSurCom>{ /* What: Card Surface Component. Why: The whole holiday list and its add-form need a shared bordered container. How: This wraps HolEdiCom. */ }
 
 
 							<HolEdiCom
-								staAppObj={ staAppObj }
 								actStoObj={ actStoObj }
+								staAppObj={ staAppObj }
 							/>{ /* What: Holiday Editor Component. Why: The holiday list and its add-form are substantial enough to live in their own component. How: This renders it, driven by the same shared state/actions this whole tab receives. */ }
 
 
@@ -3097,8 +3441,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					</section>
 
+
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'data' ] = secCurEle; } }
+
 						className='set-section set-section--data'
 					>{ /* What: Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset CarSurCom. */ }
 
@@ -3112,6 +3458,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 						</div>
 
 						<p className='settings-sub'>All of your data is stored locally, on this device to do with it as you will. Unfortunately, this also means that if you want to use this app on a different device then you will need to export your data here, and then use the import feature on the other device. Exporting your data is also a good way to backup your data, just in case something were to happen either to your device or to the browser and its stored data.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Data control. */ }
+
+
 
 						<CarSurCom>{ /* What: Card Surface Component. Why: The storage-status row, the platform-specific install notes, and the export/import/reset rows all share one bordered container. How: This wraps every row below. */ }
 
@@ -3144,7 +3492,6 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									</span>
 
-
 									<span className='set-store-facts'>{ /* What: Store Facts Span Element. Why: The protected/size/mirror facts, plus an install confirmation, need their own grouping as a row of small chips. How: This wraps 3 always-shown chips plus an installed chip while isaStaBoo is true. */ }
 
 
@@ -3170,6 +3517,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<span
 											className={ ` set-import-msg   ${ perMesObj.okaBoo ? 'is-ok' : 'is-err' } ` }
+
 											role='status'
 										>{ perMesObj.texStr }</span> // What: Persist Message Span Element. Why: This is the actual outcome text from the last Install/Protect Data attempt. How: This renders perMesObj's own text field, styled ok/err based on its own ok field.
 
@@ -3187,35 +3535,43 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<ButBasCom
 											className='set-install-btn'
+
+											icoNamStr='dowEle'
 											kinValStr='primary'
 											sizValStr='sm'
-											icoNamStr='dowEle'
+
 											onClick={ onInsAppFun }
 										>Install app</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for the native install prompt. How: This calls onInsAppFun when clicked.
 
 
 									) }
 
+
+
 									{ insStaStr === 'pending' && ( // What: Pending Install Button Check. Why: While it is not yet known whether an install prompt will become available, a disabled placeholder avoids a layout jump. How: This renders a disabled ButBasCom only while insStaStr is 'pending'.
 
 
 										<ButBasCom
+											disabled
+											icoNamStr='dowEle'
 											kinValStr='secondary'
 											sizValStr='sm'
-											icoNamStr='dowEle'
-											disabled
 										>Install app</ButBasCom> // What: Button Base Component. Why: This is a disabled placeholder shown only until install support is actually known one way or the other. How: This renders with no onClick at all, since it is always disabled.
 
 
 									) }
+
+
 
 									{ !( stoStaObj && stoStaObj.persisted ) && ( // What: Protect Data Button Check. Why: The Protect Data button only makes sense while persistence has not already been granted. How: This renders the ButBasCom only while stoStaObj reports persisted as falsy (or is not yet loaded).
 
 
 										<ButBasCom
 											className='set-protect-btn'
+
 											kinValStr='secondary'
 											sizValStr='sm'
+
 											onClick={ onProDatFun }
 										>Protect Data</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for the storage-persistence request. How: This calls onProDatFun when clicked.
 
@@ -3227,6 +3583,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 							</div>
+
 
 							{ insStaStr === 'installed' && ( // What: Already Installed Note Check. Why: A user viewing this in a plain browser tab, while an installed copy already exists, should be pointed at that installed copy instead. How: This renders the note only while insStaStr is 'installed'.
 
@@ -3250,6 +3607,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							) }
 
+
 							{ insStaStr === 'unsupported' && !iosInsBoo && !macInsBoo && ( // What: Unsupported Note Check. Why: A browser with no install prompt and no iOS/macOS-specific instructions still deserves guidance. How: This renders the note only while all 3 conditions hold.
 
 
@@ -3271,6 +3629,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 							) }
+
 
 							{ iosInsBoo && ( // What: iOS Install Note Check. Why: iOS/iPadOS need their own distinct install instructions and data-migration warning. How: This renders the note only while iosInsBoo is true.
 
@@ -3296,6 +3655,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							) }
 
+
 							{ macInsBoo && ( // What: Mac Install Note Check. Why: macOS Safari needs its own distinct install instructions and data-migration warning. How: This renders the note only while macInsBoo is true.
 
 
@@ -3320,6 +3680,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							) }
 
+
 							<div className='set-data-row set-export-row'>{ /* What: Export Row Div Element. Why: The export label/description and the Export button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Export control. */ }
 
 
@@ -3330,13 +3691,13 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<span className='set-data-sub'>Downloads a JSON file of everything, this includes <strong>{ picCouNum }</strong> pickers, <strong>{ iteCouNum }</strong> items, <strong>{ remCouNum }</strong> reminders and <strong>all app settings</strong>.</span>{ /* What: Set Data Sub Span Element. Why: The row's own description should say exactly what a backup would include right now. How: This renders the fixed description, inlining the live picCouNum/iteCouNum/remCouNum counts. */ }
 
-
 									{ expMesObj && ( // What: Export Message Check. Why: A message should only exist right after an actual export just happened. How: This renders the message span only while expMesObj holds a value.
 
 
 										<span
-											className='set-import-msg is-ok'
 											key={ expMesObj.timNum }
+
+											className='set-import-msg is-ok'
 										>Backup exported, including <strong>{ expMesObj.entNum }</strong> history { expMesObj.entNum === 1 ? 'entry' : 'entries' }.</span> // What: Export Message Span Element. Why: This is the actual confirmation text from the last export. How: This renders expMesObj's own entries count, pluralized correctly for exactly 1 entry.
 
 
@@ -3345,14 +3706,18 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								</div>
 
+
+
 								{ hasDatBoo ? ( // What: Has Data Check. Why: A working Export trigger only makes sense while there's actually something to export. How: This renders the working Export button while hasDatBoo is true, an explained disabled one otherwise.
 
 
 									<ButBasCom
 										ref={ expButRef }
+
+										icoNamStr='dowEle'
 										kinValStr='secondary'
 										sizValStr='sm'
-										icoNamStr='dowEle'
+
 										onClick={ expDatFun }
 									>Export</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for building and downloading the backup. How: This calls expDatFun when clicked.
 
@@ -3362,15 +3727,16 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<InfTipCom
 										className='set-disabled-btn'
+
 										labTexStr='There is no user data to export.'
 									>{ /* What: Info Tip Component. Why: A disabled Export button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled ButBasCom, shown only while hasDatBoo is false. */ }
 
 
 										<ButBasCom
+											disabled
+											icoNamStr='dowEle'
 											kinValStr='secondary'
 											sizValStr='sm'
-											icoNamStr='dowEle'
-											disabled
 										>Export</ButBasCom>{ /* What: Button Base Component. Why: This is the disabled Export button the tip explains. How: This renders with no onClick at all, since it is always disabled. */ }
 
 
@@ -3382,6 +3748,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 							</div>
 
+
 							<div className='set-data-row set-import-row'>{ /* What: Import Row Div Element. Why: The import label/description and the Import control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block, the hidden file input, and whichever of the trigger/confirm controls currently applies. */ }
 
 
@@ -3392,13 +3759,13 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<span className='set-data-sub'><strong>Replaces all data</strong> that is currently being stored by this app with a previously exported file.</span>{ /* What: Set Data Sub Span Element. Why: The destructive nature of import needs to be stated plainly up front. How: This renders the fixed description. */ }
 
-
 									{ penImpObj && ( // What: Pending Import Message Check. Why: A confirmation prompt should only exist while a backup is actually staged and awaiting confirmation. How: This renders the message span only while penImpObj holds a value.
 
 
 										<span
-											className='set-import-msg is-warn'
 											id='set-import-confirm-msg'
+
+											className='set-import-msg is-warn'
 										>Import <strong>{ penImpObj.namStr }</strong>? This <strong>replaces all data</strong> currently stored by this app.</span> // What: Pending Import Message Span Element. Why: This is the actual confirmation prompt, naming the staged file. How: This renders penImpObj's own name, and is referenced by the confirm button's own aria-describedby below.
 
 
@@ -3417,12 +3784,18 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<input
 									ref={ filInpRef }
+
 									style={{ display : 'none' }}
-									type='file'
+
 									accept='application/json,.json'
+									type='file'
+
 									aria-label='Import a backup file'
+
 									onChange={ onImpFilFun }
 								/>{ /* What: File Input Element. Why: A real, native file picker is required to choose a backup file; it stays hidden since the Import ButBasCom below is what the user actually sees. How: This is triggered indirectly via filInpRef.current.click() and handled by onImpFilFun. */ }
+
+
 
 								{ penImpObj ? ( // What: Pending Import Check. Why: A staged backup awaiting confirmation replaces the plain Import trigger with its own confirm pair. How: This renders the confirm pair while penImpObj holds a value, the plain trigger otherwise.
 
@@ -3432,15 +3805,21 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<ButBasCom
 											ref={ impConRef }
+
 											kinValStr='danger'
 											sizValStr='sm'
+
 											aria-describedby='set-import-confirm-msg'
+
 											onClick={ runImpFun }
 										>Import</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that replaces all data with the staged backup. How: This calls runImpFun when clicked. */ }
+
+
 
 										<ButBasCom
 											kinValStr='ghost'
 											sizValStr='sm'
+
 											onClick={ canImpFun }
 										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without importing. How: This calls canImpFun when clicked. */ }
 
@@ -3453,9 +3832,11 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<ButBasCom
 										ref={ impButRef }
+
+										icoNamStr='uplEle'
 										kinValStr='secondary'
 										sizValStr='sm'
-										icoNamStr='uplEle'
+
 										onClick={ () => filInpRef.current && filInpRef.current.click() }
 									>Import</ButBasCom> // What: Button Base Component. Why: This is the actual trigger that opens the native file picker. How: This calls the hidden file input's own click() when clicked.
 
@@ -3464,6 +3845,7 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 							</div>
+
 
 							<div className='set-data-row set-data-row--danger set-reset-row'>{ /* What: Reset Row Div Element. Why: The reset label/description and the Reset control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout, flagged as a dangerous action. How: This wraps the info block and whichever of the trigger/confirm/disabled controls currently applies. */ }
 
@@ -3474,18 +3856,20 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 									<span className='set-data-name'>Reset all data</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Reset all data". */ }
 
 									<span
-										className='set-data-sub'
 										id='set-reset-confirm-msg'
-									>Wipes everything and restores the app to a clean state. <strong>This can&rsquo;t be undone.</strong></span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
 
+										className='set-data-sub'
+									>Wipes everything and restores the app to a clean state. <strong>This can&rsquo;t be undone.</strong></span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
 
 									{ resMesStr && ( // What: Reset Message Check. Why: A message should only exist right after an actual reset just happened. How: This renders the message span only while resMesStr holds a value.
 
 
 										<span
-											className='set-import-msg is-ok'
-											role='status'
 											key={ resMesStr }
+
+											className='set-import-msg is-ok'
+
+											role='status'
 										>{ resMesStr }</span> // What: Reset Message Span Element. Why: This is the actual confirmation text from the last reset. How: This renders resMesStr directly.
 
 
@@ -3493,6 +3877,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 								</div>
+
+
 
 								{ conResBoo ? ( // What: Reset Confirm Check. Why: An in-progress reset confirmation replaces the trigger with its own Reset/Cancel pair. How: This renders the confirm pair while conResBoo is true.
 
@@ -3502,9 +3888,12 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 										<ButBasCom
 											ref={ resConRef }
+
 											kinValStr='danger'
 											sizValStr='sm'
+
 											aria-describedby='set-reset-confirm-msg'
+
 											onClick={ () => { // What: Reset Confirm Click Handler. Why: Confirming wipes every piece of data, so it also has to land the user somewhere sensible and report what happened. How: This navigates home, wipes the store, closes the confirm pair, and announces the outcome.
 
 
@@ -3524,9 +3913,12 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 											} }
 										>Reset</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes all data. How: This navigates home, resets the store, closes the confirm, and announces the outcome when clicked. */ }
 
+
+
 										<ButBasCom
 											kinValStr='ghost'
 											sizValStr='sm'
+
 											onClick={ cloResFun }
 										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without resetting. How: This calls cloResFun when clicked. */ }
 
@@ -3539,9 +3931,11 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<ButBasCom
 										ref={ resButRef }
+
+										icoNamStr='refEle'
 										kinValStr='danger'
 										sizValStr='sm'
-										icoNamStr='refEle'
+
 										onClick={ () => { // What: Reset Open Click Handler. Why: Pressing Reset should open the confirm pair without a stale message lingering beside it. How: This clears resMesStr, then opens the confirmation.
 
 
@@ -3559,15 +3953,16 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 									<InfTipCom
 										className='set-disabled-btn'
+
 										labTexStr='There is no user data to reset.'
 									>{ /* What: Info Tip Component. Why: A disabled Reset button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled ButBasCom, shown only while there is no data and no confirm pending. */ }
 
 
 										<ButBasCom
+											disabled
+											icoNamStr='refEle'
 											kinValStr='danger'
 											sizValStr='sm'
-											icoNamStr='refEle'
-											disabled
 										>Reset</ButBasCom>{ /* What: Button Base Component. Why: This is the disabled Reset button the tip explains. How: This renders with no onClick at all, since it is always disabled. */ }
 
 
@@ -3585,8 +3980,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					</section>
 
+
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'account' ] = secCurEle; } }
+
 						className='set-section set-section--account'
 					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the sync-placeholder CarSurCom. */ }
 
@@ -3600,6 +3997,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 						</div>
 
 						<p className='settings-sub'>Ease My Life runs entirely on this device, with no account required. Sign in to sync across devices is planned for a future release as a paid feature (one time fee only).</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Account. */ }
+
+
 
 						<CarSurCom>{ /* What: Card Surface Component. Why: The sync-placeholder row needs the same bordered container as every other row in this tab. How: This wraps the sync row below. */ }
 
@@ -3617,10 +4016,12 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								</div>
 
+
+
 								<ButBasCom
+									disabled
 									kinValStr='secondary'
 									sizValStr='sm'
-									disabled
 								>Coming Soon</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
 
 
@@ -3632,8 +4033,10 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 					</section>
 
+
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'about' ] = secCurEle; } }
+
 						className='set-section set-section--about'
 					>{ /* What: About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the support-the-project row, the replay-tour row, and ConSupCom. */ }
 
@@ -3649,6 +4052,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 						<p className='settings-sub'>Ease My Life is a labor of love for me. I have been using a version of this app on my own home server for years, and I have always wanted to turn it into a &ldquo;proper app&rdquo; that I could share with everyone else. I hope there are at least a few people out there that find it as useful as I do. You can find out more information about myself by visiting the link below to my personal website, including links to some of my other projects.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading, and About's own is a longer personal note. How: This renders the fixed first paragraph. */ }
 
 						<p className='settings-sub'>You will also find the link to this app&rsquo;s source code on GitHub. This is an open source project with an &ldquo;MIT + Non-Commercial&rdquo; Custom License which will allow anyone to freely fork and modify the project&rsquo;s source code, provided that attribution is included in your project and that you will not be selling the software or making money off it in any way. Please be responsible with the source code, because I am just one person maintaining the project in their free time trying to make a living. This is not some big company with vast resources trying to extract every dollar that they can.</p>{ /* What: Settings Sub Paragraph Element. Why: The license terms deserve their own separate paragraph from the personal note above. How: This renders the fixed second paragraph. */ }
+
+
 
 						<CarSurCom>{ /* What: Card Surface Component. Why: The app's own name, version, and creator/GitHub links need a shared bordered container. How: This wraps the set-about div below. */ }
 
@@ -3676,6 +4081,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						</CarSurCom>
 
+
+
 						<CarSurCom>{ /* What: Card Surface Component. Why: The "support the project" row needs the same bordered container as every other row in this tab. How: This wraps the support-project row below. */ }
 
 
@@ -3692,10 +4099,12 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								</div>
 
+
+
 								<ButBasCom
+									disabled
 									kinValStr='secondary'
 									sizValStr='sm'
-									disabled
 								>Buy Me a Coffee</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
 
 
@@ -3703,6 +4112,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 
 						</CarSurCom>
+
+
 
 						<CarSurCom>{ /* What: Card Surface Component. Why: The "replay the welcome tour" row needs the same bordered container as every other row in this tab. How: This wraps the replay-tour row below. */ }
 
@@ -3720,10 +4131,13 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								</div>
 
+
+
 								<ButBasCom
+									icoNamStr='refEle'
 									kinValStr='secondary'
 									sizValStr='sm'
-									icoNamStr='refEle'
+
 									onClick={ () => { // What: Replay Tour Click Handler. Why: Replaying the tour needs to start from the Today tab with the onboarding flags reset. How: This navigates home, then resets (and, for an established account, self-heals) the onboarding flags.
 
 
@@ -3758,14 +4172,19 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 						</CarSurCom>
 
+
+
 						<ConSupCom />{ /* What: Contact Support Component. Why: The support form is substantial enough to live in its own component. How: This renders it with no props, since it keeps all of its own state locally. */ }
 
 
 					</section>
 
+
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'legal' ] = secCurEle; } }
+
 						className='set-section set-section--legal'
+
 						style={{ minHeight : legMinNum }}
 					>{ /* What: Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the Privacy Policy/Terms of Service rows. */ }
 
@@ -3779,6 +4198,8 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 						</div>
 
 						<p className='settings-sub'>The documents below outline what you&rsquo;re agreeing to by using Ease My Life.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Legal. */ }
+
+
 
 						<CarSurCom>{ /* What: Card Surface Component. Why: Both document rows share one bordered container. How: This wraps the Privacy Policy row and the Terms of Service row. */ }
 
@@ -3798,12 +4219,15 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<button
 									className='btn btn--secondary btn--sm'
+
 									type='button'
+
 									onClick={ () => setLegDocStr( 'privacy' ) }
 								>View</button>{ /* What: Privacy View Button Element. Why: This is the actual trigger that opens the Privacy Policy inside LegModCom. How: This sets legDocStr to 'privacy' when clicked. */ }
 
 
 							</div>
+
 
 							<div className='set-data-row set-terms-row'>{ /* What: Terms Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
 
@@ -3820,7 +4244,9 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 								<button
 									className='btn btn--secondary btn--sm'
+
 									type='button'
+
 									onClick={ () => setLegDocStr( 'terms' ) }
 								>View</button>{ /* What: Terms View Button Element. Why: This is the actual trigger that opens the Terms of Service inside LegModCom. How: This sets legDocStr to 'terms' when clicked. */ }
 
@@ -3839,8 +4265,11 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 			</div>
 
+
+
 			<LegModCom
 				legDocStr={ legDocStr }
+
 				onCloModFun={ () => setLegDocStr( null ) }
 			/>{ /* What: Legal Modal Component. Why: Both Legal rows above need somewhere to actually show their own document text. How: This shows whichever document legDocStr names, or nothing while it is null, and clears it on close. */ }
 
@@ -3855,8 +4284,14 @@ function TabSetCom ( { staAppObj, actStoObj, onNavHomFun, onNavTabFun } ) {
 
 // #endregion TabSetCom
 
+// #endregion Components
 
+
+
+// #region Exports
 
 export { TabSetCom }; // What: Named Export. Why: app.jsx imports the Settings tab by this exact name. How: This exports TabSetCom; every other binding in this file is internal-only.
+
+// #endregion Exports
 
 
