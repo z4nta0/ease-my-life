@@ -28,6 +28,7 @@ import { sedPicFun    } from '../../help/sample-data.js';           // What: See
 import { sedTasFun    } from '../../help/sample-data.js';           // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
 import { sorEntFun    } from './list-sorting.js';                   // What: Sort Entries Function. Why: Sections and picker items share the app's own sort-key vocabulary. How: This is called once per comparison inside each list's own sort.
 import { SorSelCom    } from './sort-select.jsx';                   // What: Sort Select Component. Why: Every sortable list in this tab needs the same sort control. How: This is rendered for sections and each picker's own item list.
+import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
 
 // #endregion Imports
@@ -794,19 +795,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		const cleFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Every row needs its own independent wiring and its own independent teardown. How: This maps each row element to its own cleanup function, collected for the effect's own return below.
 
 
-			const updFadFun = () => { // What: Update Fade Function. Why: Each row's own fade classes need recomputing on every relevant change. How: This toggles at-start/at-end based on the row's own scrollWidth/clientWidth/scrollLeft.
-
-
-				const canScrBoo = rowCurEle.scrollWidth - rowCurEle.clientWidth > 1;                                       // What: Can Scroll Boolean. Why: A row that doesn't overflow at all should never show either fade edge. How: This is true only when the row's own content is wider than its own visible box by more than a rounding pixel.
-				const reaStaBoo = !canScrBoo || rowCurEle.scrollLeft <= 1;                                                 // What: Reached Start Boolean. Why: The left fade should hide once the row can't scroll at all or is already at its own start. How: This combines canScrBoo with the row's own current scrollLeft.
-				const reaEndBoo = !canScrBoo || rowCurEle.scrollLeft + rowCurEle.clientWidth >= rowCurEle.scrollWidth - 1; // What: Reached End Boolean. Why: The right fade should hide once the row can't scroll at all or is already at its own end. How: This combines canScrBoo with the row's own current scroll position.
-
-
-				rowCurEle.classList.toggle( 'at-start', reaStaBoo ); // What: At Start Toggle. Why: This is the actual class CSS reads to hide the left fade. How: This applies reaStaBoo.
-				rowCurEle.classList.toggle( 'at-end', reaEndBoo );   // What: At End Toggle. Why: This is the actual class CSS reads to hide the right fade. How: This applies reaEndBoo.
-
-
-			};
+			const updFadFun = () => togFadFun( rowCurEle ); // What: Update Fade Function. Why: Each row's own fade classes need recomputing on every relevant change. How: This calls togFadFun on rowCurEle.
 
 
 			updFadFun(); // What: Initial Fade Call. Why: The fade classes need to reflect this row's own real layout immediately. How: This invokes updFadFun once, synchronously.

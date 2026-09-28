@@ -18,6 +18,7 @@ import { norGroFun   } from '../../core/pickers.js';        // What: Normalize G
 import { ordSufFun   } from '../../utils/date.js';          // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { redMotFun   } from '../../utils/motion.js';        // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see PicConCom's own scroll or collapse animations. How: This is checked before each of those animations.
 import { SED_NAM_OBJ } from '../../state/seed.js';          // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in PicConCom for the mode radio group.
+import { togFadFun   } from '../../ui/edge-fade.js';        // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { WeeChiCom   } from '../../ui/weekday-chips.jsx';   // What: Weekday Chip Component. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
 
 
@@ -218,17 +219,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 
-		const updFadFun = () => { // What: Update Fade Function. Why: The rail's own edge-fade classes must reflect whether it can currently scroll, and how far. How: This toggles at-start/at-end based on the rail's own scrollWidth/clientWidth/scrollLeft.
-
-
-			const canScrBoo = raiCurEle.scrollWidth - raiCurEle.clientWidth > 1; // What: Can Scroll Boolean. Why: A rail that doesn't overflow at all should never show either fade edge. How: This is true only when the rail's own content is wider than its own visible box by more than a rounding pixel.
-
-
-			raiCurEle.classList.toggle( 'at-start', !canScrBoo || raiCurEle.scrollLeft <= 1 );                                               // What: At Start Toggle. Why: The left fade should hide once the rail can't scroll at all or is already at its own start. How: This applies the 'at-start' class per canScrBoo and the rail's own current scrollLeft.
-			raiCurEle.classList.toggle( 'at-end', !canScrBoo || raiCurEle.scrollLeft + raiCurEle.clientWidth >= raiCurEle.scrollWidth - 1 ); // What: At End Toggle. Why: The right fade should hide once the rail can't scroll at all or is already at its own end. How: This applies the 'at-end' class per canScrBoo and the rail's own current scroll position.
-
-
-		};
+		const updFadFun = () => togFadFun( raiCurEle ); // What: Update Fade Function. Why: The rail's own edge-fade classes must reflect whether it can currently scroll, and how far. How: This calls togFadFun on raiCurEle.
 
 
 		updFadFun(); // What: Initial Fade Call. Why: The fade classes need to reflect the rail's own real layout immediately on attach. How: This invokes updFadFun once, synchronously.
@@ -440,19 +431,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 
-		const updFadFun = () => { // What: Update Fade Function. Why: The fade classes need recomputing on every relevant change. How: This toggles at-start/at-end based on the row's own scrollWidth/clientWidth/scrollLeft.
-
-
-			const canScrBoo = groCurEle.scrollWidth - groCurEle.clientWidth > 1;                                       // What: Can Scroll Boolean. Why: A row that doesn't overflow at all should never show either fade edge. How: This is true only when the row's own content is wider than its own visible box by more than a rounding pixel.
-			const reaStaBoo = !canScrBoo || groCurEle.scrollLeft <= 1;                                                 // What: Reached Start Boolean. Why: The left fade should hide once the row can't scroll at all or is already at its own start. How: This combines canScrBoo with the row's own current scrollLeft.
-			const reaEndBoo = !canScrBoo || groCurEle.scrollLeft + groCurEle.clientWidth >= groCurEle.scrollWidth - 1; // What: Reached End Boolean. Why: The right fade should hide once the row can't scroll at all or is already at its own end. How: This combines canScrBoo with the row's own current scroll position.
-
-
-			groCurEle.classList.toggle( 'at-start', reaStaBoo ); // What: At Start Toggle. Why: This is the actual class CSS reads to hide the left fade. How: This applies reaStaBoo.
-			groCurEle.classList.toggle( 'at-end', reaEndBoo );   // What: At End Toggle. Why: This is the actual class CSS reads to hide the right fade. How: This applies reaEndBoo.
-
-
-		};
+		const updFadFun = () => togFadFun( groCurEle ); // What: Update Fade Function. Why: The fade classes need recomputing on every relevant change. How: This calls togFadFun on groCurEle.
 
 
 		updFadFun(); // What: Initial Fade Call. Why: The fade classes need to reflect the row's own real layout immediately on mount. How: This invokes updFadFun once, synchronously.
@@ -1286,24 +1265,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 										const curCadStr = picDatObj.cadence || 'daily';                                                                                                 // What: Current Cadence String. Why: Every branch below needs the picker's own resolved cadence. How: This reads picDatObj.cadence, defaulting to 'daily'.
 										const dayFulArr = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: The weekly/monthly/yearly branches below all need full weekday names. How: This is indexed by anchorDow/nthWeekday below.
 										const monFulArr = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; // What: Month Full Array. Why: The yearly branch below needs the full month name. How: This is indexed by anchorMonth below.
-
-
-										const ordSufFun = ( ordValNum ) => { // What: Ordinal Suffix Function. Why: Every date-based branch below needs its own day number spelled with the correct "1st/2nd/3rd/4th" suffix. How: This picks the matching suffix from ordSufArr, handling the 11th/12th/13th exception via the mod-100 remainder.
-
-
-											const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed by the mod-100 remainder below.
-											const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exceptions). How: This takes ordValNum mod 100.
-
-
-
-											return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the number with its own suffix attached. How: This tries the 20+ remainder rule first, then the teen/low-number lookup, falling back to 'th'.
-
-
-										};
-
-
-										const isaNthBoo = picDatObj.dateMode === 'nthWeekday';                     // What: Is-A Nth Boolean. Why: Monthly/yearly cadences can anchor either to a fixed date or to an "nth weekday", which read very differently. How: This checks picDatObj.dateMode.
-										const taiEndStr = ', and the pick will persist until marked as completed'; // What: Tail End String. Why: Every non-daily branch below ends with the same trailing clause. How: This is appended to each branch's own JSX below.
+										const isaNthBoo = picDatObj.dateMode === 'nthWeekday';                                                                                          // What: Is-A Nth Boolean. Why: Monthly/yearly cadences can anchor either to a fixed date or to an "nth weekday", which read very differently. How: This checks picDatObj.dateMode.
+										const taiEndStr = ', and the pick will persist until marked as completed';                                                                      // What: Tail End String. Why: Every non-daily branch below ends with the same trailing clause. How: This is appended to each branch's own JSX below.
 
 
 

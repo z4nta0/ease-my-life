@@ -19,6 +19,7 @@ import { SED_NAM_OBJ  } from '../../state/seed.js';           // What: Seed Name
 import { STA_HEL_ARR  } from '../../help/content.jsx';        // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';           // What: Tasks Namespace Object. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TAS_NAM_OBJ.norOptFun on the raw persisted reminderOpts.
 import { THR_VAL_NUM  } from '../../constants.js';            // What: Threshold Value Number. Why: Ease day-range math in this file divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
+import { togFadFun    } from '../../ui/edge-fade.js';         // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { unhHisFun    } from '../../state/sample-history.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
 import { useEmlTouFun } from '../../state/tour-bus.js';       // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
 
@@ -1125,19 +1126,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		const cleFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Each row needs its own scroll listener and ResizeObserver, and each needs its own matching teardown. How: This maps every row element to a function that removes that specific row's own listener and observer.
 
 
-			const updFadFun = () => { // What: Update Fade Function. Why: Both the initial state and every future scroll/resize need the same at-start/at-end recalculation. How: This measures whether the row can scroll at all, then toggles the at-start/at-end classes based on the current scroll position.
-
-
-				const canScrBoo = rowCurEle.scrollWidth - rowCurEle.clientWidth > 1;                                       // What: Can Scroll Boolean. Why: A row that already shows its full content has nothing to fade on either edge. How: This checks whether the row's own scrollable width meaningfully exceeds its visible width.
-				const staEdgBoo = !canScrBoo || rowCurEle.scrollLeft <= 1;                                                 // What: Start Edge Boolean. Why: The left/leading fade should hide once the row is scrolled to (or can't scroll away from) its start. How: This is true when the row can't scroll at all, or its scroll position is at or near zero.
-				const endEdgBoo = !canScrBoo || rowCurEle.scrollLeft + rowCurEle.clientWidth >= rowCurEle.scrollWidth - 1; // What: End Edge Boolean. Why: The right/trailing fade should hide once the row is scrolled to (or can't scroll away from) its end. How: This is true when the row can't scroll at all, or its visible window reaches the row's own full scrollable width.
-
-
-				rowCurEle.classList.toggle( 'at-start', staEdgBoo ); // What: At Start Toggle. Why: CSS reads this class to hide the leading fade gradient. How: This adds or removes 'at-start' based on staEdgBoo.
-				rowCurEle.classList.toggle( 'at-end', endEdgBoo );   // What: At End Toggle. Why: CSS reads this class to hide the trailing fade gradient. How: This adds or removes 'at-end' based on endEdgBoo.
-
-
-			};
+			const updFadFun = () => togFadFun( rowCurEle ); // What: Update Fade Function. Why: Both the initial state and every future scroll/resize need the same at-start/at-end recalculation. How: This calls togFadFun on rowCurEle.
 
 
 			updFadFun(); // What: Initial Fade Update Call. Why: The row's own fade state must be correct immediately on mount, not only after the first scroll/resize. How: This invokes updFadFun once, synchronously.

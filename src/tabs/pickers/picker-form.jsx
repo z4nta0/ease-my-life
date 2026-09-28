@@ -20,6 +20,7 @@ import { norConFun    } from '../../core/pickers.js';             // What: Norma
 import { norGroFun    } from '../../core/pickers.js';             // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
 import { redMotFun    } from '../../utils/motion.js';             // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
 import { SED_NAM_OBJ  } from '../../state/seed.js';               // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
+import { togFadFun    } from '../../ui/edge-fade.js';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';           // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { WeeChiCom    } from '../../ui/weekday-chips.jsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
 
@@ -303,18 +304,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		const updRaiFun = () => { // What: Update Rail Function. Why: The at-start/at-end edge-fade classes need recomputing every time the rail scrolls or resizes. How: This toggles both classes based on the rail's own current scroll position versus its scrollable width.
-
-
-			const canScrBoo = raiCurEle.scrollWidth - raiCurEle.clientWidth > 1; // What: Can Scroll Boolean. Why: A rail that doesn't actually overflow should just show both fades as "at rest" rather than neither. How: This compares the rail's own full content width against its visible width.
-
-
-			raiCurEle.classList.toggle( 'at-start', !canScrBoo || raiCurEle.scrollLeft <= 1 ); // What: At-Start Toggle Call. Why: The left edge fade should hide once the rail can't scroll left any further. How: This applies the class whenever the rail can't scroll at all, or is already scrolled to (near) its start.
-
-			raiCurEle.classList.toggle( 'at-end', !canScrBoo || raiCurEle.scrollLeft + raiCurEle.clientWidth >= raiCurEle.scrollWidth - 1 ); // What: At-End Toggle Call. Why: The right edge fade should hide once the rail can't scroll right any further. How: This applies the class whenever the rail can't scroll at all, or is already scrolled to (near) its end.
-
-
-		};
+		const updRaiFun = () => togFadFun( raiCurEle ); // What: Update Rail Function. Why: The at-start/at-end edge-fade classes need recomputing every time the rail scrolls or resizes. How: This calls togFadFun on raiCurEle.
 
 
 		updRaiFun(); // What: Initial Update Call. Why: The classes need to be correct immediately on mount, without waiting for a scroll or resize event. How: This invokes updRaiFun once, synchronously.

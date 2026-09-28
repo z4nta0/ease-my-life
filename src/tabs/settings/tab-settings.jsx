@@ -27,6 +27,7 @@ import { SET_HEL_ARR  } from '../../help/content.jsx';              // What: Set
 import { STG_NAM_OBJ  } from '../../state/storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own staRepFun()/reaPerFun() methods.
 import { StyRadCom    } from './style-radio.jsx';                   // What: Style Radio Component. Why: Appearance's Picker animation and Completion celebration pickers share one radio list. How: This is rendered twice in TabSetCom's Appearance section.
 import { TheSecCom    } from './theme-picker.jsx';                  // What: Theme Section Component. Why: Appearance's own Light and Dark theme cards live in their own file. How: This is rendered once in TabSetCom's Appearance section.
+import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
 // #endregion Imports
@@ -398,17 +399,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		const updFadFun = () => { // What: Update Fade Function. Why: This is the actual recomputation, re-run on scroll and on resize. How: This toggles 'at-start'/'at-end' on raiCurEle based on scrCurEle's own current scroll position.
-
-
-			const canScrBoo = scrCurEle.scrollWidth - scrCurEle.clientWidth > 1; // What: Can Scroll Boolean. Why: A bar that does not actually overflow should read as "at both edges" rather than showing either fade. How: This is true only when the scrollable width exceeds the visible width by more than a rounding hair.
-
-
-			raiCurEle.classList.toggle( 'at-start', !canScrBoo || scrCurEle.scrollLeft <= 1 );                                               // What: At Start Toggle. Why: The leading fade should hide once the bar cannot scroll further left. How: This applies whenever the bar can't scroll at all, or its own scrollLeft is already at (or within 1px of) 0.
-			raiCurEle.classList.toggle( 'at-end', !canScrBoo || scrCurEle.scrollLeft + scrCurEle.clientWidth >= scrCurEle.scrollWidth - 1 ); // What: At End Toggle. Why: The trailing fade should hide once the bar cannot scroll further right. How: This applies whenever the bar can't scroll at all, or its own scroll position has reached (or is within 1px of) its own scrollWidth.
-
-
-		};
+		const updFadFun = () => togFadFun( scrCurEle, raiCurEle ); // What: Update Fade Function. Why: This is the actual recomputation, re-run on scroll and on resize. How: This calls togFadFun on scrCurEle, putting the classes on raiCurEle.
 
 
 		updFadFun(); // What: Initial Fade Call. Why: The fade edges should already be correct on mount, without waiting for the first scroll/resize event. How: This invokes updFadFun once, synchronously.

@@ -46,6 +46,7 @@ import { RemTouCom    } from '../../onboarding/reminder-tours.jsx'; // What: Rem
 import { REO_NAM_OBJ  } from './reorder.js';                        // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside groDraFun/iteDraFun.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
 import { TOD_HEL_ARR  } from '../../help/content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
+import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 
 // #endregion Imports
@@ -1389,18 +1390,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const updEdgFun = () => { // What: Update Edges Function. Why: Both the scroll listener and the resize observer need this exact same recompute-and-toggle step. How: This computes staEdgBoo/endEdgBoo from raiCurEle's own scroll metrics and toggles both classes.
-
-
-			const staEdgBoo = raiCurEle.scrollLeft <= 1;                                                 // What: Start Edge Boolean. Why: The left edge fade should hide once the rail is scrolled essentially all the way to its own start. How: This checks scrollLeft against a 1px tolerance.
-			const endEdgBoo = raiCurEle.scrollLeft + raiCurEle.clientWidth >= raiCurEle.scrollWidth - 1; // What: End Edge Boolean. Why: The right edge fade should hide once the rail is scrolled essentially all the way to its own end. How: This checks the scrolled-plus-visible width against the rail's own full scrollWidth, with a 1px tolerance.
-
-
-			raiCurEle.classList.toggle( 'at-start', staEdgBoo ); // What: At-Start Class Toggle. Why: This is the actual CSS hook the mask gradient reads. How: This toggles the at-start class per staEdgBoo.
-			raiCurEle.classList.toggle( 'at-end', endEdgBoo );   // What: At-End Class Toggle. Why: This is the actual CSS hook the mask gradient reads for the opposite edge. How: This toggles the at-end class per endEdgBoo.
-
-
-		};
+		const updEdgFun = () => togFadFun( raiCurEle ); // What: Update Edges Function. Why: Both the scroll listener and the resize observer need this exact same recompute-and-toggle step. How: This calls togFadFun on raiCurEle.
 
 
 		updEdgFun(); // What: Initial Update Call. Why: The edge classes must be correct immediately on mount, without waiting for a scroll/resize event. How: This invokes updEdgFun once, synchronously.

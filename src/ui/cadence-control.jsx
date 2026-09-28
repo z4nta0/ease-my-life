@@ -6,6 +6,7 @@
 import { CAD_NAM_OBJ } from '../core/cadence.js';      // What: Cadence Namespace Object. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
 import { ColDisCom   } from './collapse.jsx';          // What: Collapse Disclosure Component. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
 import { InfTipCom   } from './info-tip.jsx';          // What: Info Tip Component. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
+import { ordSufFun   } from '../utils/date.js';        // What: Ordinal Suffix Function. Why: Every day-of-month, week-ordinal, and weekday-of-month summary needs the correct English ordinal. How: This is called with the day number.
 import { SegConCom   } from './segmented-control.jsx'; // What: Segment Control Component. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
 
 // #endregion Imports
@@ -168,47 +169,6 @@ const MON_FUL_ARR = [ 'January', 'February', 'March', 'April', 'May', 'June', 'J
 const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // What: Day Count Function. Why: The yearly subsection's day-of-month select always needs to allow day 29 for February, regardless of the real current year. How: This asks for day 0 of the month after monOneNum in a fixed leap year (2024), which JS's own Date resolves back to that month's own real last day.
 
 // #endregion dayCouFun
-
-
-
-// #region ordSufFun
-
-/**
- * ordSufFun = Ordinal Suffix Function
- *
- * @summary
- * Turns a plain number into its full English ordinal, the number itself
- * included, not just the suffix: 1 becomes '1st', 22 becomes '22nd', and
- * 11 through 13 correctly become '11th' through '13th'.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param ordValNum - Ordinal Value Number: The positive whole number to
- *                    suffix.
- *
- * @returns The number followed by its ordinal suffix.
- *
- * @example
- * ```ts
- * ordSufFun(22) // => '22nd'
- * ```
- *
-*/
-
-const ordSufFun = ( ordValNum ) => { // What: Ordinal Suffix Function. Why: Every day-of-month, week-ordinal, and weekday-of-month summary below needs the correct English ordinal suffix appended to a plain number. How: This picks the right suffix off ordValNum's own last two digits and returns the combined string.
-
-
-	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
-	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
-
-
-
-	return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTexArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
-
-
-};
-
-// #endregion ordSufFun
 
 // #endregion Helpers
 
