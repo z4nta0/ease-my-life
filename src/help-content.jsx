@@ -206,7 +206,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		mulBoo    : true,                                      // mulBoo is true because every conditional gets its own badge, not one for the whole list, since a user could be looking at any of them.
 		padYcoNum : 0,                                         // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), so the default 8px pad bled a highlight box into both neighboring rows above and below it.
 		selStr    : '.cnd-manager .rd-item > .rd-row',
-		titStr    : ( tarRecObj ) => `${ tarRecObj?.label || 'This' } Conditional` // titStr is a function because each row's own heading should read as "{its own name} Conditional" rather than one generic title shared by every conditional, falling back to "This Conditional" while labStr hasn't resolved a live name yet.
+		titStr    : ( tarRecObj ) => `${ tarRecObj?.labStr || 'This' } Conditional` // titStr is a function because each row's own heading should read as "{its own name} Conditional" rather than one generic title shared by every conditional, falling back to "This Conditional" while labStr hasn't resolved a live name yet.
 
 
 	},
@@ -657,7 +657,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		mulBoo    : true,                                            // mulBoo is true because every picker gets its own badge.
 		padYcoNum : 0,                                               // padYcoNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager; matters once a picker is expanded and .cat-body renders beneath it.
 		selStr    : '.data-list > .cat > .cat-h',
-		titStr    : ( tarRecObj ) => tarRecObj?.label ? `${ tarRecObj.label } Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
+		titStr    : ( tarRecObj ) => tarRecObj?.labStr ? `${ tarRecObj.labStr } Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
 
 
 	},
@@ -988,7 +988,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		selStr    : '.entry-editor .pie-ease-up-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelpTip) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1027,7 +1027,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		selStr    : '.entry-editor .pie-ease-down-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelpTip) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1352,7 +1352,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		selStr    : '.entry-editor .pie-ease-up-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelpTip) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1391,7 +1391,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		selStr    : '.entry-editor .pie-ease-down-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelpTip) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -3029,7 +3029,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		selStr    : '.entry-editor .pie-ease-up-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelpTip) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -3068,7 +3068,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		selStr    : '.entry-editor .pie-ease-down-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelpTip) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help-mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
