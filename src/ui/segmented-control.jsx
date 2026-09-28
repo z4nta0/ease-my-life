@@ -87,7 +87,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 
 
 
-		const butActEle = segCurEle.querySelector( '.seg-btn.is-on' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via a CSS query for the "is-on" class inside the group.
+		const butActEle = segCurEle.querySelector( '[data-element-name-hook="segConBut"][aria-pressed="true"]' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via a CSS query for the "is-on" class inside the group.
 
 
 		if ( !butActEle ) return; // What: No Active Button Guard. Why: No option is currently marked active, such as mid-transition. How: This bails out of the rest of the placement when there is nothing to measure against.
@@ -201,13 +201,15 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 
 					className={ ` seg-btn   ${ value === optConObj.keyStr ? 'is-on' : '' } ` }
 
+					data-element-name-hook='segConBut'
+
 					type='button'
 
 					aria-describedby={ desIdeStr }
 					aria-pressed={ value === optConObj.keyStr }
 
 					onClick={ () => onChange( optConObj.keyStr ) }
-				>{ optConObj.labStr }</button> // What: Option Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked.
+				>{ optConObj.labStr }</button> // What: Option Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked. Its data-element-name-hook is read by SegConCom's own active-indicator measurement.
 
 
 			) ) }

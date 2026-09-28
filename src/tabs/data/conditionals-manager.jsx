@@ -758,7 +758,11 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 	return (
 
 
-		<section className='cat cat--enter cnd-manager'>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
+		<section
+			className='cat cat--enter cnd-manager'
+
+			data-element-name-hook='datCatSec'
+		>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. */ }
@@ -767,12 +771,14 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 				<button
 					className='cat-h-l'
 
+					data-element-name-hook='catHeaBut'
+
 					type='button'
 
 					aria-expanded={ secOpeBoo }
 
 					onClick={ () => actStoObj.togColFun( '__conditionals', true ) }
-				>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. */ }
+				>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 					<span className={ ` chev   ${ secOpeBoo ? 'is-open' : '' } ` }>{ /* What: Chevron Span Element. Why: The section's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
@@ -817,7 +823,11 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 			<ColDisCom open={ secOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The whole section's own body only needs to exist while it's actually expanded. How: This opens only while secOpeBoo is true. */ }
 
 
-				<div className='cat-body'>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. */ }
+				<div
+					className='cat-body'
+
+					data-element-name-hook='catBodDiv'
+				>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 					{ ONB_CHE_OBJ.tutProFun( staAppObj ) ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfTipCom-wrapped control in that state, otherwise the real button.
@@ -924,7 +934,9 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 								ref={ isaOpeBoo ? opeRowRef : undefined }
 
 								className={ ` rd-item   ${ isaOpeBoo ? 'is-editing' : '' } ` }
-							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. */ }
+
+								data-element-name-hook='lisIteDiv'
+							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 								{ isaOpeBoo && conDraObj ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input (interactive-in-interactive) and would otherwise lose its own accessible name. How: This renders the editing header while isaOpeBoo is true and a draft exists, otherwise the normal clickable row.
@@ -1006,6 +1018,8 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 									<button
 										className='rd-row'
 
+										data-element-name-hook='lisRowBut'
+
 										type='button'
 
 										aria-expanded={ isaOpeBoo }
@@ -1019,7 +1033,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 										} }
-									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. */ }
+									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 										<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and sched spans below. */ }

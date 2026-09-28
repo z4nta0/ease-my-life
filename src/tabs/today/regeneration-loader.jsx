@@ -163,7 +163,11 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 	return (
 
 
-		<article className={ ` today-card   today-card--loader   is-${ sloStaStr } ` }>{ /* What: Loader Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. */ }
+		<article
+			className={ ` today-card   today-card--loader   is-${ sloStaStr } ` }
+
+			data-element-name-hook='todCarArt'
+		>{ /* What: Loader Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code. */ }
 
 
 			<span
@@ -212,7 +216,11 @@ function LoaCarCom ( { infRecObj, picRecObj } ) {
 			</div>
 
 
-			<div className='today-card-actions' />{ /* What: Loader Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. */ }
+			<div
+				className='today-card-actions'
+
+				data-element-name-hook='carActDiv'
+			/>{ /* What: Loader Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it. */ }
 
 
 		</article>

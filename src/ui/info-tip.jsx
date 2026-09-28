@@ -351,8 +351,10 @@ const InfTipCom = ( { actNamStr = null, children, className = '', labTexStr, trn
 						top  : tipPosObj.topNum
 					}}
 
+					data-element-name-hook='infTipSpa'
+
 					role='tooltip'
-				>{ /* What: Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own labTexStr text, placed per its own infotip--{placement} modifier class. */ }
+				>{ /* What: Tip Span Element. Why: This is the actual floating tooltip bubble, positioned via tipPosObj. How: This renders the caller's own labTexStr text, placed per its own infotip--{placement} modifier class. Its data-element-name-hook is read by the shared Escape-key handler. */ }
 
 
 					{ labTexStr }

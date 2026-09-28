@@ -680,7 +680,7 @@ let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/fo
 const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of the rgiObj step must discard whatever was typed without exiting Edit Mode. How: This resets the real input's value to pgtNamStr, then blurs it a frame later so the blur's own commit reads as a no-op.
 
 
-	const renInpEle = document.querySelector( '.pt-section .group-name-input' ); // What: Rename Input Element. Why: This must only act on the real, currently-open rename input. How: This looks it up fresh, since it may not exist outside Edit Mode.
+	const renInpEle = document.querySelector( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook="groNamInp"]' ); // What: Rename Input Element. Why: This must only act on the real, currently-open rename input. How: This looks it up fresh, since it may not exist outside Edit Mode.
 
 
 	if ( !renInpEle ) return; // What: Missing Input Guard. Why: A Back that lands here with the input already gone (never opened, or already closed) has nothing to reset. How: This returns early whenever renInpEle was not found.
@@ -969,7 +969,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 				runFun : () => { // What: Run Function. Why: The pbvObj step's own target only renders once a specific picker is the active scope, so this selects the real sample picker (unhidden for this whole tour, see unhHisFun) before that step ever mounts. How: This clicks the real scope tab matching PRE_PIC_STR.
 
 
-					const picTabEle = document.querySelector( `.stat-scope-tabs .picker-tab[data-picker-id="${ PRE_PIC_STR }"]` ); // What: Picker Tab Element. Why: This must click the exact tab for the real, preselected sample picker. How: This looks it up fresh via its own data-picker-id attribute.
+					const picTabEle = document.querySelector( `[data-element-name-hook="scoTabDiv"] [data-element-name-hook="scoTabBut"][data-picker-id="${ PRE_PIC_STR }"]` ); // What: Picker Tab Element. Why: This must click the exact tab for the real, preselected sample picker. How: This looks it up fresh via its own data-picker-id attribute.
 
 					if ( picTabEle ) picTabEle.click(); // What: Picker Tab Click. Why: This must only fire when the control actually exists. How: This clicks picTabEle.
 
@@ -1238,7 +1238,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 			runFun : () => { // What: Run Function. Why: The rgiObj step's own target (the Page Tours group's rename input) needs staging by a real click before that step ever mounts, same real-UI-driving pattern used throughout the Picker/Reminder tours. How: This clicks the Page Tours group's own rename button, captures its real name first, then focuses the resulting input a frame later.
 
 
-				const renButEle = document.querySelector( '.pt-section button.group-name--editable' ); // What: Rename Button Element. Why: This is the real control that opens the rename input this step highlights. How: This looks it up fresh, since it only exists while Edit Mode is on. // Found via .pt-section (see tab-today.jsx), not by matching the aria-label's current name text, a user who's already renamed Page Tours themselves, entirely outside any tour, would otherwise make this selector (and the whole rest of the step) silently never match again.
+				const renButEle = document.querySelector( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook="groNamBut"]' ); // What: Rename Button Element. Why: This is the real control that opens the rename input this step highlights. How: This looks it up fresh, since it only exists while Edit Mode is on. // Found via .pt-section (see tab-today.jsx), not by matching the aria-label's current name text, a user who's already renamed Page Tours themselves, entirely outside any tour, would otherwise make this selector (and the whole rest of the step) silently never match again.
 
 
 				if ( renButEle ) { // What: Rename Button Existence Check. Why: This must only act on a real, currently-rendered button. How: This branches on whether renButEle was found.
@@ -1257,7 +1257,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 				requestAnimationFrame( () => { // What: Deferred Focus Call. Why: The click's own re-render must have actually mounted the input before this can focus it. How: This runs a frame after the click above, well after React's own commit.
 
 
-					const renInpEle = document.querySelector( '.pt-section .group-name-input' ); // What: Rename Input Element. Why: This is the real input this step highlights and needs focused. How: This looks it up fresh, since it only exists once the rename button above has been clicked.
+					const renInpEle = document.querySelector( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook="groNamInp"]' ); // What: Rename Input Element. Why: This is the real input this step highlights and needs focused. How: This looks it up fresh, since it only exists once the rename button above has been clicked.
 
 
 					if ( renInpEle ) renInpEle.focus( { preventScroll : true } ); // What: Rename Input Focus. Why: Explicit focus alongside the input's own autoFocus is belt-and-suspenders, since the click driving it here is synthetic, not a direct user click on the rename button itself. How: This focuses renInpEle without scrolling the page.
@@ -1284,7 +1284,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 			runFun : () => { // What: Run Function. Why: Edit Mode's own real Cancel control alone isn't enough to discard an in-progress rename, since clicking this step's own Done button can itself race-commit a real rename first. How: This clicks the real Cancel control, then forces the real Page Tours name back afterward regardless of what the DOM did.
 
 
-				const canButEle = document.querySelector( '.editmode-banner-actions .btn--ghost' ); // What: Cancel Button Element. Why: This is the real control that discards any group reordering and closes the rename input. How: This looks it up fresh, since it only exists while Edit Mode is on. // Edit Mode's own real Cancel control discards any group reordering AND closes the rename input, GroupHeader force-closes `editing` the instant editMode itself goes false. That's still not enough on its own, though: clicking this step's own Done button (a totally different element) blurs the currently-focused rename input FIRST, as an intrinsic part of the click's own focus-change handling, which happens before React's onClick (and therefore this runFun) ever fires, and that blur's own commit() genuinely renames the group for real if the user typed something. There's no way to intercept that ordering from here, so this doesn't try to, it just forces the real name back afterward directly, via the same action a real rename commit would have called. A harmless no-op if nothing was ever typed.
+				const canButEle = document.querySelector( '[data-element-name-hook="ediBanSpa"] [data-element-name-hook="ediCanBut"]' ); // What: Cancel Button Element. Why: This is the real control that discards any group reordering and closes the rename input. How: This looks it up fresh, since it only exists while Edit Mode is on. // Edit Mode's own real Cancel control discards any group reordering AND closes the rename input, GroupHeader force-closes `editing` the instant editMode itself goes false. That's still not enough on its own, though: clicking this step's own Done button (a totally different element) blurs the currently-focused rename input FIRST, as an intrinsic part of the click's own focus-change handling, which happens before React's onClick (and therefore this runFun) ever fires, and that blur's own commit() genuinely renames the group for real if the user typed something. There's no way to intercept that ordering from here, so this doesn't try to, it just forces the real name back afterward directly, via the same action a real rename commit would have called. A harmless no-op if nothing was ever typed.
 
 
 				if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.

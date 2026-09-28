@@ -612,8 +612,8 @@ function useFloIteFun( tabIdeStr, meaEleRef ) {
 
 
 
-		const meaCurEle = meaEleRef.current;                         // What: Measure Current Element. Why: This is the actual DOM node whose real size the grid is generated against. How: This is read once from meaEleRef.current and reused for every measurement below.
-		const maiCurEle = meaCurEle && meaCurEle.closest( '.main' ); // What: Main Current Element. Why: The gutter width is measured relative to the shared .main wrapper, not the centered column itself. How: This walks up from meaCurEle to its nearest .main ancestor.
+		const meaCurEle = meaEleRef.current;                                                        // What: Measure Current Element. Why: This is the actual DOM node whose real size the grid is generated against. How: This is read once from meaEleRef.current and reused for every measurement below.
+		const maiCurEle = meaCurEle && meaCurEle.closest( '[data-element-name-hook="appConMai"]' ); // What: Main Current Element. Why: The gutter width is measured relative to the shared .main wrapper, not the centered column itself. How: This walks up from meaCurEle to its nearest .main ancestor.
 
 
 		if ( !meaCurEle || !maiCurEle ) return; // What: No Element Guard. Why: Without both elements mounted there is nothing real to measure yet. How: This bails out of the effect early, leaving floIteObj at its prior (likely null) value.

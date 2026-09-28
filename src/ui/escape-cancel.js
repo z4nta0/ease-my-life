@@ -138,7 +138,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 
 
-		if ( document.querySelector( '.infotip, .ob-scrim' ) ) return; // What: Overlay Guard. Why: A visible tooltip or modal scrim owns Escape first, ahead of any inline editor. How: This bails out while either kind of overlay is present in the document.
+		if ( document.querySelector( '[data-element-name-hook="infTipSpa"], [data-element-name-hook="intScrDiv"]' ) ) return; // What: Overlay Guard. Why: A visible tooltip or modal scrim owns Escape first, ahead of any inline editor. How: This bails out while either kind of overlay is present in the document.
 
 
 

@@ -495,10 +495,10 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 					const tryColFun = () => { // What: Try Collapse Function. Why: The just-expanded picker's own header buttons may not have mounted yet, so this must re-poll a frame at a time. How: This looks up the open picker's own header/buttons, retrying via requestAnimationFrame until they exist or the try cap is hit.
 
 
-						const opeHeaEle = document.querySelector( '.data-list .cat-h-l[aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .cat-h-l currently marked expanded.
-						const catSecEle = opeHeaEle && opeHeaEle.closest( '.cat' );                              // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing .cat section. How: This walks up from opeHeaEle to its closest .cat ancestor.
-						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                               // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
-						const heaButArr = catSecEle ? [ ...catSecEle.querySelectorAll( '.rd-ctl' ) ] : [];       // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .rd-ctl button inside catSecEle into a plain array.
+						const opeHeaEle = document.querySelector( '[data-element-name-hook="datLisDiv"] [data-element-name-hook="catHeaBut"][aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .cat-h-l currently marked expanded.
+						const catSecEle = opeHeaEle && opeHeaEle.closest( '[data-element-name-hook="datCatSec"]' );                                                    // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing .cat section. How: This walks up from opeHeaEle to its closest .cat ancestor.
+						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                                                                     // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
+						const heaButArr = catSecEle ? [ ...catSecEle.querySelectorAll( '[data-element-name-hook="catTogBut"]' ) ] : [];                                // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .rd-ctl button inside catSecEle into a plain array.
 
 
 						if ( ( !picIdeStr || heaButArr.length < 2 ) && tryCouNum++ < 20 ) { requestAnimationFrame( tryColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules tryColFun a frame later, up to 20 tries, whenever picIdeStr or both buttons are still missing. // Re-polls a frame later whenever the expected DOM hasn't mounted yet and the try cap hasn't been hit. Left inline rather than extracted into named consts: tryCouNum++ is a side effect that must stay inside this short-circuited check, extracting it would change how often it increments.
@@ -556,9 +556,9 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 				runFun : () => { // What: Run Function. Why: The Items Section step's own box must read as uncluttered, with Controls collapsed again. How: This finds the real Controls header, then collapses it only if it's still expanded. // Re-collapses Controls on the way to the Items Section step, same "clean slate" requirement as the previous step's own runFun, that step highlights this same picker box again and needs Controls collapsed for it to look uncluttered. Controls is already mounted here (unlike the Your Pickers step's own case, which had to poll for it), so no async wait is needed, just a direct actStoObj.togColFun call, guarded on aria-expanded so this is a no-op if the user already collapsed it themselves while exploring.
 
 
-					const conHeaEle = document.querySelector( '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)' ); // What: Controls Header Element. Why: This is the real control this step must collapse on the way out. How: This looks it up fresh, since it only exists while a picker is expanded.
-					const catSecEle = conHeaEle && conHeaEle.closest( '.cat' );                                               // What: Category Section Element. Why: The picker's own id lives on its enclosing .cat section. How: This walks up from conHeaEle to its closest .cat ancestor.
-					const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                                // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
+					const conHeaEle = document.querySelector( '[data-element-name-hook="datLisDiv"] > [data-element-name-hook="datCatSec"] [data-element-name-hook="catBodDiv"] > button[data-element-name-hook="catTogBut"]:nth-of-type(1)' ); // What: Controls Header Element. Why: This is the real control this step must collapse on the way out. How: This looks it up fresh, since it only exists while a picker is expanded.
+					const catSecEle = conHeaEle && conHeaEle.closest( '[data-element-name-hook="datCatSec"]' ); // What: Category Section Element. Why: The picker's own id lives on its enclosing .cat section. How: This walks up from conHeaEle to its closest .cat ancestor.
+					const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                  // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
 
 
 					if ( picIdeStr && conHeaEle.getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: This must only fire when Controls is still actually expanded. How: This toggles the picker's own ':controls' section closed.
@@ -1137,7 +1137,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 					if ( tarSteNum === 1 ) { // What: Your Pickers Collapse Check. Why: Back from Controls Section to Your Pickers must re-collapse whichever picker header(s) got expanded, restoring the same all-collapsed slate Your Pickers originally expects. How: This clicks every currently-expanded picker header, the same real click the user would trigger themselves.
 
 
-						[ ...document.querySelectorAll( '.data-list .cat-h-l[aria-expanded="true"]' ) ].forEach( ( curHeaEle ) => curHeaEle.click() ); // What: Header Click Loop. Why: Expanding Picker A, reaching Controls Section, going Back, then expanding Picker B without A ever closing would otherwise leave BOTH open. How: This clicks every currently-expanded .cat-h-l header, collapsing all of them.
+						[ ...document.querySelectorAll( '[data-element-name-hook="datLisDiv"] [data-element-name-hook="catHeaBut"][aria-expanded="true"]' ) ].forEach( ( curHeaEle ) => curHeaEle.click() ); // What: Header Click Loop. Why: Expanding Picker A, reaching Controls Section, going Back, then expanding Picker B without A ever closing would otherwise leave BOTH open. How: This clicks every currently-expanded .cat-h-l header, collapsing all of them.
 
 
 					}
@@ -1145,7 +1145,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 					else if ( tarSteNum === 2 ) { // What: Controls Re-Collapse Check. Why: Back from Edit Picker Settings to Controls Section must re-collapse Controls, undoing that step's own real click that expanded it. How: This clicks the real, currently-expanded Controls header.
 
 
-						const conHeaEle = document.querySelector( '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)[aria-expanded="true"]' ); // What: Controls Header Element. Why: This is the real control that must be clicked shut. How: This looks it up fresh, since it only exists while a picker is expanded.
+						const conHeaEle = document.querySelector( '[data-element-name-hook="datLisDiv"] > [data-element-name-hook="datCatSec"] [data-element-name-hook="catBodDiv"] > button[data-element-name-hook="catTogBut"]:nth-of-type(1)[aria-expanded="true"]' ); // What: Controls Header Element. Why: This is the real control that must be clicked shut. How: This looks it up fresh, since it only exists while a picker is expanded.
 
 
 						if ( conHeaEle ) conHeaEle.click(); // What: Controls Header Click. Why: This must only fire when the control actually exists. How: This clicks conHeaEle.
@@ -1156,7 +1156,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 					else if ( tarSteNum === 3 ) { // What: Controls Re-Expand Check. Why: Back from Items Section to Edit Picker Settings must re-expand Controls, undoing Edit Picker Settings' own outgoing runFun (which collapses it on the way to Items Section). How: This clicks the real, currently-collapsed Controls header.
 
 
-						const conHeaEle = document.querySelector( '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)[aria-expanded="false"]' ); // What: Controls Header Element. Why: This is the real control that must be clicked back open. How: This looks it up fresh, since it only exists while a picker is expanded.
+						const conHeaEle = document.querySelector( '[data-element-name-hook="datLisDiv"] > [data-element-name-hook="datCatSec"] [data-element-name-hook="catBodDiv"] > button[data-element-name-hook="catTogBut"]:nth-of-type(1)[aria-expanded="false"]' ); // What: Controls Header Element. Why: This is the real control that must be clicked back open. How: This looks it up fresh, since it only exists while a picker is expanded.
 
 
 						if ( conHeaEle ) conHeaEle.click(); // What: Controls Header Click. Why: This must only fire when the control actually exists. How: This clicks conHeaEle.
@@ -1167,9 +1167,9 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 					else if ( tarSteNum === 4 ) { // What: Items Re-Collapse Check. Why: Back from Picker Items to Items Section must re-collapse Items, undoing that step's own real click that expanded it. How: This looks up the Items header via a direct action call, since a native click would silently no-op on its own disabled attribute at this exact instant.
 
 
-						const catSecEle = document.querySelector( '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])' );  // What: Category Section Element. Why: The picker's own id and Items header both live on its enclosing .cat section. How: This looks up the one currently-expanded picker's own section.
-						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                                            // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
-						const iteHeaEle = catSecEle && catSecEle.querySelector( '.cat-body > button.rd-ctl:nth-of-type(2)' ); // What: Items Header Element. Why: This is the real control whose own aria-expanded state must be read. How: This looks it up fresh, since it only exists while a picker is expanded.
+						const catSecEle = document.querySelector( '[data-element-name-hook="datLisDiv"] > [data-element-name-hook="datCatSec"]:has([data-element-name-hook="catHeaBut"][aria-expanded="true"])' ); // What: Category Section Element. Why: The picker's own id and Items header both live on its enclosing .cat section. How: This looks up the one currently-expanded picker's own section.
+						const picIdeStr = catSecEle && catSecEle.dataset.pickerId; // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
+						const iteHeaEle = catSecEle && catSecEle.querySelector( '[data-element-name-hook="catBodDiv"] > button[data-element-name-hook="catTogBut"]:nth-of-type(2)' );                              // What: Items Header Element. Why: This is the real control whose own aria-expanded state must be read. How: This looks it up fresh, since it only exists while a picker is expanded.
 
 
 						if ( picIdeStr && iteHeaEle && iteHeaEle.getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items is disabled during Picker Items itself, so a native click would silently no-op. How: This toggles the picker's own ':items' section closed directly.
@@ -1180,7 +1180,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 					else if ( tarSteNum === 5 ) { // What: Item Re-Collapse Check. Why: Back from Edit Item Settings to Picker Items must re-collapse whichever item got expanded, either by that step's own click or by the user opening a different one while freely exploring. How: This clicks the real, currently-expanded item row.
 
 
-						const iteRowEle = document.querySelector( '.data-list .rd-item > .rd-row[aria-expanded="true"]' ); // What: Item Row Element. Why: This is the real control that must be clicked shut. How: This looks it up fresh, since it only exists while an item is expanded.
+						const iteRowEle = document.querySelector( '[data-element-name-hook="datLisDiv"] [data-element-name-hook="lisIteDiv"] > [data-element-name-hook="lisRowBut"][aria-expanded="true"]' ); // What: Item Row Element. Why: This is the real control that must be clicked shut. How: This looks it up fresh, since it only exists while an item is expanded.
 
 
 						if ( iteRowEle ) iteRowEle.click(); // What: Item Row Click. Why: This must only fire when the control actually exists. How: This clicks iteRowEle.
@@ -1197,7 +1197,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 					if ( tarSteNum === 0 ) { // What: Toggle Off Check. Why: Back from the 2nd step to the 1st expects help mode currently off, but reaching the 2nd step in the first place required a real click that turned it on. How: This clicks the real, currently-on help-highlight toggle.
 
 
-						const helButEle = document.querySelector( '.help-btn.is-on' ); // What: Help Button Element. Why: This is the real control that must be clicked back off. How: This looks it up fresh, since it only exists while help mode is on.
+						const helButEle = document.querySelector( '[data-element-name-hook="helTogBut"][aria-pressed="true"]' ); // What: Help Button Element. Why: This is the real control that must be clicked back off. How: This looks it up fresh, since it only exists while help mode is on.
 
 
 						if ( helButEle ) helButEle.click(); // What: Help Button Click. Why: This must only fire when the control actually exists. How: This clicks helButEle.
@@ -1217,7 +1217,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 				if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Feature Check. Why: Only this feature can leave help mode turned on mid-Step-2 for Skip to undo. How: This branches on feaIdeStr matching 'feat_highlights'.
 
 
-					const helButEle = document.querySelector( '.help-btn.is-on' ); // What: Help Button Element. Why: This is the real control that must be clicked back off if it's still on. How: This looks it up fresh, since it only exists while help mode is on.
+					const helButEle = document.querySelector( '[data-element-name-hook="helTogBut"][aria-pressed="true"]' ); // What: Help Button Element. Why: This is the real control that must be clicked back off if it's still on. How: This looks it up fresh, since it only exists while help mode is on.
 
 
 					if ( helButEle ) helButEle.click(); // What: Help Button Click. Why: This must only fire when the control actually exists. How: This clicks helButEle.

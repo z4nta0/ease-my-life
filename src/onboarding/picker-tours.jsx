@@ -394,7 +394,7 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 	runFun : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes .main's own scrollTop when it exists.
 
 
-		const scrConEle = document.querySelector( '.main' ); // What: Scroll Container Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
+		const scrConEle = document.querySelector( '[data-element-name-hook="appConMai"]' ); // What: Scroll Container Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
 
 		if ( scrConEle ) scrConEle.scrollTop = 0; // What: Scroll Container Reset. Why: This must only run when the element actually exists. How: This zeroes scrConEle's own scrollTop.
 
@@ -1126,7 +1126,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 				if ( tarSteNum === 5 ) { // What: Details Step Back Check. Why: Reversing buiAddFun's own step needs the form pushed back to Details. How: This clicks the form's own "Details" step-indicator tab, the only way to reverse this from outside the form, which owns that step state locally.
 
 
-					const detTabEle = document.querySelector( '.ob-picker-details' ); // What: Details Tab Element. Why: This is the real control that reverses the form's own Details/Items step. How: This looks it up fresh, since it may not exist outside the create-picker form.
+					const detTabEle = document.querySelector( '[data-element-name-hook="detSteBut"]' ); // What: Details Tab Element. Why: This is the real control that reverses the form's own Details/Items step. How: This looks it up fresh, since it may not exist outside the create-picker form.
 
 
 					if ( detTabEle ) detTabEle.click(); // What: Details Tab Click. Why: This must only fire when the control actually exists. How: This clicks detTabEle.
@@ -1137,7 +1137,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 				else if ( tarSteNum === 6 ) { // What: Item Editor Cancel Check. Why: buiNamFun's own step opened the inline item editor, which is also a one-way transition (no toggle); Cancel is the only real-DOM way to close it back to the bare "+ Add Item" button from outside. How: This clicks the item editor's own Cancel button, same reasoning as the tarSteNum === 5 branch above.
 
 
-					const canButEle = document.querySelector( '.ob-item-cancel' ); // What: Cancel Button Element. Why: This is the real control that closes the inline item editor back to buiAddFun's own step. How: This looks it up fresh, since it may not exist outside an open item editor.
+					const canButEle = document.querySelector( '[data-element-name-hook="iteCanBut"]' ); // What: Cancel Button Element. Why: This is the real control that closes the inline item editor back to buiAddFun's own step. How: This looks it up fresh, since it may not exist outside an open item editor.
 
 
 					if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.

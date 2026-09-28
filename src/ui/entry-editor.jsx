@@ -853,11 +853,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						<ButBasCom
 							className='ob-item-cancel'
 
+							data-element-name-hook='iteCanBut'
+
 							kinValStr='ghost'
 							sizValStr='sm'
 
 							onClick={ canEdiFun }
-						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. */ }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 

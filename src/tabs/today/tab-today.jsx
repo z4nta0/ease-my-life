@@ -727,8 +727,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			if ( celStyStr === 'confetti' || celStyStr === 'sparkle' ) { // What: Rect Measurement Branch. Why: Only the confetti/sparkle styles need a measured overlay rect at all. How: This measures the cards column and its scroller, falling back to the full viewport if either is missing.
 
 
-				const carAreEle = carAreRef.current;             // What: Card Area Element. Why: This is the actual DOM node the overlay's own horizontal bounds are measured from. How: This reads carAreRef.current.
-				const scrCurEle = carAreEle?.closest( '.main' ); // What: Scroller Current Element. Why: The overlay's own vertical bounds must span the scroll container's on-screen viewport, not the (possibly scrolled-away) cards list itself. How: This walks up from carAreEle to its nearest .main ancestor.
+				const carAreEle = carAreRef.current;                                            // What: Card Area Element. Why: This is the actual DOM node the overlay's own horizontal bounds are measured from. How: This reads carAreRef.current.
+				const scrCurEle = carAreEle?.closest( '[data-element-name-hook="appConMai"]' ); // What: Scroller Current Element. Why: The overlay's own vertical bounds must span the scroll container's on-screen viewport, not the (possibly scrolled-away) cards list itself. How: This walks up from carAreEle to its nearest .main ancestor.
 
 
 				if ( carAreEle && scrCurEle ) { // What: Both Elements Found Branch. Why: A real measurement is only possible once both elements exist. How: This computes celRecObj from their two bounding rects.
@@ -811,8 +811,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			const carEleLis = ( celStyStr === 'ripple' && maiScrRef.current ) // What: Card Element List. Why: Only the Ripple style needs the per-card exhale cascade at all. How: This queries every rendered card only under that style, otherwise an empty array.
-				? maiScrRef.current.querySelectorAll( '.today-card' ) // What: Ripple Branch. Why: The ripple cascades across every rendered card. How: This queries them all from the scroll root.
-				: [];                                                 // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
+				? maiScrRef.current.querySelectorAll( '[data-element-name-hook="todCarArt"]' ) // What: Ripple Branch. Why: The ripple cascades across every rendered card. How: This queries them all from the scroll root.
+				: [];                                                                          // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
 
 
 			carEleLis.forEach( ( curCarEle, curIndNum ) => { // What: Card Exhale Stagger Loop. Why: Each card's own exhale needs a slightly later delay than the one before it, so the cascade reads as a wave. How: This sets a CSS variable and adds the is-exhaling class to each card in turn.
@@ -964,7 +964,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const tabCurEle = heaCurEle.closest( '.tab--today' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest .tab--today ancestor.
+		const tabCurEle = heaCurEle.closest( '[data-element-name-hook="todTabDiv"]' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest .tab--today ancestor.
 
 
 		if ( !tabCurEle ) return; // What: No Tab Root Guard. Why: Without the tab root there is nowhere to publish the measured values. How: This bails out of the effect early when tabCurEle is missing.
@@ -1464,10 +1464,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const tabCurEle = maiScrRef.current?.closest( '.tab--today' );                                                                 // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
+			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook="todTabDiv"]' );                                        // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
 			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || 140 ) : 140; // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sticky-top-h custom property, falling back to a fixed 140.
 			const biaLinNum = stiHeiNum + 20;                                                                                              // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
-			const scrCurEle = maiScrRef.current?.closest( '.main' );                                                                       // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
+			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook="appConMai"]' );                                        // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
 
 
 			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should always spy the LAST section, even if its own header can never reach the spy line. How: This checks either the scroller's own metrics or, without one, the window's.
@@ -1532,7 +1532,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		onScrFun(); // What: Initial Scroll Call. Why: The correct group must be highlighted immediately on mount/dependency change, without waiting for a scroll event. How: This invokes onScrFun once, synchronously.
 
-		const conScrEle = maiScrRef.current?.closest( '.main' ) || window; // What: Container Scroll Element. Why: The scroll listener should attach to the real scroll container when one exists, falling back to the window. How: This walks up from maiScrRef.current, or defaults to window.
+		const conScrEle = maiScrRef.current?.closest( '[data-element-name-hook="appConMai"]' ) || window; // What: Container Scroll Element. Why: The scroll listener should attach to the real scroll container when one exists, falling back to the window. How: This walks up from maiScrRef.current, or defaults to window.
 
 
 		conScrEle.addEventListener( 'scroll', onScrFun, { passive : true } ); // What: Container Scroll Subscribe. Why: This is the primary trigger for re-evaluating the active group. How: This registers onScrFun as a passive scroll listener on conScrEle.
@@ -1566,8 +1566,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		setActGroStr( groIdeStr ); // What: Active Group Set. Why: The clicked rail button should highlight immediately, without waiting for the scroll-spy effect to catch up. How: This publishes groIdeStr into actGroStr directly.
 		skiSpyRef.current = true;  // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
 
-		const maiScrEle = tarSecEle.closest( '.main' );                                                          // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
-		const tabCurEle = tarSecEle.closest( '.tab--today' );                                                    // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
+		const maiScrEle = tarSecEle.closest( '[data-element-name-hook="appConMai"]' );                           // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
+		const tabCurEle = tarSecEle.closest( '[data-element-name-hook="todTabDiv"]' );                           // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
 		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || 140; // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sticky-top-h custom property, falling back to a fixed 140.
 		const extPadNum = 16;                                                                                    // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a fixed 16px added to the scroll target below.
 		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                       // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
@@ -1830,9 +1830,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const groDraFun = ( poiEveObj ) => { // What: Group Drag Function. Why: This is the actual pointerdown handler behind every GroHeaCom's own grip. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the group-specific drop callback.
 
 
-		const wraCurEle = groDndRef.current;                     // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
-		const griCurEle = poiEveObj.currentTarget;               // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
-		const secCurEle = griCurEle.closest( '.group-section' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest .group-section ancestor.
+		const wraCurEle = groDndRef.current;                                            // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
+		const griCurEle = poiEveObj.currentTarget;                                      // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
+		const secCurEle = griCurEle.closest( '[data-element-name-hook~="todGroSec"]' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest .group-section ancestor.
 
 
 		if ( !wraCurEle || !secCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
@@ -1842,13 +1842,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		REO_NAM_OBJ.staDraFun( poiEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
-			conLisEle   : wraCurEle,                                    // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes wraCurEle.
-			griIcoEle   : griCurEle,                                    // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
-			hanDraEle   : secCurEle,                                    // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes secCurEle.
-			iteSelStr   : '.group-section',                             // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .group-section selector.
-			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ), // What: On End Drag Function. Why: The coach must reappear once the gesture ends. How: This publishes draActBoo : false onto the shared tour bus.
-			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),  // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes draActBoo : true onto the shared tour bus, a harmless no-op when no tour is mounted.
-			scrConEle   : maiScrRef.current?.closest( '.main' ),        // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
+			conLisEle   : wraCurEle,                                                            // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes wraCurEle.
+			griIcoEle   : griCurEle,                                                            // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
+			hanDraEle   : secCurEle,                                                            // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes secCurEle.
+			iteSelStr   : '[data-element-name-hook~="todGroSec"]',                              // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .group-section selector.
+			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                         // What: On End Drag Function. Why: The coach must reappear once the gesture ends. How: This publishes draActBoo : false onto the shared tour bus.
+			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                          // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes draActBoo : true onto the shared tour bus, a harmless no-op when no tour is mounted.
+			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
 
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into staAppObj.groupOrder.
 
@@ -1900,9 +1900,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const iteDraFun = ( poiEveObj, curGroObj ) => { // What: Item Drag Function. Why: This is the actual pointerdown handler behind every EntCarCom's own grip within a group. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the item-specific drop callback.
 
 
-		const griCurEle = poiEveObj.currentTarget;            // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
-		const lisCurEle = griCurEle.closest( '.today-list' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest .today-list ancestor.
-		const carCurEle = griCurEle.closest( '.today-card' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
+		const griCurEle = poiEveObj.currentTarget;                                     // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
+		const lisCurEle = griCurEle.closest( '[data-element-name-hook="todLisDiv"]' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest .today-list ancestor.
+		const carCurEle = griCurEle.closest( '[data-element-name-hook="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
 
 
 		if ( !lisCurEle || !carCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
@@ -1912,13 +1912,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		REO_NAM_OBJ.staDraFun( poiEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
-			conLisEle   : lisCurEle,                                    // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes lisCurEle.
-			griIcoEle   : griCurEle,                                    // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
-			hanDraEle   : carCurEle,                                    // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes carCurEle.
-			iteSelStr   : '.today-card',                                // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .today-card selector.
-			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ), // What: On End Drag Function. Why: Same reasoning as groDraFun's own onEndDraFun above. How: This publishes draActBoo : false onto the shared tour bus.
-			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),  // What: On Start Drag Function. Why: Same reasoning as groDraFun's own onStaDraFun above. How: This publishes draActBoo : true onto the shared tour bus.
-			scrConEle   : maiScrRef.current?.closest( '.main' ),        // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
+			conLisEle   : lisCurEle,                                                            // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes lisCurEle.
+			griIcoEle   : griCurEle,                                                            // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
+			hanDraEle   : carCurEle,                                                            // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes carCurEle.
+			iteSelStr   : '[data-element-name-hook="todCarArt"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .today-card selector.
+			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                         // What: On End Drag Function. Why: Same reasoning as groDraFun's own onEndDraFun above. How: This publishes draActBoo : false onto the shared tour bus.
+			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                          // What: On Start Drag Function. Why: Same reasoning as groDraFun's own onStaDraFun above. How: This publishes draActBoo : true onto the shared tour bus.
+			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
 
 			onDroOrdFun : ( ordNumArr ) => { // What: On Drop Order Function. Why: The actual persisted per-group picker order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through curGroObj's own current entries, then merges the result into staAppObj.pickerOrder for this group.
 
@@ -2006,8 +2006,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 *
 		*/
 
-		const scrCurEle = maiScrRef.current?.closest( '.main' );                      // What: Scroller Current Element. Why: The scroll-to-top below needs the real scroll container when one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
-		const topEdgBoo = scrCurEle ? scrCurEle.scrollTop <= 1 : window.scrollY <= 1; // What: Top Edge Boolean. Why: A list already at the top needs no scroll (and no settle wait) at all. How: This checks either the scroller's own scrollTop or the window's own scrollY.
+		const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook="appConMai"]' ); // What: Scroller Current Element. Why: The scroll-to-top below needs the real scroll container when one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
+		const topEdgBoo = scrCurEle ? scrCurEle.scrollTop <= 1 : window.scrollY <= 1;           // What: Top Edge Boolean. Why: A list already at the top needs no scroll (and no settle wait) at all. How: This checks either the scroller's own scrollTop or the window's own scrollY.
 
 
 		if ( !topEdgBoo ) { // What: Needs Scroll Branch. Why: Only a list that isn't already at the top needs the scroll-and-wait sequence below. How: This flags skiSpyRef, scrolls, waits, then releases skiSpyRef.
@@ -3090,9 +3090,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			rafTwoNum = requestAnimationFrame( () => { // What: Raf Two Assignment. Why: This is the second, actually-scrolling frame. How: This measures genCarRef and scrolls once both its scroller and tab ancestors are found.
 
 
-				const genCurEle = genCarRef.current;                   // What: Generate Current Element. Why: Every measurement below reads this same node. How: This reads genCarRef.current.
-				const maiScrEle = genCurEle?.closest( '.main' );       // What: Main Scroll Element. Why: The scroll target needs the real scroll container. How: This walks up from genCurEle to its nearest .main ancestor.
-				const tabCurEle = genCurEle?.closest( '.tab--today' ); // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from genCurEle to its nearest .tab--today ancestor.
+				const genCurEle = genCarRef.current;                                            // What: Generate Current Element. Why: Every measurement below reads this same node. How: This reads genCarRef.current.
+				const maiScrEle = genCurEle?.closest( '[data-element-name-hook="appConMai"]' ); // What: Main Scroll Element. Why: The scroll target needs the real scroll container. How: This walks up from genCurEle to its nearest .main ancestor.
+				const tabCurEle = genCurEle?.closest( '[data-element-name-hook="todTabDiv"]' ); // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from genCurEle to its nearest .tab--today ancestor.
 
 
 				if ( genCurEle && maiScrEle && tabCurEle ) { // What: All Found Branch. Why: The scroll can only happen once every one of these 3 exists. How: This computes and applies the scroll only when all 3 are present.
@@ -3274,7 +3274,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	return (
 
 
-		<div className={ ` tab   tab--today   ${ ediModBoo ? 'is-editmode' : '' } ` }>{ /* What: Today Tab Div Element. Why: This is TabTodCom's own root wrapper. How: This renders the sticky header, the scrollable body (rail + groups + footer), and any reminder mini-tour/App Features intro overlay currently running. */ }
+		<div
+			className={ ` tab   tab--today   ${ ediModBoo ? 'is-editmode' : '' } ` }
+
+			data-element-name-hook='todTabDiv'
+		>{ /* What: Today Tab Div Element. Why: This is TabTodCom's own root wrapper. How: This renders the sticky header, the scrollable body (rail + groups + footer), and any reminder mini-tour/App Features intro overlay currently running. Its data-element-name-hook is read by Today's own scroll code. */ }
 
 
 			<HelOveCom
@@ -3290,7 +3294,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				ref={ heaEleRef }
 
 				className='today-h'
-			>{ /* What: Today Header Element. Why: This is the sticky header every scroll-spy/offset calculation in this file measures against. How: This renders the date/streak/help row and the brand mark/title/ring row beneath it. */ }
+
+				data-element-name-hook='todPagHea'
+			>{ /* What: Today Header Element. Why: This is the sticky header every scroll-spy/offset calculation in this file measures against. How: This renders the date/streak/help row and the brand mark/title/ring row beneath it. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks. */ }
 
 
 				<div className='today-h-inner'>{ /* What: Header Inner Div Element. Why: The header's own content needs an inner wrapper distinct from the sticky element itself. How: This wraps the header-left column below. */ }
@@ -3589,8 +3595,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					<div
 						className={ ` editmode-banner   ${ banCloBoo ? 'is-closing' : '' } ` }
 
+						data-element-name-hook='ediBanDiv'
+
 						role='status'
-					>{ /* What: Edit Mode Banner Div Element. Why: This is the explanatory banner shown while Edit Mode is active. How: This renders the fixed explanatory copy plus a Cancel/Done pair. */ }
+					>{ /* What: Edit Mode Banner Div Element. Why: This is the explanatory banner shown while Edit Mode is active. How: This renders the fixed explanatory copy plus a Cancel/Done pair. Its data-element-name-hook is read by the tour runner's safe-area math. */ }
 
 
 						<span className='editmode-banner-msg'>{ /* What: Banner Message Span Element. Why: The icon and the explanatory text read as one inline cluster. How: This wraps the grip icon and the fixed copy below. */ }
@@ -3606,15 +3614,21 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						</span>
 
-						<span className='editmode-banner-actions'>{ /* What: Banner Actions Span Element. Why: The Cancel/Done pair reads as one right-aligned cluster. How: This wraps both ButBasCom elements below. */ }
+						<span
+							className='editmode-banner-actions'
+
+							data-element-name-hook='ediBanSpa'
+						>{ /* What: Banner Actions Span Element. Why: The Cancel/Done pair reads as one right-aligned cluster. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 							<ButBasCom
+								data-element-name-hook='ediCanBut'
+
 								kinValStr='ghost'
 								sizValStr='sm'
 
 								onClick={ () => cloModFun( false ) }
-							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). */ }
+							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). Its data-element-name-hook is read by the Today page tour. */ }
 
 
 
@@ -3649,8 +3663,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						className='group-rail'
 
+						data-element-name-hook='groRaiAsi'
+
 						aria-label='Groups'
-					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. */ }
+					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks. */ }
 
 
 						<div className='kicker rail-kicker'>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
@@ -3841,11 +3857,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							<button
 								className={ ` em-rail-btn   ${ ediModBoo ? 'is-on' : '' } ` }
 
+								data-edit-mode-active={ ediModBoo || undefined } // What: Edit Mode Active Attribute. Why: Code that needs to know whether Edit Mode is on reads it from this attribute rather than from the button's own classes. How: This is present only while ediModBoo is true, since undefined drops the attribute entirely.
+								data-element-name-hook='ediRaiBut'
+
 								disabled={ genActBoo }
 								type='button'
 
 								onClick={ togModFun }
-							>{ /* What: Edit Mode Rail Button Element. Why: This is the actual toggle control, disabled while a generation is in flight since dragging mid-cascade makes no sense. How: This calls togModFun, swapping its own label per ediModBoo. */ }
+							>{ /* What: Edit Mode Rail Button Element. Why: This is the actual toggle control, disabled while a generation is in flight since dragging mid-cascade makes no sense. How: This calls togModFun, swapping its own label per ediModBoo. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 								<IcoSvgCom
@@ -4024,7 +4043,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											ref={ ( secCurEle ) => { secRefObj.current[ '__pageTours' ] = secCurEle; } }
 
 											className='group-section pt-section'
-										>{ /* What: Page Tours Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. */ }
+
+											data-element-name-hook='pagTouSec todGroSec'
+										>{ /* What: Page Tours Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the page tours' own group-rename steps and by Today's own drag-to-reorder and scroll code. */ }
 
 
 											<GroHeaCom
@@ -4040,7 +4061,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-											<div className='today-list'>{ /* What: Page Tours List Div Element. Why: Every visible tour card shares this one list column. How: This maps visTouArr to one PagTouCom per entry. */ }
+											<div
+												className='today-list'
+
+												data-element-name-hook='todLisDiv'
+											>{ /* What: Page Tours List Div Element. Why: Every visible tour card shares this one list column. How: This maps visTouArr to one PagTouCom per entry. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
 
 
 												{ visTouArr.map( ( curTouObj ) => ( // What: Page Tour Card List Render. Why: One card is needed per visible page tour. How: This maps visTouArr to one PagTouCom per entry, keyed by its own id.
@@ -4094,7 +4119,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										ref={ ( secCurEle ) => { secRefObj.current[ curGroObj.namStr ] = secCurEle; } }
 
 										className='group-section'
-									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. */ }
+
+										data-element-name-hook='todGroSec'
+									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code. */ }
 
 
 										<GroHeaCom
@@ -4136,7 +4163,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-										<div className='today-list'>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. */ }
+										<div
+											className='today-list'
+
+											data-element-name-hook='todLisDiv'
+										>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
 
 
 											{ curGroObj.entArr.map( ( { entRecObj, picRecObj } ) => { // What: Group Row Map. Why: Every row in this group needs rendering, either as a live loader slot (mid-generation) or as a normal EntCarCom. How: This dispatches per genActBoo/genMapObj first, otherwise resolves the row's own item and renders EntCarCom plus its own inline editor.
@@ -4272,7 +4303,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								ref={ ( secCurEle ) => { secRefObj.current[ '__appFeatures' ] = secCurEle; } }
 
 								className='group-section af-section'
-							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. */ }
+
+								data-element-name-hook='todGroSec'
+							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code. */ }
 
 
 								<GroHeaCom
@@ -4284,7 +4317,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-								<div className='today-list'>{ /* What: App Features List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. */ }
+								<div
+									className='today-list'
+
+									data-element-name-hook='todLisDiv'
+								>{ /* What: App Features List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
 
 
 									{ APP_FEA_ARR.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.ideStr ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEA_ARR, filtered per the design note above, to one AppFeaCom per entry, keyed by its own ideStr. // During a replay (fecDonBoo), a resolved card drops out the instant it resolves instead of sticking around with an Undo toggle, same "no closing card to synchronize a batch disappearance against anymore" reasoning as groEntFun's own replay-continuation cards. The ORIGINAL first-time pass is unaffected: every card stays until the whole section resolves together at the next real generation.
@@ -4499,14 +4536,20 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							) : ediModBoo ? ( // What: Edit Mode Branch. Why: Edit Mode replaces the normal footer with its own Cancel/Done pair. How: This renders the edit-mode actions while ediModBoo is true, the normal footer otherwise.
 
 
-								<div className='today-foot-actions editmode-foot-actions'>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both ButBasCom elements below. */ }
+								<div
+									className='today-foot-actions editmode-foot-actions'
+
+									data-element-name-hook='fooActDiv'
+								>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 									<ButBasCom
+										data-element-name-hook='ediCanBut'
+
 										kinValStr='ghost'
 
 										onClick={ () => cloModFun( false ) }
-									>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). */ }
+									>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). Its data-element-name-hook is read by the Today page tour. */ }
 
 
 
@@ -4527,7 +4570,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<React.Fragment>{ /* What: Normal Footer Fragment Element. Why: The Edit Mode/Regenerate action row and the generated-on sub-line are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-									<div className='today-foot-actions'>{ /* What: Foot Actions Div Element. Why: The Edit Mode and Regenerate buttons read as one row. How: This wraps both controls below. */ }
+									<div
+										className='today-foot-actions'
+
+										data-element-name-hook='fooActDiv'
+									>{ /* What: Foot Actions Div Element. Why: The Edit Mode and Regenerate buttons read as one row. How: This wraps both controls below. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 										<ButBasCom

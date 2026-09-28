@@ -1606,7 +1606,9 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				key={ filGroStr + '::' + curScoStr + '::' + filConStr }
 
 				className='data-list'
-			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. */ }
+
+				data-element-name-hook='datLisDiv'
+			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 				{ shoEmpBoo && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
@@ -1776,6 +1778,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								...( isaDraBoo ? { scrollMarginTop : 14 } : {} )
 							}}
 
+							data-element-name-hook='datCatSec'
 							data-picker-id={ picCurObj.id }
 
 							onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: A removed picker must leave the store only after its exit animation has played. How: This deletes the picker and clears rmvPicStr once the card itself (not a child) finishes animating while marked for removal.
@@ -1792,7 +1795,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							} }
-						>{ /* What: Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. */ }
+						>{ /* What: Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 							<header
@@ -1818,13 +1821,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<button
 									className='cat-h-l'
 
+									data-element-name-hook='catHeaBut'
+
 									disabled={ isaDraBoo || detPicBoo }
 									type='button'
 
 									aria-expanded={ secOpeBoo }
 
 									onClick={ () => togSecFun( picCurObj.id ) }
-								>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the card. How: This is disabled for a draft (always expanded) or during the guarded tour step. */ }
+								>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the card. How: This is disabled for a draft (always expanded) or during the guarded tour step. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 									<span className={ ` chev   ${ secOpeBoo ? 'is-open' : '' } ` }>{ /* What: Chevron Span Element. Why: The card's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
@@ -1933,11 +1938,17 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							>{ /* What: Collapse Disclosure Component. Why: The card's own body (Controls + Items) only needs to exist while it's actually expanded, instant (no animation) for a brand-new draft. How: This opens per secOpeBoo. */ }
 
 
-								<div className='cat-body'>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. */ }
+								<div
+									className='cat-body'
+
+									data-element-name-hook='catBodDiv'
+								>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 									<button
 										className={ ` rd-ctl   ${ hetConBoo ? 'ob-tour-pulse' : '' } ` }
+
+										data-element-name-hook='catTogBut'
 
 										disabled={ detConBoo }
 										type='button'
@@ -1945,7 +1956,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										aria-expanded={ !conColBoo }
 
 										onClick={ () => actStoObj.togColFun( picCurObj.id + ':controls' ) }
-									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. */ }
+									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 										<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker belong together. How: This wraps both spans below. */ }
@@ -2014,13 +2025,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<button
 										className={ ` rd-ctl   ${ hetIteBoo ? 'ob-tour-pulse' : '' } ` }
 
+										data-element-name-hook='catTogBut'
+
 										disabled={ detIteBoo }
 										type='button'
 
 										aria-expanded={ !iteColBoo }
 
 										onClick={ () => isaDraBoo ? setDraIteBoo( ( preOpeBoo ) => !preOpeBoo ) : actStoObj.togColFun( picCurObj.id + ':items' ) }
-									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. */ }
+									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 										<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the label sit together on the toggle's left side. How: This wraps the chevron span and the kicker. */ }
@@ -2146,8 +2159,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 														className={ ` rd-item   ${ iteCurObj.vacation ? 'is-vac' : '' }   ${ iteOpeBoo ? 'is-editing' : '' }   ${ insIteStr === iteCurObj.id ? 'rd-item--insert' : '' }   ${ hetRowBoo ? 'is-tour-target ob-tour-pulse' : '' } ` }
 
+														data-element-name-hook='lisIteDiv'
+
 														onAnimationEnd={ () => { if ( insIteStr === iteCurObj.id ) setInsIteStr( null ); } }
-													>{ /* What: Row Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. */ }
+													>{ /* What: Row Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 														{ iteOpeBoo ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input. How: This renders the editing header while iteOpeBoo is true, otherwise the normal clickable row.
@@ -2231,12 +2246,14 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 															<button
 																className='rd-row'
 
+																data-element-name-hook='lisRowBut'
+
 																type='button'
 
 																aria-expanded={ iteOpeBoo }
 
 																onClick={ () => setOpeIteStr( iteOpeBoo ? null : iteCurObj.id ) }
-															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles opeIteStr between null and iteCurObj.id. */ }
+															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles opeIteStr between null and iteCurObj.id. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 																<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own meta line belong together. How: This wraps the name and sched spans below. */ }

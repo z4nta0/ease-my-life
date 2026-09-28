@@ -108,10 +108,12 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onSkiT
 		<div
 			className='ob-scrim'
 
+			data-element-name-hook='intScrDiv'
+
 			aria-label={ titHeaStr }
 			aria-modal='true'
 			role='dialog'
-		>{ /* What: Container Scrim Div Element. Why: This is the modal's own full-viewport backdrop and, since it can scroll, the positioning context the focus effect above cares about. How: This wraps the welcome card below and marks itself as an accessible dialog named by titHeaStr. */ }
+		>{ /* What: Container Scrim Div Element. Why: This is the modal's own full-viewport backdrop and, since it can scroll, the positioning context the focus effect above cares about. How: This wraps the welcome card below and marks itself as an accessible dialog named by titHeaStr. Its data-element-name-hook is read by the shared Escape-key handler. */ }
 
 
 			<div className={ ` ob-welcome   ${ redMotBoo ? '' : 'ob-in' } ` }>{ /* What: Welcome Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the "ob-in" entrance class unless redMotBoo reports the user prefers reduced motion. */ }

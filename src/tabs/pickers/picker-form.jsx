@@ -167,8 +167,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		const scrTimNum = setTimeout( () => { // What: Scroll Timeout Number. Why: The block must be measured only after ColDisCom's own unfurl animation has actually finished expanding it to full height. How: This waits redMotFun() ? 0 : 320ms before measuring and scrolling.
 
 
-			const daiBloEle = daiBloRef.current;                         // What: Daily Block Element. Why: The scroll calculation needs the actual DOM node. How: This reads daiBloRef.current once and reuses it below.
-			const scrConEle = daiBloEle && daiBloEle.closest( '.main' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move. How: This walks up from daiBloEle to the nearest .main ancestor.
+			const daiBloEle = daiBloRef.current;                                                        // What: Daily Block Element. Why: The scroll calculation needs the actual DOM node. How: This reads daiBloRef.current once and reuses it below.
+			const scrConEle = daiBloEle && daiBloEle.closest( '[data-element-name-hook="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move. How: This walks up from daiBloEle to the nearest .main ancestor.
 
 
 			if ( !daiBloEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
@@ -421,7 +421,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			}
 
 
-			const scrConEle = document.querySelector( '.main' ); // What: Scroll Container Element. Why: No scrollable ancestor was found in the walk above, so the shared app-wide scroller is the fallback target. How: This queries for the .main element directly.
+			const scrConEle = document.querySelector( '[data-element-name-hook="appConMai"]' ); // What: Scroll Container Element. Why: No scrollable ancestor was found in the walk above, so the shared app-wide scroller is the fallback target. How: This queries for the .main element directly.
 
 
 			if ( scrConEle ) { // What: Fallback Scroll Guard. Why: Only a genuinely-found fallback container should be scrolled. How: This scrolls .main to the top if it exists.
@@ -667,8 +667,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The just-opened creation slot can be well out of view at the bottom of a long pool. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
 
 
-			const addWraEle = addWraRef.current;                         // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
-			const scrConEle = addWraEle && addWraEle.closest( '.main' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
+			const addWraEle = addWraRef.current;                                                        // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
+			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
 
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
@@ -738,8 +738,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The editor renders in the same below-the-list slot, which can be well out of view from wherever in a long pool the Edit button that opened it was. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
 
 
-			const addWraEle = addWraRef.current;                         // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
-			const scrConEle = addWraEle && addWraEle.closest( '.main' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
+			const addWraEle = addWraRef.current;                                                        // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
+			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
 
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
@@ -1075,10 +1075,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					<button
 						className={ ` np-step   ob-picker-details   ${ forSteNum === 1 ? 'is-on' : 'is-done' } ` }
 
+						data-element-name-hook='detSteBut'
+
 						type='button'
 
 						onClick={ () => setForSteNum( 1 ) }
-					>{ /* What: Details Step Button Element. Why: The user needs a way to jump back to Step 1 at any time. How: This marks itself "is-on" while forSteNum is 1, otherwise "is-done", and always allows navigating back. */ }
+					>{ /* What: Details Step Button Element. Why: The user needs a way to jump back to Step 1 at any time. How: This marks itself "is-on" while forSteNum is 1, otherwise "is-done", and always allows navigating back. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 						<span className='np-step-num'>{ /* What: Step Number Span Element. Why: A completed step shows a checkmark instead of its own number. How: This renders a check icon once forSteNum has advanced past 1, otherwise the literal "1". */ }

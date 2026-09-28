@@ -655,7 +655,11 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 	return (
 
 
-		<section className='cat cat--reminders cat--enter'>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
+		<section
+			className='cat cat--reminders cat--enter'
+
+			data-element-name-hook='datCatSec'
+		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. */ }
@@ -664,12 +668,14 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 				<button
 					className='cat-h-l'
 
+					data-element-name-hook='catHeaBut'
+
 					type='button'
 
 					aria-expanded={ secOpeBoo }
 
 					onClick={ togMaiFun }
-				>{ /* What: Category Header Button Element. Why: This is the actual clickable disclosure control for the whole category. How: This toggles secOpeBoo via togMaiFun. */ }
+				>{ /* What: Category Header Button Element. Why: This is the actual clickable disclosure control for the whole category. How: This toggles secOpeBoo via togMaiFun. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 					<span className={ ` chev   ${ secOpeBoo ? 'is-open' : '' } ` }>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates the disclosure's open/closed staAppObj. How: This marks itself is-open while secOpeBoo is true. */ }
@@ -714,18 +720,24 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 			<ColDisCom open={ secOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The entire body below only exists while the category itself is expanded. How: This animates cat-body open/closed based on secOpeBoo. */ }
 
 
-				<div className='cat-body'>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. */ }
+				<div
+					className='cat-body'
+
+					data-element-name-hook='catBodDiv'
+				>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 					<button
 						className='rd-ctl'
+
+						data-element-name-hook='catTogBut'
 
 						type='button'
 
 						aria-expanded={ !conColBoo }
 
 						onClick={ () => actStoObj.togColFun( '__reminders' ) }
-					>{ /* What: Controls Disclosure Button Element. Why: Controls is a nested collapsible, open by default, remembered per section. How: This toggles conColBoo via actStoObj.togColFun. */ }
+					>{ /* What: Controls Disclosure Button Element. Why: Controls is a nested collapsible, open by default, remembered per section. How: This toggles conColBoo via actStoObj.togColFun. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 						<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker read together as one unit. How: This wraps both below. */ }
@@ -772,12 +784,14 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 					<button
 						className='rd-ctl'
 
+						data-element-name-hook='catTogBut'
+
 						type='button'
 
 						aria-expanded={ !iteColBoo }
 
 						onClick={ () => actStoObj.togColFun( '__reminders:items' ) }
-					>{ /* What: Items Disclosure Button Element. Why: Items is the same kind of nested collapsible as Controls, independently remembered. How: This toggles iteColBoo via actStoObj.togColFun. */ }
+					>{ /* What: Items Disclosure Button Element. Why: Items is the same kind of nested collapsible as Controls, independently remembered. How: This toggles iteColBoo via actStoObj.togColFun. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 						<span className='rd-ctl-l'>{ /* What: Items Left Span Element. Why: The chevron and the "Items" kicker read together as one unit. How: This wraps both below. */ }
@@ -900,8 +914,10 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 												className={ ` rd-item   ${ carOpeBoo ? 'is-editing' : '' }   ${ insIdeStr === curTasObj.id ? 'rd-item--insert' : '' } ` }
 
+												data-element-name-hook='lisIteDiv'
+
 												onAnimationEnd={ () => { if ( insIdeStr === curTasObj.id ) setInsIdeStr( null ); } } // What: Insert Flag Clear. Why: The entrance animation must play only once. How: This clears insIdeStr when this row's own animation ends while it still matches.
-											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. */ }
+											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
@@ -996,12 +1012,14 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 													<button
 														className='rd-row'
 
+														data-element-name-hook='lisRowBut'
+
 														type='button'
 
 														aria-expanded={ carOpeBoo }
 
 														onClick={ () => setOpeIdeStr( carOpeBoo ? null : curTasObj.id ) } // What: Row Toggle Click. Why: The same row button opens and closes its own editor. How: This clears opeIdeStr while open and sets it to this row otherwise.
-													>{ /* What: Row Toggle Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This toggles opeIdeStr to curTasObj's own id (or back to null). */ }
+													>{ /* What: Row Toggle Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This toggles opeIdeStr to curTasObj's own id (or back to null). Its data-element-name-hook is read by the App Features tours. */ }
 
 
 														<span className={ ` rd-ico   ${ isaOncBoo ? 'is-once' : '' } ` }>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. */ }

@@ -59,13 +59,15 @@ function HelButCom ( { actModBoo, onClick } ) {
 		<button
 			className={ ` help-btn   ${ actModBoo ? 'is-on' : '' } ` }
 
+			data-element-name-hook='helTogBut'
+
 			type='button'
 
 			aria-label={ actModBoo ? 'Hide help highlights' : 'Show help highlights' } // What: Toggle Label Ternary. Why: A screen reader should announce what pressing the button will do next. How: This names the hide action while help mode is on, the show action otherwise.
 			aria-pressed={ actModBoo }
 
 			onClick={ onClick }
-		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as both its "is-on" class and its aria-pressed state, and calls onClick when pressed. */ }
+		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as both its "is-on" class and its aria-pressed state, and calls onClick when pressed. Its data-element-name-hook is read by help mode and the App Features tours. */ }
 
 
 			i

@@ -140,7 +140,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 
-			const butActEle = navCurEle.querySelector( '.tabbtn.is-on' ); // What: Button Active Element. Why: This is the specific tab button the indicator needs to sit under. How: This is found via a CSS query for the "is-on" class inside the nav.
+			const butActEle = navCurEle.querySelector( '[data-element-name-hook="navTabBut"][aria-current="page"]' ); // What: Button Active Element. Why: This is the specific tab button the indicator needs to sit under. How: This is found via a CSS query for the "is-on" class inside the nav.
 
 
 			if ( !butActEle ) { setIndRecObj( null ); return; } // What: No Active Button Guard. Why: No tab is currently marked active, such as mid-transition. How: This clears the indicator to hide it and bails out of the rest of the measurement.
@@ -214,9 +214,11 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 			className={ ` tabbar   tabbar--${ tabPlaStr }   ${ raiOpeBoo ? 'is-open' : '' }   ${ className } ` }
 
+			data-element-name-hook='appTabNav'
+
 			aria-hidden={ tbcGhoBoo || undefined }
 			aria-label='Sections'
-		>{ /* What: Container Nav Element. Why: This is TabBarCom's own root element, holding every tab, the brand button, and the rail handle. How: This renders as an actual <nav> landmark, positioned/laid out per tabPlaStr and styled with the caller's own className. */ }
+		>{ /* What: Container Nav Element. Why: This is TabBarCom's own root element, holding every tab, the brand button, and the rail handle. How: This renders as an actual <nav> landmark, positioned/laid out per tabPlaStr and styled with the caller's own className. Its data-element-name-hook is read by the tour runner's and help mode's own layout math and outside-click checks, and the support form's scroll math. */ }
 
 
 			{ indRecObj && ( // What: Indicator Visibility Check. Why: There is nothing to position until a measurement has actually happened. How: This renders the indicator span only while indRecObj holds a value, otherwise it renders nothing at all.
@@ -418,12 +420,13 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 					className={ ` tabbtn   ${ tabConObj.ideStr === actIdeStr ? 'is-on' : '' } ` }
 
+					data-element-name-hook='navTabBut'
 					data-tab={ tabConObj.ideStr }
 
 					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
 
 					onClick={ () => onChange( tabConObj.ideStr ) }
-				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself "is-on"/current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. */ }
+				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself "is-on"/current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.jsx's own active-tab indicator. */ }
 
 
 					<IcoSvgCom
@@ -820,7 +823,9 @@ function AppRooCom () {
 				ref={ maiEleRef }
 
 				className='main'
-			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active. How: This renders the Today tab directly, or wraps every other tab in a shared main-inner div, based on actIdeStr. */ }
+
+				data-element-name-hook='appConMai'
+			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active. How: This renders the Today tab directly, or wraps every other tab in a shared main-inner div, based on actIdeStr. Its data-element-name-hook is read by every tab's, tour's, and help surface's own scroll-into-view code. */ }
 
 
 				{ actIdeStr === 'today' && ( // What: Today Tab Visibility Check. Why: The Today tab is rendered directly, not through the shared main-inner wrapper other tabs use. How: This renders TabTodCom, wrapped in its own fade/key transition div, only while actIdeStr is 'today'.

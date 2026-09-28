@@ -311,6 +311,8 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 							className={ ` group-name-input   group-name-slot   ${ cloOutBoo ? 'is-closing' : '' }   ${ namErrStr ? 'is-invalid' : '' } ` }
 
+							data-element-name-hook='groNamInp'
+
 							maxLength={ 30 }
 							type='text'
 							value={ draNamStr }
@@ -345,7 +347,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 
 							} }
-						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape.
+						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape. Its data-element-name-hook is read by the page tours' own group-rename steps.
 
 
 					) : ediModBoo ? ( // What: Rename Button Branch. Why: While Edit Mode is on but the field is closed, the name itself acts as a button that opens it. How: This renders a button showing groNamStr plus an edit glyph, wired to staEdiFun.
@@ -354,12 +356,14 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 						<button
 							className='group-name group-name--editable group-name-slot'
 
+							data-element-name-hook='groNamBut'
+
 							type='button'
 
 							aria-label={ `Rename group ${ groNamStr }` }
 
 							onClick={ staEdiFun }
-						>{ /* What: Group Rename Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. */ }
+						>{ /* What: Group Rename Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. Its data-element-name-hook is read by the page tours' own group-rename steps. */ }
 
 
 							{ groNamStr }

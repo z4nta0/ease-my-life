@@ -414,7 +414,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 			const matWidEle = curIteObj.mwsStr ? document.querySelector( curIteObj.mwsStr ) : null; // What: Match Width Element. Why: mwsStr sizes the open tip to a DIFFERENT element's own width than whatever is highlighted, e.g. the nav tip's own .tabbar container. How: This looks mwsStr up directly, independent of tarEleArr.
 
-			const tipWidNum = matWidEle && matWidEle.classList.contains( 'tabbar--bottom' ) // What: Tip Width Number. Why: "As wide as the navbar itself" is only sane on 'bottom' placement, where the container really is a reasonably-sized pill; 'top'/'side' would either run off-screen or force the tip's own text into an extremely tall narrow column. How: This reads matWidEle's own real width only while it carries the 'tabbar--bottom' class, otherwise leaves this undefined.
+			const tipWidNum = matWidEle && matWidEle.matches( '[data-placement="bottom"] > [data-element-name-hook="appTabNav"]' ) // What: Tip Width Number. Why: "As wide as the navbar itself" is only sane on 'bottom' placement, where the container really is a reasonably-sized pill; 'top'/'side' would either run off-screen or force the tip's own text into an extremely tall narrow column. How: This reads matWidEle's own real width only while it carries the 'tabbar--bottom' class, otherwise leaves this undefined.
 				? matWidEle.getBoundingClientRect().width // What: Navbar Width Read. Why: On 'bottom' placement the tip matches the navbar's own width. How: This reads matWidEle's own current width.
 				: undefined;                              // What: No Width Fallback. Why: Other placements keep the usual fixed tip width. How: This leaves the width undefined.
 
@@ -528,7 +528,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		setRecMapObj( nexMapObj ); // What: Rect Map Commit. Why: The whole freshly-recomputed map must replace the previous one in one single state update. How: This writes nexMapObj into recMapObj via its own setter.
 
 
-		const togBtnEle = document.querySelector( '.help-btn' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .help-btn currently on the page.
+		const togBtnEle = document.querySelector( '[data-element-name-hook="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .help-btn currently on the page.
 
 
 		if ( togBtnEle ) { // What: Toggle Found Guard. Why: Only write a toggle rect when the button was actually found. How: This measures and stores togBtnEle's own bounding rect.
@@ -628,7 +628,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		const hitTarFun = ( cliEveObj ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
 
 
-			if ( cliEveObj.target.closest( '.help-badge, .help-tip, .help-btn, .tabbar, .ob-tour' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
+			if ( cliEveObj.target.closest( '[data-element-name-hook="helBadBut"], [data-element-name-hook="helTipDiv"], [data-element-name-hook="helTogBut"], [data-element-name-hook="appTabNav"], [data-element-name-hook="touOveDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
 
 
 
@@ -875,6 +875,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 								top  : badRecObj.top
 							}}
 
+							data-element-name-hook='helBadBut'
+
 							type='button'
 
 							aria-label={ badLabStr }
@@ -888,7 +890,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 							} }
-						>{ /* What: Help Badge Button Element. Why: This is the actual clickable "i" marker opening/closing this target's own tip. How: This shows opeIdeStr === curIdeStr as its own "is-on" class and toggles opeIdeStr when clicked. */ }
+						>{ /* What: Help Badge Button Element. Why: This is the actual clickable "i" marker opening/closing this target's own tip. How: This shows opeIdeStr === curIdeStr as its own "is-on" class and toggles opeIdeStr when clicked. Its data-element-name-hook is read by help mode's own outside-click check. */ }
 
 
 							i
