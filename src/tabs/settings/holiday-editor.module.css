@@ -1,0 +1,490 @@
+
+
+
+/**
+ * holiday-editor.module.css = Holiday Editor Module
+ *
+ * @summary
+ * Styles for HolEdiCom, Settings' Days off list and its add form. Each
+ * built-in holiday is a row with its name, landing date, and an optional
+ * "observed" note on the left and a switch on the right; turning a holiday off
+ * mutes its name and draws a line through its date. A custom day off shows its
+ * date with an "every year" tag and a delete button, slides in when added, and
+ * collapses away when removed. The add form below the list takes a name and a
+ * date.
+ *
+ * The switch, delete button, and text field declarations are copied from
+ * shared classes other screens still use, until the design-system pass
+ * merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region holiday-list */
+
+.holiday-list { /* What: Holiday List. Why: The rows read as a plain stack, not a bulleted list. How: This strips the list's markers, margin, and padding. */
+
+
+	list-style : none;
+	margin     : 0;
+	padding    : 0;
+
+
+}
+
+
+
+/* #region holiday-row */
+
+.holiday-row { /* What: Holiday Row. Why: Each day off is one row, its details left and its control right, divided from the next. How: This spreads the two apart in a padded flex row with a bottom divider. */
+
+
+	align-items     : center;
+	border-bottom   : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 16px;
+	justify-content : space-between;
+	padding         : 11px 0;
+
+
+}
+.holiday-row:last-child { /* What: Last Holiday Row. Why: The card's own edge already closes the list. How: This drops the last row's divider. */
+
+
+	border-bottom : 0;
+
+
+}
+.holiday-row--enter { /* What: Entering Holiday Row. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as the row mounts, which existing rows skip since they're keyed by id. */
+
+
+	animation : holidayRowEnterFadeIn .4s cubic-bezier(.4,0,.2,1);
+
+
+}
+.holiday-row.is-exiting { /* What: Exiting Holiday Row. Why: A removed custom day should fade up and collapse so the rows below slide up smoothly. How: This plays the exit animation, which also collapses the row's height, and stops it taking clicks. */
+
+
+	animation      : holidayRowExit .3s cubic-bezier(.4,0,.2,1) forwards;
+	overflow       : hidden;
+	pointer-events : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Holiday Row. Why: Someone who asked for less motion shouldn't see rows slide in or out. How: This applies only when the reduced-motion preference is set. */
+
+
+	.holiday-row--enter { /* What: Still Entering Holiday Row. Why: A new row should simply appear. How: This turns the entrance off. */
+
+
+		animation : none;
+
+
+	}
+
+	.holiday-row.is-exiting { /* What: Instant Exiting Holiday Row. Why: Turning the exit off would leave the row fully visible until it's removed. How: This shortens the exit to an instant so the row jumps straight to its collapsed end state. */
+
+
+		animation-duration : .01s;
+
+
+	}
+
+
+}
+@keyframes holidayRowEnterFadeIn { /* What: Holiday Row Enter Fade In. Why: A short drop reads as the row joining the list. How: This fades the row in from slightly above. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-6px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes holidayRowExit { /* What: Holiday Row Exit. Why: The row should leave the way it came while closing its gap. How: This fades the row up and out while collapsing its height, padding, and divider. */
+
+
+	from {
+
+
+		max-height     : 60px;
+		opacity        : 1;
+		padding-bottom : 11px;
+		padding-top    : 11px;
+		transform      : none;
+
+
+	}
+
+	to {
+
+
+		border-bottom-width : 0;
+		max-height          : 0;
+		opacity             : 0;
+		padding-bottom      : 0;
+		padding-top         : 0;
+		transform           : translateY(-6px);
+
+
+	}
+
+
+}
+
+
+
+/* #region holiday-info */
+
+.holiday-info { /* What: Holiday Info. Why: The name and date stack together on the row's left. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.holiday-name { /* What: Holiday Name. Why: The day off's name leads its row, and mutes when the day is turned off. How: This sets it in medium-weight body text that fades its color. */
+
+
+	font-size   : 14px;
+	font-weight : 500;
+	transition  : color .28s ease;
+
+
+}
+.holiday-row[data-holiday-off-active] .holiday-name { /* What: Off Holiday Name. Why: A turned-off day should read as inactive. How: This mutes its name. */
+
+
+	color : var(--muted);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Holiday Name. Why: Someone who asked for less motion shouldn't see the name's color fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.holiday-name { /* What: Still Holiday Name. Why: The color should simply switch. How: This turns the fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region holiday-date */
+
+.holiday-date { /* What: Holiday Date. Why: The landing date and any observed note stack under the name in quieter type. How: This sets them in small muted mono, stacked in a tight column. */
+
+
+	color          : var(--muted);
+	display        : flex;
+	flex-direction : column;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 2px;
+	letter-spacing : 0.02em;
+	position       : relative;
+
+
+}
+.holiday-date--custom { /* What: Custom Holiday Date. Why: A custom day's date and "every year" tag fit on one line. How: This lays them out in a wrapping baseline row. */
+
+
+	align-items    : baseline;
+	flex-direction : row;
+	flex-wrap      : wrap;
+	gap            : 5px;
+
+
+}
+
+.holiday-date-main { /* What: Holiday Date Label. Why: The landing date carries the strike line when the day is turned off. How: This positions it for the line and keeps it to its own width. */
+
+
+	align-self : flex-start;
+	position   : relative;
+
+
+}
+.holiday-date-main::after { /* What: Holiday Date Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin line across the date's middle, scaled to nothing until the day is off. */
+
+
+	background       : currentColor;
+	content          : '';
+	height           : 1px;
+	left             : 0;
+	position         : absolute;
+	top              : 50%;
+	transform        : scaleX(0);
+	transform-origin : left center;
+	transition       : transform .28s ease;
+	width            : 100%;
+
+
+}
+.holiday-row[data-holiday-off-active] .holiday-date-main::after { /* What: Off Holiday Date Strike Line. Why: A turned-off day's date should read as struck through. How: This scales the line to full width. */
+
+
+	transform : scaleX(1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Holiday Date Strike Line. Why: Someone who asked for less motion shouldn't see the line draw in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.holiday-date-main::after { /* What: Still Holiday Date Strike Line. Why: The line should simply appear. How: This turns its draw-in off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.holiday-obs { /* What: Holiday Observed Note. Why: A holiday observed on a different weekday says so in an accent aside. How: This sets it in small italic accent text in the body font. */
+
+
+	color          : var(--accent);
+	font-family    : var(--font-sans, inherit);
+	font-size      : 11px;
+	font-style     : italic;
+	letter-spacing : 0;
+
+
+}
+
+.holiday-recur { /* What: Holiday Recurrence Tag. Why: The "every year" tag should sit quieter than the date. How: This fades it. */
+
+
+	opacity : 0.7;
+
+
+}
+
+/* #endregion holiday-date */
+
+/* #endregion holiday-info */
+
+
+
+/* #region switch */
+
+.switch { /* What: Holiday Switch. Why: Each built-in day off can be turned off without deleting it. How: This draws a small rounded track that keeps its size in the row, fading to the accent when on. */
+
+
+	background    : var(--border);
+	border-radius : 999px;
+	cursor        : pointer;
+	flex-shrink   : 0;
+	height        : 20px;
+	position      : relative;
+	transition    : background .15s;
+	width         : 36px;
+
+
+}
+.switch[aria-pressed="true"] { /* What: On Holiday Switch. Why: An enabled day's switch should read as on. How: This fills the track with the accent, keyed off the switch's own pressed state. */
+
+
+	background : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Holiday Switch. Why: Someone who asked for less motion shouldn't see the track fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch { /* What: Still Holiday Switch. Why: The track should simply switch. How: This turns its fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.switch i { /* What: Holiday Switch Knob. Why: The knob's position shows the switch's state at a glance. How: This draws a small round knob with a soft shadow that slides across the track. */
+
+
+	background    : var(--bg);
+	border-radius : 50%;
+	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	height        : 16px;
+	left          : 2px;
+	position      : absolute;
+	top           : 2px;
+	transition    : transform .15s;
+	width         : 16px;
+
+
+}
+.switch[aria-pressed="true"] i { /* What: On Holiday Switch Knob. Why: An on switch's knob sits at the right end. How: This slides the knob across. */
+
+
+	transform : translateX(16px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Holiday Switch Knob. Why: Someone who asked for less motion shouldn't see the knob slide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch i { /* What: Still Holiday Switch Knob. Why: The knob should simply jump to its new end. How: This turns the slide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion switch */
+
+
+
+.item-del { /* What: Custom Holiday Delete Button. Why: A custom day off can be removed with a quiet icon button. How: This draws a small muted square button that turns red on hover, with a color fade. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	display         : inline-flex;
+	height          : 28px;
+	justify-content : center;
+	transition      : background .12s, color .12s;
+	width           : 28px;
+
+
+}
+.item-del:hover { /* What: Hovered Custom Holiday Delete Button. Why: A destructive action should warn as the pointer reaches it. How: This gives it a background fill and turns its glyph red. */
+
+
+	background : var(--bg);
+	color      : oklch(0.5 0.18 25);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Custom Holiday Delete Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.item-del { /* What: Still Custom Holiday Delete Button. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion holiday-row */
+
+/* #endregion holiday-list */
+
+
+
+/* #region holiday-add */
+
+.holiday-add { /* What: Holiday Add Form. Why: Adding a custom day off sits below the list, divided from it. How: This lays the name field, date field, and Add button out in a wrapping row under a hairline border. */
+
+
+	align-items : center;
+	border-top  : 0.5px solid var(--border);
+	display     : flex;
+	flex-wrap   : wrap;
+	gap         : 8px;
+	margin-top  : 14px;
+	padding-top : 14px;
+
+
+}
+
+.np-input { /* What: Holiday Add Field. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from 180px, caps them at 260px, and fades the border on focus. */
+
+
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-sm);
+	color         : var(--text);
+	flex          : 1 1 180px;
+	font-family   : var(--font-sans);
+	font-size     : 14px;
+	margin-top    : 2px;
+	max-width     : 260px;
+	outline       : none;
+	padding       : 10px 12px;
+	transition    : border-color .12s;
+	width         : 100%;
+
+
+}
+.np-input::placeholder { /* What: Holiday Add Field Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.np-input:focus { /* What: Focused Holiday Add Field. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Holiday Add Field. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-input { /* What: Still Holiday Add Field. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.holiday-date-input { /* What: Holiday Add Date Field. Why: The native date picker needs enough room to show a full date. How: This gives it a minimum width. */
+
+
+	min-width : 150px;
+
+
+}
+
+/* #endregion holiday-add */
+
+

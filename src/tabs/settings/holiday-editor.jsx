@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: HolEdiCom is built directly on React's own APIs. How: This is used directly (React.useState, React.Fragment) instead of importing individual named hooks.
+import cssModObj from './holiday-editor.module.css'; // What: CSS Module Object. Why: The holiday list and its add form are styled from their own module. How: This maps each class name in holiday-editor.module.css to its hashed module class.
+import React     from 'react';                         // What: React. Why: HolEdiCom is built directly on React's own APIs. How: This is used directly (React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { ButBasCom   } from '../../ui/button.jsx';    // What: Button Base Component. Why: Adding a custom holiday needs a consistently-styled button. How: This is rendered in HolEdiCom's own add form.
@@ -81,7 +82,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 
 	const [ draNamStr, setDraNamStr ] = React.useState( '' );   // What: Draft Name String And Setter. Why: The "add a holiday" form needs somewhere to hold the name being typed before it is actually added. How: This is bound to the name input below and read by addCusFun.
 	const [ draDatStr, setDraDatStr ] = React.useState( '' );   // What: Draft Date String And Setter. Why: The "add a holiday" form needs somewhere to hold the date being picked before it is actually added. How: This is bound to the date input below and read by addCusFun.
-	const [ exiIdeStr, setExiIdeStr ] = React.useState( null ); // What: Exiting Identifier String And Setter. Why: A removed custom holiday should play its fade-up-and-out exit before the row actually disappears. How: This holds the id currently mid-exit, checked per-row below to apply the 'is-exiting' class.
+	const [ exiIdeStr, setExiIdeStr ] = React.useState( null ); // What: Exiting Identifier String And Setter. Why: A removed custom holiday should play its fade-up-and-out exit before the row actually disappears. How: This holds the id currently mid-exit, checked per-row below to apply the module's isExiting class.
 
 
 	// #region rmvExiFun
@@ -177,7 +178,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 
 
 			<ul
-				className='holiday-list'
+				className={ cssModObj.holidayList }
 
 				data-element-name-hook='holLisUno'
 			>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps comHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -196,24 +197,26 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 						<li
 							key={ holCurObj.keyStr }
 
-							className={ ` holiday-row   ${ holEnaBoo ? '' : 'is-off' } ` }
+							className={ cssModObj.holidayRow }
+
+							data-holiday-off-active={ !holEnaBoo || undefined } // What: Holiday Off Active Attribute. Why: A turned-off holiday's name mutes and its date is struck through by its module. How: This sets the presence-only attribute while holEnaBoo is false and removes it otherwise.
 						>{ /* What: Holiday Row Li Element. Why: Each computed holiday needs its own row pairing its name/date info with an on/off switch. How: This renders holCurObj's own name and date, plus a switch bound to holEnaBoo. */ }
 
 
-							<div className='holiday-info'>{ /* What: Holiday Info Div Element. Why: The name and date need their own grouping, separate from the switch. How: This wraps the name span and the date span below. */ }
+							<div className={ cssModObj.holidayInfo }>{ /* What: Holiday Info Div Element. Why: The name and date need their own grouping, separate from the switch. How: This wraps the name span and the date span below. */ }
 
 
-								<span className='holiday-name'>{ holCurObj.namStr }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
+								<span className={ cssModObj.holidayName }>{ holCurObj.namStr }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
 
-								<span className='holiday-date'>{ /* What: Holiday Date Span Element. Why: The landing date, and (when observed) the real weekday it falls on, need their own grouping. How: This wraps the main date span and, conditionally, the observed-note span below. */ }
+								<span className={ cssModObj.holidayDate }>{ /* What: Holiday Date Span Element. Why: The landing date, and (when observed) the real weekday it falls on, need their own grouping. How: This wraps the main date span and, conditionally, the observed-note span below. */ }
 
 
-									<span className='holiday-date-main'>{ shoDatFun( holCurObj.datObj ) }</span>{ /* What: Holiday Date Main Span Element. Why: Every row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shoDatFun. */ }
+									<span className={ cssModObj.holidayDateMain }>{ shoDatFun( holCurObj.datObj ) }</span>{ /* What: Holiday Date Main Span Element. Why: Every row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shoDatFun. */ }
 
 									{ holCurObj.obsBoo && ( // What: Observed Note Check. Why: A holiday shifted off a weekend needs to also explain which real weekday it falls on. How: This renders the observed-note span only while holCurObj.obsBoo is true.
 
 
-										<span className='holiday-obs'>observed &middot; { holCurObj.namStr === 'New Year\'s Day' ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj ) }</span> // What: Holiday Obs Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun.
+										<span className={ cssModObj.holidayObs }>observed &middot; { holCurObj.namStr === 'New Year\'s Day' ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj ) }</span> // What: Holiday Obs Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun.
 
 
 									) }
@@ -225,7 +228,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 							</div>
 
 							<button
-								className={ ` switch   ${ holEnaBoo ? 'is-on' : '' } ` }
+								className={ cssModObj.switch }
 
 								data-element-name-hook='togSwiBut'
 
@@ -236,7 +239,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-								<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
+								<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed state. */ }
 
 
 							</button>
@@ -257,21 +260,21 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 					<li
 						key={ cusCurObj.id }
 
-						className={ ` holiday-row   holiday-row--custom   holiday-row--enter   ${ exiIdeStr === cusCurObj.id ? 'is-exiting' : '' } ` }
+						className={` ${ cssModObj.holidayRow }   ${ cssModObj.holidayRowEnter }   ${ exiIdeStr === cusCurObj.id ? cssModObj.isExiting : '' } `}
 					>{ /* What: Custom Holiday Row Li Element. Why: Each custom holiday needs its own row pairing its name/recurrence info with a delete button. How: This renders cusCurObj's own name and recurring date, plus a delete button bound to rmvExiFun. */ }
 
 
-						<div className='holiday-info'>{ /* What: Holiday Info Div Element. Why: The name and recurrence need their own grouping, separate from the delete button. How: This wraps the name span and the date span below. */ }
+						<div className={ cssModObj.holidayInfo }>{ /* What: Holiday Info Div Element. Why: The name and recurrence need their own grouping, separate from the delete button. How: This wraps the name span and the date span below. */ }
 
 
-							<span className='holiday-name'>{ cusCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders cusCurObj's own name field. */ }
+							<span className={ cssModObj.holidayName }>{ cusCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders cusCurObj's own name field. */ }
 
-							<span className='holiday-date holiday-date--custom'>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below. */ }
+							<span className={` ${ cssModObj.holidayDate }   ${ cssModObj.holidayDateCustom } `}>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below. */ }
 
 
 								<span>{ recDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: Every custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via recDatFun. */ }
 
-								<span className='holiday-recur'>&middot; every year</span>{ /* What: Holiday Recur Span Element. Why: A custom holiday recurs annually, and that is not otherwise obvious from the date label alone. How: This renders a fixed "every year" note. */ }
+								<span className={ cssModObj.holidayRecur }>&middot; every year</span>{ /* What: Holiday Recur Span Element. Why: A custom holiday recurs annually, and that is not otherwise obvious from the date label alone. How: This renders a fixed "every year" note. */ }
 
 
 							</span>
@@ -280,7 +283,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 						</div>
 
 						<button
-							className='item-del'
+							className={ cssModObj.itemDel }
 
 							aria-label={ `Remove ${ cusCurObj.name }` }
 
@@ -308,14 +311,14 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 
 
 			<div
-				className='holiday-add'
+				className={ cssModObj.holidayAdd }
 
 				data-element-name-hook='holAddDiv'
 			>{ /* What: Holiday Add Div Element. Why: Adding a custom holiday needs its own small form beneath the list. How: This wraps the name input, date input, and Add button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 				<input
-					className='np-input np-input--sm'
+					className={ cssModObj.npInput }
 
 					autoComplete='off'
 					placeholder='Add a holiday, e.g. Birthday'
@@ -337,7 +340,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 				/>{ /* What: Draft Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape like every other text input in this tab. */ }
 
 				<input
-					className='np-input np-input--sm holiday-date-input'
+					className={` ${ cssModObj.npInput }   ${ cssModObj.holidayDateInput } `}
 
 					type='date'
 					value={ draDatStr }
