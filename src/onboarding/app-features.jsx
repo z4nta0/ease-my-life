@@ -8,7 +8,7 @@ import React from 'react'; // What: React. Why: This file's own FeaTouCom and Fe
 
 import { buiTs1Fun } from './page-tours.jsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
 import { GuiTouCom } from './tour-runner.jsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each App Feature tutorial once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-feature step array.
-import { IcoSvgCom } from '../ui/ui.jsx';      // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
+import { IcoSvgCom } from '../ui/icon.jsx';    // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom } from './intro-modal.jsx'; // What: Intro Modal Component. Why: Each App Feature tutorial opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this feature's own icon/title/paragraphs/pills.
 
 // #endregion Imports

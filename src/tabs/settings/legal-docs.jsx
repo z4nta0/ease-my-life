@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { IcoSvgCom } from '../../ui/ui.jsx';       // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { IcoSvgCom } from '../../ui/icon.jsx';     // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
 import { redMotFun } from '../../utils/motion.js'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
 
 // #endregion Imports

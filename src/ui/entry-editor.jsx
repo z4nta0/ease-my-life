@@ -6,16 +6,19 @@
 import React from 'react'; // What: React. Why: This is the UI library EntEdiCom is built on. How: This is used directly (React.forwardRef, React.useState, React.useRef, React.useEffect, React.useImperativeHandle, ...) instead of importing individual named hooks.
 
 
-import { BooResCom    } from './ui.jsx';           // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntEdiCom's own Boost row.
-import { ButBasCom    } from './ui.jsx';           // What: Button Base Component. Why: The editor's own Save, Cancel and Delete actions are shared styled buttons. How: This is rendered for each footer action and the delete confirm.
-import { CAD_NAM_OBJ  } from '../core/cadence.js'; // What: Cadence Namespace Object. Why: An ease item's day range reads in its picker's own cadence unit. How: This is called via CAD_NAM_OBJ.uniWorFun to word the Soonest/Latest range as days, weeks or months.
-import { EUR_WAR_STR  } from '../constants.js';    // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntEdiCom.
-import { FilButCom    } from './ui.jsx';           // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntEdiCom's own Fill/Refill row, labeled per direction.
-import { InfTipCom    } from './ui.jsx';           // What: Info Tip Component. Why: The ease range rows need an inline explanation of what their values mean. How: This renders an info bubble carrying EUR_WAR_STR next to those rows.
-import { NumSteCom    } from './ui.jsx';           // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntEdiCom's own ease rows.
-import { PIC_NAM_OBJ  } from '../core/pickers.js'; // What: Pickers Namespace Object. Why: An item with no ease band of its own falls back to its picker's average band. How: This is called via PIC_NAM_OBJ.aveEasFun.
-import { THR_VAL_NUM  } from '../constants.js';    // What: Threshold Value Number. Why: The ease day-range math divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax to get its Soonest/Latest day counts.
-import { useEscCanFun } from './ui.jsx';           // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
+import { BooResCom    } from './boost-reset.jsx';    // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntEdiCom's own Boost row.
+import { ButBasCom    } from './button.jsx';         // What: Button Base Component. Why: The editor's own Save, Cancel and Delete actions are shared styled buttons. How: This is rendered for each footer action and the delete confirm.
+import { CAD_NAM_OBJ  } from '../core/cadence.js';   // What: Cadence Namespace Object. Why: An ease item's day range reads in its picker's own cadence unit. How: This is called via CAD_NAM_OBJ.uniWorFun to word the Soonest/Latest range as days, weeks or months.
+import { EUR_WAR_STR  } from '../constants.js';      // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntEdiCom.
+import { FilButCom    } from './fill-button.jsx';    // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntEdiCom's own Fill/Refill row, labeled per direction.
+import { InfTipCom    } from './info-tip.jsx';       // What: Info Tip Component. Why: The ease range rows need an inline explanation of what their values mean. How: This renders an info bubble carrying EUR_WAR_STR next to those rows.
+import { NumSteCom    } from './number-stepper.jsx'; // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntEdiCom's own ease rows.
+import { PIC_NAM_OBJ  } from '../core/pickers.js';   // What: Pickers Namespace Object. Why: An item with no ease band of its own falls back to its picker's average band. How: This is called via PIC_NAM_OBJ.aveEasFun.
+import { THR_VAL_NUM  } from '../constants.js';      // What: Threshold Value Number. Why: The ease day-range math divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax to get its Soonest/Latest day counts.
+import { useEscCanFun } from './escape-cancel.js';   // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
+
+
+import './edit-guard.js'; // What: Edit Guard Import. Why: This file arms and disarms window.__editGuard, which only exists once edit-guard.js has run. How: This is imported purely for that side effect.
 
 // #endregion Imports
 

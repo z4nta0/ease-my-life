@@ -6,8 +6,8 @@
 import React from 'react'; // What: React. Why: This is the UI library HelButCom, HelOveCom and HelTipCom are built on. How: This is used directly (React.useState, React.useRef, React.useMemo, React.useCallback, React.useEffect, React.useLayoutEffect) throughout, instead of importing individual named hooks.
 
 
-import { createPortal } from 'react-dom';    // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelOveCom's own JSX and document.body inside its return.
-import { IcoSvgCom    } from '../ui/ui.jsx'; // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
+import { createPortal } from 'react-dom';      // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelOveCom's own JSX and document.body inside its return.
+import { IcoSvgCom    } from '../ui/icon.jsx'; // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
 
 // #endregion Imports
 

@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { IcoSvgCom } from '../ui/ui.jsx'; // What: Icon Svg Component. Why: Several items' own body copy renders a small inline icon next to a button's own label, so a reader can match the tip back to the real control. How: This is rendered inside body JSX throughout this file's own catalogs (e.g. Card Actions, Picker Items).
+import { IcoSvgCom } from '../ui/icon.jsx'; // What: Icon Svg Component. Why: Several items' own body copy renders a small inline icon next to a button's own label, so a reader can match the tip back to the real control. How: This is rendered inside body JSX throughout this file's own catalogs (e.g. Card Actions, Picker Items).
 
 // #endregion Imports
 
