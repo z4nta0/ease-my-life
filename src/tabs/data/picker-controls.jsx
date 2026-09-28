@@ -272,9 +272,9 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 
-		const firMapObj = fliFirRef.current;                                                           // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from fliFirRef.current and reused throughout this effect run.
-		const pilNodArr = [ ...raiCurEle.querySelectorAll( '[data-element-name-hook="conPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill needs to be measured and possibly animated. How: This queries every '.cnd-pill' element inside the rail and spreads the NodeList into a real array.
-		const redMotBoo = redMotFun();                                                                 // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
+		const firMapObj = fliFirRef.current;                                                            // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from fliFirRef.current and reused throughout this effect run.
+		const pilNodArr = [ ...raiCurEle.querySelectorAll( '[data-element-name-hook~="conPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill needs to be measured and possibly animated. How: This queries every '.cnd-pill' element inside the rail and spreads the NodeList into a real array.
+		const redMotBoo = redMotFun();                                                                  // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
 
 
 		pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual FLIP tween (or fade-in, if newly pinned), since each may have moved a different distance. How: This computes each pill's own delta from firMapObj and plays the matching animation.
@@ -364,8 +364,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 
-		const pilNodArr = [ ...groCurEle.querySelectorAll( '[data-element-name-hook="groPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered group pill needs to be checked for movement. How: This queries every '.picker-group-pill' element inside the row and spreads the NodeList into a real array.
-		const preMapObj = groFliRef.current;                                                           // What: Previous Map Object. Why: A FLIP tween needs each pill's own position from before this render's reorder. How: This reads whatever the previous run of this effect recorded.
+		const pilNodArr = [ ...groCurEle.querySelectorAll( '[data-element-name-hook~="groPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered group pill needs to be checked for movement. How: This queries every '.picker-group-pill' element inside the row and spreads the NodeList into a real array.
+		const preMapObj = groFliRef.current;                                                            // What: Previous Map Object. Why: A FLIP tween needs each pill's own position from before this render's reorder. How: This reads whatever the previous run of this effect recorded.
 
 
 		if ( preMapObj && !redMotFun() ) { // What: Has Previous Guard. Why: The very first run has nothing to compare against, and a reduced-motion user should never see this tween. How: This only attempts to animate once a previous snapshot exists and motion isn't reduced.

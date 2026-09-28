@@ -125,7 +125,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The Cancel button below has its own click handling and must not also trigger the row-level tour toggle. How: This bails out when the click landed inside the actions area.
+			if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The Cancel button below has its own click handling and must not also trigger the row-level tour toggle. How: This bails out when the click landed inside the actions area.
 
 
 
@@ -320,11 +320,11 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area or the open name input) should toggle done. How: This checks both exclusion zones first, then calls onTogTasFun.
 
 
-		if ( cliEveObj.target.closest( '[data-element-name-hook="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The skip/edit buttons have their own click handling and must not also toggle done. How: This bails out when the click landed inside the actions area.
+		if ( cliEveObj.target.closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: The skip/edit buttons have their own click handling and must not also toggle done. How: This bails out when the click landed inside the actions area.
 
 
 
-		if ( cliEveObj.target.closest( '[data-element-name-hook="remNamInp"]' ) ) return; // What: Name Input Guard. Why: Typing in the open name input must not also toggle done. How: This bails out when the click landed inside the name input.
+		if ( cliEveObj.target.closest( '[data-element-name-hook~="remNamInp"]' ) ) return; // What: Name Input Guard. Why: Typing in the open name input must not also toggle done. How: This bails out when the click landed inside the name input.
 
 
 

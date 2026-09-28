@@ -104,14 +104,14 @@ const NAV_TAB_ARR = [ // What: Nav Tab Array. Why: The shared nav tip describes 
 const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same nav, so its own help item is defined once here. How: HelOveCom prepends this ahead of every page's own catalog.
 
 
-	absStr    : ':is([data-placement="side"], [data-placement="top"]) > [data-element-name-hook="appTabNav"]', // What: Always-Below-Selector String. Why: On 'side' placement the target can span most of the viewport's height, and on 'top' the fits-below check can flip to above on a short viewport and cover the navbar entirely. How: HelOveCom sets alwBelBoo whenever this selector matches, so plaTipFun always places the tip below.
-	ideStr    : '__nav',                       // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
-	mtwBoo    : true,                          // What: Match-Target-Width Boolean. Why: This tip's own content grew to several paragraphs, and the usual fixed 280px width read too cramped. How: HelTipCom sizes the tip to the width mwsStr measures.
-	mwsStr    : '[data-element-name-hook="appTabNav"]',                     // What: Match-Width-Selector String. Why: The tip should be as wide as the navbar itself. How: HelOveCom measures this element's own width on 'bottom' placement.
-	padYcoNum : 7,                             // What: Pad Y-Coordinate Number. Why: The highlight should sit flush with the tab bar's own outer edge on 'bottom' placement. How: This overrides the flat vertical pad.
-	scrBoo    : true,                          // What: Scroll Boolean. Why: On 'side' placement the target can span most of the viewport's own height. How: HelTipCom caps the body to the room plaTipFun found and scrolls past it.
-	selStr    : '[data-tab]',                  // What: Selector String. Why: Every nav button shares one badge and one tip. How: finTarFun matches all five tab buttons, which HelOveCom unions into one highlight.
-	titStr    : 'Navigation',                  // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
+	absStr    : ':is([data-placement="side"], [data-placement="top"]) > [data-element-name-hook~="appTabNav"]', // What: Always-Below-Selector String. Why: On 'side' placement the target can span most of the viewport's height, and on 'top' the fits-below check can flip to above on a short viewport and cover the navbar entirely. How: HelOveCom sets alwBelBoo whenever this selector matches, so plaTipFun always places the tip below.
+	ideStr    : '__nav',                                                                                        // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
+	mtwBoo    : true,                                                                                           // What: Match-Target-Width Boolean. Why: This tip's own content grew to several paragraphs, and the usual fixed 280px width read too cramped. How: HelTipCom sizes the tip to the width mwsStr measures.
+	mwsStr    : '[data-element-name-hook~="appTabNav"]',                                                        // What: Match-Width-Selector String. Why: The tip should be as wide as the navbar itself. How: HelOveCom measures this element's own width on 'bottom' placement.
+	padYcoNum : 7,                                                                                              // What: Pad Y-Coordinate Number. Why: The highlight should sit flush with the tab bar's own outer edge on 'bottom' placement. How: This overrides the flat vertical pad.
+	scrBoo    : true,                                                                                           // What: Scroll Boolean. Why: On 'side' placement the target can span most of the viewport's own height. How: HelTipCom caps the body to the room plaTipFun found and scrolls past it.
+	selStr    : '[data-tab]',                                                                                   // What: Selector String. Why: Every nav button shares one badge and one tip. How: finTarFun matches all five tab buttons, which HelOveCom unions into one highlight.
+	titStr    : 'Navigation',                                                                                   // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
 
 	bodEle : ( // What: Body Element. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps NAV_TAB_ARR, reusing each tab's own real nav icon so it can never drift from the real button.
 
@@ -187,9 +187,9 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
 const RAI_HAN_OBJ = { // What: Rail Handle Object. Why: The side rail's own pull handle needs its own help item on every page. How: HelOveCom prepends this ahead of every page's own catalog, right after NAV_HEL_OBJ.
 
 
-	ideStr : '__railHandle',                         // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
-	selStr : '[data-element-name-hook="raiHanBut"]', // What: Selector String. Why: The handle is a single real button. How: finTarFun matches it only while the drawer breakpoint renders it.
-	titStr : 'Sidebar Toggle',                       // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
+	ideStr : '__railHandle',                          // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
+	selStr : '[data-element-name-hook~="raiHanBut"]', // What: Selector String. Why: The handle is a single real button. How: finTarFun matches it only while the drawer breakpoint renders it.
+	titStr : 'Sidebar Toggle',                        // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
 
 	bodEle : <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</> // What: Body Element. Why: This is the tip's own explanatory text. How: HelTipCom renders it as the tip's body.
 
@@ -261,11 +261,11 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		const chrSelArr = [ // What: Chrome Selector Array. Why: These are the only pieces of always-on-top chrome any highlight ever needs clipping against; the tab bar alone varies its own edge at runtime. How: This is mapped into real chrome items below.
 
 
-			[ '[data-element-name-hook="todPagHea"]', 'top'  ], // What: Today Header Entry. Why: The Today header stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
-			[ '[data-element-name-hook="groRaiAsi"]', 'top'  ], // What: Group Rail Entry. Why: The Today group rail stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
-			[ '[data-element-name-hook="setRaiAsi"]', 'top'  ], // What: Settings Rail Entry. Why: The Settings section rail stays pinned above the scrolling page. How: This pairs its hook selector with the edge a highlight is clipped against.
-			[ '[data-element-name-hook="appTabNav"]', 'auto' ], // What: Tab Bar Entry. Why: The tab bar's own clipped edge depends on its placement. How: This pairs its hook selector with the edge a highlight is clipped against.
-			[ '[data-element-name-hook="ediBanDiv"]', 'top'  ]  // What: Edit Mode Banner Entry. Why: The Edit Mode banner stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook~="todPagHea"]', 'top'  ], // What: Today Header Entry. Why: The Today header stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook~="groRaiAsi"]', 'top'  ], // What: Group Rail Entry. Why: The Today group rail stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook~="setRaiAsi"]', 'top'  ], // What: Settings Rail Entry. Why: The Settings section rail stays pinned above the scrolling page. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook~="appTabNav"]', 'auto' ], // What: Tab Bar Entry. Why: The tab bar's own clipped edge depends on its placement. How: This pairs its hook selector with the edge a highlight is clipped against.
+			[ '[data-element-name-hook~="ediBanDiv"]', 'top'  ]  // What: Edit Mode Banner Entry. Why: The Edit Mode banner stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
 
 
 		];
@@ -426,7 +426,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 			const matWidEle = curIteObj.mwsStr ? document.querySelector( curIteObj.mwsStr ) : null; // What: Match Width Element. Why: mwsStr sizes the open tip to a DIFFERENT element's own width than whatever is highlighted, e.g. the nav tip's own .tabbar container. How: This looks mwsStr up directly, independent of tarEleArr.
 
-			const tipWidNum = matWidEle && matWidEle.matches( '[data-placement="bottom"] > [data-element-name-hook="appTabNav"]' ) // What: Tip Width Number. Why: "As wide as the navbar itself" is only sane on 'bottom' placement, where the container really is a reasonably-sized pill; 'top'/'side' would either run off-screen or force the tip's own text into an extremely tall narrow column. How: This reads matWidEle's own real width only while it carries the 'tabbar--bottom' class, otherwise leaves this undefined.
+			const tipWidNum = matWidEle && matWidEle.matches( '[data-placement="bottom"] > [data-element-name-hook~="appTabNav"]' ) // What: Tip Width Number. Why: "As wide as the navbar itself" is only sane on 'bottom' placement, where the container really is a reasonably-sized pill; 'top'/'side' would either run off-screen or force the tip's own text into an extremely tall narrow column. How: This reads matWidEle's own real width only while it carries the 'tabbar--bottom' class, otherwise leaves this undefined.
 				? matWidEle.getBoundingClientRect().width // What: Navbar Width Read. Why: On 'bottom' placement the tip matches the navbar's own width. How: This reads matWidEle's own current width.
 				: undefined;                              // What: No Width Fallback. Why: Other placements keep the usual fixed tip width. How: This leaves the width undefined.
 
@@ -540,7 +540,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		setRecMapObj( nexMapObj ); // What: Rect Map Commit. Why: The whole freshly-recomputed map must replace the previous one in one single state update. How: This writes nexMapObj into recMapObj via its own setter.
 
 
-		const togBtnEle = document.querySelector( '[data-element-name-hook="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .help-btn currently on the page.
+		const togBtnEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .help-btn currently on the page.
 
 
 		if ( togBtnEle ) { // What: Toggle Found Guard. Why: Only write a toggle rect when the button was actually found. How: This measures and stores togBtnEle's own bounding rect.
@@ -640,7 +640,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		const hitTarFun = ( cliEveObj ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook="helTogBut"], [data-element-name-hook="appTabNav"], [data-element-name-hook="touOveDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
+			if ( cliEveObj.target.closest( '[data-element-name-hook~="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook~="helTogBut"], [data-element-name-hook~="appTabNav"], [data-element-name-hook~="touOveDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
 
 
 

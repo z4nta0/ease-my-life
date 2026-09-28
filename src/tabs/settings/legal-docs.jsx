@@ -1019,9 +1019,9 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 
-		const maiScrEle = document.querySelector( '[data-element-name-hook="appConMai"]' ); // What: Main Scroll Element. Why: The app scrolls inside this element, not the document body, so this is what actually needs locking. How: This is queried once and reused for both the lock below and the cleanup's own restore.
-		const scrTopNum = maiScrEle ? maiScrEle.scrollTop : 0;                              // What: Scroll Top Number. Why: The scroller's exact offset at open time must be restored on close, even past the panel's own top/bottom. How: This is read once here and reused in the cleanup's own restore below.
-		const preOveStr = maiScrEle ? maiScrEle.style.overflow : '';                        // What: Previous Overflow String. Why: The scroller's own prior inline overflow value must be restored exactly, not just cleared. How: This is read once here and reused in the cleanup's own restore below.
+		const maiScrEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Main Scroll Element. Why: The app scrolls inside this element, not the document body, so this is what actually needs locking. How: This is queried once and reused for both the lock below and the cleanup's own restore.
+		const scrTopNum = maiScrEle ? maiScrEle.scrollTop : 0;                               // What: Scroll Top Number. Why: The scroller's exact offset at open time must be restored on close, even past the panel's own top/bottom. How: This is read once here and reused in the cleanup's own restore below.
+		const preOveStr = maiScrEle ? maiScrEle.style.overflow : '';                         // What: Previous Overflow String. Why: The scroller's own prior inline overflow value must be restored exactly, not just cleared. How: This is read once here and reused in the cleanup's own restore below.
 
 
 		if ( maiScrEle ) maiScrEle.style.overflow = 'hidden'; // What: Scroll Lock Guard. Why: Nothing behind the modal should scroll while it is open. How: This sets the scroller's own inline overflow to hidden, only when the scroller actually exists.

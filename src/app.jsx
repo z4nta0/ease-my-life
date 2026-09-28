@@ -140,7 +140,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 
-			const butActEle = navCurEle.querySelector( '[data-element-name-hook="navTabBut"][aria-current="page"]' ); // What: Button Active Element. Why: This is the specific tab button the indicator needs to sit under. How: This is found via a CSS query for the "is-on" class inside the nav.
+			const butActEle = navCurEle.querySelector( '[data-element-name-hook~="navTabBut"][aria-current="page"]' ); // What: Button Active Element. Why: This is the specific tab button the indicator needs to sit under. How: This is found via a CSS query for the "is-on" class inside the nav.
 
 
 			if ( !butActEle ) { setIndRecObj( null ); return; } // What: No Active Button Guard. Why: No tab is currently marked active, such as mid-transition. How: This clears the indicator to hide it and bails out of the rest of the measurement.

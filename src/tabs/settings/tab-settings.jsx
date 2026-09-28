@@ -329,7 +329,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook="appConMai"]' );    // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs to be measured/listened to in the normal case. How: This walks up from this component's own root to the nearest '.main' ancestor.
+		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' );   // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs to be measured/listened to in the normal case. How: This walks up from this component's own root to the nearest '.main' ancestor.
 		const spyIdeSet = new Set( [ 'daily', 'holidays', 'data', 'account', 'about', 'legal' ] ); // What: Spy Identifier Set. Why: Every section after the first should be assignable active purely from scroll position. How: This is checked inside the loop below, skipping any section whose id is not a member. // Appearance is left out on purpose: it's the fallback whenever no later section has crossed the base line. Legal can take part like every other section thanks to the Legal spacer effect below, which gives it enough scroll room to reach the base line.
 
 
@@ -431,8 +431,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	React.useEffect( () => { // What: Legal Spacer Effect. Why: Legal is the last section, so the page used to run out of scroll before its own top could reach the spy's base line, leaving it impossible to highlight by scrolling (or to stay highlighted after a jump). How: This measures how tall Legal must be for its own top to scroll up to the sticky offset, re-measuring whenever the scroll container resizes, and stores that in legMinNum.
 
 
-		const legCurEle = secMapRef.current[ 'legal' ];                                         // What: Legal Current Element. Why: The Legal section is the one being sized. How: This looks up its own registered element in secMapRef.
-		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.main' scroller's own height and scroll range drive the measurement. How: This walks up from this component's own root to the nearest '.main' ancestor.
+		const legCurEle = secMapRef.current[ 'legal' ];                                          // What: Legal Current Element. Why: The Legal section is the one being sized. How: This looks up its own registered element in secMapRef.
+		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.main' scroller's own height and scroll range drive the measurement. How: This walks up from this component's own root to the nearest '.main' ancestor.
 
 
 		if ( !legCurEle || !scrConEle ) return; // What: Missing Element Guard. Why: Nothing can be measured if either element is not actually mounted. How: This bails out early whenever either lookup above failed.
@@ -484,8 +484,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		skiSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy handler must not fight this deliberate jump while it is still animating. How: This flags skiSpyRef true, checked as a guard at the top of onScrEveFun above.
 
-		const scrConEle = secCurEle.closest( '[data-element-name-hook="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest '.main' ancestor.
-		const jumTopBoo = secIdeStr === SET_SEC_ARR[ 0 ].ideStr;                       // What: Jump Top Boolean. Why: Jumping to the very first section should reveal the tab's own header too, not just that section. How: This is true only when secIdeStr matches SET_SEC_ARR's own first entry. // The first section is the top of the tab; scroll all the way up so the header comes back into view rather than stopping at the section.
+		const scrConEle = secCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest '.main' ancestor.
+		const jumTopBoo = secIdeStr === SET_SEC_ARR[ 0 ].ideStr;                        // What: Jump Top Boolean. Why: Jumping to the very first section should reveal the tab's own header too, not just that section. How: This is true only when secIdeStr matches SET_SEC_ARR's own first entry. // The first section is the top of the tab; scroll all the way up so the header comes back into view rather than stopping at the section.
 
 
 		if ( scrConEle ) { // What: Container Scroll Check. Why: The normal case scrolls inside '.main', while the fallback scrolls the window. How: This takes the container branch whenever a '.main' ancestor was found.

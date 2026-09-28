@@ -87,7 +87,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 
 
 
-		const butActEle = segCurEle.querySelector( '[data-element-name-hook="segConBut"][aria-pressed="true"]' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via a CSS query for the "is-on" class inside the group.
+		const butActEle = segCurEle.querySelector( '[data-element-name-hook~="segConBut"][aria-pressed="true"]' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via a CSS query for the "is-on" class inside the group.
 
 
 		if ( !butActEle ) return; // What: No Active Button Guard. Why: No option is currently marked active, such as mid-transition. How: This bails out of the rest of the placement when there is nothing to measure against.

@@ -118,7 +118,7 @@ const arrHorFun = ( curRecObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min(
 const safBotFun = () => { // What: Safe Bottom Function. Why: A bottom-anchored tab bar is the one piece of chrome that clips from the BOTTOM of the viewport instead of the top. How: This returns the bar's own top edge when present, otherwise the full viewport height.
 
 
-	const barCurEle = document.querySelector( '[data-placement="bottom"] > [data-element-name-hook="appTabNav"]' ); // What: Bar Current Element. Why: Only a bottom-placed tab bar occupies this edge at all. How: This looks up the bar element fresh on every call.
+	const barCurEle = document.querySelector( '[data-placement="bottom"] > [data-element-name-hook~="appTabNav"]' ); // What: Bar Current Element. Why: Only a bottom-placed tab bar occupies this edge at all. How: This looks up the bar element fresh on every call.
 
 
 
@@ -184,8 +184,8 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
 
 
 
-	const heaCurEle = document.querySelector( '[data-element-name-hook="todPagHea"]' ); // What: Header Current Element. Why: Today's own sticky header is the first, always-present piece of chrome to clamp against. How: This looks it up fresh on every call, since it may not exist outside the Today tab.
-	const raiCurEle = document.querySelector( '[data-element-name-hook="groRaiAsi"]' ); // What: Rail Current Element. Why: On mobile the group rail stacks below the header as its own row, so it needs folding into the same floor. How: This looks up the rail element fresh on every call.
+	const heaCurEle = document.querySelector( '[data-element-name-hook~="todPagHea"]' ); // What: Header Current Element. Why: Today's own sticky header is the first, always-present piece of chrome to clamp against. How: This looks it up fresh on every call, since it may not exist outside the Today tab.
+	const raiCurEle = document.querySelector( '[data-element-name-hook~="groRaiAsi"]' ); // What: Rail Current Element. Why: On mobile the group rail stacks below the header as its own row, so it needs folding into the same floor. How: This looks up the rail element fresh on every call.
 
 	let floBotNum = heaCurEle ? heaCurEle.getBoundingClientRect().bottom : 0; // What: Floor Bottom Number. Why: This is the running "safe top" answer, widened below by whichever additional chrome is also present. How: This starts at the header's own bottom edge, or 0 when there is no header at all.
 
@@ -200,7 +200,7 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
 
 
 
-	const banCurEle = document.querySelector( '[data-element-name-hook="ediBanDiv"]' ); // What: Banner Current Element. Why: Edit Mode's own sticky banner is a third, independently-present piece of chrome. How: This looks up the banner element fresh on every call.
+	const banCurEle = document.querySelector( '[data-element-name-hook~="ediBanDiv"]' ); // What: Banner Current Element. Why: Edit Mode's own sticky banner is a third, independently-present piece of chrome. How: This looks up the banner element fresh on every call.
 
 	if ( banCurEle ) floBotNum = Math.max( floBotNum, banCurEle.getBoundingClientRect().bottom ); // What: Banner Bottom Fold. Why: The banner can sit lower than the header/rail alone would suggest whenever Edit Mode is on. How: This widens floBotNum to whichever is lower between the current value and the banner's own bottom edge.
 
@@ -318,7 +318,7 @@ const todTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why
 	requestAnimationFrame( () => { // What: Scroll Reset Frame. Why: The tab switch above may not have committed its own layout yet on this same tick. How: This waits one animation frame before scrolling both the app's own scroller and the window.
 
 
-		const maiCurEle = document.querySelector( '[data-element-name-hook="appConMai"]' ); // What: Main Current Element. Why: The app's own scrollable content lives inside this container, separate from the window itself. How: This looks it up fresh, since it may not exist on every layout.
+		const maiCurEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Main Current Element. Why: The app's own scrollable content lives inside this container, separate from the window itself. How: This looks it up fresh, since it may not exist on every layout.
 
 		if ( maiCurEle ) maiCurEle.scrollTop = 0; // What: Main Scroll Reset. Why: The app's own scroller needs resetting independently of the window. How: This zeroes maiCurEle's own scrollTop when it exists.
 
@@ -1809,7 +1809,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		const claChrFun = ( curRecObj, curEleArr ) => { // What: Clamp Chrome Function. Why: Today's own sticky header (and, on mobile, the groups rail stacked below it) plus a floating bottom tab bar (tabPlacement 'bottom') both sit at a higher z-index than the surrounding content but a LOWER one than this tour overlay, so a highlighted rect reaching past either one's edge would expose it through the spotlight's cutout (a box-shadow "hole") instead of dimming it, reading as if that chrome were part of the highlighted target. How: This clamps the rect actually drawn (not the one briTarFun scrolls by, which needs the real position) so the spotlight never reaches into either safe zone; targets that live INSIDE the nav bar, the group rail, or Today's own header are exempt, since clamping those against their own containing chrome can squash the highlight down to a sliver sitting below/past the actual target instead of on it.
 
 
-			if ( curEleArr.some( ( curIteEle ) => curIteEle.closest( '[data-element-name-hook="appTabNav"], [data-element-name-hook="groRaiAsi"], [data-element-name-hook="todPagHea"]' ) ) ) return curRecObj; // What: Chrome Membership Exemption. Why: A target that is itself part of the nav bar, the group rail, or Today's own header must never be clamped against that same chrome. How: This returns curRecObj untouched whenever any matched element sits inside one of those 3 containers, matched with one selector list.
+			if ( curEleArr.some( ( curIteEle ) => curIteEle.closest( '[data-element-name-hook~="appTabNav"], [data-element-name-hook~="groRaiAsi"], [data-element-name-hook~="todPagHea"]' ) ) ) return curRecObj; // What: Chrome Membership Exemption. Why: A target that is itself part of the nav bar, the group rail, or Today's own header must never be clamped against that same chrome. How: This returns curRecObj untouched whenever any matched element sits inside one of those 3 containers, matched with one selector list.
 
 
 

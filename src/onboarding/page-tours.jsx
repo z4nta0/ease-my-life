@@ -393,7 +393,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 					if ( tarSteNum === 3 ) { // What: Add Tab Scroll Check. Why: Back from Picker Selection to Create New Pickers must undo Picker Selection's own scroll-into-view, which can scroll .picker-tabs rightward past the Add tab (the first tab in the row) if there are enough pickers to overflow it. How: This scrolls .picker-tabs back to its own left edge.
 
 
-						const tabRowEle = document.querySelector( '[data-element-name-hook="picTabDiv"]' ); // What: Tab Row Element. Why: This is the real, horizontally-scrollable strip that needs resetting. How: This looks it up fresh, since it only exists on the Pickers tab.
+						const tabRowEle = document.querySelector( '[data-element-name-hook~="picTabDiv"]' ); // What: Tab Row Element. Why: This is the real, horizontally-scrollable strip that needs resetting. How: This looks it up fresh, since it only exists on the Pickers tab.
 
 
 						if ( tabRowEle ) tabRowEle.scrollTo( { left : 0 } ); // What: Tab Row Scroll Reset. Why: This must only fire when the row actually exists. How: This scrolls tabRowEle back to its own left edge.
@@ -441,7 +441,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				if ( tarSteNum === 3 ) { // What: Edit Mode Toggle Check. Why: Back from Group Grip to Edit Mode must toggle Edit Mode back off via its own real control, since the .foot-editmode target only exists while it's off. How: This clicks whichever real Edit Mode toggle/Cancel control is currently visible.
 
 
-					const butEdmEle = document.querySelector( '[data-element-name-hook="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector( '[data-element-name-hook~="fooActDiv"] [data-element-name-hook="ediCanBut"]' ); // What: Edit Mode Button Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping .foot-editmode. How: This looks up whichever control is currently present.
+					const butEdmEle = document.querySelector( '[data-element-name-hook~="ediRaiBut"][data-edit-mode-active]' ) || document.querySelector( '[data-element-name-hook~="fooActDiv"] [data-element-name-hook~="ediCanBut"]' ); // What: Edit Mode Button Element. Why: Desktop's own toggle always exists and flips itself regardless of state, mobile's own footer swaps to Cancel/Done buttons instead of keeping .foot-editmode. How: This looks up whichever control is currently present.
 
 
 					if ( butEdmEle ) butEdmEle.click(); // What: Edit Mode Button Click. Why: This must only fire when a control actually exists. How: This clicks butEdmEle.
@@ -465,10 +465,10 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 			onSkiTouFun={ () => { // What: On Skip Handler. Why: Skip can fire mid-Edit-Mode too, so any open rename input and any active Edit Mode session both need reverting before this tour actually closes. How: This forces the real name back if a rename input is open, clicks the real Cancel control if Edit Mode is on, then calls cloTouFun.
 
 
-				if ( document.querySelector( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook="groNamInp"]' ) ) forNamFun( actStoObj ); // What: Open Rename Guard. Why: The same blur-races-the-click risk as a real Done click applies here too, clicking Skip is ALSO a click on a different element than the input. How: This forces the real name back only when the rename input is actually still open.
+				if ( document.querySelector( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook~="groNamInp"]' ) ) forNamFun( actStoObj ); // What: Open Rename Guard. Why: The same blur-races-the-click risk as a real Done click applies here too, clicking Skip is ALSO a click on a different element than the input. How: This forces the real name back only when the rename input is actually still open.
 
 
-				const canButEle = document.querySelector( '[data-element-name-hook="ediBanSpa"] [data-element-name-hook="ediCanBut"]' ); // What: Cancel Button Element. Why: This reverts any group reordering, a harmless no-op if Edit Mode was never entered, since the banner/button won't exist. How: This looks it up fresh, since it only exists while Edit Mode is on.
+				const canButEle = document.querySelector( '[data-element-name-hook~="ediBanSpa"] [data-element-name-hook~="ediCanBut"]' ); // What: Cancel Button Element. Why: This reverts any group reordering, a harmless no-op if Edit Mode was never entered, since the banner/button won't exist. How: This looks it up fresh, since it only exists while Edit Mode is on.
 
 
 				if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
