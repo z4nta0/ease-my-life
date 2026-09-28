@@ -767,13 +767,19 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 				<div className='rd-ctl-subhead'>Picker Details</div>{ /* What: Basics Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "Picker Details". */ }
 
-				<div className='rd-basics-row'>{ /* What: Name Row Div Element. Why: The Name field needs its own labeled row. How: This wraps the label span and the name input. */ }
+				<div
+					className='rd-basics-row'
+
+					data-element-name-hook='basRowDiv'
+				>{ /* What: Name Row Div Element. Why: The Name field needs its own labeled row. How: This wraps the label span and the name input. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					<span className='rd-basics-lbl'>Name</span>{ /* What: Name Label Span Element. Why: The name input needs a visible label beside it. How: This renders the literal text "Name". */ }
 
 					<input
 						className='rd-basics-name'
+
+						data-element-name-hook='basNamInp'
 
 						maxLength={ 40 }
 						placeholder='Picker name'
@@ -794,13 +800,17 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 						} }
 						onChange={ ( chaEveObj ) => actStoObj.updPicFun( picDatObj.id, { name : chaEveObj.target.value } ) }
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-					/>{ /* What: Name Input Element. Why: A picker's own name is edited live rather than through a separate form. How: This commits every keystroke immediately, tidies/commits the final name on blur, and blurs on Enter. */ }
+					/>{ /* What: Name Input Element. Why: A picker's own name is edited live rather than through a separate form. How: This commits every keystroke immediately, tidies/commits the final name on blur, and blurs on Enter. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				</div>
 
 
-				<div className='rd-basics-row rd-basics-row--group'>{ /* What: Group Row Div Element. Why: The Group field needs its own labeled row. How: This wraps the label span and the group pill selector below. */ }
+				<div
+					className='rd-basics-row rd-basics-row--group'
+
+					data-element-name-hook='basGroDiv'
+				>{ /* What: Group Row Div Element. Why: The Group field needs its own labeled row. How: This wraps the label span and the group pill selector below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					<span className='rd-basics-lbl'>Group</span>{ /* What: Group Label Span Element. Why: The group selector needs a visible label beside it. How: This renders the literal text "Group". */ }
@@ -946,12 +956,20 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 
-			<fieldset className='rd-ctl-group rd-ctl-group--picks'>{ /* What: Picks Group Fieldset Element. Why: The mode radio group is a real form control set and belongs in a fieldset. How: This wraps the legend and the mode radio group below. */ }
+			<fieldset
+				className='rd-ctl-group rd-ctl-group--picks'
+
+				data-element-name-hook='picCtlFie'
+			>{ /* What: Picks Group Fieldset Element. Why: The mode radio group is a real form control set and belongs in a fieldset. How: This wraps the legend and the mode radio group below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				<legend className='rd-ctl-subhead'>How it picks</legend>{ /* What: Picks Legend Element. Why: A fieldset needs its own legend to label the radio group it contains. How: This renders the literal text "How it picks". */ }
 
-				<div className='rd-mode-radio'>{ /* What: Mode Radio Div Element. Why: Every supported mode needs its own selectable row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label+radio+hint per mode. */ }
+				<div
+					className='rd-mode-radio'
+
+					data-element-name-hook='modRadDiv'
+				>{ /* What: Mode Radio Div Element. Why: Every supported mode needs its own selectable row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label+radio+hint per mode. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 					{ Object.entries( SED_NAM_OBJ.MOD_DEF_OBJ ).map( ( [ modKeyStr, modValObj ] ) => { // What: Mode Entries Map. Why: One row is needed per supported picking mode. How: This maps every [key, definition] pair in SED_NAM_OBJ.MOD_DEF_OBJ to one label below.
@@ -1046,7 +1064,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 				<div className='rd-ctl-subhead'>When it runs</div>{ /* What: Schedule Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "When it runs". */ }
 
-				<div className='sched-line'>{ /* What: Conditional Line Div Element. Why: The attach-a-conditional toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. */ }
+				<div
+					className='sched-line'
+
+					data-element-name-hook='schLinDiv'
+				>{ /* What: Conditional Line Div Element. Why: The attach-a-conditional toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					<span className='sched-line-label'>{ /* What: Conditional Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1096,7 +1118,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 						} ) }
-					><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for attaching a conditional. How: This flips conAttBoo and, when turning off, clears the picker's own conditionalId. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
+					><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for attaching a conditional. How: This flips conAttBoo and, when turning off, clears the picker's own conditionalId. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 				</div>
@@ -1106,7 +1128,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 				<ColDisCom open={ conAttBoo }>{ /* What: Collapse Disclosure Component. Why: The conditional rail only needs to exist while the toggle is on. How: This opens only while conAttBoo is true. */ }
 
 
-					<div className='rd-cnd-rail-row'>{ /* What: Rail Row Div Element. Why: The conditional rail (or its empty-state message) needs its own row. How: This wraps whichever of the 2 branches below applies. */ }
+					<div
+						className='rd-cnd-rail-row'
+
+						data-element-name-hook='conRowDiv'
+					>{ /* What: Rail Row Div Element. Why: The conditional rail (or its empty-state message) needs its own row. How: This wraps whichever of the 2 branches below applies. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 						{ conIteArr.length ? ( // What: Has Conditionals Check. Why: The rail only makes sense once at least one conditional exists. How: This renders the rail when conIteArr has entries, otherwise an empty-state message.
@@ -1118,7 +1144,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 								className='cnd-rail picker-groups'
 
 								data-element-name-hook='conRaiDiv'
-							>{ /* What: Conditional Rail Div Element. Why: This is the actual scrollable pill rail, alphabetical except the attached conditional pins to the front. How: This maps every conditional (sorted per pk.conditionalId first, then by name) to one pill each. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+							>{ /* What: Conditional Rail Div Element. Why: This is the actual scrollable pill rail, alphabetical except the attached conditional pins to the front. How: This maps every conditional (sorted per pk.conditionalId first, then by name) to one pill each. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 								{ [ ...conIteArr ].sort( ( conOneObj, conTwoObj ) => { // What: Attached-First Sort Comparator. Why: The rail pins the attached conditional first, then lists the rest alphabetically. How: This sorts a copy of conIteArr with the rules below.
@@ -1182,7 +1208,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 
-				<div className='sched-line'>{ /* What: Daily Line Div Element. Why: The daily-generator membership toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. */ }
+				<div
+					className='sched-line'
+
+					data-element-name-hook='schLinDiv'
+				>{ /* What: Daily Line Div Element. Why: The daily-generator membership toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					<span className='sched-line-label'>{ /* What: Daily Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1231,7 +1261,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 						} }
-					><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This adds or removes picDatObj.id from daiIdeArr on click. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
+					><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This adds or removes picDatObj.id from daiIdeArr on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 				</div>
@@ -1244,7 +1274,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 					<React.Fragment>{ /* What: Schedule Fragment Element. Why: The 3 schedule rows below are true siblings with no shared wrapper of their own. How: This groups the cadence, days, and holiday rows without adding an extra DOM node. */ }
 
 
-						<div className='sched-line'>{ /* What: Cadence Line Div Element. Why: The cadence (how often) control needs its own labeled row. How: This wraps the label/sub text and the cadence selects below. */ }
+						<div
+							className='sched-line'
+
+							data-element-name-hook='schLinDiv'
+						>{ /* What: Cadence Line Div Element. Why: The cadence (how often) control needs its own labeled row. How: This wraps the label/sub text and the cadence selects below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<span className='sched-line-label'>{ /* What: Cadence Label Span Element. Why: The row's own name/help tip and live explanation belong together. How: This wraps the lbl row and sub span below. */ }
@@ -1651,7 +1685,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 						</div>
 
 
-						<div className='sched-line'>{ /* What: Days Line Div Element. Why: The weekday multi-select needs its own labeled row. How: This wraps the label/sub text and the WeeChiCom control below. */ }
+						<div
+							className='sched-line'
+
+							data-element-name-hook='schLinDiv'
+						>{ /* What: Days Line Div Element. Why: The weekday multi-select needs its own labeled row. How: This wraps the label/sub text and the WeeChiCom control below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<span className='sched-line-label'>{ /* What: Days Label Span Element. Why: The row's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1696,7 +1734,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 						</div>
 
-						<div className='sched-line'>{ /* What: Holiday Line Div Element. Why: The skip-on-holidays toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. */ }
+						<div
+							className='sched-line'
+
+							data-element-name-hook='schLinDiv'
+						>{ /* What: Holiday Line Div Element. Why: The skip-on-holidays toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<span className='sched-line-label'>{ /* What: Holiday Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1736,7 +1778,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 								aria-pressed={ !!picDatObj.skipHolidays }
 
 								onClick={ () => actStoObj.updPicFun( picDatObj.id, { skipHolidays : !picDatObj.skipHolidays } ) }
-							><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips picDatObj.skipHolidays on click. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
+							><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips picDatObj.skipHolidays on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 						</div>
@@ -1766,7 +1808,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 				<div className='rd-ctl-subhead'>Item Controls</div>{ /* What: Item Controls Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "Item Controls". */ }
 
-				<div className='sched-line'>{ /* What: Duplicates Line Div Element. Why: The avoid-duplicate-items toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. */ }
+				<div
+					className='sched-line'
+
+					data-element-name-hook='schLinDiv'
+				>{ /* What: Duplicates Line Div Element. Why: The avoid-duplicate-items toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					<span className='sched-line-label'>{ /* What: Duplicates Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1806,7 +1852,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 						aria-pressed={ !!picDatObj.avoidDuplicates }
 
 						onClick={ () => actStoObj.updPicFun( picDatObj.id, { avoidDuplicates : !picDatObj.avoidDuplicates } ) }
-					><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips picDatObj.avoidDuplicates on click. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
+					><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips picDatObj.avoidDuplicates on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 				</div>
@@ -1816,7 +1862,13 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 				<ColDisCom open={ isaEasBoo }>{ /* What: Collapse Disclosure Component. Why: Fill/Refill only makes sense for an ease-mode picker. How: This opens only while isaEasBoo is true. */ }
 
 
-					<div className={ ` ease-config   ${ isaDowBoo ? 'ease-config--down' : 'ease-config--up' } ` }>{ /* What: Ease Config Div Element. Why: Help mode needs a pure selector hook to give this section mode-specific copy (Fill vs. Refill). How: This wraps whichever of the 2 mode-specific rows below matches picDatObj.mode. */ }
+					<div
+						className={ ` ease-config   ${ isaDowBoo ? 'ease-config--down' : 'ease-config--up' } ` }
+
+						data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this section as the ease-down one without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
+						data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this section as the ease-up one without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
+						data-element-name-hook='easConDiv'
+					>{ /* What: Ease Config Div Element. Why: Help mode needs a pure selector hook to give this section mode-specific copy (Fill vs. Refill). How: This wraps whichever of the 2 mode-specific rows below matches picDatObj.mode. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 						{ picDatObj.mode === 'ease-up' && ( // What: Ease Up Check. Why: Only ease-up gets the "Fill" wording and action. How: This renders the Fill row only while picDatObj.mode is 'ease-up'.
@@ -1826,7 +1878,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 								className='pie-row'
 
 								data-element-name-hook='ediRowDiv'
-							>{ /* What: Fill Row Div Element. Why: The Fill label/summary and its button need their own row. How: This wraps the rowlabel div and the FilButCom below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
+							>{ /* What: Fill Row Div Element. Why: The Fill label/summary and its button need their own row. How: This wraps the rowlabel div and the FilButCom below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Fill Rowlabel Div Element. Why: The Fill label and its live summary belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1862,7 +1914,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 								className='pie-row'
 
 								data-element-name-hook='ediRowDiv'
-							>{ /* What: Refill Row Div Element. Why: The Refill label/summary and its button need their own row. How: This wraps the rowlabel div and the FilButCom below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, and help mode's Pickers catalog. */ }
+							>{ /* What: Refill Row Div Element. Why: The Refill label/summary and its button need their own row. How: This wraps the rowlabel div and the FilButCom below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Refill Rowlabel Div Element. Why: The Refill label and its live summary belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1901,7 +1953,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 
-			<div className='rd-ctl-group rd-ctl-group--foot pk-ctl-foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the new-draft Cancel/Add-Items/Save variant) needs its own bottom group. How: This renders whichever of the 3 footer states below matches conDelBoo/isaNewBoo. */ }
+			<div
+				className='rd-ctl-group rd-ctl-group--foot pk-ctl-foot'
+
+				data-element-name-hook='picFooDiv'
+			>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the new-draft Cancel/Add-Items/Save variant) needs its own bottom group. How: This renders whichever of the 3 footer states below matches conDelBoo/isaNewBoo. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				{ conDelBoo ? ( // What: Confirm Delete Check. Why: A real picker's Delete morphs the footer into an inline confirm before actually deleting. How: This renders the confirm row while conDelBoo is true.

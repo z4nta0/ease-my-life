@@ -2425,7 +2425,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					className='stat-h-lead'
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
+				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<button
@@ -2438,7 +2438,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
+					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 						<svg
@@ -2600,7 +2600,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								aria-label='Filter pickers by group'
 								role='tablist'
-							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
+							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<button
@@ -2621,7 +2621,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
+								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									All
@@ -2647,7 +2647,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										role='tab'
 
 										onClick={ () => setStaGroStr( groCurStr ) }
-									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
+									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 										{ groCurStr }{ /* What: Group Name Expression. Why: The pill shows its own group name. How: This renders groCurStr. */ }
@@ -2687,7 +2687,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								aria-label='Filter pickers by type'
 								role='tablist'
-							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
+							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<button
@@ -2708,7 +2708,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
+								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									All
@@ -2792,7 +2792,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											role='tab'
 
 											onClick={ entCurObj.cliFun }
-										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, and help mode's Pickers catalog. */ }
+										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 											{ entCurObj.namStr }{ /* What: Type Name Expression. Why: The pill shows its own mode or sentinel name. How: This renders the entry's own namStr. */ }
@@ -2827,7 +2827,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							className='picker-tabs stat-scope-tabs'
 
 							data-element-name-hook='scoTabDiv'
-						>{ /* What: Show Tab List Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
+						>{ /* What: Show Tab List Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
 							{ staGroStr === 'all' && typFilStr === 'all' && ( // What: All Tab Visibility Check. Why: The "All" scope tab only makes sense while neither the Group nor Type filter has narrowed the view. How: This renders the All tab only while both filters are still 'all'.
@@ -2843,7 +2843,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									type='button'
 
 									onClick={ () => setScoValStr( 'all' ) }
-								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
+								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
 									<span className='picker-tab-name'>All</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the literal word "All". */ }
@@ -2898,7 +2898,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										type='button'
 
 										onClick={ entCurObj.cliFun }
-									>{ /* What: Scope Tab Button Element. Why: The user needs a way to switch the whole page over to this specific Conditionals/Reminders/picker scope. How: This calls the entry's own cliFun when clicked. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
+									>{ /* What: Scope Tab Button Element. Why: The user needs a way to switch the whole page over to this specific Conditionals/Reminders/picker scope. How: This calls the entry's own cliFun when clicked. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
 										<span className='picker-tab-name'>{ entCurObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the entry's own namStr field. */ }

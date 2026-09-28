@@ -3359,7 +3359,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							className='today-h-lead'
 
 							data-element-name-hook='heaLeaDiv'
-						>{ /* What: Header Lead Div Element. Why: The brand mark, the title, and the completion ring read as one shared row beneath the kicker. How: This wraps all 3 below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
+						>{ /* What: Header Lead Div Element. Why: The brand mark, the title, and the completion ring read as one shared row beneath the kicker. How: This wraps all 3 below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<button
@@ -3372,7 +3372,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								aria-label='Ease My Life link to go to the Today page'
 
 								onClick={ onNavHomFun }
-							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which .brand-mark sets to var(--accent); the grid lines use var(--accent-soft), the same color as the Today group-rail/tabbar selected backgrounds. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, and help mode's Pickers catalog. */ }
+							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which .brand-mark sets to var(--accent); the grid lines use var(--accent-soft), the same color as the Today group-rail/tabbar selected backgrounds. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<svg

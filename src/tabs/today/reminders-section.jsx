@@ -577,7 +577,7 @@ function InlEdiCom ( { onCloEdiFun, onComTasFun, onDelTasFun, staAppObj, tasRcdO
 			className='rem-inline-editor'
 
 			data-element-name-hook='inlEdiDiv'
-		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
 
 
 			<SchEdiCom
@@ -1248,7 +1248,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 						className={ ` rem-quickadd-wrap   ${ addCloBoo ? 'is-closing' : '' } ` }
 
 						data-element-name-hook='remAddDiv'
-					>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
+					>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the reminder mini-tours, help mode's Today catalog, and help mode's Data catalog. */ }
 
 
 						<div
@@ -1284,7 +1284,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							className='rem-inline-editor'
 
 							data-element-name-hook='inlEdiDiv'
-						>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode's Today catalog. */ }
+						>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
 
 
 							<SchEdiCom
@@ -1300,7 +1300,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 								className='rem-inline-foot'
 
 								data-element-name-hook='ediFooDiv'
-							>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
+							>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<ButBasCom

@@ -1754,7 +1754,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 									} }
-								>{ /* What: Editing Item Wrap Div Element. Why: This is the whole existing-item editor slot, playing its own closing animation before actually unmounting. How: This reopens whatever edit staEdiFun staged in penEdiRef once its own closing keyframe finishes. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
+								>{ /* What: Editing Item Wrap Div Element. Why: This is the whole existing-item editor slot, playing its own closing animation before actually unmounting. How: This reopens whatever edit staEdiFun staged in penEdiRef once its own closing keyframe finishes. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									<div
@@ -1792,7 +1792,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 												} }
 												onChange={ ( chaEveObj ) => setEdiNamStr( chaEveObj.target.value ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renIteFun on blur, and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
+											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renIteFun on blur, and blurs itself on Enter. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 										</span>
@@ -1895,7 +1895,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 								} }
-							>{ /* What: New Item Wrap Div Element. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This commits the draft via cmtDraFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
+							>{ /* What: New Item Wrap Div Element. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This commits the draft via cmtDraFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<div
@@ -1933,7 +1933,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 											} }
 											onChange={ ( chaEveObj ) => draActObj.updIteFun( newIteObj.id, { name : chaEveObj.target.value } ) }
 											onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into draActObj (not the real store) on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
+										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into draActObj (not the real store) on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									</span>

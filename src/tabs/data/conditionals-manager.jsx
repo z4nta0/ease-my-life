@@ -216,7 +216,11 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 	return (
 
 
-		<div className='rd-edit rd-edit--cnd'>{ /* What: Editor Div Element. Why: This is ConEdiCom's own root element. How: This wraps the rd-ctl-body div below. */ }
+		<div
+			className='rd-edit rd-edit--cnd'
+
+			data-element-name-hook='conEdiDiv'
+		>{ /* What: Editor Div Element. Why: This is ConEdiCom's own root element. How: This wraps the rd-ctl-body div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 			<div className='rd-ctl-body'>{ /* What: Controls Body Div Element. Why: The name error, the shared Controls fields, and the footer all belong in one grouped body. How: This wraps the 3 pieces below. */ }
@@ -236,7 +240,11 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 
-				<div className='rd-ctl-group rd-ctl-group--foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. */ }
+				<div
+					className='rd-ctl-group rd-ctl-group--foot'
+
+					data-element-name-hook='conFooDiv'
+				>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					{ conDelBoo ? ( // What: Confirm Delete Check. Why: Delete morphs the footer into an inline confirm before actually deleting. How: This renders the confirm row while conDelBoo is true.
@@ -264,11 +272,13 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 								<ButBasCom
+									data-element-name-hook='delActBut'
+
 									kinValStr='danger'
 									sizValStr='sm'
 
 									onClick={ () => onDelConFun() }
-								>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onDelConFun on click. */ }
+								>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onDelConFun on click. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							</div>
@@ -291,12 +301,14 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 								<ButBasCom
+									data-element-name-hook='delActBut'
+
 									icoNamStr='traEle'
 									kinValStr='danger'
 									sizValStr='sm'
 
 									onClick={ () => setConDelBoo( true ) }
-								>Delete</ButBasCom> // What: Button Base Component. Why: A brand-new, not-yet-saved conditional has nothing to delete yet. How: This opens the inline delete confirm, rendered only while isaNewBoo is false.
+								>Delete</ButBasCom> // What: Button Base Component. Why: A brand-new, not-yet-saved conditional has nothing to delete yet. How: This opens the inline delete confirm, rendered only while isaNewBoo is false. Its data-element-name-hook is read by help mode's Data catalog.
 
 
 							) }
@@ -761,11 +773,15 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 		<section
 			className='cat cat--enter cnd-manager'
 
-			data-element-name-hook='datCatSec'
-		>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours and the Data page tour. */ }
+			data-element-name-hook='datCatSec conCatSec'
+		>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
 
 
-			<header className='cat-h'>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. */ }
+			<header
+				className='cat-h'
+
+				data-element-name-hook='catHeaHea'
+			>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				<button
@@ -827,7 +843,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 					className='cat-body'
 
 					data-element-name-hook='catBodDiv'
-				>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. Its data-element-name-hook is read by the App Features tours. */ }
+				>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 					{ ONB_CHE_OBJ.tutProFun( staAppObj ) ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfTipCom-wrapped control in that state, otherwise the real button.
@@ -836,9 +852,11 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 						<InfTipCom
 							className='rd-add is-tour-disabled'
 
+							data-element-name-hook='rowAddSpa'
+
 							actNamStr='Add a conditional'
 							labTexStr='This button is disabled until all tutorials are completed.'
-						>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. */ }
+						>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<IcoSvgCom
@@ -855,6 +873,8 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 						<button
 							className='rd-add'
+
+							data-element-name-hook='rowAddBut'
 
 							onClick={ () => { // What: On Click Handler. Why: Adding a conditional starts a local-only draft that nothing else sees until Save. How: This builds a draft with a fresh id, then holds it as pending, as the editor draft, and as the open row.
 
@@ -874,7 +894,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 							} }
-						>{ /* What: Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row. */ }
+						>{ /* What: Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<IcoSvgCom
@@ -936,7 +956,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 								className={ ` rd-item   ${ isaOpeBoo ? 'is-editing' : '' } ` }
 
 								data-element-name-hook='lisIteDiv'
-							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
+							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpeBoo is true, and captures opeRowRef only while it's the open row. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								{ isaOpeBoo && conDraObj ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input (interactive-in-interactive) and would otherwise lose its own accessible name. How: This renders the editing header while isaOpeBoo is true and a draft exists, otherwise the normal clickable row.
@@ -946,7 +966,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 										className='rd-row'
 
 										data-element-name-hook='lisRowDiv'
-									>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. Its data-element-name-hook is read by the App Features tours. */ }
+									>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 										<span className='rd-main'>{ /* What: Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
@@ -984,7 +1004,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } }
 												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
+											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 										</span>
@@ -1039,13 +1059,17 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 										} }
-									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. Its data-element-name-hook is read by the App Features tours. */ }
+									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 										<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and sched spans below. */ }
 
 
-											<span className='rd-name'>{ conCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. */ }
+											<span
+												className='rd-name'
+
+												data-element-name-hook='rowNamSpa'
+											>{ conCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 											<span className='rd-sched'>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
 

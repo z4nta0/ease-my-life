@@ -117,7 +117,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
 		ideStr : 'brandMark',
-		selStr : '.stat-h-lead .brand-mark',
+		selStr : '[data-element-name-hook="heaLeaDiv"] [data-element-name-hook="braMarBut"]',
 		titStr : 'Home Link'
 
 
@@ -129,7 +129,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
 		ideStr : 'groupFilter',
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--cond):not(.stat-scope-groups--type) .picker-group-pill',
+		selStr : '[data-element-name-hook="groFilDiv"] [data-element-name-hook="filPilBut"]',
 		titStr : 'Group Filter'
 
 
@@ -140,7 +140,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This filters the pickers row below by type. You can select picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), Conditionals or Reminders, independent of the Group and Conditional filters with all three narrowing the row together.</>,
 		ideStr : 'typeFilter',
-		selStr : '.stat-scope-groups--type .picker-group-pill',
+		selStr : '[data-element-name-hook="typFilDiv"] [data-element-name-hook="filPilBut"]',
 		titStr : 'Type Filter'
 
 
@@ -151,7 +151,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This selects what the rest of the page shows: conditionals, reminders, a specific picker, or everything all at once.</>,
 		ideStr : 'pickersFilter',
-		selStr : '.stat-scope-tabs .picker-tab',
+		selStr : '[data-element-name-hook="scoTabDiv"] [data-element-name-hook="scoTabBut"]',
 		titStr : 'Show Selector'
 
 
@@ -162,7 +162,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This filters the pickers list below by conditional, showing only pickers gated by the conditional you select.</>,
 		ideStr : 'conditionalsFilter',
-		selStr : '.stat-scope-groups--cond .picker-group-pill',
+		selStr : '[data-element-name-hook="conFilDiv"] [data-element-name-hook="filPilBut"]',
 		titStr : 'Conditionals Filter'
 
 
@@ -173,7 +173,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This changes the order that Conditionals, Reminders and your pickers are listed in below.</>,
 		ideStr : 'dataSectionSort',
-		selStr : '.data-sort-bar .data-sort-sel',
+		selStr : '[data-element-name-hook="sorBarDiv"] [data-element-name-hook="sorDroSel"]',
 		titStr : 'Section Sort'
 
 
@@ -192,7 +192,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
 		ideStr    : 'conditionalsManager',
 		padYcoNum : 0, // padYcoNum:0, .cat-h has no border/gap of its own below it, but .cat-body (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The 20px flex gap above .cnd-manager itself (from .tab--data) easily absorbs losing the default pad on that side too.
-		selStr    : '.cnd-manager .cat-h',
+		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook="catHeaHea"]',
 		titStr    : 'Conditionals'
 
 
@@ -203,10 +203,10 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>You can tap this conditional to expand and collapse this section. Expand it in order to view and edit its settings.</>,
 		ideStr    : 'conditionalRow',
-		labStr    : '.rd-name, .rd-name-input',
+		labStr    : '[data-element-name-hook="rowNamSpa"], [data-element-name-hook="rowNamInp"]',
 		mulBoo    : true,                                      // mulBoo is true because every conditional gets its own badge, not one for the whole list, since a user could be looking at any of them.
 		padYcoNum : 0,                                         // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), so the default 8px pad bled a highlight box into both neighboring rows above and below it.
-		selStr    : '.cnd-manager .rd-item > .rd-row',
+		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook="lisIteDiv"] > :is([data-element-name-hook="lisRowBut"], [data-element-name-hook="lisRowDiv"])',
 		titStr    : ( tarRecObj ) => `${ tarRecObj?.labStr || 'This' } Conditional` // titStr is a function because each row's own heading should read as "{its own name} Conditional" rather than one generic title shared by every conditional, falling back to "This Conditional" while labStr hasn't resolved a live name yet.
 
 
@@ -218,7 +218,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This creates a new conditional, letting you gate a picker behind a rule of your choosing so it only runs on days that rule allows.</>,
 		ideStr    : 'dataCondAdd',
 		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first conditional row below it.
-		selStr    : '.cnd-manager .rd-add',
+		selStr    : '[data-element-name-hook~="conCatSec"] :is([data-element-name-hook="rowAddBut"], [data-element-name-hook="rowAddSpa"])',
 		titStr    : 'Create New Conditional'
 
 
@@ -230,7 +230,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is the name field for this conditional, you can rename it here.</>,
 		ideStr    : 'dataCondName',
 		padYcoNum : 0, // padYcoNum:0, the row and whatever's directly below it (the first CodConCom field) stack with zero gap, same as everywhere else on this page.
-		selStr    : '.cnd-manager .rd-item.is-editing .rd-name-input',
+		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook="lisIteDiv"] [data-element-name-hook="rowNamInp"]',
 		titStr    : 'Conditional Name'
 
 
@@ -243,7 +243,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
 		ideStr    : 'dataCondCardText',
 		padYcoNum : 0,
-		selStr    : '.np-field--cardtext',
+		selStr    : '[data-element-name-hook="forFieDiv"]:has(> [data-element-name-hook="carTexDiv"])',
 		titStr    : 'Conditional Card Text'
 
 
@@ -255,7 +255,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
 		ideStr    : 'dataCondType',
 		padYcoNum : 0,
-		selStr    : '.cnd-controls .np-field:has(.rd-mode-radio)',
+		selStr    : '[data-element-name-hook="conConDiv"] :is([data-element-name-hook="forFieDiv"], [data-element-name-hook="forFieFie"]):has([data-element-name-hook="conModDiv"])',
 		titStr    : 'Conditional Type'
 
 
@@ -267,7 +267,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
 		ideStr    : 'dataCondRandom',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl:has(.pie-noweight)',
+		selStr    : '[data-element-name-hook="conTypDiv"]:has([data-element-name-hook="weiNonSpa"])',
 		titStr    : 'Conditional Weight'
 
 
@@ -279,7 +279,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
 		ideStr    : 'dataCondOdds',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .pie-row:has(.weight-stepper)',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="weiSteDiv"])',
 		titStr    : 'Conditional Trigger Odds'
 
 
@@ -291,7 +291,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
 		ideStr    : 'dataCondBoost',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .pie-row:has(.pie-boost-val)',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="booValSpa"])',
 		titStr    : 'Conditional Boost'
 
 
@@ -302,7 +302,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		ideStr    : 'dataCondEaseUp',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .cnd-ease-up-row',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active]',
 		titStr    : 'Conditional Charge Controls',
 
 		bodEle : (
@@ -331,7 +331,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		ideStr    : 'dataCondEaseDown',
 		padYcoNum : 0,
-		selStr    : '.cnd-typectl .cnd-ease-down-row',
+		selStr    : '[data-element-name-hook="conTypDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active]',
 		titStr    : 'Conditional Charge Controls',
 
 		bodEle : (
@@ -361,7 +361,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
 		ideStr    : 'dataCondActive',
 		padYcoNum : 3,
-		selStr    : '.cnd-controls .pie-row:has(.switch)',
+		selStr    : '[data-element-name-hook="conConDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="togSwiBut"])',
 		titStr    : 'Conditional Active Toggle'
 
 
@@ -371,7 +371,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'dataCondFoot',
-		selStr : '.rd-edit--cnd .rd-ctl-group--foot:has(.btn--danger) .btn',
+		selStr : '[data-element-name-hook="conEdiDiv"] [data-element-name-hook="conFooDiv"]:has([data-element-name-hook="delActBut"]) button',
 		titStr : 'Delete / Cancel / Save',
 
 		bodEle : (
@@ -399,7 +399,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'dataCondFootNew',
-		selStr : '.rd-edit--cnd .rd-ctl-group--foot:not(:has(.btn--danger)) .btn',
+		selStr : '[data-element-name-hook="conEdiDiv"] [data-element-name-hook="conFooDiv"]:not(:has([data-element-name-hook="delActBut"])) button',
 		titStr : 'Cancel / Save',
 
 		bodEle : (
@@ -434,7 +434,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
 		ideStr    : 'remindersManager',
 		padYcoNum : 0, // padYcoNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager.
-		selStr    : '.cat--reminders .cat-h',
+		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook="catHeaHea"]',
 		titStr    : 'Reminders'
 
 
@@ -447,7 +447,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>Tap this to expand or collapse the reminders settings below. Collapsed, it shows how many settings there are.</>,
 		ideStr    : 'remindersControlsHeader',
 		padYcoNum : 0,
-		selStr    : '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(1)',
+		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook="catBodDiv"] > [data-element-name-hook="catTogBut"]:nth-of-type(1)',
 		titStr    : 'Reminder Controls'
 
 
@@ -459,7 +459,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
 		ideStr    : 'remControlsMatrix',
 		padYcoNum : 0, // padYcoNum:0, .rd-matrix sits flush against the Controls header above and the Items header below (no .rd-ctl-body padding wrapper here, unlike PickerControls), so the default pad bled 8px into both.
-		selStr    : '.rd-matrix',
+		selStr    : '[data-element-name-hook="remMatDiv"]',
 		titStr    : 'Reminders Settings'
 
 
@@ -469,7 +469,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'remControlsFoot',
-		selStr : '.rd-matrix .rd-mx-foot .btn',
+		selStr : '[data-element-name-hook="remMatDiv"] [data-element-name-hook="matFooDiv"] button',
 		titStr : 'Cancel / Save',
 
 		bodEle : (
@@ -497,7 +497,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>Tap this to expand or collapse the list of your reminders below. Collapsed, it shows how many reminders you have.</>,
 		ideStr    : 'remindersItemsHeader',
 		padYcoNum : 0,
-		selStr    : '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)',
+		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook="catBodDiv"] > [data-element-name-hook="catTogBut"]:nth-of-type(2)',
 		titStr    : 'Reminders Items'
 
 
@@ -509,7 +509,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
 		ideStr    : 'remAddButton',
 		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first reminder row below it.
-		selStr    : '.cat--reminders .rd-add',
+		selStr    : '[data-element-name-hook~="remCatSec"] :is([data-element-name-hook="rowAddBut"], [data-element-name-hook="rowAddSpa"])',
 		titStr    : 'Create New Reminder'
 
 
@@ -523,7 +523,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		ideStr    : 'reminderRowOnce',
 		mulBoo    : true,
 		padYcoNum : 0,
-		selStr    : '.cat--reminders .rd-item > .rd-row:has(.rd-ico.is-once)',
+		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook="lisIteDiv"] > :is([data-element-name-hook="lisRowBut"], [data-element-name-hook="lisRowDiv"]):has([data-element-name-hook="rowIcoSpa"][data-reminder-once-active])',
 		titStr    : 'One-Time Reminder Item'
 
 
@@ -536,7 +536,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		ideStr    : 'reminderRowRecurring',
 		mulBoo    : true,
 		padYcoNum : 0,
-		selStr    : '.cat--reminders .rd-item > .rd-row:not(:has(.rd-ico.is-once))',
+		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook="lisIteDiv"] > :is([data-element-name-hook="lisRowBut"], [data-element-name-hook="lisRowDiv"]):not(:has([data-element-name-hook="rowIcoSpa"][data-reminder-once-active]))',
 		titStr    : 'Recurring Reminder Item'
 
 
@@ -547,7 +547,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This is the name field for your reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
 		ideStr : 'dataReminderName',
-		selStr : '.cat--reminders .rd-name-input',
+		selStr : '[data-element-name-hook~="remCatSec"] [data-element-name-hook="rowNamInp"]',
 		titStr : 'Reminder Name'
 
 
@@ -560,7 +560,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		ideStr    : 'dataReminderRepeat',
 		padYcoNum : 0, // padYcoNum:0, unlike Today's card-based editor, this tab's .rd-edit wrapper overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot in styles2.css), so .rem-editor touches the footer row with zero gap.
 		scrBoo    : true, // scrBoo is true here too, same reasoning as Today's addReminderRepeat.
-		selStr    : '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor',
+		selStr    : '[data-element-name-hook="inlEdiDiv"]:not([data-element-name-hook="remAddDiv"] *) [data-element-name-hook="schEdiDiv"]',
 		titStr    : 'Reminder Schedule',
 
 		bodEle : (
@@ -592,7 +592,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'dataReminderFoot',
-		selStr : '.rem-inline-editor:not(.entry-editor) .rem-inline-foot:has(.btn--danger) .btn',
+		selStr : '[data-element-name-hook="inlEdiDiv"] [data-element-name-hook="ediFooDiv"]:has([data-element-name-hook="delActBut"]) button',
 		titStr : 'Delete / Cancel / Save',
 
 		bodEle : (
@@ -620,7 +620,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'dataReminderFootNew',
-		selStr : '.rem-inline-editor:not(.entry-editor) .rem-inline-foot:not(:has(.btn--danger)) .btn',
+		selStr : '[data-element-name-hook="inlEdiDiv"] [data-element-name-hook="ediFooDiv"]:not(:has([data-element-name-hook="delActBut"])) button',
 		titStr : 'Cancel / Save',
 
 		bodEle : (
@@ -654,10 +654,10 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This is one of your pickers. Tap it to view and edit its settings and items.</>,
 		ideStr    : 'pickerRow',
-		labStr    : '.cat-mode-label',                               // labStr reads the visible .cat-mode-label pill (tab-data.jsx) in the header's cat-h-tags cluster.
+		labStr    : '[data-element-name-hook="catModSpa"]',                               // labStr reads the visible .cat-mode-label pill (tab-data.jsx) in the header's cat-h-tags cluster.
 		mulBoo    : true,                                            // mulBoo is true because every picker gets its own badge.
 		padYcoNum : 0,                                               // padYcoNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager; matters once a picker is expanded and .cat-body renders beneath it.
-		selStr    : '.data-list > .cat > .cat-h',
+		selStr    : '[data-element-name-hook="datLisDiv"] > [data-element-name-hook~="datCatSec"] > [data-element-name-hook="catHeaHea"]',
 		titStr    : ( tarRecObj ) => tarRecObj?.labStr ? `${ tarRecObj.labStr } Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
 
 
@@ -671,7 +671,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		ideStr    : 'dataPickerControlsHeader',
 		mulBoo    : true,
 		padYcoNum : 0,
-		selStr    : '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)',
+		selStr    : '[data-element-name-hook="datLisDiv"] > [data-element-name-hook~="datCatSec"] [data-element-name-hook="catBodDiv"] > [data-element-name-hook="catTogBut"]:nth-of-type(1)',
 		titStr    : 'Picker Controls'
 
 
@@ -684,7 +684,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		ideStr    : 'dataPickerItemsHeader',
 		mulBoo    : true,
 		padYcoNum : 0,
-		selStr    : '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)',
+		selStr    : '[data-element-name-hook="datLisDiv"] > [data-element-name-hook~="datCatSec"] [data-element-name-hook="catBodDiv"] > [data-element-name-hook="catTogBut"]:nth-of-type(2)',
 		titStr    : 'Picker Items'
 
 
@@ -697,7 +697,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is the name field for this picker, you can rename it here.</>,
 		ideStr    : 'dataPickerName',
 		padYcoNum : 0,
-		selStr    : '.rd-basics-row:has(.rd-basics-name)',
+		selStr    : '[data-element-name-hook="basRowDiv"]:has([data-element-name-hook="basNamInp"])',
 		titStr    : 'Picker Name'
 
 
@@ -709,7 +709,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This lets you choose which group this picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
 		ideStr    : 'dataPickerGroup',
 		padYcoNum : 0,
-		selStr    : '.rd-basics-row--group',
+		selStr    : '[data-element-name-hook="basGroDiv"]',
 		titStr    : 'Picker Group'
 
 
@@ -721,7 +721,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
 		ideStr    : 'dataPickerType',
 		padYcoNum : 0, // padYcoNum:0, .rd-ctl-group--picks (this group's own wrapper) touches "When it runs" below with zero gap.
-		selStr    : '.rd-ctl-group--picks .rd-mode-radio',
+		selStr    : '[data-element-name-hook="picCtlFie"] [data-element-name-hook="modRadDiv"]',
 		titStr    : 'Picker Type'
 
 
@@ -734,7 +734,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below, but if you want to create a new one you will need to use the Conditionals section above.</>,
 		ideStr    : 'dataPickerConditionalToggle',
 		padYcoNum : 0,
-		selStr    : '.sched-line:has(button[aria-label="Attach a conditional"])',
+		selStr    : '[data-element-name-hook="schLinDiv"]:has(button[aria-label="Attach a conditional"])',
 		titStr    : 'Picker Conditional'
 
 
@@ -746,7 +746,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, create one in the Conditionals section above.</>,
 		ideStr    : 'dataPickerConditionalRail',
 		padYcoNum : 0,
-		selStr    : '.rd-cnd-rail-row .cnd-rail',
+		selStr    : '[data-element-name-hook="conRowDiv"] [data-element-name-hook="conRaiDiv"]',
 		titStr    : 'Select a Conditional'
 
 
@@ -758,7 +758,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
 		ideStr    : 'dataPickerDailyToggle',
 		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Cadence below.
-		selStr    : '.sched-line:has(button[aria-label*="daily generator"])',
+		selStr    : '[data-element-name-hook="schLinDiv"]:has(button[aria-label*="daily generator"])',
 		titStr    : 'Daily Generator Toggle'
 
 
@@ -769,7 +769,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		ideStr    : 'dataPickerCadence',
 		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection below.
-		selStr    : '.sched-line:has(select[aria-label="Cadence"])',
+		selStr    : '[data-element-name-hook="schLinDiv"]:has(select[aria-label="Cadence"])',
 		titStr    : 'Picker Cadence',
 
 		bodEle : (
@@ -801,7 +801,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off.</>,
 		ideStr    : 'dataPickerDays',
 		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Holidays Toggle below.
-		selStr    : '.sched-line:has(.dow-chips)',
+		selStr    : '[data-element-name-hook="schLinDiv"]:has([data-element-name-hook="dowChiDiv"])',
 		titStr    : 'Picker Day Selection'
 
 
@@ -813,7 +813,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
 		ideStr    : 'dataPickerSkipHolidays',
 		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection above.
-		selStr    : '.sched-line:has(button[aria-label="Skip on holidays"])',
+		selStr    : '[data-element-name-hook="schLinDiv"]:has(button[aria-label="Skip on holidays"])',
 		titStr    : 'Picker Holidays Toggle'
 
 
@@ -825,7 +825,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
 		ideStr    : 'dataPickerAvoidDuplicates',
 		padYcoNum : 0, // padYcoNum:0, .rd-ctl-group--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
-		selStr    : '.sched-line:has(button[aria-label="Avoid duplicate items"])',
+		selStr    : '[data-element-name-hook="schLinDiv"]:has(button[aria-label="Avoid duplicate items"])',
 		titStr    : 'Picker Duplicate Items Toggle'
 
 
@@ -838,7 +838,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This fills the charge of every item in this picker at once.</>,
 		ideStr    : 'dataPickerFillUp',
 		padYcoNum : 0,
-		selStr    : '.ease-config.ease-config--up',
+		selStr    : '[data-element-name-hook="easConDiv"][data-ease-up-active]',
 		titStr    : 'Fill All'
 
 
@@ -850,7 +850,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This refills the charge of every item in this picker at once.</>,
 		ideStr    : 'dataPickerFillDown',
 		padYcoNum : 0,
-		selStr    : '.ease-config.ease-config--down',
+		selStr    : '[data-element-name-hook="easConDiv"][data-ease-down-active]',
 		titStr    : 'Refill All'
 
 
@@ -860,7 +860,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'dataPickerFoot',
-		selStr : '.pk-ctl-foot .btn',
+		selStr : '[data-element-name-hook="picFooDiv"] button',
 		titStr : 'Delete / Cancel / Save',
 
 		bodEle : (
@@ -889,7 +889,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. Fill in its name and group, then use the Add Items button to add at least two items. Once it has them, the Save button adds it to the list with all other pickers.</>,
 		ideStr : 'dataCreatePicker',
-		selStr : '.cat-create-btn',
+		selStr : '[data-element-name-hook="datCreBut"]',
 		titStr : 'Create New Picker'
 
 
@@ -907,7 +907,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This adds a new item to this picker's pool.</>,
 		ideStr    : 'dataAddItem',
 		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item, touching the first item row below it.
-		selStr    : '.data-list .rd-add',
+		selStr    : '[data-element-name-hook="datLisDiv"] :is([data-element-name-hook="rowAddBut"], [data-element-name-hook="rowAddSpa"])',
 		titStr    : 'Create New Picker Item'
 
 
@@ -920,7 +920,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle : <>This changes the order that the items in this section are listed in below.</>,
 		ideStr : 'dataCondItemSort',
 		mulBoo : true,
-		selStr : '.cnd-manager .data-sort-sel',
+		selStr : '[data-element-name-hook~="conCatSec"] [data-element-name-hook="sorDroSel"]',
 		titStr : 'Conditional Items Sort'
 
 
@@ -932,7 +932,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle : <>This changes the order that the items in this section are listed in below.</>,
 		ideStr : 'dataRemItemSort',
 		mulBoo : true,
-		selStr : '.cat--reminders .data-sort-sel',
+		selStr : '[data-element-name-hook~="remCatSec"] [data-element-name-hook="sorDroSel"]',
 		titStr : 'Reminder Items Sort'
 
 
@@ -944,7 +944,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle : <>This changes the order that the items in this section are listed in below.</>,
 		ideStr : 'dataPickerItemSort',
 		mulBoo : true,
-		selStr : '.data-list .cat[data-picker-id] .data-sort-sel',
+		selStr : '[data-element-name-hook="datLisDiv"] [data-element-name-hook~="datCatSec"][data-picker-id] [data-element-name-hook="sorDroSel"]',
 		titStr : 'Picker Items Sort'
 
 
@@ -957,7 +957,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		ideStr    : 'dataItemRow',
 		mulBoo    : true, // mulBoo is true because every item in every expanded picker gets its own badge.
 		padYcoNum : 0,    // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRow.
-		selStr    : '.data-list .rd-item > .rd-row',
+		selStr    : '[data-element-name-hook="datLisDiv"] [data-element-name-hook="lisIteDiv"] > :is([data-element-name-hook="lisRowBut"], [data-element-name-hook="lisRowDiv"])',
 		titStr    : 'Picker Item'
 
 
@@ -975,7 +975,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle : <>This is the name field for this item, you can rename it here.</>,
 		ideStr : 'itemName',
-		selStr : '.rd-item:has(.entry-editor) .rd-name-input',
+		selStr : '[data-element-name-hook="lisIteDiv"]:has([data-element-name-hook="entEdiDiv"]) [data-element-name-hook="rowNamInp"]',
 		titStr : 'Item Name'
 
 
@@ -986,7 +986,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		ideStr    : 'itemChargeRangeUp',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-ease-up-row',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-up-active]',
 		titStr    : 'Item Charge Controls',
 
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
@@ -1025,7 +1025,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		ideStr    : 'itemChargeRangeDown',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-ease-down-row',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"][data-ease-down-active]',
 		titStr    : 'Item Charge Controls',
 
 		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered unit label (its easUniSpa hook) instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
@@ -1065,7 +1065,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
 		ideStr    : 'itemWeight',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.weight-stepper)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="weiSteDiv"])',
 		titStr    : 'Item Weight'
 
 
@@ -1077,7 +1077,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
 		ideStr    : 'itemBoost',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.pie-boost-val)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="booValSpa"])',
 		titStr    : 'Item Boost'
 
 
@@ -1089,7 +1089,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
 		ideStr    : 'itemActive',
 		padYcoNum : 0,
-		selStr    : '.entry-editor .pie-row:has(.switch)',
+		selStr    : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediRowDiv"]:has([data-element-name-hook="togSwiBut"])',
 		titStr    : 'Item Active Toggle'
 
 
@@ -1099,7 +1099,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'itemFoot',
-		selStr : '.entry-editor .rem-inline-foot:has(.btn--danger) .btn',
+		selStr : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediFooDiv"]:has([data-element-name-hook="delActBut"]) button',
 		titStr : 'Delete / Cancel / Save',
 
 		bodEle : (
@@ -1127,7 +1127,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr : 'itemFootNew',
-		selStr : '.entry-editor .rem-inline-foot:not(:has(.btn--danger)) .btn',
+		selStr : '[data-element-name-hook="entEdiDiv"] [data-element-name-hook="ediFooDiv"]:not(:has([data-element-name-hook="delActBut"])) button',
 		titStr : 'Cancel / Save',
 
 		bodEle : (

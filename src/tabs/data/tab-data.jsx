@@ -1035,18 +1035,24 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-				<div className='stat-h-lead'>{ /* What: Lead Div Element. Why: The brand link and the page title belong together at the top of the header. How: This wraps the brand button and the section-h div below. */ }
+				<div
+					className='stat-h-lead'
+
+					data-element-name-hook='heaLeaDiv'
+				>{ /* What: Lead Div Element. Why: The brand link and the page title belong together at the top of the header. How: This wraps the brand button and the section-h div below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<button
 						className='brand-mark'
+
+						data-element-name-hook='braMarBut'
 
 						type='button'
 
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Button Element. Why: The logo/wordmark also works as a shortcut back to the Today tab. How: This wraps the theme-wired logo svg below and jumps to Today on click. */ }
+					>{ /* What: Brand Button Element. Why: The logo/wordmark also works as a shortcut back to the Today tab. How: This wraps the theme-wired logo svg below and jumps to Today on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 						<svg
@@ -1183,13 +1189,17 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							className='picker-groups stat-scope-groups'
 
+							data-element-name-hook='groFilDiv'
+
 							aria-label='Filter pickers by group'
 							role='tablist'
-						>{ /* What: Group Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every existing group. How: This renders the All pill, then maps exiGroArr to one pill each. */ }
+						>{ /* What: Group Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every existing group. How: This renders the All pill, then maps exiGroArr to one pill each. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<button
 								className={ ` picker-group-pill   ${ filGroStr === 'all' ? 'is-on' : '' } ` }
+
+								data-element-name-hook='filPilBut'
 
 								disabled={ disGroBoo }
 								type='button'
@@ -1198,7 +1208,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								role='tab'
 
 								onClick={ () => setFilGroStr( 'all' ) }
-							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the group filter entirely. How: This sets filGroStr to 'all' on click, disabled during the matching tour step. */ }
+							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the group filter entirely. How: This sets filGroStr to 'all' on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								All
@@ -1216,6 +1226,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									className={ ` picker-group-pill   ${ filGroStr === groCurStr ? 'is-on' : '' } ` }
 
+									data-element-name-hook='filPilBut'
+
 									disabled={ disGroBoo }
 									type='button'
 
@@ -1223,7 +1235,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									role='tab'
 
 									onClick={ () => setFilGroStr( groCurStr ) }
-								>{ /* What: Group Pill Button Element. Why: Clicking a pill narrows the list to just that group. How: This sets filGroStr to groCurStr on click, disabled during the matching tour step. */ }
+								>{ /* What: Group Pill Button Element. Why: Clicking a pill narrows the list to just that group. How: This sets filGroStr to groCurStr on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									{ groCurStr }{ /* What: Pill Name Expression. Why: Every group pill needs its own visible label. How: This renders groCurStr. */ }
@@ -1259,13 +1271,17 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							className='picker-groups stat-scope-groups stat-scope-groups--type'
 
+							data-element-name-hook='typFilDiv'
+
 							aria-label='Filter pickers by type'
 							role='tablist'
-						>{ /* What: Type Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every mode/Conditionals/Reminders pill, sorted together alphabetically. How: This renders the All pill, then maps the combined, sorted entry list to one pill each. */ }
+						>{ /* What: Type Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every mode/Conditionals/Reminders pill, sorted together alphabetically. How: This renders the All pill, then maps the combined, sorted entry list to one pill each. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<button
 								className={ ` picker-group-pill   ${ filTypStr === 'all' ? 'is-on' : '' } ` }
+
+								data-element-name-hook='filPilBut'
 
 								disabled={ disGroBoo }
 								type='button'
@@ -1274,7 +1290,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								role='tab'
 
 								onClick={ () => setFilTypStr( 'all' ) }
-							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the type filter entirely. How: This sets filTypStr to 'all' on click, disabled during the matching tour step. */ }
+							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the type filter entirely. How: This sets filTypStr to 'all' on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								All
@@ -1350,6 +1366,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										className={ ` picker-group-pill   ${ filEntObj.selBoo ? 'is-on' : '' } ` }
 
+										data-element-name-hook='filPilBut'
+
 										disabled={ disGroBoo }
 										type='button'
 
@@ -1357,7 +1375,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										role='tab'
 
 										onClick={ filEntObj.cliFun }
-									>{ /* What: Type Pill Button Element. Why: Clicking a pill narrows the list to that type. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. */ }
+									>{ /* What: Type Pill Button Element. Why: Clicking a pill narrows the list to that type. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 										{ filEntObj.namStr }{ /* What: Pill Name Expression. Why: Every pill needs its own visible label. How: This renders filEntObj.namStr. */ }
@@ -1393,13 +1411,17 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							className='picker-groups stat-scope-groups stat-scope-groups--cond'
 
+							data-element-name-hook='conFilDiv'
+
 							aria-label='Filter pickers by conditional'
 							role='tablist'
-						>{ /* What: Conditional Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every conditional. How: This renders the All pill, then maps the alphabetized conditional list to one pill each. */ }
+						>{ /* What: Conditional Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every conditional. How: This renders the All pill, then maps the alphabetized conditional list to one pill each. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<button
 								className={ ` picker-group-pill   ${ filConStr === 'all' ? 'is-on' : '' } ` }
+
+								data-element-name-hook='filPilBut'
 
 								disabled={ disGroBoo }
 								type='button'
@@ -1408,7 +1430,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								role='tab'
 
 								onClick={ () => setFilConStr( 'all' ) }
-							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the conditional filter entirely. How: This sets filConStr to 'all' on click, disabled during the matching tour step. */ }
+							>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the conditional filter entirely. How: This sets filConStr to 'all' on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								All
@@ -1426,6 +1448,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									className={ ` picker-group-pill   ${ filConStr === conCurObj.id ? 'is-on' : '' } ` }
 
+									data-element-name-hook='filPilBut'
+
 									disabled={ disGroBoo }
 									type='button'
 
@@ -1441,7 +1465,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									} }
-								>{ /* What: Conditional Pill Button Element. Why: Clicking a pill narrows the list to pickers gated by just that conditional, resetting the other 2 filters. How: This commits filConStr, resets filGroStr/filTypStr, disabled during the matching tour step. */ }
+								>{ /* What: Conditional Pill Button Element. Why: Clicking a pill narrows the list to pickers gated by just that conditional, resetting the other 2 filters. How: This commits filConStr, resets filGroStr/filTypStr, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, the Pickers page tour, help mode's Stats catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									{ conCurObj.name }{ /* What: Pill Name Expression. Why: Every conditional pill needs its own visible label. How: This renders conCurObj.name. */ }
@@ -1474,7 +1498,9 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						ref={ scoRowRef }
 
 						className='picker-tabs stat-scope-tabs'
-					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shoEntArr's own remaining entries to one box each. */ }
+
+						data-element-name-hook='scoTabDiv'
+					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shoEntArr's own remaining entries to one box each. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
 						{ shoAllBoo && ( // What: All Box Check. Why: "All" only renders when shoEntArr itself decided to include it. How: This renders the All box only while shoAllBoo is true.
@@ -1485,11 +1511,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								style={{ animationDelay : '0ms' }}
 
+								data-element-name-hook='scoTabBut'
+
 								disabled={ disShoBoo }
 								type='button'
 
 								onClick={ () => selScoFun( 'all' ) }
-							>{ /* What: All Box Button Element. Why: Selecting this box shows every visible section at once. How: This calls selScoFun('all') on click, disabled during the matching tour step. */ }
+							>{ /* What: All Box Button Element. Why: Selecting this box shows every visible section at once. How: This calls selScoFun('all') on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
 								<span className='picker-tab-name'>All</span>{ /* What: Box Name Span Element. Why: Every box needs its own visible name. How: This renders the literal text "All". */ }
@@ -1555,13 +1583,14 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									style={{ animationDelay : ( filIndNum + 1 ) * 40 + 'ms' }}
 
+									data-element-name-hook='scoTabBut'
 									data-picker-id={ filEntObj.ideStr }
 
 									disabled={ disShoBoo }
 									type='button'
 
 									onClick={ filEntObj.cliFun }
-								>{ /* What: Picker Tab Button Element. Why: Each tab narrows the list to one picker. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. */ }
+								>{ /* What: Picker Tab Button Element. Why: Each tab narrows the list to one picker. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
 									<span className='picker-tab-name'>{ filEntObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own visible picker name. How: This renders filEntObj.namStr. */ }
@@ -1585,7 +1614,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-			<div className='data-sort-bar'>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SorSelCom below. */ }
+			<div
+				className='data-sort-bar'
+
+				data-element-name-hook='sorBarDiv'
+			>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SorSelCom below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				<SorSelCom
@@ -1608,7 +1641,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				className='data-list'
 
 				data-element-name-hook='datLisDiv'
-			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. Its data-element-name-hook is read by the App Features tours and the Data page tour. */ }
+			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
 
 
 				{ shoEmpBoo && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
@@ -1795,11 +1828,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							} }
-						>{ /* What: Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours and the Data page tour. */ }
+						>{ /* What: Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
 
 
 							<header
 								className='cat-h'
+
+								data-element-name-hook='catHeaHea'
 
 								onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: Clicking anywhere on the header outside a real button toggles the card. How: This toggles the section unless it's a draft, the tour is guarding the header, or the click landed on a button.
 
@@ -1815,7 +1850,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								} }
-							>{ /* What: Category Header Element. Why: Clicking anywhere on the header (outside a real button) should toggle the card. How: This calls togSecFun unless this is a draft, the tour is guarding the header, or the click actually landed on a button. */ }
+							>{ /* What: Category Header Element. Why: Clicking anywhere on the header (outside a real button) should toggle the card. How: This calls togSecFun unless this is a draft, the tour is guarding the header, or the click actually landed on a button. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 								<button
@@ -1875,9 +1910,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<InfTipCom
 											className='cat-mode-label'
 
+											data-element-name-hook='catModSpa'
+
 											labTexStr={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }
 											trnOnlBoo
-										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
+										>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 
@@ -1942,7 +1979,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									className='cat-body'
 
 									data-element-name-hook='catBodDiv'
-								>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. Its data-element-name-hook is read by the App Features tours. */ }
+								>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 									<button
@@ -1956,7 +1993,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										aria-expanded={ !conColBoo }
 
 										onClick={ () => actStoObj.togColFun( picCurObj.id + ':controls' ) }
-									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours. */ }
+									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 										<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker belong together. How: This wraps both spans below. */ }
@@ -2033,7 +2070,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										aria-expanded={ !iteColBoo }
 
 										onClick={ () => isaDraBoo ? setDraIteBoo( ( preOpeBoo ) => !preOpeBoo ) : actStoObj.togColFun( picCurObj.id + ':items' ) }
-									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours. */ }
+									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 										<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the label sit together on the toggle's left side. How: This wraps the chevron span and the kicker. */ }
@@ -2074,9 +2111,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 												<InfTipCom
 													className='rd-add is-tour-disabled'
 
+													data-element-name-hook='rowAddSpa'
+
 													actNamStr={ `Add to ${ picCurObj.name.toLowerCase() }` }
 													labTexStr='This button is disabled until all tutorials are completed.'
-												>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. */ }
+												>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 													<IcoSvgCom
@@ -2094,10 +2133,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 												<button
 													className='rd-add'
 
+													data-element-name-hook='rowAddBut'
+
 													disabled={ detAddBoo }
 
 													onClick={ staAddFun }
-												>{ /* What: Add Button Element. Why: This is the actual "create a brand-new item" affordance. How: This calls staAddFun on click, disabled during the guarded tour step. */ }
+												>{ /* What: Add Button Element. Why: This is the actual "create a brand-new item" affordance. How: This calls staAddFun on click, disabled during the guarded tour step. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 													<IcoSvgCom
@@ -2162,7 +2203,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 														data-element-name-hook='lisIteDiv'
 
 														onAnimationEnd={ () => { if ( insIteStr === iteCurObj.id ) setInsIteStr( null ); } }
-													>{ /* What: Row Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the App Features tours and help mode's Pickers catalog. */ }
+													>{ /* What: Row Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 														{ iteOpeBoo ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input. How: This renders the editing header while iteOpeBoo is true, otherwise the normal clickable row.
@@ -2172,7 +2213,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 																className='rd-row'
 
 																data-element-name-hook='lisRowDiv'
-															>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. Its data-element-name-hook is read by the App Features tours. */ }
+															>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 																<span className='rd-main'>{ /* What: Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
@@ -2218,7 +2259,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 																		} }
 																		onChange={ ( chaEveObj ) => actStoObj.updIteFun( iteCurObj.id, { name : chaEveObj.target.value } ) }
 																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-																	/>{ /* What: Name Input Element. Why: An item's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours and help mode's Pickers catalog. */ }
+																	/>{ /* What: Name Input Element. Why: An item's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 																</span>
@@ -2259,13 +2300,17 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 																aria-expanded={ iteOpeBoo }
 
 																onClick={ () => setOpeIteStr( iteOpeBoo ? null : iteCurObj.id ) }
-															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles opeIteStr between null and iteCurObj.id. Its data-element-name-hook is read by the App Features tours. */ }
+															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles opeIteStr between null and iteCurObj.id. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 																<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own meta line belong together. How: This wraps the name and sched spans below. */ }
 
 
-																	<span className='rd-name'>{ iteCurObj.name }</span>{ /* What: Name Span Element. Why: Every item row needs its own visible name. How: This renders iteCurObj.name. */ }
+																	<span
+																		className='rd-name'
+
+																		data-element-name-hook='rowNamSpa'
+																	>{ iteCurObj.name }</span>{ /* What: Name Span Element. Why: Every item row needs its own visible name. How: This renders iteCurObj.name. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 																	<span className='rd-sched'>{ rowSumStr }</span>{ /* What: Sched Span Element. Why: The closed row's meta line summarizes the item's state. How: This renders rowSumStr. */ }
 
@@ -2417,7 +2462,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						type='button'
 
 						onClick={ staNewFun }
-					>{ /* What: Create Button Element. Why: This is the only place a brand-new picker can be started from this tab. How: This calls staNewFun on click, disabled during the guarded tour step. Its data-element-name-hook is read by the Data page tour. */ }
+					>{ /* What: Create Button Element. Why: This is the only place a brand-new picker can be started from this tab. How: This calls staNewFun on click, disabled during the guarded tour step. Its data-element-name-hook is read by the Data page tour and help mode's Data catalog. */ }
 
 
 						<IcoSvgCom

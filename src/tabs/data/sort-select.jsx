@@ -75,10 +75,12 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } ) {
 
 				className='np-input data-sort-sel'
 
+				data-element-name-hook='sorDroSel'
+
 				value={ value }
 
 				onChange={ ( chaEveObj ) => onChange( chaEveObj.target.value ) }
-			>{ /* What: Sort Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in optLisArr below, and reports the chosen key up via onChange. */ }
+			>{ /* What: Sort Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in optLisArr below, and reports the chosen key up via onChange. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				{ optLisArr.map( ( optCurObj ) => ( // What: Sort Option Map. Why: One <option> is needed per entry in optLisArr. How: This maps optLisArr to one <option> per entry, keyed by its own keyStr.

@@ -233,7 +233,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 								aria-pressed={ holEnaBoo }
 
 								onClick={ () => actStoObj.togHolFun( holCurObj.keyStr ) }
-							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode's Today catalog and help mode's Pickers catalog. */ }
+							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
