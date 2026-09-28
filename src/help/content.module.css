@@ -65,10 +65,10 @@
 
 }
 
-.help-inline-icon svg { /* What: Help Inline Icon Glyph. Why: Even centered on the line, the glyph reads slightly low against the text beside it. How: This nudges the icon up a few pixels inside its box. */
+.help-inline-icon svg { /* What: Help Inline Icon Glyph. Why: Even centered on the line, the glyph reads slightly low against the text beside it. How: This nudges the icon up inside its centered box, where a -5px margin lifts it about 2.5px. */
 
 
-	margin-top : -3px;
+	margin-top : -5px;
 
 
 }
