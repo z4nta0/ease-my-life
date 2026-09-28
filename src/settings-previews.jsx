@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This is the UI library both of this file's components are built on. How: This is used directly (React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { IcoSvgCom   } from './ui.jsx';         // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'cheEle' icon name.
+import { IcoSvgCom } from './ui.jsx';         // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'cheEle' icon name.
 import { PicStrCom } from './tab-picker.jsx'; // What: Picker Strip Component. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
 
 // #endregion Imports
@@ -39,11 +39,18 @@ import { PicStrCom } from './tab-picker.jsx'; // What: Picker Strip Component. W
  * trigger buttons disabled upstream; that behavior was replaced by this
  * explicit-consent design.
  *
+ * Sections:
+ *  - Constants
+ *  - Components
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
 
+
+// #region Constants
 
 // #region PRE_CAN_ARR
 
@@ -71,15 +78,15 @@ import { PicStrCom } from './tab-picker.jsx'; // What: Picker Strip Component. W
  *
 */
 
-const PRE_CAN_ARR = [
+const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animation preview needs its own mock pool so it works before any real picker exists. How: PicAniCom passes this straight to PicStrCom as canIteArr.
 
 
-	{ id : 'pv1', name : 'Sort the mail'      },
-	{ id : 'pv2', name : 'Water the plants'   },
-	{ id : 'pv3', name : 'Wipe the counters'  },
-	{ id : 'pv4', name : 'Take out recycling' },
-	{ id : 'pv5', name : 'Sweep the floor'    },
-	{ id : 'pv6', name : 'Fold laundry'       }
+	{ id : 'pv1', name : 'Sort the mail'      }, // What: Sort The Mail Candidate. Why: This is one mock item the preview reel cycles past. How: PicStrCom renders its name as one strip row.
+	{ id : 'pv2', name : 'Water the plants'   }, // What: Water The Plants Candidate. Why: This is one mock item the preview reel cycles past. How: PicStrCom renders its name as one strip row.
+	{ id : 'pv3', name : 'Wipe the counters'  }, // What: Wipe The Counters Candidate. Why: This is one mock item the preview reel cycles past. How: PicStrCom renders its name as one strip row.
+	{ id : 'pv4', name : 'Take out recycling' }, // What: Take Out Recycling Candidate. Why: This is one mock item the preview reel cycles past. How: PicStrCom renders its name as one strip row.
+	{ id : 'pv5', name : 'Sweep the floor'    }, // What: Sweep The Floor Candidate. Why: This is one mock item the preview reel cycles past. How: PicStrCom renders its name as one strip row.
+	{ id : 'pv6', name : 'Fold laundry'       }  // What: Fold Laundry Candidate. Why: This is one mock item the preview reel cycles past. How: PicStrCom renders its name as one strip row.
 
 
 ];
@@ -107,30 +114,34 @@ const PRE_CAN_ARR = [
  *   own stable, unique React key, used directly as the card row's own
  *   key.
  *
+ * - `namStr` (String): Name String is a real Today card's own item
+ *   name, rendered inside the card's own name line.
+ *
  * - `picStr` (String): Picker String names the picker a real Today
  *   card's item came from, rendered inside the card's own meta-picker
  *   span.
- *
- * - `namStr` (String): Name String is a real Today card's own item
- *   name, rendered inside the card's own name line.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const PRE_CAR_ARR = [
+const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock done-cards for its effects to act on. How: CelPreCom maps this to one mock .today-card row per entry.
 
 
-	{ ideStr : 'pc1', picStr : 'Morning', namStr : 'Make the bed'      },
-	{ ideStr : 'pc2', picStr : 'Chores',  namStr : 'Water the plants'  },
-	{ ideStr : 'pc3', picStr : 'Focus',   namStr : 'Inbox zero'        }
+	{ ideStr : 'pc1', namStr : 'Make the bed',     picStr : 'Morning' }, // What: Make The Bed Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one .today-card row.
+	{ ideStr : 'pc2', namStr : 'Water the plants', picStr : 'Chores'  }, // What: Water The Plants Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one .today-card row.
+	{ ideStr : 'pc3', namStr : 'Inbox zero',       picStr : 'Focus'   }  // What: Inbox Zero Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one .today-card row.
 
 
 ];
 
 // #endregion PRE_CAR_ARR
 
+// #endregion Constants
 
+
+
+// #region Components
 
 // #region CelPreCom
 
@@ -147,20 +158,20 @@ const PRE_CAR_ARR = [
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.styKeyStr - Style Key String: {@link celStyStr}
  * @param props.repTokNum - Replay Token Number: {@link celTokNum}
+ * @param props.styKeyStr - Style Key String: {@link celStyStr}
  *
  * @returns The preview stage: the mock done-cards row plus whichever
  * particles the current effect has staged on top of it.
  *
  * @example
  * ```tsx
- * CelPreCom({ styKeyStr, repTokNum }) // => <CelPreCom />
+ * CelPreCom({ repTokNum, styKeyStr }) // => <CelPreCom />
  * ```
  *
 */
 
-function CelPreCom ( { styKeyStr, repTokNum } ) {
+function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 
 	const carConRef = React.useRef( null ); // What: Card Container Reference. Why: The ripple style animates the real DOM card elements directly, so it needs a stable handle on their shared wrapper to query into. How: This is attached via the mock cards row's own ref prop below and read inside the replay effect.
@@ -176,13 +187,12 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 
 
-		const redMotBoo = false;                                                                               // What: Reduced Motion Boolean. Why: Pressing Play is itself an explicit request to SEE the animation, so this preview must always play at full motion regardless of the OS's own reduced-motion preference. How: This is hardcoded false rather than read from a real media query, unlike the app's own animations elsewhere.
 		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll( '.today-card' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every '.today-card' inside carConRef's own current element, or an empty array before it has mounted.
 
 		let ripCleTim; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
 
 
-		if ( !redMotBoo && styKeyStr === 'ripple' ) { // What: Ripple Style Check. Why: The exhale cascade below only applies when this preview is actually showing the ripple style and reduced motion isn't forcing it off. How: This restarts every mock card's own staggered exhale animation and schedules its cleanup, only once both conditions hold.
+		if ( styKeyStr === 'ripple' ) { // What: Ripple Style Check. Why: The exhale cascade below only applies when this preview is actually showing the ripple style. How: This restarts every mock card's own staggered exhale animation and schedules its cleanup.
 
 
 			carEleArr.forEach( ( carCurEle, iteIndNum ) => { // What: Ripple Start Loop. Why: Every mock card needs its own staggered exhale animation restarted, matching the real Today list's own cascade. How: This iterates carEleArr, giving each card a delay proportional to its own position before re-triggering its 'is-exhaling' class.
@@ -224,24 +234,10 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 
 
-		if ( redMotBoo ) { // What: Reduced Motion Check. Why: Reduced motion, were it ever actually reachable here, must clear all particles and bail out before any style-specific roll runs. How: This clears parIteArr and returns a cleanup function early, skipping the confetti/sparkle rolls below.
-
-
-			setParIteArr( [] ); // What: Particle Clear Call. Why: Reduced motion, were it ever actually reachable here, should show no particles at all. How: This writes an empty array into parIteArr.
-
-
-
-			return () => clearTimeout( ripCleTim ); // What: Reduced Motion Cleanup Return. Why: Even this early-exit branch must still cancel a ripple cleanup timeout it may have scheduled above. How: This returns a cleanup function that cancels ripCleTim.
-
-
-		}
-
-
-
 		if ( styKeyStr === 'confetti' ) { // What: Confetti Style Check. Why: A fresh batch of confetti particles is only rolled when this preview is actually showing the confetti style. How: This builds and writes 26 randomly-scattered confetti particle items into parIteArr.
 
 
-			setParIteArr( Array.from( { length : 26 }, ( _, iteIndNum ) => ( { // What: Confetti Particle Roll. Why: The confetti style needs a fresh batch of randomly-scattered pieces every time it replays. How: This builds 26 particle items, each with its own random angle, distance, rotation, delay, and opacity.
+			setParIteArr( Array.from( Array( 26 ).keys(), ( iteIndNum ) => ( { // What: Confetti Particle Roll. Why: The confetti style needs a fresh batch of randomly-scattered pieces every time it replays. How: This builds 26 particle items, each with its own random angle, distance, rotation, delay, and opacity.
 
 
 				angNum : Math.round( Math.random() * 360 ),              // What: Angle Number. Why: Each piece needs its own random direction to fly outward in. How: This is a random integer degree value read by the '--angle' custom property.
@@ -261,7 +257,7 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 		else if ( styKeyStr === 'sparkle' ) { // What: Sparkle Style Check. Why: A fresh batch of sparkle particles is only rolled when this preview is actually showing the sparkle style. How: This builds and writes 22 randomly-placed sparkle particle items into parIteArr.
 
 
-			setParIteArr( Array.from( { length : 22 }, ( _, iteIndNum ) => ( { // What: Sparkle Particle Roll. Why: The sparkle style needs a fresh batch of randomly-placed glints every time it replays. How: This builds 22 particle items, each with its own random position and delay.
+			setParIteArr( Array.from( Array( 22 ).keys(), ( iteIndNum ) => ( { // What: Sparkle Particle Roll. Why: The sparkle style needs a fresh batch of randomly-placed glints every time it replays. How: This builds 22 particle items, each with its own random position and delay.
 
 
 				delNum : Math.round( Math.random() * 260 ), // What: Delay Number. Why: Glints should not all appear at exactly the same instant. How: This is a random millisecond value applied as this piece's own animationDelay.
@@ -312,8 +308,9 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 
 			<div
-				className='celeb-preview-cards'
 				ref={ carConRef }
+
+				className='celeb-preview-cards'
 			>{ /* What: Celebration Preview Cards Div Element. Why: The ripple style animates these specific card elements directly, so they need a stable container carConRef can query into. How: This renders one mock done-card per entry in PRE_CAR_ARR. */ }
 
 
@@ -322,12 +319,14 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 					<div
 						key={ carCurObj.ideStr }
+
 						className='today-card is-done celeb-preview-card'
 					>{ /* What: Preview Card Div Element. Why: This mirrors the real Today tab's own done-card markup so the ripple/confetti/sparkle effects render identically here. How: This renders the check glyph and the card's own picker/name text. */ }
 
 
 						<span
 							className='check'
+
 							aria-hidden='true'
 						>{ /* What: Check Span Element. Why: A completed Today card always shows a check glyph. How: This wraps the IcoSvgCom component rendering the 'cheEle' glyph. */ }
 
@@ -339,6 +338,7 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 
 						</span>
+
 
 						<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The picker/name text needs its own grouping wrapper, matching the real Today card markup. How: This wraps the meta row and the name line below. */ }
 
@@ -366,8 +366,10 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 			</div>
 
 
+
 			<div
 				className='celeb-preview-particles'
+
 				aria-hidden='true'
 			>{ /* What: Celebration Preview Particles Div Element. Why: The confetti/sparkle overlay renders above the mock cards but must never be exposed to assistive tech, since it is purely decorative. How: This renders one piece per entry in parIteArr, each already fully styled/positioned. */ }
 
@@ -380,7 +382,9 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 						<i
 							key={ parCurObj.ideStr }
+
 							className='confetti-piece'
+
 							style={{
 								'--angle'         : parCurObj.angNum + 'deg',
 								'--dist'          : parCurObj.disNum + 'px',
@@ -396,7 +400,9 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 						<span
 							key={ parCurObj.ideStr }
+
 							className='sparkle-piece'
+
 							style={{
 								animationDelay : parCurObj.delNum + 'ms',
 								left           : parCurObj.lefNum + '%',
@@ -448,10 +454,10 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param props.repTokNum - Replay Token Number: {@link picTokNum}
  * @param props.styKeyStr - Style Key String: Which of PicStrCom's own
  *                          animation styles to preview: 'reel',
  *                          'spotlight', or 'dissolve'.
- * @param props.repTokNum - Replay Token Number: {@link picTokNum}
  *
  * @returns Either the live PicStrCom cycle (once Play has been pressed
  * at least once) or a static preview of the fixed landing candidate's
@@ -459,12 +465,12 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
  *
  * @example
  * ```tsx
- * PicAniCom({ styKeyStr, repTokNum }) // => <PicAniCom />
+ * PicAniCom({ repTokNum, styKeyStr }) // => <PicAniCom />
  * ```
  *
 */
 
-function PicAniCom ( { styKeyStr, repTokNum } ) {
+function PicAniCom ( { repTokNum, styKeyStr } ) {
 
 
 	const picCanObj = PRE_CAN_ARR[ 2 ]; // What: Picked Candidate Object. Why: The preview always needs to land on the same predictable candidate so its own copy stays truthful regardless of which run this is. How: This reads the 3rd mock candidate from PRE_CAN_ARR as a fixed, deterministic landing spot.
@@ -482,10 +488,11 @@ function PicAniCom ( { styKeyStr, repTokNum } ) {
 
 				<PicStrCom
 					key={ repTokNum }
+
 					canIteArr={ PRE_CAN_ARR }
+					forMotBoo // What: Force Motion Boolean. Why: An explicit Play press is consent to see the animation even under reduced motion. How: This bare true flag tells PicStrCom to skip its own reduced-motion shortcut.
 					picIteObj={ picCanObj }
 					styKeyStr={ styKeyStr }
-					forMotBoo
 				/> // What: Picker Strip Component. Why: This plays the real reel/spotlight/dissolve cycle so the preview shows the actual animation, not a mockup of it. How: This is remounted (via its own key) on every replay, forced to play even under reduced motion since this is an explicit Play press.
 
 
@@ -508,8 +515,14 @@ function PicAniCom ( { styKeyStr, repTokNum } ) {
 
 // #endregion PicAniCom
 
+// #endregion Components
 
+
+
+// #region Exports
 
 export { CelPreCom, PicAniCom }; // What: Named Exports. Why: tab-settings.jsx renders both as the live previews for its own Completion Celebration and Picker Animation style pickers. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
+
+// #endregion Exports
 
 
