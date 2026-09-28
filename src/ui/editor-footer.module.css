@@ -1,0 +1,91 @@
+
+
+
+/**
+ * editor-footer.module.css = Editor Footer Module
+ *
+ * @summary
+ * Styles for EdiFooCom, the Delete/Cancel/Save row that ends every reminder
+ * editor, and the delete confirm that morphs in place of it: Delete anchored
+ * left, Cancel and Save grouped right, and a short slide-in whenever one row
+ * swaps for the other. Today's inline editor and the Data tab's reminder rows
+ * both draw a full-bleed divider above the footer, so each sets the
+ * --rem-inline-foot-* custom properties on itself instead of styling the
+ * footer from outside.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region rem-inline-foot */
+
+.rem-inline-foot { /* What: Editor Footer. Why: Delete sits apart on the left while Cancel and Save pair up on the right, with room above them so a destructive tap is hard to hit by accident. How: This spreads the footer's children across a flex row, reading its spacing and divider from --rem-inline-foot-* properties a parent may set, and slides the row in each time it mounts. */
+
+
+	animation       : global(footSwapIn) .16s ease both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	border-top      : var(--rem-inline-foot-border-top, none); /* What: Footer Divider. Why: An editor laid out in full-bleed rows needs a hairline between its last row and the footer. How: A parent sets --rem-inline-foot-border-top, falling back to no divider. */
+	display         : flex;
+	gap             : 8px;
+	justify-content : space-between;
+	margin          : var(--rem-inline-foot-margin, 18px 0 0); /* What: Footer Margin. Why: A full-bleed editor pulls the footer out to its edges and drops the gap above it. How: A parent sets --rem-inline-foot-margin, falling back to an 18px gap above. */
+	padding         : var(--rem-inline-foot-padding, 0); /* What: Footer Padding. Why: A full-bleed footer needs its buttons pulled back in from the edges and clear of the divider. How: A parent sets --rem-inline-foot-padding, falling back to none. */
+
+
+}
+.rem-foot-confirm { /* What: Delete Confirm Footer. Why: The confirm question and its actions should line up on one center line. How: This vertically centers the footer's children while the confirm is up. */
+
+
+	align-items : center;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Editor Footer. Why: Someone who asked for less motion shouldn't see the footer slide in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-inline-foot { /* What: Motionless Editor Footer. Why: The swapped row should simply appear. How: This turns the slide-in off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.rem-del-msg { /* What: Delete Message. Why: The confirm question should read as plain body text that wraps cleanly on narrow screens. How: This sets it in the text color with balanced wrapping. */
+
+
+	color     : var(--text);
+	font-size : 13px;
+	text-wrap : pretty;
+
+
+}
+
+.rem-del-actions { /* What: Delete Actions. Why: The confirm's Cancel and Delete buttons stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+
+
+	display : flex;
+	flex    : 0 0 auto;
+	gap     : 8px;
+
+
+}
+
+.rem-foot-right { /* What: Footer Right Group. Why: Cancel and Save read as a pair pushed to the right, even when there's no Delete button on the left. How: This lays them out in a fixed-size row and pushes it right with an auto left margin. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+	margin-left : auto;
+
+
+}
+
+/* #endregion rem-inline-foot */
+
+

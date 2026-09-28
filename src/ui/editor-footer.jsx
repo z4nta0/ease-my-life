@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: EdiFooCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useImperativeHandle, React.useRef, React.useState, React.forwardRef) instead of importing individual named hooks.
+import cssModObj from './editor-footer.module.css'; // What: CSS Module Object. Why: The footer and delete confirm styles live in their own module. How: This maps each class name in editor-footer.module.css to its hashed module class.
+import React     from 'react';                      // What: React. Why: EdiFooCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useImperativeHandle, React.useRef, React.useState, React.forwardRef) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from './button.jsx';       // What: Button Base Component. Why: The footer's own Delete, Cancel, and Save actions need consistently-styled buttons. How: This is rendered throughout EdiFooCom.
@@ -142,15 +143,15 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 			<div
 				key='confirm'
 
-				className='rem-inline-foot rem-foot-confirm'
+				className={` ${ cssModObj.remInlineFoot }   ${ cssModObj.remFootConfirm } `}
 
 				data-element-name-hook='ediFooDiv'
 			>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-				<span className='rem-del-msg'>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
+				<span className={ cssModObj.remDelMsg }>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
 
-				<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
+				<div className={ cssModObj.remDelActions }>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
 
 
 					<ButBasCom
@@ -191,7 +192,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 		<div
 			key='foot'
 
-			className='rem-inline-foot rd-edit-foot'
+			className={ cssModObj.remInlineFoot }
 
 			data-element-name-hook='ediFooDiv'
 		>{ /* What: Plain Foot Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
@@ -215,7 +216,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 
 
 
-			<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
+			<div className={ cssModObj.remFootRight }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
 				<ButBasCom

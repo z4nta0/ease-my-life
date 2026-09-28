@@ -2233,6 +2233,8 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .today-list .rem-inline-editor .rem-editor > .rem-hint { padding: 12px 16px; margin: 0; }
 .today-list .rem-inline-editor .rem-inline-foot { border-top: 0.5px solid var(--border); padding: 14px 16px 0; margin-top: 0; }
 .today-list .rem-inline-editor .rem-inline-foot.rd-edit-foot { margin-top: 0; }
+/* EdiFooCom's module footer reads the same divider through custom properties. */
+.today-list .rem-inline-editor { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0; --rem-inline-foot-padding: 14px 16px 0; }
 /* Extra fields sit in a Collapse+fade wrapper (Today only), which breaks the
    `.rem-field + .rem-field` divider / `:first-child` padding chain — restore the
    top divider + padding on the wrapped field, and cross-fade on pill switch. */
@@ -2918,6 +2920,7 @@ button.rd-chev {
 /* Doubled border between the last control row and the footer. */
 .rd-edit .rd-edit-foot,
 .rd-edit .rem-foot-confirm { margin: 0 -16px; padding: 14px 16px 0; border-top: 0.5px solid var(--border); }
+.rd-edit { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0 -16px; --rem-inline-foot-padding: 14px 16px 0; }
 
 /* Rail entry for Reminders — subtle accent tint to set it apart as pinned. */
 .rail-btn--rem.is-on .rail-name { color: var(--accent); }
