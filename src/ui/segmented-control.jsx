@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: SegConCom is built directly on React's own APIs. How: This is used directly (React.useRef, React.useCallback, React.useLayoutEffect) instead of importing individual named hooks.
+import cssModObj from './segmented-control.module.css'; // What: CSS Module Object. Why: The control's track, thumb, and buttons are styled from their own module. How: This maps each class name in segmented-control.module.css to its hashed module class.
+import React     from 'react';                            // What: React. Why: SegConCom is built directly on React's own APIs. How: This is used directly (React.useRef, React.useCallback, React.useLayoutEffect) instead of importing individual named hooks.
 
 // #endregion Imports
 
@@ -177,7 +178,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 		<div
 			ref={ segEleRef }
 
-			className='seg'
+			className={ cssModObj.seg }
 
 			data-element-name-hook='segConDiv'
 
@@ -190,7 +191,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 			<span
 				ref={ thuEleRef }
 
-				className='seg-thumb'
+				className={ cssModObj.segThumb }
 
 				aria-hidden='true'
 			/>{ /* What: Thumb Span Element. Why: This is the small sliding pill plaThuFun positions and sizes via direct style writes. How: This starts with no inline position at all, until the first layout effect above places it. */ }
@@ -201,7 +202,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 				<button
 					key={ optConObj.keyStr }
 
-					className={ ` seg-btn   ${ value === optConObj.keyStr ? 'is-on' : '' } ` }
+					className={ cssModObj.segBtn }
 
 					data-element-name-hook='segConBut'
 

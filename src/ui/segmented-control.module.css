@@ -1,0 +1,137 @@
+
+
+
+/**
+ * segmented-control.module.css = Segmented Control Module
+ *
+ * @summary
+ * Styles for SegConCom, the app's shared segmented control: a rounded track
+ * of option buttons with one accent thumb that slides under whichever option
+ * is pressed. The buttons sit above the thumb and only change their text
+ * color; the thumb's own position, size, and glide are written from JS.
+ *
+ * A parent that needs the control sized or spaced differently sets the
+ * --seg-* custom properties on itself (flex sizing and wrapping, a max width,
+ * space below, and the Repeat control's flex basis) instead of styling the
+ * control from outside. The Repeat and Day selection controls get their own
+ * layouts through their aria-label, until the design-system pass decides
+ * whether those become a layout prop.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region seg */
+
+.seg { /* What: Segmented Control. Why: The options read as one rounded control, spread across it. How: This lays the buttons out in a wrapping, bordered pill track, reading its fit from --seg-* properties a parent may set. */
+
+
+	background      : var(--bg);
+	border          : 0.5px solid var(--border);
+	border-radius   : 20px;
+	display         : inline-flex;
+	flex            : var(--seg-flex, 0 1 auto); /* What: Segmented Control Flex. Why: A control in a tight row, like a Settings row, must keep its size. How: A parent sets --seg-flex, falling back to the normal flex sizing. */
+	flex-wrap       : var(--seg-flex-wrap, wrap); /* What: Segmented Control Wrapping. Why: A control in a Settings row must stay on one line. How: A parent sets --seg-flex-wrap, falling back to wrapping. */
+	gap             : 4px;
+	justify-content : space-between;
+	margin-bottom   : var(--seg-margin-bottom, 0); /* What: Segmented Control Bottom Margin. Why: The cadence editor wants room below its controls. How: A parent sets --seg-margin-bottom, falling back to none. */
+	max-width       : var(--seg-max-width, none); /* What: Segmented Control Max Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-width, falling back to no limit. */
+	padding         : 4px;
+	position        : relative;
+
+
+}
+.seg[aria-label="Repeat"] { /* What: Repeat Segmented Control. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, which renders the same as flex when everything fits. */
+
+
+	display               : grid;
+	flex-basis            : var(--seg-repeat-flex-basis, auto); /* What: Repeat Flex Basis. Why: The schedule editor's rows layout gives Repeat its own full-width line. How: A parent sets --seg-repeat-flex-basis, falling back to auto. */
+	grid-template-columns : repeat(auto-fit, minmax(70px, max-content));
+	justify-content       : start;
+
+
+}
+.seg[aria-label="Day selection"] { /* What: Day Selection Segmented Control. Why: Its two short options would otherwise stretch across a column flex field and land at opposite edges. How: This keeps the control to its content's width with the buttons snug together. */
+
+
+	align-self      : flex-start;
+	justify-content : flex-start;
+
+
+}
+
+.seg-thumb { /* What: Segmented Control Thumb. Why: One accent pill slides under the pressed option to mark it. How: This draws the pill behind the buttons, hidden until JS measures the pressed button and writes its position and size. */
+
+
+	background     : var(--accent);
+	border-radius  : 999px;
+	height         : 0;
+	left           : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	top            : 0;
+	width          : 0;
+	z-index        : 0;
+
+
+}
+
+.seg-btn { /* What: Segmented Control Button. Why: Each option is a borderless pill above the thumb. How: This sets it in muted text over a transparent background, raised above the thumb, with a color fade. */
+
+
+	background    : none;
+	border        : none;
+	border-radius : 999px;
+	color         : var(--muted);
+	cursor        : pointer;
+	font-family   : var(--font-sans);
+	font-size     : 13px;
+	font-weight   : 500;
+	padding       : 6px 14px;
+	position      : relative;
+	transition    : background .12s, color .12s;
+	z-index       : 1;
+
+
+}
+.seg-btn:hover { /* What: Hovered Segmented Control Button. Why: An option should respond to the pointer. How: This darkens its text. */
+
+
+	color : var(--text);
+
+
+}
+.seg-btn[aria-pressed="true"] { /* What: Pressed Segmented Control Button. Why: The pressed option's text sits on the accent thumb. How: This switches its text to the background color, keyed off the button's own pressed state. */
+
+
+	color : var(--bg);
+
+
+}
+.seg-btn[aria-pressed="true"]:hover { /* What: Hovered Pressed Segmented Control Button. Why: Hover shouldn't darken the pressed option's text against the thumb. How: This keeps it the background color. */
+
+
+	color : var(--bg);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Segmented Control Button. Why: Someone who asked for less motion shouldn't see the text color fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.seg-btn { /* What: Still Segmented Control Button. Why: The text color should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion seg */
+
+

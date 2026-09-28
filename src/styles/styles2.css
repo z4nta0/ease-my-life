@@ -1562,7 +1562,7 @@ button.cat-h-l {
 .set-data-sub { font-size: 12.5px; color: var(--muted); line-height: 1.45; text-wrap: pretty; }
 .set-layout-sub { max-width: 190px; }
 /* Keep the placement segmented control on one row (never wrap its pills). */
-.set-data-row .seg { flex-wrap: nowrap; flex: 0 0 auto; }
+.set-data-row { --seg-flex: 0 0 auto; --seg-flex-wrap: nowrap; }
 .set-data-row--danger .set-data-name { color: oklch(0.5 0.18 25); }
 .set-import-msg { font-size: 12px; margin-top: 2px; animation: importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both; }
 @keyframes importMsgPop { 0% { opacity: 0; transform: scale(.9); } 60% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: scale(1); } }
@@ -2211,64 +2211,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-skip-actions { display: flex; gap: 8px; flex: 0 0 auto; }
 
 
-/* Segmented control for repeat kind. A single accent thumb (.seg-thumb) slides
-   between options; buttons sit above it and only animate their text colour. */
-.seg {
-  display: inline-flex; flex-wrap: wrap; gap: 4px;
-  justify-content: space-between;
-  background: var(--bg); padding: 4px;
-  border: 0.5px solid var(--border); border-radius: 20px;
-  position: relative;
-  /* Parents that want space below the control (the cadence editor) set --seg-margin-bottom. */
-  margin-bottom: var(--seg-margin-bottom, 0);
-  /* The schedule editor's rows layout sets --seg-max-width so no control outgrows its row. */
-  max-width: var(--seg-max-width, none);
-}
-/* Repeat (5 options) is the only segmented control long enough to wrap on
-   narrow viewports — flex-wrap's space-between spread the wrapped row's
-   fewer items across the full width (e.g. Monthly/Yearly landing at
-   opposite edges with a big gap), and each wrapped row justified
-   independently with no relation to the row above it. Grid's auto-fit
-   gives every row the SAME column template, so wrapped rows line up
-   under the row above (Monthly under Once, Yearly under Every N days)
-   instead of re-justifying on their own. When everything fits on one
-   line this renders identically to the flex version above (no slack
-   width for start-vs-space-between to differ on) — only the wrapped
-   case looks different. */
-.seg[aria-label="Repeat"] {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(70px, max-content));
-  justify-content: start;
-  /* The schedule editor's rows layout sets --seg-repeat-flex-basis so Repeat takes its own full-width line. */
-  flex-basis: var(--seg-repeat-flex-basis, auto);
-}
-/* Day selection (Date/Weekday, Monthly+Yearly) is only ever 2 short options —
-   unlike Repeat, it never needs to wrap, so it doesn't need Repeat's grid
-   treatment. It DOES need its own fix for the same root cause though: .seg's
-   base justify-content:space-between only reads as "spread out" once the
-   container is wider than its content, and .rem-field is a column flex
-   container, so .seg stretches to that column's full width by default
-   (align-self:stretch) — pushing Date/Weekday to opposite edges with a big
-   empty gap between them. align-self:flex-start keeps it shrink-to-content
-   width instead; justify-content:flex-start keeps the two buttons snug
-   against each other even if something ever does widen the container. */
-.seg[aria-label="Day selection"] { justify-content: flex-start; align-self: flex-start; }
-.seg-thumb {
-  position: absolute; top: 0; left: 0; width: 0; height: 0;
-  background: var(--accent); border-radius: 999px;
-  opacity: 0; pointer-events: none; z-index: 0;
-}
-.seg-btn {
-  border: none; background: none; cursor: pointer;
-  padding: 6px 14px; border-radius: 999px;
-  position: relative; z-index: 1;
-  font-family: var(--font-sans); font-size: 13px; font-weight: 500;
-  color: var(--muted);
-  transition: background .12s, color .12s;
-}
-.seg-btn:hover { color: var(--text); }
-.seg-btn.is-on { color: var(--bg); }
-.seg-btn.is-on:hover { color: var(--bg); }
 
 /* Data-tab cadence row: cadence + anchor selects, wrap on narrow. flex-start
    (not flex-end) so a wrapped second line (Monthly/Yearly nth-weekday, or
@@ -3132,10 +3074,10 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 /* key band */
 .dl-key{display:flex;flex-wrap:nowrap;align-items:baseline;gap:16px;padding:11px 14px;background:oklch(from var(--surface) calc(l + 0.006) c h);border-bottom:0.5px solid var(--border)}
 /* Grid with auto-fit columns instead of flex-wrap, same fix/reasoning as
-   the Reminders Repeat control (see .seg[aria-label="Repeat"]'s own
-   comment) — a wrapped row of these 5 items otherwise packs left-to-right
-   at its own natural widths with no relation to the row above it, instead
-   of lining up under it column-for-column. */
+   the Reminders Repeat control (see its rule and comment in
+   segmented-control.module.css). A wrapped row of these 5 items otherwise
+   packs left to right at its own natural widths with no relation to the row
+   above it, instead of lining up under it column for column. */
 .dl-key-items{display:grid;grid-template-columns:repeat(auto-fit, minmax(90px, max-content));justify-content:start;align-items:center;gap:9px 16px;flex:1;min-width:0}
 .dl-ki{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
 .dl-ki b{color:var(--text);font-weight:500}
