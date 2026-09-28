@@ -1829,6 +1829,29 @@ later, but don't invent one for anything else yet:
   file uses a CSS module, every token is a module interpolation instead,
   in the same 3-space form (see "### CSS modules and JS hooks").
 
+### Reduced motion
+Decided 2026-09-28. Everything that can have a reduced-motion variant gets
+one, whether the motion comes from CSS or from JS.
+- **CSS**: every `animation` or `transition`, color-only transitions
+  included, is paired with a `@media (prefers-reduced-motion: reduce)`
+  variant (placed per the `@media` bullet under "### CSS modules and JS
+  hooks") that turns it off with `animation : none` or `transition :
+  none`. The exception is one that JS waits on (an
+  `onAnimationEnd`/`transitionend` handler that updates state): there
+  the variant shortens the duration to `.01ms` instead, since `none`
+  never fires the end event and would leave that state stuck.
+- **JS**: any motion JS drives itself (an `Element.animate` call, a
+  `requestAnimationFrame` tween, a smooth `scrollIntoView`/`scrollTo`, a
+  timed class or step sequence, a canvas or particle effect) checks
+  `utils/motion.js`'s own `redMotFun()` first and, when it returns
+  true, skips the motion and jumps straight to its end state (an
+  instant scroll, the final value, no particles), still running any
+  follow-up the motion's own completion would have triggered. The CSS
+  media query alone can't stop these, which is why the check lives in
+  JS.
+- The modules migrated before this rule were brought in line in one
+  pass; everything else is checked as its file is next touched.
+
 ### CSS modules and JS hooks
 Decided 2026-09-27, for the CSS pass that follows the file-split pass. The
 pass runs in two stages, in this order: first every JS lookup across the
@@ -1966,6 +1989,8 @@ still passes.
   `@media` block holding rules for several elements splits into one
   block per element, each placed with its own element's variants. See
   `ui/info-tip.module.css`.
+- **Reduced motion**: every `animation` or `transition` in a module
+  gets a reduced-motion variant, per "### Reduced motion" above.
 - **`@keyframes`**: a keyframe only one module uses moves into that
   module (Vite scopes its name and rewrites the `animation` reference);
   one several modules share stays global. A module that plays a global
