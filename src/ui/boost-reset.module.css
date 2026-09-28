@@ -1,0 +1,59 @@
+
+
+
+/**
+ * boost-reset.module.css = Boost Reset Module
+ *
+ * @summary
+ * Styles for BooResCom's pair: the accrued boost value, shown in mono type,
+ * and the small outlined Reset lever beside it. The same pair appears in the
+ * item editor and in a conditional's controls, styled the same in both.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.pie-boost-val { /* What: Boost Value. Why: The accrued boost is a number the user compares at a glance. How: This sets it in bold mono type in the main text color. */
+
+
+	color       : var(--text);
+	font-family : var(--font-mono);
+	font-size   : 14px;
+	font-weight : 600;
+
+
+}
+
+.pie-reset { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text. */
+
+
+	background    : var(--surface);
+	border        : 0.5px solid var(--border);
+	border-radius : 7px;
+	color         : var(--muted);
+	font-size     : 12px;
+	padding       : 4px 9px;
+	transition    : color .12s, border-color .12s;
+
+
+}
+.pie-reset:hover:not(:disabled) { /* What: Hovered Boost Reset Button. Why: An enabled reset should respond to the pointer. How: This tints its text and border with the accent color. */
+
+
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.pie-reset:disabled { /* What: Disabled Boost Reset Button. Why: With no boost to reset the button should look unavailable. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+
+

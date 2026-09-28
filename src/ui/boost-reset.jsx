@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: BooResCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import cssModObj from './boost-reset.module.css'; // What: CSS Module Object. Why: The boost value and reset button styles live in their own module. How: This maps each class name in boost-reset.module.css to its hashed module class.
+import React     from 'react';                    // What: React. Why: BooResCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function. Why: Under reduced motion the boost value drops to 0 at once instead of ticking down. How: This is checked when Reset is pressed.
@@ -148,13 +149,13 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
 
 
 			<span
-				className='pie-boost-val'
+				className={ cssModObj.pieBoostVal }
 
 				data-element-name-hook='booValSpa'
 			>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 			<button
-				className='pie-reset'
+				className={ cssModObj.pieReset }
 
 				disabled={ !booValNum }
 

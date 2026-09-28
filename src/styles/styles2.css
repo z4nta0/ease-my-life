@@ -205,13 +205,6 @@
 .rd-edit--cnd .rd-ctl-confirm { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
 .rd-edit--cnd .rd-ctl-confirm .confirm-msg { max-width: 340px; font-size: 12.5px; line-height: 1.4; color: var(--muted); }
 .rd-edit--cnd .rd-ctl-confirm .rem-del-actions { display: flex; gap: 8px; flex: 0 0 auto; }
-.cnd-typectl .pie-boost-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text); }
-.cnd-typectl .pie-reset {
-  font-size: 12px; color: var(--muted); padding: 4px 9px; border-radius: 7px;
-  border: 0.5px solid var(--border); background: var(--surface); transition: color .12s, border-color .12s;
-}
-.cnd-typectl .pie-reset:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
-.cnd-typectl .pie-reset:disabled { opacity: 0.4; cursor: default; }
 /* Collision error on the conditional name field. */
 .np-input.is-error { border-color: oklch(0.55 0.18 25); box-shadow: 0 0 0 1px oklch(0.55 0.18 25) inset; }
 .np-error { margin: 6px 0 0; font-size: 12.5px; line-height: 1.4; color: oklch(0.5 0.18 25); }
@@ -2193,14 +2186,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .entry-editor .pie-note { font-size: 13px; color: var(--muted); }
 .entry-editor .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .entry-editor .pie-ctl .np-ease-unit { font-size: 12px; }
-/* Dynamic-only read-only Boost row: the accrued drift value + a Reset lever. */
-.entry-editor .pie-boost-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text); }
-.entry-editor .pie-reset {
-  font-size: 12px; color: var(--muted); padding: 4px 9px; border-radius: 7px;
-  border: 0.5px solid var(--border); background: var(--surface); transition: color .12s, border-color .12s;
-}
-.entry-editor .pie-reset:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
-.entry-editor .pie-reset:disabled { opacity: 0.4; cursor: default; }
 /* Data picker items: dim an inactive item's name in the resting row. */
 .rd-item.is-vac .rd-name { color: var(--muted); }
 
