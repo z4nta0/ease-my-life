@@ -92,6 +92,11 @@ import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfTipCom
  *                                       tip only activates when the trigger
  *                                       text is truncated, defaulting to
  *                                       false.
+ * @param props.datAttObj              - Data Attributes Object: Any other
+ *                                       data-* state attributes the caller
+ *                                       passes, forwarded onto whichever
+ *                                       trigger span renders, so a caller's
+ *                                       module can style the trigger's state.
  *
  * @returns The trigger, plus the tooltip portal while open.
  *
@@ -102,7 +107,7 @@ import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfTipCom
  *
 */
 
-const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false } ) => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
+const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-name-hook' : hooNamStr, labTexStr, trnOnlBoo = false, ...datAttObj } ) => { // What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
 
 
 	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                      // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
@@ -296,6 +301,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 			className={ className }
 
 			data-element-name-hook={ hooNamStr }
+			{ ...datAttObj } // What: Data Attributes Spread. Why: A caller's state attributes (e.g. a selected tab) must land on the trigger its module styles. How: This spreads every remaining data-* prop onto the span.
 		>{ children }</span> // What: Inert Trigger Span Element. Why: With nothing to reveal, this must still keep the ref attached so a later resize can re-measure and flip actTipBoo. How: This renders only the ref and the caller's own className, no interactive attributes at all.
 
 
@@ -312,6 +318,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 			className={` ${ cssModObj.infotipTrigger }   ${ className } `}
 
 			data-element-name-hook={ hooNamStr }
+			{ ...datAttObj } // What: Data Attributes Spread. Why: A caller's state attributes (e.g. a selected tab) must land on the trigger its module styles. How: This spreads every remaining data-* prop onto the span.
 
 			aria-disabled={ actNamStr ? 'true' : undefined }                                     // What: Disabled Action Flag. Why: A tip standing in for a disabled control must announce that state without losing focusability. How: This sets aria-disabled only when actNamStr names an action.
 			aria-label={ actNamStr ? `${ actNamStr }, unavailable. ${ labTexStr }` : labTexStr } // What: Accessible Name Pick. Why: A tip standing in for a disabled control must name the action and say it's unavailable. How: This prefixes the tip text with that when actNamStr is set, else uses the tip text alone.
