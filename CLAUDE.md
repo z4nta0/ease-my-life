@@ -281,8 +281,9 @@ of content, not N newline characters.
 ### Undefined cases: stop and ask
 This governs every rule in this section, permanently, not just while the
 rule set is still being defined, and it covers every language this section
-applies to, including CSS and HTML once they get their own rules (neither
-has any yet). If a piece of code needs a formatting, naming, or comment
+applies to, including CSS and HTML (CSS so far has only the module and
+hook rules under "### CSS modules and JS hooks"; the formatting of the CSS
+files themselves, and HTML, have none yet). If a piece of code needs a formatting, naming, or comment
 decision that isn't already covered by an explicit rule here, stop before
 making any change and ask what to do, rather than guessing, extrapolating
 from a rule that seems "close enough," or inventing something in the
@@ -666,10 +667,10 @@ src/
   the PWA read those files from exactly those paths, so they're never
   renamed or reorganized.
 - **CSS.** Component styles become CSS modules living next to their
-  component during the later CSS pass; `styles/` keeps only global CSS
-  that can't belong to one component (design tokens/themes, base element
-  styles, `@font-face`, shared keyframes). How that global CSS is split is
-  decided in the CSS pass.
+  component during the CSS pass (see "### CSS modules and JS hooks");
+  `styles/` keeps only global CSS that can't belong to one component
+  (design tokens/themes, base element styles, `@font-face`, shared
+  keyframes). How that global CSS is split is decided in the CSS pass.
 
 ### Top-level (module scope)
 - Between any two distinct top-level declarations (a comment block, a
@@ -1825,7 +1826,79 @@ later, but don't invent one for anything else yet:
   attribute to a single separator when matching selectors, so the extra
   spacing is purely a readability convention with no visual/behavioral
   effect. Plain non-templated `className='single-class'` strings are
-  unaffected — this only applies to the backtick-templated form.
+  unaffected, since this only applies to the backtick-templated form. Once a
+  file uses a CSS module, every token is a module interpolation instead,
+  in the same 3-space form (see "### CSS modules and JS hooks").
+
+### CSS modules and JS hooks
+Decided 2026-09-27, for the CSS pass that follows the file-split pass. The
+pass runs in two stages, in this order: first every JS lookup across the
+whole app moves off class names onto `data-*` attributes (CSS untouched,
+still global), then each component file's styles move into its own module,
+one file at a time. Hooks go first because a module hashes its class names,
+and any other file still finding those elements by class (a tour or help
+selector, a `querySelector` elsewhere) would break silently while the build
+still passes.
+- **JS never finds elements by class name.** Anything that locates an
+  element (`querySelector`/`querySelectorAll`, `closest`, `matches`, a tour
+  or help catalog's selector fields, test and verification scripts) uses a
+  `data-*` attribute instead.
+- **State that CSS reacts to is an attribute, not a class.** Use the
+  matching `aria-*` attribute where one already means that state
+  (`aria-expanded`, `aria-pressed`, `aria-current`, `aria-disabled`, ...),
+  otherwise a `data-*` attribute, styled with an attribute selector (e.g.
+  `.card[data-open]`). Attribute names aren't hashed by a module, so these
+  keep working unchanged.
+- **Classes are for styling only**, always taken from the file's own
+  module. The one exception: JS may add or remove a module class to
+  trigger an animation or transition (`classList.add(
+  cssModObj.isCelebrating )`), since that switches styling on rather than
+  recording state for something to read back.
+- **Body-level state stays global**: `body[data-palette]`,
+  `body[data-placement]`, and the other attributes set on `<body>` or
+  `<html>` already follow this pattern and are styled from global CSS.
+- **`data-*` attribute names** are kebab-case and built like any other name
+  (name, descriptor, purpose, in that order), but from 3 full words with no
+  3-letter truncation and no fixed length, within reason (e.g.
+  `data-group-name-input`). This is expected to need refinement as the
+  pass goes; record each refinement here.
+- **Module files** share their component file's own name, with a
+  `.module.css` extension, next to it (`tabs/today/group-header.jsx` →
+  `tabs/today/group-header.module.css`).
+- **The import** is a default import named `cssModObj` (CSS Module
+  Object), in the file's default-import group: `import cssModObj from
+  './group-header.module.css';`.
+- **Class keys are camelCase** (Vite's `css.modules.localsConvention:
+  'camelCaseOnly'`), so `.today-card` in the module is read as
+  `cssModObj.todayCard`. During this pass each selector keeps its existing
+  class name verbatim; renaming classes belongs to the design-system pass
+  that follows it.
+- **One class per element is preferred.** When an element genuinely needs
+  more than one, they follow the className template rule under "###
+  Quotes", every token a module interpolation:
+  ```
+  className={ ` ${ cssModObj.namDesEle1 }   ${ cssModObj.namDesEle2 }   ${ cssModObj.namDesEle3 } ` }
+  ```
+- **What moves into a module.** Everything that can, even at the cost of
+  temporary duplication, which the design-system pass cleans up:
+  - Every rule styling the file's own elements moves (cut, never copied,
+    so a broken module can't hide behind a leftover global rule).
+  - A rule where a parent styles a child component's element (e.g.
+    `.today-card .check`) is copied into the child's own module, attached
+    to that element's existing class.
+  - A class several components use (`btn`, `pill`, ...) has its
+    declarations copied into each module that uses it, attached to that
+    element's existing class.
+  - A global rule is deleted once every element it styled has its own
+    module copy.
+  - Only what genuinely can't belong to one component stays global:
+    design tokens and themes, base element styles, `@font-face`, keyframes
+    several modules share, body/html-level state selectors, `index.html`'s
+    boot splash, and elements created outside React (e.g. the `sr-live`
+    live region).
+  - Splitting rules across module files changes the order they apply in,
+    so every move is checked for a rule that relied on appearing later in
+    the global file to win.
 
 ### Arrays and objects
 - **Once an array literal cannot stay on a single line, every one of its
