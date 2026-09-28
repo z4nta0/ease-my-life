@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: NumSteCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
+import cssModObj from './number-stepper.module.css'; // What: CSS Module Object. Why: The stepper's own container, button, and input styles live in its own module. How: This maps each class name in number-stepper.module.css to its hashed module class.
+import React     from 'react';                       // What: React. Why: NumSteCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
 
 // #endregion Imports
 
@@ -96,7 +97,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 
 
 		<div
-			className='np-stepper'
+			className={ cssModObj.npStepper }
 
 			aria-label={ ariLabStr }
 			role='group'
@@ -104,7 +105,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 
 
 			<button
-				className='np-weight-btn'
+				className={ cssModObj.npWeightBtn }
 
 				disabled={ value <= minValNum }
 
@@ -114,7 +115,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 			>−</button>{ /* What: Decrement Button Element. Why: This is the "-" side of the stepper. How: This is disabled once value reaches minValNum, otherwise steps it down by 1 on click. */ }
 
 			<input
-				className='np-stepper-input'
+				className={ cssModObj.npStepperInput }
 
 				inputMode='numeric'
 				type='text'
@@ -129,7 +130,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 			/>{ /* What: Stepper Input Element. Why: This lets the value be typed directly, handy for big jumps the +/- buttons make tedious. How: This mirrors texValStr, strips non-digit characters as the user types, selects-all on focus, commits on blur, and commits early on Enter. */ }
 
 			<button
-				className='np-weight-btn'
+				className={ cssModObj.npWeightBtn }
 
 				disabled={ value >= maxValNum }
 

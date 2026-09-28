@@ -1,0 +1,110 @@
+
+
+
+/**
+ * number-stepper.module.css = Number Stepper Module
+ *
+ * @summary
+ * Styles for NumSteCom: the pill-shaped container, its round minus and plus
+ * buttons, and the borderless number input between them, which strips the
+ * browser's own spin arrows so it reads as plain text.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region np-stepper */
+
+.np-stepper { /* What: Number Stepper. Why: The minus button, the number, and the plus button read as one control. How: This lays the three out in a row inside one rounded pill. */
+
+
+	align-items   : center;
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : 999px;
+	display       : inline-flex;
+	gap           : 4px;
+	padding       : 3px;
+
+
+}
+
+.np-weight-btn { /* What: Stepper Button. Why: The minus and plus buttons need to read as quiet, round, tappable controls. How: This centers the glyph in a small round button with no border of its own. */
+
+
+	align-items     : center;
+	background      : none;
+	border          : none;
+	border-radius   : 999px;
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-family     : var(--font-mono);
+	font-size       : 15px;
+	height          : 22px;
+	justify-content : center;
+	line-height     : 1;
+	transition      : color .12s, background .12s;
+	width           : 22px;
+
+
+}
+.np-weight-btn:hover:not(:disabled) { /* What: Stepper Button Hover. Why: An enabled button should respond to the pointer. How: This tints it with the accent color. */
+
+
+	background : var(--accent-soft);
+	color      : var(--accent);
+
+
+}
+.np-weight-btn:disabled { /* What: Disabled Stepper Button. Why: A button at its limit should look unavailable. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.35;
+
+
+}
+
+.np-stepper-input { /* What: Stepper Input. Why: The number can also be typed directly, so it's a real input styled to look like plain text. How: This removes the input's own chrome and centers the number in the stepper's mono type. */
+
+
+	-moz-appearance : textfield; /* What: Firefox Appearance. Why: Firefox only honors its own prefixed property for dropping a field's native styling. How: This resets the input to a plain text field in Firefox, the same as the standard appearance line below. */
+	appearance      : textfield;
+	background      : transparent;
+	border          : 0;
+	color           : var(--text);
+	font-family     : var(--font-mono);
+	font-size       : 14px;
+	font-weight     : 600;
+	outline         : none;
+	padding         : 0;
+	text-align      : center;
+	width           : 32px;
+
+
+}
+.np-stepper-input::-webkit-outer-spin-button,
+.np-stepper-input::-webkit-inner-spin-button { /* What: Stepper Input Spin Arrows. Why: Chrome and Safari draw their own up/down arrows on number inputs, which would crowd the stepper's own buttons. How: This hides both arrows. */
+
+
+	-webkit-appearance : none;
+	margin             : 0;
+
+
+}
+.np-stepper-input:focus { /* What: Focused Stepper Input. Why: Typing needs a visible field to type into. How: This gives the input a surface background and rounded corners while focused. */
+
+
+	background    : var(--surface);
+	border-radius : 5px;
+
+
+}
+
+/* #endregion np-stepper */
+
+

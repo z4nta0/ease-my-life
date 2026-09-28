@@ -2059,36 +2059,8 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 @keyframes np-row-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 
-/* Per-item weight stepper — only rendered for weighted / dynamic modes. */
-.np-weight-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; flex: 0 0 auto;
-  background: none; border: none; border-radius: 999px;
-  font-family: var(--font-mono); font-size: 15px; line-height: 1;
-  color: var(--muted); cursor: pointer;
-  transition: color .12s, background .12s;
-}
-.np-weight-btn:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); }
-.np-weight-btn:disabled { opacity: 0.35; cursor: default; }
 .np-weight-note { margin-top: -2px; }
 
-.np-stepper {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 999px;
-  padding: 3px;
-}
-/* Editable stepper value — same look as .np-stepper-val, borderless input. */
-.np-stepper-input {
-  width: 32px; text-align: center; padding: 0;
-  background: transparent; border: 0; outline: none;
-  font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text);
-  -moz-appearance: textfield; appearance: textfield;
-}
-.np-stepper-input::-webkit-outer-spin-button,
-.np-stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.np-stepper-input:focus { background: var(--surface); border-radius: 5px; }
 .np-ease-unit { font-size: 13px; color: var(--muted); align-self: center; }
 
 /* ─── Weekday chips (shared: new-picker form + Data schedule) ─────────────── */
