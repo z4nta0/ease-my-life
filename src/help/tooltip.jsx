@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: HelTipCom is built directly on React's own APIs. How: This is used directly (React.useLayoutEffect, React.useRef, React.useState) instead of importing individual named hooks.
+import cssModObj from './tooltip.module.css'; // What: CSS Module Object. Why: The help tip's card, arrow, title, and body styles live in its own module. How: This maps each class name in tooltip.module.css to its hashed module class.
+import React     from 'react';                // What: React. Why: HelTipCom is built directly on React's own APIs. How: This is used directly (React.useLayoutEffect, React.useRef, React.useState) instead of importing individual named hooks.
 
 // #endregion Imports
 
@@ -239,7 +240,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 		<div
 			ref={ tipEleRef }
 
-			className={ ` ob-coach   help-tip   ${ arrClaStr } ` }
+			className={` ${ cssModObj.obCoach }   ${ cssModObj.helpTip }   ${ arrClaStr === 'ob-coach--up' ? cssModObj.obCoachUp : '' }   ${ arrClaStr === 'ob-coach--down' ? cssModObj.obCoachDown : '' } `}
 
 			style={{
 				...( tipStyObj || { left : -9999, top : -9999 } ),
@@ -255,9 +256,9 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }
 
 
-				<p className='help-tip-title'>{ typeof tipIteObj.titStr === 'function' ? tipIteObj.titStr( tarRecObj ) : tipIteObj.titStr }</p>{ /* What: Help Tip Title Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls tipIteObj.titStr with tarRecObj when it is a function, otherwise renders it directly. */ }
+				<p className={ cssModObj.helpTipTitle }>{ typeof tipIteObj.titStr === 'function' ? tipIteObj.titStr( tarRecObj ) : tipIteObj.titStr }</p>{ /* What: Help Tip Title Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls tipIteObj.titStr with tarRecObj when it is a function, otherwise renders it directly. */ }
 
-				<div className='ob-body'>{ typeof tipIteObj.bodEle === 'function' ? tipIteObj.bodEle() : tipIteObj.bodEle }</div>{ /* What: Ob Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls tipIteObj.bodEle when it is a function, otherwise renders it directly. */ }
+				<div className={ cssModObj.obBody }>{ typeof tipIteObj.bodEle === 'function' ? tipIteObj.bodEle() : tipIteObj.bodEle }</div>{ /* What: Ob Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls tipIteObj.bodEle when it is a function, otherwise renders it directly. */ }
 
 
 			</div>

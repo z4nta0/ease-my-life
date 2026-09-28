@@ -1,0 +1,134 @@
+
+
+
+/**
+ * tooltip.module.css = Tooltip Module
+ *
+ * @summary
+ * Styles for HelTipCom, the tip a help badge opens. It reuses the guided
+ * tour's coach card look (surface, border, shadow, and the arrow pointing at
+ * the target) for consistency, then fixes its own width and opts back into
+ * pointer events under help mode's click-through overlay. The title and body
+ * paragraphs sit inside it.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region ob-coach */
+
+.ob-coach { /* What: Help Tip Card. Why: A help tip should look like the tour's own coach card. How: This floats a raised surface card over the page and fades it in. */
+
+
+	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background     : var(--surface);
+	border         : 0.5px solid var(--border);
+	border-radius  : var(--r-md);
+	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
+	padding        : 14px 15px;
+	pointer-events : auto;
+	position       : fixed;
+
+
+}
+.help-tip { /* What: Help Tip. Why: Help mode's tip differs from a tour coach card only in width and pointer events. How: This fixes its width and lets it take clicks, since help mode's overlay otherwise makes the page click-through. */
+
+
+	pointer-events : auto;
+	width          : 280px;
+
+
+}
+.ob-coach::before { /* What: Help Tip Arrow. Why: The tip should point at the element it explains. How: This draws a small rotated square that pokes out of the card at the target's horizontal position. */
+
+
+	background : var(--surface);
+	border     : 0.5px solid var(--border);
+	content    : "";
+	height     : 14px;
+	left       : var(--ob-ax,28px); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: HelTipCom writes --ob-ax as the target's center offset from the tip's left edge, falling back to 28px. */
+	position   : absolute;
+	transform  : translateX(-50%) rotate(45deg); /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would land half its width right of the target's midpoint. How: This shifts it back by half its width before rotating it into a diamond. */
+	width      : 14px;
+
+
+}
+.ob-coach--up::before { /* What: Upward Help Tip Arrow. Why: A tip below its target points up at it. How: This sets the arrow on the card's top edge, showing only its upper two sides. */
+
+
+	border-bottom : 0;
+	border-right  : 0;
+	top           : -8px;
+
+
+}
+.ob-coach--down::before { /* What: Downward Help Tip Arrow. Why: A tip above its target points down at it. How: This sets the arrow on the card's bottom edge, showing only its lower two sides. */
+
+
+	border-left : 0;
+	border-top  : 0;
+	bottom      : -8px;
+
+
+}
+@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Help Tip. Why: Someone who asked for less motion shouldn't see the tip fade in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ob-coach { /* What: Motionless Help Tip Card. Why: The tip should simply appear. How: This turns its fade and transitions off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+
+.help-tip-title { /* What: Help Tip Title. Why: The tip's title leads its explanation. How: This sets it slightly larger and bold above the body. */
+
+
+	font-size   : 15px;
+	font-weight : 600;
+	margin      : 0 0 5px;
+
+
+}
+
+
+/* #region ob-body */
+
+.ob-coach .ob-body { /* What: Help Tip Body. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in the muted color at a comfortable line height. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.5;
+	margin      : 0;
+
+
+}
+
+.help-tip .ob-body p { /* What: Help Tip Paragraph. Why: The body's paragraphs shouldn't add their own default spacing. How: This removes their margins. */
+
+
+	margin : 0;
+
+
+}
+.help-tip .ob-body p+p { /* What: Following Help Tip Paragraph. Why: Consecutive paragraphs still need a small gap between them. How: This adds top margin to every paragraph after the first. */
+
+
+	margin-top : 8px;
+
+
+}
+
+/* #endregion ob-body */
+
+/* #endregion ob-coach */
+
+

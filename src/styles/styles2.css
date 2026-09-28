@@ -3873,20 +3873,11 @@ body.ob-touring .tab{padding-bottom:200px}
 }
 .help-badge:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .help-badge.is-on{border-color:var(--accent);color:#fff;background:var(--accent)}
-/* Reuses .ob-coach itself (background/border/radius/shadow/padding/arrow)
-   for full visual consistency with the guided tour's own coach card — see
-   help/mode.jsx's own header comment. Only overrides what's actually
-   different: fixed width (matching the tour's own coachW cap) and opting
-   back into pointer-events under .help-mode's blanket pointer-events:none. */
-.help-tip{pointer-events:auto;width:280px}
-.help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
-.help-tip .ob-body p{margin:0}
-.help-tip .ob-body p+p{margin-top:8px}
 /* NAV_HELP_ITEM's per-tab column (help/mode.jsx): icon+label line above its
    own description paragraph, one such block per real nav button. */
-.help-tip .help-nav-item+.help-nav-item{margin-top:10px}
-.help-tip .help-nav-label{display:flex;align-items:center;gap:6px;margin:0 0 3px}
-.help-tip .help-nav-label svg{flex:0 0 auto}
+.help-nav-item+.help-nav-item{margin-top:10px}
+.help-nav-label{display:flex;align-items:center;gap:6px;margin:0 0 3px}
+.help-nav-label svg{flex:0 0 auto}
 /* An inline icon dropped right into a tip's own flowing prose (e.g. Picker
    Items' "The [icon] Send to Today button..."), wrapped in its own
    .help-inline-icon span (help/content.jsx) — inline-flex + align-items
@@ -3894,7 +3885,7 @@ body.ob-touring .tab{padding-bottom:200px}
    vertical-align:center to place that whole box against the surrounding
    text's line, rather than relying on vertical-align alone to center the
    icon's own content against text metrics it doesn't actually match. */
-.help-tip .ob-body .help-inline-icon{display:inline-flex;align-items:center;vertical-align:center}
+.help-inline-icon{display:inline-flex;align-items:center;vertical-align:center}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
