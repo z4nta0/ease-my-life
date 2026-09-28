@@ -1297,23 +1297,10 @@ button.cat-h-l {
   transition: transform .15s;
 }
 .chev.is-open { transform: rotate(90deg); }
-/* Animated disclosure (see <Collapse>): grid-rows 0fr↔1fr eases height to auto;
-   the inner wrapper hides overflow and fades+slides its content. */
-.collapse { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .26s cubic-bezier(.4,0,.2,1); }
-.collapse.is-open { grid-template-rows: 1fr; }
-.collapse-inner { overflow: hidden; min-height: 0; opacity: 0; transform: translateY(-4px); transition: opacity .22s ease, transform .22s ease; }
-.collapse.is-open > .collapse-inner { opacity: 1; transform: none; }
-/* Style-picker hint rows (Appearance): the hint is one short line, so a height
-   glide reads as janky — carry the swap with a stronger, slower content fade. */
-.rd-mode-opt .collapse-inner { transition: opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s; }
-.rd-mode-opt .collapse { transition: grid-template-rows .8s cubic-bezier(.4,0,.2,1); }
-.rd-mode-opt .collapse:not(.is-open) > .collapse-inner { transform: translateY(-8px); }
-@media (prefers-reduced-motion: reduce) { .rd-mode-opt .collapse-inner { transition: none; } }
-/* ColDisCom's own module reads these to match the style-radio collapse's slower hint swap above. */
+/* Mode-option hint rows: the hint is one short line, so a height glide reads as
+   janky. ColDisCom's own module reads these to carry the swap with a slower,
+   stronger content fade instead. */
 .rd-mode-opt { --collapse-row-duration: .8s; --collapse-inner-transition: opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s; --collapse-inner-offset: translateY(-8px); }
-@media (prefers-reduced-motion: reduce) {
-  .collapse, .collapse-inner { transition: none; }
-}
 /* Name + eligible count stack into their own two-row block (see tab-data.jsx)
    so the name's length never pushes the group/type pills around — those live
    in their own .cat-h-tags cluster instead, each a fixed width so they line
@@ -2377,14 +2364,6 @@ button.rd-chev {
    overflow:hidden (see style-radio-card) so the option list can bleed edge-
    to-edge without a padding gap top/bottom — the radio list's own -16px
    horizontal bleed isn't needed there since there's no padding to eat into. */
-/* Wraps StyleRadioList's own .rd-mode-radio div so it has a real <legend>
-   (see that component's own comment) — strips the UA fieldset chrome so it
-   stays visually invisible, same idea as .np-field's fieldset variant. */
-.style-radio-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
-/* Screen-reader-only text — same clipping technique as .sr-live, for content
-   that needs to exist in the accessibility tree (a fieldset's required
-   <legend>, here) without a visible on-screen presence. */
-.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .style-radio-card { overflow: hidden; }
 .style-radio-card .rd-mode-radio { margin: 0; border-top: 0; }
 .rd-mode-opt {
@@ -2398,16 +2377,6 @@ button.rd-chev {
 .rd-mode-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
 .rd-mode-opt.is-on { background: var(--accent-soft); }
 .rd-mode-opt.is-on:hover { background: var(--accent-soft); }
-/* Per-row "Preview" button (Appearance style pickers). */
-.style-preview-btn {
-  flex: 0 0 auto; align-self: center; margin-left: auto;
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em;
-  color: var(--accent); background: transparent;
-  border: 0.5px solid var(--accent); border-radius: 7px;
-  padding: 5px 11px; cursor: pointer; transition: background .18s ease, opacity .18s ease;
-}
-.style-preview-btn:hover { background: var(--accent-soft); }
-.style-preview-btn:disabled { opacity: 0.4; cursor: default; }
 /* Celebration preview stage — sized to echo the Today cards area. */
 .celeb-preview-stage {
   position: relative; overflow: hidden;

@@ -1,0 +1,374 @@
+
+
+
+/**
+ * style-radio.module.css = Style Radio Module
+ *
+ * @summary
+ * Styles for StyRadCom, the radio list behind Appearance's Picker animation
+ * and Completion celebration pickers. It reuses the look of the Data tab's
+ * picker-mode selector: full-bleed rows split by dividers, each with a dot,
+ * a name, and an optional Preview button, where the selected row gets an
+ * accent tint and left bar and slowly reveals its hint. The hint is one short
+ * line, so a height glide would read as janky; it rides a stronger, slower
+ * fade instead.
+ *
+ * The rows' declarations are copied from the shared mode-radio classes the
+ * Data tab still uses, resolved for the unpadded Appearance card this list
+ * always sits in, until the design-system pass merges them.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region style-radio-fieldset */
+
+.style-radio-fieldset { /* What: Style Radio Fieldset. Why: The radio list needs a real fieldset and legend for assistive tech without any visible fieldset chrome. How: This strips the browser's own fieldset border, margin, and padding. */
+
+
+	border    : 0;
+	margin    : 0;
+	min-width : 0;
+	padding   : 0;
+
+
+}
+
+.visually-hidden { /* What: Visually Hidden Legend. Why: The group's name must exist for screen readers while the section heading above already shows it. How: This clips the legend to a 1px box off the layout, keeping it in the accessibility tree. */
+
+
+	border      : 0;
+	clip-path   : inset(50%);
+	height      : 1px;
+	margin      : -1px;
+	overflow    : hidden;
+	padding     : 0;
+	position    : absolute;
+	white-space : nowrap;
+	width       : 1px;
+
+
+}
+
+
+
+/* #region rd-mode-radio */
+
+.rd-mode-radio { /* What: Style Radio List. Why: The options stack edge to edge inside their unpadded card, with a closing line that pairs with the preview stage below. How: This stacks the rows in a column with a bottom border. */
+
+
+	border-bottom  : 0.5px solid var(--border);
+	display        : flex;
+	flex-direction : column;
+
+
+}
+
+/* #region rd-mode-opt */
+
+.rd-mode-opt { /* What: Style Radio Row. Why: Each option is one clickable full-width row, divided from the next. How: This lays out the dot, text, and Preview button in a padded row with a bottom divider and a background fade. */
+
+
+	align-items   : flex-start;
+	border-bottom : 0.5px solid var(--border);
+	cursor        : pointer;
+	display       : flex;
+	gap           : 11px;
+	padding       : 12px 16px;
+	position      : relative;
+	transition    : background .24s ease;
+
+
+}
+.rd-mode-opt:last-child { /* What: Last Style Radio Row. Why: The list's own bottom border already closes the last row. How: This drops the last row's divider. */
+
+
+	border-bottom : 0;
+
+
+}
+.rd-mode-opt:hover { /* What: Hovered Style Radio Row. Why: A row should respond to the pointer. How: This darkens its background slightly. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.02) c h);
+
+
+}
+.rd-mode-opt:has(input:focus-visible) { /* What: Focused Style Radio Row. Why: The native radio is hidden, so a keyboard user needs to see focus on the whole row. How: This draws the accent outline inside the row while its radio has keyboard focus. */
+
+
+	outline        : 2px solid var(--accent);
+	outline-offset : -2px;
+
+
+}
+.rd-mode-opt[data-option-select-active] { /* What: Selected Style Radio Row. Why: The chosen option should stand out. How: This tints the row with the accent color. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.rd-mode-opt[data-option-select-active]:hover { /* What: Hovered Selected Style Radio Row. Why: Hover shouldn't dim the selected row's tint. How: This keeps the accent tint. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.rd-mode-opt[data-option-select-active]::before { /* What: Selected Style Radio Bar. Why: A bar on the left edge marks the selected row at a glance. How: This draws a thin accent bar down the row's left edge. */
+
+
+	background : var(--accent);
+	bottom     : 0;
+	content    : '';
+	left       : 0;
+	position   : absolute;
+	top        : 0;
+	width      : 2px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Style Radio Row. Why: Someone who asked for less motion shouldn't see the row's background fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-mode-opt { /* What: Still Style Radio Row. Why: The background should simply switch. How: This turns the background fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rd-mode-opt input { /* What: Style Radio Input. Why: The native radio backs the row's state, but the dot draws it instead. How: This hides the radio while keeping it focusable and in the form. */
+
+
+	height         : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	width          : 0;
+
+
+}
+
+.rd-mode-dot { /* What: Style Radio Dot. Why: The selected state shows as a filled dot, not the native radio. How: This draws a small bordered circle with a border fade. */
+
+
+	border        : 1.5px solid var(--border);
+	border-radius : 50%;
+	flex          : 0 0 auto;
+	height        : 16px;
+	margin-top    : 1px;
+	position      : relative;
+	transition    : border-color .12s;
+	width         : 16px;
+
+
+}
+.rd-mode-opt[data-option-select-active] .rd-mode-dot { /* What: Selected Style Radio Dot. Why: The selected row's dot should read as on. How: This colors its border with the accent. */
+
+
+	border-color : var(--accent);
+
+
+}
+.rd-mode-opt[data-option-select-active] .rd-mode-dot::after { /* What: Selected Style Radio Dot Fill. Why: A filled center marks the dot as chosen. How: This draws an accent disc inside the ring. */
+
+
+	background    : var(--accent);
+	border-radius : 50%;
+	content       : '';
+	inset         : 3px;
+	position      : absolute;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Style Radio Dot. Why: Someone who asked for less motion shouldn't see the dot's border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-mode-dot { /* What: Still Style Radio Dot. Why: The border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region rd-mode-text */
+
+.rd-mode-text { /* What: Style Radio Text. Why: The option's name and its hint stack together. How: This stacks them in a tight column that may shrink below its content's width. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 3px;
+	min-width      : 0;
+
+
+}
+
+.rd-mode-name { /* What: Style Radio Name. Why: The option's name leads the row. How: This sets it in medium-weight body text. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+
+
+/* #region collapse */
+
+.collapse { /* What: Style Radio Hint Collapse. Why: The hint opens under the selected row without unmounting. How: This eases a grid row between zero and its content's height over a slow glide. */
+
+
+	display            : grid;
+	grid-template-rows : 0fr;
+	transition         : grid-template-rows .8s cubic-bezier(.4,0,.2,1);
+
+
+}
+.collapse[data-collapse-open-active] { /* What: Open Style Radio Hint Collapse. Why: The selected row's hint should show. How: This opens the grid row to its content's height. */
+
+
+	grid-template-rows : 1fr;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Style Radio Hint Collapse. Why: Someone who asked for less motion shouldn't see the hint glide open. How: This applies only when the reduced-motion preference is set. */
+
+
+	.collapse { /* What: Still Style Radio Hint Collapse. Why: The hint should simply open and close. How: This turns the glide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #region collapse-inner */
+
+.collapse-inner { /* What: Style Radio Hint Content. Why: The one-line hint should arrive on a strong, slow fade rather than the height glide. How: This clips the content and fades and lifts it in, slightly delayed. */
+
+
+	min-height : 0;
+	opacity    : 0;
+	overflow   : hidden;
+	transform  : translateY(-8px);
+	transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
+
+
+}
+.collapse[data-collapse-open-active] > .collapse-inner { /* What: Open Style Radio Hint Content. Why: The open hint should settle fully visible. How: This fades it in and drops its lift. */
+
+
+	opacity   : 1;
+	transform : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Style Radio Hint Content. Why: Someone who asked for less motion shouldn't see the hint fade and lift. How: This applies only when the reduced-motion preference is set. */
+
+
+	.collapse-inner { /* What: Still Style Radio Hint Content. Why: The hint should simply appear. How: This turns the fade and lift off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rd-mode-hint { /* What: Style Radio Hint. Why: The hint reads as quiet supporting text under the name. How: This sets it small and muted with balanced wrapping. */
+
+
+	color       : var(--muted);
+	display     : block;
+	font-size   : 12px;
+	line-height : 1.45;
+	text-wrap   : pretty;
+
+
+}
+
+/* #endregion collapse-inner */
+
+/* #endregion collapse */
+
+/* #endregion rd-mode-text */
+
+
+
+.style-preview-btn { /* What: Style Preview Button. Why: Each row can play a live preview of its style without selecting it. How: This draws a small outlined accent button pushed to the row's right edge. */
+
+
+	align-self     : center;
+	background     : transparent;
+	border         : 0.5px solid var(--accent);
+	border-radius  : 7px;
+	color          : var(--accent);
+	cursor         : pointer;
+	flex           : 0 0 auto;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.03em;
+	margin-left    : auto;
+	padding        : 5px 11px;
+	transition     : background .18s ease, opacity .18s ease;
+
+
+}
+.style-preview-btn:hover { /* What: Hovered Style Preview Button. Why: The button should respond to the pointer. How: This fills it with the accent tint. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.style-preview-btn:disabled { /* What: Disabled Style Preview Button. Why: A preview that can't play right now should look unavailable. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Style Preview Button. Why: Someone who asked for less motion shouldn't see the button fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.style-preview-btn { /* What: Still Style Preview Button. Why: Its fill and dimming should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rd-mode-opt */
+
+/* #endregion rd-mode-radio */
+
+/* #endregion style-radio-fieldset */
+
+
