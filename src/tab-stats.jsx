@@ -37,9 +37,202 @@ import { useEmlTouFun } from './eml-tour-bus.js';     // What: Use Ease My Life 
  * define the range pills and breakdown segments. TabStaCom ties every
  * section together as the tab.
  *
+ * Sections:
+ *  - Constants
+ *  - Helpers
+ *  - Components
+ *  - Exports
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
+
+
+
+// #region Constants
+
+const MET_FIE_OBJ = { auto : 'autNum', count : 'couNum', manual : 'manNum', rejected : 'rejNum', skipped : 'skiNum' }; // What: Metric Field Object. Why: The Pick breakdown's plain-count metrics are selected by id, but each one's value lives under its own row field name. How: This maps a metric id (metKeyStr's own value) to the breakdown row field its sort and display read.
+
+
+
+const PER_DAY_OBJ = { monthly : 30, weekly : 7, yearly : 365 }; // What: Period Day Object. Why: Converting a raw calendar-day count into cadence periods needs each cadence's own approximate period length. How: This is looked up by a picker's own cadence value, whose keys it must match exactly.
+
+
+
+const REM_SIZ_NUM = 10; // What: Reminder Size Number. Why: The Reminders breakdown card pages like Gmail, 10 rows at a time. How: This is passed straight through to PagNavCom as its own pagSizNum.
+
+
+
+const SOU_FIE_OBJ = { auto : 'autNum', manual : 'manNum', reroll : 'rerNum' }; // What: Source Field Object. Why: A pick row's saved source value names which per-item tally it counts toward, but the tally fields use their own names. How: This maps each saved source value to the per-item tally field it increments.
+
+
+
+// #region SOU_MET_ARR
+
+/**
+ * SOU_MET_ARR = Source Meta Array
+ *
+ * @summary
+ * Every entry below shares this exact shape, joined with each source's
+ * own live count (as couNum) before being passed to BreBarCom as its own
+ * segDatArr; none of the 3 entries repeat these same fields' own
+ * boilerplate comments (see the "Repeated-shape object literals" comment
+ * exception in CLAUDE.md). The colors stay on-palette (accent + warm) so
+ * the breakdown bar reads as one family rather than a random spectrum.
+ *
+ * - `colStr` (String): Color String is the segment's own bar/dot color,
+ *   applied as an inline style value.
+ *
+ * - `keyStr` (String): Key String matches a pick row's own source field,
+ *   used to look up that source's live count.
+ *
+ * - `labStr` (String): Label String names the source, rendered as its own
+ *   legend row's visible text.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const SOU_MET_ARR = [ // What: Source Meta Array. Why: This defines how each Today pick came to be. How: This is joined with each source's own live count for the "How picks were chosen" BreBarCom card.
+
+
+	{ colStr : 'var(--accent)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Most picks come from the Daily generator. How: This colors them with the plain accent.
+	{ colStr : 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent.
+	{ colStr : 'var(--warm)',                                               keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone.
+
+
+];
+
+// #endregion SOU_MET_ARR
+
+
+
+// #region STA_RAN_ARR
+
+/**
+ * STA_RAN_ARR = Stat Range Array
+ *
+ * @summary
+ * Every entry below shares this exact shape, rendered as one pill each in
+ * the Range filter row; none of the 6 entries repeat these same fields'
+ * own boilerplate comments (see the "Repeated-shape object literals"
+ * comment exception in CLAUDE.md). Each entry's own trailing comment
+ * instead just names which lookback window it represents. Order matters:
+ * the pills render left to right in this exact order.
+ *
+ * - `dayNum` (Number): Day Number is the lookback window's own length in
+ *   days, subtracted from today to compute cutIsoStr, or Infinity to mean
+ *   no cutoff at all.
+ *
+ * - `keyStr` (String): Key String uniquely identifies the range, compared
+ *   against ranValStr for active-state styling and to resolve ranDefObj.
+ *
+ * - `labStr` (String): Label String names the range for the user,
+ *   rendered as the pill's own visible text.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const STA_RAN_ARR = [ // What: Stat Range Array. Why: This defines the fixed set of lookback windows the Range filter row offers. How: This is mapped over to render one pill per entry, and ranDefObj/cutIsoStr resolve the active one by its own keyStr.
+
+
+	{ dayNum : Infinity, keyStr : 'all',   labStr : 'All Time' }, // What: All Time Range Object. Why: This is the default, unbounded view. How: This sets no cutoff at all.
+	{ dayNum : 365,      keyStr : 'year',  labStr : '1 year'   }, // What: Year Range Object. Why: This covers the last full year. How: This looks back 365 days.
+	{ dayNum : 182,      keyStr : '6m',    labStr : '6 months' }, // What: Six Month Range Object. Why: This covers the last half year. How: This looks back 182 days.
+	{ dayNum : 90,       keyStr : '3m',    labStr : '3 months' }, // What: Three Month Range Object. Why: This covers the last quarter. How: This looks back 90 days.
+	{ dayNum : 30,       keyStr : 'month', labStr : 'Month'    }, // What: Month Range Object. Why: This covers the last month. How: This looks back 30 days.
+	{ dayNum : 7,        keyStr : 'week',  labStr : 'Week'     }  // What: Week Range Object. Why: This covers the last week. How: This looks back 7 days.
+
+
+];
+
+// #endregion STA_RAN_ARR
+
+
+
+const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease-mode drift/day-band computation shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
+
+
+
+// #region TYP_MET_ARR
+
+/**
+ * TYP_MET_ARR = Type Meta Array
+ *
+ * @summary
+ * Every entry below shares this exact shape, joined with each reminder
+ * type's own live count (as couNum) before being passed to BreBarCom as
+ * its own segDatArr; none of the 2 entries repeat these same fields' own
+ * boilerplate comments (see the "Repeated-shape object literals" comment
+ * exception in CLAUDE.md). Each entry's own trailing comment instead just
+ * names which reminder type it represents, using the same accent + warm
+ * palette as SOU_MET_ARR so both breakdown bars read as one family.
+ *
+ * - `colStr` (String): Color String is the segment's own bar/dot color,
+ *   applied as an inline style value.
+ *
+ * - `keyStr` (String): Key String matches a reminder log row's own type
+ *   field, used to look up that type's live count.
+ *
+ * - `labStr` (String): Label String names the reminder type, rendered as
+ *   its own legend row's visible text.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time versus recurring split shown for reminders, sharing the same visual language as SOU_MET_ARR. How: This is joined with each type's own live count for the "By reminder type" BreBarCom card.
+
+
+	{ colStr : 'var(--accent)', keyStr : 'recurring', labStr : 'Recurring' }, // What: Recurring Type Object. Why: Recurring reminders make up the bulk of most logs. How: This colors them with the plain accent.
+	{ colStr : 'var(--warm)',   keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: One-time reminders are the smaller, distinct share. How: This colors them with the warm tone.
+
+
+];
+
+// #endregion TYP_MET_ARR
+
+// #endregion Constants
+
+
+
+// #region Helpers
+
+// #region couLevFun
+
+/**
+ * couLevFun = Count Level Function
+ *
+ * @summary
+ * Converts a raw day count of completed reminders into a 0-4 heat level
+ * for the heatmap. Reminders have no "possible" denominator the way picks
+ * do (there's no fixed daily total to divide by), so this is a raw volume
+ * scale rather than a ratio like the pick heatmap uses.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param donCouNum - Done Count Number: How many reminders were completed
+ *                    that day.
+ *
+ * @returns A heat level from 0 (none) to 4 (four or more).
+ *
+ * @example
+ * ```ts
+ * couLevFun( 6 ) // => 4
+ * ```
+ *
+*/
+
+function couLevFun ( donCouNum ) {
+
+
+	return donCouNum <= 0 ? 0 : donCouNum >= 4 ? 4 : donCouNum; // What: Heat Level Return. Why: Zero and negative counts show as empty, four or more caps at the darkest cell, and anything between maps onto itself. How: This is a plain clamp of donCouNum into the 0-4 range.
+
+
+}
+
+// #endregion couLevFun
 
 
 
@@ -50,8 +243,8 @@ import { useEmlTouFun } from './eml-tour-bus.js';     // What: Use Ease My Life 
  *
  * @summary
  * Converts a Date into the local calendar day it falls on, as a plain
- * 'YYYY-MM-DD' string. Matches store.js's own isoDay and seed.js's
- * seedIsoDay, so a value produced here compares equal against a row's
+ * 'YYYY-MM-DD' string. Matches store.js's own isoDayFun and seed.js's
+ * seeIsoFun, so a value produced here compares equal against a row's
  * denormalized date field without any timezone drift.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -125,188 +318,11 @@ function relWheFun ( wheIsoStr ) {
 
 // #endregion relWheFun
 
-
-
-// #region STA_RAN_ARR
-
-/**
- * STA_RAN_ARR = Stat Range Array
- *
- * @summary
- * Every entry below shares this exact shape, rendered as one pill each in
- * the Range filter row; none of the 6 entries repeat these same fields'
- * own boilerplate comments (see the "Repeated-shape object literals"
- * comment exception in CLAUDE.md). Each entry's own trailing comment
- * instead just names which lookback window it represents. Order matters:
- * the pills render left to right in this exact order.
- *
- * - `dayNum` (Number): Day Number is the lookback window's own length in
- *   days, subtracted from today to compute cutIsoStr, or Infinity to mean
- *   no cutoff at all.
- *
- * - `keyStr` (String): Key String uniquely identifies the range, compared
- *   against ranValStr for active-state styling and to resolve ranDefObj.
- *
- * - `labStr` (String): Label String names the range for the user,
- *   rendered as the pill's own visible text.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-const STA_RAN_ARR = [ // What: Stat Range Array. Why: This defines the fixed set of lookback windows the Range filter row offers. How: This is mapped over to render one pill per entry, and ranDefObj/cutIsoStr resolve the active one by its own keyStr.
-
-
-	{ dayNum : Infinity, keyStr : 'all',   labStr : 'All Time' }, // What: All Time Range Object. Why: This is the default, unbounded view. How: This sets no cutoff at all.
-	{ dayNum : 365,      keyStr : 'year',  labStr : '1 year'   }, // What: Year Range Object. Why: This covers the last full year. How: This looks back 365 days.
-	{ dayNum : 182,      keyStr : '6m',    labStr : '6 months' }, // What: Six Month Range Object. Why: This covers the last half year. How: This looks back 182 days.
-	{ dayNum : 90,       keyStr : '3m',    labStr : '3 months' }, // What: Three Month Range Object. Why: This covers the last quarter. How: This looks back 90 days.
-	{ dayNum : 30,       keyStr : 'month', labStr : 'Month'    }, // What: Month Range Object. Why: This covers the last month. How: This looks back 30 days.
-	{ dayNum : 7,        keyStr : 'week',  labStr : 'Week'     }  // What: Week Range Object. Why: This covers the last week. How: This looks back 7 days.
-
-
-];
-
-// #endregion STA_RAN_ARR
+// #endregion Helpers
 
 
 
-// #region SOU_MET_ARR
-
-/**
- * SOU_MET_ARR = Source Meta Array
- *
- * @summary
- * Every entry below shares this exact shape, joined with each source's
- * own live count (as couNum) before being passed to BreBarCom as its own
- * segDatArr; none of the 3 entries repeat these same fields' own
- * boilerplate comments (see the "Repeated-shape object literals" comment
- * exception in CLAUDE.md). The colors stay on-palette (accent + warm) so
- * the breakdown bar reads as one family rather than a random spectrum.
- *
- * - `colStr` (String): Color String is the segment's own bar/dot color,
- *   applied as an inline style value.
- *
- * - `keyStr` (String): Key String matches a pick row's own source field,
- *   used to look up that source's live count.
- *
- * - `labStr` (String): Label String names the source, rendered as its own
- *   legend row's visible text.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-const SOU_MET_ARR = [ // What: Source Meta Array. Why: This defines how each Today pick came to be. How: This is joined with each source's own live count for the "How picks were chosen" BreBarCom card.
-
-
-	{ colStr : 'var(--accent)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Most picks come from the Daily generator. How: This colors them with the plain accent.
-	{ colStr : 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent.
-	{ colStr : 'var(--warm)',                                               keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone.
-
-
-];
-
-// #endregion SOU_MET_ARR
-
-
-
-// #region TYP_MET_ARR
-
-/**
- * TYP_MET_ARR = Type Meta Array
- *
- * @summary
- * Every entry below shares this exact shape, joined with each reminder
- * type's own live count (as couNum) before being passed to BreBarCom as
- * its own segDatArr; none of the 2 entries repeat these same fields' own
- * boilerplate comments (see the "Repeated-shape object literals" comment
- * exception in CLAUDE.md). Each entry's own trailing comment instead just
- * names which reminder type it represents, using the same accent + warm
- * palette as SOU_MET_ARR so both breakdown bars read as one family.
- *
- * - `colStr` (String): Color String is the segment's own bar/dot color,
- *   applied as an inline style value.
- *
- * - `keyStr` (String): Key String matches a reminder log row's own type
- *   field, used to look up that type's live count.
- *
- * - `labStr` (String): Label String names the reminder type, rendered as
- *   its own legend row's visible text.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
-*/
-
-const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time versus recurring split shown for reminders, sharing the same visual language as SOU_MET_ARR. How: This is joined with each type's own live count for the "By reminder type" BreBarCom card.
-
-
-	{ colStr : 'var(--accent)', keyStr : 'recurring', labStr : 'Recurring' }, // What: Recurring Type Object. Why: Recurring reminders make up the bulk of most logs. How: This colors them with the plain accent.
-	{ colStr : 'var(--warm)',   keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: One-time reminders are the smaller, distinct share. How: This colors them with the warm tone.
-
-
-];
-
-// #endregion TYP_MET_ARR
-
-
-
-const SOU_FIE_OBJ = { auto : 'autNum', manual : 'manNum', reroll : 'rerNum' }; // What: Source Field Object. Why: A pick row's saved source value names which per-item tally it counts toward, but the tally fields use their own names. How: This maps each saved source value to the per-item tally field it increments.
-
-
-
-const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease-mode drift/day-band computation shares this one fixed ceiling value. How: This is divided by an item's own easeMin/easeMax wherever a drift-to-days conversion happens.
-
-
-
-const PER_DAY_OBJ = { monthly : 30, weekly : 7, yearly : 365 }; // What: Period Day Object. Why: Converting a raw calendar-day count into cadence periods needs each cadence's own approximate period length. How: This is looked up by a picker's own cadence value, whose keys it must match exactly.
-
-
-
-const MET_FIE_OBJ = { auto : 'autNum', count : 'couNum', manual : 'manNum', rejected : 'rejNum', skipped : 'skiNum' }; // What: Metric Field Object. Why: The Pick breakdown's plain-count metrics are selected by id, but each one's value lives under its own row field name. How: This maps a metric id (metKeyStr's own value) to the breakdown row field its sort and display read.
-
-
-
-const REM_SIZ_NUM = 10; // What: Reminder Size Number. Why: The Reminders breakdown card pages like Gmail, 10 rows at a time. How: This is passed straight through to PagNavCom as its own pagSizNum.
-
-
-
-// #region couLevFun
-
-/**
- * couLevFun = Count Level Function
- *
- * @summary
- * Converts a raw day count of completed reminders into a 0-4 heat level
- * for the heatmap. Reminders have no "possible" denominator the way picks
- * do (there's no fixed daily total to divide by), so this is a raw volume
- * scale rather than a ratio like the pick heatmap uses.
- *
- * @author z4nta0 <https://github.com/z4nta0>
- *
- * @param donCouNum - Done Count Number: How many reminders were completed
- *                    that day.
- *
- * @returns A heat level from 0 (none) to 4 (four or more).
- *
- * @example
- * ```ts
- * couLevFun( 6 ) // => 4
- * ```
- *
-*/
-
-function couLevFun ( donCouNum ) {
-
-
-	return donCouNum <= 0 ? 0 : donCouNum >= 4 ? 4 : donCouNum; // What: Heat Level Return. Why: Zero and negative counts show as empty, four or more caps at the darkest cell, and anything between maps onto itself. How: This is a plain clamp of donCouNum into the 0-4 range.
-
-
-}
-
-// #endregion couLevFun
-
-
+// #region Components
 
 // #region BreBarCom
 
@@ -337,7 +353,7 @@ function couLevFun ( donCouNum ) {
  *
  * @example
  * ```tsx
- * BreBarCom({ className, empMesStr, kicTexStr, segDatArr, totCouNum }) // => <BreBarCom />
+ * BreBarCom({ className, empMesStr, kicTexStr, ... }) // => <BreBarCom />
  * ```
  *
 */
@@ -353,6 +369,8 @@ function BreBarCom ( { className = '', empMesStr, kicTexStr, segDatArr, totCouNu
 
 			<div className='kicker'>{ kicTexStr }</div>{ /* What: Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
 
+
+
 			{ totCouNum > 0 ? ( // What: Has Data Check. Why: A stacked bar with nothing in it would render as an empty, confusing sliver. How: This renders the real bar and legend only while totCouNum is positive, otherwise the empty state below.
 
 
@@ -367,11 +385,14 @@ function BreBarCom ( { className = '', empMesStr, kicTexStr, segDatArr, totCouNu
 
 							<span
 								key={ segCurObj.keyStr }
+
 								className='bd-seg'
+
 								style={{
 									background : segCurObj.colStr,
 									width      : `${ ( segCurObj.couNum / totCouNum ) * 100 }%`
 								}}
+
 								title={ `${ segCurObj.labStr }: ${ segCurObj.couNum }` }
 							/> // What: Segment Span Element. Why: Each stacked segment needs its own width, color, and a hover tooltip with the raw count. How: This is sized to the segment's own share of totCouNum and colored via its own colStr.
 
@@ -380,6 +401,7 @@ function BreBarCom ( { className = '', empMesStr, kicTexStr, segDatArr, totCouNu
 
 
 					</div>
+
 
 					<ul className='bd-legend'>{ /* What: Legend List Element. Why: The bar alone doesn't label its own segments. How: This renders one legend row per segment, including zero-count ones, each with its own dot, name, value, and percentage. */ }
 
@@ -392,6 +414,7 @@ function BreBarCom ( { className = '', empMesStr, kicTexStr, segDatArr, totCouNu
 
 								<span
 									className='bd-dot'
+
 									style={{ background : segCurObj.colStr }}
 								/>{ /* What: Dot Span Element. Why: The legend row needs a small color swatch matching its bar segment. How: This is a plain colored dot, styled via segCurObj's own colStr. */ }
 
@@ -523,7 +546,7 @@ function HeaLegCom () {
  *
  * @example
  * ```tsx
- * PagNavCom({ alwShoBoo, curPagNum, onChange, pagSizNum, ... }) // => <PagNavCom />
+ * PagNavCom({ alwShoBoo, curPagNum, onChange, ... }) // => <PagNavCom />
  * ```
  *
 */
@@ -563,17 +586,23 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 
 				<button
 					className='pager-arrow'
+
 					disabled={ curPagNum <= 0 }
 					type='button'
+
 					aria-label='Previous page'
+
 					onClick={ () => onChange( curPagNum - 1 ) }
 				>&lsaquo;</button>{ /* What: Previous Arrow Button Element. Why: The user needs a way to move back one page. How: This is disabled on the first page and otherwise calls onChange with the previous page index. */ }
 
 				<button
 					className='pager-arrow'
+
 					disabled={ curPagNum >= pagCouNum - 1 }
 					type='button'
+
 					aria-label='Next page'
+
 					onClick={ () => onChange( curPagNum + 1 ) }
 				>&rsaquo;</button>{ /* What: Next Arrow Button Element. Why: The user needs a way to move forward one page. How: This is disabled on the last page and otherwise calls onChange with the next page index. */ }
 
@@ -596,7 +625,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 // #region TabStaCom
 
 /**
- * TabStaCom = Tab Stats
+ * TabStaCom = Tab Stats Component
  *
  * @summary
  * Renders the Stats tab. Everything shown here is derived on the fly from
@@ -612,7 +641,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Actions Store Object: {@link useAppStaFun}
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
  * @param props.onNavTabFun - On Navigate Tab Function: Navigates to an
@@ -624,7 +653,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
  *
  * @example
  * ```tsx
- * TabStaCom({ actStoObj, onNavHomFun, onNavTabFun, staAppObj }) // => <TabStaCom />
+ * TabStaCom({ actStoObj, onNavHomFun, ... }) // => <TabStaCom />
  * ```
  *
 */
@@ -2410,8 +2439,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			<HelOveCom
 				actModBoo={ helModBoo }
 				helIteArr={ STA_HEL_ARR }
+
 				onCloAllFun={ helExiFun }
 			/>{ /* What: Help Overlay Component. Why: Help mode needs its own dimmed tooltip layer above the real page. How: This renders active only while helModBoo is true, fed this page's own STA_HEL_ARR copy. */ }
+
+
 
 			<header className='stat-h'>{ /* What: Header Element. Why: This groups the page's own kicker/help toggle, brand mark, title, and subtitle. How: This renders as a semantic header landmark above the filters/body wrapper. */ }
 
@@ -2421,21 +2453,29 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					<div className='kicker stat-h-kicker'>Stats</div>{ /* What: Kicker Div Element. Why: Every tab opens with a small labelled kicker naming the page. How: This renders the literal word "Stats". */ }
 
+
+
 					<HelButCom
 						actModBoo={ helModBoo }
+
 						onClick={ () => setHelModBoo( ( preHelBoo ) => !preHelBoo ) }
 					/>{ /* What: Help Button Component. Why: This page needs its own header toggle for entering/leaving help mode. How: This flips helModBoo on click, reflecting its current state via actModBoo. */ }
 
 
 				</div>
 
+
+
 				<div className='stat-h-lead'>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. */ }
 
 
 					<button
 						className='brand-mark'
+
 						type='button'
+
 						aria-label='Ease My Life link to go to the Today page'
+
 						onClick={ onNavHomFun }
 					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. */ }
 
@@ -2443,6 +2483,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<svg
 							fill='none'
 							viewBox='8 8 528 528'
+
 							aria-hidden='true'
 						>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }{ /* Same theme-wired logo as the Today header (currentColor -> accent, grid lines -> accent-soft) so the two tabs read as one product. */ }
 
@@ -2452,6 +2493,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<clipPath
 									id='braMarCli--sta'
+
 									clipPathUnits='userSpaceOnUse'
 								>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, given a unique id so it can be referenced via url(#...). */ }
 
@@ -2470,8 +2512,6 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							</defs>
-
-
 
 							<g
 								style={{
@@ -2500,8 +2540,6 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							</g>
 
-
-
 							<rect
 								style={{
 									stroke         : 'currentColor',
@@ -2509,6 +2547,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									strokeLinejoin : 'round',
 									strokeWidth    : 16
 								}}
+
 								height='512'
 								rx='75'
 								ry='75'
@@ -2517,12 +2556,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								y='16'
 							/>{ /* What: Badge Rect Element. Why: The logo needs a visible rounded-square border/badge behind the glyph. How: This draws the same rounded-square shape as the clip rect above, but stroked and visible instead of hidden in defs. */ }
 
-
 							<path
 								style={{
 									fill   : 'currentColor',
 									stroke : 'currentColor'
 								}}
+
 								clipPath='url(#braMarCli--sta)'
 								d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'
 								strokeLinecap='round'
@@ -2536,6 +2575,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					</button>
 
+
 					<div className='section-h'>{ /* What: Section Header Div Element. Why: The page's own title needs a dedicated wrapper matching every other tab's header layout. How: This wraps the single h1 title below. */ }
 
 
@@ -2547,6 +2587,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 				</div>
 
+
+
 				<p className='section-sub stat-h-sub'>{ /* What: Section Subtitle Element. Why: The page needs a short explanatory subtitle beneath its title, including a link to the Data page. How: This renders that explanatory copy with an inline button jumping to the Data tab. */ }
 
 
@@ -2554,7 +2596,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					<button
 						className='sub-tablink'
+
 						type='button'
+
 						onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }
 					>Data page</button>{ /* What: Sub Tablink Button Element. Why: The subtitle's own explanation needs a working shortcut to the Data tab. How: This calls onNavTabFun with 'data' when clicked, guarding against a missing onNavTabFun prop. */ }
 
@@ -2566,8 +2610,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 			</header>
 
+
+
 			<div
 				className='stat-body-wrap'
+
 				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
 			>{ /* What: Body Wrap Div Element. Why: The Welcome Tour's own reserved top space applies to the whole scrollable filters/body area together. How: This applies touBusObj.resTopNum as top padding when it's non-zero. */ }
 
@@ -2585,7 +2632,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<div
 								ref={ groRowRef }
+
 								className='picker-groups stat-scope-groups'
+
 								aria-label='Filter pickers by group'
 								role='tablist'
 							>{ /* What: Group Pill List Div Element. Why: This is the actual scrollable row of Group filter pills. How: This renders an "All" pill first, then one pill per exiGroArr entry. */ }
@@ -2593,9 +2642,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<button
 									className={ ` picker-group-pill   ${ staGroStr === 'all' ? 'is-on' : '' } ` }
+
 									type='button'
+
 									aria-selected={ staGroStr === 'all' }
 									role='tab'
+
 									onClick={ () => { // What: All Group Click Handler. Why: Returning to All must also reset the scope, since a narrowed scope may no longer be visible. How: This resets both staGroStr and scoValStr to 'all'.
 
 
@@ -2619,10 +2671,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										key={ groCurStr }
+
 										className={ ` picker-group-pill   ${ staGroStr === groCurStr ? 'is-on' : '' } ` }
+
 										type='button'
+
 										aria-selected={ staGroStr === groCurStr }
 										role='tab'
+
 										onClick={ () => setStaGroStr( groCurStr ) }
 									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. */ }
 
@@ -2646,6 +2702,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
 					{ ( exiModArr.length > 1 || hasConBoo || remEnaBoo ) && ( // What: Type Row Visibility Check. Why: A Type filter row is pointless with only one mode in use and neither Conditionals nor Reminders available. How: This renders the row only while at least one of those three conditions holds.
 
 
@@ -2656,7 +2713,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<div
 								ref={ typRowRef }
+
 								className='picker-groups stat-scope-groups stat-scope-groups--type'
+
 								aria-label='Filter pickers by type'
 								role='tablist'
 							>{ /* What: Type Pill List Div Element. Why: This is the actual scrollable row of Type filter pills. How: This renders an "All" pill first, then every mode/Conditionals/Reminders pill sorted alphabetically by name. */ }
@@ -2664,9 +2723,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<button
 									className={ ` picker-group-pill   ${ typFilStr === 'all' ? 'is-on' : '' } ` }
+
 									type='button'
+
 									aria-selected={ typFilStr === 'all' }
 									role='tab'
+
 									onClick={ () => { // What: All Type Click Handler. Why: Returning to All must also reset the scope, since a narrowed scope may no longer be visible. How: This resets both typFilStr and scoValStr to 'all'.
 
 
@@ -2748,10 +2810,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<button
 											key={ entCurObj.keyStr }
+
 											className={ ` picker-group-pill   ${ entCurObj.selBoo ? 'is-on' : '' } ` }
+
 											type='button'
+
 											aria-selected={ entCurObj.selBoo }
 											role='tab'
+
 											onClick={ entCurObj.cliFun }
 										>{ /* What: Type Pill Button Element. Why: The user needs a way to narrow both the Type filter and (for the two sentinels) the scope itself down to this one entry. How: This calls the entry's own cliFun, already closing over whichever behavior it needs. */ }
 
@@ -2775,6 +2841,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
 					<div className='stat-filter-row'>{ /* What: Show Filter Row Div Element. Why: The Show label and its own scope-tab list are grouped as one row. How: This wraps the "Show" label span and the picker-tabs scope list. */ }
 
 
@@ -2783,6 +2850,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<div
 							key={ staGroStr + '|' + typFilStr }
 							ref={ scoRowRef }
+
 							className='picker-tabs stat-scope-tabs'
 						>{ /* What: Show Tab List Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. */ }
 
@@ -2792,8 +2860,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<button
 									className={ ` picker-tab   picker-tab--enter   ${ scoValStr === 'all' ? 'is-on' : '' } ` }
+
 									style={{ animationDelay : '0ms' }}
+
 									type='button'
+
 									onClick={ () => setScoValStr( 'all' ) }
 								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. */ }
 
@@ -2839,10 +2910,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										key={ entCurObj.keyStr }
+
 										className={ ` picker-tab   picker-tab--enter   ${ entCurObj.selBoo ? 'is-on' : '' } ` }
+
 										style={{ animationDelay : ( entIndNum + 1 ) * 40 + 'ms' }}
+
 										data-picker-id={ entCurObj.picStr }
+
 										type='button'
+
 										onClick={ entCurObj.cliFun }
 									>{ /* What: Scope Tab Button Element. Why: The user needs a way to switch the whole page over to this specific Conditionals/Reminders/picker scope. How: This calls the entry's own cliFun when clicked. */ }
 
@@ -2863,6 +2939,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					</div>
 
+
 					<div className='stat-filter-row'>{ /* What: Range Filter Row Div Element. Why: The Range label and its own pill list are grouped as one row. How: This wraps the "Range" label span and the stat-filter-pills list. */ }
 
 
@@ -2870,6 +2947,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 						<div
 							ref={ ranRowRef }
+
 							className='stat-filter-pills stat-filter-pills--seg'
 						>{ /* What: Range Pill List Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. */ }
 
@@ -2879,8 +2957,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<button
 									key={ ranCurObj.keyStr }
+
 									className={ ` stat-pill   ${ ranValStr === ranCurObj.keyStr ? 'is-on' : '' } ` }
+
 									type='button'
+
 									onClick={ () => setRanValStr( ranCurObj.keyStr ) }
 								>{ ranCurObj.labStr }</button> // What: Range Pill Button Element. Why: The user needs a way to switch the whole page over to this specific lookback window. How: This sets ranValStr to this pill's own keyStr when clicked.
 
@@ -2896,8 +2977,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 				</div>
 
+
+
 				<div
 					key={ scoValStr + '|' + ranValStr }
+
 					className='tab-fade stat-body ob-stat-content'
 				>{ /* What: Body Div Element. Why: This groups every scope-dependent card below the filter rows, remounting (and replaying its own fade) whenever the scope or range changes. How: This renders the single-picker header, the Conditionals/headline/heatmap blocks, and every remaining card in a fixed order. */ }
 
@@ -2910,11 +2994,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<span className='kicker'>Picker</span>{ /* What: Picker Kicker Span Element. Why: This block needs its own small label naming what it identifies. How: This renders the literal word "Picker". */ }
 
-
-
 							<h2 className='picker-title'>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. */ }
 
+
+
 							<PilTagCom tonValStr='mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scoPicObj.mode ] || {} ).labStr || scoPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. */ }
+
+
 
 							{ ( () => { // What: Mode Hint Render. Why: A mode's own hint text can be either a single paragraph or several, and each needs wrapping in its own paragraph element. How: This reads the mode's own hint field and maps an array into one <p> per paragraph, or wraps a plain string in one.
 
@@ -2931,6 +3017,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<p
 										key={ parIndNum }
+
 										className='picker-hint'
 									>{ parCurStr }</p> // What: Picker Hint Paragraph Element. Why: Each hint paragraph needs its own element. How: This renders parCurStr.
 
@@ -2945,6 +3032,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 					) }
+
+
 
 					{ isaConBoo && ( () => { // What: Conditionals Body Visibility Check. Why: This entire block only renders while the Conditionals scope is active. How: This IIFE computes two small local formatters once, then returns the headline cards and breakdown list together.
 
@@ -2972,6 +3061,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</CarSurCom>
 
+
+
 									<CarSurCom className='stat-card stat-mk-condcycles'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "cycles" total. */ }
 
 
@@ -2982,6 +3073,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</CarSurCom>
 
+
+
 									<CarSurCom className='stat-card stat-mk-condrate'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "fire rate" percentage. */ }
 
 
@@ -2991,6 +3084,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									</CarSurCom>
+
+
 
 									<CarSurCom className='stat-card stat-mk-condlast'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. */ }
 
@@ -3005,6 +3100,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								</div>
 
+
+
 								<CarSurCom className='stat-mk-condbreakdown'>{ /* What: Card Surface Component. Why: The Conditionals breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the list itself. */ }
 
 
@@ -3015,7 +3112,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<button
 											className='rank-sort'
+
 											type='button'
+
 											onClick={ () => setConSorStr( ( preDirStr ) => ( preDirStr === 'desc' ? 'asc' : 'desc' ) ) }
 										>{ /* What: Sort Toggle Button Element. Why: The user needs a way to flip the breakdown list's own sort direction. How: This flips conSorStr between 'desc' and 'asc' when clicked. */ }
 
@@ -3035,6 +3134,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<div
 										ref={ conRowRef }
+
 										className='bd-metrics'
 									>{ /* What: Metric Pill Row Div Element. Why: The user needs a way to pivot the breakdown list across five different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
@@ -3044,8 +3144,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											<button
 												key={ conKeyStr }
+
 												className={ ` bd-metric   ${ conMetStr === conKeyStr ? 'is-on' : '' } ` }
+
 												type='button'
+
 												onClick={ () => setConMetStr( conKeyStr ) }
 											>{ /* What: Metric Pill Button Element. Why: The user needs a way to switch the breakdown list over to this specific metric. How: This sets conMetStr to this pill's own key when clicked. */ }
 
@@ -3078,11 +3181,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</p>
 
+
 									{ conBreArr.length ? ( // What: Conditional List Visibility Check. Why: An empty breakdown needs its own message instead of a bare empty list. How: This renders the real list only while conBreArr has at least one row.
 
 
 										<ul
 											key={ conMetStr + conSorStr }
+
 											className={ ` rank   rank--breakdown   bd-list-fade   ${ ( conMetStr === 'interval' || conMetStr === 'last' ) ? 'rank--freq' : '' } ` }
 										>{ /* What: Conditional List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps conBreArr to one list item per conditional. */ }
 
@@ -3111,6 +3216,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 													<li
 														key={ conRowObj.ideStr }
+
 														className={ conRowObj.delBoo ? 'is-deleted' : '' }
 													>{ /* What: Conditional List Item Element. Why: Every conditional needs its own row grouping its name/target on one side and its metric value on the other. How: This renders the rank-name block and the cnd-bd-vals block as two siblings. */ }
 
@@ -3224,6 +3330,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					})() }
 
+
+
 					{ !isaConBoo && ( // What: Headline Row Visibility Check. Why: The Conditionals scope has its own dedicated headline row above, so this generic one only belongs on every other scope. How: This renders it only while isaConBoo is false.
 
 
@@ -3246,6 +3354,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</CarSurCom>
 
+
+
 									<CarSurCom className='stat-card stat-mk-remweek'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "this week" total. */ }
 
 
@@ -3256,6 +3366,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</CarSurCom>
 
+
+
 									<CarSurCom className='stat-card stat-mk-remactive'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "active days" total. */ }
 
 
@@ -3265,6 +3377,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									</CarSurCom>
+
+
 
 									<CarSurCom className='stat-card stat-mk-rembusiest'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "busiest day" total. */ }
 
@@ -3301,6 +3415,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</CarSurCom>
 
+
+
 									<CarSurCom className={ ` stat-card   stat-mk-fulldays   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "full days" total, tagged with an extra scope-specific class for help mode. */ }
 
 
@@ -3311,6 +3427,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</CarSurCom>
 
+
+
 									<CarSurCom className={ ` stat-card   stat-mk-done   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "items done" total, tagged with an extra scope-specific class for help mode. */ }
 
 
@@ -3320,6 +3438,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									</CarSurCom>
+
+
 
 									<CarSurCom className={ ` stat-card   stat-mk-rate   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completion" percentage, tagged with an extra scope-specific class for help mode. */ }
 
@@ -3343,6 +3463,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
+
 					{ !isaConBoo && ( // What: Heatmap Visibility Check. Why: The Conditionals scope has no day-by-day heatmap of its own to show. How: This renders the whole heatmap card only while isaConBoo is false.
 
 
@@ -3353,6 +3475,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<div className='kicker'>{ ranKicStr }{ isaRemBoo ? ' · reminders' : '' }</div>{ /* What: Kicker Div Element. Why: The heatmap needs its own label naming the active range, plus a Reminders qualifier when that scope is active. How: This renders ranKicStr, appending " · reminders" only while isaRemBoo is true. */ }
+
+
 
 								<HeaLegCom />{ /* What: Heat Legend Component. Why: The heatmap needs its own "less...more" scale legend beside its kicker. How: This renders the shared 5-swatch legend row. */ }
 
@@ -3385,9 +3509,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<button
 											className='heat-year-arrow'
+
 											disabled={ yeaIndNum <= 0 }
 											type='button'
+
 											aria-label='Previous year'
+
 											onClick={ () => jumYeaFun( datYeaArr[ yeaIndNum - 1 ], 'prev' ) }
 										>&lsaquo;</button>{ /* What: Previous Year Arrow Button Element. Why: The user needs a way to page back one calendar year. How: This is disabled on the earliest year and otherwise pages to the previous entry in datYeaArr. */ }
 
@@ -3395,9 +3522,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<button
 											className='heat-year-arrow'
+
 											disabled={ yeaIndNum >= datYeaArr.length - 1 }
 											type='button'
+
 											aria-label='Next year'
+
 											onClick={ () => jumYeaFun( datYeaArr[ yeaIndNum + 1 ], 'next' ) }
 										>&rsaquo;</button>{ /* What: Next Year Arrow Button Element. Why: The user needs a way to page forward one calendar year. How: This is disabled on the latest year and otherwise pages to the next entry in datYeaArr. */ }
 
@@ -3409,6 +3539,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							})() }
+
+
 
 							{ actDayNum === 0 ? ( // What: Empty Heatmap Check. Why: A heatmap with zero active days needs its own explanatory message instead of an all-empty grid. How: This renders that message only while actDayNum is zero, otherwise the real grid and detail panel below.
 
@@ -3433,6 +3565,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<div
 										key={ actYeaNum == null ? 'single' : actYeaNum }
+
 										className={ ` heat   ${ heaDirStr ? 'heat-slide-' + heaDirStr : '' } ` }
 									>{ /* What: Heat Grid Div Element. Why: This is the actual grid of day cells, remounting (and replaying its own slide-in) whenever the active paged year changes. How: This maps heaDayArr to one cell button per day. */ }
 
@@ -3481,10 +3614,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<button
 													key={ dayCurObj.datStr }
+
 													className={ ` heat-cell   heat-${ levValNum }   ${ selDayBoo ? 'is-sel' : '' } ` }
+
 													type='button'
+
 													aria-label={ titTexStr }
 													title={ titTexStr }
+
 													onClick={ () => setHeaSelStr( selDayBoo ? null : dayCurObj.datStr ) }
 												/> // What: Heat Cell Button Element. Why: Each day needs its own tappable, color-coded cell. How: This toggles heaSelStr to this cell's own date (or clears it, if already selected) on click.
 
@@ -3496,6 +3633,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									</div>
+
+
 
 									{ ( () => { // What: Heat Detail Render. Why: A tapped cell's own detail list is either shown or a plain hint is shown instead, depending on whether anything is currently selected. How: This looks up the selected day's own aggregate entry, then returns either the hint or the detail panel.
 
@@ -3528,6 +3667,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												</div>
 
+
 												{ ( selDayObj.iteArr || [] ).length ? ( // What: Item List Visibility Check. Why: A day with an aggregate entry but no logged items at all still needs an explanatory message instead of an empty list. How: This renders the real list only while selDayObj.iteArr has at least one entry.
 
 
@@ -3539,6 +3679,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 															<li
 																key={ iteIndNum }
+
 																className={ iteCurObj.donBoo ? 'is-done' : '' }
 															>{ /* What: Heat Detail Item Element. Why: Each item needs its own name and (for a pick day) a done/not-done mark. How: This renders the name span and, only outside the Reminders scope, the mark span. */ }
 
@@ -3586,6 +3727,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
+
 					{ scoValStr === 'all' && hasConBoo && ( // What: Conditionals Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while at least one conditional exists. How: This renders it only while both conditions hold.
 
 
@@ -3609,6 +3752,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							</div>
+
 
 							{ conStaArr.length ? ( // What: Conditional Summary List Check. Why: An empty summary needs its own message instead of a bare empty list. How: This renders the real list only while conStaArr has at least one row.
 
@@ -3670,6 +3814,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
+
 					{ isaRemBoo && ( // What: Reminders Extras Visibility Check. Why: The type-split bar and the Reminders breakdown card only belong while the Reminders scope is active. How: This renders both together only while isaRemBoo is true.
 
 
@@ -3678,11 +3824,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<BreBarCom
 								className='stat-mk-remtype'
+
 								empMesStr={ `No reminders completed in ${ ranNouStr } yet.` }
 								kicTexStr='By reminder type'
 								segDatArr={ typSegArr }
 								totCouNum={ totDonNum }
 							/>{ /* What: Breakdown Bar Component. Why: The Reminders scope needs the same stacked-bar treatment as the pick-source split, but for the one-time/recurring type split instead. How: This is fed typSegArr and totDonNum as its own segments/total. */ }
+
+
 
 							<CarSurCom className='stat-mk-rembreakdown'>{ /* What: Card Surface Component. Why: The Reminders breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the paged list itself. */ }
 
@@ -3694,7 +3843,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										className='rank-sort'
+
 										type='button'
+
 										onClick={ () => setRemSorStr( ( preDirStr ) => ( preDirStr === 'desc' ? 'asc' : 'desc' ) ) }
 									>{ /* What: Sort Toggle Button Element. Why: The user needs a way to flip the breakdown list's own sort direction. How: This flips remSorStr between 'desc' and 'asc' when clicked. */ }
 
@@ -3716,6 +3867,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<div
 									ref={ remRowRef }
+
 									className='bd-metrics'
 								>{ /* What: Metric Pill Row Div Element. Why: The user needs a way to pivot the breakdown list across three different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
@@ -3725,8 +3877,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<button
 											key={ remKeyStr }
+
 											className={ ` bd-metric   ${ remMetStr === remKeyStr ? 'is-on' : '' } ` }
+
 											type='button'
+
 											onClick={ () => setRemMetStr( remKeyStr ) }
 										>{ /* What: Metric Pill Button Element. Why: The user needs a way to switch the breakdown list over to this specific metric. How: This sets remMetStr to this pill's own key when clicked. */ }
 
@@ -3755,6 +3910,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								</p>
 
+
+
 								{ remBreArr.length ? ( // What: Reminder List Visibility Check. Why: An empty breakdown needs its own message instead of a bare empty list plus a pointless pager. How: This renders the real list and pager only while remBreArr has at least one row.
 
 
@@ -3763,6 +3920,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<ul
 											key={ remMetStr + remSorStr + remSafNum }
+
 											className='rem-log bd-list-fade'
 										>{ /* What: Reminder List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric, sort, or page changes. How: This maps remIteArr to one list item per reminder row. */ }
 
@@ -3806,12 +3964,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										</ul>
 
+
+
 										<PagNavCom
 											alwShoBoo
 											curPagNum={ remSafNum }
 											pagSizNum={ REM_SIZ_NUM }
 											totIteNum={ remBreArr.length }
 											uniWorStr={ remMetStr === 'skipped' ? 'skipped' : 'completed' }
+
 											onChange={ setRemIndNum }
 										/>{ /* What: Pager Navigation Component. Why: A breakdown list longer than one page needs its own pager to move through it. How: This is fed the current safe page/size/total, always showing itself via alwShoBoo since this card's own list is often long. */ }
 
@@ -3845,6 +4006,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
+
 					{ shoRemBoo && ( // What: Reminders Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while reminders are enabled at all. How: This renders it only while shoRemBoo is true.
 
 
@@ -3868,6 +4031,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							</div>
+
 
 							{ remLogArr.length ? ( // What: Reminder Summary List Check. Why: An empty summary needs its own message instead of a bare empty list. How: This renders the real list only while remLogArr has at least one row.
 
@@ -3917,11 +4081,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
+
 					{ !isaRemBoo && !isaConBoo && ( // What: Source Split Visibility Check. Why: The pick-source breakdown only makes sense while a pick-shaped scope (All or a single picker) is active. How: This renders it only while neither the Reminders nor Conditionals sentinel is active. // Source split (picks); the All view shows it last, and a single-picker scope shows it too.
 
 
 						<BreBarCom
 							className='stat-mk-source'
+
 							empMesStr={ `Nothing picked in ${ ranNouStr } yet.` }
 							kicTexStr='How picks were chosen'
 							segDatArr={ souSegArr }
@@ -3930,6 +4097,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 					) }
+
+
 
 					{ scoValStr === 'all' && ( // What: Rankings Visibility Check. Why: The Most Picked/Coldest cards only make sense on the combined All view, not a single-picker scope. How: This renders both cards only while scoValStr is 'all'.
 
@@ -3941,6 +4110,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<div className='kicker'>Most picked</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Most picked". */ }
+
 
 								{ topPicArr.length ? ( // What: Top List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while topPicArr has at least one entry.
 
@@ -3979,10 +4149,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							</CarSurCom>
 
+
+
 							<CarSurCom className='stat-mk-coldest'>{ /* What: Card Surface Component. Why: The Coldest items ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
 
 
 								<div className='kicker'>Coldest items</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Coldest items". */ }
+
 
 								{ colIteArr.length ? ( // What: Cold List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while colIteArr has at least one entry.
 
@@ -4027,6 +4200,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 					) }
 
+
+
 					{ isaPicBoo && ( // What: Pick Breakdown Visibility Check. Why: This entire card only belongs while a single real picker is the active scope. How: This renders it only while isaPicBoo is true.
 
 
@@ -4040,7 +4215,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<button
 									className='rank-sort'
+
 									type='button'
+
 									onClick={ () => setSorDirStr( ( preDirStr ) => ( preDirStr === 'desc' ? 'asc' : 'desc' ) ) }
 								>{ /* What: Sort Toggle Button Element. Why: The user needs a way to flip the breakdown list's own sort direction. How: This flips sorDirStr between 'desc' and 'asc' when clicked. */ }
 
@@ -4060,7 +4237,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<div
 								ref={ metRowRef }
+
 								className='bd-metrics'
+
 								aria-label='Breakdown metric'
 								role='tablist'
 							>{ /* What: Metric Pill Row Div Element. Why: The user needs a way to pivot the breakdown list across every metric this picker's own mode supports. How: This renders one pill per entry in metPilArr. */ }
@@ -4071,10 +4250,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										key={ metCurObj.keyStr }
+
 										className={ ` bd-metric   ${ effMetStr === metCurObj.keyStr ? 'is-on' : '' } ` }
+
 										type='button'
+
 										aria-selected={ effMetStr === metCurObj.keyStr }
 										role='tab'
+
 										onClick={ () => setMetKeyStr( metCurObj.keyStr ) }
 									>{ /* What: Metric Pill Button Element. Why: The user needs a way to switch the breakdown list over to this specific metric. How: This sets metKeyStr to this pill's own key when clicked. */ }
 
@@ -4100,14 +4283,18 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										className={ ` note-link   ${ couModStr === 'total' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setCouModStr( 'total' ) }
 									>total picks</button>{ /* What: Total Toggle Button Element. Why: The user needs a way to switch the Count metric's own percentage denominator to the picker's whole total. How: This sets couModStr to 'total' when clicked. */ }
 
 									{ ' ' }or only{ ' ' }
 									<button
 										className={ ` note-link   ${ couModStr === 'eligible' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setCouModStr( 'eligible' ) }
 									>eligible picks</button>{ /* What: Eligible Toggle Button Element. Why: The user needs a way to switch the Count metric's own percentage denominator to only picks made while each item was active. How: This sets couModStr to 'eligible' when clicked. */ }
 
@@ -4129,14 +4316,18 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										className={ ` note-link   ${ freModStr === 'calendar' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setFreModStr( 'calendar' ) }
 									>{ calUniStr }</button>{ /* What: Calendar Toggle Button Element. Why: The user needs a way to switch the Frequency metric's own unit to literal calendar days/periods. How: This sets freModStr to 'calendar' when clicked. */ }
 
 									{ ' ' }or only{ ' ' }
 									<button
 										className={ ` note-link   ${ freModStr === 'eligible' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setFreModStr( 'eligible' ) }
 									>eligible { eliUniStr }</button>{ /* What: Eligible Toggle Button Element. Why: The user needs a way to switch the Frequency metric's own unit to only the picker's own eligible run periods. How: This sets freModStr to 'eligible' when clicked. */ }
 
@@ -4158,14 +4349,18 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										className={ ` note-link   ${ speModStr === 'calendar' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setSpeModStr( 'calendar' ) }
 									>{ calUniStr }</button>{ /* What: Calendar Toggle Button Element. Why: The user needs a way to switch the Spent metric's own unit to literal calendar days/periods. How: This sets speModStr to 'calendar' when clicked. */ }
 
 									{ ' ' }or only{ ' ' }
 									<button
 										className={ ` note-link   ${ speModStr === 'eligible' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setSpeModStr( 'eligible' ) }
 									>eligible { eliUniStr }</button>{ /* What: Eligible Toggle Button Element. Why: The user needs a way to switch the Spent metric's own unit to only the picker's own eligible run periods. How: This sets speModStr to 'eligible' when clicked. */ }
 
@@ -4219,14 +4414,18 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<button
 										className={ ` note-link   ${ lasModStr === 'calendar' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setLasModStr( 'calendar' ) }
 									>{ calUniStr }</button>{ /* What: Calendar Toggle Button Element. Why: The user needs a way to switch the Last Picked metric's own unit to literal calendar days/periods. How: This sets lasModStr to 'calendar' when clicked. */ }
 
 									{ ' ' }or only{ ' ' }
 									<button
 										className={ ` note-link   ${ lasModStr === 'eligible' ? 'is-on' : '' } ` }
+
 										type='button'
+
 										onClick={ () => setLasModStr( 'eligible' ) }
 									>eligible { eliUniStr }</button>{ /* What: Eligible Toggle Button Element. Why: The user needs a way to switch the Last Picked metric's own unit to only the picker's own eligible run periods. How: This sets lasModStr to 'eligible' when clicked. */ }
 
@@ -4238,11 +4437,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							) }
 
+
 							{ breLisArr.length ? ( // What: Breakdown List Visibility Check. Why: An empty picker needs its own message instead of a bare empty list. How: This renders the real list only while breLisArr has at least one row.
 
 
 								<ul
 									key={ effMetStr + sorDirStr }
+
 									className={ ` rank   rank--breakdown   bd-list-fade   ${ ( effMetStr === 'freq' || effMetStr === 'last' ) ? 'rank--freq' : '' } ` }
 								>{ /* What: Breakdown List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps breLisArr to one list item per item. */ }
 
@@ -4262,6 +4463,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											<li
 												key={ iteCurObj.ideStr }
+
 												className={ ` ${ iteCurObj.vacBoo ? 'is-vacation' : '' }   ${ iteCurObj.delBoo ? 'is-deleted' : '' } ` }
 											>{ /* What: Breakdown List Item Element. Why: Every item needs its own row grouping its name/tags/suffix on one side and its metric value on the other. How: This renders the rank-name block and the rank-bd-vals block as two siblings. */ }
 
@@ -4343,6 +4545,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 															<InfTipCom
 																className='pie-help pie-help--sm'
+
 																labTexStr='No full cycle has been completed yet'
 															>?</InfTipCom>{ /* What: Info Tip Component. Why: A N/A Spent value needs a small inline explanation of why there's no cycle to measure yet. How: This renders the shared "?" bubble with its own label text. */ }
 
@@ -4421,8 +4624,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 // #endregion TabStaCom
 
+// #endregion Components
 
+
+
+// #region Exports
 
 export { TabStaCom }; // What: Named Exports. Why: app.jsx renders this as the Stats tab itself. How: This re-exports TabStaCom; every other binding in this file is internal-only.
+
+// #endregion Exports
 
 
