@@ -15,10 +15,8 @@
  * behind the active tab. When the placement changes, a ghost copy of the old
  * bar exits toward its edge while the real one enters from its new edge.
  *
- * The nav's small mark and initials (.brand-mark, .brand-name) are hidden in
- * every placement, the wordmark standing in for them; their rules are carried
- * over as they were. The main area reads data-tab-today-active, set while the
- * Today tab shows, since Today runs edge to edge.
+ * The main area reads data-tab-today-active, set while the Today tab shows,
+ * since Today runs edge to edge.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -500,95 +498,6 @@
 
 
 }
-
-/* #region brand-mark */
-
-.brand-mark { /* What: Nav Brand Mark. Why: The nav keeps the logo mark in its brand button, though every placement shows the wordmark instead. How: This sizes the mark like the tab headers' logos, in the accent color, with a lift on hover. */
-
-
-	--brand-mark-h  : calc(34px * 1.1 * 2);
-	aspect-ratio    : 1 / 1;
-	border-radius   : 11px;
-	color           : var(--accent);
-	display         : block;
-	flex            : 0 0 auto;
-	height          : calc(34px * 1.1 * 2); /* What: Two-Line Height. Why: The mark matches a header title's two-line height. How: This multiplies the title's font size by its line height, twice. */
-	text-decoration : none;
-	transition      : transform 180ms ease;
-
-
-}
-.brand-mark:hover { /* What: Hovered Nav Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
-
-
-	transform : translateY(-1px);
-
-
-}
-.tabbar--side .brand-mark,
-.tabbar--top .brand-mark { /* What: Hidden Nav Brand Mark. Why: The side and top bars show the wordmark, which already includes the mark. How: This hides the separate mark. */
-
-
-	display : none;
-
-
-}
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Nav Brand Mark. Why: Someone who asked for less motion shouldn't see the mark lift. How: This applies only when the reduced-motion preference is set. */
-
-
-	.brand-mark { /* What: Still Nav Brand Mark. Why: The mark should stay put. How: This turns its lift transition off. */
-
-
-		transition : none;
-
-
-	}
-
-
-}
-
-.brand-mark svg { /* What: Nav Brand Mark Glyph. Why: The logo should fill its mark box. How: This sizes the svg to the full box as a block. */
-
-
-	display : block;
-	height  : 100%;
-	width   : 100%;
-
-
-}
-
-/* #endregion brand-mark */
-
-
-/* #region brand-name */
-
-.brand-name { /* What: Nav Brand Initials. Why: The initials are a fallback wordmark the side and top bars never show. How: This tightens their letter spacing. */
-
-
-	letter-spacing : -0.02em;
-
-
-}
-.tabbar--side .brand-name,
-.tabbar--top .brand-name { /* What: Hidden Nav Brand Initials. Why: The side and top bars show the full wordmark instead. How: This hides the initials. */
-
-
-	display : none;
-
-
-}
-
-.brand-name span { /* What: Nav Brand Initial. Why: Each initial reads in the accent color. How: This colors the letter spans. */
-
-
-	color : var(--accent);
-
-
-}
-
-/* #endregion brand-name */
-
-
 
 /* #region brand-wordmark */
 

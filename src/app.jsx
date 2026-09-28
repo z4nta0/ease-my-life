@@ -203,10 +203,6 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 
-	const bmcIdeStr = `braMarCli${ tbcGhoBoo ? '--gho' : '' }`; // What: Brand-Mark-ClipPath Identifier String. Why: SVG clipPath references must use a document-unique id, and this component can render two instances at once. How: This appends a "--gho" modifier when tbcGhoBoo is true so the real and ghost instances never collide.
-
-
-
 	return (
 
 
@@ -249,134 +245,23 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 				aria-label='Ease My Life link to go to the Today page'
 
 				onClick={ () => onChange( 'today' ) }
-			>{ /* What: Brand Button Element. Why: The logo/wordmark should also work as a shortcut back to the Today tab. How: This wraps the mark and wordmark spans in a real button and jumps to 'today' on click. */ }
+			>{ /* What: Brand Button Element. Why: The logo/wordmark should also work as a shortcut back to the Today tab. How: This wraps the wordmark span in a real button and jumps to 'today' on click. */ }
 
-
-				<span
-					className={ cssModObj.brandMark }
-
-					aria-hidden='true'
-				>{ /* What: Mark Span Element. Why: This groups the small square logo mark so it can be hidden from screen readers while the button's own label carries the meaning. How: This wraps the logo svg and is itself aria-hidden. */ }
-
-
-					<svg
-						fill='none'
-						height='18'
-						viewBox='8 8 528 528'
-						width='18'
-					>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
-
-
-						<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
-
-
-							<clipPath
-								id={ bmcIdeStr }
-
-								clipPathUnits='userSpaceOnUse'
-							>{ /* What: Badge Clippath Element. Why: The glyph path's own curves slightly overshoot the rounded-square badge and need to be masked to it. How: This defines a rounded-square clip region, given a unique id so it can be referenced via url(#...). */ }
-
-
-								<rect
-									height='512'
-									rx='75'
-									ry='75'
-									width='512'
-									x='16'
-									y='16'
-								/>{ /* What: Clip Rect Element. Why: The clip region itself needs a concrete shape to clip to. How: This draws the rounded-square shape that the clipPath above exposes for reference. */ }
-
-
-							</clipPath>
-
-
-						</defs>
-
-						<g
-							style={{
-								stroke      : 'var(--accent-soft)',
-								strokeWidth : 16
-							}}
-						>{ /* What: Grid Group Element. Why: Groups the 8 decorative background lines so they can share one stroke style instead of repeating it 8 times. How: This sets the shared stroke/strokeWidth once, applied to every child path below. */ }
-
-
-							<path d='M 528 112 L 16 112' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings below draw the rest of the grid. */ }
-
-							<path d='M 216 528 L 216 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
-
-							<path d='M 320 528 L 320 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
-
-							<path d='M 424 528 L 424 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
-
-							<path d='M 112 528 L 112 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
-
-							<path d='M 528 216 L 16 216' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
-
-							<path d='M 528 320 L 16 320' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
-
-							<path d='M 528 424 L 16 424' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment, completing the grid. */ }
-
-
-						</g>
-
-						<rect
-							style={{
-								stroke         : 'currentColor',
-								strokeLinecap  : 'round',
-								strokeLinejoin : 'round',
-								strokeWidth    : 16
-							}}
-
-							height='512'
-							rx='75'
-							ry='75'
-							width='512'
-							x='16'
-							y='16'
-						/>{ /* What: Badge Rect Element. Why: The logo needs a visible rounded-square border/badge behind the glyph. How: This draws the same rounded-square shape as the clip rect above, but stroked and visible instead of hidden in defs. */ }
-
-						<path
-							style={{
-								fill   : 'currentColor',
-								stroke : 'currentColor'
-							}}
-
-							clipPath={ `url(#${ bmcIdeStr })` }
-							d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'
-							strokeLinecap='round'
-							strokeLinejoin='round'
-							strokeWidth='8'
-						/>{ /* What: Glyph Path Element. Why: This is the actual squiggly "Ease My Life" brand glyph drawn inside the badge. How: This path is clipped to the rounded-square badge so its curves never spill outside it. */ }
-
-
-					</svg>
-
-
-				</span>
-
-
-				<span className={ cssModObj.brandName }>{ /* What: Name Span Element. Why: This groups the three individual initial letters into one visual unit. How: This wraps the three initial-letter spans below. */ }
-
-
-					<span>E</span>{ /* What: Letter Span Element. Why: This shows the "E" initial as a fallback wordmark on narrow layouts. How: This is one of three individually-styled single-letter spans forming "EML". */ }<span>M</span>{ /* What: Letter Span Element. Why: This shows the "M" initial as a fallback wordmark on narrow layouts. How: This is one of three individually-styled single-letter spans forming "EML". */ }<span>L</span>{ /* What: Letter Span Element. Why: This shows the "L" initial as a fallback wordmark on narrow layouts. How: This is one of three individually-styled single-letter spans forming "EML". */ }
-
-
-				</span>
 
 				<span
 					className={ cssModObj.brandWordmark }
 
 					aria-hidden='true'
-				>{ /* What: Wordmark Span Element. Why: Wider layouts show the full "Ease My Life" wordmark instead of just the "EML" initials. How: This wraps a small repeated logo mark and the two text lines below, hidden from screen readers since the button's own label already covers it. */ }
+				>{ /* What: Wordmark Span Element. Why: The side and top bars lead with the full "Ease My Life" wordmark. How: This wraps a small logo mark and the two text lines below, hidden from screen readers since the button's own label already covers it. */ }
 
 
-					<span className={ cssModObj.bwMark }>{ /* What: Mark Span Element. Why: The wordmark repeats the small square logo mark beside the text. How: This wraps a second, simplified copy of the logo svg. */ }
+					<span className={ cssModObj.bwMark }>{ /* What: Mark Span Element. Why: The wordmark shows the small logo mark beside the text. How: This wraps a simplified copy of the logo svg. */ }
 
 
 						<svg
 							fill='none'
 							viewBox='8 8 528 528'
-						>{ /* What: Logo Svg Element. Why: This draws the small square logo mark that accompanies the wordmark text. How: This is a simplified copy of the main logo svg, without the grid lines or clipped badge outline. */ }
+						>{ /* What: Logo Svg Element. Why: This draws the small square logo mark that accompanies the wordmark text. How: This is a simplified copy of the tab headers' logo svg, without the grid lines or clipped badge outline. */ }
 
 
 							<path
@@ -389,7 +274,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 								strokeLinecap='round'
 								strokeLinejoin='round'
 								strokeWidth='8'
-							/>{ /* What: Glyph Path Element. Why: This is the same squiggly brand glyph as the main logo mark. How: This draws the glyph directly, unclipped, since this simplified copy has no badge outline to stay inside of. */ }
+							/>{ /* What: Glyph Path Element. Why: This is the same squiggly brand glyph as the tab headers' logo mark. How: This draws the glyph directly, unclipped, since this simplified copy has no badge outline to stay inside of. */ }
 
 
 						</svg>
