@@ -377,7 +377,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 
 /* Card exhale — each completed card pulses once with a soft accent halo as
    the celebration cascades top-to-bottom. Delay set inline via --exhale-delay. */
-.today-card.is-exhaling {
+.today-card[data-card-exhale-active] {
   animation: cardExhale var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both;
 }
 @keyframes cardExhale {
@@ -969,7 +969,7 @@ button.check { cursor: pointer; }
     opacity: 0;
   }
   /* Card exhale halo — additive only. */
-  .today-card.is-exhaling {
+  .today-card[data-card-exhale-active] {
     animation: none;
     box-shadow: none;
     transform: none;

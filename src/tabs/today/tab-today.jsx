@@ -820,7 +820,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 				curCarEle.style.setProperty( '--exhale-delay', `${ curIndNum * 70 }ms` ); // What: Exhale Delay Set. Why: Each card starts its exhale a beat after the one before it. How: This sets --exhale-delay to 70ms per card index.
 
-				curCarEle.classList.add( 'is-exhaling' ); // What: Exhale Class Add. Why: This is what actually starts the card's own exhale animation. How: This adds is-exhaling.
+				curCarEle.setAttribute( 'data-card-exhale-active', '' ); // What: Exhale Attribute Set. Why: This is what actually starts the card's own exhale animation, in whichever module the card belongs to. How: This adds the presence-only data-card-exhale-active attribute.
 
 
 			} );
@@ -835,11 +835,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-				carEleLis.forEach( ( curCarEle ) => { // What: Exhale Reset Loop. Why: Every card that played the ripple must go back to its resting state. How: This removes each card's own exhale class and delay.
+				carEleLis.forEach( ( curCarEle ) => { // What: Exhale Reset Loop. Why: Every card that played the ripple must go back to its resting state. How: This removes each card's own exhale attribute and delay.
 
 
-					curCarEle.classList.remove( 'is-exhaling' );        // What: Exhale Class Remove. Why: The card's own ripple animation is finished. How: This removes is-exhaling.
-					curCarEle.style.removeProperty( '--exhale-delay' ); // What: Exhale Delay Remove. Why: The per-card stagger delay must not linger into the next celebration. How: This removes the --exhale-delay custom property.
+					curCarEle.removeAttribute( 'data-card-exhale-active' ); // What: Exhale Attribute Remove. Why: The card's own ripple animation is finished. How: This removes data-card-exhale-active.
+					curCarEle.style.removeProperty( '--exhale-delay' );     // What: Exhale Delay Remove. Why: The per-card stagger delay must not linger into the next celebration. How: This removes the --exhale-delay custom property.
 
 
 				} );
