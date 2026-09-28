@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import cssModObj from './card-surface.module.css'; // What: CSS Module Object. Why: The card's own surface and padding styles live in its own module. How: This maps each class name in card-surface.module.css to its hashed module class.
+
+// #endregion Imports
+
+
+
 /**
  * card-surface.jsx = Card Surface
  *
@@ -55,7 +63,7 @@ const CarSurCom = ( { children, className = '', isaPadBoo = true, ...resProObj }
 
 
 	<div
-		className={ ` card   ${ isaPadBoo ? 'card--p' : '' }   ${ className } ` }
+		className={` ${ cssModObj.card }   ${ isaPadBoo ? cssModObj.cardP : '' }   ${ className } `}
 
 		{ ...resProObj }
 	>{ /* What: Surface Div Element. Why: This is CarSurCom's own root rendered element. How: This applies the isaPadBoo/className modifier classes, spreads any other passed props, and renders whatever children the caller passed. */ }

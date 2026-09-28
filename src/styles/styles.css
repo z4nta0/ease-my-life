@@ -477,13 +477,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 .btn--secondary { color: var(--text); border: 0.5px solid var(--border); background: var(--surface); }
 .btn--secondary:hover { border-color: var(--muted); }
 
-.card {
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-lg);
-}
-.card--p { padding: 18px 20px; }
-
 .pill {
   display: inline-flex; align-items: center;
   padding: 2px 8px;
