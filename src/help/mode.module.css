@@ -1,0 +1,164 @@
+
+
+
+/**
+ * mode.module.css = Help Mode Module
+ *
+ * @summary
+ * Styles for HelOveCom's help-mode overlay and the navigation tip's per-tab
+ * blocks. The overlay is a fixed full-screen layer that ignores the pointer
+ * except on its badges: one SVG dim layer whose mask punches a hole for every
+ * highlighted target, an outlined spot drawn over each hole, and a small "i"
+ * badge per target that opens its tip. The spot is only an outline, with no
+ * box-shadow spread, since the mask already dims everything outside the holes
+ * and a shadow per spot would darken every other hole. Each spot's own
+ * border-radius is set inline to match what it outlines, so the rule here is
+ * only the fallback. An open badge keys off data-badge-open-active.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region help-nav-item */
+
+.help-nav-item + .help-nav-item { /* What: Following Help Nav Item. Why: Each tab's block in the navigation tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
+
+
+	margin-top : 10px;
+
+
+}
+
+/* #region help-nav-label */
+
+.help-nav-label { /* What: Help Nav Label. Why: A tab's icon and bold name read together as the block's heading. How: This lines them up in a centered row above the block's description. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 6px;
+	margin      : 0 0 3px;
+
+
+}
+
+.help-nav-label svg { /* What: Help Nav Label Icon. Why: The icon should keep its size however long the name beside it gets. How: This stops the icon from shrinking in the row. */
+
+
+	flex : 0 0 auto;
+
+
+}
+
+/* #endregion help-nav-label */
+
+/* #endregion help-nav-item */
+
+
+
+/* #region help-mode */
+
+.help-mode { /* What: Help Mode Overlay. Why: Help mode dims the whole page above the app while clicks still reach the badges. How: This fixes a full-screen layer above the app that ignores the pointer, with only the badges opting back in. */
+
+
+	inset          : 0;
+	pointer-events : none;
+	position       : fixed;
+	z-index        : 1000;
+
+
+}
+
+/* #region help-dim-svg */
+
+.help-dim-svg { /* What: Help Dim Layer. Why: The dim layer has to cover the whole viewport. How: This pins the svg to the overlay's edges. */
+
+
+	inset    : 0;
+	position : absolute;
+
+
+}
+
+.help-dim-fill { /* What: Help Dim Fill. Why: Everything outside the highlighted targets should read as dimmed. How: This fills the masked rect with a dark translucent scrim. */
+
+
+	fill : oklch(0.15 0.02 250/0.55);
+
+
+}
+
+/* #endregion help-dim-svg */
+
+
+
+.help-spot { /* What: Help Spot. Why: Each highlighted target needs a visible outline over its hole in the dim layer. How: This draws an accent border around a fixed box that ignores the pointer. */
+
+
+	border         : 2px solid oklch(from var(--accent) l c h/0.9);
+	border-radius  : var(--r-md);
+	pointer-events : none;
+	position       : fixed;
+
+
+}
+
+.help-badge { /* What: Help Badge. Why: Each target gets a small "i" marker that opens its tip. How: This draws a round outlined button at a fixed spot that takes the pointer back from the overlay. */
+
+
+	align-items     : center;
+	background      : var(--surface);
+	border          : 1px solid var(--muted);
+	border-radius   : 50%;
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	font-size       : 11px;
+	font-weight     : 700;
+	height          : 20px;
+	justify-content : center;
+	line-height     : 1;
+	pointer-events  : auto;
+	position        : fixed;
+	transition      : border-color .15s ease, color .15s ease, background .15s ease;
+	width           : 20px;
+
+
+}
+.help-badge:hover { /* What: Hovered Help Badge. Why: The badge should respond to the pointer. How: This tints it in the accent color. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.help-badge[data-badge-open-active] { /* What: Open Help Badge. Why: The badge whose tip is open should stand out from the rest. How: This fills it in the accent color with white text. */
+
+
+	background   : var(--accent);
+	border-color : var(--accent);
+	color        : #fff;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Help Badge. Why: Someone who asked for less motion shouldn't see the badge fade between colors. How: This applies only when the reduced-motion preference is set. */
+
+
+	.help-badge { /* What: Still Help Badge. Why: The badge should change color at once. How: This turns its color transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion help-mode */
+
+

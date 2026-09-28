@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: HelOveCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useState) instead of importing individual named hooks.
+import cssModObj from './mode.module.css'; // What: CSS Module Object. Why: The help-mode overlay and the navigation tip's per-tab blocks are styled from their own module. How: This maps each class name in mode.module.css to its hashed module class.
+import React     from 'react';             // What: React. Why: HelOveCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useState) instead of importing individual named hooks.
 
 
 import { badRecFun    } from './geometry.js';  // What: Badge Rect Function. Why: Each highlighted target's badge is positioned against its own rect. How: This is called once per highlighted target.
@@ -125,11 +126,11 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
 				<div
 					key={ curTabObj.icoStr }
 
-					className='help-nav-item'
+					className={ cssModObj.helpNavItem }
 				>{ /* What: Help Nav Item Div Element. Why: Each tab gets its own icon/label/description block inside the shared nav tip. How: This renders curTabObj's own icon and label on one line, its description below. */ }
 
 
-					<div className='help-nav-label'><IcoSvgCom icoNamStr={ curTabObj.icoStr } sizValNum={ 14 } /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
+					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr={ curTabObj.icoStr } sizValNum={ 14 } /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
 
 					<p>{ curTabObj.desStr }</p>{ /* What: Help Nav Description Paragraph Element. Why: This is the actual explanatory text for this tab. How: This renders curTabObj.desStr as plain text. */ }
 
@@ -733,14 +734,14 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 		<div
-			className='help-mode'
+			className={ cssModObj.helpMode }
 
 			aria-live='polite'
 		>{ /* What: Container Help Mode Div Element. Why: This is HelOveCom's own root portaled element. How: This wraps the dim-layer SVG, the rendered highlight spots, every badge, and at most one open tip below. */ }
 
 
 			<svg
-				className='help-dim-svg'
+				className={ cssModObj.helpDimSvg }
 				height={ vieHeiNum }
 				width={ vieWidNum }
 			>{ /* What: Help Dim Svg Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
@@ -806,7 +807,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				</mask>
 
 				<rect
-					className='help-dim-fill'
+					className={ cssModObj.helpDimFill }
 
 					height={ vieHeiNum }
 					mask='url(#help-mask)'
@@ -818,7 +819,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 			</svg>
 
-			{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Highlight Spot Map. Why: Alongside the mask's own dim-layer cutout, each target also gets a rendered .help-spot div, e.g. for its own visible border/glow styling. How: This maps recEntArr the same way the mask cutouts above do.
+			{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Highlight Spot Map. Why: Alongside the mask's own dim-layer cutout, each target also gets a rendered help spot div, e.g. for its own visible border/glow styling. How: This maps recEntArr the same way the mask cutouts above do.
 
 
 				const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Shape Destructure. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own shape, or the default, directly.
@@ -846,7 +847,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 					<div
 						key={ curIdeStr }
 
-						className='help-spot'
+						className={ cssModObj.helpSpot }
 
 						style={ spoStyObj }
 					/> // What: Help Spot Div Element. Why: This is the actual visible highlight box drawn around a target, e.g. for its own border/glow styling. How: This is positioned and shaped entirely via spoStyObj, keyed by curIdeStr for React's own list reconciliation.
@@ -880,13 +881,14 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 						<button
 							key={ curIdeStr }
 
-							className={ ` help-badge   ${ opeIdeStr === curIdeStr ? 'is-on' : '' } ` }
+							className={ cssModObj.helpBadge }
 
 							style={{
 								left : badRecObj.left,
 								top  : badRecObj.top
 							}}
 
+							data-badge-open-active={ opeIdeStr === curIdeStr || undefined } // What: Badge Open Active Attribute. Why: The badge whose tip is open is filled in the accent color. How: This sets the presence-only attribute while this badge's own id is the open one.
 							data-element-name-hook='helBadBut'
 
 							type='button'
@@ -902,7 +904,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 							} }
-						>{ /* What: Help Badge Button Element. Why: This is the actual clickable "i" marker opening/closing this target's own tip. How: This shows opeIdeStr === curIdeStr as its own "is-on" class and toggles opeIdeStr when clicked. Its data-element-name-hook is read by help mode's own outside-click check. */ }
+						>{ /* What: Help Badge Button Element. Why: This is the actual clickable "i" marker opening/closing this target's own tip. How: This marks itself open via data-badge-open-active while opeIdeStr === curIdeStr and toggles opeIdeStr when clicked. Its data-element-name-hook is read by help mode's own outside-click check. */ }
 
 
 							i
