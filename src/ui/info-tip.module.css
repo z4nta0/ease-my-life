@@ -1,0 +1,119 @@
+
+
+
+/**
+ * info-tip.module.css = Info Tip Module
+ *
+ * @summary
+ * Styles for InfTipCom: the focusable trigger wrapped around the caller's own
+ * content, and the floating tip bubble it portals to the page body, which
+ * slides in from the side it opens toward.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region infotip-trigger */
+
+.infotip-trigger { /* What: Info Tip Trigger. Why: Whatever a tip is attached to should hint that it explains something. How: This shows the help cursor over the trigger. */
+
+
+	cursor : help;
+
+
+}
+.infotip-trigger:focus-visible { /* What: Focused Info Tip Trigger. Why: A keyboard user needs to see which trigger has focus. How: This draws the accent outline around it. */
+
+
+	border-radius  : 4px;
+	outline        : 2px solid var(--accent);
+	outline-offset : 2px;
+
+
+}
+
+.infotip-trigger button:disabled { /* What: Disabled Trigger Button. Why: A disabled native button swallows pointer and touch events instead of letting them reach the trigger around it, so on touch screens its tip would never open. How: This lets those events pass through the button to the trigger. */
+
+
+	pointer-events : none;
+
+
+}
+
+.infotip { /* What: Info Tip. Why: The tip is a small floating bubble that must stay readable over everything else on screen. How: This styles the bubble, keeps it out of pointer hit-testing, and plays its entrance animation. */
+
+
+	animation      : infotipIn 130ms cubic-bezier(.22,1.2,.36,1);
+	background     : var(--surface);
+	border         : 0.5px solid var(--border);
+	border-radius  : 10px;
+	box-shadow     : 0 8px 28px oklch(0 0 0 / 0.14), 0 1px 2px oklch(0 0 0 / 0.06);
+	color          : var(--text);
+	font-family    : var(--font-sans);
+	font-size      : 12px;
+	line-height    : 1.45;
+	max-width      : 248px;
+	padding        : 9px 11px;
+	pointer-events : none;
+	position       : fixed;
+	text-wrap      : pretty;
+	z-index        : 1020; /* What: Tip Stack Level. Why: A tour step's disabled Next button explains itself with a tip, which has to show above the tour's own dim and coach card at 1010. How: This keeps every open tip on top of everything else on screen. */
+
+
+}
+.infotip--top { /* What: Upward Info Tip. Why: A tip opening above its trigger should slide up into place. How: This starts the entrance slightly below. */
+
+
+	--itip-dy : 4px; /* What: Info Tip Y Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infotipIn keyframes read this as their starting vertical shift. */
+
+
+}
+.infotip--bottom { /* What: Downward Info Tip. Why: A tip opening below its trigger should slide down into place. How: This starts the entrance slightly above. */
+
+
+	--itip-dy : -4px; /* What: Info Tip Y Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infotipIn keyframes read this as their starting vertical shift. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Info Tip. Why: Someone who asked for less motion shouldn't see tips slide in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.infotip { /* What: Motionless Info Tip. Why: The tip should simply appear. How: This turns the entrance animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes infotipIn { /* What: Info Tip Entrance. Why: A tip that fades and slides in slightly reads as attached to its trigger. How: This fades from transparent and slides from the --itip-dy offset to its resting place. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(var(--itip-dy, 4px)) scale(0.98);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion infotip-trigger */
+
+
