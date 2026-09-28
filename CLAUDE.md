@@ -1958,6 +1958,30 @@ still passes.
   JS block, every rule's declarations get exactly 2 blank lines after
   the rule's opening `{` line and 2 before its closing `}`. See
   `tabs/pickers/progress-bar.module.css` for the reference example.
+- **`@media` blocks**: a `@media` override is a variant of the element it
+  styles, so it sits directly under that element's base rule with its
+  other variants. The block gets its own What/Why/How comment after its
+  `{` and the usual 2 blank lines of padding inside it; each rule inside
+  is indented one more tab and formatted like any other rule. A global
+  `@media` block holding rules for several elements splits into one
+  block per element, each placed with its own element's variants. See
+  `ui/info-tip.module.css`.
+- **`@keyframes`**: a keyframe only one module uses moves into that
+  module (Vite scopes its name and rewrites the `animation` reference);
+  one several modules share stays global. It sits directly after the
+  variants of the element that uses it, with one What/Why/How comment
+  on its own `@keyframes` line. Its steps (`from`, `to`, `50%`, ...) get
+  no comment of their own, are indented one tab, get the usual 2 blank
+  lines of padding, aligned colons, and 1 blank line between steps.
+- **Keyframe names** follow the 3-segment naming rule with no fixed
+  character count (within reason): segment 1 identifies what animates
+  (the element's own class when it's for one specific element, or the
+  HTML tag when it's for several, e.g. `button`), segment 2 is a
+  descriptor (e.g. the state it's for or that triggers it), and segment
+  3 is the type of animation where one fits (`bounce`, `fade`/`fadeIn`/
+  `fadeOut`, `spin`, `flip`, ...). Like class names, existing keyframes
+  keep their current names while they move into modules; renaming them
+  belongs to the design-system pass, where this rule may be refined.
 - **A rule with more than one selector** puts each selector on its own
   line, ending with `,`, and only the last one carries the `{` and the
   rule's comment, the same "once it's multi-line, one entry per line"
