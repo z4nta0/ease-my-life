@@ -583,6 +583,7 @@ function InlEdiCom ( { onCloEdiFun, onComTasFun, onDelTasFun, staAppObj, tasRcdO
 			<SchEdiCom
 				actStoObj={ draActObj }
 				aniExtBoo
+				layStr='stacked' // What: Layout String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
 				staAppObj={ staAppObj }
 				tasRcdObj={ draTasObj }
 			/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the local draft. How: This is passed draActObj instead of the real store actions, so every edit stays local until Save. */ }
@@ -1290,6 +1291,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							<SchEdiCom
 								actStoObj={ draActObj }
 								aniExtBoo
+								layStr='stacked' // What: Layout String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
 								staAppObj={ staAppObj }
 								tasRcdObj={ draTasObj }
 							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed draActObj instead of the real store actStoObj, so every field stays local until Add. */ }

@@ -2187,28 +2187,14 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-quickadd-wrap .rem-quickadd { padding-bottom: 8px; }
 .rem-quickadd-wrap .rem-inline-editor { margin-top: 0; }
 
-/* Today inline reminder editor: row separators (top border on every row but the
-   first) + a bottom border on the last control row that doubles against the
-   footer's top border — matching the Data manager's editor while keeping the
-   Today stacked layout. Scoped to .today-list so Data (.rd-edit) is untouched. */
+/* Today inline reminder editor: the schedule editor's stacked layout draws its
+   own row dividers edge to edge, so the card drops its side padding, and the
+   footer's top border doubles against the editor's closing line. */
 .today-list .rem-inline-editor:not(.entry-editor) { padding-left: 0; padding-right: 0; }
-.today-list .rem-inline-editor .rem-editor { gap: 0; border-bottom: 0.5px solid var(--border); }
-.today-list .rem-inline-editor .rem-editor .rem-field { padding: 12px 16px; }
-.today-list .rem-inline-editor .rem-editor .rem-field:first-child { padding-top: 0; }
-.today-list .rem-inline-editor .rem-editor .rem-field + .rem-field,
-.today-list .rem-inline-editor .rem-editor > .rem-hint { border-top: 0.5px solid var(--border); }
-.today-list .rem-inline-editor .rem-editor > .rem-hint { padding: 12px 16px; margin: 0; }
 .today-list .rem-inline-editor .rem-inline-foot { border-top: 0.5px solid var(--border); padding: 14px 16px 0; margin-top: 0; }
 .today-list .rem-inline-editor .rem-inline-foot.rd-edit-foot { margin-top: 0; }
 /* EdiFooCom's module footer reads the same divider through custom properties. */
 .today-list .rem-inline-editor { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0; --rem-inline-foot-padding: 14px 16px 0; }
-/* Extra fields sit in a Collapse+fade wrapper (Today only), which breaks the
-   `.rem-field + .rem-field` divider / `:first-child` padding chain — restore the
-   top divider + padding on the wrapped field, and cross-fade on pill switch. */
-.today-list .rem-inline-editor .rem-editor .rem-extra-fade > .rem-field { border-top: 0.5px solid var(--border); padding-top: 12px; }
-.rem-extra-fade { animation: setSubFade .3s ease; }
-.cad-anchor-fade { animation: setSubFade .3s ease; }
-@media (prefers-reduced-motion: reduce) { .rem-extra-fade, .cad-anchor-fade { animation: none; } }
 
 /* Skip-until confirmation, revealed under a reminder like the inline editor. */
 .rem-skip-confirm {
@@ -2224,18 +2210,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-skip-msg strong { font-weight: 600; }
 .rem-skip-actions { display: flex; gap: 8px; flex: 0 0 auto; }
 
-/* ── The scheduling editor (shared: Today inline + Data manager) ── */
-.rem-editor { display: flex; flex-direction: column; gap: 16px; }
-.rem-field { display: flex; flex-direction: column; gap: 8px; }
-.rem-flabel {
-  font-family: var(--font-mono); font-size: 11px;
-  letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted);
-}
-.rem-hint { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
-/* Repeat label + its dynamic per-kind explanation. Stacked (Today) or on the
-   left column (Data), the sub is normal-case so it reads as a sentence. */
-.rem-flabel-wrap { display: flex; flex-direction: column; gap: 2px; }
-.rem-flabel-sub { font-size: 11px; line-height: 1.35; color: var(--muted); }
 
 /* Segmented control for repeat kind. A single accent thumb (.seg-thumb) slides
    between options; buttons sit above it and only animate their text colour. */
@@ -2247,6 +2221,8 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   position: relative;
   /* Parents that want space below the control (the cadence editor) set --seg-margin-bottom. */
   margin-bottom: var(--seg-margin-bottom, 0);
+  /* The schedule editor's rows layout sets --seg-max-width so no control outgrows its row. */
+  max-width: var(--seg-max-width, none);
 }
 /* Repeat (5 options) is the only segmented control long enough to wrap on
    narrow viewports — flex-wrap's space-between spread the wrapped row's
@@ -2263,20 +2239,9 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(70px, max-content));
   justify-content: start;
+  /* The schedule editor's rows layout sets --seg-repeat-flex-basis so Repeat takes its own full-width line. */
+  flex-basis: var(--seg-repeat-flex-basis, auto);
 }
-/* In the Data-tab reminder editor (.rd-edit .rem-editor .rem-field is a
-   wrapping flex ROW — label left, control right; see that rule further
-   down), whether this control ends up alongside the label on the same
-   line or wraps to its own line depends on the browser's computed
-   hypothetical/intrinsic width for it as a flex item. That computation
-   isn't reliable for a grid-display item across browsers — it can come
-   out small enough to fit next to the label, which then also starves
-   the grid's own column count down to one. Forcing its own full-width
-   line explicitly removes that ambiguity; every browser we could test
-   already rendered it on its own line anyway (the label's explanation
-   sentence alone is wide enough), so this doesn't change anything
-   visible, just makes it deterministic. */
-.rd-edit .rem-editor .rem-field .seg[aria-label="Repeat"] { flex-basis: 100%; }
 /* Day selection (Date/Weekday, Monthly+Yearly) is only ever 2 short options —
    unlike Repeat, it never needs to wrap, so it doesn't need Repeat's grid
    treatment. It DOES need its own fix for the same root cause though: .seg's
@@ -2305,15 +2270,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .seg-btn.is-on { color: var(--bg); }
 .seg-btn.is-on:hover { color: var(--bg); }
 
-.rem-inline { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
-/* On an iPhone SE-width viewport, the Pickers create form's Yearly nth-weekday
-   row (Ordinal + Weekday + Month selects, 3 wide) clips the Month select's
-   right edge at the default 8px gap — shave it down just enough to fit. */
-@container app (max-width: 400px) {
-  .rem-inline { gap: 4px; }
-}
-.rem-num { width: 72px; max-width: 72px; margin-top: 0; text-align: center; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-.rem-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; }
 /* Data-tab cadence row: cadence + anchor selects, wrap on narrow. flex-start
    (not flex-end) so a wrapped second line (Monthly/Yearly nth-weekday, or
    Yearly date mode, both wide enough to wrap before Weekly ever does) starts
@@ -2324,34 +2280,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; }
 .rd-cad-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; font-size: 13px; }
 
-/* Editable interval start date: a link-styled toggle that swaps to a native
-   date input inline within the "Counted from …" hint. */
-.rem-date-link {
-  border: none; background: none; padding: 0; cursor: pointer;
-  font: inherit; font-weight: 600; color: var(--accent);
-  text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px;
-}
-.rem-date-link:hover { opacity: 0.82; }
-.rem-date-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
-.rem-date-inline {
-  font-family: var(--font-mono); font-size: 12px;
-  padding: 2px 6px; border: 0.5px solid var(--border); border-radius: var(--r-sm);
-  background: var(--bg); color: var(--text); vertical-align: baseline;
-}
-.rem-date-inline:focus { outline: none; border-color: var(--accent); }
-/* The "Counted from" control swaps between a link and a native date input on
-   click. Both fade + settle in on mount so the swap eases instead of snapping. */
-@keyframes dateSwapIn {
-  from { opacity: 0; transform: translateY(1px) scale(.94); }
-  to   { opacity: 1; transform: none; }
-}
-.rem-date-link, .rem-date-inline {
-  animation: dateSwapIn .2s cubic-bezier(.3,1.1,.5,1) both;
-  transform-origin: left center;
-}
-@media (prefers-reduced-motion: reduce) {
-  .rem-date-link, .rem-date-inline { animation: none; }
-}
 
 /* ── Data tab: reminder manager ── */
 .data-empty {
@@ -2852,40 +2780,6 @@ button.rd-chev {
   .rem-foot-confirm, .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .rd-edit-foot, .pool-confirm { animation: none; }
 }
 
-/* ── Data reminder editor: match the picker item editor ──────────────────────
-   One setting per full-bleed row (label left / control right), a hairline
-   between rows, and a doubled border into the footer. Scoped to .rd-edit so
-   Today's reminder editor keeps its stacked card layout. */
-.rd-edit .rem-editor { gap: 0; }
-.rd-edit .rem-editor .rem-field {
-  flex-direction: row; flex-wrap: wrap; align-items: center;
-  justify-content: space-between; column-gap: 12px; row-gap: 8px;
-  margin: 0 -16px; padding: 10px 16px; min-height: 44px; box-sizing: border-box;
-  border-bottom: 0.5px solid var(--border);
-}
-/* Divider above the first control row too (matches the picker item editor's
-   line under its name field). */
-.rd-edit .rem-editor .rem-field:first-child { border-top: 0.5px solid var(--border); }
-.rd-edit .rem-editor .rem-field .rem-flabel { flex: 0 0 auto; }
-/* Explanation column absorbs the slack: zero basis + grow so it only takes
-   leftover width (never demands its content width) and wraps the sentence over
-   as many lines as needed. Because it doesn't push outward, the seg is no longer
-   bumped to a second line when the explanation is longer (Monthly / Yearly). */
-.rd-edit .rem-editor .rem-field .rem-flabel-wrap { flex: 1 1 0; min-width: 160px; }
-/* Repeat seg keeps its natural width on wide rows so it stays put, but remains
-   shrinkable (flex-shrink 1): when the row is too narrow (mobile) it drops to a
-   full-width second line and compresses to fit, wrapping its pills into two rows
-   instead of overflowing. */
-.rd-edit .rem-editor .rem-field .seg { flex: 0 1 auto; max-width: 100%; }
-.rd-edit .rem-editor .rem-field .rem-inline,
-.rd-edit .rem-editor .rem-field .weekday-chips { flex: 0 1 auto; }
-/* A field's own hint (interval / monthly) drops below on its own full line. */
-.rd-edit .rem-editor .rem-field .rem-hint { flex-basis: 100%; }
-/* The one-time explanation is a standalone hint — render it as its own bordered
-   row so it too doubles against the footer's top border. */
-.rd-edit .rem-editor > .rem-hint {
-  margin: 0 -16px; padding: 11px 16px; border-bottom: 0.5px solid var(--border);
-}
 /* Doubled border between the last control row and the footer. */
 .rd-edit .rd-edit-foot,
 .rd-edit .rem-foot-confirm { margin: 0 -16px; padding: 14px 16px 0; border-top: 0.5px solid var(--border); }
@@ -3778,20 +3672,7 @@ body.ob-touring .tab{padding-bottom:200px}
    same treatment as .set-store-chip.is-warn. */
 .set-rm-note { color: oklch(0.45 0.13 50); }
 
-/* Live "won't show today" advisory inside the reminder editor. Sits under the
-   control that caused it; warm rather than red because nothing is broken. */
-.rem-vis-note { margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; color: oklch(0.45 0.13 50); max-width: 52ch; }
-/* The note's live-region wrapper stays mounted even with nothing to say, so an
-   advisory that appears after a schedule edit is actually announced. While empty
-   it is taken out of flow (an empty flex child would otherwise add one parent
-   `gap` of dead space) but kept in the accessibility tree. */
-.rem-vis-live:empty { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); }
-/* "Never shows" is a dead configuration, not a deferral — red, and it reads as an
-   alert to screen readers rather than a status. Darkened from --danger for AA at
-   this size. */
-.rem-vis-note.is-never { color: oklch(0.45 0.17 25); }
 /* Post-create confirmation, in the list where the new card would appear. */
 .rem-added-msg { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; padding: 9px 12px; border-radius: var(--r-sm); border: 0.5px solid var(--border); background: var(--surface); }
 .rem-added-msg.is-ok { color: oklch(0.42 0.1 155); border-color: oklch(0.5 0.11 155/0.3); background: oklch(0.5 0.11 155/0.06); }
 .rem-added-msg.is-warn { color: oklch(0.45 0.13 50); border-color: oklch(from var(--warm) l c h/0.35); background: oklch(from var(--warm) l c h/0.07); }
-@media (prefers-reduced-motion: reduce) { .rem-added-msg, .rem-vis-note { animation: none; } }

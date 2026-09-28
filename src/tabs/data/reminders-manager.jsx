@@ -1120,6 +1120,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 															<SchEdiCom
 																actStoObj={ actStoObj }
 																aniExtBoo
+																layStr='rows' // What: Layout String. Why: The Data tab lays each field out as its own full-bleed row, matching the picker item editor. How: SchEdiCom's own module applies its rows layout class.
 																staAppObj={ staAppObj }
 																tasRcdObj={ curTasObj }
 															/>{ /* What: Schedule Editor Component. Why: Unlike Today's own InlEdiCom, the Data tab commits every field change straight to the real store; there's no local draft to revert on Cancel here except via EdiFooCom's own snapshot. How: This is passed the real actStoObj bag directly as actStoObj. */ }
