@@ -4364,7 +4364,7 @@ body.ob-touring .tab{padding-bottom:200px}
    own box-shadow trick handles for a single target; stacking N box-shadows
    here instead would re-darken every OTHER hole, which is the exact
    compose failure this whole separate engine exists to avoid. border-radius
-   is set inline per target (see help/mode.jsx's own shapeFor) to roughly
+   is set inline per target (see help/geometry.js's own shaRadFun) to roughly
    match what it's actually outlining instead of always being a plain
    rounded rect — this is just the fallback for whenever that isn't set. */
 .help-spot{

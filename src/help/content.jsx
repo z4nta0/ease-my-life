@@ -77,28 +77,29 @@ import { IcoSvgCom } from '../ui/icon.jsx'; // What: Icon Svg Component. Why: Se
  *   and Pad Y-Coordinate Number override the default highlight padding on
  *   one axis, for a specific target whose highlight would otherwise overlap
  *   a neighboring element (see that item's own leading comment for the
- *   exact reasoning); read by help/mode.jsx's claPadFun/badRecFun.
+ *   exact reasoning); read by help/geometry.js's claPadFun/badRecFun.
  *
  * - `scrBoo` (Boolean, optional): Scroll Boolean caps the open tip's own
  *   height and scrolls its content internally instead of overflowing past the
  *   target, for a body tall enough to overlap it on a short viewport; read by
- *   help/mode.jsx's own placement math (plaTipFun).
+ *   help/tooltip.jsx's own placement math (plaTipFun).
  *
  * - `selStr` (String): Selector String determines which on-page element(s)
- *   this item highlights; passed through help/mode.jsx's own finTarFun, a
+ *   this item highlights; passed through help/geometry.js's own finTarFun, a
  *   comma-separated-fallback matcher tried left to right until one alternative
  *   matches a visible element.
  *
  * - `shaStr` (String or Function, optional): Shape String overrides the
  *   default CSS-border-radius shape detection, for a target whose round
  *   appearance comes from something else (an inner SVG shape, or a computed
- *   union with no single source element of its own); passed to help/mode.jsx's
- *   own shaRadFun, or called directly when it is a function.
+ *   union with no single source element of its own); passed to
+ *   help/geometry.js's own shaRadFun, or called directly when it is a
+ *   function.
  *
  * - `titStr` (String or Function): Title String is the tip's own heading; a
  *   function is used when the heading depends on something only known at open
  *   time (a live DOM value, or a matched element's own name), called by
- *   help/mode.jsx's HelTipCom with the item's own target rect.
+ *   help/tooltip.jsx's HelTipCom with the item's own target rect.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -988,7 +989,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		selStr    : '.entry-editor .pie-ease-up-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1027,7 +1028,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		selStr    : '.entry-editor .pie-ease-down-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1352,7 +1353,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		selStr    : '.entry-editor .pie-ease-up-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1391,7 +1392,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		selStr    : '.entry-editor .pie-ease-down-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -1534,7 +1535,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Select a Conditional Help Item. Why: This is the on-demand help tip for the Select a Conditional element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Only present once the toggle above is on (the whole .cnd-attach block is a ColDisCom), findTargets naturally won't match anything while it's closed, no visibility check needed here.
+	{ // What: Select a Conditional Help Item. Why: This is the on-demand help tip for the Select a Conditional element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Only present once the toggle above is on (the whole .cnd-attach block is a ColDisCom), finTarFun naturally won't match anything while it's closed, no visibility check needed here.
 
 
 		bodEle : <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add New Conditional button to build one inline.</>,
@@ -2757,16 +2758,16 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		padXcoNum : 4, // padXcoNum: 4 exists because .foot-editmode sits right next to .ob-generate (Regenerate) with only a 10px gap between them, and the default 8px pad on each side would overlap by 6px.
 		selStr    : '.em-rail-btn, .foot-editmode',
 
-		titStr : () => document.querySelector( '.em-rail-btn' )?.classList.contains( 'is-on' ) ? 'Done Button' : 'Edit Mode', // title/body are functions (see help/mode.jsx's own comment on this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
+		titStr : () => document.querySelector( '.em-rail-btn' )?.classList.contains( 'is-on' ) ? 'Done Button' : 'Edit Mode', // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
 
-		bodEle : () => document.querySelector( '.em-rail-btn' )?.classList.contains( 'is-on' ) // title/body are functions (see help/mode.jsx's own comment on this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
+		bodEle : () => document.querySelector( '.em-rail-btn' )?.classList.contains( 'is-on' ) // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
 			? <>This button saves any edits that you have made and exits Edit Mode.</> // What: Done Body Branch. Why: With Edit Mode on, this same button saves and exits instead. How: This renders the Done copy.
 			: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</> // What: Edit Mode Body Branch. Why: With Edit Mode off, this button opens it. How: This renders the Edit Mode copy.
 
 
 	},
 
-	// .editmode-banner-actions is the Cancel/Done pair in Edit Mode's own sticky banner. .editmode-foot-actions (styles2.css/tab-today.jsx) is the identical pair repeated in the footer, distinguished from the OTHER (non-editing) footer actions row that shares .today-foot-actions with it, findTargets' comma syntax is fallback-only (see groupNameEdit's own comment in this file for why that distinction matters), so this needs its own class rather than reusing the shared one, and can't be combined with editmode-banner-actions into one selStr either, for the same reason (both are always present together while Edit Mode is on, so the first one found would always win).
+	// .editmode-banner-actions is the Cancel/Done pair in Edit Mode's own sticky banner. .editmode-foot-actions (styles2.css/tab-today.jsx) is the identical pair repeated in the footer, distinguished from the OTHER (non-editing) footer actions row that shares .today-foot-actions with it, finTarFun's comma syntax is fallback-only (see groupNameEdit's own comment in this file for why that distinction matters), so this needs its own class rather than reusing the shared one, and can't be combined with editmode-banner-actions into one selStr either, for the same reason (both are always present together while Edit Mode is on, so the first one found would always win).
 	{ // What: Cancel / Done Help Item. Why: This is the on-demand help tip for the Cancel / Done element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2819,7 +2820,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	// These three only exist in the DOM while Edit Mode is on, same "findTargets returns nothing, item silently skipped" handling as the side-placement rail handle (see help/mode.jsx). mulBoo is true on all three because every group's own grip/card/name gets its own badge, since a user editing a long list could be looking at any one of them, not just the first.
+	// These three only exist in the DOM while Edit Mode is on, same "finTarFun returns nothing, item silently skipped" handling as the side-placement rail handle (see help/mode.jsx). mulBoo is true on all three because every group's own grip/card/name gets its own badge, since a user editing a long list could be looking at any one of them, not just the first.
 	{ // What: Reorder Group Help Item. Why: This is the on-demand help tip for the Reorder Group element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2845,7 +2846,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Rename Group Help Item. Why: This is the on-demand help tip for the Rename Group element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .group-name-slot is a shared class on BOTH the button (idle) and the input (mid-edit), findTargets' comma syntax is fallback-only (try the first selector, only try the next if it matched NOTHING at all), not a union, so '.group-name--editable, .group-name-input' silently dropped whichever group was actively being edited the moment any OTHER group's plain button still matched. One stable class sidesteps that entirely: clicking a name to rename it used to make this exact highlight vanish and leave the now-visible input hidden behind the dimmer, right when a user is actually interacting with it.
+	{ // What: Rename Group Help Item. Why: This is the on-demand help tip for the Rename Group element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .group-name-slot is a shared class on BOTH the button (idle) and the input (mid-edit), finTarFun's comma syntax is fallback-only (try the first selector, only try the next if it matched NOTHING at all), not a union, so '.group-name--editable, .group-name-input' silently dropped whichever group was actively being edited the moment any OTHER group's plain button still matched. One stable class sidesteps that entirely: clicking a name to rename it used to make this exact highlight vanish and leave the now-visible input hidden behind the dimmer, right when a user is actually interacting with it.
 
 
 		bodEle    : <>While Edit Mode is on, click a group's name to rename it.</>,
@@ -3029,7 +3030,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		selStr    : '.entry-editor .pie-ease-up-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-up-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -3068,7 +3069,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		selStr    : '.entry-editor .pie-ease-down-row',
 		titStr    : 'Item Charge Controls',
 
-		bodEle : () => { // bodEle is a function (see help/mode.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
+		bodEle : () => { // bodEle is a function (see help/tooltip.jsx's HelTipCom) that reads the picker's own cadence unit word (days/weeks/months/years) straight off the already-rendered .np-ease-unit label instead of hardcoding "days", which would be wrong for a non-daily cadence picker.
 
 
 			const uniWorStr = document.querySelector( '.entry-editor .pie-ease-down-row .np-ease-unit' )?.textContent || 'days'; // What: Unit Word String. Why: This item's own copy needs the real, currently-displayed unit label (e.g. "days"), not a hardcoded guess. How: This reads the matched row's own unit control text, falling back to 'days' if not found.
@@ -3195,7 +3196,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr : 'addReminderRepeat',
-		scrBoo : true, // scrBoo is true because the body now covers 5 schedule kinds including the every-N/weekday recurrence wording, tall enough to overlap the Repeat control/highlight on a short viewport without it; caps to whichever side (above/below) placeTip finds more room and scrolls internally there instead of overflowing into the target either way.
+		scrBoo : true, // scrBoo is true because the body now covers 5 schedule kinds including the every-N/weekday recurrence wording, tall enough to overlap the Repeat control/highlight on a short viewport without it; caps to whichever side (above/below) plaTipFun finds more room and scrolls internally there instead of overflowing into the target either way.
 		selStr : '.rem-quickadd-wrap .rem-editor',
 		titStr : 'Reminder Schedule',
 
