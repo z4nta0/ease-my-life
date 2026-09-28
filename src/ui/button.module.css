@@ -52,6 +52,19 @@
 
 
 }
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Button. Why: Someone who asked for less motion shouldn't see the button's colors fade or its press nudge glide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.btn { /* What: Still Button. Why: A press and a hover should simply switch the button's look. How: This turns the transition off, so colors switch and the press nudge lands instantly. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
 .btn--sm { /* What: Small Button. Why: Compact rows need a shorter button. How: This shrinks the height, padding, text, and gap. */
 
 

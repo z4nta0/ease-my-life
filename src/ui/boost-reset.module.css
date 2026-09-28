@@ -55,5 +55,18 @@
 
 
 }
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Boost Reset Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pie-reset { /* What: Still Boost Reset Button. Why: The hover colors should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
 
 

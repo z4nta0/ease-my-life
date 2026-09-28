@@ -68,6 +68,19 @@
 
 
 }
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Stepper Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-weight-btn { /* What: Still Stepper Button. Why: The hover colors should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
 
 .np-stepper-input { /* What: Stepper Input. Why: The number can also be typed directly, so it's a real input styled to look like plain text. How: This removes the input's own chrome and centers the number in the stepper's mono type. */
 

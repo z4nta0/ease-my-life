@@ -77,6 +77,19 @@
 
 
 }
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Sort Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.data-sort-sel { /* What: Still Sort Select. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
 
 /* #endregion data-sort-row */
 

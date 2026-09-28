@@ -27,10 +27,10 @@
 @media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fill Icon. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
 
 
-	.is-spinning svg { /* What: Still Fill Icon. Why: The icon should stay put. How: This turns the spin off. */
+	.is-spinning svg { /* What: Still Fill Icon. Why: The icon should stay put. How: This shortens the spin to an instant, so the button's own animationend handler still fires and clears the spin state. */
 
 
-		animation : none;
+		animation-duration : .01ms;
 
 
 	}

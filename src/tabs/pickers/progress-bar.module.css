@@ -48,6 +48,19 @@
 
 
 }
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Progress Fill. Why: Someone who asked for less motion shouldn't see the fill slide. How: This applies only when the reduced-motion preference is set. */
+
+
+	.prog i { /* What: Still Progress Fill. Why: The fill should jump straight to its new width. How: This turns the width slide off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
 
 /* #endregion prog */
 
