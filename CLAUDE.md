@@ -1958,6 +1958,11 @@ still passes.
   JS block, every rule's declarations get exactly 2 blank lines after
   the rule's opening `{` line and 2 before its closing `}`. See
   `tabs/pickers/progress-bar.module.css` for the reference example.
+- **A rule with more than one selector** puts each selector on its own
+  line, ending with `,`, and only the last one carries the `{` and the
+  rule's comment, the same "once it's multi-line, one entry per line"
+  reasoning as array entries and JSX attributes. See
+  `ui/number-stepper.module.css`'s own spin-arrow rule.
 - **CSS comments**: every rule gets one What/Why/How comment, written as
   `/* What: ... Why: ... How: ... */` one space after its own opening
   `{`, the same as any multi-line construct. Declarations get no comment
