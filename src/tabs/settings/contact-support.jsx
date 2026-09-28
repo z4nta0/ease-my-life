@@ -441,7 +441,11 @@ function ConSupCom () {
 			<CarSurCom>{ /* What: Card Surface Component. Why: "Having problems?" needs its own bordered container, matching every other row in this tab. How: This wraps the trigger row below. */ }
 
 
-				<div className='set-data-row set-contact-trigger'>{ /* What: Contact Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. */ }
+				<div
+					className='set-data-row set-contact-trigger'
+
+					data-element-name-hook='supTriDiv'
+				>{ /* What: Contact Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 					<div className='set-data-info'>{ /* What: Contact Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and (conditionally) the sent-confirmation span. */ }
@@ -495,7 +499,9 @@ function ConSupCom () {
 						ref={ forCarRef }
 
 						className='support-form'
-					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's own footer buttons. */ }
+
+						data-element-name-hook='supForDiv'
+					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's own footer buttons. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 						<label className='support-field'>{ /* What: Subject Label Element. Why: The subject input needs its own labeled field wrapper, matching the message field below. How: This wraps the visible field label and the subject input itself. */ }
@@ -597,7 +603,11 @@ function ConSupCom () {
 
 						</p>
 
-						<div className='support-form-foot'>{ /* What: Support Form Foot Div Element. Why: The validation/failure messages and the form's own action buttons need their own grouping at the bottom. How: This wraps whichever messages currently apply plus the Cancel/Send buttons. */ }
+						<div
+							className='support-form-foot'
+
+							data-element-name-hook='supFooDiv'
+						>{ /* What: Support Form Foot Div Element. Why: The validation/failure messages and the form's own action buttons need their own grouping at the bottom. How: This wraps whichever messages currently apply plus the Cancel/Send buttons. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 							{ shoErrBoo && !canSenBoo && ( // What: Validation Message Check. Why: A validation message should only show while the form is actually invalid and the user has already tried to send. How: This renders the message only while both conditions hold.

@@ -1859,7 +1859,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
 		ideStr : 'brandMark',
-		selStr : '.stat-h-lead .brand-mark',
+		selStr : '[data-element-name-hook="heaLeaDiv"] [data-element-name-hook="braMarBut"]',
 		titStr : 'Home Link'
 
 
@@ -1871,7 +1871,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
 		ideStr    : 'settingsRail',
 		padYcoNum : 0, // padYcoNum:0, on narrow viewports this is sticky (position:sticky; top:0) with its own opaque background; the default pad extended the mask cutout past the rail's own real bottom edge, revealing whatever page content had scrolled underneath it in that gap (nothing there covers it, the dim overlay sits above the rail's own z-index:18, and the cutout hole doesn't care that the rail's own box doesn't reach that far).
-		selStr    : '.settings-rail',
+		selStr    : '[data-element-name-hook="setRaiAsi"]',
 		titStr    : 'Sections Navigation'
 
 
@@ -1888,7 +1888,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>When on, the app follows your system's own light/dark setting and automatically switches between your chosen light and dark themes (e.g. Ink &rarr; Night) whenever your system does. When off, only your manually selected theme below applies.</>,
 		ideStr : 'appearanceSystemPref',
-		selStr : '.set-section--appearance .set-data-row:has(button[aria-label="System preference"])',
+		selStr : '[data-element-name-hook="setAppSec"] [data-element-name-hook="setRowDiv"]:has(button[aria-label="System preference"])',
 		titStr : 'System Theme Preference'
 
 
@@ -1899,7 +1899,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>This is where you choose the theme that's used when the app is in light mode. Pick any of the presets, or use the Custom row to mix your own colors. Custom themes will automatically generate a matching dark theme, which you're then free to edit separately.</>,
 		ideStr : 'appearanceThemeLight',
-		selStr : '.set-subsection--theme-light',
+		selStr : '[data-element-name-hook="theLigDiv"]',
 		titStr : 'Light Theme'
 
 
@@ -1912,7 +1912,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This is where you choose the theme that's used when the app is in dark mode. Pick any of the presets, or use the Custom row to mix your own colors. Custom themes will automatically generate a matching light theme, which you're then free to edit separately.</>,
 		ideStr    : 'appearanceThemeDark',
 		padYcoNum : 4,
-		selStr    : '.set-subsection--theme-dark',
+		selStr    : '[data-element-name-hook="theDarDiv"]',
 		titStr    : 'Dark Theme'
 
 
@@ -1924,7 +1924,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This is where you choose which animation plays in the Today page when every item in your todo list is marked as done. Use Preview to watch any of them play out before picking one.</>,
 		ideStr    : 'appearanceCelebration',
 		padYcoNum : 4,
-		selStr    : '.set-subsection--celebration',
+		selStr    : '[data-element-name-hook="celStyDiv"]',
 		titStr    : 'Completion Celebration'
 
 
@@ -1936,7 +1936,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick One" button. Use Preview to watch any of them play out before picking one.</>,
 		ideStr    : 'appearancePickAnim',
 		padYcoNum : 4,
-		selStr    : '.set-subsection--pickanim',
+		selStr    : '[data-element-name-hook="picAniDiv"]',
 		titStr    : 'Picker Animation'
 
 
@@ -1948,7 +1948,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This controls where the app's main navigation is positioned on screen: a floating bar at the bottom, a sidebar on the left, or a bar along the top.</>,
 		ideStr    : 'appearanceLayout',
 		padYcoNum : 4,
-		selStr    : '.set-subsection--layout',
+		selStr    : '[data-element-name-hook="setLayDiv"]',
 		titStr    : 'Tab Bar Placement'
 
 
@@ -1967,7 +1967,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually using the Regenerate button at the bottom of the Today page.</>,
 		ideStr    : 'dailyAutoToggle',
 		padYcoNum : 0,
-		selStr    : '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])',
+		selStr    : '[data-element-name-hook="setDaiSec"] [data-element-name-hook="setRowDiv"]:has(button[aria-label="Run the Daily generator automatically"])',
 		titStr    : 'Run Generator Automatically'
 
 
@@ -1979,7 +1979,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This sets what time of day the Daily generator runs automatically. A quiet, early hour works best so your list is ready first thing in the morning.</>,
 		ideStr    : 'dailyRunTime',
 		padYcoNum : 0,
-		selStr    : '.set-section--daily .set-data-row--sub',
+		selStr    : '[data-element-name-hook="setDaiSec"] [data-element-name-hook="runTimDiv"]',
 		titStr    : 'Run Generator Time'
 
 
@@ -1991,7 +1991,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This lets you get a notification once your todo list has been generated for the day. This is the only notification the app will ever send and only once a day. It only works while the app is open in a tab or window, but always push notifications are coming in a future release.</>,
 		ideStr    : 'dailyNotify',
 		padYcoNum : 0,
-		selStr    : '.set-notify-row',
+		selStr    : '[data-element-name-hook="notRowDiv"]',
 		titStr    : 'Run Generator Notification'
 
 
@@ -2010,7 +2010,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This lists every computed holiday for the current year. Toggle any of them off if you don't observe it, any picker set to "Skip on holidays" will respect these settings.</>,
 		ideStr    : 'holidayList',
 		padYcoNum : 4,
-		selStr    : '.holiday-list',
+		selStr    : '[data-element-name-hook="holLisUno"]',
 		titStr    : 'Edit Observed Holidays'
 
 
@@ -2022,7 +2022,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This lets you add your own custom holiday, like a birthday or anniversary, which pickers will respect if their "Skip on holidays" toggle is turned on.</>,
 		ideStr    : 'holidayAdd',
 		padYcoNum : 4,
-		selStr    : '.holiday-add',
+		selStr    : '[data-element-name-hook="holAddDiv"]',
 		titStr    : 'Add Custom Holiday'
 
 
@@ -2041,7 +2041,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This shows how your data is currently being stored, whether the browser has promised not to clear it, and roughly how much data you are storing in the app. Installing the app or granting persistent storage both help protect it from being cleared automatically.</>,
 		ideStr    : 'dataStorageStatus',
 		padYcoNum : 0,
-		selStr    : '.set-store-row',
+		selStr    : '[data-element-name-hook="stoRowDiv"]',
 		titStr    : 'Protect Your Data'
 
 
@@ -2053,7 +2053,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This shows device and browser specific information about how to install the app. Installing the app has many benefits, but you can always keep using the app as a website if you prefer.</>,
 		ideStr    : 'dataInstallInstructions',
 		padYcoNum : 0,
-		selStr    : '.set-store-ios',
+		selStr    : '[data-element-name-hook="insRowDiv"]',
 		titStr    : 'Install Instructions'
 
 
@@ -2065,7 +2065,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This downloads a file containing all of your data: pickers, items, reminders, history and app settings. Since all app data lives on your device, you alone are responsible for taking care of it. It is also handy for moving your data to a new, or second, device.</>,
 		ideStr    : 'dataExport',
 		padYcoNum : 0,
-		selStr    : '.set-export-row',
+		selStr    : '[data-element-name-hook="expRowDiv"]',
 		titStr    : 'Export Your Data'
 
 
@@ -2077,7 +2077,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This restores your data from a previously exported backup file. Importing a backup <b>replaces all data</b> currently stored in the app, so make sure that's what you want first.</>,
 		ideStr    : 'dataImport',
 		padYcoNum : 0,
-		selStr    : '.set-import-row',
+		selStr    : '[data-element-name-hook="impRowDiv"]',
 		titStr    : 'Import Your Data'
 
 
@@ -2089,7 +2089,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This wipes everything and restores the app to a clean, first-run state. <b>This can't be undone</b>, so export a backup first if there's any chance you'll want this data again.</>,
 		ideStr    : 'dataReset',
 		padYcoNum : 0,
-		selStr    : '.set-reset-row',
+		selStr    : '[data-element-name-hook="resRowDiv"]',
 		titStr    : 'Reset All Data'
 
 
@@ -2106,7 +2106,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>Ease My Life runs entirely on this device with no account required. Syncing your data across devices is planned as a future paid feature (a one-time fee, not a subscription).</>,
 		ideStr : 'account',
-		selStr : '.set-section--account',
+		selStr : '[data-element-name-hook="setAccSec"]',
 		titStr : 'Your Account'
 
 
@@ -2123,7 +2123,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>This shows the app's current version, along with links to the creator's website and this app's source code on GitHub.</>,
 		ideStr : 'aboutInfo',
-		selStr : '.set-about',
+		selStr : '[data-element-name-hook="aboInfDiv"]',
 		titStr : 'App Info'
 
 
@@ -2134,7 +2134,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>A planned way to support development of the app directly, coming in a future release.</>,
 		ideStr : 'aboutSupportProject',
-		selStr : '.set-support-project-row',
+		selStr : '[data-element-name-hook="supProDiv"]',
 		titStr : 'Support the Project'
 
 
@@ -2145,7 +2145,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>This replays the first-run walkthrough from the very beginning, including the welcome message and all of the tutorials.</>,
 		ideStr : 'aboutReplayTour',
-		selStr : '.set-replay-tour-row',
+		selStr : '[data-element-name-hook="repTouDiv"]',
 		titStr : 'Replay the Welcome Tour'
 
 
@@ -2156,7 +2156,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>This opens a short form for sending a message directly to the developer. Your app version and browser are attached automatically, so there's no back-and-forth needed to track those down.</>,
 		ideStr : 'aboutContactTrigger',
-		selStr : '.set-contact-trigger',
+		selStr : '[data-element-name-hook="supTriDiv"]',
 		titStr : 'Contact Support'
 
 
@@ -2167,7 +2167,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 		bodEle : <>Fill in a subject and message describing your problem or suggestion. Your app version and browser are already filled in below for reference.</>,
 		ideStr : 'aboutContactForm',
-		selStr : '.support-form',
+		selStr : '[data-element-name-hook="supForDiv"]',
 		titStr : 'Support Message'
 
 
@@ -2177,7 +2177,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 
 		ideStr : 'aboutContactFormFoot',
-		selStr : '.support-form-foot',
+		selStr : '[data-element-name-hook="supFooDiv"]',
 		titStr : 'Cancel / Send',
 
 		bodEle : (
@@ -2212,7 +2212,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This opens the Privacy Policy, which explains how your data is collected, used, and stored.</>,
 		ideStr    : 'legalPrivacy',
 		padYcoNum : 0,
-		selStr    : '.set-privacy-row',
+		selStr    : '[data-element-name-hook="priRowDiv"]',
 		titStr    : 'Privacy Policy'
 
 
@@ -2224,7 +2224,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		bodEle    : <>This opens the Terms of Service, which covers the rules for using Ease My Life, including any paid features.</>,
 		ideStr    : 'legalTerms',
 		padYcoNum : 0,
-		selStr    : '.set-terms-row',
+		selStr    : '[data-element-name-hook="terRowDiv"]',
 		titStr    : 'Terms of Service'
 
 

@@ -176,7 +176,11 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 		<React.Fragment>{ /* What: Holiday Editor Fragment Element. Why: The holiday list and the add form below it are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-			<ul className='holiday-list'>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps comHolArr and then cusHolArr into their own rows below. */ }
+			<ul
+				className='holiday-list'
+
+				data-element-name-hook='holLisUno'
+			>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps comHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 				{ comHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps comHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
@@ -301,7 +305,11 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 
 
 
-			<div className='holiday-add'>{ /* What: Holiday Add Div Element. Why: Adding a custom holiday needs its own small form beneath the list. How: This wraps the name input, date input, and Add button. */ }
+			<div
+				className='holiday-add'
+
+				data-element-name-hook='holAddDiv'
+			>{ /* What: Holiday Add Div Element. Why: Adding a custom holiday needs its own small form beneath the list. How: This wraps the name input, date input, and Add button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 				<input

@@ -426,7 +426,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
 
 					onClick={ () => onChange( tabConObj.ideStr ) }
-				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself "is-on"/current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator. */ }
+				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself "is-on"/current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator. */ }
 
 
 					<IcoSvgCom

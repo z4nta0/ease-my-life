@@ -2425,7 +2425,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					className='stat-h-lead'
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Settings catalog. */ }
 
 
 					<button
@@ -2438,7 +2438,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+					>{ /* What: Brand Button Element. Why: The logo mark also works as a shortcut back to the Today tab. How: This wraps the logo svg in a real button and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Settings catalog. */ }
 
 
 						<svg

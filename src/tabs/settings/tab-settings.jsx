@@ -1120,18 +1120,24 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-				<div className='stat-h-lead'>{ /* What: Stat H Lead Div Element. Why: The brand mark and the page title sit side by side in this same lead row on every tab. How: This wraps the brand-mark button and the section title. */ }
+				<div
+					className='stat-h-lead'
+
+					data-element-name-hook='heaLeaDiv'
+				>{ /* What: Stat H Lead Div Element. Why: The brand mark and the page title sit side by side in this same lead row on every tab. How: This wraps the brand-mark button and the section title. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Settings catalog. */ }
 
 
 					<button
 						className='brand-mark'
+
+						data-element-name-hook='braMarBut'
 
 						type='button'
 
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Mark Button Element. Why: The logo doubles as a shortcut back to the Today tab, same as every other header. How: This calls onNavHomFun when clicked. */ }
+					>{ /* What: Brand Mark Button Element. Why: The logo doubles as a shortcut back to the Today tab, same as every other header. How: This calls onNavHomFun when clicked. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Settings catalog. */ }
 
 
 						<svg
@@ -1261,7 +1267,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					data-element-name-hook='setRaiAsi'
 
 					aria-label='Settings sections'
-				>{ /* What: Settings Rail Aside Element. Why: This is the sticky/scrollable rail of section links tracked by scroll-spy and driven by jumSecFun. How: This wraps the rail's own kicker and its scrolling <ul> of section links. Its data-element-name-hook is read by help mode's chrome clipping. */ }
+				>{ /* What: Settings Rail Aside Element. Why: This is the sticky/scrollable rail of section links tracked by scroll-spy and driven by jumSecFun. How: This wraps the rail's own kicker and its scrolling <ul> of section links. Its data-element-name-hook is read by help mode's chrome clipping and help mode's Settings catalog. */ }
 
 
 					<div className='kicker rail-kicker'>Sections</div>{ /* What: Kicker Div Element. Why: The rail needs its own small heading, matching the kicker style used elsewhere. How: This renders the fixed text "Sections". */ }
@@ -1322,7 +1328,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						className='set-section set-section--appearance'
 
 						data-element-name-hook='setAppSec'
-					>{ /* What: Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the Settings page tour. */ }
+					>{ /* What: Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the Settings page tour and help mode's Settings catalog. */ }
 
 
 						<div className='set-section-h'>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -1345,7 +1351,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							<CarSurCom>{ /* What: Card Surface Component. Why: The toggle row needs the same bordered container as every other row in this tab. How: This wraps the system-preference row below. */ }
 
 
-								<div className='set-data-row'>{ /* What: System Pref Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. */ }
+								<div
+									className='set-data-row'
+
+									data-element-name-hook='setRowDiv'
+								>{ /* What: System Pref Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 									<div className='set-data-info'>{ /* What: System Pref Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the switch. How: This wraps the name span and the description span. */ }
@@ -1417,7 +1427,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							className='set-subsection set-subsection--celebration'
 
 							data-element-name-hook='celStyDiv'
-						>{ /* What: Celebration Subsection Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours. */ }
+						>{ /* What: Celebration Subsection Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 							<div className='set-subsection-h'>Completion celebration</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
@@ -1468,7 +1478,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							className='set-subsection set-subsection--pickanim'
 
 							data-element-name-hook='picAniDiv'
-						>{ /* What: Pickanim Subsection Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours. */ }
+						>{ /* What: Pickanim Subsection Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 							<div className='set-subsection-h'>Picker animation</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
@@ -1523,7 +1533,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 						</div>
 
-						<div className='set-subsection set-subsection--layout'>{ /* What: Layout Subsection Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own CarSurCom. */ }
+						<div
+							className='set-subsection set-subsection--layout'
+
+							data-element-name-hook='setLayDiv'
+						>{ /* What: Layout Subsection Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own CarSurCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 							<div className='set-subsection-h'>Layout</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
@@ -1535,7 +1549,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							<CarSurCom>{ /* What: Card Surface Component. Why: The placement row needs the same bordered container as every other row in this tab. How: This wraps the placement row below. */ }
 
 
-								<div className='set-data-row'>{ /* What: Layout Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control. */ }
+								<div
+									className='set-data-row'
+
+									data-element-name-hook='setRowDiv'
+								>{ /* What: Layout Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 									<div className='set-data-info'>{ /* What: Layout Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
@@ -1613,7 +1631,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						className='set-section set-section--daily'
 
 						data-element-name-hook='setDaiSec'
-					>{ /* What: Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. Its data-element-name-hook is read by the Settings page tour and the App Features tours. */ }
+					>{ /* What: Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. Its data-element-name-hook is read by the Settings page tour, the App Features tours, and help mode's Settings catalog. */ }
 
 
 						<div className='set-section-h'>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -1631,7 +1649,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<CarSurCom>{ /* What: Card Surface Component. Why: The auto-run toggle, its run-time row, and the notify-me row all share one bordered container. How: This wraps all 3 rows below. */ }
 
 
-							<div className='set-data-row'>{ /* What: Auto Run Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. */ }
+							<div
+								className='set-data-row'
+
+								data-element-name-hook='setRowDiv'
+							>{ /* What: Auto Run Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Auto Run Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the switch. How: This wraps the name span and the description span. */ }
@@ -1685,7 +1707,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							</div>
 
 
-							<div className={ ` set-data-row   set-data-row--sub   ${ daiModStr === 'auto' ? '' : 'is-disabled' } ` }>{ /* What: Run Time Row Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. */ }
+							<div
+								className={ ` set-data-row   set-data-row--sub   ${ daiModStr === 'auto' ? '' : 'is-disabled' } ` }
+
+								data-element-name-hook='runTimDiv'
+							>{ /* What: Run Time Row Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Run Time Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the input. How: This wraps the name span and the description span. */ }
@@ -1728,7 +1754,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ daiModStr === 'auto' && notPerStr !== 'unsupported' && ( // What: Notify Row Visibility Check. Why: The notify-me row only makes sense while the generator actually runs automatically, and only in an environment that supports notifications at all. How: This renders the whole row only while both conditions hold.
 
 
-								<div className='set-data-row set-notify-row'>{ /* What: Notify Row Div Element. Why: The label/description and the permission control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and whichever of the 3 permission-state controls below applies. */ }
+								<div
+									className='set-data-row set-notify-row'
+
+									data-element-name-hook='notRowDiv'
+								>{ /* What: Notify Row Div Element. Why: The label/description and the permission control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and whichever of the 3 permission-state controls below applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 									<div className='set-data-info'>{ /* What: Notify Info Div Element. Why: The row's own name and its permission-dependent description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
@@ -1871,7 +1901,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<CarSurCom>{ /* What: Card Surface Component. Why: The storage-status row, the platform-specific install notes, and the export/import/reset rows all share one bordered container. How: This wraps every row below. */ }
 
 
-							<div className='set-data-row set-store-row'>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block. */ }
+							<div
+								className='set-data-row set-store-row'
+
+								data-element-name-hook='stoRowDiv'
+							>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Store Info Div Element. Why: The row's own name, description, fact chips, and any persist-result message all need their own grouping. How: This wraps the name span, the description span, the facts span, and (conditionally) the persist-message span. */ }
@@ -2003,7 +2037,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									className='set-data-row set-store-ios'
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: Already Installed Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours. */ }
+								>{ /* What: Already Installed Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 									<div className='set-data-info'>{ /* What: Already Installed Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
@@ -2030,7 +2064,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									className='set-data-row set-store-ios'
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: Unsupported Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours. */ }
+								>{ /* What: Unsupported Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 									<div className='set-data-info'>{ /* What: Unsupported Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
@@ -2057,7 +2091,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									className='set-data-row set-store-ios'
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: iOS Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours. */ }
+								>{ /* What: iOS Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 									<div className='set-data-info'>{ /* What: iOS Install Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and 2 description spans. */ }
@@ -2086,7 +2120,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									className='set-data-row set-store-ios'
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: Mac Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours. */ }
+								>{ /* What: Mac Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 									<div className='set-data-info'>{ /* What: Mac Install Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and 2 description spans. */ }
@@ -2108,7 +2142,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							) }
 
 
-							<div className='set-data-row set-export-row'>{ /* What: Export Row Div Element. Why: The export label/description and the Export button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Export control. */ }
+							<div
+								className='set-data-row set-export-row'
+
+								data-element-name-hook='expRowDiv'
+							>{ /* What: Export Row Div Element. Why: The export label/description and the Export button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Export control. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Export Info Div Element. Why: The row's own name, description, and any post-export message all need their own grouping. How: This wraps the name span, the description span, and (conditionally) the export-message span. */ }
@@ -2176,7 +2214,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							</div>
 
 
-							<div className='set-data-row set-import-row'>{ /* What: Import Row Div Element. Why: The import label/description and the Import control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block, the hidden file input, and whichever of the trigger/confirm controls currently applies. */ }
+							<div
+								className='set-data-row set-import-row'
+
+								data-element-name-hook='impRowDiv'
+							>{ /* What: Import Row Div Element. Why: The import label/description and the Import control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block, the hidden file input, and whichever of the trigger/confirm controls currently applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Import Info Div Element. Why: The row's own name, description, and any pending/completed message all need their own grouping. How: This wraps the name span, the description span, and whichever message span currently applies. */ }
@@ -2274,7 +2316,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							</div>
 
 
-							<div className='set-data-row set-data-row--danger set-reset-row'>{ /* What: Reset Row Div Element. Why: The reset label/description and the Reset control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout, flagged as a dangerous action. How: This wraps the info block and whichever of the trigger/confirm/disabled controls currently applies. */ }
+							<div
+								className='set-data-row set-data-row--danger set-reset-row'
+
+								data-element-name-hook='resRowDiv'
+							>{ /* What: Reset Row Div Element. Why: The reset label/description and the Reset control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout, flagged as a dangerous action. How: This wraps the info block and whichever of the trigger/confirm/disabled controls currently applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Reset Info Div Element. Why: The row's own name, description, and any post-reset message all need their own grouping. How: This wraps the name span, the description span, and (conditionally) the reset-message span. */ }
@@ -2412,7 +2458,9 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						ref={ ( secCurEle ) => { secMapRef.current[ 'account' ] = secCurEle; } }
 
 						className='set-section set-section--account'
-					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the sync-placeholder CarSurCom. */ }
+
+						data-element-name-hook='setAccSec'
+					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the sync-placeholder CarSurCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 						<div className='set-section-h'>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2430,7 +2478,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<CarSurCom>{ /* What: Card Surface Component. Why: The sync-placeholder row needs the same bordered container as every other row in this tab. How: This wraps the sync row below. */ }
 
 
-							<div className='set-data-row'>{ /* What: Sync Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. */ }
+							<div
+								className='set-data-row'
+
+								data-element-name-hook='setRowDiv'
+							>{ /* What: Sync Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Sync Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -2487,7 +2539,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<CarSurCom>{ /* What: Card Surface Component. Why: The app's own name, version, and creator/GitHub links need a shared bordered container. How: This wraps the set-about div below. */ }
 
 
-							<div className='set-about'>{ /* What: Set About Div Element. Why: The brand name, version, and links all belong to one identity block. How: This wraps the brand span and the version/creator/GitHub spans. */ }
+							<div
+								className='set-about'
+
+								data-element-name-hook='aboInfDiv'
+							>{ /* What: Set About Div Element. Why: The brand name, version, and links all belong to one identity block. How: This wraps the brand span and the version/creator/GitHub spans. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-about-brand'>{ /* What: Set About Brand Div Element. Why: The brand name needs its own small wrapper, separate from the version/link lines below it. How: This wraps the single brand-name span. */ }
@@ -2515,7 +2571,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<CarSurCom>{ /* What: Card Surface Component. Why: The "support the project" row needs the same bordered container as every other row in this tab. How: This wraps the support-project row below. */ }
 
 
-							<div className='set-data-row set-support-project-row'>{ /* What: Support Project Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. */ }
+							<div
+								className='set-data-row set-support-project-row'
+
+								data-element-name-hook='supProDiv'
+							>{ /* What: Support Project Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Support Project Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -2547,7 +2607,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<CarSurCom>{ /* What: Card Surface Component. Why: The "replay the welcome tour" row needs the same bordered container as every other row in this tab. How: This wraps the replay-tour row below. */ }
 
 
-							<div className='set-data-row set-replay-tour-row'>{ /* What: Replay Tour Row Div Element. Why: The label/description and the Replay Tour button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Replay Tour ButBasCom. */ }
+							<div
+								className='set-data-row set-replay-tour-row'
+
+								data-element-name-hook='repTouDiv'
+							>{ /* What: Replay Tour Row Div Element. Why: The label/description and the Replay Tour button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Replay Tour ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Replay Tour Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -2635,7 +2699,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 						<CarSurCom>{ /* What: Card Surface Component. Why: Both document rows share one bordered container. How: This wraps the Privacy Policy row and the Terms of Service row. */ }
 
 
-							<div className='set-data-row set-privacy-row'>{ /* What: Privacy Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
+							<div
+								className='set-data-row set-privacy-row'
+
+								data-element-name-hook='priRowDiv'
+							>{ /* What: Privacy Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Privacy Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -2660,7 +2728,11 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							</div>
 
 
-							<div className='set-data-row set-terms-row'>{ /* What: Terms Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
+							<div
+								className='set-data-row set-terms-row'
+
+								data-element-name-hook='terRowDiv'
+							>{ /* What: Terms Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className='set-data-info'>{ /* What: Terms Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
