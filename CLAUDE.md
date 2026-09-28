@@ -1857,10 +1857,30 @@ still passes.
 - **Body-level state stays global**: `body[data-palette]`,
   `body[data-placement]`, and the other attributes set on `<body>` or
   `<html>` already follow this pattern and are styled from global CSS.
-- **`data-*` attribute names** are kebab-case and built like any other name
-  (name, descriptor, purpose, in that order), but from 3 full words with no
+- **One identity attribute per element.** Every element JS needs to find
+  carries `data-element-name-hook`, whose value names the element itself,
+  not what any one piece of code uses it for, so every consumer (a
+  lookup, a tour step, a help item, a test script) shares the same hook
+  and a search for the value lists all of them. The value follows the
+  class naming rule below, element-type segment included (e.g.
+  `data-element-name-hook='remRowBut'`), the same name the element's
+  class gets in the design-system pass. Selectors match it exactly
+  (`[data-element-name-hook='remRowBut']`); an element that genuinely
+  needs a second identity holds both values, space-separated, and
+  selectors for it use `~=`. The element's own What/Why/How comment says
+  which kinds of code rely on the hook. A custom component that renders
+  a hooked element accepts `data-element-name-hook` under that same name
+  at its call sites and forwards it to the element.
+- **State attributes stay separate from identity**: runtime state is an
+  `aria-*` attribute where one fits, otherwise its own presence-only
+  `data-*` attribute, set as `data-row-edit-active={ isaEdiBoo ||
+  undefined }` so it disappears when false, and matched with
+  `[data-row-edit-active]`.
+- **Other `data-*` attribute names** (state attributes, and any future
+  attribute) are kebab-case and built like any other name (name,
+  descriptor, purpose, in that order), but from 3 full words with no
   3-letter truncation and no fixed length, within reason (e.g.
-  `data-group-name-input`). This is expected to need refinement as the
+  `data-row-edit-active`). This is expected to need refinement as the
   pass goes; record each refinement here.
 - **Module files** share their component file's own name, with a
   `.module.css` extension, next to it (`tabs/today/group-header.jsx` →
