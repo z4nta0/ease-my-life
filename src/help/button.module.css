@@ -1,0 +1,75 @@
+
+
+
+/**
+ * button.module.css = Help Button Module
+ *
+ * @summary
+ * Styles for HelButCom, the small circled "i" in each tab's header that turns
+ * help mode on and off. It stays muted until engaged, like the other rarely
+ * used help triggers, so it doesn't compete with real controls, and it fills
+ * with the accent color while help mode is on. It sits above help mode's own
+ * dim layer, so it stays bright and clickable as the way back out.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+.help-btn { /* What: Help Button. Why: The help toggle should be quiet but always reachable, even over help mode's own dim layer. How: This draws a small muted circled glyph raised above the dim layer, brightening on hover. */
+
+
+	align-items     : center;
+	background      : none;
+	border          : 1px solid var(--muted);
+	border-radius   : 50%;
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : 13px;
+	font-weight     : 700;
+	height          : 26px;
+	justify-content : center;
+	line-height     : 1;
+	position        : relative;
+	transition      : border-color .15s ease, color .15s ease, background .15s ease;
+	width           : 26px;
+	z-index         : 1001; /* What: Above The Help Dim. Why: Help mode's dim layer sits at 1000, and the toggle must stay undimmed while it's the way out. How: 1001 lifts the button just above it. */
+
+
+}
+.help-btn:hover { /* What: Hovered Help Button. Why: The toggle should respond to the pointer. How: This tints it with the accent color. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.help-btn[aria-pressed="true"] { /* What: Active Help Button. Why: While help mode is on, the toggle should read as switched on. How: This fills it with the accent color, keyed off the button's own pressed state. */
+
+
+	background   : var(--accent);
+	border-color : var(--accent);
+	color        : #fff;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Help Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.help-btn { /* What: Still Help Button. Why: The colors should simply switch. How: This turns the color fade off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+

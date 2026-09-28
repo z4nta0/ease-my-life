@@ -3546,26 +3546,6 @@ body.ob-touring .tab{padding-bottom:200px}
 .np-tour-name{margin:16px 0 16px}
 
 /* ─── Help mode: on-demand page annotations (src/help/mode.jsx) ──────────── */
-/* The per-page toggle. Muted by default like .pie-help's own "rarely used,
-   shouldn't compete with real controls" treatment — this one lives in a
-   page header, so it's visible far more often than a single field's own
-   (?) trigger, which is exactly why it stays this quiet until engaged.
-   position+z-index lift it above .help-mode's own z-index:1000 dim layer —
-   without that it'd read as dimmed like everything else despite staying
-   genuinely clickable the whole time, which is exactly backwards from what
-   its own state (still active, still the way out) should communicate. */
-.help-btn{
-  position:relative;z-index:1001;
-  width:26px;height:26px;flex:0 0 auto;
-  display:inline-flex;align-items:center;justify-content:center;
-  border:1px solid var(--muted);border-radius:50%;
-  background:none;color:var(--muted);
-  font-size:13px;font-weight:700;line-height:1;
-  cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
-}
-.help-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-.help-btn.is-on{border-color:var(--accent);color:#fff;background:var(--accent)}
-
 .help-mode{position:fixed;inset:0;z-index:1000;pointer-events:none}
 .help-dim-svg{position:absolute;inset:0}
 .help-dim-fill{fill:oklch(0.15 0.02 250/0.55)}

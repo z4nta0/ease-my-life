@@ -1,6 +1,14 @@
 
 
 
+// #region Imports
+
+import cssModObj from './button.module.css'; // What: CSS Module Object. Why: The help toggle is styled from its own module. How: This maps each class name in button.module.css to its hashed module class.
+
+// #endregion Imports
+
+
+
 /**
  * button.jsx = Button
  *
@@ -57,7 +65,7 @@ function HelButCom ( { actModBoo, onClick } ) {
 
 
 		<button
-			className={ ` help-btn   ${ actModBoo ? 'is-on' : '' } ` }
+			className={ cssModObj.helpBtn }
 
 			data-element-name-hook='helTogBut'
 
@@ -67,7 +75,7 @@ function HelButCom ( { actModBoo, onClick } ) {
 			aria-pressed={ actModBoo }
 
 			onClick={ onClick }
-		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as both its "is-on" class and its aria-pressed state, and calls onClick when pressed. Its data-element-name-hook is read by help mode and the App Features tours. */ }
+		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as its aria-pressed state, which its module also styles as switched on, and calls onClick when pressed. Its data-element-name-hook is read by help mode and the App Features tours. */ }
 
 
 			i
