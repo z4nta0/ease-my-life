@@ -430,7 +430,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				? matWidEle.getBoundingClientRect().width // What: Navbar Width Read. Why: On 'bottom' placement the tip matches the navbar's own width. How: This reads matWidEle's own current width.
 				: undefined;                              // What: No Width Fallback. Why: Other placements keep the usual fixed tip width. How: This leaves the width undefined.
 
-			const alwBelBoo = curIteObj.absStr ? !!document.querySelector( curIteObj.absStr ) : false;                                   // What: Always Below Boolean. Why: Only a page/placement where absStr's own target actually exists (e.g. '.tabbar--side') should skip the normal above/below choice. How: This checks whether absStr currently matches anything at all.
+			const alwBelBoo = curIteObj.absStr ? !!document.querySelector( curIteObj.absStr ) : false;                                   // What: Always Below Boolean. Why: Only a page/placement where absStr's own target actually exists (e.g. the nav on side placement) should skip the normal above/below choice. How: This checks whether absStr currently matches anything at all.
 			const padSurObj = claPadFun( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr );                                        // What: Pad Surviving Object. Why: This item's own surviving per-side padding must be computed the same way as the mulBoo branch above. How: This calls claPadFun with the same padHorNum/padVerNum already resolved above.
 
 

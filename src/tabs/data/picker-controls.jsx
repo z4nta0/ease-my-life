@@ -1863,12 +1863,12 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 					<div
-						className={ ` ease-config   ${ isaDowBoo ? 'ease-config--down' : 'ease-config--up' } ` }
+						className='ease-config'
 
 						data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this section as the ease-down one without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 						data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this section as the ease-up one without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
 						data-element-name-hook='easConDiv'
-					>{ /* What: Ease Config Div Element. Why: Help mode needs a pure selector hook to give this section mode-specific copy (Fill vs. Refill). How: This wraps whichever of the 2 mode-specific rows below matches picDatObj.mode. Its data-element-name-hook is read by help mode's Data catalog. */ }
+					>{ /* What: Ease Config Div Element. Why: Help mode gives this section mode-specific copy (Fill vs. Refill), telling the two apart by its ease-up/ease-down state attributes. How: This wraps whichever of the 2 mode-specific rows below matches picDatObj.mode. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 						{ picDatObj.mode === 'ease-up' && ( // What: Ease Up Check. Why: Only ease-up gets the "Fill" wording and action. How: This renders the Fill row only while picDatObj.mode is 'ease-up'.

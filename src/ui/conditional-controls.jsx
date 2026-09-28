@@ -676,11 +676,11 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 						className='cnd-typectl pie-rows'
 
 						data-element-name-hook='conTypDiv'
-					>{ /* What: Ease Type Control Div Element. Why: cnd-ease-up-row/cnd-ease-down-row (in addition to the shared pie-row) are pure selector hooks for help mode, see help/content.jsx's newCondEaseUp/newCondEaseDown, split by direction the same way EntEdiCom's own pie-ease-up-row/pie-ease-down-row are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
+					>{ /* What: Ease Type Control Div Element. Why: Its rows carry data-ease-up-active/data-ease-down-active state so help mode's newCondEaseUp/newCondEaseDown can tell the two directions apart, split the same way EntEdiCom's own rows are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 						<div
-							className={ ` pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' } ` }
+							className='pie-row'
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -731,7 +731,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 						<div
-							className={ ` pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' } ` }
+							className='pie-row'
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -785,7 +785,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 							<div
-								className='pie-row cnd-ease-up-row'
+								className='pie-row'
 
 								data-ease-up-active // What: Ease Up Active Attribute. Why: Help mode finds this Fill row as an ease-up row without reading its classes. How: This is always present, since Fill only ever renders for an ease-up conditional.
 								data-element-name-hook='ediRowDiv'
@@ -826,7 +826,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 							<div
-								className='pie-row cnd-ease-down-row'
+								className='pie-row'
 
 								data-ease-down-active // What: Ease Down Active Attribute. Why: Help mode finds this Refill row as an ease-down row without reading its classes. How: This is always present, since Refill only ever renders for an ease-down conditional.
 								data-element-name-hook='ediRowDiv'

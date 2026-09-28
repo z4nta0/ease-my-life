@@ -399,17 +399,16 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 					 * entry-editor.jsx = Ease Direction Split
 					 *
 					 * @summary
-					 * pie-ease-up-row/pie-ease-down-row (on every relevant row
-					 * below, alongside the row's own shared pie-row class) are
-					 * pure selector hooks for help mode (see help/content.jsx's
-					 * itemChargeRangeUp/Down), split by direction rather than one
-					 * shared pie-ease-row, since Soonest/Latest/Fill (ease-up) and
-					 * Shortest/Longest/Refill (ease-down) get entirely different
-					 * tip copy, not just relabeled headings. FilButCom (ui.jsx)
-					 * has no class of its own to distinguish it by, and it only
-					 * renders for ONE direction at a time, so there is no existing
-					 * class shared by exactly "this direction's ease rows" other
-					 * than this pair.
+					 * data-ease-up-active/data-ease-down-active (on every relevant
+					 * row below) let help mode tell the two directions apart (see
+					 * help/content.jsx's itemChargeRangeUp/Down), split by
+					 * direction rather than one shared marker, since
+					 * Soonest/Latest/Fill (ease-up) and Shortest/Longest/Refill
+					 * (ease-down) get entirely different tip copy, not just
+					 * relabeled headings. FilButCom (ui.jsx) has no identity of its
+					 * own to distinguish it by, and it only renders for ONE
+					 * direction at a time, so nothing else marks exactly "this
+					 * direction's ease rows".
 					 *
 					 * @author z4nta0 <https://github.com/z4nta0>
 					 *
@@ -419,7 +418,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 						<div
-							className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }
+							className='pie-row'
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -489,7 +488,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 						<div
-							className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }
+							className='pie-row'
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -562,7 +561,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 							<div
-								className='pie-row pie-ease-up-row'
+								className='pie-row'
 
 								data-ease-up-active // What: Ease Up Active Attribute. Why: Help mode finds this Fill row as an ease-up row without reading its classes. How: This is always present, since Fill only ever renders for an ease-up picker.
 								data-element-name-hook='ediRowDiv'
@@ -603,7 +602,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 							<div
-								className='pie-row pie-ease-down-row'
+								className='pie-row'
 
 								data-ease-down-active // What: Ease Down Active Attribute. Why: Help mode finds this Refill row as an ease-down row without reading its classes. How: This is always present, since Refill only ever renders for an ease-down picker.
 								data-element-name-hook='ediRowDiv'
