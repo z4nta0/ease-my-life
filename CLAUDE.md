@@ -2069,9 +2069,15 @@ still passes.
     }`). The property is named after the child it's for (`--seg-...`),
     since a custom property inherits to every descendant, including a
     nested instance of the same child. Where a variant changes
-    structure rather than values and a custom property reads badly,
-    the parent passes a module class down as a `className` prop
-    instead; each such case is raised with the user first.
+    structure rather than values (decided 2026-09-28), the child takes
+    a layout prop naming which layout it's in, e.g. `ui/
+    schedule-editor.jsx`'s own `layStr` (`'stacked'` on Today,
+    `'rows'` in the Data tab), and its own module holds each layout as
+    a modifier class on its root (`.rem-editor--stacked`,
+    `.rem-editor--rows`) with that layout's descendant rules, so the
+    child still owns every one of its styles and the parent only names
+    the layout. A case that fits neither this nor a custom property is
+    raised with the user first.
   - A class several components use (`btn`, `pill`, ...) has its
     declarations copied into each module that uses it, attached to that
     element's existing class.
