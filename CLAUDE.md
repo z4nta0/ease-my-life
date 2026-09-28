@@ -1849,6 +1849,14 @@ one, whether the motion comes from CSS or from JS.
   follow-up the motion's own completion would have triggered. The CSS
   media query alone can't stop these, which is why the check lives in
   JS.
+- **Exception, an explicitly requested preview**: an animation the user
+  starts on purpose just to see it (Settings' celebration and pick-animation
+  previews, played by pressing Play or Preview) keeps its motion under
+  reduced motion, since the press is consent to see it. Only the animation
+  being previewed is exempt; ordinary transitions inside the preview (a
+  hover fade, say) still get their reduced-motion variant. See `ui/
+  picker-strip.jsx`'s own `data-motion-force-active` and `tabs/settings/
+  previews.module.css`.
 - The modules migrated before this rule were brought in line in one
   pass; everything else is checked as its file is next touched.
 
