@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: PagTouCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
+import cssModObj from './page-tour-card.module.css'; // What: CSS Module Object. Why: The page tour card is styled from its own module. How: This maps each class name in page-tour-card.module.css to its hashed module class.
+import React     from 'react';                         // What: React. Why: PagTouCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
 import { IcoSvgCom   } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
@@ -93,8 +94,9 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 		<article
-			className={ ` today-card   today-card--tutorial   ${ tutDonBoo ? 'is-done' : '' }   ${ cheExiBoo ? 'is-removing' : '' } ` }
+			className={` ${ cssModObj.todayCard }   ${ cheExiBoo ? cssModObj.isRemoving : '' } `}
 
+			data-card-done-active={ tutDonBoo || undefined } // What: Card Done Active Attribute. Why: A finished tour's card dims, fills its check, and strikes its text through from its module. How: This sets the presence-only attribute while tutDonBoo is true and removes it otherwise.
 			data-element-name-hook='todCarArt tutCarArt'
 
 			onClick={ onRowCliFun }
@@ -105,7 +107,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 				<button
-					className='check'
+					className={ cssModObj.check }
 
 					data-element-name-hook='carCheBut'
 
@@ -126,7 +128,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 					<span
-						className='check-ripple'
+						className={ cssModObj.checkRipple }
 
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
@@ -144,7 +146,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 				<button
-					className='check'
+					className={ cssModObj.check }
 
 					data-element-name-hook='carCheBut'
 
@@ -175,13 +177,13 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 			) }
 
 
-			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
+			<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
-				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The tour's own label and its optional time estimate sit together. How: This wraps the label span and, when one exists, the time estimate. */ }
+				<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The tour's own label and its optional time estimate sit together. How: This wraps the label span and, when one exists, the time estimate. */ }
 
 
-					<span className='meta-picker'>{ touRecObj.labStr } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRecObj's own label plus the literal word "Tour". */ }
+					<span>{ touRecObj.labStr } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRecObj's own label plus the literal word "Tour". */ }
 
 
 
@@ -191,9 +193,9 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
-							<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
+							<span className={ cssModObj.metaDot }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-							<span className='meta-time'>{ touRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tour takes. How: This renders touRecObj's own time. */ }
+							<span>{ touRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tour takes. How: This renders touRecObj's own time. */ }
 
 
 						</React.Fragment>
@@ -204,7 +206,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 				</div>
 
-				<div className='today-card-name'>Take a quick tour of the { touRecObj.labStr } page</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with touRecObj's own label interpolated. */ }
+				<div className={ cssModObj.todayCardName }>Take a quick tour of the { touRecObj.labStr } page</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with touRecObj's own label interpolated. */ }
 
 
 			</div>
@@ -214,14 +216,14 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 				<div
-					className='today-card-actions'
+					className={ cssModObj.todayCardActions }
 
 					data-element-name-hook='carActDiv'
 				>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 					<button
-						className='icon-btn'
+						className={ cssModObj.iconBtn }
 
 						aria-label='Cancel tutorial'
 						title='Cancel'
