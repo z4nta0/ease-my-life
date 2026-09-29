@@ -3966,6 +3966,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<span
 										key={ curParObj.ideNum }
 
+										className='sparkle-piece'
+
 										style={{
 											animationDelay : `${ curParObj.delNum }ms`,
 											left           : `${ curParObj.posXcoNum }%`,
