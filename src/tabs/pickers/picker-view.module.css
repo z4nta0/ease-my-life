@@ -383,6 +383,13 @@
 
 
 }
+.picker-actions .pv-act--send.is-sent { /* What: Sent Send Button. Why: Send to Today swells once as it confirms, winning over the entrance the other actions play. How: This plays the button pop while it carries its sent class. */
+
+
+	animation : sentBtnPop 360ms cubic-bezier(.22,1.5,.36,1);
+
+
+}
 .pv-act[data-tour-disabled-active] { /* What: Tour-Disabled Picker Action. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
 
 
@@ -400,6 +407,43 @@
 
 
 		animation-duration : .01ms;
+
+
+	}
+
+	.picker-actions .pv-act--send.is-sent { /* What: Still Sent Send Button. Why: The swell is only decoration. How: This turns it off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes sentBtnPop { /* What: Sent Button Pop. Why: A brief swell reads as the send landing. How: This scales the button up slightly and back. */
+
+
+	0% {
+
+
+		transform : scale(1);
+
+
+	}
+
+	40% {
+
+
+		transform : scale(1.06);
+
+
+	}
+
+	100% {
+
+
+		transform : scale(1);
 
 
 	}

@@ -1226,7 +1226,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 							<ButBasCom
-								className={ cssModObj.pvAct }
+								className={` ${ cssModObj.pvAct }   ${ cssModObj.pvActSend }   ${ runPhaStr === 'sent' ? cssModObj.isSent : '' } `}
 
 								style={{ animationDelay : '0ms' }}
 
