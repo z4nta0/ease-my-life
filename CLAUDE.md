@@ -2152,6 +2152,16 @@ still passes.
     tokens alphabetically within each, 1 blank line between a marker and
     its tokens, and 3 blank lines between sections. A token gets its own
     comment only when its name doesn't say what it is (e.g. `--r-sm`).
+    - **Exception, the core design numbers** (decided 2026-09-29): the
+      user's own section of core design numbers always comes first inside
+      `:root`, ahead of the alphabetized token sections, and is never
+      alphabetized, neither its position nor the values inside it, which
+      stay in the order the user wrote them. They're the base values every
+      other custom property (and literal number) draws from, so other
+      tokens are fitted to them over time, carefully and one step at a
+      time, never all at once. Unlike the rest of this doc, these core
+      numbers aren't specific to this project: anything said here about
+      them applies to any project unless stated otherwise.
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
@@ -2201,6 +2211,10 @@ are renamed to this as their files come up in the design-system pass.
 - **Breakpoints stay literal numbers**, since a custom property can't be
   read inside an `@media` or `@container` condition, but their values still
   come from the scale the design system defines.
+- **The core design numbers are exempt** from this naming pattern (see
+  the exception under "The global stylesheet" above): they're named and
+  ordered as the user writes them, and, like everything else about them,
+  aren't specific to this project.
 - A property that doesn't fit the pattern is raised with the user when it
   comes up, per "### Undefined cases: stop and ask", and the decision is
   recorded here.
