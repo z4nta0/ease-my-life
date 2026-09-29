@@ -200,11 +200,6 @@
 }
 
 .picker-view { display: flex; flex-direction: column; gap: 18px; }
-/* Purely structural — lets the Pickers page tour highlight the stage +
-   action buttons as one combined box without also catching the header/pool
-   above and below. Mirrors .picker-view's own flex/gap so wrapping these
-   two doesn't change their spacing. */
-.picker-run { display: flex; flex-direction: column; gap: 18px; }
 
 .picker-h {
   display: flex; justify-content: space-between; align-items: flex-start;
@@ -228,106 +223,6 @@
 }
 .picker-hint + .picker-hint { margin-top: 8px; }
 .mode-opt-hint + .mode-opt-hint { margin-top: 6px; }
-
-.picker-stage {
-  position: relative;
-  /* Fixed to the tallest state — the reel (5 × 56px rows = 280px) plus the
-     64px vertical padding = 344px. Holding this constant stops the stage
-     (and the action buttons below it) from collapsing/expanding as the phase
-     cycles idle → running → done, e.g. on Re-roll. */
-  min-height: 344px;
-  display: flex; align-items: center; justify-content: center;
-  padding: 32px 20px;
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-xl);
-  overflow: hidden;
-}
-/* On a short viewport, 344px alone can push the action buttons below it (the
-   Pickers page tour's own "Manual Generation" step surfaced this: the coach
-   tooltip, this stage, AND the Pick one button below it don't all fit above
-   ~750px of height) — clipping the reel a bit is the better tradeoff than
-   the actual controls sitting below the fold, unreachable without knowing to
-   scroll. App-wide, not scoped to the tour: any short-viewport visit to the
-   Pickers page hits the same problem regardless of whether a tour is up. */
-@media (max-height: 750px) {
-  .picker-stage { min-height: 260px; }
-}
-
-.stage-idle, .stage-empty {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  text-align: center;
-}
-
-/* Sent confirmation — replaces the reel briefly after Send to Today. */
-.stage-sent {
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
-  text-align: center;
-  animation: sentRise 320ms cubic-bezier(.22,1.2,.36,1);
-}
-.stage-sent-check {
-  width: 56px; height: 56px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--accent); color: var(--bg);
-  animation: sentPop 440ms cubic-bezier(.22,1.5,.36,1);
-}
-.stage-sent-name {
-  font-size: 24px; font-weight: 500; letter-spacing: -0.015em;
-  color: var(--text); text-wrap: pretty; max-width: 30ch;
-}
-@keyframes sentRise {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
-}
-@keyframes sentPop {
-  0%   { transform: scale(0); }
-  60%  { transform: scale(1.12); }
-  100% { transform: scale(1); }
-}
-.pv-act--send.is-sent { animation: sentBtnPop 360ms cubic-bezier(.22,1.5,.36,1); }
-@keyframes sentBtnPop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
-.stage-idle-num {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 56px;
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: var(--text);
-}
-.stage-idle-lbl {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  max-width: 32ch;
-  margin-bottom: 8px;
-}
-
-/* Actions */
-.picker-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-/* Pool list */
-.picker-pool { display: flex; flex-direction: column; gap: 10px; }
-/* Purely structural — see its own comment in tab-picker.jsx. Mirrors
-   .picker-pool's own flex/gap so wrapping .pool-h + .pool-list doesn't
-   change their spacing. */
-.pool-items { display: flex; flex-direction: column; gap: 10px; }
-.pool-h { display: flex; align-items: center; justify-content: space-between; }
-.ghost-link {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.ghost-link:hover { color: var(--text); }
 
 .pool-list {
   display: flex; flex-direction: column;
@@ -390,24 +285,7 @@
 }
 .pool-row:last-child { border-bottom: 0; }
 .pool-row.is-vac { opacity: 0.45; }
-.pool-row.is-ineligible { opacity: 0.6; }
 .pool-row--confirm { grid-template-columns: 1fr; }
-.pool-send {
-  display: inline-flex; align-items: center; justify-content: center;
-  justify-self: end;
-  width: 30px; height: 30px; padding: 0;
-  background: transparent; color: var(--muted);
-  border: 0.5px solid var(--border); border-radius: var(--r-sm);
-  cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-.pool-send:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-.pool-send.is-sent { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); cursor: default; }
-/* Confirmation pop when the check swaps in after Send-to-Today. */
-@keyframes poolSendPop { 0% { transform: scale(.4); opacity: .3; } 60% { transform: scale(1.18); } 100% { transform: scale(1); opacity: 1; } }
-.pool-send.is-sent svg { animation: poolSendPop .32s cubic-bezier(.34,1.5,.5,1) both; }
-@media (prefers-reduced-motion: reduce) { .pool-send.is-sent svg { animation-duration: .01ms; } }
-.pool-send.is-disabled { opacity: 0.4; cursor: default; }
-.pool-send.is-disabled:hover { color: var(--muted); border-color: var(--border); background: none; }
 .pool-edit {
   display: inline-flex; align-items: center; justify-content: center;
   justify-self: end;
@@ -451,16 +329,6 @@
   font-size: 14px;
   text-wrap: pretty;
 }
-/* flex: 0 1 160px — a fixed width for the name itself (not the row's own
-   space-between, tried first: at a wide viewport that stuck the pill to
-   the row's far right edge, way past the end of a typically much shorter
-   name). Every row using the identical literal 160px is what lines the
-   pill up in one column across items — same trick already used for the
-   Day Log's picker names and conditional names. min-width: 0 lets it
-   shrink/wrap instead of overflowing on a genuinely narrow row — and lets
-   a real name a little over 160px just wrap onto a second line rather
-   than widening the column for everyone else. */
-.pool-item-name { flex: 0 1 160px; min-width: 0; }
 /* width: 80px — a fixed size for the pill itself, not just a max, so its
    own text ("not yet" / "spent" / "inactive") never wraps onto a second
    line inside it. justify-content: center, not text-align: center — .pill
@@ -477,7 +345,6 @@
    share. */
 @media (max-width: 480px) {
   .pool-name { flex-wrap: wrap; }
-  .pool-name .pool-item-name { flex: 1 1 100%; }
   /* Undo the base rule's fixed 80px + centered text for the wrapped case
      specifically — back to auto width, content hugging its own left edge
      (flex-start). Centering was for aligning same-line pills into one
@@ -501,22 +368,6 @@
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--muted);
-}
-.pool-prog {
-  display: flex; align-items: center; gap: 8px;
-  min-width: 100px;
-}
-/* On a narrow (mobile) row, 100px + the three 30px action button columns +
-   their gaps left too little of the row's own width for the 1fr name
-   column, wrapping names awkwardly — desktop has room to spare, so this is
-   scoped to mobile only. */
-@media (max-width: 640px) {
-  .pool-prog { min-width: 70px; }
-}
-.pool-val {
-  font-variant-numeric: tabular-nums;
-  min-width: 22px;
-  text-align: right;
 }
 .pool-weight {
   font-variant-numeric: tabular-nums;
@@ -2087,25 +1938,6 @@ button.rd-chev {
 /* Tab switch: the incoming tab's content fades + rises in (peer tabs, so no
    directional slide). Keyed on the active tab so it replays each switch. */
 .tab-fade { animation: tabFadeIn .2s ease both; }
-/* Picker action buttons: enter (fade+rise, staggered via inline delay) when the
-   pick resolves; exit (fade+fall) on Re-roll / Done / Send. */
-@keyframes pvActIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-@keyframes pvActOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(6px); } }
-.picker-actions .pv-act { animation: pvActIn .22s cubic-bezier(.34,1.2,.5,1) both; }
-.picker-actions .pv-act.is-leaving { animation: pvActOut .18s ease both; }
-.pv-send-label { display: inline-block; }
-/* Re-roll/Done during the Pickers page tour's "Add to Todo List" step: the
-   native `disabled` attribute alone renders no differently on a .btn (no
-   :disabled rule exists for it anywhere), which would leave these looking
-   fully clickable while silently doing nothing — confusing specifically
-   because Send to Today right next to them IS meant to be clicked for
-   real. Applied only while that exact tour step is up (see
-   tab-picker.jsx's own tourInterceptSend), so it disappears again the
-   moment the step ends. */
-.pv-act.is-tour-disabled { opacity: 0.4; cursor: default; pointer-events: none; }
-@media (prefers-reduced-motion: reduce) {
-  .picker-actions .pv-act, .picker-actions .pv-act.is-leaving { animation-duration: .01ms; }
-}
 @keyframes tabFadeIn { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .tab-fade { animation: none; } }
 /* Heatmap year paging: directional slide+fade — next year enters from the
@@ -2240,7 +2072,6 @@ button.rd-chev {
   .section-title { font-size: 26px; }
   .today-title { font-size: 28px; }
   .picker-title { font-size: 24px; }
-  .stage-idle-num { font-size: 48px; }
 }
 
 /* ═══ Today "Edit Mode" (drag-to-reorder) ══════════════════════════════════
@@ -2754,17 +2585,6 @@ body[data-tour-active]{--tab-tour-padding:200px}
 
 
 /* ─── Reduced motion: gaps closed (see the matching block in styles.css) ───── */
-@media (prefers-reduced-motion: reduce) {
-  /* Send-to-Today confirmation: sentRise/sentPop start at opacity 0 and scale 0,
-     so these must be pinned visible or the confirmation never appears. */
-  .stage-sent,
-  .stage-sent-check,
-  .pv-act--send.is-sent {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-}
 
 
 /* Reduced-motion advisory under the two animation-choice headings. Darkened from
