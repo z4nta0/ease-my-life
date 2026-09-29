@@ -643,7 +643,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   gap: 12px;
   scroll-margin-top: calc(var(--sticky-top-h, 140px) + 16px);
 }
-.group-section + .group-section {
+.groups-dnd > .group-section:not(:first-child) {
   border-top: 0.5px solid var(--border);
   padding-top: 28px;
 }
@@ -782,7 +782,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
     border-color: var(--accent);
     background: var(--accent-soft);
   }
-  .group-section + .group-section {
+  .groups-dnd > .group-section:not(:first-child) {
     padding-top: 20px;
   }
   /* Mobile header trims its padding a touch */

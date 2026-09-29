@@ -1,0 +1,1189 @@
+
+
+
+/**
+ * reminders-section.module.css = Reminders Section Module
+ *
+ * @summary
+ * Styles for the Today tab's Reminders section: its group section and header
+ * (grip, name, count, progress dashes, and Add button), the add result
+ * message, the quick-add form with its inline editor, and each reminder card
+ * with its checkbox, meta line, name, actions, inline editor, and skip
+ * confirm. The header rules are copies of group-header.module.css's own, and
+ * the card rules are copies of the global Today card rules, resolved where the
+ * reminder overrides used to win. A done card keys off data-card-done-active,
+ * an editing card off data-card-edit-active, a filled dash off
+ * data-dash-done-active, an ok add message off data-message-ok-active, and the
+ * disabled Add button off the aria-disabled its info tip sets. The card
+ * entrance, exit, and removal, the fresh checkbox ripple and dash sweep, and
+ * the quick-add close are this file's own module classes, while the ripple
+ * celebration's cross-file exhale keys off data-card-exhale-active. A section
+ * that isn't first in its column draws the divider the old sibling selector
+ * drew, since every sibling in that column is a group section.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region group-section */
+
+.group-section { /* What: Reminders Section. Why: The Reminders block is one of Today's group sections, landing below the sticky header when scrolled to. How: This stacks its header and list in a column with a scroll margin that clears the header. */
+
+
+	display           : flex;
+	flex-direction    : column;
+	gap               : 12px;
+	scroll-margin-top : calc(var(--sticky-top-h, 140px) + 16px);
+
+
+}
+.group-section:not(:first-child) { /* What: Following Reminders Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since every sibling in the group column is a group section, standing in for the old sibling selector that can't reach across modules. */
+
+
+	border-top  : 0.5px solid var(--border);
+	padding-top : 28px;
+
+
+}
+.group-section[data-item-drag-active] { /* What: Dragged Reminders Section. Why: A section being dragged lifts above the rest, without its divider. How: This floats it on a shadowed surface and drops its top divider and padding. */
+
+
+	background    : var(--surface);
+	border-radius : var(--r-lg, 16px);
+	border-top    : 0 !important;
+	box-shadow    : 0 20px 46px -14px oklch(0 0 0 / 0.32);
+	padding-top   : 0 !important;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Reminders Section. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
+
+
+	.group-section:not(:first-child) { /* What: Tighter Following Reminders Section. Why: The divider needs less room. How: This shrinks the padding above the section. */
+
+
+		padding-top : 20px;
+
+
+	}
+
+
+}
+
+/* #region group-h */
+
+.group-h { /* What: Group Header. Why: The name cluster and the progress dashes share one row, pushed to opposite ends. How: This spreads them apart in a centered flex row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 16px;
+	justify-content : space-between;
+
+
+}
+
+/* #region group-h-l */
+
+.group-h-l { /* What: Group Header Left. Why: The grip, name, count, and Day Log chip read as one left cluster. How: This lines them up on their text baseline, allowing the cluster to shrink. */
+
+
+	align-items : baseline;
+	display     : flex;
+	gap         : 10px;
+	min-width   : 0;
+
+
+}
+
+.group-grip { /* What: Group Grip. Why: In Edit Mode a handle lets the whole group be dragged to a new spot. How: This draws a small muted square handle with a grab cursor that owns the touch gesture and tints on hover. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	cursor          : grab;
+	display         : inline-flex;
+	height          : 26px;
+	justify-content : center;
+	margin-left     : -4px;
+	touch-action    : none; /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
+	transition      : color .12s, background .12s;
+	width           : 26px;
+
+
+}
+.group-grip:hover { /* What: Hovered Group Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its glyph. */
+
+
+	background : var(--accent-soft);
+	color      : var(--text);
+
+
+}
+.group-grip:active { /* What: Pressed Group Grip. Why: A press on the handle starts a drag. How: This switches to the grabbing cursor. */
+
+
+	cursor : grabbing;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Grip. Why: Someone who asked for less motion shouldn't see the handle's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-grip { /* What: Still Group Grip. Why: Its colors should simply switch. How: This turns the fades off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.group-name { /* What: Group Name. Why: The group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
+
+
+	font-size      : 18px;
+	font-weight    : 500;
+	letter-spacing : -0.015em;
+	margin         : 0;
+	text-wrap      : pretty;
+
+
+}
+
+
+/* #region group-count */
+
+.group-count { /* What: Group Count. Why: The done and total counts read as one small figure beside the name. How: This sets them in small muted mono with steady-width digits, on the name's baseline. */
+
+
+	align-items          : baseline;
+	color                : var(--muted);
+	display              : inline-flex;
+	font-family          : var(--font-mono);
+	font-size            : 11.5px;
+	font-variant-numeric : tabular-nums;
+	gap                  : 4px;
+	letter-spacing       : 0.02em;
+
+
+}
+
+.group-done { /* What: Group Done Count. Why: The done count is the figure that changes, so it leads. How: This sets it in the full text color. */
+
+
+	color : var(--text);
+
+
+}
+
+.group-of { /* What: Group Total Count. Why: The "of total" part should sit quieter than the done count. How: This fades it. */
+
+
+	opacity : 0.7;
+
+
+}
+
+/* #endregion group-count */
+
+/* #endregion group-h-l */
+
+
+
+/* #region rem-h-r */
+
+.rem-h-r { /* What: Header Right. Why: The progress dashes and the Add button sit together at the header's right end. How: This lines them up in a centered row, so the header stays a two-child row like every other group's. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 10px;
+
+
+}
+
+/* #region group-progress */
+
+.group-progress { /* What: Group Progress. Why: One dash per row shows the group's progress at a glance. How: This lays the dashes out in a tight row. */
+
+
+	display : flex;
+	gap     : 4px;
+
+
+}
+
+.group-progress i { /* What: Group Progress Dash. Why: Each row gets a small dash that fills when it's done. How: This draws a small rounded grey bar that fades its fill and clips the sweep overlay. */
+
+
+	background    : var(--border);
+	border-radius : 2px;
+	height        : 4px;
+	overflow      : hidden;
+	position      : relative;
+	transition    : background .25s ease;
+	width         : 14px;
+
+
+}
+.group-progress i[data-dash-done-active] { /* What: Done Group Progress Dash. Why: A done row's dash should read as filled. How: This fills it with the accent. */
+
+
+	background : var(--accent);
+
+
+}
+.group-progress i.is-fresh { /* What: Fresh Group Progress Dash. Why: The dash for the row just done should sweep full rather than snap. How: This keeps the base grey while the overlay sweeps across it, and must stay after the done rule so it wins. */
+
+
+	background : var(--border);
+
+
+}
+.group-progress i.is-fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
+
+
+	animation        : global(dashSweep) 480ms cubic-bezier(.4,.6,.3,1) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background       : var(--accent);
+	border-radius    : inherit;
+	content          : '';
+	inset            : 0;
+	position         : absolute;
+	transform        : scaleX(0);
+	transform-origin : left center;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Progress Dash. Why: Someone who asked for less motion shouldn't see the dash fade or sweep; the done fill already shows the state. How: This applies only when the reduced-motion preference is set. */
+
+
+	.group-progress i { /* What: Still Group Progress Dash. Why: The fill should simply switch. How: This turns the fade off. */
+
+
+		transition : none;
+
+
+	}
+
+	.group-progress i.is-fresh::after { /* What: Hidden Group Progress Dash Sweep. Why: Without its sweep the overlay adds nothing. How: This turns the sweep off and hides the overlay. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+/* #endregion group-progress */
+
+
+
+/* #region rem-add-btn */
+
+.rem-add-btn { /* What: Add Reminder Button. Why: A small round button beside the dashes opens the quick-add form. How: This draws an outlined circle that tints on hover. */
+
+
+	align-items     : center;
+	background      : var(--bg);
+	border          : 0.5px solid var(--border);
+	border-radius   : 999px;
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	height          : 30px;
+	justify-content : center;
+	transition      : border-color .12s, color .12s, background .12s;
+	width           : 30px;
+
+
+}
+.rem-add-btn:hover { /* What: Hovered Add Reminder Button. Why: The button should respond to the pointer. How: This tints it in the accent color. */
+
+
+	background   : oklch(from var(--accent-soft) l c h / 0.5);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.rem-add-btn[aria-disabled="true"] { /* What: Disabled Add Reminder Button. Why: While the tutorials run, adding a reminder is unavailable and should look it. How: This dims the button and drops the pointer cursor, keying off the aria-disabled its info tip sets, but keeps pointer events, since the tip needs hover and taps to show why. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Reminder Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-add-btn { /* What: Still Add Reminder Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rem-add-btn */
+
+/* #endregion rem-h-r */
+
+/* #endregion group-h */
+
+
+
+/* #region today-list */
+
+.today-list { /* What: Reminder List. Why: The add message, quick-add form, and cards stack as the section's list. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+
+
+}
+
+.rem-added-msg { /* What: Add Result Message. Why: After adding, a short note says where the new reminder went, in a warning tone unless it lands today. How: This draws a small bordered note tinted warm. */
+
+
+	background    : oklch(from var(--warm) l c h/0.07);
+	border        : 0.5px solid var(--border);
+	border-color  : oklch(from var(--warm) l c h/0.35);
+	border-radius : var(--r-sm);
+	color         : oklch(0.45 0.13 50);
+	font-size     : 12.5px;
+	line-height   : 1.5;
+	margin        : 0 0 8px;
+	padding       : 9px 12px;
+
+
+}
+.rem-added-msg[data-message-ok-active] { /* What: Ok Add Result Message. Why: A reminder that lands in today's list reads as a success. How: This tints the note green. */
+
+
+	background   : oklch(0.5 0.11 155/0.06);
+	border-color : oklch(0.5 0.11 155/0.3);
+	color        : oklch(0.42 0.1 155);
+
+
+}
+
+
+
+/* #region rem-quickadd-wrap */
+
+.rem-quickadd-wrap { /* What: Quick-Add Form. Why: The add form drops into the top of the list and eases away when closed. How: This fades it in on mount, and plays its close while it carries the closing class. */
+
+
+	animation : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+.rem-quickadd-wrap.is-closing { /* What: Closing Quick-Add Form. Why: The form should ease away rather than vanish. How: This fades it upward, clipping it while it goes. */
+
+
+	animation : remQuickOut .18s ease both;
+	overflow  : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Quick-Add Form. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-quickadd-wrap { /* What: Still Quick-Add Form. Why: The form should appear and close at once, while still ending the animation its handler waits on. How: This shortens its fades to .01ms instead of turning them off. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+@keyframes remQuickOut { /* What: Quick-Add Out. Why: The form should leave upward. How: This fades it out while lifting it slightly. */
+
+
+	from {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY(-6px);
+
+
+	}
+
+
+}
+
+/* #region rem-quickadd */
+
+.rem-quickadd { /* What: Quick-Add Name Row. Why: The new reminder's name field sits above its schedule. How: This lines the field up in a padded row that fades in. */
+
+
+	align-items : center;
+	animation   : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display     : flex;
+	gap         : 8px;
+	padding     : 4px 2px 8px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Quick-Add Name Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-quickadd { /* What: Still Quick-Add Name Row. Why: The row should simply appear. How: This turns its fade off and pins it fully shown. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.np-input { /* What: Quick-Add Name Input. Why: The name field fills the row. How: This draws a bordered field that grows across the row and borders in the accent color on focus. */
+
+
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-sm);
+	color         : var(--text);
+	flex          : 1;
+	font-family   : var(--font-sans);
+	font-size     : 14px;
+	margin-top    : 0;
+	max-width     : none;
+	outline       : none;
+	padding       : 10px 12px;
+	transition    : border-color .12s;
+	width         : 100%;
+
+
+}
+.np-input::placeholder { /* What: Quick-Add Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.np-input:focus { /* What: Focused Quick-Add Name Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Quick-Add Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-input { /* What: Still Quick-Add Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rem-quickadd */
+
+
+
+/* #region rem-inline-editor */
+
+.rem-inline-editor { /* What: Reminder Inline Editor. Why: Editing a reminder or filling in a new one opens a recessed card of fields, whose rows run edge to edge. How: This draws the card with no side padding, sets the --rem-inline-foot-* properties EdiFooCom reads for its divider, and fades it in. */
+
+
+	--rem-inline-foot-border-top : 0.5px solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-margin     : 0; /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
+	--rem-inline-foot-padding    : 14px 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
+	animation                    : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background                   : oklch(from var(--surface) calc(l - 0.006) c h);
+	border                       : 0.5px solid var(--border);
+	border-radius                : var(--r-md);
+	margin                       : 0 0 4px;
+	padding                      : 16px 0;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Reminder Inline Editor. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-inline-editor { /* What: Still Reminder Inline Editor. Why: The editor should simply appear. How: This turns its fade off and pins it fully shown. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.rem-inline-foot { /* What: Quick-Add Footer. Why: Cancel and Add end the form below a divider. How: This pushes them right in a padded row under a hairline. */
+
+
+	border-top      : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 8px;
+	justify-content : flex-end;
+	margin-top      : 0;
+	padding         : 14px 16px 0;
+
+
+}
+
+/* #endregion rem-inline-editor */
+
+/* #endregion rem-quickadd-wrap */
+
+
+
+/* #region today-card */
+
+.today-card { /* What: Reminder Card. Why: Each due reminder is a card like any other Today item, clickable to toggle. How: This lays the checkbox, body, and actions out on a three-column grid in a bordered card that fades between states. */
+
+
+	align-items           : center;
+	background            : var(--surface);
+	border                : 0.5px solid var(--border);
+	border-radius         : var(--r-lg);
+	cursor                : pointer;
+	display               : grid;
+	gap                   : 16px;
+	grid-template-columns : auto 1fr auto;
+	margin-bottom         : 10px;
+	padding               : 16px 18px;
+	perspective           : 800px;
+	transition            : background .15s, opacity .2s, border-color .12s;
+	user-select           : none;
+
+
+}
+.today-card[data-card-exhale-active] { /* What: Exhaling Reminder Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exhale-delay tab-today.jsx sets on each card. */
+
+
+	animation : global(cardExhale) var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+.today-card:last-child { /* What: Last Reminder Card. Why: The list ends at the last card with no gap. How: This drops its bottom margin. */
+
+
+	margin-bottom : 0;
+
+
+}
+.today-card:hover { /* What: Hovered Reminder Card. Why: The card should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+
+
+}
+.today-card:active { /* What: Pressed Reminder Card. Why: A press should register before the toggle lands. How: This shades the card. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.01) c h);
+
+
+}
+.today-card.is-removing { /* What: Removing Tutorial Card. Why: The tutorial card leaves with the rest of the checklist. How: This plays the shared skip-out collapse and stops it taking clicks. */
+
+
+	animation      : global(cardSkipOut) 380ms cubic-bezier(.4,.05,.7,.4) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	overflow       : hidden;
+	pointer-events : none;
+
+
+}
+.today-card[data-card-done-active] { /* What: Done Reminder Card. Why: A done reminder reads as settled. How: This shades the card slightly darker than the surface. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.005) c h);
+
+
+}
+.today-card[data-card-edit-active] { /* What: Editing Reminder Card. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
+
+
+	cursor : default;
+
+
+}
+.rem-card--insert { /* What: Inserted Reminder Card. Why: A newly added or newly due reminder drops into the list. How: This plays the card entrance, cleared by the card's own animationend handler. */
+
+
+	animation : remCardIn .32s cubic-bezier(.34,1.2,.5,1) both;
+
+
+}
+.rem-card--removing { /* What: Deleted Reminder Card. Why: A deleted reminder collapses out of the list. How: This plays the collapse, whose end drives the actual delete. */
+
+
+	animation : remCardOut .34s ease forwards;
+	overflow  : hidden;
+
+
+}
+.rem-card--purging { /* What: Purged Reminder Card. Why: A completed one-time reminder cleared by Generate slides up and fades before it goes. How: This plays the purge, ignoring clicks while it runs. */
+
+
+	animation      : remCardPurgeOut .3s cubic-bezier(.4,0,.2,1) forwards;
+	overflow       : hidden;
+	pointer-events : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Reminder Card. Why: Someone who asked for less motion shouldn't see the cards move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card { /* What: Still Reminder Card. Why: The card should switch states at once. How: This turns its transitions off. */
+
+
+		transition : none;
+
+
+	}
+
+	.today-card[data-card-exhale-active] { /* What: Still Exhaling Reminder Card. Why: The halo is only decoration. How: This turns the exhale off and pins the card at rest. */
+
+
+		animation  : none;
+		box-shadow : none;
+		transform  : none;
+
+
+	}
+
+	.today-card.is-removing { /* What: Instantly Removed Tutorial Card. Why: The collapse should finish at once rather than leave the card showing until it unmounts. How: This drops the animation and collapses the card to nothing. */
+
+
+		animation      : none;
+		border-width   : 0;
+		height         : 0;
+		margin         : 0;
+		min-height     : 0;
+		opacity        : 0;
+		padding-bottom : 0;
+		padding-top    : 0;
+
+
+	}
+
+	.rem-card--insert,
+	.rem-card--removing,
+	.rem-card--purging { /* What: Instant Reminder Card Animations. Why: The card should arrive and leave at once, while still ending the animations their handlers wait on. How: This shortens each to .01ms instead of turning it off. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+@keyframes remCardIn { /* What: Reminder Card In. Why: A short drop reads as the card arriving. How: This fades the card in from slightly above. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-8px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes remCardOut { /* What: Reminder Card Out. Why: The card should fold away rather than vanish. How: This fades it out while collapsing its height, margins, and padding. */
+
+
+	from {
+
+
+		max-height : 140px;
+		opacity    : 1;
+
+
+	}
+
+	to {
+
+
+		margin-bottom  : 0;
+		margin-top     : 0;
+		max-height     : 0;
+		opacity        : 0;
+		padding-bottom : 0;
+		padding-top    : 0;
+
+
+	}
+
+
+}
+@keyframes remCardPurgeOut { /* What: Reminder Card Purge Out. Why: A purged card slides up as it leaves. How: This fades it upward while collapsing its height, margin, and padding. */
+
+
+	from {
+
+
+		margin-bottom  : 10px;
+		max-height     : 140px;
+		opacity        : 1;
+		padding-bottom : 16px;
+		padding-top    : 16px;
+		transform      : none;
+
+
+	}
+
+	to {
+
+
+		margin-bottom  : 0;
+		max-height     : 0;
+		opacity        : 0;
+		padding-bottom : 0;
+		padding-top    : 0;
+		transform      : translateY(-10px);
+
+
+	}
+
+
+}
+
+/* #region check */
+
+.check { /* What: Reminder Checkbox. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small rounded box that fades between states. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 1px solid var(--border);
+	border-radius      : 8px;
+	color              : inherit;
+	display            : inline-flex;
+	flex               : none;
+	font               : inherit;
+	height             : 24px;
+	justify-content    : center;
+	margin             : 0;
+	padding            : 0;
+	position           : relative;
+	transition         : background .12s, border-color .12s, color .12s;
+	width              : 24px;
+
+
+}
+button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: This sets the pointer cursor. */
+
+
+	cursor : pointer;
+
+
+}
+.check:focus-visible { /* What: Focused Checkbox. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
+
+
+	box-shadow     : 0 0 0 3px var(--bg);
+	outline        : 2px solid var(--accent);
+	outline-offset : 3px;
+
+
+}
+.today-card[data-card-done-active] .check:focus-visible { /* What: Focused Done Checkbox. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
+
+
+	box-shadow : 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
+
+
+}
+.check:hover { /* What: Hovered Checkbox. Why: The box should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--text);
+
+
+}
+.today-card[data-card-done-active] .check { /* What: Done Checkbox. Why: A done reminder's box reads as filled. How: This fills it in the accent color. */
+
+
+	background   : var(--accent);
+	border-color : var(--accent);
+	color        : var(--bg);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Reminder Checkbox. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.check { /* What: Still Reminder Checkbox. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.check-ripple { /* What: Checkbox Ripple. Why: Checking a reminder sends a ring out from its box. How: This draws a hidden accent ring just outside the box that ignores the pointer. */
+
+
+	border         : 1.5px solid var(--accent);
+	border-radius  : 9px;
+	inset          : -1px;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+.today-card.is-fresh .check-ripple { /* What: Fresh Checkbox Ripple. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
+
+
+	animation : global(checkRipple) 600ms cubic-bezier(.2,.6,.3,1) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fresh Checkbox Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card.is-fresh .check-ripple { /* What: Still Fresh Checkbox Ripple. Why: The ring is only decoration. How: This turns the ripple off and keeps the ring hidden. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+.today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when a reminder is checked. How: This plays the shared spring on the mark. */
+
+
+	animation : global(checkSpring) 360ms cubic-bezier(.22,1.4,.36,1) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Done Check Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card[data-card-done-active] .check svg { /* What: Still Done Check Mark. Why: The mark is state, so it stays while the spring goes. How: This turns the spring off and pins the mark fully shown. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion check */
+
+
+
+/* #region today-card-body */
+
+.today-card-body { /* What: Reminder Card Body. Why: The meta line and name stack as the card's text. How: This stacks them in a column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+/* #region today-card-meta */
+
+.today-card-meta { /* What: Reminder Meta Line. Why: The reminder's schedule reads as quiet metadata above its name. How: This sets it in small muted mono type beside its icon, without the uppercase other cards use. */
+
+
+	align-items    : center;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 6px;
+	letter-spacing : 0.02em;
+	text-transform : none;
+
+
+}
+
+.today-card-meta svg { /* What: Reminder Meta Icon. Why: The icon marks the card as a reminder. How: This tints it in the accent color. */
+
+
+	color : var(--accent);
+
+
+}
+
+.meta-picker { /* What: Reminder Meta Label. Why: The schedule label stays muted. How: This sets it in the muted color. */
+
+
+	color : var(--muted);
+
+
+}
+
+.meta-dot { /* What: Reminder Meta Dot. Why: The separator should sit quieter than the text around it. How: This fades it. */
+
+
+	opacity : 0.5;
+
+
+}
+
+/* #endregion today-card-meta */
+
+
+
+.rem-card-name-input { /* What: Reminder Name Input. Why: An editing card renames its reminder in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+
+
+	background     : none;
+	border         : none;
+	border-bottom  : 1px solid var(--border);
+	color          : var(--text);
+	font-family    : var(--font-sans);
+	font-size      : 17px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	margin         : 0;
+	padding        : 1px 0;
+	transition     : border-color .12s;
+	width          : 100%;
+
+
+}
+.rem-card-name-input:focus { /* What: Focused Reminder Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var(--accent);
+	outline             : none;
+
+
+}
+.rem-card-name-input::placeholder { /* What: Reminder Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Reminder Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-card-name-input { /* What: Still Reminder Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.today-card-name { /* What: Reminder Name. Why: The reminder's name is the card's headline. How: This sets it large and medium weight. */
+
+
+	font-size      : 17px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	text-wrap      : pretty;
+
+
+}
+.today-card[data-card-done-active] .today-card-name { /* What: Done Reminder Name. Why: A done reminder reads as crossed off. How: This mutes and strikes through its name. */
+
+
+	color                     : var(--muted);
+	text-decoration           : line-through;
+	text-decoration-thickness : 0.5px;
+
+
+}
+
+/* #endregion today-card-body */
+
+
+
+/* #region today-card-actions */
+
+.today-card-actions { /* What: Reminder Card Actions. Why: Skip and Edit sit together at the card's end. How: This lays them out in a row. */
+
+
+	display : flex;
+	gap     : 4px;
+
+
+}
+
+.icon-btn { /* What: Reminder Action Button. Why: Each action is a small icon button. How: This draws a square hit area that tints on hover. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	display         : inline-flex;
+	height          : 30px;
+	justify-content : center;
+	transition      : background .12s, color .12s;
+	width           : 30px;
+
+
+}
+.icon-btn:hover { /* What: Hovered Reminder Action Button. Why: The button should respond to the pointer. How: This fills it with the background color and darkens its icon. */
+
+
+	background : var(--bg);
+	color      : var(--text);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Reminder Action Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.icon-btn { /* What: Still Reminder Action Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion today-card-actions */
+
+/* #endregion today-card */
+
+
+
+/* #region rem-skip-confirm */
+
+.rem-skip-confirm { /* What: Skip Confirm. Why: Skipping a reminder asks first, in a recessed card under it. How: This spreads the question and its actions across a wrapping row and fades the card in. */
+
+
+	align-items     : center;
+	animation       : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background      : oklch(from var(--surface) calc(l - 0.006) c h);
+	border          : 0.5px solid var(--border);
+	border-radius   : var(--r-md);
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : 16px;
+	justify-content : space-between;
+	margin          : -4px 0 4px;
+	padding         : 14px 16px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Skip Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-skip-confirm { /* What: Still Skip Confirm. Why: The card should simply appear. How: This turns its fade off and pins it fully shown. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.rem-skip-msg { /* What: Skip Question. Why: The question reads as body text, with the date in bold. How: This sets it in the text color. */
+
+
+	color     : var(--text);
+	font-size : 14px;
+
+
+}
+.rem-skip-msg strong { /* What: Skip Date. Why: The date the reminder skips to is the answer that matters. How: This sets it bold. */
+
+
+	font-weight : 600;
+
+
+}
+
+.rem-skip-actions { /* What: Skip Actions. Why: The confirm's buttons stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+
+
+	display : flex;
+	flex    : 0 0 auto;
+	gap     : 8px;
+
+
+}
+
+/* #endregion rem-skip-confirm */
+
+/* #endregion today-list */
+
+/* #endregion group-section */
+
+

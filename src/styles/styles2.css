@@ -1675,53 +1675,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .sched-line .switch { cursor: pointer; }
 .sched-off-note { font-size: 13px; color: var(--muted); }
 
-/* ─── Reminders ──────────────────────────────────────────────────────────── */
-/* Today section: reuses .today-card / .check / .group-h. Extras only. */
-.rem-section .group-h { align-items: center; }
-.rem-meta { text-transform: none; letter-spacing: 0.02em; }
-.rem-meta .meta-picker { color: var(--muted); }
-
-/* Reminders' header has a group-progress bar AND an add button sharing the
-   header's right-hand flex slot (`.group-h`'s own space-between only expects
-   two children) — wrap both together so the header stays a simple 2-child
-   row like every other group's. */
-.rem-h-r { display: flex; align-items: center; gap: 10px; }
-.rem-add-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; flex: 0 0 auto;
-  border: 0.5px solid var(--border); border-radius: 999px;
-  background: var(--bg); color: var(--muted); cursor: pointer;
-  transition: border-color .12s, color .12s, background .12s;
-}
-.rem-add-btn:hover { border-color: var(--accent); color: var(--accent); background: oklch(from var(--accent-soft) l c h / 0.5); }
-/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
-   pointer-events:none here — this instance is an InfoTip span (see
-   reminders-section.jsx's tutProFun), not a real <button>, whenever
-   ONB_CHE_OBJ.tutProFun is true, and InfoTip needs real
-   hover/tap events reaching it to show its tooltip at all (see
-   .btn.is-disabled in styles.css, the same InfoTip pattern used by the
-   Generate card, which omits it for the same reason). Nothing unsafe
-   fires either way: the real onClick isn't wired to this element while
-   disabled. */
-.rem-add-btn.is-tour-disabled { opacity: 0.4; cursor: default; }
-
-/* Pin icon (one-time reminders) gets the warm accent to read as "sticky". */
-.rem-card .rem-meta svg { color: var(--accent); }
-
-/* When a reminder's editor is open, its title becomes a direct-edit input —
-   same affordance as the Data tab's name field, sized to match the card title. */
-.rem-card-name-input {
-  width: 100%; margin: 0; padding: 1px 0;
-  border: none; background: none;
-  font-family: var(--font-sans);
-  font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: var(--text);
-  border-bottom: 1px solid var(--border);
-  transition: border-color .12s;
-}
-.rem-card-name-input:focus { outline: none; border-bottom-color: var(--accent); }
-.rem-card-name-input::placeholder { color: var(--muted); opacity: 0.7; }
-.rem-card.is-editing { cursor: default; }
-
 /* Today picker entry: edit affordance — name turns into a direct-edit input and
    a controls box (weight / active / delete) opens beneath, mirroring Data. */
 .entry-card-name-input {
@@ -1757,13 +1710,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .entry-editor .pie-ctl .np-ease-unit { font-size: 12px; }
 /* Data picker items: dim an inactive item's name in the resting row. */
 .rd-item.is-vac .rd-name { color: var(--muted); }
-
-.rem-quickadd {
-  display: flex; gap: 8px; align-items: center;
-  padding: 4px 2px;
-  animation: np-row-in .16s ease;
-}
-.rem-quickadd .np-input { flex: 1; max-width: none; margin-top: 0; }
 
 /* Inline editor shown under a Today card when its pencil is toggled. This
    sits inside a <ColDisCom> (collapse.jsx), whose .collapse-inner has a permanent
@@ -1805,54 +1751,13 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   border-top: 0.5px solid var(--border);
 }
 
-/* Quick-add: name input sits flush above the same scheduling box. */
-.rem-quickadd-wrap { animation: np-row-in .16s ease; }
-.rem-quickadd-wrap.is-closing { animation: remQuickOut .18s ease both; overflow: hidden; }
-@keyframes remQuickOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-6px); } }
-@media (prefers-reduced-motion: reduce) { .rem-quickadd-wrap, .rem-quickadd-wrap.is-closing { animation-duration: .01ms; } }
-/* Reminder card entrance (freshly added) + collapse-out (deleted). The removing
-   keyframe drives removeTask via onAnimationEnd, so keep it instant (not none)
-   under reduced motion. */
-@keyframes remCardIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
-.rem-card--insert { animation: remCardIn .32s cubic-bezier(.34,1.2,.5,1) both; }
-@keyframes remCardOut { from { opacity: 1; max-height: 140px; } to { opacity: 0; max-height: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }
-.rem-card--removing { animation: remCardOut .34s ease forwards; overflow: hidden; }
-@media (prefers-reduced-motion: reduce) { .rem-card--insert, .rem-card--removing { animation-duration: .01ms; } }
-/* Completed one-time reminder purged by Generate: slides up + fades before the
-   commit removes it from state, instead of vanishing instantly. */
-@keyframes remCardPurgeOut {
-  from { opacity: 1; transform: none; max-height: 140px; margin-bottom: 10px; padding-top: 16px; padding-bottom: 16px; }
-  to   { opacity: 0; transform: translateY(-10px); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
-}
-.rem-card--purging { animation: remCardPurgeOut .3s cubic-bezier(.4,0,.2,1) forwards; overflow: hidden; pointer-events: none; }
-@media (prefers-reduced-motion: reduce) { .rem-card--purging { animation-duration: .01ms; } }
-.rem-quickadd-wrap .rem-quickadd { padding-bottom: 8px; }
-.rem-quickadd-wrap .rem-inline-editor { margin-top: 0; }
-
 /* Today inline reminder editor: the schedule editor's stacked layout draws its
    own row dividers edge to edge, so the card drops its side padding, and the
    footer's top border doubles against the editor's closing line. */
-.today-list .rem-inline-editor:not(.entry-editor) { padding-left: 0; padding-right: 0; }
 .today-list .rem-inline-editor .rem-inline-foot { border-top: 0.5px solid var(--border); padding: 14px 16px 0; margin-top: 0; }
 .today-list .rem-inline-editor .rem-inline-foot.rd-edit-foot { margin-top: 0; }
 /* EdiFooCom's module footer reads the same divider through custom properties. */
 .today-list .rem-inline-editor { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0; --rem-inline-foot-padding: 14px 16px 0; }
-
-/* Skip-until confirmation, revealed under a reminder like the inline editor. */
-.rem-skip-confirm {
-  margin: -4px 0 4px;
-  padding: 14px 16px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  flex-wrap: wrap;
-  background: oklch(from var(--surface) calc(l - 0.006) c h);
-  border: 0.5px solid var(--border); border-radius: var(--r-md);
-  animation: np-row-in .16s ease;
-}
-.rem-skip-msg { font-size: 14px; color: var(--text); }
-.rem-skip-msg strong { font-weight: 600; }
-.rem-skip-actions { display: flex; gap: 8px; flex: 0 0 auto; }
-
-
 
 /* Data-tab cadence row: cadence + anchor selects, wrap on narrow. flex-start
    (not flex-end) so a wrapped second line (Monthly/Yearly nth-weekday, or
@@ -3000,9 +2905,7 @@ body[data-tour-active]{--tab-tour-padding:200px}
     transform: none;
   }
   /* The inline editors: all entrance fades. */
-  /* .rem-quickadd-wrap was already covered; this is the inner row, which has its
-     own np-row-in fade. */
-  .rem-quickadd, .rem-inline-editor, .rem-skip-confirm {
+  .rem-inline-editor {
     animation: none;
     opacity: 1;
     transform: none;
@@ -3015,7 +2918,3 @@ body[data-tour-active]{--tab-tour-padding:200px}
    same treatment as .set-store-chip.is-warn. */
 .set-rm-note { color: oklch(0.45 0.13 50); }
 
-/* Post-create confirmation, in the list where the new card would appear. */
-.rem-added-msg { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; padding: 9px 12px; border-radius: var(--r-sm); border: 0.5px solid var(--border); background: var(--surface); }
-.rem-added-msg.is-ok { color: oklch(0.42 0.1 155); border-color: oklch(0.5 0.11 155/0.3); background: oklch(0.5 0.11 155/0.06); }
-.rem-added-msg.is-warn { color: oklch(0.45 0.13 50); border-color: oklch(from var(--warm) l c h/0.35); background: oklch(from var(--warm) l c h/0.07); }
