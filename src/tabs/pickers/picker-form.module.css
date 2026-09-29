@@ -1,0 +1,1706 @@
+
+
+
+/**
+ * picker-form.module.css = Picker Form Module
+ *
+ * @summary
+ * Styles for PicForCom, the two-step form that creates or edits a picker:
+ * its header and step bar, the Details step (name, group chips, the pick
+ * mode radio, the conditional toggle with its rail and new-conditional
+ * editor, and the daily schedule with its days, holidays, and duplicates
+ * switches), and the Items step (the item pool, its delete confirm, and the
+ * add-item rows that reuse the item editor), each ending in its own footer.
+ * The current and finished steps key off data-step-current-active and
+ * data-step-done-active, a chosen group chip off data-chip-select-active, the
+ * chosen mode off data-option-select-active, the chosen conditional off
+ * data-pill-select-active, a switch off its own aria-checked, and a blocked
+ * Delete tip off its own aria-disabled. The pool row, confirm, and add-item
+ * animations are this file's own module classes, and the add-item rows set
+ * the --entry-editor-* properties the item editor reads.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region picker-view */
+
+.picker-view { /* What: Picker Form. Why: The header, steps, and current step stack as one form. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 18px;
+
+
+}
+
+/* #region picker-h */
+
+.picker-h { /* What: Form Header. Why: The kicker and title head the form. How: This lays them out in a top-aligned row. */
+
+
+	align-items     : flex-start;
+	display         : flex;
+	gap             : 16px;
+	justify-content : space-between;
+
+
+}
+
+.kicker { /* What: Kicker. Why: A small eyebrow label names whether the form creates or edits. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : 22px;
+	text-transform : uppercase;
+
+
+}
+
+.picker-title { /* What: Form Title. Why: The form's title, or the picker's name while editing, heads the form. How: This sets it large and tight. */
+
+
+	font-size      : 28px;
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	margin         : 4px 0 0;
+
+
+}
+@container app (max-width: 520px) { /* What: Narrow Form Title. Why: A narrow app needs a smaller title. How: This applies only when the app matches (max-width: 520px). */
+
+
+	.picker-title { /* What: Smaller Form Title. Why: The title has less room. How: This drops it to 24px. */
+
+
+		font-size : 24px;
+
+
+	}
+
+
+}
+
+/* #endregion picker-h */
+
+
+
+/* #region np-steps */
+
+.np-steps { /* What: Step Bar. Why: The form's two steps read as a small numbered bar joined by a line. How: This lines the steps and their connector up in a row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 10px;
+	margin      : 2px 0 4px;
+
+
+}
+
+/* #region np-step */
+
+.np-step { /* What: Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label. */
+
+
+	align-items : center;
+	background  : none;
+	border      : none;
+	color       : var(--muted);
+	cursor      : pointer;
+	display     : inline-flex;
+	gap         : 8px;
+	padding     : 2px;
+
+
+}
+.np-step:disabled { /* What: Unavailable Step Button. Why: The Items step can't be reached until the details are ready. How: This drops the pointer cursor. */
+
+
+	cursor : default;
+
+
+}
+.np-step[data-step-current-active] { /* What: Current Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
+
+
+	color : var(--text);
+
+
+}
+.np-step[data-step-done-active] { /* What: Finished Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
+
+
+	color : var(--text);
+
+
+}
+
+.np-step-num { /* What: Step Number. Why: Each step shows its number, or a check once done, in a small circle. How: This centers it in an outlined 22px circle that fades between states. */
+
+
+	align-items     : center;
+	border          : 1px solid var(--border);
+	border-radius   : 999px;
+	color           : var(--muted);
+	display         : inline-flex;
+	font-family     : var(--font-mono);
+	font-size       : 11px;
+	font-weight     : 600;
+	height          : 22px;
+	justify-content : center;
+	transition      : border-color .12s, background .12s, color .12s;
+	width           : 22px;
+
+
+}
+.np-step[data-step-current-active] .np-step-num { /* What: Current Step Number. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
+
+
+	background   : var(--accent);
+	border-color : var(--accent);
+	color        : var(--accent-ink, #fff);
+
+
+}
+.np-step[data-step-done-active] .np-step-num { /* What: Finished Step Number. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
+
+
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Step Number. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-step-num { /* What: Still Step Number. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.np-step-lbl { /* What: Step Label. Why: Each step names itself beside its number. How: This sets it in medium weight. */
+
+
+	font-size   : 13px;
+	font-weight : 500;
+
+
+}
+
+/* #endregion np-step */
+
+
+
+.np-step-line { /* What: Step Connector. Why: A short line joins the two steps. How: This draws a 28px hairline. */
+
+
+	background : var(--border);
+	flex       : 0 0 28px;
+	height     : 1px;
+
+
+}
+
+/* #endregion np-steps */
+
+
+
+/* #region tab-fade */
+
+.tab-fade { /* What: Step Fade. Why: Each step fades in as the form switches to it. How: This plays the shared tab fade. */
+
+
+	animation : global(tabFadeIn) .2s ease both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the app shell and the Pickers tab, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Step Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.tab-fade { /* What: Still Step Fade. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.picker-hint { /* What: Step Hint. Why: A hint opens each step, explaining what it asks for. How: This sets muted body text with a capped line length. */
+
+
+	color     : var(--muted);
+	font-size : 14px;
+	margin    : 0;
+	max-width : 56ch;
+	text-wrap : pretty;
+
+
+}
+.picker-hint + .picker-hint { /* What: Following Step Hint. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
+
+
+	margin-top : 8px;
+
+
+}
+.np-weight-note { /* What: Mode Note. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up 2px. */
+
+
+	margin-top : -2px;
+
+
+}
+
+
+
+/* #region np-fields */
+
+.np-fields { /* What: Details Fields. Why: The Details step's fields stack with room between them. How: This stacks them in a widely spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 24px;
+	margin-top     : 16px;
+
+
+}
+
+/* #region np-field */
+
+.np-field { /* What: Field. Why: Each field stacks its label, help, and control. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 8px;
+
+
+}
+fieldset.np-field { /* What: Mode Fieldset. Why: The mode radio is a real fieldset for its group name, stripped of the browser's frame. How: This clears its border, margin, and padding and lets it shrink. */
+
+
+	border    : 0;
+	margin    : 0;
+	min-width : 0;
+	padding   : 0;
+
+
+}
+.np-daily-group { /* What: Daily Generator Field. Why: The toggle and its schedule sit closer together than other fields' pieces. How: This tightens the gap. */
+
+
+	gap : 4px;
+
+
+}
+.np-tour-name { /* What: Tour Name Field. Why: The Items step's name field, shown during the tour, needs room above and below. How: This adds 16px margins. */
+
+
+	margin : 16px 0 16px;
+
+
+}
+
+.np-label { /* What: Field Label. Why: Each field is named above its control. How: This sets the label in medium weight. */
+
+
+	font-size      : 15px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+
+
+}
+legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like any other field label. How: This clears the legend's own padding and float. */
+
+
+	float   : none;
+	padding : 0;
+	width   : 100%;
+
+
+}
+
+.np-help { /* What: Field Help. Why: The help line explains what each field is for. How: This sets muted body text with a capped line length. */
+
+
+	color       : var(--muted);
+	font-size   : 13px;
+	line-height : 1.5;
+	margin      : 0;
+	max-width   : 60ch;
+	text-wrap   : pretty;
+
+
+}
+
+.set-sub-fade { /* What: Fading Help. Why: Help that changes with its switch fades in each time it does. How: This plays the shared fade whenever its keyed paragraph remounts. */
+
+
+	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Help. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-sub-fade { /* What: Still Fading Help. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.np-input { /* What: Text Input. Why: Names are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
+
+
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-sm);
+	color         : var(--text);
+	font-family   : var(--font-sans);
+	font-size     : 14px;
+	margin-top    : 2px;
+	max-width     : 360px;
+	outline       : none;
+	padding       : 10px 12px;
+	transition    : border-color .12s;
+	width         : 100%;
+
+
+}
+.np-input::placeholder { /* What: Text Input Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.np-input:focus { /* What: Focused Text Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+.np-input--sm { /* What: Short Text Input. Why: The new group's name needs less width. How: This caps it at 260px. */
+
+
+	max-width : 260px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Text Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-input { /* What: Still Text Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region np-groups */
+
+.np-groups { /* What: Group Chips. Why: The existing groups and the New Group chip wrap together under the label. How: This lays them out in a wrapping row. */
+
+
+	display    : flex;
+	flex-wrap  : wrap;
+	gap        : 8px;
+	margin-top : 2px;
+
+
+}
+
+.np-chip { /* What: Group Chip. Why: Each group is a chip that files the picker under it. How: This draws an outlined pill that fades between colors. */
+
+
+	align-items   : center;
+	background    : var(--surface);
+	border        : 0.5px solid var(--border);
+	border-radius : 999px;
+	color         : var(--text);
+	cursor        : pointer;
+	display       : inline-flex;
+	font-size     : 13px;
+	font-weight   : 500;
+	gap           : 5px;
+	padding       : 7px 14px;
+	transition    : border-color .12s, background .12s, color .12s;
+
+
+}
+.np-chip:hover { /* What: Hovered Group Chip. Why: The chip should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.np-chip[data-chip-select-active] { /* What: Chosen Group Chip. Why: The picker's group should stand out. How: This fills it in the soft accent, keying off data-chip-select-active. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.np-chip--new { /* What: New Group Chip. Why: Adding a group reads as a dashed placeholder chip. How: This dashes it in muted text. */
+
+
+	border-style : dashed;
+	color        : var(--muted);
+
+
+}
+.np-chip--new[data-chip-select-active] { /* What: Open New Group Chip. Why: While its name field is open, the chip reads as chosen. How: This solidifies it in the accent. */
+
+
+	border-style : solid;
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-chip { /* What: Still Group Chip. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion np-groups */
+
+
+
+/* #region mode-radio */
+
+.mode-radio { /* What: Mode Radio. Why: The pick modes stack as bordered option cards. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 4px;
+
+
+}
+
+/* #region mode-opt */
+
+.mode-opt { /* What: Mode Option. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states. */
+
+
+	align-items   : flex-start;
+	background    : oklch(from var(--surface) calc(l - 0.005) c h);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-md);
+	cursor        : pointer;
+	display       : flex;
+	gap           : 10px;
+	padding       : 10px 12px;
+	transition    : border-color .12s, background .12s;
+
+
+}
+.mode-opt:hover { /* What: Hovered Mode Option. Why: The card should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
+
+
+	outline        : 2px solid var(--accent);
+	outline-offset : 2px;
+
+
+}
+.mode-opt[data-option-select-active] { /* What: Chosen Mode Option. Why: The picker's mode should stand out. How: This fills the card in the soft accent, keying off data-option-select-active. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.mode-opt { /* What: Still Mode Option. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.mode-opt input { /* What: Mode Option Radio. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look and draws an outlined 14px circle. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	border             : 1px solid var(--border);
+	border-radius      : 50%;
+	height             : 14px;
+	margin-top         : 2px;
+	min-width          : 14px;
+	position           : relative;
+	transition         : border-color .12s;
+	width              : 14px;
+
+
+}
+.mode-opt[data-option-select-active] input { /* What: Chosen Mode Option Radio. Why: The chosen radio rings in the accent. How: This borders it in the accent. */
+
+
+	border-color : var(--accent);
+
+
+}
+.mode-opt[data-option-select-active] input::after { /* What: Chosen Mode Option Radio Dot. Why: The chosen radio is filled. How: This draws an accent disc inside the ring. */
+
+
+	background    : var(--accent);
+	border-radius : 50%;
+	content       : '';
+	inset         : 3px;
+	position      : absolute;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option Radio. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.mode-opt input { /* What: Still Mode Option Radio. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.mode-opt-name { /* What: Mode Option Name. Why: The mode's name leads the card. How: This sets it in medium weight. */
+
+
+	font-size   : 14px;
+	font-weight : 500;
+
+
+}
+
+.mode-opt-hint { /* What: Mode Option Hint. Why: Each mode explains itself under its name. How: This sets small muted text. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.45;
+
+
+}
+.mode-opt-hint + .mode-opt-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+
+
+	margin-top : 6px;
+
+
+}
+
+/* #endregion mode-opt */
+
+/* #endregion mode-radio */
+
+
+
+/* #region np-field--toggle */
+
+.np-field--toggle { /* What: Toggle Field. Why: A field whose answer is on or off puts its text beside a switch, divided from the field above. How: This spreads them across a top-aligned row under a hairline. */
+
+
+	align-items     : flex-start;
+	border-top      : 0.5px solid var(--border);
+	display         : flex;
+	flex-direction  : row;
+	gap             : 20px;
+	justify-content : space-between;
+	padding-top     : 20px;
+
+
+}
+
+.np-field--toggle .np-toggle-text { /* What: Toggle Field Text. Why: A toggle field's label and help stack together beside its switch. How: This stacks them in a spaced column, while the schedule's own toggles keep their plain block flow. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 8px;
+
+
+}
+.np-cond .np-field--toggle .np-toggle-text { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at 440px. */
+
+
+	max-width : 440px;
+
+
+}
+
+/* #region switch */
+
+.switch { /* What: Setting Switch. Why: Each on or off setting uses a switch that keeps its size beside its text. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var(--border);
+	border-radius : 999px;
+	cursor        : pointer;
+	flex-shrink   : 0;
+	height        : 20px;
+	margin-top    : 2px;
+	position      : relative;
+	transition    : background .15s;
+	width         : 36px;
+
+
+}
+.switch[aria-checked="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
+
+
+	background : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch { /* What: Still Setting Switch. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.switch i { /* What: Setting Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var(--bg);
+	border-radius : 50%;
+	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	height        : 16px;
+	left          : 2px;
+	position      : absolute;
+	top           : 2px;
+	transition    : transform .15s;
+	width         : 16px;
+
+
+}
+.switch[aria-checked="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX(16px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch i { /* What: Still Setting Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion switch */
+
+/* #endregion np-field--toggle */
+
+
+
+/* #region cnd-attach */
+
+.cnd-attach { /* What: Conditional Attach Area. Why: The conditional rail and the new-conditional editor stack under the toggle. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 14px;
+	padding-top    : 12px;
+
+
+}
+
+/* #region cnd-rail */
+
+.cnd-rail { /* What: Conditional Rail. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fade             : 28px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	gap                : 8px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	overflow-x         : auto;
+	padding-bottom     : 2px;
+	scrollbar-width    : none;
+
+
+}
+.cnd-rail::-webkit-scrollbar { /* What: Conditional Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.cnd-rail[data-scroll-start-active] { /* What: Conditional Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.cnd-rail[data-scroll-end-active] { /* What: Conditional Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+
+/* #region cnd-pill */
+
+.cnd-pill { /* What: Conditional Pill. Why: Each conditional is a card-like pill that attaches it to the picker. How: This draws a bordered card with the name over the mode, fading between states. */
+
+
+	background      : var(--surface);
+	border          : 0.5px solid var(--border);
+	border-radius   : 12px;
+	cursor          : pointer;
+	display         : flex;
+	flex-direction  : column;
+	flex-shrink     : 0;
+	gap             : 3px;
+	justify-content : center;
+	min-width       : 132px;
+	padding         : 10px 14px;
+	text-align      : left;
+	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
+
+
+}
+.cnd-pill:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.cnd-pill[data-pill-select-active] { /* What: Chosen Conditional Pill. Why: The conditional to attach should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	box-shadow   : 0 0 0 1px var(--accent) inset;
+
+
+}
+.cnd-pill--new { /* What: New Conditional Pill. Why: Adding a conditional reads as a dashed placeholder with its icon beside the label. How: This lays it out in a row, dashed and muted. */
+
+
+	align-items    : center;
+	border-style   : dashed;
+	color          : var(--muted);
+	flex-direction : row;
+	gap            : 8px;
+
+
+}
+.cnd-pill--new[data-pill-select-active] { /* What: Open New Conditional Pill. Why: While the new-conditional editor is open, its pill reads as chosen. How: This colors it in the accent. */
+
+
+	color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Conditional Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cnd-pill { /* What: Still Conditional Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.cnd-pill-name { /* What: Conditional Pill Name. Why: The conditional's name leads its pill. How: This sets it in medium weight body color. */
+
+
+	color       : var(--text);
+	font-size   : 14px;
+	font-weight : 500;
+
+
+}
+.cnd-pill--new .cnd-pill-name { /* What: New Conditional Pill Label. Why: The placeholder's label reads muted with its pill. How: This mutes it. */
+
+
+	color       : var(--muted);
+	font-weight : 500;
+
+
+}
+.cnd-pill--new[data-pill-select-active] .cnd-pill-name { /* What: Open New Conditional Pill Label. Why: The label follows its pill's accent. How: This colors it. */
+
+
+	color : var(--accent);
+
+
+}
+
+.cnd-pill-mode { /* What: Conditional Pill Mode. Why: Each pill names its conditional's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion cnd-pill */
+
+/* #endregion cnd-rail */
+
+/* #endregion cnd-attach */
+
+
+
+/* #region np-sched */
+
+.np-sched { /* What: Schedule Settings. Why: The daily generator's cadence, days, holidays, and duplicates settings stack under its toggle. How: This stacks them in a widely spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 22px;
+	padding        : 18px 0 0 0;
+
+
+}
+
+/* #region np-sched-block */
+
+.np-sched-block { /* What: Schedule Block. Why: Each schedule setting's label, help, and control stack together. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 8px;
+
+
+}
+
+/* #region np-sched-row */
+
+.np-sched-row { /* What: Days Row. Why: The weekday chips and their presets sit on one row that wraps when tight. How: This lines them up in a wrapping row. */
+
+
+	align-items : center;
+	display     : flex;
+	flex-wrap   : wrap;
+	gap         : 16px;
+
+
+}
+
+/* #region np-sched-presets */
+
+.np-sched-presets { /* What: Day Presets. Why: The Every Day, Weekdays, and Weekends shortcuts sit together. How: This lines them up in a wrapping row. */
+
+
+	display   : flex;
+	flex-wrap : wrap;
+	gap       : 6px;
+
+
+}
+
+.np-preset { /* What: Day Preset. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text. */
+
+
+	background    : none;
+	border        : none;
+	border-radius : var(--r-sm);
+	color         : var(--accent);
+	cursor        : pointer;
+	font-size     : 12.5px;
+	padding       : 4px 6px;
+
+
+}
+.np-preset:hover { /* What: Hovered Day Preset. Why: The preset should respond to the pointer. How: This tints it in the soft accent. */
+
+
+	background : oklch(from var(--accent-soft) l c h);
+
+
+}
+
+/* #endregion np-sched-presets */
+
+/* #endregion np-sched-row */
+
+/* #endregion np-sched-block */
+
+
+
+.np-sched-toggle { /* What: Schedule Toggle. Why: The holidays and duplicates settings put their text beside a switch. How: This spreads them across a top-aligned row. */
+
+
+	align-items     : flex-start;
+	display         : flex;
+	gap             : 20px;
+	justify-content : space-between;
+
+
+}
+
+/* #endregion np-sched */
+
+/* #endregion np-field */
+
+/* #endregion np-fields */
+
+
+
+/* #region np-footer */
+
+.np-footer { /* What: Step Footer. Why: Each step ends with a note and its actions below a divider. How: This spreads them across a centered row under a hairline. */
+
+
+	align-items     : center;
+	border-top      : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 16px;
+	justify-content : space-between;
+	padding-top     : 16px;
+
+
+}
+.np-pool + .np-footer { /* What: Items Footer. Why: The Items footer needs room below the pool. How: This spaces it 20px down. */
+
+
+	margin-top : 20px;
+
+
+}
+.np-footer--step1 { /* What: Details Footer. Why: The Details footer needs room below the fields. How: This spaces it 24px down. */
+
+
+	margin-top : 24px;
+
+
+}
+
+.np-footer-note { /* What: Footer Note. Why: The note says what the step still needs, in quiet mono type that takes the spare width. How: This sets small muted mono text capped at 40ch. */
+
+
+	color          : var(--muted);
+	flex           : 1 1 auto;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.03em;
+	max-width      : 40ch;
+	min-width      : 0;
+
+
+}
+
+.np-footer-actions { /* What: Footer Actions. Why: The step's buttons stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+
+
+}
+
+/* #endregion np-footer */
+
+
+
+/* #region np-pool */
+
+.np-pool { /* What: Items Pool. Why: The pool and the add-item area stack under the step's hints. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 8px;
+	margin-top     : 20px;
+
+
+}
+
+.np-pool-empty { /* What: Empty Pool. Why: A new picker with no items says what to add. How: This draws a dashed padded note in muted text. */
+
+
+	background    : oklch(from var(--surface) l c h / 0.5);
+	border        : 1px dashed var(--border);
+	border-radius : var(--r-sm);
+	color         : var(--muted);
+	font-size     : 13px;
+	line-height   : 1.5;
+	padding       : 18px 16px;
+	text-wrap     : pretty;
+
+
+}
+
+/* #region pool-list */
+
+.pool-list { /* What: Pool List. Why: The items read as one bordered list. How: This stacks the rows in a rounded surface that clips them. */
+
+
+	background     : var(--surface);
+	border         : 0.5px solid var(--border);
+	border-radius  : var(--r-md);
+	display        : flex;
+	flex-direction : column;
+	overflow       : hidden;
+
+
+}
+
+/* #region pool-row */
+
+.pool-row { /* What: Pool Row. Why: Each item is one row: name, meta, and its buttons. How: This lays them out on a five-column grid, divided from the next row. */
+
+
+	align-items           : center;
+	border-bottom         : 0.5px solid var(--border);
+	display               : grid;
+	gap                   : 16px;
+	grid-template-columns : 1fr auto auto auto auto;
+	padding               : 18px 16px;
+
+
+}
+@container app (max-width: 399px) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches (max-width: 399px). */
+
+
+	.pool-row { /* What: Tight Pool Row. Why: The columns need the room. How: This tightens the gap. */
+
+
+		gap : 10px;
+
+
+	}
+
+
+}
+.pool-row:last-child { /* What: Last Pool Row. Why: The list's own border already closes it. How: This drops the last row's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.pool-row--confirm { /* What: Confirming Pool Row. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
+
+
+	grid-template-columns : 1fr;
+
+
+}
+.pool-row--insert { /* What: Inserted Pool Row. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
+
+
+	animation : poolRowInsertFadeIn .6s cubic-bezier(.34,1.2,.5,1) both;
+
+
+}
+.pool-row--removing { /* What: Removing Pool Row. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
+
+
+	animation : poolRowRemove .34s ease forwards;
+	overflow  : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pool-row--insert,
+	.pool-row--removing { /* What: Instant Pool Row Animations. Why: The row should arrive and leave at once, while still ending the animations its handler waits on. How: This shortens both to .01ms. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+@keyframes poolRowInsertFadeIn { /* What: Pool Row Insert Fade In. Why: A short rise reads as the item settling in. How: This fades the row in from below. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(16px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes poolRowRemove { /* What: Pool Row Remove. Why: The row should fold away rather than vanish. How: This fades it while collapsing its height, padding, and divider. */
+
+
+	from {
+
+
+		max-height : 160px;
+		opacity    : 1;
+
+
+	}
+
+	to {
+
+
+		border-bottom-width : 0;
+		max-height          : 0;
+		opacity             : 0;
+		padding-bottom      : 0;
+		padding-top         : 0;
+
+
+	}
+
+
+}
+
+/* #region pool-confirm */
+
+.pool-confirm { /* What: Pool Delete Confirm. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in. */
+
+
+	align-items     : center;
+	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : 12px;
+	justify-content : space-between;
+
+
+}
+.pool-confirm.is-leaving { /* What: Leaving Pool Delete Confirm. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
+
+
+	animation : global(footSwapOut) .14s ease both; /* What: Global footSwapOut Keyframes. Why: The footSwapOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Delete Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pool-confirm,
+	.pool-confirm.is-leaving { /* What: Still Pool Delete Confirm. Why: The confirm should simply appear and go. How: This turns both slides off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.pool-confirm-msg { /* What: Pool Delete Question. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
+
+
+	font-size : 14px;
+	text-wrap : pretty;
+
+
+}
+
+.pool-confirm-actions { /* What: Pool Delete Actions. Why: Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+
+
+	display : flex;
+	flex    : 0 0 auto;
+	gap     : 8px;
+
+
+}
+
+/* #endregion pool-confirm */
+
+
+
+.pool-name { /* What: Pool Item Name. Why: The name takes the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines it up in a row that can shrink. */
+
+
+	align-items : center;
+	display     : flex;
+	font-size   : 14px;
+	gap         : 8px;
+	min-width   : 0;
+	text-wrap   : pretty;
+
+
+}
+@media (max-width: 480px) { /* What: Narrow Pool Item Name. Why: On a narrow row the name's contents wrap instead of competing for width. How: This applies only when the viewport matches (max-width: 480px). */
+
+
+	.pool-name { /* What: Wrapped Pool Item Name. Why: The name needs to wrap. How: This lets the row wrap. */
+
+
+		flex-wrap : wrap;
+
+
+	}
+
+
+}
+
+/* #region pool-meta */
+
+.pool-meta { /* What: Pool Item Meta. Why: The item's range or weight reads as small mono figures at the row's end. How: This lines them up right-aligned in muted mono type. */
+
+
+	align-items     : center;
+	color           : var(--muted);
+	display         : flex;
+	font-family     : var(--font-mono);
+	font-size       : 11px;
+	gap             : 12px;
+	justify-content : flex-end;
+	justify-self    : end;
+
+
+}
+
+.pool-ease-meta { /* What: Pool Item Range. Why: An ease item shows its soonest-to-latest range. How: This sets it in muted tabular figures. */
+
+
+	color                : var(--muted);
+	font-size            : 12.5px;
+	font-variant-numeric : tabular-nums;
+
+
+}
+
+.pool-weight { /* What: Pool Item Weight. Why: The weight figure lines up across rows. How: This sets it in tabular figures. */
+
+
+	font-variant-numeric : tabular-nums;
+
+
+}
+
+/* #endregion pool-meta */
+
+
+
+.pool-edit { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : 0.5px solid var(--border);
+	border-radius   : var(--r-sm);
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	height          : 30px;
+	justify-content : center;
+	justify-self    : end;
+	padding         : 0;
+	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	width           : 30px;
+
+
+}
+.pool-edit:hover { /* What: Hovered Pool Edit Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Edit Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pool-edit { /* What: Still Pool Edit Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.pool-del { /* What: Pool Delete Button. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : 0.5px solid var(--border);
+	border-radius   : var(--r-sm);
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	height          : 30px;
+	justify-content : center;
+	justify-self    : end;
+	padding         : 0;
+	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	width           : 30px;
+
+
+}
+.pool-del:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
+
+
+	background   : color-mix(in srgb, var(--danger, #d24545) 8%, transparent);
+	border-color : var(--danger, #d24545);
+	color        : var(--danger, #d24545);
+
+
+}
+.pool-del[aria-disabled="true"] { /* What: Blocked Pool Delete Button. Why: A delete blocked at the two-item minimum still shows its tip. How: This dims the tip's trigger, keying off the aria-disabled its info tip sets. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+.pool-del[aria-disabled="true"]:hover { /* What: Hovered Blocked Pool Delete Button. Why: A blocked button shouldn't react like a live one. How: This keeps its resting look. */
+
+
+	background   : none;
+	border-color : var(--border);
+	color        : var(--muted);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Delete Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pool-del { /* What: Still Pool Delete Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion pool-row */
+
+/* #endregion pool-list */
+
+
+
+/* #region pv-additem-wrap */
+
+.pv-additem-wrap { /* What: Add Item Area. Why: The new-item row, an open item editor, and the Add Item button share one slot below the pool. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 10px;
+
+
+}
+
+/* #region pv-newitem */
+
+.pv-newitem { /* What: Add Item Row. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --entry-editor-* properties the editor reads. */
+
+
+	--entry-editor-delete-display  : none;
+	--entry-editor-foot-justify    : flex-end;
+	--entry-editor-rows-border-top : 0;
+	--entry-editor-rows-margin-top : 0;
+	animation                      : global(pvNewItemIn) .3s cubic-bezier(.34,1.2,.5,1) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background                     : var(--surface);
+	border                         : 0.5px solid var(--border);
+	border-radius                  : var(--r-md);
+	overflow                       : hidden;
+
+
+}
+.pv-newitem.is-closing { /* What: Closing Add Item Row. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
+
+
+	animation : global(pvNewItemOut) .26s ease both; /* What: Global pvNewItemOut Keyframes. Why: The pvNewItemOut keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	overflow  : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pv-newitem { /* What: Still Add Item Row. Why: The card should simply appear. How: This turns its entrance off. */
+
+
+		animation : none;
+
+
+	}
+
+	.pv-newitem.is-closing { /* What: Instant Closing Add Item Row. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+
+/* #region rd-row */
+
+.rd-row { /* What: Add Item Name Row. Why: The item's name is edited in the row's header, which isn't clickable here. How: This lays the name field out in a padded row with the default cursor. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : default;
+	display            : flex;
+	font               : inherit;
+	gap                : 12px;
+	padding            : 11px 16px;
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+
+/* #region rd-main */
+
+.rd-main { /* What: Add Item Name Column. Why: The name field takes the row's remaining width. How: This makes it a shrinkable column. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.rd-name-input { /* What: Add Item Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline. */
+
+
+	background     : transparent;
+	border         : 0;
+	border-bottom  : 1px solid var(--border);
+	font           : inherit;
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+	padding        : 1px 0;
+	transition     : border-color .12s;
+	width          : 100%;
+
+
+}
+.rd-name-input:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var(--accent);
+	outline             : none;
+
+
+}
+.rd-name-input::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-name-input { /* What: Still Add Item Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rd-main */
+
+/* #endregion rd-row */
+
+
+
+.rd-edit { /* What: Add Item Editor Slot. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --entry-editor-* properties that strip the editor's chrome. */
+
+
+	--entry-editor-background    : none;
+	--entry-editor-border        : 0;
+	--entry-editor-border-radius : 0;
+	--entry-editor-margin        : 0;
+	--entry-editor-padding       : 0;
+	border-top                   : 0.5px solid var(--border);
+	padding                      : 2px 16px 14px;
+
+
+}
+
+/* #endregion pv-newitem */
+
+
+
+.pv-additem-btn { /* What: Add Item Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : 1px dashed var(--border);
+	border-radius   : var(--r-md);
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	font            : inherit;
+	font-size       : 13.5px;
+	font-weight     : 500;
+	gap             : 6px;
+	justify-content : center;
+	padding         : 10px 14px;
+	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	width           : 100%;
+
+
+}
+.pv-additem-btn:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pv-additem-btn { /* What: Still Add Item Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion pv-additem-wrap */
+
+/* #endregion np-pool */
+
+/* #endregion tab-fade */
+
+/* #endregion picker-view */
+
+

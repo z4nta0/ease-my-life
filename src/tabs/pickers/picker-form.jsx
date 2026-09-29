@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: PicForCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import cssModObj from './picker-form.module.css'; // What: CSS Module Object. Why: PicForCom's own styles live in its module. How: Each className reads its hashed class from here.
+import React     from 'react';                   // What: React. Why: PicForCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.jsx';               // What: Button Base Component. Why: The form's step, add, save and cancel actions need consistently-styled controls. How: This is rendered for each of those actions.
@@ -1045,19 +1046,19 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		<div
 			ref={ forWraRef }
 
-			className='picker-view np-form'
+			className={ cssModObj.pickerView }
 		>{ /* What: Picker Form Div Element. Why: This is PicForCom's own root, holding the header, the step indicator (create only), and whichever step's own content is active. How: This wraps every piece of the create/edit form. */ }
 
 
-			<header className='picker-h'>{ /* What: Picker Header Element. Why: The kicker and heading read as one title block. How: This wraps those two pieces. */ }
+			<header className={ cssModObj.pickerH }>{ /* What: Picker Header Element. Why: The kicker and heading read as one title block. How: This wraps those two pieces. */ }
 
 
 				<div>{ /* What: Header Text Div Element. Why: The form's kicker and title belong together. How: This wraps the two lines below. */ }
 
 
-					<div className='kicker'>{ isaEdiBoo ? 'Editing' : 'New picker' }</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the heading below. How: This renders "Editing" or "New picker" depending on isaEdiBoo. */ }
+					<div className={ cssModObj.kicker }>{ isaEdiBoo ? 'Editing' : 'New picker' }</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the heading below. How: This renders "Editing" or "New picker" depending on isaEdiBoo. */ }
 
-					<h2 className='picker-title'>{ isaEdiBoo ? ( newNamStr.trim() || 'Editing picker' ) : 'Create a picker' }</h2>{ /* What: Title Heading Element. Why: This form's own main heading should reflect whatever the user has typed so far while editing. How: This shows the live-typed name (or a fallback) while editing, otherwise a fixed create-mode heading. */ }
+					<h2 className={ cssModObj.pickerTitle }>{ isaEdiBoo ? ( newNamStr.trim() || 'Editing picker' ) : 'Create a picker' }</h2>{ /* What: Title Heading Element. Why: This form's own main heading should reflect whatever the user has typed so far while editing. How: This shows the live-typed name (or a fallback) while editing, otherwise a fixed create-mode heading. */ }
 
 
 				</div>
@@ -1069,21 +1070,23 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			{ !isaEdiBoo && ( // What: Step Indicator Check. Why: Only the create flow ever has a second step to indicate. How: This renders the whole step indicator only while isaEdiBoo is false. // What: Edit Steps Design Note. Why: Edit reuses only the Details step, since this picker's items already exist and are edited via the Data tab or PicVieCom's own live pool instead. How: There's no Items step to switch to here, so the step indicator below is skipped entirely while isaEdiBoo is true.
 
 
-				<div className='np-steps'>{ /* What: Steps Div Element. Why: Details and Items need a shared two-step indicator row. How: This wraps both step buttons and the connecting line between them. */ }
+				<div className={ cssModObj.npSteps }>{ /* What: Steps Div Element. Why: Details and Items need a shared two-step indicator row. How: This wraps both step buttons and the connecting line between them. */ }
 
 
 					<button
-						className={ ` np-step   ob-picker-details   ${ forSteNum === 1 ? 'is-on' : 'is-done' } ` }
+						className={ cssModObj.npStep }
 
+						data-step-current-active={ forSteNum === 1 || undefined } // What: Step Current Active Attribute. Why: The step being filled in reads as current. How: This sets the presence-only attribute while forSteNum is 1.
+						data-step-done-active={ forSteNum !== 1 || undefined } // What: Step Done Active Attribute. Why: Once past Details, its step reads as finished. How: This sets the presence-only attribute while forSteNum isn't 1.
 						data-element-name-hook='detSteBut'
 
 						type='button'
 
 						onClick={ () => setForSteNum( 1 ) }
-					>{ /* What: Details Step Button Element. Why: The user needs a way to jump back to Step 1 at any time. How: This marks itself "is-on" while forSteNum is 1, otherwise "is-done", and always allows navigating back. Its data-element-name-hook is read by the picker mini-tours. */ }
+					>{ /* What: Details Step Button Element. Why: The user needs a way to jump back to Step 1 at any time. How: This marks itself current while forSteNum is 1, otherwise done, through its data-step-*-active attributes, and always allows navigating back. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
-						<span className='np-step-num'>{ /* What: Step Number Span Element. Why: A completed step shows a checkmark instead of its own number. How: This renders a check icon once forSteNum has advanced past 1, otherwise the literal "1". */ }
+						<span className={ cssModObj.npStepNum }>{ /* What: Step Number Span Element. Why: A completed step shows a checkmark instead of its own number. How: This renders a check icon once forSteNum has advanced past 1, otherwise the literal "1". */ }
 
 
 							{ forSteNum > 1 ? ( // What: Step Done Check. Why: A completed Details step shows a checkmark in place of its number. How: This renders the check icon once forSteNum is past 1.
@@ -1106,26 +1109,28 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 						</span>
 
-						<span className='np-step-lbl'>Details</span>{ /* What: Step Label Span Element. Why: The step needs a readable name alongside its number. How: This renders the fixed literal text. */ }
+						<span className={ cssModObj.npStepLbl }>Details</span>{ /* What: Step Label Span Element. Why: The step needs a readable name alongside its number. How: This renders the fixed literal text. */ }
 
 
 					</button>
 
-					<span className='np-step-line' />{ /* What: Step Line Span Element. Why: The two step buttons need a visible connecting line between them. How: This is a purely decorative element, styled entirely via CSS. */ }
+					<span className={ cssModObj.npStepLine } />{ /* What: Step Line Span Element. Why: The two step buttons need a visible connecting line between them. How: This is a purely decorative element, styled entirely via CSS. */ }
 
 					<button
-						className={ ` np-step   ${ forSteNum === 2 ? 'is-on' : '' } ` }
+						className={ cssModObj.npStep }
+
+						data-step-current-active={ forSteNum === 2 || undefined } // What: Step Current Active Attribute. Why: The step being filled in reads as current. How: This sets the presence-only attribute while forSteNum is 2.
 
 						disabled={ !detReaBoo }
 						type='button'
 
 						onClick={ () => detReaBoo && setForSteNum( 2 ) }
-					>{ /* What: Items Step Button Element. Why: The user needs a way to jump to Step 2 once it's actually reachable. How: This stays disabled until detReaBoo is true, and marks itself "is-on" while forSteNum is 2. */ }
+					>{ /* What: Items Step Button Element. Why: The user needs a way to jump to Step 2 once it's actually reachable. How: This stays disabled until detReaBoo is true, and marks itself current through data-step-current-active while forSteNum is 2. */ }
 
 
-						<span className='np-step-num'>2</span>{ /* What: Step Number Span Element. Why: The step needs its own visible number. How: This renders the literal "2". */ }
+						<span className={ cssModObj.npStepNum }>2</span>{ /* What: Step Number Span Element. Why: The step needs its own visible number. How: This renders the literal "2". */ }
 
-						<span className='np-step-lbl'>Items</span>{ /* What: Step Label Span Element. Why: The step needs a readable name alongside its number. How: This renders the fixed literal text. */ }
+						<span className={ cssModObj.npStepLbl }>Items</span>{ /* What: Step Label Span Element. Why: The step needs a readable name alongside its number. How: This renders the fixed literal text. */ }
 
 
 					</button>
@@ -1144,11 +1149,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 				<div
 					key='np-step1'
 
-					className='tab-fade'
+					className={ cssModObj.tabFade }
 				>{ /* What: Step One Fade Div Element. Why: Switching steps should play a fade transition, and React needs a stable key to treat each step as a distinct mounted instance. How: This wraps the whole Details step's own fields and footer. */ }
 
 
-					<p className='picker-hint'>{ /* What: Intro Hint Paragraph Element. Why: A first-time user needs a plain-language orientation before the fields below. How: This shows a slightly different phrasing for edit versus create. */ }
+					<p className={ cssModObj.pickerHint }>{ /* What: Intro Hint Paragraph Element. Why: A first-time user needs a plain-language orientation before the fields below. How: This shows a slightly different phrasing for edit versus create. */ }
 
 
 						{ isaEdiBoo // What: Edit Mode Check. Why: Editing and creating need different intro text. How: This picks one of the two paragraphs below based on isaEdiBoo.
@@ -1167,33 +1172,33 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 					<div
-						className='np-fields'
+						className={ cssModObj.npFields }
 
 						data-element-name-hook='picFieDiv'
 					>{ /* What: Fields Div Element. Why: Every Details field (Name, Group, Picker type, conditional attach, daily schedule) belongs in one shared column. How: This wraps every np-field block below. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 						<div
-							className='np-field'
+							className={ cssModObj.npField }
 
 							data-element-name-hook='forFieDiv'
 						>{ /* What: Name Field Div Element. Why: The label, its help text, and the input itself form one field unit. How: This wraps those three pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<label
-								className='np-label'
+								className={ cssModObj.npLabel }
 
 								htmlFor='np-name'
 							>Name</label>{ /* What: Name Label Element. Why: The input below needs an associated, readable label. How: This is linked to the input via the shared 'np-name' id. */ }
 
-							<p className='np-help'>What you&rsquo;ll see on the picker bar above and on your todo list cards. Short and plain works best, e.g. &ldquo;Daily Chore&rdquo;, &ldquo;Dinner&rdquo;, &ldquo;Coffee Creamer&rdquo;.</p>{ /* What: Name Help Paragraph Element. Why: A first-time user needs guidance on what makes a good picker name. How: This renders a fixed explanatory sentence with a couple of worked examples. */ }
+							<p className={ cssModObj.npHelp }>What you&rsquo;ll see on the picker bar above and on your todo list cards. Short and plain works best, e.g. &ldquo;Daily Chore&rdquo;, &ldquo;Dinner&rdquo;, &ldquo;Coffee Creamer&rdquo;.</p>{ /* What: Name Help Paragraph Element. Why: A first-time user needs guidance on what makes a good picker name. How: This renders a fixed explanatory sentence with a couple of worked examples. */ }
 
 							<input
 								ref={ namInpRef }
 
 								id='np-name'
 
-								className='np-input'
+								className={ cssModObj.npInput }
 
 								autoComplete='off'
 								maxLength={ 40 }
@@ -1209,18 +1214,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 						<div
-							className='np-field'
+							className={ cssModObj.npField }
 
 							data-element-name-hook='forFieDiv'
 						>{ /* What: Group Field Div Element. Why: The label, help text, group chips, and the inline new-group input form one field unit. How: This wraps those pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<span className='np-label'>Group</span>{ /* What: Group Label Span Element. Why: The controls below need a readable label. How: This renders the literal word "Group". */ }
+							<span className={ cssModObj.npLabel }>Group</span>{ /* What: Group Label Span Element. Why: The controls below need a readable label. How: This renders the literal word "Group". */ }
 
-							<p className='np-help'>Pickers are clustered into groups on your todo list, like &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks sit together. You may choose an existing group or create a new one.</p>{ /* What: Group Help Paragraph Element. Why: A first-time user needs to understand what a group actually does before choosing one. How: This renders a fixed explanatory sentence. */ }
+							<p className={ cssModObj.npHelp }>Pickers are clustered into groups on your todo list, like &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks sit together. You may choose an existing group or create a new one.</p>{ /* What: Group Help Paragraph Element. Why: A first-time user needs to understand what a group actually does before choosing one. How: This renders a fixed explanatory sentence. */ }
 
 							<div
-								className='np-groups'
+								className={ cssModObj.npGroups }
 
 								data-element-name-hook='forGroDiv'
 							>{ /* What: Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
@@ -1232,7 +1237,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									<button
 										key={ curGroStr }
 
-										className={ ` np-chip   ${ !addGroBoo && selGroStr === curGroStr ? 'is-on' : '' } ` }
+										className={ cssModObj.npChip }
+
+										data-chip-select-active={ ( !addGroBoo && selGroStr === curGroStr ) || undefined } // What: Chip Select Active Attribute. Why: The picker's group should stand out. How: This sets the presence-only attribute while this chip's group is chosen and the new-group field is closed.
 
 										type='button'
 
@@ -1256,7 +1263,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								)) }
 
 								<button
-									className={ ` np-chip   np-chip--new   ${ addGroBoo ? 'is-on' : '' } ` }
+									className={` ${ cssModObj.npChip }   ${ cssModObj.npChipNew } `}
+
+									data-chip-select-active={ addGroBoo || undefined } // What: Chip Select Active Attribute. Why: While the new-group field is open, its chip reads as chosen. How: This sets the presence-only attribute while addGroBoo is true.
 
 									type='button'
 
@@ -1281,7 +1290,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 								<input
-									className='np-input np-input--sm'
+									className={` ${ cssModObj.npInput }   ${ cssModObj.npInputSm } `}
 
 									autoComplete='off'
 									autoFocus
@@ -1303,18 +1312,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 						<fieldset
-							className='np-field'
+							className={ cssModObj.npField }
 
 							data-element-name-hook='forFieFie'
 						>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<legend className='np-label'>Picker type</legend>{ /* What: Mode Legend Element. Why: A fieldset needs its own accessible legend. How: This renders the literal text "Picker type". */ }
+							<legend className={ cssModObj.npLabel }>Picker type</legend>{ /* What: Mode Legend Element. Why: A fieldset needs its own accessible legend. How: This renders the literal text "Picker type". */ }
 
-							<p className='np-help'>This is the ruleset that the picker follows each time it runs. &ldquo;Truly Random&rdquo; is the simplest where every item has an equal chance. The others nudge the odds in different ways. Not sure? We recommend the Dynamic Weighted type but you can change a picker&rsquo;s type at any time.</p>{ /* What: Mode Help Paragraph Element. Why: A first-time user needs to understand what a "mode" even means before picking one. How: This renders a fixed explanatory sentence with a recommendation. */ }
+							<p className={ cssModObj.npHelp }>This is the ruleset that the picker follows each time it runs. &ldquo;Truly Random&rdquo; is the simplest where every item has an equal chance. The others nudge the odds in different ways. Not sure? We recommend the Dynamic Weighted type but you can change a picker&rsquo;s type at any time.</p>{ /* What: Mode Help Paragraph Element. Why: A first-time user needs to understand what a "mode" even means before picking one. How: This renders a fixed explanatory sentence with a recommendation. */ }
 
 							<div
-								className='mode-radio'
+								className={ cssModObj.modeRadio }
 
 								data-element-name-hook='modRadDiv'
 							>{ /* What: Mode Radio Div Element. Why: Every mode in SED_NAM_OBJ.MOD_DEF_OBJ needs its own selectable radio row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label per entry. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
@@ -1326,8 +1335,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									<label
 										key={ modKeyStr }
 
-										className={ ` mode-opt   ${ selModStr === modKeyStr ? 'is-on' : '' } ` }
+										className={ cssModObj.modeOpt }
 
+										data-option-select-active={ selModStr === modKeyStr || undefined } // What: Option Select Active Attribute. Why: The picker's mode should stand out. How: This sets the presence-only attribute while this option is the chosen mode.
 										data-element-name-hook='modOptLab'
 										data-mode={ modKeyStr }
 									>{ /* What: Mode Option Label Element. Why: The radio input and its own name/hint text must all be one clickable label. How: This wraps the radio input and its description block. Its data-element-name-hook is read by the picker mini-tours. */ }
@@ -1345,7 +1355,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<div>{ /* What: Mode Text Div Element. Why: The mode's own name and hint text need to sit beside the radio input. How: This wraps mode-opt-name and mode-opt-hint. */ }
 
 
-											<div className='mode-opt-name'>{ modInfObj.labStr }</div>{ /* What: Mode Name Div Element. Why: The mode needs its own readable name. How: This renders modInfObj.labStr. */ }
+											<div className={ cssModObj.modeOptName }>{ modInfObj.labStr }</div>{ /* What: Mode Name Div Element. Why: The mode needs its own readable name. How: This renders modInfObj.labStr. */ }
 
 											{ Array.isArray( modInfObj.hinArr ) // What: Hint Content Check. Why: A mode's own hint can be one paragraph or several. How: This maps every paragraph when hint is an array, otherwise renders the single hint.
 
@@ -1356,13 +1366,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													<div
 														key={ parIndNum }
 
-														className='mode-opt-hint'
+														className={ cssModObj.modeOptHint }
 													>{ parTexStr }</div> // What: Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index.
 
 
 												) )
 
-												: <div className='mode-opt-hint'>{ modInfObj.hinArr }</div> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hinArr directly when it's a plain string.
+												: <div className={ cssModObj.modeOptHint }>{ modInfObj.hinArr }</div> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hinArr directly when it's a plain string.
 
 
 											}
@@ -1385,33 +1395,33 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 						<div
-							className='np-field np-cond'
+							className={` ${ cssModObj.npField }   ${ cssModObj.npCond } `}
 
 							data-element-name-hook='forFieDiv'
 						>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<div
-								className='np-field--toggle'
+								className={ cssModObj.npFieldToggle }
 
 								data-element-name-hook='conTogDiv'
 							>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-								<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The label and its two help paragraphs read as one block. How: This wraps those three pieces. */ }
+								<div className={ cssModObj.npToggleText }>{ /* What: Toggle Text Div Element. Why: The label and its two help paragraphs read as one block. How: This wraps those three pieces. */ }
 
 
-									<span className='np-label'>Attach a conditional</span>{ /* What: Conditional Label Span Element. Why: The toggle below needs a readable label. How: This renders the literal text. */ }
+									<span className={ cssModObj.npLabel }>Attach a conditional</span>{ /* What: Conditional Label Span Element. Why: The toggle below needs a readable label. How: This renders the literal text. */ }
 
-									<p className='np-help'>Conditionals can be attached to a picker that will determine whether a picker should be run on any given day during the auto generator phase for the Today page. Run eligibility can be determined using the same rules that the pickers use, e.g. Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down.</p>{ /* What: Conditional Help Paragraph Element. Why: A first-time user needs to understand what a conditional even does. How: This renders a fixed explanatory sentence. */ }
+									<p className={ cssModObj.npHelp }>Conditionals can be attached to a picker that will determine whether a picker should be run on any given day during the auto generator phase for the Today page. Run eligibility can be determined using the same rules that the pickers use, e.g. Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down.</p>{ /* What: Conditional Help Paragraph Element. Why: A first-time user needs to understand what a conditional even does. How: This renders a fixed explanatory sentence. */ }
 
-									<p className='np-help'>Example: You have a Daily Chore picker that you attach a Weighted conditional to in order to determine whether a Day Off should should be triggered and therefore no chores should be chosen for that day.</p>{ /* What: Conditional Example Paragraph Element. Why: A concrete example lands faster than the abstract explanation above alone. How: This renders a fixed worked example sentence. */ }
+									<p className={ cssModObj.npHelp }>Example: You have a Daily Chore picker that you attach a Weighted conditional to in order to determine whether a Day Off should should be triggered and therefore no chores should be chosen for that day.</p>{ /* What: Conditional Example Paragraph Element. Why: A concrete example lands faster than the abstract explanation above alone. How: This renders a fixed worked example sentence. */ }
 
 
 								</div>
 
 								<button
-									className={ ` switch   ${ conAttBoo ? 'is-on' : '' } ` }
+									className={ cssModObj.switch }
 
 									data-element-name-hook='togSwiBut'
 
@@ -1425,7 +1435,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
+									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
 
 
 								</button>
@@ -1438,13 +1448,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							<ColDisCom open={ conAttBoo }>{ /* What: Collapse Disclosure Component. Why: The whole conditional-attach block only needs to exist while conAttBoo is actually on. How: This animates cnd-attach open/closed around that boolean. */ }
 
 
-								<div className='cnd-attach'>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the ColDisCom around CodConCom. */ }
+								<div className={ cssModObj.cndAttach }>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the ColDisCom around CodConCom. */ }
 
 
 									<div
 										ref={ raiCalFun }
 
-										className='cnd-rail picker-groups'
+										className={ cssModObj.cndRail }
 
 										data-element-name-hook='conRaiDiv'
 										data-scroll-end-active // What: Scroll End Active Attribute. Why: The rail starts with no edge fades until edge-fade.js first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
@@ -1472,7 +1482,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											<button
 												key={ curConObj.id }
 
-												className={ ` cnd-pill   ${ conSelStr === curConObj.id ? 'is-on' : '' } ` }
+												className={ cssModObj.cndPill }
+
+												data-pill-select-active={ conSelStr === curConObj.id || undefined } // What: Pill Select Active Attribute. Why: The conditional to attach should stand out. How: This sets the presence-only attribute while this pill is chosen.
 
 												type='button'
 
@@ -1480,9 +1492,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											>{ /* What: Conditional Pill Button Element. Why: Every existing conditional needs its own selectable pill showing its name and mode. How: This selects curConObj.id on click. */ }
 
 
-												<span className='cnd-pill-name'>{ curConObj.name }</span>{ /* What: Pill Name Span Element. Why: The pill needs its own readable name. How: This renders curConObj.name. */ }
+												<span className={ cssModObj.cndPillName }>{ curConObj.name }</span>{ /* What: Pill Name Span Element. Why: The pill needs its own readable name. How: This renders curConObj.name. */ }
 
-												<span className='cnd-pill-mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ curConObj.mode ] || {} ).labStr || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode string. */ }
+												<span className={ cssModObj.cndPillMode }>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ curConObj.mode ] || {} ).labStr || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode string. */ }
 
 
 											</button>
@@ -1491,7 +1503,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										)) }
 
 										<button
-											className={ ` cnd-pill   cnd-pill--new   ${ conSelStr === 'new' ? 'is-on' : '' } ` }
+											className={` ${ cssModObj.cndPill }   ${ cssModObj.cndPillNew } `}
+
+											data-pill-select-active={ conSelStr === 'new' || undefined } // What: Pill Select Active Attribute. Why: While the new-conditional editor is open, its pill reads as chosen. How: This sets the presence-only attribute while conSelStr is 'new'.
 
 											type='button'
 
@@ -1511,7 +1525,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 												sizValNum={ 16 }
 											/>{ /* What: Icon Svg Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
-											<span className='cnd-pill-name'>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
+											<span className={ cssModObj.cndPillName }>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
 
 
 										</button>
@@ -1546,24 +1560,24 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 						<div
-							className='np-field np-daily-group'
+							className={` ${ cssModObj.npField }   ${ cssModObj.npDailyGroup } `}
 
 							data-element-name-hook='forFieDiv'
 						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<div
-								className='np-field--toggle'
+								className={ cssModObj.npFieldToggle }
 
 								data-element-name-hook='daiTogDiv'
 							>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-								<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The label and its own live-updating help text read as one block. How: This wraps those two pieces. */ }
+								<div className={ cssModObj.npToggleText }>{ /* What: Toggle Text Div Element. Why: The label and its own live-updating help text read as one block. How: This wraps those two pieces. */ }
 
 
 									<label
-										className='np-label'
+										className={ cssModObj.npLabel }
 
 										htmlFor='np-daily'
 									>Include in the daily generator</label>{ /* What: Daily Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch via the shared 'np-daily' id. */ }
@@ -1571,7 +1585,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									<p
 										key={ incDaiBoo ? 'on' : 'off' }
 
-										className='np-help set-sub-fade'
+										className={` ${ cssModObj.npHelp }   ${ cssModObj.setSubFade } `}
 									>{ /* What: Daily Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by incDaiBoo so the text cross-fades on every change. */ }
 
 
@@ -1595,7 +1609,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								<button
 									id='np-daily'
 
-									className={ ` switch   ${ incDaiBoo ? 'is-on' : '' } ` }
+									className={ cssModObj.switch }
 
 									data-element-name-hook='togSwiBut'
 
@@ -1616,7 +1630,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								>{ /* What: Daily Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This marks daiTogRef true (so the reveal effect above knows this was a genuine user toggle) and flips incDaiBoo. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
+									<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
 
 
 								</button>
@@ -1632,12 +1646,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								<div
 									ref={ daiBloRef }
 
-									className='np-sched np-daily-anim'
+									className={ cssModObj.npSched }
 								>{ /* What: Schedule Div Element. Why: The cadence control, the weekday picker, and the two schedule toggles form one collapsible block. How: This wraps np-sched-block/np-sched-toggle sections below. */ }
 
 
 									<div
-										className='np-sched-block'
+										className={ cssModObj.npSchedBlock }
 
 										data-element-name-hook='schBloDiv'
 									>{ /* What: Cadence Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
@@ -1655,19 +1669,19 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<div
-										className='np-sched-block'
+										className={ cssModObj.npSchedBlock }
 
 										data-element-name-hook='schBloDiv'
 									>{ /* What: Days Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-										<span className='np-label'>Which days?</span>{ /* What: Days Label Span Element. Why: The weekday picker below needs a readable label. How: This renders the literal text. */ }
+										<span className={ cssModObj.npLabel }>Which days?</span>{ /* What: Days Label Span Element. Why: The weekday picker below needs a readable label. How: This renders the literal text. */ }
 
-										<p className='np-help'>Pick the days that this picker is allowed to run on. Tap a day to turn it off. This is handy for things like chores, that you&rsquo;d rather not see on weekends.</p>{ /* What: Days Help Paragraph Element. Why: A first-time user needs to understand what tapping a day chip actually does. How: This renders a fixed explanatory sentence. */ }
+										<p className={ cssModObj.npHelp }>Pick the days that this picker is allowed to run on. Tap a day to turn it off. This is handy for things like chores, that you&rsquo;d rather not see on weekends.</p>{ /* What: Days Help Paragraph Element. Why: A first-time user needs to understand what tapping a day chip actually does. How: This renders a fixed explanatory sentence. */ }
 
 
 										<div
-											className='np-sched-row'
+											className={ cssModObj.npSchedRow }
 
 											data-element-name-hook='schRowDiv'
 										>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeeChiCom and np-sched-presets. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
@@ -1683,11 +1697,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-											<div className='np-sched-presets'>{ /* What: Presets Div Element. Why: Three common day patterns deserve one-tap shortcuts instead of manual chip-tapping every time. How: This wraps the Every day/Weekdays/Weekends buttons. */ }
+											<div className={ cssModObj.npSchedPresets }>{ /* What: Presets Div Element. Why: Three common day patterns deserve one-tap shortcuts instead of manual chip-tapping every time. How: This wraps the Every day/Weekdays/Weekends buttons. */ }
 
 
 												<button
-													className='np-preset'
+													className={ cssModObj.npPreset }
 
 													type='button'
 
@@ -1695,7 +1709,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 												>Every day</button>{ /* What: Every Day Preset Button Element. Why: This is the fastest way to select every day at once. How: This calls witLocFun with the full week, keeping any locked anchor day intact. */ }
 
 												<button
-													className='np-preset'
+													className={ cssModObj.npPreset }
 
 													type='button'
 
@@ -1703,7 +1717,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 												>Weekdays</button>{ /* What: Weekdays Preset Button Element. Why: This is a common one-tap pattern for chore-like pickers. How: This calls witLocFun with Monday through Friday. */ }
 
 												<button
-													className='np-preset'
+													className={ cssModObj.npPreset }
 
 													type='button'
 
@@ -1722,17 +1736,17 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<div
-										className='np-sched-toggle'
+										className={ cssModObj.npSchedToggle }
 
 										data-element-name-hook='schTogDiv'
 									>{ /* What: Skip Holidays Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-										<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
+										<div className={ cssModObj.npToggleText }>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
 
 
 											<label
-												className='np-label'
+												className={ cssModObj.npLabel }
 
 												htmlFor='np-skiphol'
 											>Skip on holidays</label>{ /* What: Skip Holidays Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch via the shared 'np-skiphol' id. */ }
@@ -1740,7 +1754,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											<p
 												key={ skiHolBoo ? 'on' : 'off' }
 
-												className='np-help set-sub-fade'
+												className={` ${ cssModObj.npHelp }   ${ cssModObj.setSubFade } `}
 											>{ /* What: Skip Holidays Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by skiHolBoo so the text cross-fades on every change. */ }
 
 
@@ -1764,7 +1778,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<button
 											id='np-skiphol'
 
-											className={ ` switch   ${ skiHolBoo ? 'is-on' : '' } ` }
+											className={ cssModObj.switch }
 
 											data-element-name-hook='togSwiBut'
 
@@ -1778,7 +1792,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										>{ /* What: Holiday Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips skiHolBoo on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
+											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
 
 
 										</button>
@@ -1789,17 +1803,17 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<div
-										className='np-sched-toggle'
+										className={ cssModObj.npSchedToggle }
 
 										data-element-name-hook='schTogDiv'
 									>{ /* What: Avoid Duplicates Toggle Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps np-toggle-text and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-										<div className='np-toggle-text'>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
+										<div className={ cssModObj.npToggleText }>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and sub text below. */ }
 
 
 											<label
-												className='np-label'
+												className={ cssModObj.npLabel }
 
 												htmlFor='np-avoiddupes'
 											>Avoid duplicate items</label>{ /* What: Avoid Duplicates Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch via the shared 'np-avoiddupes' id. */ }
@@ -1807,7 +1821,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											<p
 												key={ avoDupBoo ? 'on' : 'off' }
 
-												className='np-help set-sub-fade'
+												className={` ${ cssModObj.npHelp }   ${ cssModObj.setSubFade } `}
 											>{ /* What: Avoid Duplicates Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by avoDupBoo so the text cross-fades on every change. */ }
 
 
@@ -1831,7 +1845,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<button
 											id='np-avoiddupes'
 
-											className={ ` switch   ${ avoDupBoo ? 'is-on' : '' } ` }
+											className={ cssModObj.switch }
 
 											data-element-name-hook='togSwiBut'
 
@@ -1845,7 +1859,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										>{ /* What: Duplicates Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips avoDupBoo on click. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }
+											<i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
 
 
 										</button>
@@ -1868,14 +1882,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 					<div
-						className='np-footer np-footer--step1'
+						className={` ${ cssModObj.npFooter }   ${ cssModObj.npFooterStep1 } `}
 
 						data-element-name-hook='detFooDiv'
 					>{ /* What: Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps np-footer-note and np-footer-actions. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 						<div
-							className='np-footer-note'
+							className={ cssModObj.npFooterNote }
 
 							data-element-name-hook='fooNotDiv'
 						>{ /* What: Footer Note Div Element. Why: The Step 1 footer explains what's still missing before Next works. How: This renders the note text below. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
@@ -1931,7 +1945,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						</div>
 
 						<div
-							className='np-footer-actions'
+							className={ cssModObj.npFooterActions }
 
 							data-element-name-hook='forActDiv'
 						>{ /* What: Footer Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
@@ -1961,8 +1975,6 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 								<ButBasCom
-									className='ob-picker-next'
-
 									data-element-name-hook='forNexBut'
 
 									disabled={ !detReaBoo || conColBoo }
@@ -1991,11 +2003,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 				<div
 					key='np-step2'
 
-					className='tab-fade'
+					className={ cssModObj.tabFade }
 				>{ /* What: Step Two Fade Div Element. Why: Switching steps should play a fade transition, and React needs a stable key to treat each step as a distinct mounted instance. How: This wraps the whole Items step's own hint text, pool, and footer. */ }
 
 
-					<p className='picker-hint'>{ /* What: Items Intro Hint Paragraph Element. Why: A first-time user needs to be reminded which picker/mode they're building items for. How: This renders the live-typed name (or a fallback) and the chosen mode's own label. */ }
+					<p className={ cssModObj.pickerHint }>{ /* What: Items Intro Hint Paragraph Element. Why: A first-time user needs to be reminded which picker/mode they're building items for. How: This renders the live-typed name (or a fallback) and the chosen mode's own label. */ }
 
 
 						This is the list of items that your
@@ -2011,7 +2023,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'random' && ( // What: Random Note Check. Why: Only Truly Random has literally nothing extra to explain about its own items. How: This renders the note only for that mode.
 
 
-						<p className='picker-hint np-weight-note'>Because you chose &ldquo;Truly Random&rdquo;, there are no extra controls to tweak for these items since they all have an equal chance of being picked.</p> // What: Random Note Paragraph Element. Why: A Truly Random picker has no per-item controls, which is worth saying. How: This renders a fixed explanation.
+						<p className={` ${ cssModObj.pickerHint }   ${ cssModObj.npWeightNote } `}>Because you chose &ldquo;Truly Random&rdquo;, there are no extra controls to tweak for these items since they all have an equal chance of being picked.</p> // What: Random Note Paragraph Element. Why: A Truly Random picker has no per-item controls, which is worth saying. How: This renders a fixed explanation.
 
 
 					) }
@@ -2019,7 +2031,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'weighted' && ( // What: Weighted Note Check. Why: Weighted and Dynamic both introduce the per-item weight concept, worth explaining once items are being added. How: This renders the note only for that mode.
 
 
-						<p className='picker-hint np-weight-note'>Because you chose &ldquo;Weighted&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Weighted Note Paragraph Element. Why: Weighted items carry a weight the user should understand. How: This renders a fixed explanation.
+						<p className={` ${ cssModObj.pickerHint }   ${ cssModObj.npWeightNote } `}>Because you chose &ldquo;Weighted&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Weighted Note Paragraph Element. Why: Weighted items carry a weight the user should understand. How: This renders a fixed explanation.
 
 
 					) }
@@ -2027,7 +2039,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'dynamic' && ( // What: Dynamic Note Check. Why: Same reasoning as the Weighted note above, worded to also quote the mode's own live label. How: This renders the note only for that mode.
 
 
-						<p className='picker-hint np-weight-note'>Because you chose &ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].labStr }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Dynamic Note Paragraph Element. Why: Dynamic items carry a weight plus a drift bonus the user should understand. How: This renders an explanation naming the chosen mode.
+						<p className={` ${ cssModObj.pickerHint }   ${ cssModObj.npWeightNote } `}>Because you chose &ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].labStr }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p> // What: Dynamic Note Paragraph Element. Why: Dynamic items carry a weight plus a drift bonus the user should understand. How: This renders an explanation naming the chosen mode.
 
 
 					) }
@@ -2035,7 +2047,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'ease-up' && ( // What: Ease Up Note Check. Why: Ease Up/Ease Down both introduce the per-item drift-cadence concept, worth explaining once items are being added. How: This renders the note only for that mode.
 
 
-						<p className='picker-hint np-weight-note'>Because you chose &ldquo;Ease Up&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different timeout period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it charges towards becoming eligible again.</p> // What: Ease Up Note Paragraph Element. Why: Ease Up items each need their own timeout band. How: This renders a fixed explanation.
+						<p className={` ${ cssModObj.pickerHint }   ${ cssModObj.npWeightNote } `}>Because you chose &ldquo;Ease Up&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different timeout period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it charges towards becoming eligible again.</p> // What: Ease Up Note Paragraph Element. Why: Ease Up items each need their own timeout band. How: This renders a fixed explanation.
 
 
 					) }
@@ -2043,7 +2055,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					{ selModStr === 'ease-down' && ( // What: Ease Down Note Check. Why: Same reasoning as the Ease Up note above, worded for discharging instead of charging. How: This renders the note only for that mode.
 
 
-						<p className='picker-hint np-weight-note'>Because you chose &ldquo;Ease Down&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different selection period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it discharges towards deselection.</p> // What: Ease Down Note Paragraph Element. Why: Ease Down items each need their own selection band. How: This renders a fixed explanation.
+						<p className={` ${ cssModObj.pickerHint }   ${ cssModObj.npWeightNote } `}>Because you chose &ldquo;Ease Down&rdquo;, each item gets its own cadence. This is set per item below, since each item might need a different selection period. For each one you will need to pick a soonest and a latest value, which will be used to determine its new value as it discharges towards deselection.</p> // What: Ease Down Note Paragraph Element. Why: Ease Down items each need their own selection band. How: This renders a fixed explanation.
 
 
 					) }
@@ -2052,14 +2064,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 						<div
-							className='np-field np-tour-name'
+							className={` ${ cssModObj.npField }   ${ cssModObj.npTourName } `}
 
 							data-element-name-hook='forFieDiv'
 						>{ /* What: Tour Name Field Div Element. Why: The label and input form one field unit. How: This wraps those two pieces. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<label
-								className='np-label'
+								className={ cssModObj.npLabel }
 
 								htmlFor='np-tour-name'
 							>Picker name</label>{ /* What: Picker Name Label Element. Why: The tour name field needs its own visible label, tied to the input below. How: This renders the literal text "Picker name" and points at np-tour-name through htmlFor. */ }
@@ -2067,7 +2079,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							<input
 								id='np-tour-name'
 
-								className='np-input'
+								className={ cssModObj.npInput }
 
 								autoComplete='off'
 								maxLength={ 40 }
@@ -2086,13 +2098,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-					<div className='np-pool'>{ /* What: Pool Div Element. Why: The empty-state message, the real pool list, and the add/edit slot below it all share this one section. How: This wraps whichever of those currently applies. */ }
+					<div className={ cssModObj.npPool }>{ /* What: Pool Div Element. Why: The empty-state message, the real pool list, and the add/edit slot below it all share this one section. How: This wraps whichever of those currently applies. */ }
 
 
 						{ pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length === 0 && !actNewStr && ( // What: Empty Pool Check. Why: A pool with no committed items yet (and nothing currently being added) needs its own placeholder message. How: This renders the placeholder only under both conditions.
 
 
-							<div className='np-pool-empty'>Nothing here yet. Add at least 2 items that this picker can choose between, so that there&rsquo;s a real choice to make.</div> // What: Empty Pool Div Element. Why: An empty draft pool needs a nudge toward adding items. How: This renders a fixed message.
+							<div className={ cssModObj.npPoolEmpty }>Nothing here yet. Add at least 2 items that this picker can choose between, so that there&rsquo;s a real choice to make.</div> // What: Empty Pool Div Element. Why: An empty draft pool needs a nudge toward adding items. How: This renders a fixed message.
 
 
 						) }
@@ -2102,7 +2114,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						{ pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length > 0 && ( // What: Non-Empty Pool Check. Why: The real list only needs to render once at least one committed item actually exists. How: This renders pool-list only while that count is above 0.
 
 
-							<div className='pool-list'>{ /* What: Pool List Div Element. Why: One row per committed draft item needs a shared list container. How: This maps every committed entry of pooIteArr to one row below. */ }
+							<div className={ cssModObj.poolList }>{ /* What: Pool List Div Element. Why: One row per committed draft item needs a shared list container. How: This maps every committed entry of pooIteArr to one row below. */ }
 
 
 								{ pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).map( ( curIteObj ) => { // What: Pool Row List Render. Why: Every committed draft item needs its own row, showing its own cadence/weight summary. How: This maps the filtered list to one row per curIteObj.
@@ -2119,7 +2131,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<div
 											key={ curIteObj.id }
 
-											className={ ` pool-row   ${ insDraStr === curIteObj.id ? 'pool-row--insert' : '' }   ${ conDelStr === curIteObj.id ? 'pool-row--confirm' : '' }   ${ rmvIdeStr === curIteObj.id ? 'pool-row--removing' : '' } ` }
+											className={` ${ cssModObj.poolRow }   ${ insDraStr === curIteObj.id ? cssModObj.poolRowInsert : '' }   ${ conDelStr === curIteObj.id ? cssModObj.poolRowConfirm : '' }   ${ rmvIdeStr === curIteObj.id ? cssModObj.poolRowRemoving : '' } `}
 
 											onAnimationEnd={ ( aniEveObj ) => { // What: On Animation End Handler. Why: A new row's slide-in and a deleted row's removal both finish on this row's own animation end. How: This clears the insert flag, and removes the draft item once its removal animation is done.
 
@@ -2145,12 +2157,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											{ conDelStr === curIteObj.id ? ( // What: Delete Confirm Check. Why: A row pending delete confirmation replaces its own normal content entirely. How: This renders the confirm row while conDelStr matches this item, otherwise the row's real content below.
 
 
-												<div className={ ` pool-confirm   ${ conLeaStr === curIteObj.id ? 'is-leaving' : '' } ` }>{ /* What: Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps pool-confirm-msg and pool-confirm-actions. */ }
+												<div className={` ${ cssModObj.poolConfirm }   ${ conLeaStr === curIteObj.id ? cssModObj.isLeaving : '' } `}>{ /* What: Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps pool-confirm-msg and pool-confirm-actions. */ }
 
 
-													<span className='pool-confirm-msg'>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Confirm Message Span Element. Why: The user must see exactly which item they're about to remove from the draft. How: This renders curIteObj.name inside the fixed question text. */ }
+													<span className={ cssModObj.poolConfirmMsg }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Confirm Message Span Element. Why: The user must see exactly which item they're about to remove from the draft. How: This renders curIteObj.name inside the fixed question text. */ }
 
-													<div className='pool-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
+													<div className={ cssModObj.poolConfirmActions }>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
 														<ButBasCom
@@ -2190,14 +2202,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 												<React.Fragment>{ /* What: Row Content Fragment Element. Why: The name/meta block and the edit/delete actions below are true siblings with no shared wrapper of their own. How: This groups all of this draft row's own real content without adding an extra DOM node. */ }
 
 
-													<div className='pool-name'>{ curIteObj.name }</div>{ /* What: Name Div Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
+													<div className={ cssModObj.poolName }>{ curIteObj.name }</div>{ /* What: Name Div Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
 
-													<div className='pool-meta'>{ /* What: Meta Div Element. Why: The optional cadence summary and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
+													<div className={ cssModObj.poolMeta }>{ /* What: Meta Div Element. Why: The optional cadence summary and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
 
 
-														{ isaEasBoo && <span className='pool-ease-meta'>{ sooDayNum }&ndash;{ latDayNum } { CAD_NAM_OBJ.uniWorFun( cadCurObj.cadence, latDayNum ) }</span> }{ /* What: Ease Meta Span Check. Why: Only ease-up/ease-down items have a cadence summary worth showing. How: This renders the soonest-latest range, unit-worded per the picker's own cadence, only while isaEasBoo is true. */ }
+														{ isaEasBoo && <span className={ cssModObj.poolEaseMeta }>{ sooDayNum }&ndash;{ latDayNum } { CAD_NAM_OBJ.uniWorFun( cadCurObj.cadence, latDayNum ) }</span> }{ /* What: Ease Meta Span Check. Why: Only ease-up/ease-down items have a cadence summary worth showing. How: This renders the soonest-latest range, unit-worded per the picker's own cadence, only while isaEasBoo is true. */ }
 
-														{ shoWeiBoo && <span className='pool-weight'>w{ curIteObj.weight }</span> }{ /* What: Weight Span Check. Why: Only weighted/dynamic items have a weight worth showing. How: This renders the raw weight only while shoWeiBoo is true. */ }
+														{ shoWeiBoo && <span className={ cssModObj.poolWeight }>w{ curIteObj.weight }</span> }{ /* What: Weight Span Check. Why: Only weighted/dynamic items have a weight worth showing. How: This renders the raw weight only while shoWeiBoo is true. */ }
 
 
 													</div>
@@ -2205,7 +2217,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 													<div aria-hidden='true' />{ /* What: Spacer Div Element. Why: The row's own CSS grid still expects a cell in this column, even though the live pool's own drift/status pills have no equivalent here yet. How: This is an empty, hidden placeholder cell. */ }
 
 													<button
-														className='pool-edit'
+														className={ cssModObj.poolEdit }
 
 														type='button'
 
@@ -2230,7 +2242,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 														<InfTipCom
-															className='pool-del is-disabled'
+															className={ cssModObj.poolDel }
 
 															actNamStr='Delete'
 															labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
@@ -2250,7 +2262,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 														<button
-															className='pool-del'
+															className={ cssModObj.poolDel }
 
 															type='button'
 
@@ -2297,7 +2309,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						<div
 							ref={ addWraRef }
 
-							className='pv-additem-wrap'
+							className={ cssModObj.pvAdditemWrap }
 
 							data-element-name-hook='iteAddDiv'
 						>{ /* What: Add Item Wrap Div Element. Why: The new-item form, an already-committed item's editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
@@ -2320,7 +2332,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 										<div
-											className={ ` pv-newitem   rd-item   is-editing   ${ ediCloBoo ? 'is-closing' : '' } ` }
+											className={` ${ cssModObj.pvNewitem }   ${ ediCloBoo ? cssModObj.isClosing : '' } `}
 
 											data-element-name-hook='lisIteDiv'
 
@@ -2353,17 +2365,17 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 											<div
-												className='rd-row'
+												className={ cssModObj.rdRow }
 
 												onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
 											>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool wrap itself listens for. How: This stops propagation on every click. */ }
 
 
-												<span className='rd-main'>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
+												<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
 
 
 													<input
-														className='rd-name-input'
+														className={ cssModObj.rdNameInput }
 
 														data-element-name-hook='rowNamInp'
 
@@ -2395,7 +2407,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											</div>
 
-											<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
+											<div className={ cssModObj.rdEdit }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
 
 
 												<EntEdiCom
@@ -2430,7 +2442,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<button
-										className='pv-additem-btn'
+										className={ cssModObj.pvAdditemBtn }
 
 										data-element-name-hook='iteAddBut'
 
@@ -2457,7 +2469,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 									<div
-										className={ ` pv-newitem   rd-item   is-editing   ${ actCloStr ? 'is-closing' : '' } ` }
+										className={` ${ cssModObj.pvNewitem }   ${ actCloStr ? cssModObj.isClosing : '' } `}
 
 										data-element-name-hook='lisIteDiv'
 
@@ -2499,17 +2511,17 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 										<div
-											className='rd-row'
+											className={ cssModObj.rdRow }
 
 											onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
 										>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool wrap itself listens for. How: This stops propagation on every click. */ }
 
 
-											<span className='rd-main'>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
+											<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
 
 
 												<input
-													className='rd-name-input'
+													className={ cssModObj.rdNameInput }
 
 													data-element-name-hook='rowNamInp'
 
@@ -2541,7 +2553,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										</div>
 
-										<div className='rd-edit'>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
+										<div className={ cssModObj.rdEdit }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
 
 
 											<EntEdiCom
@@ -2575,14 +2587,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 					<div
-						className='np-footer'
+						className={ cssModObj.npFooter }
 
 						data-element-name-hook='iteFooDiv'
 					>{ /* What: Footer Div Element. Why: The step's own guidance note and its Back/Create actions sit in one footer row. How: This wraps np-footer-note and np-footer-actions. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 						<div
-							className='np-footer-note'
+							className={ cssModObj.npFooterNote }
 
 							data-element-name-hook='fooNotDiv'
 						>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise counting toward the 2-item minimum. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
@@ -2606,7 +2618,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						</div>
 
 						<div
-							className='np-footer-actions'
+							className={ cssModObj.npFooterActions }
 
 							data-element-name-hook='forActDiv'
 						>{ /* What: Footer Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
@@ -2621,8 +2633,6 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 							<ButBasCom
-								className='ob-picker-create'
-
 								data-element-name-hook='forCreBut'
 
 								disabled={ !enoIteBoo || conColBoo }

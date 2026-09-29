@@ -285,10 +285,10 @@ const BOO_STE_OBJ = { // What: Boost Step Object. Why: This step highlights the 
  * CRE_STE_OBJ = Create Step Object
  *
  * @summary
- * Highlights the form's own real "Create Picker" button, .ob-picker-create
- * (see tab-picker.jsx's own np-footer). cirBoo plus priStr:'Done' together
- * mean this is the ONE step where the real target's own native click handler
- * (subForFun, which actually calls actStoObj.addPicFun) has to survive
+ * Highlights the form's own real "Create Picker" button, found by its
+ * forCreBut hook in picker-form.jsx's footer. cirBoo plus priStr:'Done'
+ * together mean this is the ONE step where the real target's own native click
+ * handler (subForFun, which actually calls actStoObj.addPicFun) has to survive
  * finTouFun's own side effects (selTabFun away from Pickers, unmounting this
  * whole tour); GuiTouCom's own priActFun defers the 'Done'/advance half of a
  * cirBoo click by a tick for exactly this reason (see its own comment), so
@@ -343,14 +343,12 @@ const GRO_STE_OBJ = { // What: Group Step Object. Why: This step highlights the 
  *
  * @summary
  * Highlights the "Add Items" button that advances the form from its Details
- * sub-step to its Items sub-step, .ob-picker-next, a class name left over from
- * the original stashed create-a-picker tour design, reused here as-is since it
- * already targets exactly this button. stbBoo is set since it is always the
- * last thing in the Details footer regardless of how the form got here,
- * reached going forward (scrolled down from filling out fields) or Back from
- * buiNamFun's own step (the form just switched back from its Items sub-step, a
- * completely different shape, so whatever scroll position carried over means
- * nothing).
+ * sub-step to its Items sub-step, found by its forNexBut hook. stbBoo is set
+ * since it is always the last thing in the Details footer regardless of how
+ * the form got here, reached going forward (scrolled down from filling out
+ * fields) or Back from buiNamFun's own step (the form just switched back from
+ * its Items sub-step, a completely different shape, so whatever scroll
+ * position carried over means nothing).
  *
  * The click this runFun() accompanies swaps the form from Details to its own
  * (much shorter) Items sub-step IN PLACE, within the same scrollable

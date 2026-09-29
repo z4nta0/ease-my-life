@@ -97,33 +97,6 @@
   transition: border-color .24s ease, background .24s ease, color .24s ease;
 }
 .picker-group-pill:hover { border-color: var(--muted); color: var(--text); }
-
-/* Attach-a-conditional (Pickers create-flow). Horizontal rail of larger, more
-   square pills (picker-card feel) for choosing an existing conditional or
-   adding a new one; inherits the .picker-groups edge-fade + scroll behavior. */
-.cnd-attach { display: flex; flex-direction: column; gap: 14px; padding-top: 12px; }
-.cnd-rail { gap: 8px; padding-bottom: 2px; }
-.cnd-pill {
-  flex-shrink: 0;
-  display: flex; flex-direction: column; gap: 3px; justify-content: center;
-  min-width: 132px; padding: 10px 14px;
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: 12px;
-  text-align: left; cursor: pointer;
-  transition: border-color .24s ease, background .24s ease, box-shadow .24s ease;
-}
-.cnd-pill:hover { border-color: var(--muted); }
-.cnd-pill.is-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; background: var(--accent-soft); }
-.cnd-pill-name { font-size: 14px; font-weight: 500; color: var(--text); }
-.cnd-pill-mode { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
-.cnd-pill--new { flex-direction: row; align-items: center; gap: 8px; color: var(--muted); border-style: dashed; }
-.cnd-pill--new .cnd-pill-name { color: var(--muted); font-weight: 500; }
-.cnd-pill--new.is-on { color: var(--accent); }
-.cnd-pill--new.is-on .cnd-pill-name { color: var(--accent); }
-/* Keep the two-paragraph explanation from running full width so the toggle sits
-   comfortably on the same line as the title (matches the other toggle rows). */
-.np-cond .np-field--toggle .np-toggle-text { max-width: 440px; }
 .picker-group-pill.is-on {
   background: oklch(from var(--accent-soft) l c h);
   border-color: var(--accent);
@@ -143,17 +116,6 @@
   background: oklch(from var(--accent) l c h / 0.16);
   color: var(--accent);
 }
-
-.picker-view { display: flex; flex-direction: column; gap: 18px; }
-
-.picker-h {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  gap: 16px;
-}
-/* The mode pill now sits below the name (Edit button took its old spot on
-   the right) — .pill's own inline-flex already puts it on its own line
-   after the block-level .picker-title, this just adds breathing room. */
-.picker-h > div { --pill-margin-top: 6px; }
 .picker-title {
   font-size: 28px; font-weight: 500;
   letter-spacing: -0.025em;
@@ -167,153 +129,10 @@
   text-wrap: pretty;
 }
 .picker-hint + .picker-hint { margin-top: 8px; }
-.mode-opt-hint + .mode-opt-hint { margin-top: 6px; }
-
-.pool-list {
-  display: flex; flex-direction: column;
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-md);
-  overflow: hidden;
-}
-/* Add-new-items (Pickers-tab item creation). Full-width dashed "Add items"
-   button below the pool, expanding into the staging form. */
-.pv-additem-wrap { display: flex; flex-direction: column; gap: 10px; }
-.pv-additem-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  width: 100%; padding: 10px 14px;
-  background: transparent; color: var(--muted);
-  border: 1px dashed var(--border); border-radius: var(--r-md);
-  font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-.pv-additem-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-/* In-progress new item reuses the Data-tab rd-item editor, but standalone (not
-   inside a card) so it needs its own surface, border and radius. */
-.pv-newitem { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--r-md); overflow: hidden; animation: pvNewItemIn .3s cubic-bezier(.34,1.2,.5,1) both; }
 @keyframes pvNewItemIn { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .pv-newitem { animation: none; } }
-.pv-newitem.rd-item:last-child { border-bottom: 0.5px solid var(--border); }
-/* In the Pickers-tab new-item editor the name row already provides the
-   divider, so the item editor (entry-editor.module.css) drops its rows' top
-   border and top margin, and since a brand-new item is discarded with Cancel,
-   its footer hides the redundant Delete and right-aligns Cancel and Save. */
-.pv-newitem { --entry-editor-delete-display: none; --entry-editor-foot-justify: flex-end; --entry-editor-rows-border-top: 0; --entry-editor-rows-margin-top: 0; }
-.pv-newitem .rd-row { cursor: default; }
-.pv-newitem .rd-edit { border-top: 0.5px solid var(--border); }
-/* Save animation: a just-saved item glides into place at the bottom of the pool. */
-@keyframes poolRowInsert { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-.pool-row--insert { animation: poolRowInsert .6s cubic-bezier(.34,1.2,.5,1) both; }
-@media (prefers-reduced-motion: reduce) { .pool-row--insert { animation-duration: .01ms; } }
-/* Delete: the row collapses + fades, letting neighbours slide up to fill. */
-@keyframes poolRowRemove { from { max-height: 160px; opacity: 1; } to { max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; border-bottom-width: 0; } }
-.pool-row--removing { animation: poolRowRemove .34s ease forwards; overflow: hidden; }
-@media (prefers-reduced-motion: reduce) { .pool-row--removing { animation-duration: .01ms; } }
 /* Creation UI dismissal: the in-progress editor collapses + fades before the
    saved item pops into the pool list. */
 @keyframes pvNewItemOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-6px) scale(.98); } }
-.pv-newitem.is-closing { animation: pvNewItemOut .26s ease both; overflow: hidden; }
-@media (prefers-reduced-motion: reduce) { .pv-newitem.is-closing { animation-duration: .01ms; } }
-.pool-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto auto;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 16px;
-  border-bottom: 0.5px solid var(--border);
-}
-@container app (max-width: 399px) {
-  .pool-row { gap: 10px; }
-}
-.pool-row:last-child { border-bottom: 0; }
-.pool-row--confirm { grid-template-columns: 1fr; }
-.pool-edit {
-  display: inline-flex; align-items: center; justify-content: center;
-  justify-self: end;
-  width: 30px; height: 30px; padding: 0;
-  background: transparent; color: var(--muted);
-  border: 0.5px solid var(--border); border-radius: var(--r-sm);
-  cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-.pool-edit:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-.pool-del {
-  display: inline-flex; align-items: center; justify-content: center;
-  justify-self: end;
-  width: 30px; height: 30px; padding: 0;
-  background: transparent; color: var(--muted);
-  border: 0.5px solid var(--border); border-radius: var(--r-sm);
-  cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-.pool-del:hover { color: var(--danger, #d24545); border-color: var(--danger, #d24545); background: color-mix(in srgb, var(--danger, #d24545) 8%, transparent); }
-/* Delete blocked at the 2-item minimum — same InfoTip-trigger pattern as
-   .pool-send.is-disabled above, rendered so the explanatory tip still shows. */
-.pool-del.is-disabled { opacity: 0.4; cursor: default; }
-.pool-del.is-disabled:hover { color: var(--muted); border-color: var(--border); background: none; }
-.pool-confirm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.pool-confirm-msg { font-size: 14px; text-wrap: pretty; }
-.pool-confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
-/* min-width: 0 — .pool-name is the grid item sitting in .pool-row's own
-   1fr column; without this, a grid item's default min-width:auto keeps
-   the column from shrinking below its content's min-content size (the
-   widest unbreakable word in the name, since the name itself can wrap).
-   A weighted/dynamic row's .pool-meta is wider than an ease-up row's (it
-   adds a wN pill alongside the progress bar — see .pool-meta below), so
-   on a narrow phone (iPhone SE width) it was this column that tipped the
-   row's total required width over the available space, overflowing the
-   row and pushing .pool-del off its right edge — worse for a name with
-   one especially long word (e.g. "Butterscotch...") than for one made of
-   several short, breakable words, since only the former was actually
-   hitting its min-content floor. */
-.pool-name {
-  display: flex; align-items: center; gap: 8px;
-  min-width: 0;
-  font-size: 14px;
-  text-wrap: pretty;
-}
-/* width: 80px — a fixed size for the pill itself, not just a max, so its
-   own text ("not yet" / "spent" / "inactive") never wraps onto a second
-   line inside it. justify-content: center, not text-align: center — .pill
-   is display:inline-flex (pill-tag.jsx), so its text is a flex item rather than
-   plain inline content; text-align has no effect on a flex item's position
-   along the main axis, justify-content does. Holds regardless of viewport. */
-.pool-name { --pill-width: 80px; --pill-flex: 0 0 80px; --pill-justify-content: center; }
-/* Below 480px, push the pill onto its own line under the name instead of
-   competing with it for width on a narrow row. Forcing .pool-item-name to
-   flex-basis: 100% (rather than giving the pill itself width: 100%, which
-   stretched it uncomfortably wide across the whole row) leaves the pill at
-   its own normal fixed 80px, just wrapped down a line by flex-wrap — name
-   claims the entire first line, so nothing of the second is left for it to
-   share. */
-@media (max-width: 480px) {
-  .pool-name { flex-wrap: wrap; }
-  /* Undo the base rule's fixed 80px + centered text for the wrapped case
-     specifically — back to auto width, content hugging its own left edge
-     (flex-start). Centering was for aligning same-line pills into one
-     column at wider viewports; once wrapped onto its own line, there's no
-     sibling to align WITH, and margin-left below needs the text flush
-     against the pill's own left edge (not centered, which shifts by a
-     different amount per label's own width) to reliably cancel out. */
-  .pool-name { --pill-width: auto; --pill-flex: 0 0 auto; --pill-justify-content: flex-start; }
-  /* -7px, not +7px — the goal is to pull the pill LEFT so its own text
-     lines up with the name text above it, cancelling out .pill--muted's
-     own 7px left padding (which otherwise indents the pill's visible text
-     7px to the right of the name's). Only wanted once the pill has
-     wrapped onto its own second line — inline, at wider viewports, it
-     sits right after the name via .pool-name's own `gap` and needs no
-     correction. */
-  .pool-name { --pill-margin-left: -7px; }
-}
-.pool-meta {
-  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
-  justify-self: end;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-.pool-weight {
-  font-variant-numeric: tabular-nums;
-}
-.pool-ease-meta { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
 /* ─── Tab: Stats ─────────────────────────────────────────────────────────── */
 
@@ -1034,38 +853,6 @@ button.heat-cell.is-sel {
   .settings-rail .rail-btn.is-on { border-color: var(--accent); background: var(--accent-soft); }
 }
 
-.mode-radio { display: flex; flex-direction: column; gap: 4px; }
-.mode-opt {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 10px 12px;
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-md);
-  background: oklch(from var(--surface) calc(l - 0.005) c h);
-  cursor: pointer;
-  transition: border-color .12s, background .12s;
-}
-.mode-opt:hover { border-color: var(--muted); }
-/* Keyboard focus ring: the radio itself is small (or visually hidden in the
-   rd-mode-opt variant), so the ring goes on the whole option row. */
-.mode-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
-.mode-opt.is-on { border-color: var(--accent); background: var(--accent-soft); }
-.mode-opt input {
-  appearance: none; -webkit-appearance: none;
-  width: 14px; height: 14px; min-width: 14px;
-  margin-top: 2px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  position: relative;
-  transition: border-color .12s;
-}
-.mode-opt.is-on input { border-color: var(--accent); }
-.mode-opt.is-on input::after {
-  content: ''; position: absolute; inset: 3px;
-  border-radius: 50%; background: var(--accent);
-}
-.mode-opt-name { font-weight: 500; font-size: 14px; }
-.mode-opt-hint { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
-
 .daily-list { display: flex; flex-direction: column; }
 .daily-list li {
   display: flex; justify-content: space-between; align-items: center;
@@ -1093,30 +880,6 @@ button.heat-cell.is-sel {
 .switch.is-on i { transform: translateX(16px); }
 
 /* ─── New-picker form ───────────────────────────────────────────────────────  */
-.np-fields { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
-.np-field { display: flex; flex-direction: column; gap: 8px; }
-/* .np-field also renders as a <fieldset> (the picker-mode radio group, for a
-   real group-level accessible name via <legend> instead of an orphaned
-   <label>) — reset the browser's default fieldset border/padding/min-width
-   so it matches every plain-div .np-field exactly. */
-fieldset.np-field { border: 0; margin: 0; padding: 0; min-width: 0; }
-legend.np-label { padding: 0; float: none; width: 100%; }
-.np-field--toggle {
-  display: flex;
-  flex-direction: row; align-items: flex-start; justify-content: space-between;
-  gap: 20px;
-  padding-top: 20px;
-  border-top: 0.5px solid var(--border);
-}
-.np-field--toggle .np-toggle-text { display: flex; flex-direction: column; gap: 8px; }
-.np-field--toggle .switch { flex-shrink: 0; margin-top: 2px; cursor: pointer; }
-.np-label { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
-.np-help {
-  margin: 0;
-  font-size: 13px; line-height: 1.5;
-  color: var(--muted);
-  max-width: 60ch; text-wrap: pretty;
-}
 .np-input {
   width: 100%; max-width: 360px;
   background: var(--bg);
@@ -1132,145 +895,8 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 .np-input::placeholder { color: var(--muted); opacity: 0.7; }
 .np-input:focus { border-color: var(--accent); }
-.np-input--sm { max-width: 260px; }
-
-.np-groups { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
-.np-chip {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 7px 14px;
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: 999px;
-  font-size: 13px; font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-  transition: border-color .12s, background .12s, color .12s;
-}
-.np-chip:hover { border-color: var(--muted); }
-.np-chip.is-on {
-  border-color: var(--accent);
-  background: oklch(from var(--accent-soft) l c h);
-  color: var(--accent);
-}
-.np-chip--new { color: var(--muted); border-style: dashed; }
-.np-chip--new.is-on { color: var(--accent); border-style: solid; }
-
-.np-footer {
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 0.5px solid var(--border);
-}
-.np-footer-note {
-  font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: 0.03em;
-  color: var(--muted);
-  flex: 1 1 auto; min-width: 0; max-width: 40ch;
-}
-.np-footer-actions { display: flex; gap: 8px; align-items: center; flex: 0 0 auto; }
-/* Step-2 footer follows the pool directly — add breathing room so its top
-   border doesn't sit flush against the last pool row. */
-.np-pool + .np-footer { margin-top: 20px; }
-.np-footer--step1 { margin-top: 24px; }
-
-/* Step indicator — two segments, current accented, completed checkmarked. */
-.np-steps {
-  display: flex; align-items: center; gap: 10px;
-  margin: 2px 0 4px;
-}
-.np-step {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: none; border: none; padding: 2px; cursor: pointer;
-  color: var(--muted);
-}
-.np-step:disabled { cursor: default; }
-.np-step-num {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; border-radius: 999px;
-  border: 1px solid var(--border);
-  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
-  color: var(--muted);
-  transition: border-color .12s, background .12s, color .12s;
-}
-.np-step-lbl { font-size: 13px; font-weight: 500; }
-.np-step.is-on { color: var(--text); }
-.np-step.is-on .np-step-num { border-color: var(--accent); background: var(--accent); color: var(--accent-ink, #fff); }
-.np-step.is-done { color: var(--text); }
-.np-step.is-done .np-step-num { border-color: var(--accent); color: var(--accent); }
-.np-step-line { flex: 0 0 28px; height: 1px; background: var(--border); }
-
-/* The growing pool list. */
-.np-pool { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
-.np-pool-empty {
-  padding: 18px 16px;
-  border: 1px dashed var(--border); border-radius: var(--r-sm);
-  background: oklch(from var(--surface) l c h / 0.5);
-  color: var(--muted); font-size: 13px; line-height: 1.5;
-  text-wrap: pretty;
-}
 @keyframes np-row-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 
-.np-weight-note { margin-top: -2px; }
-
-/* ─── New-picker form: daily schedule sub-area ────────────────────────────── */
-/* Sits beneath the "Include in the Daily generator" toggle; only shown when
-   that toggle is on, so it reads as a refinement of it. */
-.np-sched {
-  display: flex; flex-direction: column; gap: 22px;
-  padding: 18px 0 0 0;
-}
-.np-sched-block { display: flex; flex-direction: column; gap: 8px; }
-/* Daily-generator toggle + its cadence/schedule refinement share one field with a
-   tighter internal gap than the form's section gap, so they read as one group. */
-.np-daily-group { display: flex; flex-direction: column; gap: 4px; }
-.np-sched-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.np-sched-presets { display: flex; gap: 6px; flex-wrap: wrap; }
-.np-preset {
-  border: none; background: none; cursor: pointer;
-  font-size: 12.5px; color: var(--accent);
-  padding: 4px 6px; border-radius: var(--r-sm);
-}
-.np-preset:hover { background: oklch(from var(--accent-soft) l c h); }
-.np-sched-toggle {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
-}
-.np-sched-toggle .switch { flex-shrink: 0; margin-top: 2px; cursor: pointer; }
-
-/* Data tab: the item editor sits inside a full-bleed row (.rd-edit), so it
-   strips its card chrome (border, tint, radius, padding), while Today keeps
-   its card. */
-.rd-edit { --entry-editor-background: none; --entry-editor-border: 0; --entry-editor-border-radius: 0; --entry-editor-margin: 0; --entry-editor-padding: 0; }
-
-/* ── Data tab: Reminders section (finalized) ──────────────────────────────────
-   One collapsible .cat section. Inside: a nested "Controls" disclosure + a
-   settings matrix, then a full-bleed items list whose rows expand into the
-   exact Today scheduling editor. */
-
-.rd-item { border-bottom: 0.5px solid var(--border); }
-.rd-item:last-child { border-bottom: 0; }
-/* Real <button> (conditional rows + picker item rows) — they were divs with a
-   click handler and no tabindex, so keyboard users couldn't open an editor. The
-   reset strips UA chrome only; layout, padding and hover stay owned here. */
-.rd-row { display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; user-select: none;
-  appearance: none; -webkit-appearance: none; border: 0; background: none;
-  font: inherit; color: inherit; width: 100%; text-align: left; }
-.rd-row:hover { background: oklch(from var(--surface) calc(l - 0.008) c h); }
-.rd-item.is-editing > .rd-row:hover { background: transparent; }
-/* The editing-state row is a plain div (see tab-data.jsx's own comment) —
-   only its .rd-chev button is actually clickable now, so the row itself
-   shouldn't still look clickable everywhere via the shared .rd-row cursor. */
-.rd-item.is-editing > .rd-row { cursor: default; }
-.rd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.rd-name-input {
-  border: 0; background: transparent; font: inherit;
-  font-size: 14px; font-weight: 500; letter-spacing: -0.005em;
-  padding: 1px 0; width: 100%;
-  border-bottom: 1px solid var(--border);
-  transition: border-color .12s;
-}
-.rd-name-input:focus { outline: none; border-bottom-color: var(--accent); }
-.rd-name-input::placeholder { color: var(--muted); opacity: 0.7; }
-.rd-edit { padding: 2px 16px 14px; }
 /* Appearance's Picker animation / Completion celebration cards go unpadded +
    overflow:hidden (see style-radio-card) so the option list can bleed edge-
    to-edge without a padding gap top/bottom — the radio list's own -16px
@@ -1306,13 +932,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    Covers every editor footer — picker item, reminder, picker settings, conditional. */
 @keyframes footSwapIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 @keyframes footSwapOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(3px); } }
-.pool-confirm.is-leaving { animation: footSwapOut .14s ease both; }
-.rd-ctl-confirm, .pool-confirm { animation: footSwapIn .16s ease both; }
-@media (prefers-reduced-motion: reduce) {
-  .rd-ctl-confirm, .pool-confirm { animation: none; }
-}
-
-.rd-edit { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0 -16px; --rem-inline-foot-padding: 14px 16px 0; }
 
 /* Stats → Reminders completed (separate additive metric, not in the heatmap). */
 .rem-stats-head {
@@ -1451,17 +1070,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
   50%{outline-color:oklch(from var(--accent) l c h/0.2)}
 }
-/* .rd-item is the one exception: it's paired WITH .is-tour-target (not
-   alone), because it needs that class's own border-based highlight, not
-   this class's default outline — .rd-item.is-tour-target already sets
-   outline:none in favor of per-side borders (touching item rows can't use
-   outline, see that rule's own comment), so animating outline-color here
-   would do nothing visible. Overrides the animation to fade border-color
-   instead, which — being a real CSS animation — still wins over every one
-   of .rd-item.is-tour-target's own static border-*-color declarations
-   (including its :first-of-type/:last-of-type variants), regardless of
-   selector specificity. */
-.rd-item.ob-tour-pulse{animation:obTourFadeBorder 1.8s ease-in-out infinite}
 @keyframes obTourFadeBorder{
   0%,100%{border-color:oklch(from var(--accent) l c h/1)}
   50%{border-color:oklch(from var(--accent) l c h/0.2)}
@@ -1471,7 +1079,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   /* Frozen mid-fade would read as a paused animation rather than a
      deliberate static state — pin it to full color instead. */
   .ob-tour-pulse{animation:none;outline-color:var(--accent)}
-  .rd-item.ob-tour-pulse{animation:none;border-color:var(--accent)}
 }
 /* While a tour runs, every tab gets room to scroll a bottom-anchored target
    clear of the tab bar; each tab's root reads the property (see CLAUDE.md's
@@ -1479,7 +1086,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    styled from this sheet. */
 body[data-tour-active]{--tab-tour-padding:200px}
 .tab{padding-bottom:var(--tab-tour-padding,0)}
-.np-tour-name{margin:16px 0 16px}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
