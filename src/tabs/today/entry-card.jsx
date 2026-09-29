@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: EntCarCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
+import cssModObj from './entry-card.module.css'; // What: CSS Module Object. Why: Every Today entry card variant is styled from its own module. How: This maps each class name in entry-card.module.css to its hashed module class.
+import React     from 'react';                   // What: React. Why: EntCarCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
 import { IcoSvgCom   } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: The card's check, grip and action buttons show small glyphs. How: This is rendered inside those controls.
@@ -132,8 +133,10 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 			<article
-				className={ ` today-card   today-card--tutorial   ${ tutDonBoo ? 'is-done' : '' }   ${ neeAttBoo ? 'is-needed' : '' }   ${ cheExiBoo ? 'is-removing' : '' } ` }
+				className={` ${ cssModObj.todayCard }   ${ cssModObj.todayCardTutorial }   ${ cheExiBoo ? cssModObj.isRemoving : '' } `}
 
+				data-card-done-active={ tutDonBoo || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while tutDonBoo is true.
+				data-card-needed-active={ neeAttBoo || undefined } // What: Card Needed Active Attribute. Why: While no real picker exists, the tutorial card asks for attention in a warm tint. How: This sets the presence-only attribute while neeAttBoo is true.
 				data-element-name-hook='todCarArt tutCarArt'
 
 				onClick={ onRowCliFun }
@@ -144,7 +147,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<button
-						className='check'
+						className={ cssModObj.check }
 
 						data-element-name-hook='carCheBut'
 
@@ -165,7 +168,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<span
-							className='check-ripple'
+							className={ cssModObj.checkRipple }
 
 							aria-hidden='true'
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
@@ -183,7 +186,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<button
-						className='check'
+						className={ cssModObj.check }
 
 						data-element-name-hook='carCheBut'
 
@@ -214,13 +217,13 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 				) }
 
 
-				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
+				<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
-					<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The picker's own name and its optional time estimate sit together. How: This wraps the picker-name span and, when one exists, the time estimate. */ }
+					<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The picker's own name and its optional time estimate sit together. How: This wraps the picker-name span and, when one exists, the time estimate. */ }
 
 
-						<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which sample picker this card offers. How: This renders picRecObj's own name. */ }
+						<span className={ cssModObj.metaPicker }>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which sample picker this card offers. How: This renders picRecObj's own name. */ }
 
 
 
@@ -230,9 +233,9 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 							<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
-								<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The picker name and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
+								<span className={ cssModObj.metaDot }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The picker name and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-								<span className='meta-time'>{ ONB_PCT_OBJ[ picRecObj.id ] }</span>{ /* What: Meta Time Span Element. Why: A manually-timed estimate helps the user judge how long this tutorial takes. How: This renders the looked-up estimate for picRecObj's own id. */ }
+								<span>{ ONB_PCT_OBJ[ picRecObj.id ] }</span>{ /* What: Meta Time Span Element. Why: A manually-timed estimate helps the user judge how long this tutorial takes. How: This renders the looked-up estimate for picRecObj's own id. */ }
 
 
 							</React.Fragment>
@@ -243,7 +246,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					</div>
 
-					<div className='today-card-name'>Set up a { picRecObj.name } picker</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with picRecObj's own name interpolated. */ }
+					<div className={ cssModObj.todayCardName }>Set up a { picRecObj.name } picker</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with picRecObj's own name interpolated. */ }
 
 
 				</div>
@@ -253,14 +256,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<div
-						className='today-card-actions'
+						className={ cssModObj.todayCardActions }
 
 						data-element-name-hook='carActDiv'
 					>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 						<button
-							className='icon-btn'
+							className={ cssModObj.iconBtn }
 
 							aria-label='Cancel tutorial'
 							title='Cancel'
@@ -335,8 +338,10 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 			<article
-				className={ ` today-card   today-card--dayoff   ${ entRecObj.done ? 'is-done' : '' }   ${ daoFreBoo ? 'is-fresh' : '' }   ${ isaRmvBoo ? 'is-removing' : '' }   ${ ediModBoo ? 'is-reorderable' : '' } ` }
+				className={` ${ cssModObj.todayCard }   ${ cssModObj.todayCardDayoff }   ${ daoFreBoo ? cssModObj.isFresh : '' }   ${ isaRmvBoo ? cssModObj.isRemoving : '' } `}
 
+				data-card-done-active={ entRecObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRecObj.done is true.
+				data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 				data-element-name-hook='todCarArt daoCarArt'
 
 				onClick={ onRowCliFun }
@@ -347,7 +352,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<span
-						className='card-grip'
+						className={ cssModObj.cardGrip }
 
 						data-element-name-hook='carGriSpa'
 
@@ -375,7 +380,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<button
-						className='check'
+						className={ cssModObj.check }
 
 						data-element-name-hook='carCheBut'
 
@@ -396,7 +401,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<span
-							className='check-ripple'
+							className={ cssModObj.checkRipple }
 
 							aria-hidden='true'
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
@@ -419,14 +424,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 				) }
 
 
-				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
+				<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
-					<div className='today-card-meta today-card-meta--dayoff'>{ /* What: Card Meta Div Element. Why: A day-off row's own truncatable title needs its own modifier class for layout. How: This wraps the InfTipCom-wrapped title below. */ }
+					<div className={` ${ cssModObj.todayCardMeta }   ${ cssModObj.todayCardMetaDayoff } `}>{ /* What: Card Meta Div Element. Why: A day-off row's own truncatable title needs its own modifier class for layout. How: This wraps the InfTipCom-wrapped title below. */ }
 
 
 						<InfTipCom
-							className='meta-picker meta-dayoff-title'
+							className={` ${ cssModObj.metaPicker }   ${ cssModObj.metaDayoffTitle } `}
 
 							labTexStr={ daoTitStr }
 							trnOnlBoo
@@ -441,7 +446,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					</div>
 
-					<div className='today-card-name'>{ entRecObj.cardText || 'Enjoy your day off' }</div>{ /* What: Card Name Div Element. Why: This is the day-off card's own main display text. How: This renders entRecObj's own cardText, falling back to a fixed friendly phrase. */ }
+					<div className={ cssModObj.todayCardName }>{ entRecObj.cardText || 'Enjoy your day off' }</div>{ /* What: Card Name Div Element. Why: This is the day-off card's own main display text. How: This renders entRecObj's own cardText, falling back to a fixed friendly phrase. */ }
 
 
 				</div>
@@ -451,14 +456,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<div
-						className='today-card-actions'
+						className={ cssModObj.todayCardActions }
 
 						data-element-name-hook='carActDiv'
 					>{ /* What: Card Actions Div Element. Why: A day-off row still shows the full 3-icon action strip for layout parity, but re-roll/edit are disabled since neither concept applies. How: This wraps the disabled Re-Roll InfTipCom, a working Skip button, and the disabled Edit InfTipCom. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 						<InfTipCom
-							className='icon-btn is-disabled'
+							className={ cssModObj.iconBtn }
 
 							actNamStr='Re-Roll'
 							labTexStr={ disTipStr }
@@ -476,7 +481,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<button
-							className='icon-btn'
+							className={ cssModObj.iconBtn }
 
 							aria-label='Skip'
 							title='Skip'
@@ -503,7 +508,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<InfTipCom
-							className='icon-btn is-disabled'
+							className={ cssModObj.iconBtn }
 
 							actNamStr='Edit'
 							labTexStr={ disTipStr }
@@ -568,8 +573,10 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 			<article
-				className={ ` today-card   today-card--charging   ${ entRecObj.done ? 'is-done' : '' }   ${ chrFreBoo ? 'is-fresh' : '' }   ${ isaRmvBoo ? 'is-removing' : '' }   ${ ediModBoo ? 'is-reorderable' : '' } ` }
+				className={` ${ cssModObj.todayCard }   ${ cssModObj.todayCardCharging }   ${ chrFreBoo ? cssModObj.isFresh : '' }   ${ isaRmvBoo ? cssModObj.isRemoving : '' } `}
 
+				data-card-done-active={ entRecObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRecObj.done is true.
+				data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 				data-element-name-hook='todCarArt chrCarArt'
 
 				onClick={ onRowCliFun }
@@ -580,7 +587,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<span
-						className='card-grip'
+						className={ cssModObj.cardGrip }
 
 						data-element-name-hook='carGriSpa'
 
@@ -608,7 +615,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<button
-						className='check'
+						className={ cssModObj.check }
 
 						data-element-name-hook='carCheBut'
 
@@ -629,7 +636,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<span
-							className='check-ripple'
+							className={ cssModObj.checkRipple }
 
 							aria-hidden='true'
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
@@ -652,18 +659,18 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 				) }
 
 
-				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
+				<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
-					<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
+					<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
 
 
-						<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this charging card belongs to. How: This renders picRecObj's own name. */ }
+						<span className={ cssModObj.metaPicker }>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this charging card belongs to. How: This renders picRecObj's own name. */ }
 
 
 					</div>
 
-					<div className='today-card-name'>No eligible items for today</div>{ /* What: Card Name Div Element. Why: This is the fixed explanatory text for a charging row. How: This renders a literal, fixed phrase. */ }
+					<div className={ cssModObj.todayCardName }>No eligible items for today</div>{ /* What: Card Name Div Element. Why: This is the fixed explanatory text for a charging row. How: This renders a literal, fixed phrase. */ }
 
 
 				</div>
@@ -673,14 +680,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<div
-						className='today-card-actions'
+						className={ cssModObj.todayCardActions }
 
 						data-element-name-hook='carActDiv'
 					>{ /* What: Card Actions Div Element. Why: A charging row still shows the full 3-icon action strip for layout parity, but every one of them is disabled since none of those concepts apply here. How: This wraps 3 disabled InfTipCom-wrapped icons. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 						<InfTipCom
-							className='icon-btn is-disabled'
+							className={ cssModObj.iconBtn }
 
 							actNamStr='Re-Roll'
 							labTexStr={ disTipStr }
@@ -698,7 +705,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<InfTipCom
-							className='icon-btn is-disabled'
+							className={ cssModObj.iconBtn }
 
 							actNamStr='Skip'
 							labTexStr={ disTipStr }
@@ -716,7 +723,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<InfTipCom
-							className='icon-btn is-disabled'
+							className={ cssModObj.iconBtn }
 
 							actNamStr='Edit'
 							labTexStr={ disTipStr }
@@ -850,8 +857,11 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 		<article
-			className={ ` today-card   ${ entRecObj.done ? 'is-done' : '' }   ${ isaFreBoo ? 'is-fresh' : '' }   ${ isaRmvBoo ? 'is-removing' : '' }   ${ isaRolBoo ? 'is-rolling' : '' }   ${ isaEdiBoo ? 'is-editing' : '' }   ${ ediModBoo ? 'is-reorderable' : '' } ` }
+			className={` ${ cssModObj.todayCard }   ${ isaFreBoo ? cssModObj.isFresh : '' }   ${ isaRmvBoo ? cssModObj.isRemoving : '' }   ${ isaRolBoo ? cssModObj.isRolling : '' } `}
 
+			data-card-done-active={ entRecObj.done || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while entRecObj.done is true.
+			data-card-edit-active={ isaEdiBoo || undefined } // What: Card Edit Active Attribute. Why: While its editor is open, the card stops looking clickable. How: This sets the presence-only attribute while isaEdiBoo is true.
+			data-card-reorder-active={ ediModBoo || undefined } // What: Card Reorder Active Attribute. Why: In Edit Mode the card turns into a dashed, draggable outline. How: This sets the presence-only attribute while ediModBoo is true.
 			data-element-name-hook='todCarArt'
 
 			onClick={ onRowCliFun }
@@ -862,7 +872,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 				<span
-					className='card-grip'
+					className={ cssModObj.cardGrip }
 
 					data-element-name-hook='carGriSpa'
 
@@ -890,7 +900,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 				<button
-					className='check'
+					className={ cssModObj.check }
 
 					data-element-name-hook='carCheBut'
 
@@ -911,7 +921,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<span
-						className='check-ripple'
+						className={ cssModObj.checkRipple }
 
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
@@ -934,13 +944,13 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 			) }
 
 
-			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row (or its editable field) read as one grouped block. How: This wraps the meta row and either the name field or the plain name div below. */ }
+			<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The meta row and name row (or its editable field) read as one grouped block. How: This wraps the meta row and either the name field or the plain name div below. */ }
 
 
-				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot. How: This wraps the picker-name span below. */ }
+				<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot. How: This wraps the picker-name span below. */ }
 
 
-					<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker produced this item. How: This renders picRecObj's own name. */ }
+					<span className={ cssModObj.metaPicker }>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker produced this item. How: This renders picRecObj's own name. */ }
 
 
 				</div>
@@ -949,7 +959,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<input
-						className='entry-card-name-input'
+						className={ cssModObj.entryCardNameInput }
 
 						data-element-name-hook='entNamInp'
 
@@ -971,7 +981,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaEdiBoo is false.
 
 
-					<div className='today-card-name'>{ curIteObj.name }</div> // What: Card Name Div Element. Why: Outside the inline rename field, the item's own name just displays plainly. How: This renders curIteObj's own name.
+					<div className={ cssModObj.todayCardName }>{ curIteObj.name }</div> // What: Card Name Div Element. Why: Outside the inline rename field, the item's own name just displays plainly. How: This renders curIteObj's own name.
 
 
 				) }
@@ -984,7 +994,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 				<div
-					className='today-card-actions'
+					className={ cssModObj.todayCardActions }
 
 					data-element-name-hook='carActDiv'
 				>{ /* What: Card Actions Div Element. Why: An ordinary pick row's own re-roll/skip/edit controls sit together. How: This wraps a working-or-disabled Re-Roll, a working-or-disabled Skip, and an always-working Edit toggle. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
@@ -994,7 +1004,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<button
-							className={ ` icon-btn   ${ isaRolBoo ? 'is-spinning' : '' } ` }
+							className={` ${ cssModObj.iconBtn }   ${ isaRolBoo ? cssModObj.isSpinning : '' } `}
 
 							aria-label='Re-Roll'
 							title='Re-Roll'
@@ -1023,7 +1033,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<InfTipCom
-							className='icon-btn is-disabled'
+							className={ cssModObj.iconBtn }
 
 							actNamStr='Re-Roll'
 							labTexStr={ actRerStr }
@@ -1047,7 +1057,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<InfTipCom
-							className='icon-btn is-disabled'
+							className={ cssModObj.iconBtn }
 
 							actNamStr='Skip'
 							labTexStr={ donSkiStr }
@@ -1067,7 +1077,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 						<button
-							className='icon-btn'
+							className={ cssModObj.iconBtn }
 
 							aria-label='Skip'
 							title='Skip'
@@ -1097,7 +1107,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 					<button
-						className={ ` icon-btn   ${ isaEdiBoo ? 'is-on' : '' } ` }
+						className={ cssModObj.iconBtn }
 
 						aria-expanded={ isaEdiBoo }
 						aria-label='Edit'

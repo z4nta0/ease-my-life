@@ -1675,20 +1675,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .sched-line .switch { cursor: pointer; }
 .sched-off-note { font-size: 13px; color: var(--muted); }
 
-/* Today picker entry: edit affordance — name turns into a direct-edit input and
-   a controls box (weight / active / delete) opens beneath, mirroring Data. */
-.entry-card-name-input {
-  width: 100%; margin: 0; padding: 1px 0;
-  border: none; background: none;
-  font-family: var(--font-sans);
-  font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: var(--text);
-  border-bottom: 1px solid var(--border);
-  transition: border-color .12s;
-}
-.entry-card-name-input:focus { outline: none; border-bottom-color: var(--accent); }
-.entry-card-name-input::placeholder { color: var(--muted); opacity: 0.7; }
-.today-card.is-editing { cursor: default; }
-
 /* Picker-item editor: one setting per full-bleed row (label left / control
    right), with hairline dividers — same shape as the "When it runs" controls.
    Full-bleed via -16px margins (both Today's card and Data's .rd-edit inset 16px). */
@@ -2366,55 +2352,8 @@ button.rd-chev {
 }
 .editmode-banner-msg svg { opacity: 0.85; }
 .editmode-banner-actions { display: flex; align-items: center; gap: 8px; flex: none; }
-
-/* Grip handles — sit where the check / group title lead was. */
-.card-grip, .group-grip {
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--muted);
-  cursor: grab;
-  touch-action: none;                 /* let pointer drag own the gesture */
-  border-radius: 8px;
-  transition: color .12s, background .12s;
-}
-.card-grip { width: 24px; height: 24px; }
-.group-grip { width: 26px; height: 26px; margin-left: -4px; }
-.card-grip:hover, .group-grip:hover { color: var(--text); background: var(--accent-soft); }
-.card-grip:active, .group-grip:active { cursor: grabbing; }
-.group-h.is-reorderable .group-h-l { gap: 10px; }
-
-/* Resting draggable rows: dashed outline + grab cursor, no click affordances. */
-.today-card.is-reorderable {
-  cursor: grab;
-  border-style: dashed;
-  border-color: oklch(from var(--accent) l c h / 0.4);
-  perspective: none;                  /* Firefox: 3D context interferes with the drag translate */
-  animation: emUnlock 0.28s ease both;
-}
-.today-card.is-reorderable:hover {
-  border-color: oklch(from var(--accent) l c h / 0.6);
-  background: var(--surface);
-}
-.today-card.is-reorderable:active { background: var(--surface); }
-/* Opacity-only unlock. IMPORTANT: do NOT animate `transform` here — with
-   `both` fill-mode the animation permanently holds its final transform value
-   and overrides the inline `translateY()` the drag controller sets, which
-   silently froze every item row in place (group headers have no such animation,
-   so they dragged fine — that was the whole bug). */
-@keyframes emUnlock {
-  from { opacity: 0.4; }
-  to   { opacity: 1; }
-}
 @media (prefers-reduced-motion: reduce) {
-  .today-card.is-reorderable, .editmode-banner { animation: none; }
-}
-
-/* The row/section actively under the pointer: lifted, scaled, above the rest. */
-.today-card[data-item-drag-active] {
-  cursor: grabbing;
-  border-style: solid;
-  border-color: oklch(from var(--accent) l c h / 0.55);
-  box-shadow: 0 18px 40px -12px oklch(0 0 0 / 0.34), 0 6px 14px -4px oklch(0 0 0 / 0.18);
-  transform: scale(1.015);
+  .editmode-banner { animation: none; }
 }
 .group-section[data-item-drag-active] {
   box-shadow: 0 20px 46px -14px oklch(0 0 0 / 0.32);
@@ -2855,11 +2794,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-create--generate.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.07)}
 .ob-create.is-removing{animation:cardSkipOut 380ms cubic-bezier(.4,.05,.7,.4) forwards}
 @media (prefers-reduced-motion:reduce){.ob-create.is-removing{animation:none;opacity:0}}
-/* Same "needs attention" cue as .ob-create--generate.is-needed above, applied
-   to every still-open "Create a picker" launcher card while zero real
-   pickers exist yet — see ONB_CHE_OBJ.reaPicFun. */
-.today-card--tutorial.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.06)}
-.today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){
   .ob-generate-pulse::after{animation:none;transition:none}

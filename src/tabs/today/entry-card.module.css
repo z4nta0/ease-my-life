@@ -1,0 +1,732 @@
+
+
+
+/**
+ * entry-card.module.css = Entry Card Module
+ *
+ * @summary
+ * Styles for the Today tab's entry cards: the picker tutorial launcher, the
+ * day-off card, the charging card, and the ordinary picked-item card, each a
+ * grid of checkbox (or Edit Mode grip), body, and actions. A done card keys
+ * off data-card-done-active, an editing card off data-card-edit-active, a
+ * card in Edit Mode off data-card-reorder-active, a tutorial card that needs
+ * attention off data-card-needed-active, and a disabled action off the
+ * aria-disabled its info tip sets. The fresh checkbox ripple, the removal
+ * collapse, the re-roll tumble, and the re-roll icon spin are this file's own
+ * module classes, while the ripple celebration's exhale and a drag's lift key
+ * off data-card-exhale-active and data-item-drag-active, set from other files.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region today-card */
+
+.today-card { /* What: Entry Card. Why: Each Today entry is a card, clickable to toggle. How: This lays the checkbox, body, and actions out on a three-column grid in a bordered card that fades between states. */
+
+
+	align-items           : center;
+	background            : var(--surface);
+	border                : 0.5px solid var(--border);
+	border-radius         : var(--r-lg);
+	cursor                : pointer;
+	display               : grid;
+	gap                   : 16px;
+	grid-template-columns : auto 1fr auto;
+	margin-bottom         : 10px;
+	padding               : 16px 18px;
+	perspective           : 800px;
+	transition            : background .15s, opacity .2s, border-color .12s;
+	user-select           : none;
+
+
+}
+.today-card[data-card-exhale-active] { /* What: Exhaling Entry Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exhale-delay tab-today.jsx sets on each card. */
+
+
+	animation : global(cardExhale) var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+.today-card:last-child { /* What: Last Entry Card. Why: The list ends at the last card with no gap. How: This drops its bottom margin. */
+
+
+	margin-bottom : 0;
+
+
+}
+.today-card:hover { /* What: Hovered Entry Card. Why: The card should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+
+
+}
+.today-card:active { /* What: Pressed Entry Card. Why: A press should register before the toggle lands. How: This shades the card. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.01) c h);
+
+
+}
+.today-card.is-removing { /* What: Removing Entry Card. Why: A skipped entry or a finished tutorial card slides out and collapses. How: This plays the shared skip-out collapse and stops it taking clicks. */
+
+
+	animation      : global(cardSkipOut) 380ms cubic-bezier(.4,.05,.7,.4) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the reminder and page tour cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	overflow       : hidden;
+	pointer-events : none;
+
+
+}
+.today-card[data-card-done-active] { /* What: Done Entry Card. Why: A done entry reads as settled. How: This shades the card slightly darker than the surface. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.005) c h);
+
+
+}
+.today-card--dayoff { /* What: Day-Off Card. Why: A day off reads as a gentle rest, apart from ordinary entries. How: This washes the card in the soft accent. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.today-card--dayoff[data-card-done-active] { /* What: Done Day-Off Card. Why: A done day off keeps its accent wash, a shade darker. How: This darkens the soft accent slightly. */
+
+
+	background : oklch(from var(--accent-soft) calc(l - 0.02) c h);
+
+
+}
+.today-card[data-card-edit-active] { /* What: Editing Entry Card. Why: While its editor is open, clicking the card doesn't toggle it. How: This resets the cursor. */
+
+
+	cursor : default;
+
+
+}
+.today-card[data-card-reorder-active] { /* What: Reorderable Entry Card. Why: In Edit Mode a card is dragged rather than toggled. How: This dashes its border in the accent color, switches to the grab cursor, and plays a short unlock as Edit Mode opens. */
+
+
+	animation    : emUnlock 0.28s ease both;
+	border-color : oklch(from var(--accent) l c h / 0.4);
+	border-style : dashed;
+	cursor       : grab;
+	perspective  : none; /* What: Flat Perspective. Why: In Firefox the card's 3D context interferes with the drag's translate. How: This drops the perspective while the card can be dragged. */
+
+
+}
+.today-card[data-card-reorder-active]:hover { /* What: Hovered Reorderable Entry Card. Why: The card should respond to the pointer without looking clickable. How: This deepens the dashed border and keeps a plain surface. */
+
+
+	background   : var(--surface);
+	border-color : oklch(from var(--accent) l c h / 0.6);
+
+
+}
+.today-card[data-card-reorder-active]:active { /* What: Pressed Reorderable Entry Card. Why: A press starts a drag, not a toggle. How: This keeps the plain surface. */
+
+
+	background : var(--surface);
+
+
+}
+.today-card[data-item-drag-active] { /* What: Dragged Entry Card. Why: The card under the pointer lifts above the rest. How: This solidifies its border, shadows it, and scales it up slightly. */
+
+
+	border-color : oklch(from var(--accent) l c h / 0.55);
+	border-style : solid;
+	box-shadow   : 0 18px 40px -12px oklch(0 0 0 / 0.34), 0 6px 14px -4px oklch(0 0 0 / 0.18);
+	cursor       : grabbing;
+	transform    : scale(1.015);
+
+
+}
+.today-card--tutorial[data-card-needed-active] { /* What: Needed Tutorial Card. Why: While no real picker exists, the tutorial cards ask for attention. How: This tints the card warm. */
+
+
+	background   : oklch(from var(--warm) l c h/0.06);
+	border-color : oklch(from var(--warm) l c h/0.55);
+
+
+}
+.today-card--tutorial[data-card-needed-active]:hover { /* What: Hovered Needed Tutorial Card. Why: The card should respond to the pointer. How: This deepens its warm border. */
+
+
+	border-color : oklch(from var(--warm) l c h/0.7);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Entry Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card { /* What: Still Entry Card. Why: The card should switch states at once. How: This turns its transitions off. */
+
+
+		transition : none;
+
+
+	}
+
+	.today-card[data-card-exhale-active] { /* What: Still Exhaling Entry Card. Why: The halo is only decoration. How: This turns the exhale off and pins the card at rest. */
+
+
+		animation  : none;
+		box-shadow : none;
+		transform  : none;
+
+
+	}
+
+	.today-card.is-removing { /* What: Instantly Removed Entry Card. Why: The collapse should finish at once rather than leave the card showing until it unmounts. How: This drops the animation and collapses the card to nothing. */
+
+
+		animation      : none;
+		border-width   : 0;
+		height         : 0;
+		margin         : 0;
+		min-height     : 0;
+		opacity        : 0;
+		padding-bottom : 0;
+		padding-top    : 0;
+
+
+	}
+
+	.today-card[data-card-reorder-active] { /* What: Still Reorderable Entry Card. Why: Edit Mode should simply switch on. How: This turns the unlock off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes emUnlock { /* What: Edit Mode Unlock. Why: The cards fade up as they come loose for dragging, animating opacity only, since a held transform would override the drag's inline translate and freeze the card in place. How: This fades the card from 40% to full opacity. */
+
+
+	from {
+
+
+		opacity : 0.4;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+
+/* #region card-grip */
+
+.card-grip { /* What: Card Grip. Why: In Edit Mode a handle in place of the checkbox drags the card to a new spot. How: This draws a small muted square that takes touch drags and tints on hover. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	cursor          : grab;
+	display         : inline-flex;
+	height          : 24px;
+	justify-content : center;
+	touch-action    : none;
+	transition      : color .12s, background .12s;
+	width           : 24px;
+
+
+}
+.card-grip:hover { /* What: Hovered Card Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its icon. */
+
+
+	background : var(--accent-soft);
+	color      : var(--text);
+
+
+}
+.card-grip:active { /* What: Pressed Card Grip. Why: A press on the handle starts a drag. How: This switches to the grabbing cursor. */
+
+
+	cursor : grabbing;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Card Grip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.card-grip { /* What: Still Card Grip. Why: Its colors should simply switch. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion card-grip */
+
+
+
+/* #region check */
+
+.check { /* What: Entry Checkbox. Why: The card's primary action is a real button styled as a checkbox. How: This strips the button chrome down to a small rounded box that fades between states. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 1px solid var(--border);
+	border-radius      : 8px;
+	color              : inherit;
+	display            : inline-flex;
+	flex               : none;
+	font               : inherit;
+	height             : 24px;
+	justify-content    : center;
+	margin             : 0;
+	padding            : 0;
+	position           : relative;
+	transition         : background .12s, border-color .12s, color .12s;
+	width              : 24px;
+
+
+}
+button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: This sets the pointer cursor. */
+
+
+	cursor : pointer;
+
+
+}
+.check:focus-visible { /* What: Focused Checkbox. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
+
+
+	box-shadow     : 0 0 0 3px var(--bg);
+	outline        : 2px solid var(--accent);
+	outline-offset : 3px;
+
+
+}
+.today-card[data-card-done-active] .check:focus-visible { /* What: Focused Done Checkbox. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
+
+
+	box-shadow : 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
+
+
+}
+.check:hover { /* What: Hovered Checkbox. Why: The box should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--text);
+
+
+}
+.today-card[data-card-done-active] .check { /* What: Done Checkbox. Why: A done entry's box reads as filled. How: This fills it in the accent color. */
+
+
+	background   : var(--accent);
+	border-color : var(--accent);
+	color        : var(--bg);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Entry Checkbox. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.check { /* What: Still Entry Checkbox. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.check-ripple { /* What: Checkbox Ripple. Why: Checking an entry sends a ring out from its box. How: This draws a hidden accent ring just outside the box that ignores the pointer. */
+
+
+	border         : 1.5px solid var(--accent);
+	border-radius  : 9px;
+	inset          : -1px;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+.today-card.is-fresh .check-ripple { /* What: Fresh Checkbox Ripple. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
+
+
+	animation : global(checkRipple) 600ms cubic-bezier(.2,.6,.3,1) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fresh Checkbox Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card.is-fresh .check-ripple { /* What: Still Fresh Checkbox Ripple. Why: The ring is only decoration. How: This turns the ripple off and keeps the ring hidden. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+.today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when an entry is checked. How: This plays the shared spring on the mark. */
+
+
+	animation : global(checkSpring) 360ms cubic-bezier(.22,1.4,.36,1) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Done Check Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card[data-card-done-active] .check svg { /* What: Still Done Check Mark. Why: The mark is state, so it stays while the spring goes. How: This turns the spring off and pins the mark fully shown. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion check */
+
+
+
+/* #region today-card-body */
+
+.today-card-body { /* What: Entry Card Body. Why: The meta line and name stack as the card's text. How: This stacks them in a column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+.today-card.is-rolling .today-card-body { /* What: Re-Rolling Card Body. Why: A re-roll tumbles the card's text a full turn, swapping in the new pick at the halfway point, upside down. How: This spins the body once around its X axis in 3D. */
+
+
+	animation       : rerollFlip 760ms cubic-bezier(.5,.1,.5,.9);
+	transform-style : preserve-3d;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Re-Rolling Card Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-card.is-rolling .today-card-body { /* What: Still Re-Rolling Card Body. Why: The new pick should simply appear. How: This turns the tumble off and keeps the body upright. */
+
+
+		animation : none;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes rerollFlip { /* What: Re-Roll Flip. Why: A single-direction tumble reads as the card rolling to a new pick. How: This turns the body a full turn backward around its X axis. */
+
+
+	from {
+
+
+		transform : rotateX(0deg);
+
+
+	}
+
+	to {
+
+
+		transform : rotateX(-360deg);
+
+
+	}
+
+
+}
+
+/* #region today-card-meta */
+
+.today-card-meta { /* What: Entry Meta Line. Why: The picker's name reads as quiet metadata above the entry's name. How: This sets it in small uppercase muted mono type. */
+
+
+	align-items    : center;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 6px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+.today-card-meta--dayoff { /* What: Day-Off Meta Line. Why: The day-off title can run long and must truncate rather than stretch the card. How: This lets the line shrink. */
+
+
+	min-width : 0;
+
+
+}
+
+.today-card--dayoff .meta-picker { /* What: Day-Off Meta Label. Why: A day off names its conditional in the accent, a little bolder. How: This colors it and raises its weight. */
+
+
+	color       : var(--accent);
+	font-weight : 600;
+
+
+}
+
+.meta-dayoff-title { /* What: Day-Off Title. Why: The combined picker and conditional title stays on one line, since a wrapped title looks unbalanced. How: This clips it with an ellipsis. */
+
+
+	display       : block;
+	font-weight   : 400;
+	max-width     : 100%;
+	overflow      : hidden;
+	text-overflow : ellipsis;
+	white-space   : nowrap;
+
+
+}
+.meta-dayoff-title strong { /* What: Day-Off Conditional Name. Why: The conditional's own name leads the title. How: This sets it bold. */
+
+
+	font-weight : 700;
+
+
+}
+
+.meta-dot { /* What: Entry Meta Dot. Why: The separator should sit quieter than the text around it. How: This fades it. */
+
+
+	opacity : 0.5;
+
+
+}
+
+/* #endregion today-card-meta */
+
+
+
+.entry-card-name-input { /* What: Entry Name Input. Why: An editing card renames its item in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+
+
+	background     : none;
+	border         : none;
+	border-bottom  : 1px solid var(--border);
+	color          : var(--text);
+	font-family    : var(--font-sans);
+	font-size      : 17px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	margin         : 0;
+	padding        : 1px 0;
+	transition     : border-color .12s;
+	width          : 100%;
+
+
+}
+.entry-card-name-input:focus { /* What: Focused Entry Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var(--accent);
+	outline             : none;
+
+
+}
+.entry-card-name-input::placeholder { /* What: Entry Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Entry Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.entry-card-name-input { /* What: Still Entry Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.today-card-name { /* What: Entry Name. Why: The entry's name is the card's headline. How: This sets it large and medium weight. */
+
+
+	font-size      : 17px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	text-wrap      : pretty;
+
+
+}
+.today-card[data-card-done-active] .today-card-name { /* What: Done Entry Name. Why: A done entry reads as crossed off. How: This mutes and strikes through its name. */
+
+
+	color                     : var(--muted);
+	text-decoration           : line-through;
+	text-decoration-thickness : 0.5px;
+
+
+}
+.today-card--charging .today-card-name { /* What: Charging Card Status. Why: A charging card's name is a status line, not a task. How: This mutes and italicizes it. */
+
+
+	color      : var(--muted);
+	font-style : italic;
+
+
+}
+
+/* #endregion today-card-body */
+
+
+
+/* #region today-card-actions */
+
+.today-card-actions { /* What: Entry Card Actions. Why: Re-Roll, Skip, and Edit sit together at the card's end. How: This lays them out in a row. */
+
+
+	display : flex;
+	gap     : 4px;
+
+
+}
+
+.icon-btn { /* What: Entry Action Button. Why: Each action is a small icon button. How: This draws a square hit area that tints on hover. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	display         : inline-flex;
+	height          : 30px;
+	justify-content : center;
+	transition      : background .12s, color .12s;
+	width           : 30px;
+
+
+}
+.icon-btn:hover { /* What: Hovered Entry Action Button. Why: The button should respond to the pointer. How: This fills it with the background color and darkens its icon. */
+
+
+	background : var(--bg);
+	color      : var(--text);
+
+
+}
+.icon-btn[aria-disabled="true"] { /* What: Disabled Entry Action. Why: An unavailable action looks inert but stays focusable, so its tip can explain why. How: This dims it and drops the pointer cursor, keying off the aria-disabled its info tip sets. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+.icon-btn[aria-disabled="true"]:hover { /* What: Hovered Disabled Entry Action. Why: An unavailable action shouldn't react like a live one. How: This keeps its background clear and its icon muted. */
+
+
+	background : none;
+	color      : var(--muted);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Entry Action Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.icon-btn { /* What: Still Entry Action Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.icon-btn.is-spinning svg { /* What: Spinning Re-Roll Icon. Why: The re-roll icon spins along with the card's tumble. How: This turns the icon a full turn backward while the button carries its spinning class. */
+
+
+	animation : rerollSpin 760ms cubic-bezier(.4,0,.4,1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Spinning Re-Roll Icon. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.icon-btn.is-spinning svg { /* What: Still Spinning Re-Roll Icon. Why: The icon should stay put. How: This turns the spin off and keeps the icon upright. */
+
+
+		animation : none;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes rerollSpin { /* What: Re-Roll Spin. Why: The icon spins the same way the card tumbles. How: This turns it a full turn backward. */
+
+
+	from {
+
+
+		transform : rotate(0);
+
+
+	}
+
+	to {
+
+
+		transform : rotate(-360deg);
+
+
+	}
+
+
+}
+
+/* #endregion today-card-actions */
+
+/* #endregion today-card */
+
+

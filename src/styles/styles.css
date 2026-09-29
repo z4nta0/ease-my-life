@@ -374,12 +374,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   0%   { opacity: var(--celeb-ripple-opacity); transform: scale(1);  border-width: 1.5px; }
   100% { opacity: 0;    transform: scale(var(--celeb-ripple-scale)); border-width: 0.5px; }
 }
-
-/* Card exhale — each completed card pulses once with a soft accent halo as
-   the celebration cascades top-to-bottom. Delay set inline via --exhale-delay. */
-.today-card[data-card-exhale-active] {
-  animation: cardExhale var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both;
-}
 @keyframes cardExhale {
   0%   { transform: none;          box-shadow: 0 0 0 0 oklch(from var(--accent) l c h / 0); }
   35%  { transform: scale(var(--exhale-scale));  box-shadow: 0 0 0 var(--exhale-glow) oklch(from var(--accent) l c h / var(--exhale-glow-op)); }
@@ -473,50 +467,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 }
 
 .today-list { display: flex; flex-direction: column; }
-
-.today-card {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 18px;
-  margin-bottom: 10px;
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-lg);
-  transition: background .15s, opacity .2s, border-color .12s;
-  cursor: pointer;
-  user-select: none;
-  perspective: 800px;
-}
-.today-card:last-child { margin-bottom: 0; }
-.today-card:hover { border-color: oklch(from var(--border) calc(l - 0.08) c h); }
-.today-card:active { background: oklch(from var(--surface) calc(l - 0.01) c h); }
-.today-card.is-removing {
-  pointer-events: none;
-  overflow: hidden;
-  animation: cardSkipOut 380ms cubic-bezier(.4,.05,.7,.4) forwards;
-}
-
-/* Re-roll flip — full 360° tumble on X axis (single direction). State swaps
-   at the midpoint (180°, card upside-down) so the new content rolls through
-   from upside-down back to right-side up. Backface stays visible so the
-   tumble reads continuously. */
-.today-card.is-rolling .today-card-body {
-  transform-style: preserve-3d;
-  animation: rerollFlip 760ms cubic-bezier(.5,.1,.5,.9);
-}
-@keyframes rerollFlip {
-  from { transform: rotateX(0deg); }
-  to   { transform: rotateX(-360deg); }
-}
-.icon-btn.is-spinning svg {
-  animation: rerollSpin 760ms cubic-bezier(.4,0,.4,1);
-}
-@keyframes rerollSpin {
-  from { transform: rotate(0); }
-  to   { transform: rotate(-360deg); }
-}
 @keyframes cardSkipOut {
   0% {
     opacity: 1;
@@ -788,131 +738,22 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   /* Mobile header trims its padding a touch */
   .today-h { padding: 16px 20px 14px; }
 }
-
-.today-card.is-done { background: oklch(from var(--surface) calc(l - 0.005) c h); }
-.today-card.is-done .today-card-name { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 0.5px; }
-
-/* Day-off card — a conditional is active and its dependent pickers are resting.
-   Reads as a gentle "rest" state: accent-soft wash + accent meta label. */
-.today-card--dayoff { background: var(--accent-soft); }
-.today-card--dayoff .meta-picker { color: var(--accent); font-weight: 600; }
-/* Combined "{picker} — {conditional}" title: single line, ellipsis on overflow
-   (mobile-safe — a wrapped two-line title looks unbalanced). The conditional
-   name keeps the bold accent; the picker prefix is de-emphasised. */
-.today-card-meta--dayoff { min-width: 0; }
-.meta-dayoff-title { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; }
-.meta-dayoff-title strong { font-weight: 700; }
-.today-card--dayoff.is-done { background: oklch(from var(--accent-soft) calc(l - 0.02) c h); }
-
-/* Charging card — an ease-up picker has nothing eligible yet. Neutral/muted
-   "resting" look; its name reads as a status line rather than a task. */
-.today-card--charging .today-card-name { color: var(--muted); font-style: italic; }
-.today-card--charging .icon-btn.is-disabled { opacity: 0.4; cursor: default; }
-.today-card--charging .icon-btn.is-disabled:hover { background: none; color: var(--muted); }
-
-/* Rendered as a real <button> on interactive cards (keyboard + screen-reader
-   access to the app's primary action) and as a plain <span> on the loader and
-   the Settings celebration preview, which aren't interactive. The reset below
-   strips UA button chrome only — border/background/size stay owned by this rule
-   and by .today-card.is-done .check. */
-.check {
-  position: relative;
-  width: 24px; height: 24px; border-radius: 8px;
-  border: 1px solid var(--border);
-  display: inline-flex; align-items: center; justify-content: center;
-  transition: background .12s, border-color .12s, color .12s;
-  appearance: none; -webkit-appearance: none;
-  padding: 0; margin: 0; flex: none;
-  background: none; font: inherit; color: inherit;
-}
 /* Screen-reader-only live region (window.announce). Present from load so status
    changes are reliably announced; clipped rather than display:none, which would
    remove it from the accessibility tree. */
 .sr-live { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-button.check { cursor: pointer; }
-/* Keyboard focus: an explicit accent ring separated from the box by a
-   background-coloured gap. The gap is what makes it legible on the DONE state,
-   where the box is filled solid accent and a touching accent ring vanishes —
-   so both states can share one rule instead of a state-specific colour. */
-.check:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  box-shadow: 0 0 0 3px var(--bg);
-}
-.today-card.is-done .check:focus-visible {
-  /* Filled box: pull the ring's inner edge to the card surface, and add a thin
-     bg-coloured inset line so the checkmark's edge stays distinct from it. */
-  box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
-}
-.check:hover { border-color: var(--text); }
-/* Same InfoTip-trigger pattern as .icon-btn.is-disabled/.btn.is-disabled
-   above, for a blocked App Feature launcher's Play button (see
-   AppFeatureCard in tab-today.jsx) — stays focusable/tappable so the tip
-   explaining why is still reachable. */
-.check.is-disabled { opacity: 0.4; cursor: default; }
-.check.is-disabled:hover { border-color: var(--border); }
-.today-card.is-done .check {
-  background: var(--accent); border-color: var(--accent); color: var(--bg);
-}
-.today-card.is-done .check svg {
-  animation: checkSpring 360ms cubic-bezier(.22,1.4,.36,1) both;
-}
 @keyframes checkSpring {
   0%   { opacity: 0; transform: scale(0.4); }
   55%  { opacity: 1; transform: scale(1.18); }
   100% { transform: scale(1); }
 }
-.check-ripple {
-  position: absolute;
-  inset: -1px;
-  border-radius: 9px;
-  border: 1.5px solid var(--accent);
-  opacity: 0;
-  pointer-events: none;
-}
-.today-card.is-fresh .check-ripple {
-  animation: checkRipple 600ms cubic-bezier(.2,.6,.3,1) forwards;
-}
 @keyframes checkRipple {
   0%   { opacity: 0.85; transform: scale(1); border-width: 1.5px; }
   100% { opacity: 0;    transform: scale(2.6); border-width: 0.5px; }
 }
-
-.today-card-body { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.today-card-meta {
-  display: flex; align-items: center; gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.meta-dot { opacity: 0.5; }
-.today-card-name {
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  text-wrap: pretty;
-}
-
-.today-card-actions { display: flex; gap: 4px; }
-.icon-btn {
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--muted);
-  transition: background .12s, color .12s;
-}
-.icon-btn:hover { background: var(--bg); color: var(--text); }
-/* Disabled re-roll (ease-up with only one charged item): rendered as an InfoTip
-   trigger so the explanatory tip still shows on hover/tap. Looks inert, no hover
-   affordance, but stays focusable/tappable for the tip. */
-.icon-btn.is-disabled {
-  opacity: 0.4; cursor: default;
-}
-.icon-btn.is-disabled:hover { background: none; color: var(--muted); }
-/* Same InfoTip-trigger pattern as .icon-btn.is-disabled above, for a full
-   .btn (e.g. the mini-tour checklist's blocked Generate button). */
+/* Same InfoTip-trigger pattern as the entry cards' disabled icon buttons
+   (entry-card.module.css), for a full .btn (e.g. the mini-tour checklist's
+   blocked Generate button). */
 .btn.is-disabled { opacity: 0.4; cursor: default; }
 .btn.is-disabled:hover { background: var(--bg); color: inherit; }
 
@@ -968,12 +809,6 @@ button.check { cursor: pointer; }
     animation: none;
     opacity: 0;
   }
-  /* Card exhale halo — additive only. */
-  .today-card[data-card-exhale-active] {
-    animation: none;
-    box-shadow: none;
-    transform: none;
-  }
   /* Streak chip: the background/border-colour fade STAYS — a colour change is
      not motion, and it is the signal that the streak advanced. Only the icon's
      transform transition is movement. */
@@ -985,41 +820,9 @@ button.check { cursor: pointer; }
     opacity: 1;
     transform: none;
   }
-  /* Check mark: the glyph is state, so it stays; the spring and ripple go. */
-  .today-card.is-done .check svg {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-  .today-card.is-fresh .check-ripple {
-    animation: none;
-    opacity: 0;
-  }
   /* Group progress dot sweep — the .is-done fill already conveys the state. */
   .group-progress i.is-fresh::after {
     animation: none;
     opacity: 0;
-  }
-  /* Card removal: cardSkipOut ends at opacity 0 / height 0. Keep the collapse
-     instant rather than reverting it, or the row would linger fully visible
-     until React unmounts it. */
-  .today-card.is-removing {
-    animation: none;
-    opacity: 0;
-    height: 0;
-    min-height: 0;
-    margin: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-width: 0;
-  }
-  /* Re-roll: no 3D tumble, no spinner rotation. */
-  .today-card.is-rolling .today-card-body {
-    animation: none;
-    transform: none;
-  }
-  .icon-btn.is-spinning svg {
-    animation: none;
-    transform: none;
   }
 }
