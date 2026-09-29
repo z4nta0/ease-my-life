@@ -2650,7 +2650,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
-		padYcoNum : 2, // padYcoNum: 2, same 6px gap to the pill below as the Pickers page (see .stat-picker-id's own --pill-margin-top in tab-stats.module.css); the default 8px pad on each side would overlap by 10px otherwise.
+		padYcoNum : 2, // padYcoNum: 2, the mode pill sits only 4px below, a little tighter than the Pickers page's 6px (see .stat-picker-id's own --pill-margin-top in tab-stats.module.css); the default 8px pad on each side would overlap by 12px otherwise.
 		selStr    : '[data-element-name-hook~="picIdeDiv"] [data-element-name-hook~="picTitHea"]',
 		titStr    : 'Picker Name'
 
