@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, React.useMemo, React.useCallback, ...) throughout instead of importing individual named hooks.
+import cssModObj from './tab-stats.module.css'; // What: CSS Module Object. Why: TabStaCom's own styles live in its module. How: Each className reads its hashed class from here.
+import React     from 'react';                   // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, React.useMemo, React.useCallback, ...) throughout instead of importing individual named hooks.
 
 
 import { CAD_NAM_OBJ  } from '../../core/cadence.js';         // What: Cadence Namespace Object. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.
@@ -53,6 +54,10 @@ import { useEmlTouFun } from '../../state/tour-bus.js';       // What: Use Ease 
 
 
 // #region Constants
+
+const HEA_LEV_ARR = [ cssModObj.heat0, cssModObj.heat1, cssModObj.heat2, cssModObj.heat3, cssModObj.heat4 ]; // What: Heat Level Array. Why: A day's cell tints by its completion level, and a hashed module class can't be built from a string. How: This lists each level's module class in order, so HEA_LEV_ARR[ levValNum ] picks the cell's tint.
+
+
 
 const MET_FIE_OBJ = { auto : 'autNum', count : 'couNum', manual : 'manNum', rejected : 'rejNum', skipped : 'skiNum' }; // What: Metric Field Object. Why: The Pick breakdown's plain-count metrics are selected by id, but each one's value lives under its own row field name. How: This maps a metric id (metKeyStr's own value) to the breakdown row field its sort and display read.
 
@@ -294,8 +299,6 @@ function relWheFun ( wheIsoStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.className              - Class Name: Extra class name(s) to
- *                                       append; defaults to an empty string.
  * @param props.data-element-name-hook - Data Element Name Hook: The element's
  *                                       own identity hook, forwarded onto its
  *                                       root card, so code can find it without
@@ -318,35 +321,31 @@ function relWheFun ( wheIsoStr ) {
  *
  * @example
  * ```tsx
- * BreBarCom({ className, empMesStr, kicTexStr, ... }) // => <BreBarCom />
+ * BreBarCom({ empMesStr, kicTexStr, segDatArr, ... }) // => <BreBarCom />
  * ```
  *
 */
 
-function BreBarCom ( { className = '', 'data-element-name-hook' : hooNamStr, empMesStr, kicTexStr, segDatArr, totCouNum } ) {
+function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexStr, segDatArr, totCouNum } ) {
 
 
 	return (
 
 
-		<CarSurCom
-			className={ className }
-
-			data-element-name-hook={ hooNamStr }
-		>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
+		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
 
 
-			<div className='kicker'>{ kicTexStr }</div>{ /* What: Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
+			<div className={ cssModObj.kicker }>{ kicTexStr }</div>{ /* What: Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
 
 
 
 			{ totCouNum > 0 ? ( // What: Has Data Check. Why: A stacked bar with nothing in it would render as an empty, confusing sliver. How: This renders the real bar and legend only while totCouNum is positive, otherwise the empty state below.
 
 
-				<div className='bd'>{ /* What: Breakdown Div Element. Why: This groups the bar and its legend as one visual unit. How: This wraps the bd-bar span row and the bd-legend list below it. */ }
+				<div className={ cssModObj.bd }>{ /* What: Breakdown Div Element. Why: This groups the bar and its legend as one visual unit. How: This wraps the bd-bar span row and the bd-legend list below it. */ }
 
 
-					<div className='bd-bar'>{ /* What: Bar Div Element. Why: This is the actual stacked proportion bar. How: This renders one span per non-zero segment, each sized to its own share of totCouNum. */ }
+					<div className={ cssModObj.bdBar }>{ /* What: Bar Div Element. Why: This is the actual stacked proportion bar. How: This renders one span per non-zero segment, each sized to its own share of totCouNum. */ }
 
 
 						{ segDatArr.filter( ( segCurObj ) => segCurObj.couNum > 0 ).map( ( segCurObj ) => ( // What: Bar Segment Render. Why: A zero-count segment would render as an invisible sliver anyway, so it's skipped entirely. How: This maps every segment with a positive count to one proportionally-widthed span.
@@ -355,7 +354,7 @@ function BreBarCom ( { className = '', 'data-element-name-hook' : hooNamStr, emp
 							<span
 								key={ segCurObj.keyStr }
 
-								className='bd-seg'
+								className={ cssModObj.bdSeg }
 
 								style={{
 									background : segCurObj.colStr,
@@ -372,7 +371,7 @@ function BreBarCom ( { className = '', 'data-element-name-hook' : hooNamStr, emp
 					</div>
 
 
-					<ul className='bd-legend'>{ /* What: Legend List Element. Why: The bar alone doesn't label its own segments. How: This renders one legend row per segment, including zero-count ones, each with its own dot, name, value, and percentage. */ }
+					<ul className={ cssModObj.bdLegend }>{ /* What: Legend List Element. Why: The bar alone doesn't label its own segments. How: This renders one legend row per segment, including zero-count ones, each with its own dot, name, value, and percentage. */ }
 
 
 						{ segDatArr.map( ( segCurObj ) => ( // What: Legend Row Render. Why: Every segment, even a zero-count one, still needs its own legend row for context. How: This maps every segment in segDatArr to one legend list item.
@@ -382,16 +381,16 @@ function BreBarCom ( { className = '', 'data-element-name-hook' : hooNamStr, emp
 
 
 								<span
-									className='bd-dot'
+									className={ cssModObj.bdDot }
 
 									style={{ background : segCurObj.colStr }}
 								/>{ /* What: Dot Span Element. Why: The legend row needs a small color swatch matching its bar segment. How: This is a plain colored dot, styled via segCurObj's own colStr. */ }
 
-								<span className='bd-label'>{ segCurObj.labStr }</span>{ /* What: Label Span Element. Why: The legend row needs the segment's own name. How: This renders segCurObj.labStr. */ }
+								<span className={ cssModObj.bdLabel }>{ segCurObj.labStr }</span>{ /* What: Label Span Element. Why: The legend row needs the segment's own name. How: This renders segCurObj.labStr. */ }
 
-								<span className='bd-val'>{ segCurObj.couNum }</span>{ /* What: Value Span Element. Why: The legend row needs the segment's own raw count. How: This renders segCurObj.couNum. */ }
+								<span className={ cssModObj.bdVal }>{ segCurObj.couNum }</span>{ /* What: Value Span Element. Why: The legend row needs the segment's own raw count. How: This renders segCurObj.couNum. */ }
 
-								<span className='bd-pct'>{ totCouNum ? Math.round( ( segCurObj.couNum / totCouNum ) * 100 ) : 0 }%</span>{ /* What: Percent Span Element. Why: The legend row needs the segment's own share of the total. How: This computes segCurObj.couNum as a percentage of totCouNum, guarding against a zero totCouNum. */ }
+								<span className={ cssModObj.bdPct }>{ totCouNum ? Math.round( ( segCurObj.couNum / totCouNum ) * 100 ) : 0 }%</span>{ /* What: Percent Span Element. Why: The legend row needs the segment's own share of the total. How: This computes segCurObj.couNum as a percentage of totCouNum, guarding against a zero totCouNum. */ }
 
 
 							</li>
@@ -409,7 +408,7 @@ function BreBarCom ( { className = '', 'data-element-name-hook' : hooNamStr, emp
 			) : ( // What: Empty State Branch. Why: A zero-total card needs to explain why the bar is missing instead of showing nothing at all. How: This renders the else branch, taken while totCouNum is zero.
 
 
-				<div className='stat-empty'>{ empMesStr }</div> // What: Empty State Div Element. Why: This is the actual empty-state message. How: This renders the caller's own empMesStr.
+				<div className={ cssModObj.statEmpty }>{ empMesStr }</div> // What: Empty State Div Element. Why: This is the actual empty-state message. How: This renders the caller's own empMesStr.
 
 
 			) }
@@ -455,20 +454,20 @@ function HeaLegCom () {
 	return (
 
 
-		<div className='heat-legend'>{ /* What: Legend Div Element. Why: This groups the "less"/"more" labels and the 5 swatches into one row. How: This renders those 7 children in a fixed left-to-right order. */ }
+		<div className={ cssModObj.heatLegend }>{ /* What: Legend Div Element. Why: This groups the "less"/"more" labels and the 5 swatches into one row. How: This renders those 7 children in a fixed left-to-right order. */ }
 
 
 			<span>less</span>{ /* What: Less Span Element. Why: The scale needs a label at its dim end. How: This renders the literal word "less". */ }
 
-			<i className='heat-cell heat-0' />{ /* What: Swatch Element. Why: This is the scale's own level-0 (empty) reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.heatCell }   ${ cssModObj.heat0 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-0 (empty) reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
 
-			<i className='heat-cell heat-1' />{ /* What: Swatch Element. Why: This is the scale's own level-1 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.heatCell }   ${ cssModObj.heat1 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-1 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
 
-			<i className='heat-cell heat-2' />{ /* What: Swatch Element. Why: This is the scale's own level-2 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.heatCell }   ${ cssModObj.heat2 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-2 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
 
-			<i className='heat-cell heat-3' />{ /* What: Swatch Element. Why: This is the scale's own level-3 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.heatCell }   ${ cssModObj.heat3 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-3 reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
 
-			<i className='heat-cell heat-4' />{ /* What: Swatch Element. Why: This is the scale's own level-4 (darkest) reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
+			<i className={` ${ cssModObj.heatCell }   ${ cssModObj.heat4 } `} />{ /* What: Swatch Element. Why: This is the scale's own level-4 (darkest) reference swatch. How: This is a plain, non-interactive colored cell sharing the real heatmap cells' own classes. */ }
 
 			<span>more</span>{ /* What: More Span Element. Why: The scale needs a label at its dark end. How: This renders the literal word "more". */ }
 
@@ -539,22 +538,22 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 	return (
 
 
-		<div className='pager'>{ /* What: Pager Div Element. Why: This is PagNavCom's own root element, grouping the range text and the arrow buttons. How: This renders the "start-end of total" text followed by the two arrow buttons. */ }
+		<div className={ cssModObj.pager }>{ /* What: Pager Div Element. Why: This is PagNavCom's own root element, grouping the range text and the arrow buttons. How: This renders the "start-end of total" text followed by the two arrow buttons. */ }
 
 
-			<span className='pager-range'>{ /* What: Range Span Element. Why: The pager needs one combined "1-10 of N items" readout. How: This renders staIteNum, an en dash, endIteNum, "of", totIteNum, and the optional unit word. */ }
+			<span className={ cssModObj.pagerRange }>{ /* What: Range Span Element. Why: The pager needs one combined "1-10 of N items" readout. How: This renders staIteNum, an en dash, endIteNum, "of", totIteNum, and the optional unit word. */ }
 
 
-				{ staIteNum }&ndash;{ endIteNum } <span className='pager-of'>of</span> { totIteNum }{ uniWorStr ? ` ${ uniWorStr }` : '' }{ /* What: Range Readout Expression. Why: The pager reads as one line of text. How: This joins the start, end, total, and optional unit word. */ }
+				{ staIteNum }&ndash;{ endIteNum } <span className={ cssModObj.pagerOf }>of</span> { totIteNum }{ uniWorStr ? ` ${ uniWorStr }` : '' }{ /* What: Range Readout Expression. Why: The pager reads as one line of text. How: This joins the start, end, total, and optional unit word. */ }
 
 
 			</span>
 
-			<div className='pager-arrows'>{ /* What: Arrows Div Element. Why: The previous/next controls are grouped together for layout. How: This renders the two arrow buttons side by side. */ }
+			<div className={ cssModObj.pagerArrows }>{ /* What: Arrows Div Element. Why: The previous/next controls are grouped together for layout. How: This renders the two arrow buttons side by side. */ }
 
 
 				<button
-					className='pager-arrow'
+					className={ cssModObj.pagerArrow }
 
 					disabled={ curPagNum <= 0 }
 					type='button'
@@ -565,7 +564,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 				>&lsaquo;</button>{ /* What: Previous Arrow Button Element. Why: The user needs a way to move back one page. How: This is disabled on the first page and otherwise calls onChange with the previous page index. */ }
 
 				<button
-					className='pager-arrow'
+					className={ cssModObj.pagerArrow }
 
 					disabled={ curPagNum >= pagCouNum - 1 }
 					type='button'
@@ -2388,7 +2387,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	return (
 
 
-		<div className='tab tab--stats'>{ /* What: Tab Div Element. Why: This is TabStaCom's own root element. How: This renders the help overlay, the header, and the scrollable filters/body wrapper below it. */ }
+		<div className={ cssModObj.tabStats }>{ /* What: Tab Div Element. Why: This is TabStaCom's own root element. How: This renders the help overlay, the header, and the scrollable filters/body wrapper below it. */ }
 
 
 			<HelOveCom
@@ -2400,13 +2399,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-			<header className='stat-h'>{ /* What: Header Element. Why: This groups the page's own kicker/help toggle, brand mark, title, and subtitle. How: This renders as a semantic header landmark above the filters/body wrapper. */ }
+			<header className={ cssModObj.statH }>{ /* What: Header Element. Why: This groups the page's own kicker/help toggle, brand mark, title, and subtitle. How: This renders as a semantic header landmark above the filters/body wrapper. */ }
 
 
-				<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The page's own kicker and help toggle sit side by side. How: This wraps the kicker span and the HelButCom. */ }
+				<div className={ cssModObj.kickerRow }>{ /* What: Kicker Row Div Element. Why: The page's own kicker and help toggle sit side by side. How: This wraps the kicker span and the HelButCom. */ }
 
 
-					<div className='kicker stat-h-kicker'>Stats</div>{ /* What: Kicker Div Element. Why: Every tab opens with a small labelled kicker naming the page. How: This renders the literal word "Stats". */ }
+					<div className={ cssModObj.kicker }>Stats</div>{ /* What: Kicker Div Element. Why: Every tab opens with a small labelled kicker naming the page. How: This renders the literal word "Stats". */ }
 
 
 
@@ -2422,14 +2421,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 				<div
-					className='stat-h-lead'
+					className={ cssModObj.statHLead }
 
 					data-element-name-hook='heaLeaDiv'
 				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<button
-						className='brand-mark'
+						className={ cssModObj.brandMark }
 
 						data-element-name-hook='braMarBut'
 
@@ -2537,10 +2536,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					</button>
 
 
-					<div className='section-h'>{ /* What: Section Header Div Element. Why: The page's own title needs a dedicated wrapper matching every other tab's header layout. How: This wraps the single h1 title below. */ }
+					<div className={ cssModObj.sectionH }>{ /* What: Section Header Div Element. Why: The page's own title needs a dedicated wrapper matching every other tab's header layout. How: This wraps the single h1 title below. */ }
 
 
-						<h1 className='section-title'>Your <span className='stat-title-accent'>eased</span> life, according to the numbers.</h1>{ /* What: Section Title Element. Why: Every tab needs its own large page title. How: This renders the page's own title text with one accented span. */ }
+						<h1 className={ cssModObj.sectionTitle }>Your <span className={ cssModObj.statTitleAccent }>eased</span> life, according to the numbers.</h1>{ /* What: Section Title Element. Why: Every tab needs its own large page title. How: This renders the page's own title text with one accented span. */ }
 
 
 					</div>
@@ -2550,13 +2549,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-				<p className='section-sub stat-h-sub'>{ /* What: Section Subtitle Element. Why: The page needs a short explanatory subtitle beneath its title, including a link to the Data page. How: This renders that explanatory copy with an inline button jumping to the Data tab. */ }
+				<p className={ cssModObj.sectionSub }>{ /* What: Section Subtitle Element. Why: The page needs a short explanatory subtitle beneath its title, including a link to the Data page. How: This renders that explanatory copy with an inline button jumping to the Data tab. */ }
 
 
 					Filter by group, conditionals, reminders, pickers, and time below. This page is best used in conjunction with the{ ' ' }
 
 					<button
-						className='sub-tablink'
+						className={ cssModObj.subTablink }
 
 						type='button'
 
@@ -2574,27 +2573,27 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 			<div
-				className='stat-body-wrap'
+				className={ cssModObj.statBodyWrap }
 
 				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
 			>{ /* What: Body Wrap Div Element. Why: The Welcome Tour's own reserved top space applies to the whole scrollable filters/body area together. How: This applies touBusObj.resTopNum as top padding when it's non-zero. */ }
 
 
-				<div className='stat-filters ob-stat-content'>{ /* What: Filters Div Element. Why: This groups every filter row together above the scope-dependent body cards. How: This renders the Group, Type, Show, and Range rows in that fixed order. */ }
+				<div className={ cssModObj.statFilters }>{ /* What: Filters Div Element. Why: This groups every filter row together above the scope-dependent body cards. How: This renders the Group, Type, Show, and Range rows in that fixed order. */ }
 
 
 					{ exiGroArr.length > 1 && ( // What: Group Row Visibility Check. Why: A Group filter row is pointless with zero or one group in use. How: This renders the row only while more than one distinct group exists.
 
 
-						<div className='stat-filter-row'>{ /* What: Group Filter Row Div Element. Why: The Group label and its own pill list are grouped as one row. How: This wraps the "Group" label span and the picker-groups pill list. */ }
+						<div className={ cssModObj.statFilterRow }>{ /* What: Group Filter Row Div Element. Why: The Group label and its own pill list are grouped as one row. How: This wraps the "Group" label span and the picker-groups pill list. */ }
 
 
-							<span className='stat-filter-lbl'>Group</span>{ /* What: Group Label Span Element. Why: The row needs its own visible label naming what it filters. How: This renders the literal word "Group". */ }
+							<span className={ cssModObj.statFilterLbl }>Group</span>{ /* What: Group Label Span Element. Why: The row needs its own visible label naming what it filters. How: This renders the literal word "Group". */ }
 
 							<div
 								ref={ groRowRef }
 
-								className='picker-groups stat-scope-groups'
+								className={ cssModObj.pickerGroups }
 
 								data-element-name-hook='groFilDiv'
 
@@ -2604,7 +2603,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<button
-									className={ ` picker-group-pill   ${ staGroStr === 'all' ? 'is-on' : '' } ` }
+									className={ cssModObj.pickerGroupPill }
 
 									data-element-name-hook='filPilBut'
 
@@ -2626,7 +2625,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									All
 
-									<span className='picker-group-count'>{ picLisArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of group. */ }
+									<span className={ cssModObj.pickerGroupCount }>{ picLisArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of group. */ }
 
 
 								</button>
@@ -2637,7 +2636,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<button
 										key={ groCurStr }
 
-										className={ ` picker-group-pill   ${ staGroStr === groCurStr ? 'is-on' : '' } ` }
+										className={ cssModObj.pickerGroupPill }
 
 										data-element-name-hook='filPilBut'
 
@@ -2652,7 +2651,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										{ groCurStr }{ /* What: Group Name Expression. Why: The pill shows its own group name. How: This renders groCurStr. */ }
 
-										<span className='picker-group-count'>{ picLisArr.filter( ( picCurObj ) => picCurObj.group === groCurStr && !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: This pill needs its own picker count for this specific group. How: This counts every non-hidden picker whose own group matches groCurStr. */ }
+										<span className={ cssModObj.pickerGroupCount }>{ picLisArr.filter( ( picCurObj ) => picCurObj.group === groCurStr && !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: This pill needs its own picker count for this specific group. How: This counts every non-hidden picker whose own group matches groCurStr. */ }
 
 
 									</button>
@@ -2673,15 +2672,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ ( exiModArr.length > 1 || hasConBoo || remEnaBoo ) && ( // What: Type Row Visibility Check. Why: A Type filter row is pointless with only one mode in use and neither Conditionals nor Reminders available. How: This renders the row only while at least one of those three conditions holds.
 
 
-						<div className='stat-filter-row'>{ /* What: Type Filter Row Div Element. Why: The Type label and its own pill list are grouped as one row. How: This wraps the "Type" label span and the picker-groups pill list. */ }
+						<div className={ cssModObj.statFilterRow }>{ /* What: Type Filter Row Div Element. Why: The Type label and its own pill list are grouped as one row. How: This wraps the "Type" label span and the picker-groups pill list. */ }
 
 
-							<span className='stat-filter-lbl'>Type</span>{ /* What: Type Label Span Element. Why: The row needs its own visible label naming what it filters. How: This renders the literal word "Type". */ }
+							<span className={ cssModObj.statFilterLbl }>Type</span>{ /* What: Type Label Span Element. Why: The row needs its own visible label naming what it filters. How: This renders the literal word "Type". */ }
 
 							<div
 								ref={ typRowRef }
 
-								className='picker-groups stat-scope-groups stat-scope-groups--type'
+								className={ cssModObj.pickerGroups }
 
 								data-element-name-hook='typFilDiv'
 
@@ -2691,7 +2690,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<button
-									className={ ` picker-group-pill   ${ typFilStr === 'all' ? 'is-on' : '' } ` }
+									className={ cssModObj.pickerGroupPill }
 
 									data-element-name-hook='filPilBut'
 
@@ -2713,7 +2712,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									All
 
-									<span className='picker-group-count'>{ picLisArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Type Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of mode. */ }
+									<span className={ cssModObj.pickerGroupCount }>{ picLisArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Type Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of mode. */ }
 
 
 								</button>
@@ -2782,7 +2781,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<button
 											key={ entCurObj.keyStr }
 
-											className={ ` picker-group-pill   ${ entCurObj.selBoo ? 'is-on' : '' } ` }
+											className={ cssModObj.pickerGroupPill }
 
 											data-element-name-hook='filPilBut'
 
@@ -2797,7 +2796,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											{ entCurObj.namStr }{ /* What: Type Name Expression. Why: The pill shows its own mode or sentinel name. How: This renders the entry's own namStr. */ }
 
-											<span className='picker-group-count'>{ entCurObj.couNum }</span>{ /* What: Type Count Span Element. Why: This pill needs its own picker/conditional/reminder count. How: This renders the entry's own precomputed couNum field. */ }
+											<span className={ cssModObj.pickerGroupCount }>{ entCurObj.couNum }</span>{ /* What: Type Count Span Element. Why: This pill needs its own picker/conditional/reminder count. How: This renders the entry's own precomputed couNum field. */ }
 
 
 										</button>
@@ -2815,16 +2814,16 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					) }
 
 
-					<div className='stat-filter-row'>{ /* What: Show Filter Row Div Element. Why: The Show label and its own scope-tab list are grouped as one row. How: This wraps the "Show" label span and the picker-tabs scope list. */ }
+					<div className={ cssModObj.statFilterRow }>{ /* What: Show Filter Row Div Element. Why: The Show label and its own scope-tab list are grouped as one row. How: This wraps the "Show" label span and the picker-tabs scope list. */ }
 
 
-						<span className='stat-filter-lbl'>Show</span>{ /* What: Show Label Span Element. Why: The row needs its own visible label naming what it selects. How: This renders the literal word "Show". */ }
+						<span className={ cssModObj.statFilterLbl }>Show</span>{ /* What: Show Label Span Element. Why: The row needs its own visible label naming what it selects. How: This renders the literal word "Show". */ }
 
 						<div
 							key={ staGroStr + '|' + typFilStr }
 							ref={ scoRowRef }
 
-							className='picker-tabs stat-scope-tabs'
+							className={ cssModObj.pickerTabs }
 
 							data-element-name-hook='scoTabDiv'
 						>{ /* What: Show Tab List Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
@@ -2834,11 +2833,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<button
-									className={ ` picker-tab   picker-tab--enter   ${ scoValStr === 'all' ? 'is-on' : '' } ` }
+									className={ cssModObj.pickerTab }
 
 									style={{ animationDelay : '0ms' }}
 
 									data-element-name-hook='scoTabBut'
+									data-tab-select-active={ scoValStr === 'all' || undefined } // What: Tab Select Active Attribute. Why: The scope showing below should stand out in the strip. How: This is present only on the showing scope's tab.
 
 									type='button'
 
@@ -2846,9 +2846,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								>{ /* What: All Scope Tab Button Element. Why: The user needs a way back to the combined, everything-at-once dashboard. How: This sets scoValStr to 'all' when clicked. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
-									<span className='picker-tab-name'>All</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the literal word "All". */ }
+									<span className={ cssModObj.pickerTabName }>All</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the literal word "All". */ }
 
-									<span className='picker-tab-mode'>Everything</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the literal word "Everything". */ }
+									<span className={ cssModObj.pickerTabMode }>Everything</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the literal word "Everything". */ }
 
 
 								</button>
@@ -2888,11 +2888,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<button
 										key={ entCurObj.keyStr }
 
-										className={ ` picker-tab   picker-tab--enter   ${ entCurObj.selBoo ? 'is-on' : '' } ` }
+										className={ cssModObj.pickerTab }
 
 										style={{ animationDelay : ( entIndNum + 1 ) * 40 + 'ms' }}
 
 										data-element-name-hook='scoTabBut'
+										data-tab-select-active={ entCurObj.selBoo || undefined } // What: Tab Select Active Attribute. Why: The scope showing below should stand out in the strip. How: This is present only on the showing scope's tab.
 										data-picker-id={ entCurObj.picStr }
 
 										type='button'
@@ -2901,9 +2902,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									>{ /* What: Scope Tab Button Element. Why: The user needs a way to switch the whole page over to this specific Conditionals/Reminders/picker scope. How: This calls the entry's own cliFun when clicked. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
-										<span className='picker-tab-name'>{ entCurObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the entry's own namStr field. */ }
+										<span className={ cssModObj.pickerTabName }>{ entCurObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every scope tab needs its own visible name. How: This renders the entry's own namStr field. */ }
 
-										<span className='picker-tab-mode'>{ entCurObj.labStr }</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the entry's own labStr field. */ }
+										<span className={ cssModObj.pickerTabMode }>{ entCurObj.labStr }</span>{ /* What: Tab Mode Span Element. Why: Every scope tab needs a small descriptive subline under its name. How: This renders the entry's own labStr field. */ }
 
 
 									</button>
@@ -2918,15 +2919,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					</div>
 
 
-					<div className='stat-filter-row'>{ /* What: Range Filter Row Div Element. Why: The Range label and its own pill list are grouped as one row. How: This wraps the "Range" label span and the stat-filter-pills list. */ }
+					<div className={ cssModObj.statFilterRow }>{ /* What: Range Filter Row Div Element. Why: The Range label and its own pill list are grouped as one row. How: This wraps the "Range" label span and the stat-filter-pills list. */ }
 
 
-						<span className='stat-filter-lbl'>Range</span>{ /* What: Range Label Span Element. Why: The row needs its own visible label naming what it filters. How: This renders the literal word "Range". */ }
+						<span className={ cssModObj.statFilterLbl }>Range</span>{ /* What: Range Label Span Element. Why: The row needs its own visible label naming what it filters. How: This renders the literal word "Range". */ }
 
 						<div
 							ref={ ranRowRef }
 
-							className='stat-filter-pills stat-filter-pills--seg'
+							className={ cssModObj.statFilterPills }
 
 							data-element-name-hook='ranPilDiv'
 						>{ /* What: Range Pill List Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
@@ -2938,9 +2939,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<button
 									key={ ranCurObj.keyStr }
 
-									className={ ` stat-pill   ${ ranValStr === ranCurObj.keyStr ? 'is-on' : '' } ` }
+									className={ cssModObj.statPill }
 
 									data-element-name-hook='ranPilBut'
+									data-pill-select-active={ ranValStr === ranCurObj.keyStr || undefined } // What: Pill Select Active Attribute. Why: The active range should stand out. How: This is present only on the showing range's pill.
 
 									type='button'
 
@@ -2964,7 +2966,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				<div
 					key={ scoValStr + '|' + ranValStr }
 
-					className='tab-fade stat-body ob-stat-content'
+					className={ cssModObj.statBody }
 				>{ /* What: Body Div Element. Why: This groups every scope-dependent card below the filter rows, remounting (and replaying its own fade) whenever the scope or range changes. How: This renders the single-picker header, the Conditionals/headline/heatmap blocks, and every remaining card in a fixed order. */ }
 
 
@@ -2972,16 +2974,16 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 						<div
-							className='stat-picker-id'
+							className={ cssModObj.statPickerId }
 
 							data-element-name-hook='picIdeDiv'
 						>{ /* What: Picker Identity Div Element. Why: This groups the scoped picker's own kicker, name, mode pill, and hint text. How: This wraps those four pieces in a fixed order. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-							<span className='kicker'>Picker</span>{ /* What: Picker Kicker Span Element. Why: This block needs its own small label naming what it identifies. How: This renders the literal word "Picker". */ }
+							<span className={ cssModObj.kicker }>Picker</span>{ /* What: Picker Kicker Span Element. Why: This block needs its own small label naming what it identifies. How: This renders the literal word "Picker". */ }
 
 							<h2
-								className='picker-title'
+								className={ cssModObj.pickerTitle }
 
 								data-element-name-hook='picTitHea'
 							>{ scoPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scoPicObj.name. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
@@ -3009,7 +3011,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 										<p
-											className='picker-hint'
+											className={ cssModObj.pickerHint }
 
 											data-element-name-hook='picHinPar'
 										>{ modHinVal }</p> // What: Picker Hint Paragraph Element. Why: A plain-string hint needs just one paragraph element. How: This renders modHinVal. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
@@ -3028,7 +3030,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<p
 										key={ parIndNum }
 
-										className='picker-hint'
+										className={ cssModObj.pickerHint }
 
 										data-element-name-hook='picHinPar'
 									>{ parCurStr }</p> // What: Picker Hint Paragraph Element. Why: Each hint paragraph needs its own element. How: This renders parCurStr. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
@@ -3060,19 +3062,19 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							<React.Fragment>{ /* What: Conditionals Fragment Element. Why: This groups the headline row and the breakdown card without adding an extra DOM wrapper of its own. How: This wraps those two sibling blocks. */ }
 
 
-								<div className='stat-row'>{ /* What: Conditional Headline Row Div Element. Why: The four Conditionals headline numbers share the same row layout as every other scope's own headline cards. How: This renders one CarSurCom per headline number. */ }
+								<div className={ cssModObj.statRow }>{ /* What: Conditional Headline Row Div Element. Why: The four Conditionals headline numbers share the same row layout as every other scope's own headline cards. How: This renders one CarSurCom per headline number. */ }
 
 
 									<CarSurCom
-										className='stat-card stat-mk-condfired'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='conFirDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "triggered" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ conTotObj.firNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.firNum. */ }
+										<div className={ cssModObj.statNum }>{ conTotObj.firNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.firNum. */ }
 
-										<div className='stat-lbl'>triggered</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "triggered". */ }
+										<div className={ cssModObj.statLbl }>triggered</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "triggered". */ }
 
 
 									</CarSurCom>
@@ -3080,15 +3082,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className='stat-card stat-mk-condcycles'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='conCycDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "cycles" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ conTotObj.totNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.totNum. */ }
+										<div className={ cssModObj.statNum }>{ conTotObj.totNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.totNum. */ }
 
-										<div className='stat-lbl'>cycles</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "cycles". */ }
+										<div className={ cssModObj.statLbl }>cycles</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "cycles". */ }
 
 
 									</CarSurCom>
@@ -3096,15 +3098,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className='stat-card stat-mk-condrate'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='conRatDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "fire rate" percentage. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ conTotObj.ratNum }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.ratNum as a percentage. */ }
+										<div className={ cssModObj.statNum }>{ conTotObj.ratNum }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.ratNum as a percentage. */ }
 
-										<div className='stat-lbl'>fire rate</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "fire rate". */ }
+										<div className={ cssModObj.statLbl }>fire rate</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "fire rate". */ }
 
 
 									</CarSurCom>
@@ -3112,15 +3114,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className='stat-card stat-mk-condlast'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='conLasDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ conTotObj.lasStr ? conDayFun( conTotObj.lasStr ) : '—' }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large value, or a placeholder glyph when nothing has ever fired. How: This formats conTotObj.lasStr, or renders the em-dash placeholder glyph when it's null. */ }
+										<div className={ cssModObj.statNum }>{ conTotObj.lasStr ? conDayFun( conTotObj.lasStr ) : '—' }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large value, or a placeholder glyph when nothing has ever fired. How: This formats conTotObj.lasStr, or renders the em-dash placeholder glyph when it's null. */ }
 
-										<div className='stat-lbl'>last fired</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "last fired". */ }
+										<div className={ cssModObj.statLbl }>last fired</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "last fired". */ }
 
 
 									</CarSurCom>
@@ -3131,19 +3133,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<CarSurCom
-									className='stat-mk-condbreakdown'
-
 									data-element-name-hook='conBreDiv'
 								>{ /* What: Card Surface Component. Why: The Conditionals breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the list itself. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-									<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
+									<div className={ cssModObj.rankHead }>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
 
 
-										<div className='kicker'>Conditionals breakdown</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Conditionals breakdown". */ }
+										<div className={ cssModObj.kicker }>Conditionals breakdown</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Conditionals breakdown". */ }
 
 										<button
-											className='rank-sort'
+											className={ cssModObj.rankSort }
 
 											type='button'
 
@@ -3167,7 +3167,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<div
 										ref={ conRowRef }
 
-										className='bd-metrics'
+										className={ cssModObj.bdMetrics }
 									>{ /* What: Metric Pill Row Div Element. Why: The user needs a way to pivot the breakdown list across five different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
 
@@ -3177,7 +3177,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											<button
 												key={ conKeyStr }
 
-												className={ ` bd-metric   ${ conMetStr === conKeyStr ? 'is-on' : '' } ` }
+												className={ cssModObj.bdMetric }
+
+												data-pill-select-active={ conMetStr === conKeyStr || undefined } // What: Pill Select Active Attribute. Why: The showing metric should stand out. How: This is present only on the showing metric's pill.
 
 												type='button'
 
@@ -3196,7 +3198,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</div>
 
-									<p className='rank-note'>{ /* What: Rank Note Paragraph Element. Why: The active metric needs a short explanation of what it actually measures. How: This renders one of five explanatory sentences, chosen by conMetStr. */ }
+									<p className={ cssModObj.rankNote }>{ /* What: Rank Note Paragraph Element. Why: The active metric needs a short explanation of what it actually measures. How: This renders one of five explanatory sentences, chosen by conMetStr. */ }
 
 
 										{ conMetStr === 'rate' // What: Conditional Note Expression. Why: The note paragraph's own text depends on the active metric. How: This picks one of five explanations by conMetStr, testing for the rate pill first.
@@ -3220,7 +3222,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<ul
 											key={ conMetStr + conSorStr }
 
-											className={ ` rank   rank--breakdown   bd-list-fade   ${ ( conMetStr === 'interval' || conMetStr === 'last' ) ? 'rank--freq' : '' } ` }
+											className={` ${ cssModObj.rank }   ${ cssModObj.rankBreakdown }   ${ cssModObj.bdListFade }   ${ ( conMetStr === 'interval' || conMetStr === 'last' ) ? cssModObj.rankFreq : '' } `}
 										>{ /* What: Conditional List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps conBreArr to one list item per conditional. */ }
 
 
@@ -3249,44 +3251,44 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 													<li
 														key={ conRowObj.ideStr }
 
-														className={ conRowObj.delBoo ? 'is-deleted' : '' }
+														data-row-deleted-active={ conRowObj.delBoo || undefined } // What: Row Deleted Active Attribute. Why: A deleted conditional's history remains but reads as historical. How: This is present only while conRowObj.delBoo is true.
 													>{ /* What: Conditional List Item Element. Why: Every conditional needs its own row grouping its name/target on one side and its metric value on the other. How: This renders the rank-name block and the cnd-bd-vals block as two siblings. */ }
 
 
-														<span className='rank-name'>{ /* What: Rank Name Span Element. Why: The conditional's own name, deleted tag, and target suffix are grouped together. How: This wraps the name row and the optional target meta span. */ }
+														<span className={ cssModObj.rankName }>{ /* What: Rank Name Span Element. Why: The conditional's own name, deleted tag, and target suffix are grouped together. How: This wraps the name row and the optional target meta span. */ }
 
 
-															<span className='rank-name-row'>{ /* What: Rank Name Row Span Element. Why: The name text and an optional "deleted" tag sit side by side. How: This wraps the name text span and the conditional deleted tag. */ }
+															<span className={ cssModObj.rankNameRow }>{ /* What: Rank Name Row Span Element. Why: The name text and an optional "deleted" tag sit side by side. How: This wraps the name text span and the conditional deleted tag. */ }
 
 
-																<span className='rank-name-text'>{ conRowObj.namStr }</span>{ /* What: Rank Name Text Span Element. Why: The row needs its own visible conditional name. How: This renders conRowObj.namStr. */ }
+																<span className={ cssModObj.rankNameText }>{ conRowObj.namStr }</span>{ /* What: Rank Name Text Span Element. Why: The row needs its own visible conditional name. How: This renders conRowObj.namStr. */ }
 
-																{ conRowObj.delBoo && <span className='rank-tag rank-tag--deleted'>deleted</span> }{ /* What: Deleted Tag Check. Why: A since-deleted conditional's own row must be visibly flagged. How: This renders a small "deleted" tag only while conRowObj.delBoo is true. */ }
+																{ conRowObj.delBoo && <span className={` ${ cssModObj.rankTag }   ${ cssModObj.rankTagDeleted } `}>deleted</span> }{ /* What: Deleted Tag Check. Why: A since-deleted conditional's own row must be visibly flagged. How: This renders a small "deleted" tag only while conRowObj.delBoo is true. */ }
 
 
 															</span>
 
-															{ conTarStr && <span className='rank-meta'>{ conTarStr }</span> }{ /* What: Target Meta Check. Why: A deleted conditional has no configured target left to show. How: This renders the computed conTarStr under the name only while it's non-null. */ }
+															{ conTarStr && <span className={ cssModObj.rankMeta }>{ conTarStr }</span> }{ /* What: Target Meta Check. Why: A deleted conditional has no configured target left to show. How: This renders the computed conTarStr under the name only while it's non-null. */ }
 
 
 														</span>
 
-														<span className='cnd-bd-vals'>{ /* What: Conditional Values Span Element. Why: The row's own inactive tag and metric-specific value sit together on the opposite side from the name. How: This wraps the inactive tag, the mode tag, and whichever metric-specific value block matches conMetStr. */ }
+														<span className={ cssModObj.cndBdVals }>{ /* What: Conditional Values Span Element. Why: The row's own inactive tag and metric-specific value sit together on the opposite side from the name. How: This wraps the inactive tag, the mode tag, and whichever metric-specific value block matches conMetStr. */ }
 
 
-															{ !conRowObj.delBoo && conRowObj.actBoo === false && <span className='rank-tag'>inactive</span> }{ /* What: Inactive Tag Check. Why: A live but currently-disabled conditional needs its own visible flag. How: This renders a small "inactive" tag only for a non-deleted conditional whose own active field is false. */ }
+															{ !conRowObj.delBoo && conRowObj.actBoo === false && <span className={ cssModObj.rankTag }>inactive</span> }{ /* What: Inactive Tag Check. Why: A live but currently-disabled conditional needs its own visible flag. How: This renders a small "inactive" tag only for a non-deleted conditional whose own active field is false. */ }
 
-															<span className='rem-log-type'>{ ( conRowObj.modStr || '' ).replace( '-', '‑' ) }</span>{ /* What: Mode Tag Span Element. Why: Every row needs its own small mode label. How: This renders the conditional's own mode, with a non-breaking hyphen swapped in for a literal hyphen. */ }
+															<span className={ cssModObj.remLogType }>{ ( conRowObj.modStr || '' ).replace( '-', '‑' ) }</span>{ /* What: Mode Tag Span Element. Why: Every row needs its own small mode label. How: This renders the conditional's own mode, with a non-breaking hyphen swapped in for a literal hyphen. */ }
 
 															{ conMetStr === 'rate' && ( // What: Rate Value Check. Why: The rate-specific percentage/fraction display only belongs on this one metric. How: This renders it only while conMetStr is 'rate'.
 
 
-																<span className='rank-vals'>{ /* What: Rank Values Span Element. Why: The rate metric shows both a percentage and a raw fraction together. How: This wraps the percent span and the fraction span. */ }
+																<span className={ cssModObj.rankVals }>{ /* What: Rank Values Span Element. Why: The rate metric shows both a percentage and a raw fraction together. How: This wraps the percent span and the fraction span. */ }
 
 
-																	<span className='rank-pct'>{ conRowObj.ratNum == null ? '—' : conRowObj.ratNum + '%' }</span>{ /* What: Rank Percent Span Element. Why: The rate metric's own headline value is a percentage, or a placeholder glyph when there's no rate at all. How: This renders conRowObj.ratNum as a percentage, or the em-dash placeholder when it's null. */ }
+																	<span className={ cssModObj.rankPct }>{ conRowObj.ratNum == null ? '—' : conRowObj.ratNum + '%' }</span>{ /* What: Rank Percent Span Element. Why: The rate metric's own headline value is a percentage, or a placeholder glyph when there's no rate at all. How: This renders conRowObj.ratNum as a percentage, or the em-dash placeholder when it's null. */ }
 
-																	<span className='rank-frac'>{ conRowObj.firNum } / { conRowObj.totNum }</span>{ /* What: Rank Fraction Span Element. Why: The rate metric's own supporting detail is the raw fired/total fraction. How: This renders conRowObj.firNum and conRowObj.totNum joined by a slash. */ }
+																	<span className={ cssModObj.rankFrac }>{ conRowObj.firNum } / { conRowObj.totNum }</span>{ /* What: Rank Fraction Span Element. Why: The rate metric's own supporting detail is the raw fired/total fraction. How: This renders conRowObj.firNum and conRowObj.totNum joined by a slash. */ }
 
 
 																</span>
@@ -3294,20 +3296,24 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 															) }
 
-															{ conMetStr === 'triggers' && <span className='rank-metric-n'>{ conRowObj.firNum }</span> }{ /* What: Triggers Value Check. Why: The triggers metric shows a single raw count. How: This renders conRowObj.firNum only while conMetStr is 'triggers'. */ }
+															{ conMetStr === 'triggers' && <span className={ cssModObj.rankMetricN }>{ conRowObj.firNum }</span> }{ /* What: Triggers Value Check. Why: The triggers metric shows a single raw count. How: This renders conRowObj.firNum only while conMetStr is 'triggers'. */ }
 
-															{ conMetStr === 'cycles' && <span className='rank-metric-n'>{ conRowObj.totNum }</span> }{ /* What: Cycles Value Check. Why: The cycles metric shows a single raw count. How: This renders conRowObj.totNum only while conMetStr is 'cycles'. */ }
+															{ conMetStr === 'cycles' && <span className={ cssModObj.rankMetricN }>{ conRowObj.totNum }</span> }{ /* What: Cycles Value Check. Why: The cycles metric shows a single raw count. How: This renders conRowObj.totNum only while conMetStr is 'cycles'. */ }
 
 															{ conMetStr === 'interval' && ( conRowObj.intNum != null ? ( // What: Interval Value Check. Why: The interval metric's own value/placeholder display only belongs on this one metric. How: This renders it only while conMetStr is 'interval'.
 
 
-																<span className='rank-freq-val cnd-bd-freq--interval'>every { conRowObj.intNum } { conRowObj.intNum === 1 ? 'day' : 'days' }</span> // What: Interval Span Element. Why: A conditional that fired at least twice has a real average gap. How: This renders "every N days", pluralized.
+																<span className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.cndBdFreqInterval } `}>every { conRowObj.intNum } { conRowObj.intNum === 1 ? 'day' : 'days' }</span> // What: Interval Span Element. Why: A conditional that fired at least twice has a real average gap. How: This renders "every N days", pluralized.
 
 
 															) : ( // What: No Interval Branch. Why: Fewer than two fires means no gap to average. How: This renders the else branch, taken while intNum is null.
 
 
-																<span className='rank-freq-val cnd-bd-freq--interval is-dim'>{ conRowObj.firNum <= 1 ? 'Fired Once' : 'Not Fired' }</span> // What: Interval Placeholder Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it fired once or never.
+																<span
+																	className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.cndBdFreqInterval } `}
+
+																	data-value-dim-active
+																>{ conRowObj.firNum <= 1 ? 'Fired Once' : 'Not Fired' }</span> // What: Interval Placeholder Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it fired once or never.
 
 
 															) ) }
@@ -3315,13 +3321,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 															{ conMetStr === 'last' && ( conRowObj.lasStr ? ( // What: Last Value Check. Why: The last-fired metric's own value/placeholder display only belongs on this one metric. How: This renders it only while conMetStr is 'last'.
 
 
-																<span className='rank-freq-val cnd-bd-freq--last'>{ conDayFun( conRowObj.lasStr ) }</span> // What: Last Fired Span Element. Why: A conditional that fired has a real last date. How: This renders lasStr via conDayFun.
+																<span className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.cndBdFreqLast } `}>{ conDayFun( conRowObj.lasStr ) }</span> // What: Last Fired Span Element. Why: A conditional that fired has a real last date. How: This renders lasStr via conDayFun.
 
 
 															) : ( // What: Never Fired Branch. Why: A conditional that never fired has no date. How: This renders the else branch, taken while lasStr is null.
 
 
-																<span className='rank-freq-val cnd-bd-freq--last is-dim'>Never</span> // What: Never Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed word "Never".
+																<span
+																	className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.cndBdFreqLast } `}
+
+																	data-value-dim-active
+																>Never</span> // What: Never Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed word "Never".
 
 
 															) ) }
@@ -3345,7 +3355,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
 
 
-										<div className='stat-empty'>No conditional activity in { ranNouStr } yet.</div> // What: Conditional Empty State Div Element. Why: An empty breakdown needs to explain why the list is missing instead of showing nothing at all. How: This renders only while conBreArr is empty.
+										<div className={ cssModObj.statEmpty }>No conditional activity in { ranNouStr } yet.</div> // What: Conditional Empty State Div Element. Why: An empty breakdown needs to explain why the list is missing instead of showing nothing at all. How: This renders only while conBreArr is empty.
 
 
 									) }
@@ -3367,25 +3377,25 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ !isaConBoo && ( // What: Headline Row Visibility Check. Why: The Conditionals scope has its own dedicated headline row above, so this generic one only belongs on every other scope. How: This renders it only while isaConBoo is false.
 
 
-						<div className='stat-row'>{ /* What: Headline Row Div Element. Why: Every non-Conditionals scope shows 4 headline cards in one row. How: This renders either the Reminders-shaped set or the pick-shaped set, based on isaRemBoo. */ }
+						<div className={ cssModObj.statRow }>{ /* What: Headline Row Div Element. Why: Every non-Conditionals scope shows 4 headline cards in one row. How: This renders either the Reminders-shaped set or the pick-shaped set, based on isaRemBoo. */ }
 
 
-							{ isaRemBoo ? ( // What: Reminders Headline Check. Why: The Reminders scope's own headline cards are shaped differently from a pick-based scope's. How: This renders the Reminders-shaped set while isaRemBoo is true, the pick-shaped set otherwise. // stat-mk-* are dedicated, zero-styling selector hooks for help mode (same idea as day-log.jsx's dl-mk-* classes), since every headline card here shares the plain .stat-card class with no other way to address one specifically.
+							{ isaRemBoo ? ( // What: Reminders Headline Check. Why: The Reminders scope's own headline cards are shaped differently from a pick-based scope's. How: This renders the Reminders-shaped set while isaRemBoo is true, the pick-shaped set otherwise.
 
 
 								<React.Fragment>{ /* What: Reminders Headline Fragment Element. Why: The 4 Reminders-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 CarSurCom elements. */ }
 
 
 									<CarSurCom
-										className='stat-card stat-mk-remdone'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='remDonDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completed" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
+										<div className={ cssModObj.statNum }>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
 
-										<div className='stat-lbl'>completed</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "completed". */ }
+										<div className={ cssModObj.statLbl }>completed</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "completed". */ }
 
 
 									</CarSurCom>
@@ -3393,15 +3403,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className='stat-card stat-mk-remweek'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='remWeeDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "this week" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ remWeeNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders remWeeNum. */ }
+										<div className={ cssModObj.statNum }>{ remWeeNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders remWeeNum. */ }
 
-										<div className='stat-lbl'>this week</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "this week". */ }
+										<div className={ cssModObj.statLbl }>this week</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "this week". */ }
 
 
 									</CarSurCom>
@@ -3409,15 +3419,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className='stat-card stat-mk-remactive'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='remActDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "active days" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ actDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders actDayNum. */ }
+										<div className={ cssModObj.statNum }>{ actDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders actDayNum. */ }
 
-										<div className='stat-lbl'>active days</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "active days". */ }
+										<div className={ cssModObj.statLbl }>active days</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "active days". */ }
 
 
 									</CarSurCom>
@@ -3425,15 +3435,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className='stat-card stat-mk-rembusiest'
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='remBusDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "busiest day" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ busDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders busDayNum. */ }
+										<div className={ cssModObj.statNum }>{ busDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders busDayNum. */ }
 
-										<div className='stat-lbl'>busiest day</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "busiest day". */ }
+										<div className={ cssModObj.statLbl }>busiest day</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "busiest day". */ }
 
 
 									</CarSurCom>
@@ -3449,16 +3459,16 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className={ ` stat-card   stat-mk-streak   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='staStrDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
-									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "day streak" total, tagged with an extra scope-specific class for help mode. */ }{ /* stat-mk-scope-{all,picker}: All and a specific picker both fall into this branch and share the exact same stat-mk-* classes above, so help mode needs an extra hook to give the two scopes their own separate tooltip copy. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "day streak" total, tagged with data-picker-scope-active so help mode can tell the two scopes apart. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ stkDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders stkDayNum. */ }
+										<div className={ cssModObj.statNum }>{ stkDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders stkDayNum. */ }
 
-										<div className='stat-lbl'>day streak</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "day streak". */ }
+										<div className={ cssModObj.statLbl }>day streak</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "day streak". */ }
 
 										<IcoSvgCom
 											icoNamStr='flaEle'
@@ -3471,16 +3481,16 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className={ ` stat-card   stat-mk-fulldays   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='staFulDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
-									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "full days" total, tagged with an extra scope-specific class for help mode. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "full days" total, tagged with data-picker-scope-active so help mode can tell the two scopes apart. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ fulDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders fulDayNum. */ }
+										<div className={ cssModObj.statNum }>{ fulDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders fulDayNum. */ }
 
-										<div className='stat-lbl'>full days &middot; { actDayNum }</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it, plus its own denominator for context. How: This renders the literal words "full days" followed by actDayNum. */ }
+										<div className={ cssModObj.statLbl }>full days &middot; { actDayNum }</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it, plus its own denominator for context. How: This renders the literal words "full days" followed by actDayNum. */ }
 
 
 									</CarSurCom>
@@ -3488,16 +3498,16 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className={ ` stat-card   stat-mk-done   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='staDonDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
-									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "items done" total, tagged with an extra scope-specific class for help mode. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "items done" total, tagged with data-picker-scope-active so help mode can tell the two scopes apart. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
+										<div className={ cssModObj.statNum }>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
 
-										<div className='stat-lbl'>items done</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "items done". */ }
+										<div className={ cssModObj.statLbl }>items done</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "items done". */ }
 
 
 									</CarSurCom>
@@ -3505,16 +3515,16 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<CarSurCom
-										className={ ` stat-card   stat-mk-rate   ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' } ` }
+										className={ cssModObj.statCard }
 
 										data-element-name-hook='staRatDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
-									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completion" percentage, tagged with an extra scope-specific class for help mode. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completion" percentage, tagged with data-picker-scope-active so help mode can tell the two scopes apart. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-										<div className='stat-num'>{ comRatNum }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders comRatNum as a percentage. */ }
+										<div className={ cssModObj.statNum }>{ comRatNum }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders comRatNum as a percentage. */ }
 
-										<div className='stat-lbl'>completion</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "completion". */ }
+										<div className={ cssModObj.statLbl }>completion</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "completion". */ }
 
 
 									</CarSurCom>
@@ -3537,16 +3547,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 						<CarSurCom
-							className='stat-heatmap-card'
-
 							data-element-name-hook='heaMapDiv'
 						>{ /* What: Card Surface Component. Why: The heatmap shares the same card chrome as every other stat card. How: This wraps the heat header, the optional year pager, and either the grid+detail or an empty state. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
-							<div className='heat-h'>{ /* What: Heat Header Div Element. Why: The heatmap's own kicker and legend sit together in one row. How: This wraps the kicker div and the HeaLegCom legend. */ }
+							<div className={ cssModObj.heatH }>{ /* What: Heat Header Div Element. Why: The heatmap's own kicker and legend sit together in one row. How: This wraps the kicker div and the HeaLegCom legend. */ }
 
 
-								<div className='kicker'>{ ranKicStr }{ isaRemBoo ? ' · reminders' : '' }</div>{ /* What: Kicker Div Element. Why: The heatmap needs its own label naming the active range, plus a Reminders qualifier when that scope is active. How: This renders ranKicStr, appending " · reminders" only while isaRemBoo is true. */ }
+								<div className={ cssModObj.kicker }>{ ranKicStr }{ isaRemBoo ? ' · reminders' : '' }</div>{ /* What: Kicker Div Element. Why: The heatmap needs its own label naming the active range, plus a Reminders qualifier when that scope is active. How: This renders ranKicStr, appending " · reminders" only while isaRemBoo is true. */ }
 
 
 
@@ -3576,11 +3584,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								return (
 
 
-									<div className='heat-year-nav'>{ /* What: Heat Year Navigation Div Element. Why: The previous-arrow, active-year label, and next-arrow sit together in one row. How: This wraps those three elements. */ }
+									<div className={ cssModObj.heatYearNav }>{ /* What: Heat Year Navigation Div Element. Why: The previous-arrow, active-year label, and next-arrow sit together in one row. How: This wraps those three elements. */ }
 
 
 										<button
-											className='heat-year-arrow'
+											className={ cssModObj.heatYearArrow }
 
 											disabled={ yeaIndNum <= 0 }
 											type='button'
@@ -3590,10 +3598,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											onClick={ () => jumYeaFun( datYeaArr[ yeaIndNum - 1 ], 'prev' ) }
 										>&lsaquo;</button>{ /* What: Previous Year Arrow Button Element. Why: The user needs a way to page back one calendar year. How: This is disabled on the earliest year and otherwise pages to the previous entry in datYeaArr. */ }
 
-										<span className='heat-year'>{ actYeaNum }</span>{ /* What: Heat Year Span Element. Why: The pager needs its own visible label naming the active year. How: This renders actYeaNum. */ }
+										<span className={ cssModObj.heatYear }>{ actYeaNum }</span>{ /* What: Heat Year Span Element. Why: The pager needs its own visible label naming the active year. How: This renders actYeaNum. */ }
 
 										<button
-											className='heat-year-arrow'
+											className={ cssModObj.heatYearArrow }
 
 											disabled={ yeaIndNum >= datYeaArr.length - 1 }
 											type='button'
@@ -3617,7 +3625,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ actDayNum === 0 ? ( // What: Empty Heatmap Check. Why: A heatmap with zero active days needs its own explanatory message instead of an all-empty grid. How: This renders that message only while actDayNum is zero, otherwise the real grid and detail panel below.
 
 
-								<div className='stat-empty'>{ /* What: Heatmap Empty Div Element. Why: An empty heatmap needs to explain why there's no grid. How: This renders a scope-specific empty message. */ }
+								<div className={ cssModObj.statEmpty }>{ /* What: Heatmap Empty Div Element. Why: An empty heatmap needs to explain why there's no grid. How: This renders a scope-specific empty message. */ }
 
 
 									{ isaRemBoo // What: Heatmap Empty Expression. Why: The message names what's missing for the active scope. How: This picks the reminders or picks wording by isaRemBoo.
@@ -3638,7 +3646,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<div
 										key={ actYeaNum == null ? 'single' : actYeaNum }
 
-										className={ ` heat   ${ heaDirStr ? 'heat-slide-' + heaDirStr : '' } ` }
+										className={` ${ cssModObj.heat }   ${ heaDirStr === 'next' ? cssModObj.heatSlideNext : '' }   ${ heaDirStr === 'prev' ? cssModObj.heatSlidePrev : '' } `}
 									>{ /* What: Heat Grid Div Element. Why: This is the actual grid of day cells, remounting (and replaying its own slide-in) whenever the active paged year changes. How: This maps heaDayArr to one cell button per day. */ }
 
 
@@ -3687,7 +3695,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 												<button
 													key={ dayCurObj.datStr }
 
-													className={ ` heat-cell   heat-${ levValNum }   ${ selDayBoo ? 'is-sel' : '' } ` }
+													className={` ${ cssModObj.heatCell }   ${ HEA_LEV_ARR[ levValNum ] } `}
+
+													data-cell-select-active={ selDayBoo || undefined } // What: Cell Select Active Attribute. Why: The tapped day should stand out. How: This is present only on the selected day's cell.
 
 													type='button'
 
@@ -3714,7 +3724,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										const selDayObj = heaSelStr && heaDayArr.find( ( dayCurObj ) => dayCurObj.datStr === heaSelStr ); // What: Selected Day Object. Why: The detail panel below needs the actual aggregate entry for whichever day is selected, not just its date string. How: This finds the matching entry in heaDayArr, or stays falsy when nothing is selected.
 
 
-										if ( !selDayObj ) return <p className='heat-tap-hint'>Tap a day to see what was picked.</p>; // What: No Selection Guard. Why: With nothing tapped yet, a plain hint replaces the detail panel entirely. How: This returns the hint paragraph and skips the rest of this IIFE.
+										if ( !selDayObj ) return <p className={ cssModObj.heatTapHint }>Tap a day to see what was picked.</p>; // What: No Selection Guard. Why: With nothing tapped yet, a plain hint replaces the detail panel entirely. How: This returns the hint paragraph and skips the rest of this IIFE.
 
 
 
@@ -3726,15 +3736,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										return (
 
 
-											<div className='heat-detail'>{ /* What: Heat Detail Div Element. Why: The tapped day's own header and item list are grouped together. How: This wraps the detail header and either the item list or an empty message. */ }
+											<div className={ cssModObj.heatDetail }>{ /* What: Heat Detail Div Element. Why: The tapped day's own header and item list are grouped together. How: This wraps the detail header and either the item list or an empty message. */ }
 
 
-												<div className='heat-detail-h'>{ /* What: Heat Detail Header Div Element. Why: The selected day's own label and done-count sit together in one row. How: This wraps the date span and the count span. */ }
+												<div className={ cssModObj.heatDetailH }>{ /* What: Heat Detail Header Div Element. Why: The selected day's own label and done-count sit together in one row. How: This wraps the date span and the count span. */ }
 
 
-													<span className='heat-detail-date'>{ selLabStr }</span>{ /* What: Heat Detail Date Span Element. Why: The panel needs its own visible date label. How: This renders selLabStr. */ }
+													<span className={ cssModObj.heatDetailDate }>{ selLabStr }</span>{ /* What: Heat Detail Date Span Element. Why: The panel needs its own visible date label. How: This renders selLabStr. */ }
 
-													<span className='heat-detail-count'>{ isaRemBoo ? `${ selDayObj.donNum } done` : `${ selDayObj.donNum }/${ selDayObj.totNum } done` }</span>{ /* What: Heat Detail Count Span Element. Why: The panel needs its own visible completion count for the day. How: This phrases either a plain "done" count or a "done/total" fraction, depending on scope. */ }
+													<span className={ cssModObj.heatDetailCount }>{ isaRemBoo ? `${ selDayObj.donNum } done` : `${ selDayObj.donNum }/${ selDayObj.totNum } done` }</span>{ /* What: Heat Detail Count Span Element. Why: The panel needs its own visible completion count for the day. How: This phrases either a plain "done" count or a "done/total" fraction, depending on scope. */ }
 
 
 												</div>
@@ -3743,7 +3753,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 												{ ( selDayObj.iteArr || [] ).length ? ( // What: Item List Visibility Check. Why: A day with an aggregate entry but no logged items at all still needs an explanatory message instead of an empty list. How: This renders the real list only while selDayObj.iteArr has at least one entry.
 
 
-													<ul className='heat-detail-list'>{ /* What: Heat Detail List Element. Why: This is the actual list of what was logged on the selected day. How: This maps selDayObj.iteArr to one list item per entry. */ }
+													<ul className={ cssModObj.heatDetailList }>{ /* What: Heat Detail List Element. Why: This is the actual list of what was logged on the selected day. How: This maps selDayObj.iteArr to one list item per entry. */ }
 
 
 														{ selDayObj.iteArr.map( ( iteCurObj, iteIndNum ) => ( // What: Heat Detail Item Render. Why: Every logged item on the selected day needs its own row. How: This maps each item to a list item, keyed by its own position since items have no stable id here.
@@ -3752,13 +3762,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 															<li
 																key={ iteIndNum }
 
-																className={ iteCurObj.donBoo ? 'is-done' : '' }
+																data-row-done-active={ iteCurObj.donBoo || undefined } // What: Row Done Active Attribute. Why: A done item and its check read darker. How: This is present only while iteCurObj.donBoo is true.
 															>{ /* What: Heat Detail Item Element. Why: Each item needs its own name and (for a pick day) a done/not-done mark. How: This renders the name span and, only outside the Reminders scope, the mark span. */ }
 
 
-																<span className='heat-detail-name'>{ iteCurObj.namStr }</span>{ /* What: Heat Detail Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
+																<span className={ cssModObj.heatDetailName }>{ iteCurObj.namStr }</span>{ /* What: Heat Detail Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
 
-																{ !isaRemBoo && <span className='heat-detail-mark'>{ iteCurObj.donBoo ? '✓' : '—' }</span> }{ /* What: Heat Detail Mark Check. Why: A Reminders day has no separate done/not-done state to mark, since every logged row there is already a completion. How: This renders a check or em-dash mark only outside the Reminders scope. */ }
+																{ !isaRemBoo && <span className={ cssModObj.heatDetailMark }>{ iteCurObj.donBoo ? '✓' : '—' }</span> }{ /* What: Heat Detail Mark Check. Why: A Reminders day has no separate done/not-done state to mark, since every logged row there is already a completion. How: This renders a check or em-dash mark only outside the Reminders scope. */ }
 
 
 															</li>
@@ -3773,7 +3783,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 												) : ( // What: No Items Branch. Why: A day with an entry but no logged items still needs a message. How: This renders the else branch, taken while selDayObj.iteArr is empty.
 
 
-													<p className='heat-detail-empty'>Nothing { isaRemBoo ? 'completed' : 'picked' } this day.</p> // What: Heat Detail Empty Paragraph Element. Why: This is the actual empty-day message. How: This says nothing was completed or picked, by scope.
+													<p className={ cssModObj.heatDetailEmpty }>Nothing { isaRemBoo ? 'completed' : 'picked' } this day.</p> // What: Heat Detail Empty Paragraph Element. Why: This is the actual empty-day message. How: This says nothing was completed or picked, by scope.
 
 
 												) }
@@ -3805,23 +3815,23 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 						<CarSurCom
-							className='cnd-sum-card'
+							className={ cssModObj.cndSumCard }
 
 							data-element-name-hook='conSumDiv'
 						>{ /* What: Card Surface Component. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-							<div className='rem-stats-head'>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, sharing this class with the Reminders summary below for consistent layout. How: This wraps the kicker div and the two inline stat spans. */ }
+							<div className={ cssModObj.remStatsHead }>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, sharing this class with the Reminders summary below for consistent layout. How: This wraps the kicker div and the two inline stat spans. */ }
 
 
-								<div className='kicker'>Conditionals</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal word "Conditionals". */ }
+								<div className={ cssModObj.kicker }>Conditionals</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal word "Conditionals". */ }
 
-								<div className='rem-stats-nums'>{ /* What: Reminder Stats Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two rem-stat spans. */ }
+								<div className={ cssModObj.remStatsNums }>{ /* What: Reminder Stats Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two rem-stat spans. */ }
 
 
-									<span className='rem-stat'><strong>{ conTotObj.firNum }</strong>&nbsp;triggered</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N triggered" readout. How: This renders conTotObj.firNum in bold, followed by the word "triggered". */ }
+									<span className={ cssModObj.remStat }><strong>{ conTotObj.firNum }</strong>&nbsp;triggered</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N triggered" readout. How: This renders conTotObj.firNum in bold, followed by the word "triggered". */ }
 
-									<span className='rem-stat'><strong>{ conTotObj.ratNum }%</strong>&nbsp;fire rate</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N% fire rate" readout. How: This renders conTotObj.ratNum in bold as a percentage, followed by "fire rate". */ }
+									<span className={ cssModObj.remStat }><strong>{ conTotObj.ratNum }%</strong>&nbsp;fire rate</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N% fire rate" readout. How: This renders conTotObj.ratNum in bold as a percentage, followed by "fire rate". */ }
 
 
 								</div>
@@ -3833,7 +3843,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ conStaArr.length ? ( // What: Conditional Summary List Check. Why: An empty summary needs its own message instead of a bare empty list. How: This renders the real list only while conStaArr has at least one row.
 
 
-								<ul className='cnd-sum-list'>{ /* What: Conditional Summary List Element. Why: This is the actual summary list, capped to the first 8 conditionals. How: This maps the first 8 entries of conStaArr to one list item per conditional. */ }
+								<ul className={ cssModObj.cndSumList }>{ /* What: Conditional Summary List Element. Why: This is the actual summary list, capped to the first 8 conditionals. How: This maps the first 8 entries of conStaArr to one list item per conditional. */ }
 
 
 									{ conStaArr.slice( 0, 8 ).map( ( conRowObj ) => ( // What: Conditional Summary Row Render. Why: Every summarized conditional needs its own compact row showing its name, tags, mode, and fraction/rate. How: This maps up to 8 conStaArr entries to one list item per conditional.
@@ -3842,26 +3852,26 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<li key={ conRowObj.ideStr }>{ /* What: Conditional Summary Item Element. Why: Each conditional needs its own row grouping its name/tags on one side and its mode/fraction/rate on the other. How: This renders the name span and the meta span as two siblings. */ }
 
 
-											<span className='cnd-sum-name'>{ /* What: Conditional Summary Name Span Element. Why: The conditional's own name and any deleted/inactive tags are grouped together. How: This wraps the plain name text and its two conditional tag checks. */ }
+											<span className={ cssModObj.cndSumName }>{ /* What: Conditional Summary Name Span Element. Why: The conditional's own name and any deleted/inactive tags are grouped together. How: This wraps the plain name text and its two conditional tag checks. */ }
 
 
 												{ conRowObj.namStr }{ /* What: Conditional Name Expression. Why: The summary row shows the conditional's own name. How: This renders conRowObj.namStr. */ }
 
-												{ conRowObj.delBoo && <span className='rank-tag rank-tag--deleted'>deleted</span> }{ /* What: Deleted Tag Check. Why: A since-deleted conditional's own row must be visibly flagged. How: This renders a small "deleted" tag only while conRowObj.delBoo is true. */ }
+												{ conRowObj.delBoo && <span className={` ${ cssModObj.rankTag }   ${ cssModObj.rankTagDeleted } `}>deleted</span> }{ /* What: Deleted Tag Check. Why: A since-deleted conditional's own row must be visibly flagged. How: This renders a small "deleted" tag only while conRowObj.delBoo is true. */ }
 
-												{ !conRowObj.delBoo && conRowObj.actBoo === false && <span className='rank-tag'>inactive</span> }{ /* What: Inactive Tag Check. Why: A live but currently-disabled conditional needs its own visible flag. How: This renders a small "inactive" tag only for a non-deleted conditional whose own active field is false. */ }
+												{ !conRowObj.delBoo && conRowObj.actBoo === false && <span className={ cssModObj.rankTag }>inactive</span> }{ /* What: Inactive Tag Check. Why: A live but currently-disabled conditional needs its own visible flag. How: This renders a small "inactive" tag only for a non-deleted conditional whose own active field is false. */ }
 
 
 											</span>
 
-											<span className='cnd-sum-meta'>{ /* What: Conditional Summary Meta Span Element. Why: The conditional's own mode, fraction, and rate are grouped on the opposite side from the name. How: This wraps those three spans. */ }
+											<span className={ cssModObj.cndSumMeta }>{ /* What: Conditional Summary Meta Span Element. Why: The conditional's own mode, fraction, and rate are grouped on the opposite side from the name. How: This wraps those three spans. */ }
 
 
-												<span className='rem-log-type'>{ ( conRowObj.modStr || '' ).replace( '-', '‑' ) }</span>{ /* What: Mode Tag Span Element. Why: Every row needs its own small mode label. How: This renders the conditional's own mode, with a non-breaking hyphen swapped in for a literal hyphen. */ }
+												<span className={ cssModObj.remLogType }>{ ( conRowObj.modStr || '' ).replace( '-', '‑' ) }</span>{ /* What: Mode Tag Span Element. Why: Every row needs its own small mode label. How: This renders the conditional's own mode, with a non-breaking hyphen swapped in for a literal hyphen. */ }
 
-												<span className='cnd-sum-frac'>{ conRowObj.firNum } / { conRowObj.totNum }</span>{ /* What: Conditional Summary Fraction Span Element. Why: The summary needs its own raw fired/total fraction. How: This renders conRowObj.firNum and conRowObj.totNum joined by a slash. */ }
+												<span className={ cssModObj.cndSumFrac }>{ conRowObj.firNum } / { conRowObj.totNum }</span>{ /* What: Conditional Summary Fraction Span Element. Why: The summary needs its own raw fired/total fraction. How: This renders conRowObj.firNum and conRowObj.totNum joined by a slash. */ }
 
-												<span className='cnd-sum-rate'>{ conRowObj.ratNum == null ? '—' : conRowObj.ratNum + '%' }</span>{ /* What: Conditional Summary Rate Span Element. Why: The summary needs its own rate percentage, or a placeholder glyph when there's no rate at all. How: This renders conRowObj.ratNum as a percentage, or the em-dash placeholder when it's null. */ }
+												<span className={ cssModObj.cndSumRate }>{ conRowObj.ratNum == null ? '—' : conRowObj.ratNum + '%' }</span>{ /* What: Conditional Summary Rate Span Element. Why: The summary needs its own rate percentage, or a placeholder glyph when there's no rate at all. How: This renders conRowObj.ratNum as a percentage, or the em-dash placeholder when it's null. */ }
 
 
 											</span>
@@ -3879,7 +3889,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
 
 
-								<div className='rem-log-empty'>No conditional activity in { ranNouStr } yet.</div> // What: Conditional Summary Empty State Div Element. Why: An empty summary needs to explain why the list is missing instead of showing nothing at all. How: This renders only while conStaArr is empty.
+								<div className={ cssModObj.remLogEmpty }>No conditional activity in { ranNouStr } yet.</div> // What: Conditional Summary Empty State Div Element. Why: An empty summary needs to explain why the list is missing instead of showing nothing at all. How: This renders only while conStaArr is empty.
 
 
 							) }
@@ -3899,8 +3909,6 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<BreBarCom
-								className='stat-mk-remtype'
-
 								data-element-name-hook='remTypDiv'
 
 								empMesStr={ `No reminders completed in ${ ranNouStr } yet.` }
@@ -3912,19 +3920,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<CarSurCom
-								className='stat-mk-rembreakdown'
-
 								data-element-name-hook='remBreDiv'
 							>{ /* What: Card Surface Component. Why: The Reminders breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the paged list itself. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-								<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
+								<div className={ cssModObj.rankHead }>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
 
 
-									<div className='kicker'>Reminders breakdown</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Reminders breakdown". */ }
+									<div className={ cssModObj.kicker }>Reminders breakdown</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Reminders breakdown". */ }
 
 									<button
-										className='rank-sort'
+										className={ cssModObj.rankSort }
 
 										type='button'
 
@@ -3950,7 +3956,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<div
 									ref={ remRowRef }
 
-									className='bd-metrics'
+									className={ cssModObj.bdMetrics }
 								>{ /* What: Metric Pill Row Div Element. Why: The user needs a way to pivot the breakdown list across three different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
 
@@ -3960,7 +3966,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<button
 											key={ remKeyStr }
 
-											className={ ` bd-metric   ${ remMetStr === remKeyStr ? 'is-on' : '' } ` }
+											className={ cssModObj.bdMetric }
+
+											data-pill-select-active={ remMetStr === remKeyStr || undefined } // What: Pill Select Active Attribute. Why: The showing metric should stand out. How: This is present only on the showing metric's pill.
 
 											type='button'
 
@@ -3979,7 +3987,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								</div>
 
-								<p className='rank-note'>{ /* What: Rank Note Paragraph Element. Why: The active metric needs a short explanation of what it actually shows. How: This renders one of three explanatory sentences, chosen by remMetStr. */ }
+								<p className={ cssModObj.rankNote }>{ /* What: Rank Note Paragraph Element. Why: The active metric needs a short explanation of what it actually shows. How: This renders one of three explanatory sentences, chosen by remMetStr. */ }
 
 
 									{ remMetStr === 'recent' // What: Reminder Note Expression. Why: The note paragraph's own text depends on the active metric. How: This picks one of three explanations by remMetStr, testing for Recent first.
@@ -4003,7 +4011,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<ul
 											key={ remMetStr + remSorStr + remSafNum }
 
-											className='rem-log bd-list-fade'
+											className={` ${ cssModObj.remLog }   ${ cssModObj.bdListFade } `}
 										>{ /* What: Reminder List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric, sort, or page changes. How: This maps remIteArr to one list item per reminder row. */ }
 
 
@@ -4013,23 +4021,23 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 												<li key={ remMetStr === 'recent' ? remRowObj.ideStr : rowIndNum }>{ /* What: Reminder List Item Element. Why: Each row needs its own name on one side and its own meta (type + date/count) on the other. How: This renders the name span and the meta span as two siblings. */ }
 
 
-													<span className='rem-log-name'>{ remRowObj.namStr }</span>{ /* What: Rem Log Name Span Element. Why: The row needs its own visible reminder name. How: This renders remRowObj.namStr. */ }
+													<span className={ cssModObj.remLogName }>{ remRowObj.namStr }</span>{ /* What: Rem Log Name Span Element. Why: The row needs its own visible reminder name. How: This renders remRowObj.namStr. */ }
 
-													<span className='rem-log-meta'>{ /* What: Rem Log Meta Span Element. Why: The row's own type tag and date/count value are grouped on the opposite side from the name. How: This wraps the type span and either a relative-date span or a raw-count span. */ }
+													<span className={ cssModObj.remLogMeta }>{ /* What: Rem Log Meta Span Element. Why: The row's own type tag and date/count value are grouped on the opposite side from the name. How: This wraps the type span and either a relative-date span or a raw-count span. */ }
 
 
-														<span className={ ` rem-log-type   rem-log-type--${ remRowObj.typStr } ` }>{ remRowObj.typStr === 'once' ? 'one-time' : 'recurring' }</span>{ /* What: Rem Log Type Span Element. Why: Every row needs its own small type label. How: This renders "one-time" or "recurring" based on remRowObj.typStr. */ }
+														<span className={` ${ cssModObj.remLogType }   ${ remRowObj.typStr === 'recurring' ? cssModObj.remLogTypeRecurring : '' } `}>{ remRowObj.typStr === 'once' ? 'one-time' : 'recurring' }</span>{ /* What: Rem Log Type Span Element. Why: Every row needs its own small type label. How: This renders "one-time" or "recurring" based on remRowObj.typStr. */ }
 
 														{ remMetStr === 'recent' ? ( // What: Recent Value Check. Why: Recent rows are dated events, while the other pills show counts. How: This renders a relative date while remMetStr is 'recent', otherwise the count.
 
 
-															<span className='rem-log-when'>{ relWheFun( remRowObj.timStr ) }</span> // What: Rem Log When Span Element. Why: A recent event shows when it happened. How: This formats timStr via relWheFun.
+															<span className={ cssModObj.remLogWhen }>{ relWheFun( remRowObj.timStr ) }</span> // What: Rem Log When Span Element. Why: A recent event shows when it happened. How: This formats timStr via relWheFun.
 
 
 														) : ( // What: Count Value Branch. Why: Completions and Skipped rows show a total. How: This renders the else branch, taken for every non-Recent pill.
 
 
-															<span className='rank-metric-n'>{ remRowObj.couNum }</span> // What: Rank Metric Number Span Element. Why: A grouped row shows its own total. How: This renders couNum.
+															<span className={ cssModObj.rankMetricN }>{ remRowObj.couNum }</span> // What: Rank Metric Number Span Element. Why: A grouped row shows its own total. How: This renders couNum.
 
 
 														) }
@@ -4065,7 +4073,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								) : ( // What: Reminder Empty Branch. Why: An empty breakdown needs its own explanatory message instead of the list and pager. How: This renders the else branch, taken while remBreArr has no rows.
 
 
-									<div className='rem-log-empty'>{ /* What: Rem Log Empty Div Element. Why: An empty breakdown needs to explain why the list is missing, phrased differently for the Skipped metric than the others. How: This renders one of two explanatory messages based on remMetStr. */ }
+									<div className={ cssModObj.remLogEmpty }>{ /* What: Rem Log Empty Div Element. Why: An empty breakdown needs to explain why the list is missing, phrased differently for the Skipped metric than the others. How: This renders one of two explanatory messages based on remMetStr. */ }
 
 
 										{ remMetStr === 'skipped' // What: Reminder Empty Expression. Why: The empty message names what's missing for the active metric. How: This picks skip or completion wording by remMetStr.
@@ -4094,23 +4102,21 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 						<CarSurCom
-							className='rem-stats-card'
-
 							data-element-name-hook='remSumDiv'
 						>{ /* What: Card Surface Component. Why: The Reminders summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-							<div className='rem-stats-head'>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row. How: This wraps the kicker div and the two inline stat spans. */ }
+							<div className={ cssModObj.remStatsHead }>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row. How: This wraps the kicker div and the two inline stat spans. */ }
 
 
-								<div className='kicker'>Reminders completed</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Reminders completed". */ }
+								<div className={ cssModObj.kicker }>Reminders completed</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Reminders completed". */ }
 
-								<div className='rem-stats-nums'>{ /* What: Reminder Stats Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two rem-stat spans. */ }
+								<div className={ cssModObj.remStatsNums }>{ /* What: Reminder Stats Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two rem-stat spans. */ }
 
 
-									<span className='rem-stat'><strong>{ remRowArr.length }</strong>&nbsp;{ ranValStr === 'all' ? 'all time' : 'in range' }</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline total readout, phrased for the active range. How: This renders remRowArr.length in bold, followed by "all time" or "in range". */ }
+									<span className={ cssModObj.remStat }><strong>{ remRowArr.length }</strong>&nbsp;{ ranValStr === 'all' ? 'all time' : 'in range' }</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline total readout, phrased for the active range. How: This renders remRowArr.length in bold, followed by "all time" or "in range". */ }
 
-									<span className='rem-stat'><strong>{ remWeeNum }</strong>&nbsp;this week</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N this week" readout. How: This renders remWeeNum in bold, followed by "this week". */ }
+									<span className={ cssModObj.remStat }><strong>{ remWeeNum }</strong>&nbsp;this week</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N this week" readout. How: This renders remWeeNum in bold, followed by "this week". */ }
 
 
 								</div>
@@ -4122,7 +4128,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ remLogArr.length ? ( // What: Reminder Summary List Check. Why: An empty summary needs its own message instead of a bare empty list. How: This renders the real list only while remLogArr has at least one row.
 
 
-								<ul className='rem-log'>{ /* What: Reminder Summary List Element. Why: This is the actual summary list, capped to the first 8 completions. How: This maps the first 8 entries of remLogArr to one list item per completion. */ }
+								<ul className={ cssModObj.remLog }>{ /* What: Reminder Summary List Element. Why: This is the actual summary list, capped to the first 8 completions. How: This maps the first 8 entries of remLogArr to one list item per completion. */ }
 
 
 									{ remLogArr.slice( 0, 8 ).map( ( remRowObj ) => ( // What: Reminder Summary Row Render. Why: Every summarized completion needs its own compact row showing its name, type, and relative date. How: This maps up to 8 remLogArr entries to one list item per row.
@@ -4131,14 +4137,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<li key={ remRowObj.rowId }>{ /* What: Reminder Summary Item Element. Why: Each completion needs its own name on one side and its own type/date on the other. How: This renders the name span and the meta span as two siblings. */ }
 
 
-											<span className='rem-log-name'>{ remRowObj.name }</span>{ /* What: Rem Log Name Span Element. Why: The row needs its own visible reminder name. How: This renders remRowObj.name. */ }
+											<span className={ cssModObj.remLogName }>{ remRowObj.name }</span>{ /* What: Rem Log Name Span Element. Why: The row needs its own visible reminder name. How: This renders remRowObj.name. */ }
 
-											<span className='rem-log-meta'>{ /* What: Rem Log Meta Span Element. Why: The row's own type tag and relative date are grouped on the opposite side from the name. How: This wraps the type span and the relative-date span. */ }
+											<span className={ cssModObj.remLogMeta }>{ /* What: Rem Log Meta Span Element. Why: The row's own type tag and relative date are grouped on the opposite side from the name. How: This wraps the type span and the relative-date span. */ }
 
 
-												<span className={ ` rem-log-type   rem-log-type--${ remRowObj.type } ` }>{ remRowObj.type === 'once' ? 'one-time' : 'recurring' }</span>{ /* What: Rem Log Type Span Element. Why: Every row needs its own small type label. How: This renders "one-time" or "recurring" based on remRowObj.type. */ }
+												<span className={` ${ cssModObj.remLogType }   ${ remRowObj.type === 'recurring' ? cssModObj.remLogTypeRecurring : '' } `}>{ remRowObj.type === 'once' ? 'one-time' : 'recurring' }</span>{ /* What: Rem Log Type Span Element. Why: Every row needs its own small type label. How: This renders "one-time" or "recurring" based on remRowObj.type. */ }
 
-												<span className='rem-log-when'>{ relWheFun( remRowObj.completedAt ) }</span>{ /* What: Rem Log When Span Element. Why: Every row needs its own relative completion date. How: This renders relWheFun applied to remRowObj.completedAt. */ }
+												<span className={ cssModObj.remLogWhen }>{ relWheFun( remRowObj.completedAt ) }</span>{ /* What: Rem Log When Span Element. Why: Every row needs its own relative completion date. How: This renders relWheFun applied to remRowObj.completedAt. */ }
 
 
 											</span>
@@ -4156,7 +4162,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							) : ( // What: Rem Stats Empty Branch. Why: An empty summary needs its own fixed message instead of the real list. How: This renders the else branch, taken while remLogArr is empty.
 
 
-								<div className='rem-log-empty'>No completions in { ranNouStr }. Check one off on Today and it lands here.</div> // What: Rem Log Empty Div Element. Why: An empty summary needs to explain why the list is missing. How: This renders a fixed message naming the active range.
+								<div className={ cssModObj.remLogEmpty }>No completions in { ranNouStr }. Check one off on Today and it lands here.</div> // What: Rem Log Empty Div Element. Why: An empty summary needs to explain why the list is missing. How: This renders a fixed message naming the active range.
 
 
 							) }
@@ -4173,8 +4179,6 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 						<BreBarCom
-							className='stat-mk-source'
-
 							data-element-name-hook='souBreDiv'
 
 							empMesStr={ `Nothing picked in ${ ranNouStr } yet.` }
@@ -4191,23 +4195,21 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					{ scoValStr === 'all' && ( // What: Rankings Visibility Check. Why: The Most Picked/Coldest cards only make sense on the combined All view, not a single-picker scope. How: This renders both cards only while scoValStr is 'all'.
 
 
-						<div className='stat-row stat-row--2'>{ /* What: Rankings Row Div Element. Why: The two ranking cards sit side by side in their own row. How: This wraps the Most Picked and Coldest items Cards. */ }
+						<div className={` ${ cssModObj.statRow }   ${ cssModObj.statRow2 } `}>{ /* What: Rankings Row Div Element. Why: The two ranking cards sit side by side in their own row. How: This wraps the Most Picked and Coldest items Cards. */ }
 
 
 							<CarSurCom
-								className='stat-mk-mostpicked'
-
 								data-element-name-hook='mosPicDiv'
 							>{ /* What: Card Surface Component. Why: The Most Picked ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-								<div className='kicker'>Most picked</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Most picked". */ }
+								<div className={ cssModObj.kicker }>Most picked</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Most picked". */ }
 
 
 								{ topPicArr.length ? ( // What: Top List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while topPicArr has at least one entry.
 
 
-									<ul className='rank'>{ /* What: Top Ranking List Element. Why: This is the actual top-5 most-picked list. How: This maps topPicArr to one list item per item. */ }
+									<ul className={ cssModObj.rank }>{ /* What: Top Ranking List Element. Why: This is the actual top-5 most-picked list. How: This maps topPicArr to one list item per item. */ }
 
 
 										{ topPicArr.map( ( iteCurObj, iteIndNum ) => ( // What: Top Ranking Row Render. Why: Every one of the top 5 items needs its own row showing its name and count. How: This maps topPicArr to one list item, keyed by its own position since these are plain aggregate values with no stable id here.
@@ -4218,7 +4220,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<span>{ iteCurObj.namStr }</span>{ /* What: Item Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
 
-												<span className='rank-n'>{ iteCurObj.couNum }</span>{ /* What: Rank Number Span Element. Why: The row needs its own visible pick count. How: This renders iteCurObj.couNum. */ }
+												<span className={ cssModObj.rankN }>{ iteCurObj.couNum }</span>{ /* What: Rank Number Span Element. Why: The row needs its own visible pick count. How: This renders iteCurObj.couNum. */ }
 
 
 											</li>
@@ -4233,7 +4235,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
 
 
-									<div className='stat-empty'>Nothing picked in { ranNouStr } yet.</div> // What: Top Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while topPicArr is empty.
+									<div className={ cssModObj.statEmpty }>Nothing picked in { ranNouStr } yet.</div> // What: Top Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while topPicArr is empty.
 
 
 								) }
@@ -4244,19 +4246,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<CarSurCom
-								className='stat-mk-coldest'
-
 								data-element-name-hook='colIteDiv'
 							>{ /* What: Card Surface Component. Why: The Coldest items ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-								<div className='kicker'>Coldest items</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Coldest items". */ }
+								<div className={ cssModObj.kicker }>Coldest items</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Coldest items". */ }
 
 
 								{ colIteArr.length ? ( // What: Cold List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while colIteArr has at least one entry.
 
 
-									<ul className='rank rank--cold'>{ /* What: Cold Ranking List Element. Why: This is the actual bottom-5 least-picked list. How: This maps colIteArr to one list item per item. */ }
+									<ul className={` ${ cssModObj.rank }   ${ cssModObj.rankCold } `}>{ /* What: Cold Ranking List Element. Why: This is the actual bottom-5 least-picked list. How: This maps colIteArr to one list item per item. */ }
 
 
 										{ colIteArr.map( ( iteCurObj, iteIndNum ) => ( // What: Cold Ranking Row Render. Why: Every one of the bottom 5 items needs its own row showing its name and count. How: This maps colIteArr to one list item, keyed by its own position since these are plain aggregate values with no stable id here.
@@ -4267,7 +4267,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<span>{ iteCurObj.namStr }</span>{ /* What: Item Name Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
 
-												<span className='rank-n'>{ iteCurObj.couNum }</span>{ /* What: Rank Number Span Element. Why: The row needs its own visible pick count. How: This renders iteCurObj.couNum. */ }
+												<span className={ cssModObj.rankN }>{ iteCurObj.couNum }</span>{ /* What: Rank Number Span Element. Why: The row needs its own visible pick count. How: This renders iteCurObj.couNum. */ }
 
 
 											</li>
@@ -4282,7 +4282,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
 
 
-									<div className='stat-empty'>No items in this scope.</div> // What: Cold Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while colIteArr is empty.
+									<div className={ cssModObj.statEmpty }>No items in this scope.</div> // What: Cold Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while colIteArr is empty.
 
 
 								) }
@@ -4302,19 +4302,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 						<CarSurCom
-							className='stat-breakdown-card'
-
 							data-element-name-hook='breCarDiv'
 						>{ /* What: Card Surface Component. Why: The Pick breakdown shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, the active metric's own note, and the sorted list itself. Its data-element-name-hook is read by the Stats page tour and help mode's Stats catalog. */ }
 
 
-							<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
+							<div className={ cssModObj.rankHead }>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
 
 
-								<div className='kicker'>Pick breakdown</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Pick breakdown". */ }
+								<div className={ cssModObj.kicker }>Pick breakdown</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Pick breakdown". */ }
 
 								<button
-									className='rank-sort'
+									className={ cssModObj.rankSort }
 
 									type='button'
 
@@ -4338,7 +4336,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							<div
 								ref={ metRowRef }
 
-								className='bd-metrics'
+								className={ cssModObj.bdMetrics }
 
 								aria-label='Breakdown metric'
 								role='tablist'
@@ -4351,7 +4349,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<button
 										key={ metCurObj.keyStr }
 
-										className={ ` bd-metric   ${ effMetStr === metCurObj.keyStr ? 'is-on' : '' } ` }
+										className={ cssModObj.bdMetric }
+
+										data-pill-select-active={ effMetStr === metCurObj.keyStr || undefined } // What: Pill Select Active Attribute. Why: The showing metric should stand out. How: This is present only on the showing metric's pill.
 
 										type='button'
 
@@ -4376,13 +4376,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'count' && ( // What: Count Note Visibility Check. Why: The Count metric's own explanation, including its inline total/eligible toggle, only belongs while it's the active metric. How: This renders it only while effMetStr is 'count'.
 
 
-								<p className='rank-note'>{ /* What: Count Note Paragraph Element. Why: The Count metric needs its own explanation, including its denominator toggle. How: This wraps the text and the total/eligible toggle buttons. */ }
+								<p className={ cssModObj.rankNote }>{ /* What: Count Note Paragraph Element. Why: The Count metric needs its own explanation, including its denominator toggle. How: This wraps the text and the total/eligible toggle buttons. */ }
 
 
 									Total count for the number of times that a { scoPicObj.name } item was picked (rejections and skips are not included), counted in{ ' ' }
 
 									<button
-										className={ ` note-link   ${ couModStr === 'total' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ couModStr === 'total' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4391,7 +4393,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									{ ' ' }or only{ ' ' }
 									<button
-										className={ ` note-link   ${ couModStr === 'eligible' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ couModStr === 'eligible' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4409,13 +4413,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'freq' && ( // What: Frequency Note Visibility Check. Why: The Frequency metric's own explanation, including its inline calendar/eligible toggle, only belongs while it's the active metric. How: This renders it only while effMetStr is 'freq'.
 
 
-								<p className='rank-note'>{ /* What: Frequency Note Paragraph Element. Why: The Frequency metric needs its own explanation, including its unit toggle. How: This wraps the text and the calendar/eligible toggle buttons. */ }
+								<p className={ cssModObj.rankNote }>{ /* What: Frequency Note Paragraph Element. Why: The Frequency metric needs its own explanation, including its unit toggle. How: This wraps the text and the calendar/eligible toggle buttons. */ }
 
 
 									Average number of days between subsequent picks, counted in total{ ' ' }
 
 									<button
-										className={ ` note-link   ${ freModStr === 'calendar' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ freModStr === 'calendar' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4424,7 +4430,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									{ ' ' }or only{ ' ' }
 									<button
-										className={ ` note-link   ${ freModStr === 'eligible' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ freModStr === 'eligible' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4442,13 +4450,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'spent' && ( // What: Spent Note Visibility Check. Why: The Spent metric's own explanation, including its inline calendar/eligible toggle, only belongs while it's the active metric. How: This renders it only while effMetStr is 'spent'.
 
 
-								<p className='rank-note'>{ /* What: Spent Note Paragraph Element. Why: The Spent metric needs its own explanation, including its unit toggle. How: This wraps the text and the calendar/eligible toggle buttons. */ }
+								<p className={ cssModObj.rankNote }>{ /* What: Spent Note Paragraph Element. Why: The Spent metric needs its own explanation, including its unit toggle. How: This wraps the text and the calendar/eligible toggle buttons. */ }
 
 
 									Average number of days before an item&rsquo;s charge runs out, counted in total{ ' ' }
 
 									<button
-										className={ ` note-link   ${ speModStr === 'calendar' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ speModStr === 'calendar' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4457,7 +4467,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									{ ' ' }or only{ ' ' }
 									<button
-										className={ ` note-link   ${ speModStr === 'eligible' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ speModStr === 'eligible' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4475,7 +4487,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'auto' && ( // What: Auto Note Visibility Check. Why: The Auto metric needs its own one-line explanation. How: This renders it only while effMetStr is 'auto'.
 
 
-								<p className='rank-note'>Total count for the number of times that a { scoPicObj.name } item was picked using the auto generator.</p> // What: Auto Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
+								<p className={ cssModObj.rankNote }>Total count for the number of times that a { scoPicObj.name } item was picked using the auto generator.</p> // What: Auto Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
 
 
 							) }
@@ -4483,7 +4495,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'manual' && ( // What: Manual Note Visibility Check. Why: The Hand Picked metric needs its own one-line explanation. How: This renders it only while effMetStr is 'manual'.
 
 
-								<p className='rank-note'>Total count for the number of times that a { scoPicObj.name } item was picked manually using the Pick One button on the Pickers page.</p> // What: Manual Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
+								<p className={ cssModObj.rankNote }>Total count for the number of times that a { scoPicObj.name } item was picked manually using the Pick One button on the Pickers page.</p> // What: Manual Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
 
 
 							) }
@@ -4491,7 +4503,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'rejected' && ( // What: Rejected Note Visibility Check. Why: The Re-Rolled Away metric needs its own one-line explanation. How: This renders it only while effMetStr is 'rejected'.
 
 
-								<p className='rank-note'>Total count for the number of times that a { scoPicObj.name } item was rejected using the re-roll button on the Today page.</p> // What: Rejected Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
+								<p className={ cssModObj.rankNote }>Total count for the number of times that a { scoPicObj.name } item was rejected using the re-roll button on the Today page.</p> // What: Rejected Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
 
 
 							) }
@@ -4499,7 +4511,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'skipped' && ( // What: Skipped Note Visibility Check. Why: The Skipped metric needs its own one-line explanation. How: This renders it only while effMetStr is 'skipped'.
 
 
-								<p className='rank-note'>Total count for the number of times that a { scoPicObj.name } item was skipped using the skip button on the Today page.</p> // What: Skipped Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
+								<p className={ cssModObj.rankNote }>Total count for the number of times that a { scoPicObj.name } item was skipped using the skip button on the Today page.</p> // What: Skipped Note Paragraph Element. Why: This metric needs its own one-line explanation. How: This renders fixed copy naming the scoped picker.
 
 
 							) }
@@ -4507,13 +4519,15 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							{ effMetStr === 'last' && ( // What: Last Picked Note Visibility Check. Why: The Last Picked metric's own explanation, including its inline calendar/eligible toggle, only belongs while it's the active metric. How: This renders it only while effMetStr is 'last'.
 
 
-								<p className='rank-note'>{ /* What: Last Picked Note Paragraph Element. Why: The Last Picked metric needs its own explanation, including its unit toggle. How: This wraps the text and the calendar/eligible toggle buttons. */ }
+								<p className={ cssModObj.rankNote }>{ /* What: Last Picked Note Paragraph Element. Why: The Last Picked metric needs its own explanation, including its unit toggle. How: This wraps the text and the calendar/eligible toggle buttons. */ }
 
 
 									Days since each item was last picked, counted in total{ ' ' }
 
 									<button
-										className={ ` note-link   ${ lasModStr === 'calendar' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ lasModStr === 'calendar' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4522,7 +4536,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									{ ' ' }or only{ ' ' }
 									<button
-										className={ ` note-link   ${ lasModStr === 'eligible' ? 'is-on' : '' } ` }
+										className={ cssModObj.noteLink }
+
+										data-link-select-active={ lasModStr === 'eligible' || undefined } // What: Link Select Active Attribute. Why: The showing unit should stand out. How: This is present only on the showing unit's link.
 
 										type='button'
 
@@ -4544,7 +4560,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<ul
 									key={ effMetStr + sorDirStr }
 
-									className={ ` rank   rank--breakdown   bd-list-fade   ${ ( effMetStr === 'freq' || effMetStr === 'last' ) ? 'rank--freq' : '' } ` }
+									className={` ${ cssModObj.rank }   ${ cssModObj.rankBreakdown }   ${ cssModObj.bdListFade }   ${ ( effMetStr === 'freq' || effMetStr === 'last' ) ? cssModObj.rankFreq : '' } `}
 								>{ /* What: Breakdown List Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps breLisArr to one list item per item. */ }
 
 
@@ -4564,37 +4580,38 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											<li
 												key={ iteCurObj.ideStr }
 
-												className={ ` ${ iteCurObj.vacBoo ? 'is-vacation' : '' }   ${ iteCurObj.delBoo ? 'is-deleted' : '' } ` }
+												data-row-deleted-active={ iteCurObj.delBoo || undefined } // What: Row Deleted Active Attribute. Why: A deleted item's history remains but reads as historical. How: This is present only while iteCurObj.delBoo is true.
+												data-row-vacation-active={ iteCurObj.vacBoo || undefined } // What: Row Vacation Active Attribute. Why: An inactive item reads muted. How: This is present only while iteCurObj.vacBoo is true.
 											>{ /* What: Breakdown List Item Element. Why: Every item needs its own row grouping its name/tags/suffix on one side and its metric value on the other. How: This renders the rank-name block and the rank-bd-vals block as two siblings. */ }
 
 
-												<span className='rank-name'>{ /* What: Rank Name Span Element. Why: The item's own name, deleted tag, and suffix are grouped together. How: This wraps the name row and the optional suffix meta span. */ }
+												<span className={ cssModObj.rankName }>{ /* What: Rank Name Span Element. Why: The item's own name, deleted tag, and suffix are grouped together. How: This wraps the name row and the optional suffix meta span. */ }
 
 
-													<span className='rank-name-row'>{ /* What: Rank Name Row Span Element. Why: The name text and an optional "deleted" tag sit side by side. How: This wraps the name text span and the item deleted tag. */ }
+													<span className={ cssModObj.rankNameRow }>{ /* What: Rank Name Row Span Element. Why: The name text and an optional "deleted" tag sit side by side. How: This wraps the name text span and the item deleted tag. */ }
 
 
-														<span className='rank-name-text'>{ iteCurObj.namStr }</span>{ /* What: Rank Name Text Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
+														<span className={ cssModObj.rankNameText }>{ iteCurObj.namStr }</span>{ /* What: Rank Name Text Span Element. Why: The row needs its own visible item name. How: This renders iteCurObj.namStr. */ }
 
-														{ iteCurObj.delBoo && <span className='rank-tag rank-tag--deleted'>deleted</span> }{ /* What: Deleted Tag Check. Why: A since-deleted item's own row must be visibly flagged. How: This renders a small "deleted" tag only while iteCurObj.delBoo is true. */ }
+														{ iteCurObj.delBoo && <span className={` ${ cssModObj.rankTag }   ${ cssModObj.rankTagDeleted } `}>deleted</span> }{ /* What: Deleted Tag Check. Why: A since-deleted item's own row must be visibly flagged. How: This renders a small "deleted" tag only while iteCurObj.delBoo is true. */ }
 
 
 													</span>
 
-													{ sufValStr && <span className='rank-meta'>{ sufValStr }</span> }{ /* What: Suffix Meta Check. Why: Not every metric has a suffix to show under the name. How: This renders the resolved sufValStr under the name only while it's non-null. */ }
+													{ sufValStr && <span className={ cssModObj.rankMeta }>{ sufValStr }</span> }{ /* What: Suffix Meta Check. Why: Not every metric has a suffix to show under the name. How: This renders the resolved sufValStr under the name only while it's non-null. */ }
 
 
 												</span>
 
-												<span className='rank-bd-vals'>{ /* What: Rank Breakdown Values Span Element. Why: The row's own inactive/was-inactive tags and metric-specific value sit together on the opposite side from the name. How: This wraps those tags and whichever metric-specific value block matches effMetStr. */ }
+												<span className={ cssModObj.rankBdVals }>{ /* What: Rank Breakdown Values Span Element. Why: The row's own inactive/was-inactive tags and metric-specific value sit together on the opposite side from the name. How: This wraps those tags and whichever metric-specific value block matches effMetStr. */ }
 
 
-													{ !iteCurObj.delBoo && iteCurObj.vacBoo && <span className='rank-tag'>inactive</span> }{ /* What: Inactive Tag Check. Why: A live but currently-inactive item needs its own visible flag. How: This renders a small "inactive" tag only for a non-deleted item whose own vacation field is true. */ }
+													{ !iteCurObj.delBoo && iteCurObj.vacBoo && <span className={ cssModObj.rankTag }>inactive</span> }{ /* What: Inactive Tag Check. Why: A live but currently-inactive item needs its own visible flag. How: This renders a small "inactive" tag only for a non-deleted item whose own vacation field is true. */ }
 
 													{ !iteCurObj.delBoo && effMetStr === 'last' && !iteCurObj.vacBoo && iteCurObj.wasBoo && ( // What: Was Inactive Tag Check. Why: The Last Picked metric specifically wants to flag an item that went inactive after its own last pick and hasn't been picked since returning. How: This renders a small "was inactive" tag only under that exact combination of conditions.
 
 
-														<span className='rank-tag rank-tag--was'>was inactive</span> // What: Was Inactive Tag Span Element. Why: This is the actual tag text. How: This renders the fixed words "was inactive".
+														<span className={` ${ cssModObj.rankTag }   ${ cssModObj.rankTagWas } `}>was inactive</span> // What: Was Inactive Tag Span Element. Why: This is the actual tag text. How: This renders the fixed words "was inactive".
 
 
 													) }
@@ -4602,12 +4619,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 													{ effMetStr === 'count' && ( // What: Count Value Check. Why: The Count metric's own percentage/fraction display only belongs on this one metric. How: This renders it only while effMetStr is 'count', against the denominator couModStr picks.
 
 
-														<span className='rank-vals'>{ /* What: Rank Values Span Element. Why: The Count metric shows both a percentage and a raw fraction together. How: This wraps the percent span and the fraction span. */ }
+														<span className={ cssModObj.rankVals }>{ /* What: Rank Values Span Element. Why: The Count metric shows both a percentage and a raw fraction together. How: This wraps the percent span and the fraction span. */ }
 
 
-															<span className='rank-pct'>{ denValNum ? Math.round( ( iteCurObj.couNum / denValNum ) * 100 ) : 0 }%</span>{ /* What: Rank Percent Span Element. Why: The Count metric's own headline value is a percentage of the active denominator. How: This divides iteCurObj.couNum by denValNum, guarding against a zero denominator. */ }
+															<span className={ cssModObj.rankPct }>{ denValNum ? Math.round( ( iteCurObj.couNum / denValNum ) * 100 ) : 0 }%</span>{ /* What: Rank Percent Span Element. Why: The Count metric's own headline value is a percentage of the active denominator. How: This divides iteCurObj.couNum by denValNum, guarding against a zero denominator. */ }
 
-															<span className='rank-frac'>{ iteCurObj.couNum } / { denValNum }</span>{ /* What: Rank Fraction Span Element. Why: The Count metric's own supporting detail is the raw picks/denominator fraction. How: This renders iteCurObj.couNum and denValNum joined by a slash. */ }
+															<span className={ cssModObj.rankFrac }>{ iteCurObj.couNum } / { denValNum }</span>{ /* What: Rank Fraction Span Element. Why: The Count metric's own supporting detail is the raw picks/denominator fraction. How: This renders iteCurObj.couNum and denValNum joined by a slash. */ }
 
 
 														</span>
@@ -4618,13 +4635,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 													{ effMetStr === 'freq' && ( freDisObj ? ( // What: Frequency Value Check. Why: The Frequency metric's own value/placeholder display only belongs on this one metric. How: This renders it only while effMetStr is 'freq'.
 
 
-														<span className='rank-freq-val rank-bd-freq--freq'>every { freDisObj.numStr } { freDisObj.worStr }</span> // What: Frequency Span Element. Why: A gapped item shows its own average gap. How: This renders freDisObj's own number and unit word.
+														<span className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.rankBdFreqFreq } `}>every { freDisObj.numStr } { freDisObj.worStr }</span> // What: Frequency Span Element. Why: A gapped item shows its own average gap. How: This renders freDisObj's own number and unit word.
 
 
 													) : ( // What: No Frequency Branch. Why: An item picked fewer than twice has no gap. How: This renders the else branch, taken while freDisObj is null.
 
 
-														<span className='rank-freq-val rank-bd-freq--freq is-dim'>{ iteCurObj.freNum === 1 ? 'Picked Once' : 'Not Picked' }</span> // What: Frequency Placeholder Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it was picked once or never.
+														<span
+															className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.rankBdFreqFreq } `}
+
+															data-value-dim-active
+														>{ iteCurObj.freNum === 1 ? 'Picked Once' : 'Not Picked' }</span> // What: Frequency Placeholder Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it was picked once or never.
 
 
 													) ) }
@@ -4632,19 +4653,23 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 													{ effMetStr === 'spent' && ( speDisObj ? ( // What: Spent Value Check. Why: The Spent metric's own value/placeholder display only belongs on this one metric. How: This renders it only while effMetStr is 'spent'.
 
 
-														<span className='rank-freq-val rank-bd-freq--freq'>&asymp; { speDisObj.numStr } { speDisObj.worStr }</span> // What: Spent Span Element. Why: An item with a completed cycle shows its own average cycle length. How: This renders speDisObj's own number and unit word, marked approximate.
+														<span className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.rankBdFreqFreq } `}>&asymp; { speDisObj.numStr } { speDisObj.worStr }</span> // What: Spent Span Element. Why: An item with a completed cycle shows its own average cycle length. How: This renders speDisObj's own number and unit word, marked approximate.
 
 
 													) : ( // What: No Spent Branch. Why: An item with no completed cycle has nothing to average. How: This renders the else branch, taken while speDisObj is null.
 
 
-														<span className='rank-freq-val rank-bd-freq--freq is-dim'>{ /* What: Spent Placeholder Span Element. Why: The row still needs a dimmed N/A placeholder with an explanation. How: This wraps the N/A text and its info tip. */ }
+														<span
+															className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.rankBdFreqFreq } `}
+
+															data-value-dim-active
+														>{ /* What: Spent Placeholder Span Element. Why: The row still needs a dimmed N/A placeholder with an explanation. How: This wraps the N/A text and its info tip. */ }
 
 
 															N/A{ ' ' }
 
 															<InfTipCom
-																className='pie-help pie-help--sm'
+																className={ cssModObj.pieHelp }
 
 																labTexStr='No full cycle has been completed yet'
 															>?</InfTipCom>{ /* What: Info Tip Component. Why: A N/A Spent value needs a small inline explanation of why there's no cycle to measure yet. How: This renders the shared "?" bubble with its own label text. */ }
@@ -4658,13 +4683,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 													{ effMetStr === 'last' && ( iteCurObj.lasNum != null ? ( // What: Last Picked Value Check. Why: The Last Picked metric's own value/placeholder display only belongs on this one metric. How: This renders it only while effMetStr is 'last'.
 
 
-														<span className='rank-freq-val rank-bd-freq--last'>{ lasForFun( iteCurObj.lasNum, lasModStr ) }</span> // What: Last Picked Span Element. Why: A picked item shows how long ago it was last picked. How: This formats lasNum via lasForFun in the active unit.
+														<span className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.rankBdFreqLast } `}>{ lasForFun( iteCurObj.lasNum, lasModStr ) }</span> // What: Last Picked Span Element. Why: A picked item shows how long ago it was last picked. How: This formats lasNum via lasForFun in the active unit.
 
 
 													) : ( // What: Never Picked Branch. Why: A never-picked item has no last date. How: This renders the else branch, taken while lasNum is null.
 
 
-														<span className='rank-freq-val rank-bd-freq--last is-dim'>Not Picked</span> // What: Never Picked Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed words "Not Picked".
+														<span
+															className={` ${ cssModObj.rankFreqVal }   ${ cssModObj.rankBdFreqLast } `}
+
+															data-value-dim-active
+														>Not Picked</span> // What: Never Picked Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed words "Not Picked".
 
 
 													) ) }
@@ -4672,7 +4701,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 													{ ( effMetStr === 'auto' || effMetStr === 'manual' || effMetStr === 'rejected' || effMetStr === 'skipped' ) && ( // What: Plain Metric Value Check. Why: These four metrics all show the same plain raw-count shape, just reading a different field. How: This renders iteCurObj's own field named by effMetStr only while effMetStr matches one of these four.
 
 
-														<span className='rank-metric-n'>{ iteCurObj[ MET_FIE_OBJ[ effMetStr ] ] }</span> // What: Metric Number Span Element. Why: These four metrics each show one raw count. How: This reads the row field MET_FIE_OBJ maps effMetStr to.
+														<span className={ cssModObj.rankMetricN }>{ iteCurObj[ MET_FIE_OBJ[ effMetStr ] ] }</span> // What: Metric Number Span Element. Why: These four metrics each show one raw count. How: This reads the row field MET_FIE_OBJ maps effMetStr to.
 
 
 													) }
@@ -4696,7 +4725,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
 
 
-								<div className='stat-empty'>This picker has no items yet.</div> // What: Breakdown Empty State Div Element. Why: An empty picker needs to explain why the list is missing instead of showing nothing at all. How: This renders only while breLisArr is empty.
+								<div className={ cssModObj.statEmpty }>This picker has no items yet.</div> // What: Breakdown Empty State Div Element. Why: An empty picker needs to explain why the list is missing instead of showing nothing at all. How: This renders only while breLisArr is empty.
 
 
 							) }

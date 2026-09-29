@@ -57,65 +57,10 @@ body {
   font-feature-settings: 'ss01', 'cv11';
 }
 
-.kicker {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 22px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* ─── App shell ────────────────────────────────────────────────────────── */
-
-/* ─── Tab-header brand mark ──────────────────────────────────────────── */
-
-.brand-mark { color: var(--accent); display: inline-flex; }
-/* Header logos are now <button>s (link back to Today) — strip native chrome. */
-button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; background: none; padding: 0; font: inherit; cursor: pointer; }
-
-/* ─── Generic atoms ──────────────────────────────────────────────────────── */
 
 
-.section-h { display: flex; flex-direction: column; gap: 18px; }
-.section-title {
-  font-size: 30px;
-  line-height: 1.15;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  margin: 0;
-}
-.section-sub { color: var(--muted); margin: 0; max-width: 52ch; }
-.sub-tablink { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-.sub-tablink:hover { text-decoration-thickness: 2px; }
 
 /* ─── Tab: Today ─────────────────────────────────────────────────────────── */
-/* Row that holds a tab's kicker and the controls at its end. */
-.kicker-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-width: 0;
-}
-.brand-mark {
-  flex: 0 0 auto;
-  display: block;
-  /* Match the title's two-line height: font-size × line-height × 2. */
-  height: calc(34px * 1.1 * 2);
-  --brand-mark-h: calc(34px * 1.1 * 2);
-  aspect-ratio: 1 / 1;
-  border-radius: 11px;
-  text-decoration: none;
-  transition: transform 180ms ease;
-}
-.brand-mark:hover { transform: translateY(-1px); }
-.brand-mark svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
 
 /* Completion-celebration style variables (Appearance → Completion
    celebration). "Ripple" is the pure-CSS default (the card exhale, values

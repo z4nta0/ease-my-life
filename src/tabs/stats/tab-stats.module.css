@@ -1,0 +1,2511 @@
+
+
+
+/**
+ * tab-stats.module.css = Stats Tab Module
+ *
+ * @summary
+ * Styles for TabStaCom, the Stats tab: its header and scope filters (the
+ * Group and Type pill rails, the Show tab strip, and the Range pills), then
+ * the body that fades in under them, holding the single-picker identity
+ * block, the headline stat cards, the stacked breakdown bars, the heatmap
+ * with its year pager and tapped-day detail, the rank and breakdown lists
+ * with their metric pills and unit toggles, the reminder and conditional
+ * logs, and the range pager. Selected filters key off aria-selected,
+ * data-tab-select-active, and data-pill-select-active, a selected heat cell
+ * off data-cell-select-active, a unit toggle off data-link-select-active,
+ * and list rows off data-row-vacation-active, data-row-deleted-active, and
+ * data-row-done-active, with dimmed values off data-value-dim-active.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region tab--stats */
+
+.tab--stats { /* What: Stats Tab. Why: The header and body stack as the tab's page, with extra room below while a tour runs. How: This stacks them in a spaced column and reads the body's tour padding. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 28px;
+	padding-bottom : var(--tab-tour-padding, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tour-padding while a tour runs, falling back to none. */
+
+
+}
+
+
+
+/* #region stat-h */
+
+.stat-h { /* What: Page Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 18px;
+
+
+}
+
+/* #region kicker-row */
+
+.kicker-row { /* What: Kicker Row. Why: The page kicker and the help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.kicker { /* What: Kicker. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : 22px;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion kicker-row */
+
+
+
+/* #region stat-h-lead */
+
+.stat-h-lead { /* What: Header Lead. Why: The brand mark and title sit side by side. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 16px;
+
+
+}
+@media (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the viewport is 640px wide or less. */
+
+
+	.stat-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : 12px;
+
+
+	}
+
+
+}
+
+/* #region brand-mark */
+
+.brand-mark { /* What: Brand Mark. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	align-self         : center;
+	appearance         : none;
+	aspect-ratio       : auto;
+	background         : none;
+	border             : 0;
+	border-radius      : 11px;
+	color              : var(--accent);
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : 68px;
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform 180ms ease;
+	width              : 68px;
+
+
+}
+.brand-mark:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY(-1px);
+
+
+}
+@media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
+
+
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark to 56px. */
+
+
+		height : 56px;
+		width  : 56px;
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.brand-mark { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.brand-mark svg { /* What: Brand Mark Glyph. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion brand-mark */
+
+
+
+/* #region section-h */
+
+.section-h { /* What: Section Header. Why: The title sits beside the brand mark, centered against it. How: This stacks the title in a column that takes the remaining width. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : 18px;
+	justify-content : center;
+	min-width       : 0;
+
+
+}
+
+/* #region section-title */
+
+.section-title { /* What: Section Title. Why: The page's main heading leads the tab. How: This sets it large and tight. */
+
+
+	font-size      : 30px;
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	line-height    : 1.15;
+	margin         : 0;
+
+
+}
+@container app (max-width: 520px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 520px wide or less. */
+
+
+	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it to 26px. */
+
+
+		font-size : 26px;
+
+
+	}
+
+
+}
+
+.stat-title-accent { /* What: Title Accent. Why: The heading's key word reads in the accent color. How: This colors the span. */
+
+
+	color : var(--accent);
+
+
+}
+
+/* #endregion section-title */
+
+/* #endregion section-h */
+
+/* #endregion stat-h-lead */
+
+
+
+/* #region section-sub */
+
+.section-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline, set a little below the title row. How: This sets it muted with a capped line length and an 18px top margin. */
+
+
+	color     : var(--muted);
+	margin    : 18px 0 0;
+	max-width : 52ch;
+
+
+}
+
+.sub-tablink { /* What: Intro Link. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var(--accent);
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.sub-tablink:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+/* #endregion section-sub */
+
+/* #endregion stat-h */
+
+
+
+/* #region stat-body-wrap */
+
+.stat-body-wrap { /* What: Body Wrap. Why: The filters and the body below them move as one unit, so a tour can reserve room above them without moving the header. How: This stacks them in a spaced column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 28px;
+	min-width      : 0;
+
+
+}
+
+
+
+/* #region stat-filters */
+
+.stat-filters { /* What: Filters. Why: The Group, Type, Show, and Range rows form one filter block. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 14px;
+
+
+}
+
+/* #region stat-filter-row */
+
+.stat-filter-row { /* What: Filter Row. Why: Each filter's label sits above its rail. How: This stacks them in a stretched column. */
+
+
+	align-items    : stretch;
+	display        : flex;
+	flex-direction : column;
+	gap            : 7px;
+
+
+}
+
+.stat-filter-lbl { /* What: Filter Label. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
+
+
+	color          : var(--muted);
+	flex-shrink    : 0;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.06em;
+	text-transform : uppercase;
+
+
+}
+
+/* #region picker-groups */
+
+.picker-groups { /* What: Pill Rail. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fade             : 28px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	flex               : 1 1 auto;
+	gap                : 8px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	min-width          : 0;
+	overflow-x         : auto;
+	padding-bottom     : 2px;
+	scrollbar-width    : none;
+
+
+}
+.picker-groups::-webkit-scrollbar { /* What: Pill Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.picker-groups[data-scroll-start-active] { /* What: Pill Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.picker-groups[data-scroll-end-active] { /* What: Pill Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+
+/* #region picker-group-pill */
+
+.picker-group-pill { /* What: Filter Pill. Why: Each group or type is a pill that scopes the stats. How: This draws an outlined pill that fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	cursor         : pointer;
+	display        : inline-flex;
+	flex-shrink    : 0;
+	font-size      : 13px;
+	font-weight    : 500;
+	gap            : 7px;
+	letter-spacing : -0.01em;
+	padding        : 6px 13px;
+	transition     : border-color .24s ease, background .24s ease, color .24s ease;
+
+
+}
+.picker-group-pill:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var(--muted);
+	color        : var(--text);
+
+
+}
+.picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Filter Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picker-group-pill { /* What: Still Filter Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.picker-group-count { /* What: Pill Count. Why: Each pill shows how many pickers it covers. How: This sets the number in a small tinted mono capsule. */
+
+
+	background           : oklch(from var(--border) calc(l + 0.02) c h);
+	border-radius        : 999px;
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 11px;
+	font-variant-numeric : tabular-nums;
+	min-width            : 18px;
+	padding              : 1px 6px;
+	text-align           : center;
+
+
+}
+.picker-group-pill[aria-selected="true"] .picker-group-count { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
+
+
+	background : oklch(from var(--accent) l c h / 0.16);
+	color      : var(--accent);
+
+
+}
+
+/* #endregion picker-group-pill */
+
+/* #endregion picker-groups */
+
+
+
+/* #region picker-tabs */
+
+.picker-tabs { /* What: Show Tab Strip. Why: The rail scrolls sideways when its tabs outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fade             : 36px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	flex               : 1 1 auto;
+	gap                : 8px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	min-width          : 0;
+	overflow-x         : auto;
+	scroll-snap-type   : x mandatory;
+	scrollbar-width    : none;
+
+
+}
+.picker-tabs::-webkit-scrollbar { /* What: Show Tab Strip Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.picker-tabs[data-scroll-start-active] { /* What: Show Tab Strip At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.picker-tabs[data-scroll-end-active] { /* What: Show Tab Strip At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+@supports (-moz-appearance: none) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+
+
+	.picker-tabs { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds 1px of bottom padding. */
+
+
+		padding-bottom : 1px;
+
+
+	}
+
+
+}
+
+/* #region picker-tab */
+
+.picker-tab { /* What: Show Tab. Why: Everything and each picker in scope is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
+
+
+	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background        : var(--surface);
+	border            : 0.5px solid var(--border);
+	border-radius     : var(--r-md);
+	display           : flex;
+	flex-direction    : column;
+	flex-shrink       : 0;
+	gap               : 1px;
+	min-width         : 132px;
+	padding           : 12px 16px;
+	scroll-snap-align : start;
+	text-align        : left;
+	transition        : border-color .12s, background .12s;
+
+
+}
+.picker-tab:hover { /* What: Hovered Show Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.picker-tab[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Show Tab. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picker-tab { /* What: Still Show Tab. Why: The change should happen at once. How: This turns its animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+
+.picker-tab-name { /* What: Show Tab Name. Why: The scope's name leads its tab. How: This sets it in medium weight. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+
+
+}
+.picker-tab[data-tab-select-active] .picker-tab-name { /* What: Selected Show Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
+
+
+	color : var(--accent);
+
+
+}
+
+.picker-tab-mode { /* What: Show Tab Mode. Why: Each tab names its scope's kind as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion picker-tab */
+
+/* #endregion picker-tabs */
+
+/* #region stat-filter-pills */
+
+.stat-filter-pills { /* What: Range Pills. Why: The range pills wrap on a wide app and scroll sideways with faded edges on a narrow one. How: This lays them out in a wrapping flex row, with its scrollbar hidden and its edges masked. */
+
+
+	--fade             : 28px; /* What: Fade Width. Why: This is how far each edge fade reaches into the row. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	flex-wrap          : wrap;
+	gap                : 7px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	min-width          : 0;
+	overflow-x         : auto;
+	padding-bottom     : 2px;
+	scrollbar-width    : none;
+
+
+}
+.stat-filter-pills::-webkit-scrollbar { /* What: Range Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.stat-filter-pills[data-scroll-start-active] { /* What: Range Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.stat-filter-pills[data-scroll-end-active] { /* What: Range Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+@container app (max-width: 600px) { /* What: Narrow Range Pills. Why: On a narrow app the pills match the scrolling rows above them. How: This applies only when the app matches (max-width: 600px). */
+
+
+	.stat-filter-pills { /* What: Scrolling Range Pills. Why: The pills should stay on one side-scrolling line. How: This stops them wrapping. */
+
+
+		flex-wrap : nowrap;
+
+
+	}
+
+
+}
+
+.stat-pill { /* What: Range Pill. Why: Each range is a pill that sets the period every stat covers. How: This draws an outlined pill that never shrinks or wraps and fades between colors. */
+
+
+	background     : transparent;
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	cursor         : pointer;
+	flex-shrink    : 0;
+	font-size      : 13px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	padding        : 6px 13px;
+	transition     : border-color .12s, background .12s, color .12s;
+	white-space    : nowrap;
+
+
+}
+.stat-pill:hover { /* What: Hovered Range Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var(--muted);
+	color        : var(--text);
+
+
+}
+.stat-pill[data-pill-select-active] { /* What: Selected Range Pill. Why: The active range should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Range Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.stat-pill { /* What: Still Range Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion stat-filter-pills */
+
+/* #endregion stat-filter-row */
+
+/* #endregion stat-filters */
+
+
+
+/* #region stat-body */
+
+.stat-body { /* What: Stats Body. Why: The cards fade in under the filters, spaced as one column. How: This lays them out in a full-width grid with a row gap and plays the shared tab fade each time it remounts. */
+
+
+	animation             : global(tabFadeIn) .2s ease both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the Pickers tab and the picker form, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display               : grid;
+	gap                   : 28px;
+	grid-auto-rows        : auto;
+	grid-template-columns : minmax(0, 1fr);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Stats Body. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.stat-body { /* What: Still Stats Body. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region stat-picker-id */
+
+.stat-picker-id { /* What: Picker Identity. Why: A single picker's stats open with its kicker, name, mode pill, and hints, like the Pickers page header. How: This stacks them tightly and hands the mode pill its spacing, keeping it sized to its content. */
+
+
+	--pill-align-self : flex-start; /* What: Pill Align Self. Why: The column would otherwise stretch the pill to full width. How: PilTagCom reads this for its own align-self. */
+	--pill-margin-top : 4px; /* What: Pill Margin Top. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
+	display           : flex;
+	flex-direction    : column;
+	gap               : 2px;
+
+
+}
+
+.picker-title { /* What: Picker Name. Why: The picker's name heads its stats. How: This sets it large and tight. */
+
+
+	font-size      : 28px;
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	margin         : 6px 0 0;
+
+
+}
+@container app (max-width: 520px) { /* What: Narrow Picker Name. Why: A narrow app needs a smaller name. How: This applies only when the app matches (max-width: 520px). */
+
+
+	.picker-title { /* What: Smaller Picker Name. Why: The name has less room. How: This drops it to 24px. */
+
+
+		font-size : 24px;
+
+
+	}
+
+
+}
+
+.picker-hint { /* What: Picker Hint. Why: The picker's mode explains itself under its name. How: This sets muted body text with a capped line length, spaced below what precedes it. */
+
+
+	color     : var(--muted);
+	font-size : 14px;
+	margin    : 8px 0 0;
+	max-width : 56ch;
+	text-wrap : pretty;
+
+
+}
+
+/* #endregion stat-picker-id */
+
+
+
+/* #region stat-row */
+
+.stat-row { /* What: Stat Card Row. Why: The headline numbers sit side by side as a row of cards. How: This lays them out in a four-column grid. */
+
+
+	display               : grid;
+	gap                   : 10px;
+	grid-template-columns : repeat(4, 1fr);
+
+
+}
+.stat-row--2 { /* What: Two Card Row. Why: The most and least picked lists share one row. How: This drops the grid to two columns. */
+
+
+	grid-template-columns : repeat(2, 1fr);
+
+
+}
+@container app (max-width: 600px) { /* What: Narrow Stat Card Row. Why: A narrow app has room for fewer columns. How: This applies only when the app matches (max-width: 600px). */
+
+
+	.stat-row { /* What: Two Column Stat Card Row. Why: Four cards would be too cramped. How: This drops the grid to two columns. */
+
+
+		grid-template-columns : repeat(2, 1fr);
+
+
+	}
+
+	.stat-row--2 { /* What: Stacked Two Card Row. Why: The two lists need the full width. How: This stacks them in one column. */
+
+
+		grid-template-columns : 1fr;
+
+
+	}
+
+
+}
+
+/* #region stat-card */
+
+.stat-row > .stat-card { /* What: Stat Card. Why: A headline number needs a tighter card than the default, with room for its corner icon. How: This trims the card's padding and positions it for the icon, scoped to the row so it wins over the card's own padding. */
+
+
+	padding  : 14px 16px;
+	position : relative;
+
+
+}
+
+.stat-card svg { /* What: Stat Card Icon. Why: Each headline card carries a small icon in its corner. How: This pins it to the top right in the warm color. */
+
+
+	color    : var(--warm);
+	position : absolute;
+	right    : 14px;
+	top      : 14px;
+
+
+}
+
+.stat-num { /* What: Stat Number. Why: The headline number is the card's point. How: This sets it large in tight tabular mono. */
+
+
+	font-family          : var(--font-mono);
+	font-size            : 28px;
+	font-variant-numeric : tabular-nums;
+	font-weight          : 400;
+	letter-spacing       : -0.03em;
+	line-height          : 1;
+
+
+}
+
+.stat-lbl { /* What: Stat Label. Why: The number names what it counts below it. How: This sets small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11.5px;
+	letter-spacing : 0.03em;
+	margin-top     : 8px;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion stat-card */
+
+/* #endregion stat-row */
+
+
+
+/* #region bd */
+
+.bd { /* What: Breakdown. Why: A breakdown shows its proportion bar over its legend. How: This stacks them with a gap under the kicker. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 14px;
+	margin-top     : 12px;
+
+
+}
+
+/* #region bd-bar */
+
+.bd-bar { /* What: Breakdown Bar. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped 12px pill on a faint track. */
+
+
+	background    : oklch(from var(--border) calc(l + 0.02) c h);
+	border-radius : 999px;
+	display       : flex;
+	height        : 12px;
+	overflow      : hidden;
+
+
+}
+
+.bd-seg { /* What: Breakdown Segment. Why: Each segment's width is its share, and should ease when it changes. How: This fills the bar's height and eases its width. */
+
+
+	height     : 100%;
+	transition : width .3s cubic-bezier(.3,1,.5,1);
+
+
+}
+.bd-seg + .bd-seg { /* What: Following Breakdown Segment. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
+
+
+	box-shadow : -1px 0 0 var(--surface);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Breakdown Segment. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.bd-seg { /* What: Still Breakdown Segment. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion bd-bar */
+
+
+
+/* #region bd-legend */
+
+.bd-legend { /* What: Breakdown Legend. Why: The legend lists each segment under the bar. How: This stacks its rows. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 0;
+
+
+}
+
+.bd-legend li { /* What: Legend Row. Why: Each row pairs a swatch and label with the count and share, divided from the next. How: This lines them up in a row under a hairline. */
+
+
+	align-items   : center;
+	border-bottom : 0.5px solid var(--border);
+	display       : flex;
+	font-size     : 14px;
+	gap           : 10px;
+	padding       : 9px 0;
+
+
+}
+.bd-legend li:last-child { /* What: Last Legend Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+
+.bd-dot { /* What: Legend Swatch. Why: Each row shows its segment's color. How: This draws a small rounded square that never shrinks. */
+
+
+	border-radius : 3px;
+	flex-shrink   : 0;
+	height        : 10px;
+	width         : 10px;
+
+
+}
+
+.bd-label { /* What: Legend Label. Why: The segment's name reads in body color. How: This colors it. */
+
+
+	color : var(--text);
+
+
+}
+
+.bd-val { /* What: Legend Count. Why: The count sits at the row's right. How: This pushes it right in tabular mono. */
+
+
+	color                : var(--text);
+	font-family          : var(--font-mono);
+	font-size            : 13px;
+	font-variant-numeric : tabular-nums;
+	margin-left          : auto;
+
+
+}
+
+.bd-pct { /* What: Legend Share. Why: The share follows the count in a fixed column. How: This sets it 44px wide, right-aligned in small muted mono. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 12px;
+	font-variant-numeric : tabular-nums;
+	text-align           : right;
+	width                : 44px;
+
+
+}
+
+/* #endregion bd-legend */
+
+/* #endregion bd */
+
+
+
+/* #region heat-h */
+
+.heat-h { /* What: Heatmap Header. Why: The kicker and the level legend share the card's top row. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	justify-content : space-between;
+	margin-bottom   : 14px;
+
+
+}
+
+/* #region heat-legend */
+
+.heat-legend { /* What: Heat Legend. Why: A row of sample cells explains the tint levels. How: This lines them up in small uppercase muted mono. */
+
+
+	align-items    : center;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 5px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+.heat-legend .heat-cell { /* What: Legend Heat Cell. Why: The sample cells are fixed-size swatches. How: This sizes them at 13px without stretching. */
+
+
+	aspect-ratio : auto;
+	flex         : 0 0 auto;
+	height       : 13px;
+	width        : 13px;
+
+
+}
+
+/* #endregion heat-legend */
+
+/* #endregion heat-h */
+
+
+
+/* #region heat-year-nav */
+
+.heat-year-nav { /* What: Year Pager. Why: All time spanning several years pages through them. How: This centers the year between its arrows. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 18px;
+	justify-content : center;
+	margin-bottom   : 14px;
+
+
+}
+
+.heat-year { /* What: Pager Year. Why: The showing year reads between its arrows. How: This sets it in bold tabular mono at a fixed width. */
+
+
+	font-family          : var(--font-mono);
+	font-size            : 15px;
+	font-variant-numeric : tabular-nums;
+	font-weight          : 600;
+	min-width            : 4ch;
+	text-align           : center;
+
+
+}
+
+.heat-year-arrow { /* What: Year Arrow. Why: Each arrow is a small square button that tints on hover. How: This draws a 30px outlined square with its glyph centered, fading between states. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : 0.5px solid var(--border);
+	border-radius   : 8px;
+	color           : var(--text);
+	cursor          : pointer;
+	display         : flex;
+	font-size       : 18px;
+	height          : 30px;
+	justify-content : center;
+	line-height     : 1;
+	transition      : background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+	width           : 30px;
+
+
+}
+.heat-year-arrow:hover:not(:disabled) { /* What: Hovered Year Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
+
+
+	background   : oklch(from var(--accent) l c h / 0.08);
+	border-color : oklch(from var(--accent) l c h / 0.5);
+
+
+}
+.heat-year-arrow:disabled { /* What: Disabled Year Arrow. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.3;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Year Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.heat-year-arrow { /* What: Still Year Arrow. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion heat-year-nav */
+
+
+
+/* #region heat */
+
+.heat { /* What: Heatmap Grid. Why: The days fill a grid of squares. How: This lays them out in as many 32px-minimum columns as fit. */
+
+
+	display               : grid;
+	gap                   : 4px;
+	grid-template-columns : repeat(auto-fill, minmax(32px, 1fr));
+
+
+}
+.heat-slide-next { /* What: Next Year Heatmap. Why: Paging forward should read as moving right. How: This slides the grid in from the right. */
+
+
+	animation : heatSlideNextFadeIn .26s cubic-bezier(.2,.7,.3,1) both;
+
+
+}
+.heat-slide-prev { /* What: Previous Year Heatmap. Why: Paging back should read as moving left. How: This slides the grid in from the left. */
+
+
+	animation : heatSlidePrevFadeIn .26s cubic-bezier(.2,.7,.3,1) both;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Heatmap. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.heat-slide-next,
+	.heat-slide-prev { /* What: Still Heatmap. Why: The new year should simply appear. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes heatSlideNextFadeIn { /* What: Heat Slide Next Fade In Keyframes. Why: The next year enters from the right. How: This fades the grid in while sliding it 16px left into place. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX(16px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes heatSlidePrevFadeIn { /* What: Heat Slide Previous Fade In Keyframes. Why: The previous year enters from the left. How: This fades the grid in while sliding it 16px right into place. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX(-16px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+.heat-cell { /* What: Heat Cell. Why: Each day is a small square tinted by how much got done. How: This draws a rounded square on the faint track color. */
+
+
+	aspect-ratio  : 1;
+	background    : oklch(from var(--border) calc(l + 0.02) c h);
+	border-radius : 4px;
+	display       : block;
+
+
+}
+button.heat-cell { /* What: Heat Cell Button. Why: Each day in the grid is tappable, so its button chrome goes. How: This strips the native look, fills its column, and readies an outline and a hover grow. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	border             : none;
+	cursor             : pointer;
+	margin             : 0;
+	outline            : 2px solid transparent;
+	outline-offset     : 2px;
+	padding            : 0;
+	transition         : outline-color 0.12s ease, transform 0.08s ease;
+	width              : 100%;
+
+
+}
+button.heat-cell:hover { /* What: Hovered Heat Cell. Why: The cell should respond to the pointer. How: This grows it slightly. */
+
+
+	transform : scale(1.08);
+
+
+}
+button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: The tapped day should stand out. How: This outlines it in body color, keying off data-cell-select-active. */
+
+
+	outline-color : var(--text);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Heat Cell. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	button.heat-cell { /* What: Still Heat Cell. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+.heat-0 { /* What: Empty Heat Level. Why: A day with nothing done stays on the faint track color. How: This sets that color. */
+
+
+	background : oklch(from var(--border) calc(l + 0.02) c h);
+
+
+}
+.heat-1 { /* What: First Heat Level. Why: A little done reads as a pale accent. How: This lightens and desaturates the accent. */
+
+
+	background : oklch(from var(--accent) calc(l + 0.30) calc(c - 0.10) h);
+
+
+}
+.heat-2 { /* What: Second Heat Level. Why: Some done reads a step stronger. How: This lightens the accent less. */
+
+
+	background : oklch(from var(--accent) calc(l + 0.18) calc(c - 0.06) h);
+
+
+}
+.heat-3 { /* What: Third Heat Level. Why: Most done reads nearly full strength. How: This lightens the accent slightly. */
+
+
+	background : oklch(from var(--accent) calc(l + 0.08) calc(c - 0.03) h);
+
+
+}
+.heat-4 { /* What: Full Heat Level. Why: A full day reads in the accent itself. How: This sets the accent. */
+
+
+	background : var(--accent);
+
+
+}
+
+/* #endregion heat */
+
+.heat-tap-hint { /* What: Tap Hint. Why: Under the grid, a quiet hint says a day can be tapped. How: This sets small faded uppercase mono. */
+
+
+	color          : oklch(from var(--muted) l c h / 0.7);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	margin         : 14px 0 0;
+	text-transform : uppercase;
+
+
+}
+
+
+
+/* #region heat-detail */
+
+.heat-detail { /* What: Day Detail. Why: A tapped day lists what was picked under the grid. How: This sets it off with a hairline above. */
+
+
+	border-top  : 0.5px solid var(--border);
+	margin-top  : 16px;
+	padding-top : 14px;
+
+
+}
+
+/* #region heat-detail-h */
+
+.heat-detail-h { /* What: Day Detail Header. Why: The date and its count share one line. How: This spreads them across a baseline row. */
+
+
+	align-items     : baseline;
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	margin-bottom   : 8px;
+
+
+}
+
+.heat-detail-date { /* What: Day Detail Date. Why: The date leads the detail. How: This sets it bold. */
+
+
+	font-size   : 14px;
+	font-weight : 600;
+
+
+}
+
+.heat-detail-count { /* What: Day Detail Count. Why: The count reads as quiet metadata. How: This sets small muted tabular mono. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 12px;
+	font-variant-numeric : tabular-nums;
+
+
+}
+
+/* #endregion heat-detail-h */
+
+
+
+/* #region heat-detail-list */
+
+.heat-detail-list { /* What: Day Detail List. Why: The day's items stack as rows. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+
+
+}
+
+.heat-detail-list li { /* What: Day Detail Row. Why: Each item pairs its name with its done mark, divided from the next. How: This spreads them across a baseline row under a faint hairline. */
+
+
+	align-items     : baseline;
+	border-bottom   : 0.5px solid oklch(from var(--border) l c h / 0.55);
+	display         : flex;
+	font-size       : 14px;
+	gap             : 12px;
+	justify-content : space-between;
+	padding         : 7px 0;
+
+
+}
+.heat-detail-list li:last-child { /* What: Last Day Detail Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+
+.heat-detail-name { /* What: Day Detail Name. Why: An item not done reads muted. How: This mutes it. */
+
+
+	color : var(--muted);
+
+
+}
+.heat-detail-list li[data-row-done-active] .heat-detail-name { /* What: Done Day Detail Name. Why: A done item reads in body color. How: This darkens it, keying off data-row-done-active. */
+
+
+	color : var(--text);
+
+
+}
+
+.heat-detail-mark { /* What: Day Detail Mark. Why: Each item ends in a check or a dash. How: This sets it in faded mono. */
+
+
+	color       : oklch(from var(--muted) l c h / 0.6);
+	font-family : var(--font-mono);
+	font-size   : 13px;
+
+
+}
+.heat-detail-list li[data-row-done-active] .heat-detail-mark { /* What: Done Day Detail Mark. Why: A done item's check reads in the accent. How: This colors it, keying off data-row-done-active. */
+
+
+	color : var(--accent);
+
+
+}
+
+/* #endregion heat-detail-list */
+
+.heat-detail-empty { /* What: Day Detail Empty. Why: A day with nothing says so quietly. How: This sets small muted text. */
+
+
+	color     : var(--muted);
+	font-size : 13px;
+	margin    : 0;
+
+
+}
+
+/* #endregion heat-detail */
+
+
+
+/* #region rem-stats-head */
+
+.rem-stats-head { /* What: Summary Header. Why: A summary card's kicker and its headline stats share the top, wrapping when long. How: This spreads them across a wrapping baseline row. */
+
+
+	align-items     : baseline;
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : 16px;
+	justify-content : space-between;
+	margin-bottom   : 12px;
+
+
+}
+
+/* #region rem-stats-nums */
+
+.rem-stats-nums { /* What: Summary Stats. Why: The headline stats sit side by side. How: This lines them up in a spaced row. */
+
+
+	display : flex;
+	gap     : 18px;
+
+
+}
+.cnd-sum-card .rem-stats-head .rem-stats-nums { /* What: Conditional Summary Stats. Why: The Conditionals card's stats would fit beside its title but should break like the Reminders card's for consistency. How: This forces them onto their own line. */
+
+
+	flex-basis : 100%;
+
+
+}
+
+.rem-stat { /* What: Summary Stat. Why: Each stat is a number with a label. How: This sets the label small and muted. */
+
+
+	color     : var(--muted);
+	font-size : 13px;
+
+
+}
+.rem-stat strong { /* What: Summary Stat Number. Why: The number leads its label. How: This sets it large, bold, and tabular in body color. */
+
+
+	color                : var(--text);
+	font-family          : var(--font-mono);
+	font-size            : 18px;
+	font-variant-numeric : tabular-nums;
+	font-weight          : 600;
+	margin-right         : 4px;
+
+
+}
+
+/* #endregion rem-stats-nums */
+
+/* #endregion rem-stats-head */
+
+
+
+/* #region cnd-sum-list */
+
+.cnd-sum-list { /* What: Conditional Summary List. Why: Each conditional's triggers stack as ruled rows. How: This clears the list styling and stacks the rows. */
+
+
+	display        : flex;
+	flex-direction : column;
+	list-style     : none;
+	margin         : 4px 0 0;
+	padding        : 0;
+
+
+}
+.cnd-sum-list li { /* What: Conditional Summary Row. Why: Each conditional pairs its name with its mode and numbers, divided from the one above. How: This spreads them across a centered row over a hairline. */
+
+
+	align-items     : center;
+	border-top      : 1px solid var(--border);
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	padding         : 9px 0;
+
+
+}
+.cnd-sum-list li:first-child { /* What: First Conditional Summary Row. Why: The first row needs no divider. How: This drops its border. */
+
+
+	border-top : 0;
+
+
+}
+
+.cnd-sum-name { /* What: Conditional Summary Name. Why: The name and its tag share the row's left. How: This lines them up in a centered row that can shrink. */
+
+
+	align-items : center;
+	display     : flex;
+	font-size   : 14px;
+	gap         : 8px;
+	min-width   : 0;
+
+
+}
+
+/* #region cnd-sum-meta */
+
+.cnd-sum-meta { /* What: Conditional Summary Meta. Why: The mode pill, fraction, and rate sit together at the row's end. How: This lines them up on a baseline row that never shrinks. */
+
+
+	align-items : baseline;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 12px;
+
+
+}
+
+.cnd-sum-meta .rem-log-type { /* What: Conditional Summary Mode Pill. Why: Every mode pill should be the same size. How: This fixes it at 82px with its label centered. */
+
+
+	text-align : center;
+	width      : 82px;
+
+
+}
+
+.cnd-sum-frac { /* What: Conditional Summary Fraction. Why: A wider fraction would shift this row's pill out of line with its siblings. How: This fixes it at 66px, right-aligned in small muted tabular mono. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 12px;
+	font-variant-numeric : tabular-nums;
+	text-align           : right;
+	width                : 66px;
+
+
+}
+
+.cnd-sum-rate { /* What: Conditional Summary Rate. Why: The fire rate is the row's main number. How: This sets it bold in the accent, right-aligned at a minimum width. */
+
+
+	color                : var(--accent);
+	font-family          : var(--font-mono);
+	font-size            : 14px;
+	font-variant-numeric : tabular-nums;
+	font-weight          : 600;
+	min-width            : 40px;
+	text-align           : right;
+
+
+}
+
+/* #endregion cnd-sum-meta */
+
+/* #endregion cnd-sum-list */
+
+
+
+/* #region rank-head */
+
+.rank-head { /* What: List Header. Why: A breakdown's kicker and its sort toggle share the top row. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+
+
+}
+
+.rank-head .kicker { /* What: List Header Kicker. Why: A long title should wrap rather than squeeze the sort toggle. How: This lets the kicker shrink. */
+
+
+	min-width : 0;
+
+
+}
+
+.rank-sort { /* What: Sort Toggle. Why: The list's sort direction flips from a small pill beside its title. How: This draws an outlined mono pill that never shrinks or wraps and fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	cursor         : pointer;
+	display        : inline-flex;
+	flex           : 0 0 auto;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 5px;
+	letter-spacing : 0.04em;
+	padding        : 5px 10px;
+	text-transform : uppercase;
+	transition     : border-color .12s, color .12s;
+	white-space    : nowrap;
+
+
+}
+.rank-sort:hover { /* What: Hovered Sort Toggle. Why: The toggle should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var(--muted);
+	color        : var(--text);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Sort Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rank-sort { /* What: Still Sort Toggle. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rank-head */
+
+
+
+/* #region bd-metrics */
+
+.bd-metrics { /* What: Metric Pills. Why: The breakdown's metrics sit in one side-scrolling row with faded edges. How: This lays them out in an unwrapped scrolling flex row, with its scrollbar hidden and its edges masked. */
+
+
+	--fade             : 28px; /* What: Fade Width. Why: This is how far each edge fade reaches into the row. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	flex-wrap          : nowrap;
+	gap                : 6px;
+	margin             : 12px 0 4px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	min-width          : 0;
+	overflow-x         : auto;
+	padding-bottom     : 2px;
+	scrollbar-width    : none;
+
+
+}
+.bd-metrics::-webkit-scrollbar { /* What: Metric Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.bd-metrics[data-scroll-start-active] { /* What: Metric Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.bd-metrics[data-scroll-end-active] { /* What: Metric Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+
+.bd-metric { /* What: Metric Pill. Why: Each metric is a pill that switches the list below. How: This draws a small outlined pill that never shrinks and fades between colors. */
+
+
+	background     : transparent;
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	cursor         : pointer;
+	flex           : 0 0 auto;
+	font-size      : 12.5px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	padding        : 5px 11px;
+	transition     : border-color .12s, background .12s, color .12s;
+
+
+}
+.bd-metric:hover { /* What: Hovered Metric Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var(--muted);
+	color        : var(--text);
+
+
+}
+.bd-metric[data-pill-select-active] { /* What: Selected Metric Pill. Why: The showing metric should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Metric Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.bd-metric { /* What: Still Metric Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion bd-metrics */
+
+
+
+.rank-note { /* What: List Note. Why: A note explains what the showing metric counts. How: This sets small muted text under the pills. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.45;
+	margin      : 12px 0 0;
+	text-wrap   : pretty;
+
+
+}
+
+.note-link { /* What: Unit Toggle. Why: A note switches the metric's unit with inline links. How: This strips the button chrome down to dotted underlined text that fades between colors. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var(--muted);
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-decoration-style : dotted;
+	text-underline-offset : 2px;
+	transition            : color .12s;
+
+
+}
+.note-link:hover { /* What: Hovered Unit Toggle. Why: The link should respond to the pointer. How: This darkens it. */
+
+
+	color : var(--text);
+
+
+}
+.note-link[data-link-select-active] { /* What: Selected Unit Toggle. Why: The showing unit should stand out. How: This sets it bold in the accent with a solid underline, keying off data-link-select-active. */
+
+
+	color                 : var(--accent);
+	font-weight           : 600;
+	text-decoration-style : solid;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Unit Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.note-link { /* What: Still Unit Toggle. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.bd-list-fade { /* What: Refreshing List. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
+
+
+	animation : global(setSubFade) .3s ease, bdListRise .3s cubic-bezier(.2,.7,.3,1); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every live explanation line, so they stay in the global sheet, while bdListRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Refreshing List. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.bd-list-fade { /* What: Still Refreshing List. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes bdListRise { /* What: Breakdown List Rise Keyframes. Why: The refreshed list settles up into place. How: This moves it up 5px. */
+
+
+	from {
+
+
+		transform : translateY(5px);
+
+
+	}
+
+	to {
+
+
+		transform : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region rank */
+
+.rank { /* What: Rank List. Why: A list of items stacks as ruled rows. How: This stacks them with a little room above. */
+
+
+	display        : flex;
+	flex-direction : column;
+	margin-top     : 8px;
+
+
+}
+.rank--freq { /* What: Unit Rank List. Why: A list under a unit note needs more room above. How: This spaces it 14px down. */
+
+
+	margin-top : 14px;
+
+
+}
+.rank--breakdown { /* What: Breakdown Rank List. Why: A breakdown list sits under its note and pills. How: This spaces it 14px down. */
+
+
+	margin-top : 14px;
+
+
+}
+.rank li { /* What: Rank Row. Why: Each item pairs its name with its value, divided from the next. How: This spreads them across a baseline row under a hairline. */
+
+
+	align-items     : baseline;
+	border-bottom   : 0.5px solid var(--border);
+	display         : flex;
+	font-size       : 14px;
+	gap             : 12px;
+	justify-content : space-between;
+	padding         : 13px 0;
+
+
+}
+.rank li:last-child { /* What: Last Rank Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+.rank--breakdown li,
+.rank--freq li { /* What: Breakdown Rank Row. Why: A breakdown row's tags and pills should center against its name block. How: This centers the row. */
+
+
+	align-items : center;
+
+
+}
+
+.rank-n { /* What: Rank Count. Why: Each item's count reads as quiet metadata. How: This sets small muted tabular mono. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 12px;
+	font-variant-numeric : tabular-nums;
+
+
+}
+.rank--cold .rank-n { /* What: Cold Rank Count. Why: The coldest items' counts read fainter still. How: This fades the muted color. */
+
+
+	color : oklch(from var(--muted) l c h / 0.7);
+
+
+}
+
+.rank--breakdown .rank-name,
+.rank--freq .rank-name { /* What: Breakdown Item Name. Why: A breakdown row stacks its name line over its meta. How: This stacks them in a shrinkable column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 3px;
+	min-width      : 0;
+
+
+}
+.rank--breakdown li[data-row-vacation-active] .rank-name,
+.rank--freq li[data-row-vacation-active] .rank-name { /* What: Inactive Item Name. Why: An inactive item reads muted. How: This mutes its name, keying off data-row-vacation-active. */
+
+
+	color : var(--muted);
+
+
+}
+.rank--breakdown .rank-name-row { /* What: Item Name Line. Why: The name and its tag share a line. How: This lines them up on a baseline row that can shrink. */
+
+
+	align-items : baseline;
+	display     : flex;
+	gap         : 8px;
+	min-width   : 0;
+
+
+}
+.rank--breakdown li[data-row-deleted-active] .rank-name-text,
+.rank--freq li[data-row-deleted-active] .rank-name-text { /* What: Deleted Item Name. Why: A deleted item's history remains but should read as historical. How: This mutes and strikes its name, keying off data-row-deleted-active. */
+
+
+	color                 : var(--muted);
+	text-decoration       : line-through;
+	text-decoration-color : oklch(from var(--muted) l c h / 0.5);
+
+
+}
+
+.rank-meta { /* What: Item Meta. Why: A target or suffix reads as quiet mono under the name. How: This sets small faded mono. */
+
+
+	color          : oklch(from var(--muted) l c h / 0.85);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.02em;
+
+
+}
+
+.rank-tag { /* What: Item Tag. Why: A status like inactive reads as a small outlined chip. How: This draws a small uppercase mono pill that never shrinks. */
+
+
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	flex           : 0 0 auto;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	padding        : 1px 6px;
+	text-transform : uppercase;
+
+
+}
+.rank-tag--was { /* What: Was Inactive Tag. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : oklch(from var(--accent) l c h / 0.4);
+	color        : var(--accent);
+
+
+}
+.rank-tag--deleted { /* What: Deleted Tag. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
+
+
+	background   : oklch(0.55 0.16 25 / 0.08);
+	border-color : oklch(0.55 0.16 25 / 0.4);
+	color        : oklch(0.55 0.16 25);
+
+
+}
+
+.rank-vals { /* What: Item Values. Why: The share and fraction sit together at the row's end. How: This lines them up on a baseline row that never shrinks. */
+
+
+	align-items : baseline;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 10px;
+
+
+}
+
+.rank-bd-vals { /* What: Item Breakdown Values. Why: The status tag sits with the value on the right, rather than crowding the name. How: This lines them up in a centered row that never shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 10px;
+
+
+}
+.rank-bd-vals .rank-frac { /* What: Item Breakdown Fraction. Why: A wider fraction would shift this row's share out of line with its siblings. How: This fixes it at 66px. */
+
+
+	width : 66px;
+
+
+}
+.rank-bd-vals .rank-metric-n { /* What: Item Breakdown Number. Why: Every row's number should line up. How: This fixes it at 40px. */
+
+
+	width : 40px;
+
+
+}
+
+.rank-pct { /* What: Item Share. Why: The share reads as the row's main number. How: This sets tabular mono right-aligned at a minimum width. */
+
+
+	color                : var(--text);
+	font-family          : var(--font-mono);
+	font-size            : 14px;
+	font-variant-numeric : tabular-nums;
+	min-width            : 38px;
+	text-align           : right;
+
+
+}
+
+.rank-frac { /* What: Item Fraction. Why: The raw count reads as quieter detail beside the share. How: This sets small muted tabular mono right-aligned at a minimum width. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 11.5px;
+	font-variant-numeric : tabular-nums;
+	min-width            : 52px;
+	text-align           : right;
+
+
+}
+
+.rank-metric-n { /* What: Metric Number. Why: A count metric shows one number per row. How: This sets tabular mono right-aligned, never shrinking. */
+
+
+	color                : var(--text);
+	flex                 : 0 0 auto;
+	font-family          : var(--font-mono);
+	font-size            : 14px;
+	font-variant-numeric : tabular-nums;
+	min-width            : 32px;
+	text-align           : right;
+
+
+}
+
+.rank-freq-val { /* What: Unit Value. Why: A frequency or last-picked value reads as mono at the row's end. How: This sets tabular mono that never shrinks or wraps. */
+
+
+	color                : var(--text);
+	flex                 : 0 0 auto;
+	font-family          : var(--font-mono);
+	font-size            : 13px;
+	font-variant-numeric : tabular-nums;
+	white-space          : nowrap;
+
+
+}
+.rank-freq-val[data-value-dim-active] { /* What: Placeholder Unit Value. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
+
+
+	color : oklch(from var(--muted) l c h / 0.7);
+
+
+}
+.rank-bd-freq--freq { /* What: Frequency Value. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at 112px, right-aligned. */
+
+
+	text-align : right;
+	width      : 112px;
+
+
+}
+.rank-bd-freq--last { /* What: Last Picked Value. Why: Values like N days ago and Yesterday differ in width, which would shift the tag before them. How: This fixes it at 112px, right-aligned. */
+
+
+	text-align : right;
+	width      : 112px;
+
+
+}
+.cnd-bd-freq--interval { /* What: Conditional Interval Value. Why: Values like every 100 days would shift the pill before them. How: This fixes it at 112px, right-aligned. */
+
+
+	text-align : right;
+	width      : 112px;
+
+
+}
+.cnd-bd-freq--last { /* What: Conditional Last Fired Value. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at 50px, right-aligned. */
+
+
+	text-align : right;
+	width      : 50px;
+
+
+}
+
+/* #region cnd-bd-vals */
+
+.cnd-bd-vals { /* What: Conditional Breakdown Values. Why: The mode pill sits with the row's value on the right. How: This lines them up in a centered row that never shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 10px;
+
+
+}
+
+.cnd-bd-vals .rem-log-type { /* What: Conditional Breakdown Mode Pill. Why: Every row's pill should be the same size. How: This fixes it at 82px with its label centered. */
+
+
+	flex       : 0 0 auto;
+	text-align : center;
+	width      : 82px;
+
+
+}
+.cnd-bd-vals .rank-frac { /* What: Conditional Breakdown Fraction. Why: A wider fraction would shift this row's pill out of line. How: This fixes it at 66px. */
+
+
+	width : 66px;
+
+
+}
+.cnd-bd-vals .rank-metric-n { /* What: Conditional Breakdown Number. Why: Every row's number should line up. How: This fixes it at 40px. */
+
+
+	width : 40px;
+
+
+}
+
+/* #endregion cnd-bd-vals */
+
+/* #endregion rank */
+
+
+
+/* #region rem-log */
+
+.rem-log { /* What: Reminder Log. Why: Completed or broken-down reminders stack as ruled rows. How: This clears the list styling. */
+
+
+	list-style : none;
+	margin     : 0;
+	padding    : 0;
+
+
+}
+.rem-log li { /* What: Reminder Log Row. Why: Each reminder pairs its name with its type and date, divided from the next. How: This spreads them across a centered row under a hairline. */
+
+
+	align-items     : center;
+	border-bottom   : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	padding         : 13px 0;
+
+
+}
+.rem-log li:last-child { /* What: Last Reminder Log Row. Why: The last row needs no divider. How: This drops its border. */
+
+
+	border-bottom : 0;
+
+
+}
+
+.rem-log-name { /* What: Reminder Log Name. Why: The reminder's name leads its row and wraps rather than truncating. How: This sets it slightly heavy and lets it shrink. */
+
+
+	font-size   : 14px;
+	font-weight : 450;
+	min-width   : 0;
+
+
+}
+
+/* #region rem-log-meta */
+
+.rem-log-meta { /* What: Reminder Log Meta. Why: The type pill and the date sit together at the row's end. How: This lines them up in a centered row that never shrinks. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	flex        : 0 0 auto;
+	gap         : 10px;
+
+
+}
+
+.rem-log-meta .rem-log-type { /* What: Reminder Log Type Pill. Why: One-time and recurring pills should be the same size. How: This fixes it at 82px with its label centered. */
+
+
+	text-align : center;
+	width      : 82px;
+
+
+}
+
+.rem-log-when { /* What: Reminder Log Date. Why: A one-digit day is narrower than a two-digit one, which would shift the pill before it. How: This fixes it at 76px, right-aligned in small muted mono on one line. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.02em;
+	text-align     : right;
+	white-space    : nowrap;
+	width          : 76px;
+
+
+}
+
+/* #endregion rem-log-meta */
+
+
+
+.rem-log-type { /* What: Type Pill. Why: A reminder's kind or a conditional's mode reads as a small outlined chip. How: This draws a small uppercase mono pill. */
+
+
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.05em;
+	padding        : 2px 7px;
+	text-transform : uppercase;
+
+
+}
+.rem-log-type--recurring { /* What: Recurring Type Pill. Why: A recurring reminder reads in the accent. How: This tints the chip in the accent. */
+
+
+	background   : oklch(from var(--accent-soft) l c h / 0.5);
+	border-color : oklch(from var(--accent) l c h / 0.4);
+	color        : var(--accent);
+
+
+}
+
+/* #endregion rem-log */
+
+
+
+/* #region pager */
+
+.pager { /* What: Range Pager. Why: A long list pages through its rows from a control at its foot. How: This pushes the range and arrows right over a hairline. */
+
+
+	align-items     : center;
+	border-top      : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 14px;
+	justify-content : flex-end;
+	margin-top      : 16px;
+	padding-top     : 14px;
+
+
+}
+
+.pager-range { /* What: Pager Range. Why: The showing rows read as quiet metadata. How: This sets small muted tabular mono. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 12px;
+	font-variant-numeric : tabular-nums;
+	letter-spacing       : 0.02em;
+
+
+}
+.pager-of { /* What: Pager Of. Why: The joining word reads quieter than the numbers. How: This fades it. */
+
+
+	opacity : 0.6;
+
+
+}
+
+/* #region pager-arrows */
+
+.pager-arrows { /* What: Pager Arrows. Why: The previous and next arrows sit together. How: This lines them up in a row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 6px;
+
+
+}
+
+.pager-arrow { /* What: Pager Arrow. Why: Each arrow is a small square button that tints on hover. How: This draws a 28px outlined square with its glyph centered, fading between states. */
+
+
+	align-items     : center;
+	background      : transparent;
+	border          : 0.5px solid var(--border);
+	border-radius   : 8px;
+	color           : var(--text);
+	cursor          : pointer;
+	display         : flex;
+	font-size       : 17px;
+	height          : 28px;
+	justify-content : center;
+	line-height     : 1;
+	transition      : background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+	width           : 28px;
+
+
+}
+.pager-arrow:hover:not(:disabled) { /* What: Hovered Pager Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
+
+
+	background   : oklch(from var(--accent) l c h / 0.08);
+	border-color : oklch(from var(--accent) l c h / 0.5);
+
+
+}
+.pager-arrow:disabled { /* What: Disabled Pager Arrow. Why: An arrow with nowhere to go should look it. How: This fades it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.3;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pager Arrow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pager-arrow { /* What: Still Pager Arrow. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion pager-arrows */
+
+/* #endregion pager */
+
+.stat-empty { /* What: Empty Stat. Why: A card with nothing to show says so quietly. How: This sets small muted text with a little padding. */
+
+
+	color     : var(--muted);
+	font-size : 13.5px;
+	padding   : 14px 2px;
+
+
+}
+
+.rem-log-empty { /* What: Empty Log. Why: A log with nothing in range says so quietly. How: This sets small muted text with a little padding. */
+
+
+	color     : var(--muted);
+	font-size : 13px;
+	padding   : 6px 0;
+
+
+}
+
+.pie-help { /* What: Help Bubble. Why: A small circled "?" beside an N/A value explains it without competing with it. How: This draws a small muted round badge that brightens on hover. */
+
+
+	align-items     : center;
+	border          : 1px solid var(--muted);
+	border-radius   : 50%;
+	color           : var(--muted);
+	cursor          : help;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : 11px;
+	font-weight     : 700;
+	height          : 14.5px;
+	justify-content : center;
+	line-height     : 1;
+	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	width           : 14.5px;
+
+
+}
+.pie-help:hover { /* What: Hovered Help Bubble. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Help Bubble. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pie-help { /* What: Still Help Bubble. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion stat-body */
+
+/* #endregion stat-body-wrap */
+
+/* #endregion tab--stats */
+
+
