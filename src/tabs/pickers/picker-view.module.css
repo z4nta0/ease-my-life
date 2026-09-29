@@ -983,6 +983,15 @@
 
 
 }
+.pool-send.ob-tour-pulse { /* What: Tour Target Pool Send Button. Why: App Features' manual-pick tour points at the Send to Today button inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
+
+
+	animation      : global(obTourFade) 1.8s ease-in-out infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	outline        : 2px solid var(--accent);
+	outline-offset : -2px;
+
+
+}
 @media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Send Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
@@ -990,6 +999,14 @@
 
 
 		transition : none;
+
+
+	}
+	.pool-send.ob-tour-pulse { /* What: Still Tour Target Pool Send Button. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
+
+
+		animation     : none;
+		outline-color : var(--accent);
 
 
 	}

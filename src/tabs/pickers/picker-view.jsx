@@ -1589,7 +1589,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 												<button
-													className={` ${ cssModObj.poolSend }   ${ higSenBoo ? 'ob-tour-pulse' : '' } `}
+													className={` ${ cssModObj.poolSend }   ${ higSenBoo ? cssModObj.obTourPulse : '' } `}
 
 													disabled={ disIteBoo }
 													type='button'

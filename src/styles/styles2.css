@@ -1051,21 +1051,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 /* ── Onboarding ──────────────────────────────────────────────────────────
    Welcome modal, get-started checklist, first-picker CTA, and the spotlight
    tour (dim + cut-out + coach card). Uses app tokens throughout. */
-/* Pulses a specific REAL element inside a requireClick step's bigger
-   spotlight box (Edit Item tour, onboarding/app-features.jsx). Started as
-   an .ob-generate-pulse-style expanding ring, but several of these targets
-   (a picker header, each item row) sit packed edge-to-edge inside a card
-   with siblings on every side — a ring needs room to expand into, which a
-   cramped list doesn't have, and it either clipped against the card's own
-   edge or overlapped the next row's own ring. Fading a plain outline in
-   and out instead needs no expansion room at all, so it reads cleanly no
-   matter how many of these are on screen at once or how tightly packed
-   they are. Draws its own outline by default (unlike the old version,
-   which had to be paired with .is-tour-target for an outline to exist at
-   all), so it's used alone on most targets. The step itself suppresses
-   .ob-spot's own default pulse via a pulseSel that never matches (see
-   that file's own comment), so only this fade shows. */
-.ob-tour-pulse{outline:2px solid var(--accent);outline-offset:-2px;animation:obTourFade 1.8s ease-in-out infinite}
 @keyframes obTourFade{
   0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
   50%{outline-color:oklch(from var(--accent) l c h/0.2)}
@@ -1075,11 +1060,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   50%{border-color:oklch(from var(--accent) l c h/0.2)}
 }
 @keyframes obFade{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){
-  /* Frozen mid-fade would read as a paused animation rather than a
-     deliberate static state — pin it to full color instead. */
-  .ob-tour-pulse{animation:none;outline-color:var(--accent)}
-}
 /* While a tour runs, every tab gets room to scroll a bottom-anchored target
    clear of the tab bar; each tab's root reads the property (see CLAUDE.md's
    body-level state rule), with this plain .tab read covering the tabs still
