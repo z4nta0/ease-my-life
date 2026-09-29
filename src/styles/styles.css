@@ -31,6 +31,80 @@
 :root { /* What: Design Tokens. Why: Every module reads its colors, fonts, radii, and celebration timing from one place. How: This defines each token's default value, grouped into sections. */
 
 
+    /* #region Core Design Numbers */
+
+	/**
+	 * styles.css = Core Design Numbers
+	 *
+	 * @summary
+	 * The core design number, also known as the "plastic ratio" (also commonly
+     * denoted as ρ (rho) and sometimes called the radiant number or the
+     * fundamental ratio), is used as a base scaling factor throughout the
+     * design system. The adjective plastic does not refer to the artificial
+     * material, but to the formative and sculptural qualities of this ratio,
+     * as in plastic arts meaning something that can be given a three
+     * dimensional shape. This is because the characteristic ratios of the
+     * number, ⁠3/4⁠ and ⁠1/7⁠, relate to the limits of human perception in
+     * relating one physical size to another. It is considered the three
+     * dimensional equivalent of the ubiquitous golden ratio. I previously used
+     * said golden ratio as a base scaling factor, but found that, because of
+     * its larger number, it did not have enough nuance for the many values
+     * that a design system needs. i.e. numbers scaled up or down too quickly.
+     *
+     * I know a lot of what I just said seems abstract, or even silly, but a
+     * core number is required for a design system. So it might as well be
+     * based on something perceptually meaningful, or even just fun.
+     *
+     * Plastic Ratio = <https://en.wikipedia.org/wiki/Plastic_ratio>
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	*/
+
+    --cor-des-num : calc( ( pow( 108 + 12 * sqrt( 69 ), 1 / 3 ) + pow( 108 - 12 * sqrt( 69 ), 1 / 3 ) ) / 6 ); /* What: Core Design Number ~= 1.325. Why: This is the "plastic ratio" and it is the core design number derived from the formula. How: Modules read it as a base scaling factor. */
+
+    --cdn-pow-001 : calc( pow( var( --cor-des-num ), 1 ) );  /* What: Core-Design-Number to the Power of 1 ~= 1.325. Why: Sometimes the first power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-002 : calc( pow( var( --cor-des-num ), 2 ) );  /* What: Core-Design-Number to the Power of 2 ~= 1.755. Why: Sometimes the square of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-003 : calc( pow( var( --cor-des-num ), 3 ) );  /* What: Core-Design-Number to the Power of 3 ~= 2.325. Why: Sometimes the cube of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-004 : calc( pow( var( --cor-des-num ), 4 ) );  /* What: Core-Design-Number to the Power of 4 ~= 3.080. Why: Sometimes the fourth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-005 : calc( pow( var( --cor-des-num ), 5 ) );  /* What: Core-Design-Number to the Power of 5 ~= 4.080. Why: Sometimes the fifth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-006 : calc( pow( var( --cor-des-num ), 6 ) );  /* What: Core-Design-Number to the Power of 6 ~= 5.404. Why: Sometimes the sixth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-007 : calc( pow( var( --cor-des-num ), 7 ) );  /* What: Core-Design-Number to the Power of 7 ~= 7.159. Why: Sometimes the seventh power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-008 : calc( pow( var( --cor-des-num ), 8 ) );  /* What: Core-Design-Number to the Power of 8 ~= 9.484. Why: Sometimes the eighth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-009 : calc( pow( var( --cor-des-num ), 9 ) );  /* What: Core-Design-Number to the Power of 9 ~= 12.564. Why: Sometimes the ninth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-010 : calc( pow( var( --cor-des-num ), 10 ) ); /* What: Core-Design-Number to the Power of 10 ~= 16.643. Why: Sometimes the tenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-011 : calc( pow( var( --cor-des-num ), 11 ) ); /* What: Core-Design-Number to the Power of 11 ~= 22.047. Why: Sometimes the eleventh power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-012 : calc( pow( var( --cor-des-num ), 12 ) ); /* What: Core-Design-Number to the Power of 12 ~= 29.207. Why: Sometimes the twelfth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-013 : calc( pow( var( --cor-des-num ), 13 ) ); /* What: Core-Design-Number to the Power of 13 ~= 38.691. Why: Sometimes the thirteenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-014 : calc( pow( var( --cor-des-num ), 14 ) ); /* What: Core-Design-Number to the Power of 14 ~= 51.254. Why: Sometimes the fourteenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-015 : calc( pow( var( --cor-des-num ), 15 ) ); /* What: Core-Design-Number to the Power of 15 ~= 67.897. Why: Sometimes the fifteenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-016 : calc( pow( var( --cor-des-num ), 16 ) ); /* What: Core-Design-Number to the Power of 16 ~= 89.945. Why: Sometimes the sixteenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-017 : calc( pow( var( --cor-des-num ), 17 ) ); /* What: Core-Design-Number to the Power of 17 ~= 119.151. Why: Sometimes the seventeenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-018 : calc( pow( var( --cor-des-num ), 18 ) ); /* What: Core-Design-Number to the Power of 18 ~= 157.842. Why: Sometimes the eighteenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-019 : calc( pow( var( --cor-des-num ), 19 ) ); /* What: Core-Design-Number to the Power of 19 ~= 209.096. Why: Sometimes the nineteenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-020 : calc( pow( var( --cor-des-num ), 20 ) ); /* What: Core-Design-Number to the Power of 20 ~= 276.993. Why: Sometimes the twentieth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-021 : calc( pow( var( --cor-des-num ), 21 ) ); /* What: Core-Design-Number to the Power of 21 ~= 366.937. Why: Sometimes the twenty-first power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-022 : calc( pow( var( --cor-des-num ), 22 ) ); /* What: Core-Design-Number to the Power of 22 ~= 486.088. Why: Sometimes the twenty-second power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-023 : calc( pow( var( --cor-des-num ), 23 ) ); /* What: Core-Design-Number to the Power of 23 ~= 643.930. Why: Sometimes the twenty-third power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-024 : calc( pow( var( --cor-des-num ), 24 ) ); /* What: Core-Design-Number to the Power of 24 ~= 853.026. Why: Sometimes the twenty-fourth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-025 : calc( pow( var( --cor-des-num ), 25 ) ); /* What: Core-Design-Number to the Power of 25 ~= 1,130.019. Why: Sometimes the twenty-fifth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-026 : calc( pow( var( --cor-des-num ), 26 ) ); /* What: Core-Design-Number to the Power of 26 ~= 1,496.956. Why: Sometimes the twenty-sixth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+
+    --cdn-pow-n01 : calc( var( --cdn-pow-001 ) * -1 ); /* What: Core-Design-Number to the Power of 1 * -1 ~= -1.325. Why: Sometimes the inverse of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n02 : calc( var( --cdn-pow-002 ) * -1 ); /* What: Core-Design-Number to the Power of 2 * -1 ~= -1.755. Why: Sometimes the inverse square of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n03 : calc( var( --cdn-pow-003 ) * -1 ); /* What: Core-Design-Number to the Power of 3 * -1 ~= -2.325. Why: Sometimes the inverse cube of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n04 : calc( var( --cdn-pow-004 ) * -1 ); /* What: Core-Design-Number to the Power of 4 * -1 ~= -3.080. Why: Sometimes the inverse fourth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n05 : calc( var( --cdn-pow-005 ) * -1 ); /* What: Core-Design-Number to the Power of 5 * -1 ~= -4.080. Why: Sometimes the inverse fifth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n06 : calc( var( --cdn-pow-006 ) * -1 ); /* What: Core-Design-Number to the Power of 6 * -1 ~= -5.404. Why: Sometimes the inverse sixth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n07 : calc( var( --cdn-pow-007 ) * -1 ); /* What: Core-Design-Number to the Power of 7 * -1 ~= -7.159. Why: Sometimes the inverse seventh power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n08 : calc( var( --cdn-pow-008 ) * -1 ); /* What: Core-Design-Number to the Power of 8 * -1 ~= -9.484. Why: Sometimes the inverse eighth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n09 : calc( var( --cdn-pow-009 ) * -1 ); /* What: Core-Design-Number to the Power of 9 * -1 ~= -12.564. Why: Sometimes the inverse ninth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+    --cdn-pow-n10 : calc( var( --cdn-pow-010 ) * -1 ); /* What: Core-Design-Number to the Power of 10 * -1 ~= -16.643. Why: Sometimes the inverse tenth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
+
+    /* #endregion Core Design Numbers */
+
+
+
 	/* #region Celebration Tokens */
 
 	/**
