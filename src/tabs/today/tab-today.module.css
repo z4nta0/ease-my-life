@@ -712,11 +712,10 @@
 
 
 	.ring.is-pulsing svg,
-	.ring.is-celebrating svg { /* What: Still Ring Graphic. Why: The ring shouldn't pop. How: This turns its animation and transform off. */
+	.ring.is-celebrating svg { /* What: Still Ring Graphic. Why: The ring shouldn't pop, but must keep its quarter turn so the arc still starts at the top. How: This turns its animation off, leaving the base rotation in place. */
 
 
 		animation : none;
-		transform : none;
 
 
 	}
