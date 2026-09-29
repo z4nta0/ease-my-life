@@ -675,183 +675,12 @@ button.heat-cell.is-sel {
 .item-del:hover { background: var(--bg); color: var(--text); }
 .item-del:hover { color: oklch(0.5 0.18 25); }
 
-/* ─── Tab: Settings ──────────────────────────────────────────────────────── */
-
-.tab--settings { gap: 24px; }
-.settings-sub { margin: 0; color: var(--muted); font-size: 14px; }
-
-/* ── Settings: two-column layout (sticky section nav + scrolling sections) ────
-   Mirrors the Today tab's group rail, but the Settings header is not sticky so
-   the rail parks near the top of the scroll viewport. */
-.tab--settings .settings-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 32px;
-  align-items: start;
-  margin-top: 28px;
-}
-.settings-rail {
-  position: sticky;
-  top: 16px;
-  align-self: start;
-  max-height: calc(100vh - 32px);
-  overflow-y: auto;
-  scrollbar-width: none;
-}
-.settings-rail::-webkit-scrollbar { display: none; }
-.settings-rail .rail-kicker { padding: 0 12px 4px; }
-.settings-rail ul { display: flex; flex-direction: column; gap: 2px; }
-
-.settings-sections { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
-.set-section {
-  display: flex; flex-direction: column; gap: 12px;
-  scroll-margin-top: 32px;
-}
-/* Mono kicker + dividing line atop each section (matches the Data tab). */
-.set-section-h {
-  display: flex; align-items: center; gap: 12px;
-  padding-bottom: 10px;
-  border-bottom: 0.5px solid var(--border);
-}
-.set-section-h .kicker { padding: 0; }
-
-/* Appearance: Theme / Picker animation / Layout subsections within one section. */
-.set-subsection { display: flex; flex-direction: column; gap: 8px; }
-.set-subsection-h {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--muted);
-}
-
-/* Data control + Account: label/description left, action button right. */
-.set-data-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 14px 0; border-bottom: 0.5px solid var(--border);
-}
-.set-data-row:first-child { padding-top: 4px; }
-.set-data-row:last-child { border-bottom: 0; padding-bottom: 4px; }
-.set-data-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 auto; }
-.set-data-name { font-size: 14px; font-weight: 600; }
-.set-data-sub { font-size: 12.5px; color: var(--muted); line-height: 1.45; text-wrap: pretty; }
-.set-layout-sub { max-width: 190px; }
-/* Keep the placement segmented control on one row (never wrap its pills). */
-.set-data-row { --seg-flex: 0 0 auto; --seg-flex-wrap: nowrap; }
-.set-data-row--danger .set-data-name { color: oklch(0.5 0.18 25); }
-.set-import-msg { font-size: 12px; margin-top: 2px; animation: importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both; }
-@keyframes importMsgPop { 0% { opacity: 0; transform: scale(.9); } 60% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .set-import-msg { animation: none; } }
-.set-import-msg.is-ok { color: var(--accent); }
-.set-import-msg.is-err { color: oklch(0.5 0.18 25); }
-/* Pending destructive confirmation (import) — warm, matching the reminder
-   advisories rather than the red of an error. */
-.set-import-msg.is-warn { color: oklch(0.45 0.13 50); max-width: 52ch; line-height: 1.45; }
-
-/* Quick fade when a dynamic explanation swaps (keyed remount on value change). */
-.set-sub-fade { animation: setSubFade .6s ease; }
 @keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .set-sub-fade { animation: none; } }
 /* Breakdown lists (conditionals / reminders / pick breakdown): fade+rise when
    the metric pill or sort direction changes (keyed remount). */
 .bd-list-fade { animation: setSubFade .3s ease, bdListRise .3s cubic-bezier(.2,.7,.3,1); }
 @keyframes bdListRise { from { transform: translateY(5px); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .bd-list-fade { animation: none; } }
-.set-data-row .set-time-input { flex: 0 0 130px; width: 130px; font-variant-numeric: tabular-nums; }
-.set-data-row .btn { flex: 0 0 auto; white-space: nowrap; }
-.set-data-row { --btn-flex: 0 0 auto; --btn-white-space: nowrap; }
-.set-data-row .switch { flex: 0 0 auto; }
-.set-reset-confirm { display: flex; gap: 8px; flex: 0 0 auto; animation: footSwapIn .16s ease both; }
-.set-disabled-btn { flex: 0 0 auto; display: inline-flex; }
-.set-reset-confirm.is-leaving { animation: footSwapOut .14s ease both; }
-@media (prefers-reduced-motion: reduce) { .set-reset-confirm { animation: none; } }
-/* The run-time sub-row sits under the toggle with a divider + extra top gap;
-   greys out and disables when the generator is set to manual. */
-.set-data-row--sub { border-top: 0; padding-top: 14px; transition: opacity .3s ease; }
-.set-data-row--sub.is-disabled { opacity: 0.45; }
-.set-data-row--sub.is-disabled .set-time-input { pointer-events: none; }
-
-/* About */
-.set-about { display: flex; flex-direction: column; gap: 10px; }
-.set-about-brand { display: flex; align-items: baseline; gap: 10px; }
-.set-about-name { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; }
-.set-about-ver {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em;
-  color: var(--muted);
-}
-.set-about-creator { font-size: 12.5px; color: var(--muted); }
-.set-about-creator a { color: var(--accent); }
-.set-about-creator a:hover { color: var(--text); }
-
-/* Mobile: rail flips to a horizontal sticky pill bar above the sections. */
-@container app (max-width: 760px) {
-  .tab--settings .settings-layout { grid-template-columns: 1fr; gap: 16px; }
-  .settings-rail {
-    position: sticky; top: 0; z-index: 18;
-    max-height: none;
-    /* Undo the desktop rule's overflow-y: auto — with overflow-x left
-       untouched otherwise, the browser force-pairs it to overflow-x: auto
-       too (CSS overflow spec), turning .settings-rail into a SECOND,
-       invisible scroll/clip container even with nothing to scroll
-       (scrollWidth === clientWidth). That silently clipped ::after's
-       right-edge fade despite its computed styles looking correct.
-       min-width: 0 replaces overflow as the fix for the OTHER thing that
-       overflow-y: auto was incidentally doing: as a grid item (see
-       .settings-layout), .settings-rail's default min-width:auto is
-       content-based, so without an explicit min-width it balloons to fit
-       .settings-rail-scroll's full unscrolled content width (628px)
-       instead of respecting the 1fr grid track. */
-    overflow: visible;
-    min-width: 0;
-    padding: 14px 20px;
-    background: var(--bg);
-  }
-  /* The actual horizontal scroller — deliberately NOT .settings-rail itself.
-     Fade as an opaque gradient OVERLAY, not a mask — two reasons neither
-     mask placement worked: masking .settings-rail itself faded its own
-     background too, letting page content scrolled underneath the sticky
-     rail show through; masking the inner <ul> instead positioned the
-     fade relative to the ul's own full scrollable width (~628px, the
-     width of every pill combined) rather than the rail's visible ~335px
-     viewport, putting the fade zone hundreds of px off-screen.
-     A THIRD bug (confirmed on real devices, both Firefox and Chrome —
-     not a rendering quirk): the fade pseudo-elements are position:absolute,
-     and putting them on the SAME element as overflow-x:auto made them
-     scroll away WITH the pills — the fade would visibly "attach" to
-     whichever pill happened to be under it and drift off with it, instead
-     of staying pinned to the visible edge. Splitting the scrolling element
-     (.settings-rail-scroll, wraps just the <ul>) from the fade-hosting
-     element (.settings-rail, sticky, never itself scrolls) fixes all
-     three: the rail's own background stays opaque, the fade tracks the
-     rail's real visible width, and the fade itself never moves. */
-  .settings-rail-scroll {
-    overflow-x: auto; overflow-y: hidden;
-    scrollbar-width: none;
-  }
-  .settings-rail-scroll::-webkit-scrollbar { display: none; }
-  .settings-rail::before, .settings-rail::after {
-    content: ''; position: absolute; top: 0; bottom: 0; width: 24px;
-    pointer-events: none; z-index: 1;
-  }
-  /* left/right: 20px, not 0 — 0 would sit flush with .settings-rail's own
-     padding edge (padding: 14px 20px), but .settings-rail-scroll's actual
-     visible content edge is inset 20px further in than that. A fade at
-     the padding edge overlaps almost entirely with the empty padding
-     gutter, which is already var(--bg) — a bg-to-transparent gradient
-     painted over bg-colored padding is visually a no-op, so the fade
-     appeared to not render at all. Insetting by the padding amount
-     aligns the fade with where the pills actually get cut off. */
-  .settings-rail::before { left: 20px; background: linear-gradient(to right, var(--bg), transparent); }
-  .settings-rail::after { right: 20px; background: linear-gradient(to left, var(--bg), transparent); }
-  .settings-rail[data-scroll-start-active]::before { opacity: 0; }
-  .settings-rail[data-scroll-end-active]::after { opacity: 0; }
-  .settings-rail .rail-kicker { display: none; }
-  .settings-rail ul {
-    flex-direction: row; flex-wrap: nowrap; gap: 6px; width: max-content;
-  }
-  .settings-rail .rail-btn {
-    flex-shrink: 0; width: auto; white-space: nowrap;
-    padding: 6px 12px; border: 0.5px solid var(--border); border-radius: 999px;
-  }
-  .settings-rail .rail-btn.is-on { border-color: var(--accent); background: var(--accent-soft); }
-}
 
 .daily-list { display: flex; flex-direction: column; }
 .daily-list li {
@@ -880,28 +709,7 @@ button.heat-cell.is-sel {
 .switch.is-on i { transform: translateX(16px); }
 
 /* ─── New-picker form ───────────────────────────────────────────────────────  */
-.np-input {
-  width: 100%; max-width: 360px;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-sm);
-  padding: 10px 12px;
-  margin-top: 2px;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  color: var(--text);
-  outline: none;
-  transition: border-color .12s;
-}
-.np-input::placeholder { color: var(--muted); opacity: 0.7; }
-.np-input:focus { border-color: var(--accent); }
 @keyframes np-row-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
-
-/* Appearance's Picker animation / Completion celebration cards go unpadded +
-   overflow:hidden (see style-radio-card) so the option list can bleed edge-
-   to-edge without a padding gap top/bottom — the radio list's own -16px
-   horizontal bleed isn't needed there since there's no padding to eat into. */
-.style-radio-card { overflow: hidden; }
 .pie-help {
   display: inline-flex; align-items: center; justify-content: center;
   width: 16px; height: 16px; flex: 0 0 auto;
@@ -1062,29 +870,3 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    styled from this sheet. */
 body[data-tour-active]{--tab-tour-padding:200px}
 .tab{padding-bottom:var(--tab-tour-padding,0)}
-
-/* ─── Settings: storage & installation panel ──────────────────────────────── */
-.set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.set-store-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border:0.5px solid var(--border);border-radius:999px;background:var(--bg);color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:0.01em;white-space:nowrap}
-.set-store-chip.is-ok{border-color:oklch(0.5 0.11 155/0.35);background:oklch(0.5 0.11 155/0.08);color:oklch(0.42 0.1 155)}
-/* Darkened rather than raw --warm (L=0.62): at 11px this is body text and
-   needs 4.5:1, and "Not protected yet" is the panel's most consequential line.
-   Same treatment as .is-ok above — hue/chroma kept, lightness dropped. */
-.set-store-chip.is-warn{border-color:oklch(from var(--warm) l c h/0.4);background:oklch(from var(--warm) l c h/0.08);color:oklch(0.45 0.13 50)}
-.set-store-actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;flex-shrink:0}
-/* iOS instruction row reads as a note, not another action. */
-.set-store-ios .set-data-sub{max-width:60ch}
-/* The install-steps paragraph and the WARNING paragraph below it are two
-   distinct notes, not a name+description pair — give them breathing room
-   instead of .set-data-info's tight 3px gap. */
-.set-store-ios .set-data-sub + .set-data-sub{margin-top:8px}
-
-
-/* ─── Reduced motion: gaps closed (see the matching block in styles.css) ───── */
-
-
-/* Reduced-motion advisory under the two animation-choice headings. Darkened from
-   raw --warm (L=0.62), which only reaches 3.64:1 at this 14px/400 body size —
-   same treatment as .set-store-chip.is-warn. */
-.set-rm-note { color: oklch(0.45 0.13 50); }
-

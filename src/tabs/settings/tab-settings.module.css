@@ -1,0 +1,1270 @@
+
+
+
+/**
+ * tab-settings.module.css = Settings Tab Module
+ *
+ * @summary
+ * Styles for TabSetCom, the Settings tab: its header, the section rail
+ * (a sticky column on wide screens, a sticky scrolling pill bar with edge
+ * fades on narrow ones), and every section's rows, from the Appearance
+ * subsections and switches to the storage panel's chips, the import and
+ * reset confirms, and the About block. The selected rail button keys off
+ * data-rail-select-active, a switch off its own aria-pressed, the manual
+ * run-time row off data-row-disabled-active, result messages off
+ * data-message-ok-active, data-message-error-active, and
+ * data-message-warn-active, and the storage chips off data-chip-ok-active
+ * and data-chip-warn-active. Each data row hands the segmented control and
+ * the button their no-shrink, no-wrap sizing through custom properties.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region tab--settings */
+
+.tab--settings { /* What: Settings Tab. Why: The page leaves extra room below while a tour runs. How: This reads the body's tour padding. */
+
+
+	padding-bottom : var(--tab-tour-padding, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tour-padding while a tour runs, falling back to none. */
+
+
+}
+
+
+
+/* #region stat-h */
+
+.stat-h { /* What: Page Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 18px;
+
+
+}
+
+/* #region kicker-row */
+
+.kicker-row { /* What: Kicker Row. Why: The page kicker and the help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.kicker { /* What: Kicker. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : 22px;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion kicker-row */
+
+
+
+/* #region stat-h-lead */
+
+.stat-h-lead { /* What: Header Lead. Why: The brand mark and title sit side by side. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 16px;
+
+
+}
+@media (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the viewport is 640px wide or less. */
+
+
+	.stat-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : 12px;
+
+
+	}
+
+
+}
+
+/* #region brand-mark */
+
+.brand-mark { /* What: Brand Mark. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	align-self         : center;
+	appearance         : none;
+	aspect-ratio       : auto;
+	background         : none;
+	border             : 0;
+	border-radius      : 11px;
+	color              : var(--accent);
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : 68px;
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform 180ms ease;
+	width              : 68px;
+
+
+}
+.brand-mark:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY(-1px);
+
+
+}
+@media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
+
+
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark to 56px. */
+
+
+		height : 56px;
+		width  : 56px;
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.brand-mark { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.brand-mark svg { /* What: Brand Mark Glyph. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion brand-mark */
+
+
+
+/* #region section-h */
+
+.section-h { /* What: Section Header. Why: The title sits beside the brand mark, centered against it. How: This stacks the title in a column that takes the remaining width. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : 18px;
+	justify-content : center;
+	min-width       : 0;
+
+
+}
+
+/* #region section-title */
+
+.section-title { /* What: Section Title. Why: The page's main heading leads the tab. How: This sets it large and tight. */
+
+
+	font-size      : 30px;
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	line-height    : 1.15;
+	margin         : 0;
+
+
+}
+@container app (max-width: 520px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 520px wide or less. */
+
+
+	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it to 26px. */
+
+
+		font-size : 26px;
+
+
+	}
+
+
+}
+
+.stat-title-accent { /* What: Title Accent. Why: The heading's key word reads in the accent color. How: This colors the span. */
+
+
+	color : var(--accent);
+
+
+}
+
+/* #endregion section-title */
+
+/* #endregion section-h */
+
+/* #endregion stat-h-lead */
+
+
+
+/* #region section-sub */
+
+.section-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline. How: This sets it muted, capped in line length. */
+
+
+	color     : var(--muted);
+	margin    : 0;
+	max-width : 52ch;
+
+
+}
+
+.sub-tablink { /* What: Intro Link. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var(--accent);
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.sub-tablink:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+/* #endregion section-sub */
+
+/* #endregion stat-h */
+
+
+
+/* #region settings-layout */
+
+.settings-layout { /* What: Settings Layout. Why: The section rail and the sections sit side by side. How: This lays them out in a two-column grid. */
+
+
+	align-items           : start;
+	display               : grid;
+	gap                   : 32px;
+	grid-template-columns : 200px 1fr;
+	margin-top            : 28px;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Settings Layout. Why: On a narrow app the rail sits above the sections. How: This applies only when the app matches (max-width: 760px). */
+
+
+	.settings-layout { /* What: Stacked Settings Layout. Why: The rail becomes a bar above the sections. How: This drops to one column with a smaller gap. */
+
+
+		gap                   : 16px;
+		grid-template-columns : 1fr;
+
+
+	}
+
+
+}
+
+
+
+/* #region settings-rail */
+
+.settings-rail { /* What: Section Rail. Why: The section links stay in reach while the sections scroll. How: This sticks the rail near the top and lets it scroll on its own with its scrollbar hidden. */
+
+
+	align-self      : start;
+	max-height      : calc(100vh - 32px);
+	overflow-y      : auto;
+	position        : sticky;
+	scrollbar-width : none;
+	top             : 16px;
+
+
+}
+.settings-rail::-webkit-scrollbar { /* What: Section Rail Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+
+
+	display : none;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Section Rail. Why: On a narrow app the rail becomes a sticky pill bar above the sections. How: This applies only when the app matches (max-width: 760px). */
+
+
+	.settings-rail { /* What: Pill Bar Rail. Why: The bar stays pinned over the sections without clipping its own edge fades. How: This sticks it to the top on an opaque background, with overflow visible and min-width 0 so it neither turns into a second scroll container nor stretches past its grid track. */
+
+
+		background : var(--bg);
+		max-height : none;
+		min-width  : 0;
+		overflow   : visible;
+		padding    : 14px 20px;
+		position   : sticky;
+		top        : 0;
+		z-index    : 18;
+
+
+	}
+
+	.settings-rail::before,
+	.settings-rail::after { /* What: Pill Bar Edge Fades. Why: Pills cut off at an edge should fade out rather than stop hard. How: This pins a 24px overlay to each side of the rail, which never scrolls itself. */
+
+
+		bottom         : 0;
+		content        : '';
+		pointer-events : none;
+		position       : absolute;
+		top            : 0;
+		width          : 24px;
+		z-index        : 1;
+
+
+	}
+
+	.settings-rail::before { /* What: Left Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it 20px and fades from the background to transparent. */
+
+
+		background : linear-gradient(to right, var(--bg), transparent);
+		left       : 20px;
+
+
+	}
+
+	.settings-rail::after { /* What: Right Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it 20px and fades from the background to transparent. */
+
+
+		background : linear-gradient(to left, var(--bg), transparent);
+		right      : 20px;
+
+
+	}
+
+	.settings-rail[data-scroll-start-active]::before { /* What: Hidden Left Edge Fade. Why: Nothing is cut off once the row is scrolled to its start. How: This hides the left fade, keying off data-scroll-start-active. */
+
+
+		opacity : 0;
+
+
+	}
+
+	.settings-rail[data-scroll-end-active]::after { /* What: Hidden Right Edge Fade. Why: Nothing is cut off once the row is scrolled to its end. How: This hides the right fade, keying off data-scroll-end-active. */
+
+
+		opacity : 0;
+
+
+	}
+
+
+}
+
+.rail-kicker { /* What: Rail Kicker. Why: The rail's heading lines up with its buttons. How: This insets it like a button. */
+
+
+	padding : 0 12px 4px;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Rail Kicker. Why: The pill row has no room for a heading. How: This applies only when the app matches (max-width: 760px). */
+
+
+	.rail-kicker { /* What: Hidden Rail Kicker. Why: The pill row has no room for a heading. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+
+
+/* #region settings-rail-scroll */
+
+@container app (max-width: 760px) { /* What: Narrow Rail Scroller. Why: On a narrow app the pill row scrolls sideways inside the sticky rail. How: This applies only when the app matches (max-width: 760px). */
+
+
+	.settings-rail-scroll { /* What: Rail Scroller. Why: The pills scroll inside this wrapper rather than the rail itself, so the rail's fades and background stay pinned. How: This scrolls horizontally with its scrollbar hidden. */
+
+
+		overflow-x      : auto;
+		overflow-y      : hidden;
+		scrollbar-width : none;
+
+
+	}
+
+	.settings-rail-scroll::-webkit-scrollbar { /* What: Rail Scroller Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+/* #region settings-rail-ul */
+
+.settings-rail ul { /* What: Rail List. Why: The section buttons stack in a tight column. How: This stacks them with a 2px gap. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Rail List. Why: On a narrow app the buttons run across in one scrolling row. How: This applies only when the app matches (max-width: 760px). */
+
+
+	.settings-rail ul { /* What: Rail Pill Row. Why: The pills sit in one line as wide as they need, so the wrapper can scroll them. How: This lays them out in an unwrapped row sized to its content. */
+
+
+		flex-direction : row;
+		flex-wrap      : nowrap;
+		gap            : 6px;
+		width          : max-content;
+
+
+	}
+
+
+}
+
+/* #region rail-btn */
+
+.rail-btn { /* What: Rail Button. Why: Each section is a rail button that jumps to it. How: This lays its name out in a full-width rounded row that fades between colors. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	display         : flex;
+	font-size       : 13.5px;
+	font-weight     : 500;
+	gap             : 10px;
+	justify-content : space-between;
+	letter-spacing  : -0.005em;
+	padding         : 8px 12px;
+	text-align      : left;
+	transition      : background .12s, color .12s;
+	width           : 100%;
+
+
+}
+.rail-btn:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
+
+
+	color : var(--text);
+
+
+}
+.rail-btn[data-rail-select-active] { /* What: Selected Rail Button. Why: The section in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
+
+
+	background : var(--accent-soft);
+	color      : var(--accent);
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Rail Button. Why: On a narrow app the rail is a row of pills. How: This applies only when the app matches (max-width: 760px). */
+
+
+	.rail-btn { /* What: Rail Pill. Why: In the narrow pill row each section is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
+
+
+		background    : var(--surface);
+		border        : 0.5px solid var(--border);
+		border-radius : 999px;
+		flex-shrink   : 0;
+		font-size     : 13px;
+		padding       : 6px 12px;
+		white-space   : nowrap;
+		width         : auto;
+
+
+	}
+
+	.rail-btn[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
+
+
+		background   : var(--accent-soft);
+		border-color : var(--accent);
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rail-btn { /* What: Still Rail Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rail-name { /* What: Rail Name. Why: A long section name should wrap evenly. How: This balances its line breaks. */
+
+
+	text-wrap : pretty;
+
+
+}
+
+/* #endregion rail-btn */
+
+/* #endregion settings-rail-ul */
+
+/* #endregion settings-rail-scroll */
+
+/* #endregion settings-rail */
+
+
+
+/* #region settings-sections */
+
+.settings-sections { /* What: Settings Sections. Why: The sections stack in the right-hand column. How: This stacks them in a spaced column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 32px;
+	min-width      : 0;
+
+
+}
+
+
+
+/* #region set-section */
+
+.set-section { /* What: Settings Section. Why: Each section stacks its heading, intro, and rows, and a rail jump should stop short of the top. How: This stacks them in a spaced column with a scroll margin. */
+
+
+	display           : flex;
+	flex-direction    : column;
+	gap               : 12px;
+	scroll-margin-top : 32px;
+
+
+}
+
+.set-section-h { /* What: Section Heading. Why: Each section opens with its kicker over a dividing line, matching the Data tab. How: This lines the kicker up in a row above a hairline. */
+
+
+	align-items    : center;
+	border-bottom  : 0.5px solid var(--border);
+	display        : flex;
+	gap            : 12px;
+	padding-bottom : 10px;
+
+
+}
+
+.settings-sub { /* What: Section Intro. Why: Each section and subsection explains itself in muted copy. How: This sets it muted at 14px with no margin. */
+
+
+	color     : var(--muted);
+	font-size : 14px;
+	margin    : 0;
+
+
+}
+.set-rm-note { /* What: Reduced Motion Note. Why: The note that animations won't play reads as an advisory. How: This colors it in a warm tone darkened to stay readable. */
+
+
+	color : oklch(0.45 0.13 50);
+
+
+}
+
+
+
+/* #region set-subsection */
+
+.set-subsection { /* What: Appearance Subsection. Why: Each Appearance topic stacks its heading, copy, and control. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 8px;
+
+
+}
+
+.set-subsection-h { /* What: Subsection Heading. Why: Each Appearance topic names itself in a small label. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.05em;
+	text-transform : uppercase;
+
+
+}
+
+.style-radio-card { /* What: Style Picker Card. Why: The animation lists bleed edge to edge in an unpadded card. How: This clips them to the card's rounded corners. */
+
+
+	overflow : hidden;
+
+
+}
+
+/* #endregion set-subsection */
+
+
+
+/* #region set-data-row */
+
+.set-data-row { /* What: Settings Row. Why: Each setting puts its text on the left and its control on the right, divided from the next row. How: This spreads them across a centered row under a hairline, and hands the segmented control and buttons their no-shrink, no-wrap sizing. */
+
+
+	--btn-flex        : 0 0 auto; /* What: Button Flex. Why: A row's button should keep its size. How: ButBasCom reads this for its own flex. */
+	--btn-white-space : nowrap; /* What: Button White Space. Why: A row's button label should stay on one line. How: ButBasCom reads this for its own white-space. */
+	--seg-flex        : 0 0 auto; /* What: Segmented Flex. Why: The placement control should keep its size. How: SegConCom reads this for its own flex. */
+	--seg-flex-wrap   : nowrap; /* What: Segmented Flex Wrap. Why: The placement control's pills should never wrap. How: SegConCom reads this for its own flex-wrap. */
+	align-items       : center;
+	border-bottom     : 0.5px solid var(--border);
+	display           : flex;
+	gap               : 16px;
+	justify-content   : space-between;
+	padding           : 14px 0;
+
+
+}
+.set-data-row:first-child { /* What: First Settings Row. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
+
+
+	padding-top : 4px;
+
+
+}
+.set-data-row:last-child { /* What: Last Settings Row. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
+
+
+	border-bottom  : 0;
+	padding-bottom : 4px;
+
+
+}
+.set-data-row--sub { /* What: Run Time Row. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This drops the top border, adds top room, and fades its opacity. */
+
+
+	border-top  : 0;
+	padding-top : 14px;
+	transition  : opacity .3s ease;
+
+
+}
+.set-data-row--sub[data-row-disabled-active] { /* What: Disabled Run Time Row. Why: The run time does nothing while the generator runs manually. How: This dims the row, keying off data-row-disabled-active. */
+
+
+	opacity : 0.45;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Run Time Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-data-row--sub { /* What: Still Run Time Row. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #region set-data-info */
+
+.set-data-info { /* What: Row Info. Why: The row's name, description, and any facts or message stack together and take the space the control leaves. How: This stacks them in a tight column that grows but can shrink. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 3px;
+	min-width      : 0;
+
+
+}
+
+.set-data-name { /* What: Row Name. Why: The row's name leads it. How: This sets it in bold body text. */
+
+
+	font-size   : 14px;
+	font-weight : 600;
+
+
+}
+.set-data-row--danger .set-data-name { /* What: Danger Row Name. Why: A destructive row names itself in red. How: This colors it. */
+
+
+	color : oklch(0.5 0.18 25);
+
+
+}
+
+.set-data-sub { /* What: Row Description. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced line breaks. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.45;
+	text-wrap   : pretty;
+
+
+}
+.set-store-ios .set-data-sub { /* What: Install Note Description. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
+
+
+	max-width : 60ch;
+
+
+}
+.set-store-ios .set-data-sub + .set-data-sub { /* What: Following Install Note Description. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one 8px down. */
+
+
+	margin-top : 8px;
+
+
+}
+
+.set-sub-fade { /* What: Live Description. Why: A description that changes with its setting should fade in the new wording. How: This plays the shared fade each time the keyed element remounts. */
+
+
+	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Live Description. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-sub-fade { /* What: Still Live Description. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.set-layout-sub { /* What: Layout Description. Why: The placement description must leave the segmented control room on one line. How: This caps it at 190px. */
+
+
+	max-width : 190px;
+
+
+}
+
+
+
+/* #region set-store-facts */
+
+.set-store-facts { /* What: Storage Facts. Why: The protected, size, fallback, and installed facts read as a row of small chips. How: This wraps them in a spaced row under the description. */
+
+
+	display    : flex;
+	flex-wrap  : wrap;
+	gap        : 6px;
+	margin-top : 8px;
+
+
+}
+
+.set-store-chip { /* What: Storage Chip. Why: Each fact is a small neutral chip. How: This draws a bordered mono pill that never wraps. */
+
+
+	align-items    : center;
+	background     : var(--bg);
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	display        : inline-flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 4px;
+	letter-spacing : 0.01em;
+	padding        : 3px 8px;
+	white-space    : nowrap;
+
+
+}
+.set-store-chip[data-chip-ok-active] { /* What: Good Storage Chip. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
+
+
+	background   : oklch(0.5 0.11 155/0.08);
+	border-color : oklch(0.5 0.11 155/0.35);
+	color        : oklch(0.42 0.1 155);
+
+
+}
+.set-store-chip[data-chip-warn-active] { /* What: Warning Storage Chip. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
+
+
+	background   : oklch(from var(--warm) l c h/0.08);
+	border-color : oklch(from var(--warm) l c h/0.4);
+	color        : oklch(0.45 0.13 50);
+
+
+}
+
+/* #endregion set-store-facts */
+
+
+
+.set-import-msg { /* What: Result Message. Why: An action's result pops in under its row's description. How: This sets small text that plays a springy pop. */
+
+
+	animation  : importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both;
+	font-size  : 12px;
+	margin-top : 2px;
+
+
+}
+.set-import-msg[data-message-ok-active] { /* What: Good Result Message. Why: A success reads in the accent. How: This colors it, keying off data-message-ok-active. */
+
+
+	color : var(--accent);
+
+
+}
+.set-import-msg[data-message-error-active] { /* What: Failed Result Message. Why: A failure reads red. How: This colors it, keying off data-message-error-active. */
+
+
+	color : oklch(0.5 0.18 25);
+
+
+}
+.set-import-msg[data-message-warn-active] { /* What: Pending Result Message. Why: A pending destructive import reads warm, like the reminder advisories, rather than as an error. How: This colors it warm with a capped line length, keying off data-message-warn-active. */
+
+
+	color       : oklch(0.45 0.13 50);
+	line-height : 1.45;
+	max-width   : 52ch;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Result Message. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-import-msg { /* What: Still Result Message. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes importMsgPop { /* What: Import Message Pop Keyframes. Why: A result should land with a little bounce. How: This scales it up past full size and back while fading it in. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : scale(.9);
+
+
+	}
+
+	60% {
+
+
+		opacity   : 1;
+		transform : scale(1.06);
+
+
+	}
+
+	100% {
+
+
+		opacity   : 1;
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+/* #endregion set-data-info */
+
+
+
+/* #region switch */
+
+.switch { /* What: Setting Switch. Why: Each on or off setting uses a switch that keeps its size at the row's end. How: This draws a pill track that fades its color and never shrinks. */
+
+
+	background    : var(--border);
+	border-radius : 999px;
+	flex          : 0 0 auto;
+	height        : 20px;
+	position      : relative;
+	transition    : background .15s;
+	width         : 36px;
+
+
+}
+.switch[aria-pressed="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+
+
+	background : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch { /* What: Still Setting Switch. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.switch i { /* What: Switch Knob. Why: The knob slides across to show the setting's state. How: This draws a shadowed disc at the track's left that slides on change. */
+
+
+	background    : var(--bg);
+	border-radius : 50%;
+	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	height        : 16px;
+	left          : 2px;
+	position      : absolute;
+	top           : 2px;
+	transition    : transform .15s;
+	width         : 16px;
+
+
+}
+.switch[aria-pressed="true"] i { /* What: On Switch Knob. Why: An enabled switch has its knob at the right. How: This slides it 16px across. */
+
+
+	transform : translateX(16px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch i { /* What: Still Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion switch */
+
+.set-time-input { /* What: Run Time Input. Why: The run time is typed into a fixed-width field at the row's end. How: This draws a rounded field 130px wide with tabular digits that borders in the accent on focus. */
+
+
+	background           : var(--bg);
+	border               : 0.5px solid var(--border);
+	border-radius        : var(--r-sm);
+	color                : var(--text);
+	flex                 : 0 0 130px;
+	font-family          : var(--font-sans);
+	font-size            : 14px;
+	font-variant-numeric : tabular-nums;
+	margin-top           : 2px;
+	max-width            : 360px;
+	outline              : none;
+	padding              : 10px 12px;
+	transition           : border-color .12s;
+	width                : 130px;
+
+
+}
+.set-time-input::placeholder { /* What: Run Time Input Placeholder. Why: A hint should read quieter than real input. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.set-time-input:focus { /* What: Focused Run Time Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+.set-data-row--sub[data-row-disabled-active] .set-time-input { /* What: Disabled Run Time Input. Why: The run time does nothing while the generator runs manually. How: This stops it from taking the pointer. */
+
+
+	pointer-events : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Run Time Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-time-input { /* What: Still Run Time Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.set-reset-confirm { /* What: Confirm Pair. Why: A destructive action's Cancel and confirm buttons swap in for its single button. How: This lines them up in a row that keeps its size and plays the shared footer swap-in. */
+
+
+	animation : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display   : flex;
+	flex      : 0 0 auto;
+	gap       : 8px;
+
+
+}
+.set-reset-confirm.is-leaving { /* What: Leaving Confirm Pair. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
+
+
+	animation : global(footSwapOut) .14s ease both; /* What: Global footSwapOut Keyframes. Why: The footSwapOut keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Confirm Pair. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-reset-confirm,
+	.set-reset-confirm.is-leaving { /* What: Still Confirm Pair. Why: The pair should swap at once, and JS already skips the leave delay. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.set-disabled-btn { /* What: Disabled Action Tip. Why: A blocked action's tip trigger should size like the button it wraps. How: This makes it an unshrinking inline flex box. */
+
+
+	display : inline-flex;
+	flex    : 0 0 auto;
+
+
+}
+
+.set-store-actions { /* What: Storage Actions. Why: The Install and Protect buttons stack beside the storage info. How: This stacks them in a stretched column that never shrinks. */
+
+
+	align-items    : stretch;
+	display        : flex;
+	flex-direction : column;
+	flex-shrink    : 0;
+	gap            : 8px;
+
+
+}
+
+.btn { /* What: Document Button. Why: Each legal row opens its document with a small secondary button at the row's end. How: This draws a small outlined pill that never shrinks or wraps and nudges down when pressed. */
+
+
+	align-items    : center;
+	background     : var(--surface);
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--text);
+	display        : inline-flex;
+	flex           : 0 0 auto;
+	font-size      : 13px;
+	font-weight    : 500;
+	gap            : 5px;
+	height         : 30px;
+	letter-spacing : -0.005em;
+	padding        : 0 11px;
+	transition     : background .12s, color .12s, transform .08s;
+	white-space    : nowrap;
+
+
+}
+.btn:hover { /* What: Hovered Document Button. Why: The button should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.btn:active { /* What: Pressed Document Button. Why: A press should feel physical. How: This nudges it down half a pixel. */
+
+
+	transform : translateY(0.5px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Document Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.btn { /* What: Still Document Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion set-data-row */
+
+
+
+/* #region set-about */
+
+.set-about { /* What: About Block. Why: The app's name, version, and links stack as one identity block. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 10px;
+
+
+}
+
+/* #region set-about-brand */
+
+.set-about-brand { /* What: About Brand. Why: The app's name sits on its own line. How: This lines it up on a baseline row. */
+
+
+	align-items : baseline;
+	display     : flex;
+	gap         : 10px;
+
+
+}
+
+.set-about-name { /* What: About Name. Why: The app's name leads the block. How: This sets it large and bold. */
+
+
+	font-size      : 18px;
+	font-weight    : 600;
+	letter-spacing : -0.015em;
+
+
+}
+
+/* #endregion set-about-brand */
+
+.set-about-ver { /* What: About Version. Why: The build version reads as small metadata. How: This sets it in small muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.03em;
+
+
+}
+
+.set-about-creator { /* What: About Link Line. Why: The creator and source links read as quieter lines. How: This sets them small and muted. */
+
+
+	color     : var(--muted);
+	font-size : 12.5px;
+
+
+}
+.set-about-creator a { /* What: About Link. Why: The link should read as a link. How: This colors it in the accent. */
+
+
+	color : var(--accent);
+
+
+}
+.set-about-creator a:hover { /* What: Hovered About Link. Why: The link should respond to the pointer. How: This darkens it to body text. */
+
+
+	color : var(--text);
+
+
+}
+
+/* #endregion set-about */
+
+/* #endregion set-section */
+
+/* #endregion settings-sections */
+
+/* #endregion settings-layout */
+
+/* #endregion tab--settings */
+
+

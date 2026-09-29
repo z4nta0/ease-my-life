@@ -77,24 +77,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 
 /* ─── Generic atoms ──────────────────────────────────────────────────────── */
 
-.btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 0 14px; height: 38px;
-  border-radius: 999px;
-  font-size: 14px; font-weight: 500;
-  letter-spacing: -0.005em;
-  transition: background .12s, color .12s, transform .08s;
-}
-.btn:active { transform: translateY(0.5px); }
-.btn:disabled { opacity: 0.5; cursor: default; }
-.btn--sm { height: 30px; padding: 0 11px; font-size: 13px; gap: 5px; border-radius: 999px; }
-.btn--ghost { color: var(--muted); }
-.btn--ghost:hover { color: var(--text); background: var(--surface); }
-.btn--danger { color: oklch(0.5 0.18 25); border: 0.5px solid currentColor; background: transparent; }
-.btn--danger:hover { background: oklch(0.97 0.02 25); }
-.btn--secondary { color: var(--text); border: 0.5px solid var(--border); background: var(--surface); }
-.btn--secondary:hover { border-color: var(--muted); }
-
 
 .section-h { display: flex; flex-direction: column; gap: 18px; }
 .section-title {
@@ -192,47 +174,9 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 }
 
 /* ── Today: group layout ──────────────────────────────────────────────── */
-.rail-kicker { padding: 0 12px 4px; }
-.rail-btn {
-  width: 100%;
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13.5px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  color: var(--muted);
-  transition: background .12s, color .12s;
-  text-align: left;
-}
-.rail-btn:hover { color: var(--text); }
-.rail-btn.is-on {
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-.rail-name { text-wrap: pretty; }
 @keyframes dashSweep {
   0%   { transform: scaleX(0); }
   100% { transform: scaleX(1); }
-}
-
-/* Mobile: the rail collapses into a scrolling pill row */
-@container app (max-width: 760px) {
-  .rail-kicker { display: none; }
-  .rail-btn {
-    flex-shrink: 0;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 0.5px solid var(--border);
-    background: var(--surface);
-    font-size: 13px;
-    white-space: nowrap;
-  }
-  .rail-btn.is-on {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-  }
 }
 /* Screen-reader-only live region (window.announce). Present from load so status
    changes are reliably announced; clipped rather than display:none, which would
@@ -247,8 +191,3 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   0%   { opacity: 0.85; transform: scale(1); border-width: 1.5px; }
   100% { opacity: 0;    transform: scale(2.6); border-width: 0.5px; }
 }
-/* Same InfoTip-trigger pattern as the entry cards' disabled icon buttons
-   (entry-card.module.css), for a full .btn standing in for a blocked action
-   inside an info tip. */
-.btn.is-disabled { opacity: 0.4; cursor: default; }
-.btn.is-disabled:hover { background: var(--bg); color: inherit; }
