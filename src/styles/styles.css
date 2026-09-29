@@ -136,3 +136,60 @@ body {
   0%   { opacity: 0.85; transform: scale(1); border-width: 1.5px; }
   100% { opacity: 0;    transform: scale(2.6); border-width: 0.5px; }
 }
+
+/* ─── Tab: Picker ────────────────────────────────────────────────────────── */
+@keyframes pvNewItemIn { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
+/* Creation UI dismissal: the in-progress editor collapses + fades before the
+   saved item pops into the pool list. */
+@keyframes pvNewItemOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-6px) scale(.98); } }
+
+/* ─── Tab: Data ──────────────────────────────────────────────────────────── */
+/* Filter-change entrance: when the group/scope changes the list remounts (keyed
+   on the filter) and each card fades + slides up with a small per-index stagger,
+   reading as a smooth reflow to the new filter. */
+@keyframes catEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+/* Show-filter boxes slide in horizontally (staggered) when the group changes;
+   the row is keyed on the group so the animation replays. */
+@keyframes pickerTabEnter {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* A freshly-added reminder / picker item row slides down + fades in when created
+   via "+ New reminder" / "+ Add to …", so the insertion reads as a deliberate
+   action rather than the row just popping into place. The editor Collapse below
+   it expands at the same time. */
+@keyframes rowInsert {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ─── New-picker form ───────────────────────────────────────────────────────  */
+@keyframes np-row-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+@keyframes tabFadeIn { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+/* Footer ↔ delete-confirm swap: whichever row appears fades + slides in (the
+   ternary branches carry distinct keys so React remounts them to replay this).
+   Covers every editor footer: picker item, reminder, picker settings, conditional. */
+@keyframes footSwapIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@keyframes footSwapOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(3px); } }
+
+/* While a drag is in progress, kill the grab-hover text-selection everywhere. */
+body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-select: none !important; }
+
+/* ── Onboarding ──────────────────────────────────────────────────────────
+   Welcome modal, get-started checklist, first-picker CTA, and the spotlight
+   tour (dim + cut-out + coach card). Uses app tokens throughout. */
+@keyframes obTourFade{
+  0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
+  50%{outline-color:oklch(from var(--accent) l c h/0.2)}
+}
+@keyframes obFade{from{opacity:0}to{opacity:1}}
+/* While a tour runs, every tab gets room to scroll a bottom-anchored target
+   clear of the tab bar; each tab's root reads the property (see CLAUDE.md's
+   body-level state rule). */
+body[data-tour-active]{--tab-tour-padding:200px}

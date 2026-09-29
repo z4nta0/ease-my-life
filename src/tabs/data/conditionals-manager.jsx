@@ -818,7 +818,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 						<h2 className={ cssModObj.catName }>Conditionals</h2>{ /* What: Category Name Element. Why: Every section needs its own visible name. How: This renders the literal text "Conditionals". */ }
 
-						<span className={ cssModObj.catCount }>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see styles2.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
+						<span className={ cssModObj.catCount }>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see conditionals-manager.module.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
 
 
 							<span>{ conIteArr.filter( ( conCurObj ) => conCurObj.active !== false ).length }</span>{ /* What: Count N Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }

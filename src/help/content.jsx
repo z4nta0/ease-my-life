@@ -561,7 +561,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr    : 'dataReminderRepeat',
-		padYcoNum : 0, // padYcoNum:0, unlike Today's card-based editor, this tab's .rd-edit wrapper overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot in styles2.css), so .rem-editor touches the footer row with zero gap.
+		padYcoNum : 0, // padYcoNum:0, unlike Today's card-based editor, this tab's .rd-edit wrapper overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot in ui/entry-editor.module.css), so .rem-editor touches the footer row with zero gap.
 		scrBoo    : true, // scrBoo is true here too, same reasoning as Today's addReminderRepeat.
 		selStr    : '[data-element-name-hook~="inlEdiDiv"]:not([data-element-name-hook~="remAddDiv"] *) [data-element-name-hook~="schEdiDiv"]',
 		titStr    : 'Reminder Schedule',
@@ -1232,7 +1232,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
-		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see styles2.css's .picker-h > div > .pill rule); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
+		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see picker-view.module.css's .picker-h > div rule, which sets the pill's --pill-margin-top); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
 		selStr    : '[data-element-name-hook~="picVieDiv"] [data-element-name-hook~="picTitHea"]',
 		titStr    : 'Picker Name'
 
@@ -1868,7 +1868,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	},
 
-	{ // What: Sections Navigation Help Item. Why: This is the on-demand help tip for the Sections Navigation element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Section rail, on mobile this collapses into a horizontal sticky pill bar pinned above the sections (see .settings-rail's own @container rule in styles2.css); on desktop it's a vertical sidebar. One combined highlight over the whole rail rather than per-button, matching the nav bar's own precedent.
+	{ // What: Sections Navigation Help Item. Why: This is the on-demand help tip for the Sections Navigation element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Section rail, on mobile this collapses into a horizontal sticky pill bar pinned above the sections (see .settings-rail's own @container rule in tab-settings.module.css); on desktop it's a vertical sidebar. One combined highlight over the whole rail rather than per-button, matching the nav bar's own precedent.
 
 
 		bodEle    : <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
@@ -2650,7 +2650,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
-		padYcoNum : 2, // padYcoNum: 2, same 6px gap to the pill below as the Pickers page (see .stat-picker-id > .pill's own margin-top in styles2.css); the default 8px pad on each side would overlap by 10px otherwise.
+		padYcoNum : 2, // padYcoNum: 2, same 6px gap to the pill below as the Pickers page (see .stat-picker-id's own --pill-margin-top in tab-stats.module.css); the default 8px pad on each side would overlap by 10px otherwise.
 		selStr    : '[data-element-name-hook~="picIdeDiv"] [data-element-name-hook~="picTitHea"]',
 		titStr    : 'Picker Name'
 
@@ -2770,7 +2770,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	// .editmode-banner-actions is the Cancel/Done pair in Edit Mode's own sticky banner. .editmode-foot-actions (styles2.css/tab-today.jsx) is the identical pair repeated in the footer, distinguished from the OTHER (non-editing) footer actions row that shares .today-foot-actions with it, finTarFun's comma syntax is fallback-only (see groupNameEdit's own comment in this file for why that distinction matters), so this needs its own class rather than reusing the shared one, and can't be combined with editmode-banner-actions into one selStr either, for the same reason (both are always present together while Edit Mode is on, so the first one found would always win).
+	// .editmode-banner-actions is the Cancel/Done pair in Edit Mode's own sticky banner. .editmode-foot-actions (tab-today.jsx) is the identical pair repeated in the footer, distinguished from the OTHER (non-editing) footer actions row that shares .today-foot-actions with it, finTarFun's comma syntax is fallback-only (see groupNameEdit's own comment in this file for why that distinction matters), so this needs its own class rather than reusing the shared one, and can't be combined with editmode-banner-actions into one selStr either, for the same reason (both are always present together while Edit Mode is on, so the first one found would always win).
 	{ // What: Cancel / Done Help Item. Why: This is the on-demand help tip for the Cancel / Done element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 

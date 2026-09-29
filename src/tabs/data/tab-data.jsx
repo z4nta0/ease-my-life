@@ -1891,7 +1891,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<h2 className={ cssModObj.catName }>{ picCurObj.name }</h2>{ /* What: Category Name Element. Why: Every card needs its own visible name. How: This renders picCurObj's own name. */ }
 
-										<span className={ cssModObj.catCount }>{ /* What: Category Count Span Element. Why: The eligible/total count needs 3 separate elements (see styles2.css) rather than one text run. How: This wraps the eligible count, the "of" separator, and the total count below. */ }
+										<span className={ cssModObj.catCount }>{ /* What: Category Count Span Element. Why: The eligible/total count needs 3 separate elements (see tab-data.module.css) rather than one text run. How: This wraps the eligible count, the "of" separator, and the total count below. */ }
 
 
 											<span>{ eliCouNum }</span>{ /* What: Eligible Count Span Element. Why: The count leads with how many items are currently eligible. How: This renders eliCouNum. */ }
