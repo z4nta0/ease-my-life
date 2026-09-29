@@ -3380,7 +3380,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	// #region Reminders Log Panel
 
-	// day-log.jsx's RemLogCom, dl-mk-r* classes are dedicated selector hooks, kept separate from the visually-styled .dl-r-name/.dl-r-when/.dl-r-st classes so adding them to the header row (alongside the data rows, for one column-spanning highlight) doesn't drag data-row font styling onto the header labels.
+	// day-log.jsx's RemLogCom, each column's header cell and data cells share one data-element-name-hook value, so one selector highlights the whole column without the header borrowing the data rows' font styling.
 	{ // What: Reminder Column Help Item. Why: This is the on-demand help tip for the Reminder Column element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -3423,7 +3423,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	// #region Picker/Conditional Log Panel
 
-	// day-log.jsx's GroLogCom, dl-mk-* here are the same kind of dedicated hooks. Deliberately TWO separate column groups (picker item rows vs. Conditionals section rows) rather than one shared set: the Conditionals section has its own full-width "Rested: .../Attached: ..." line between rows, which a single highlight spanning BOTH sections would otherwise stretch across, making it look like that unrelated text was part of the column.
+	// day-log.jsx's GroLogCom, these column hooks work the same way. Deliberately TWO separate column groups (picker item rows vs. Conditionals section rows) rather than one shared set: the Conditionals section has its own full-width "Rested: .../Attached: ..." line between rows, which a single highlight spanning BOTH sections would otherwise stretch across, making it look like that unrelated text was part of the column.
 	{ // What: Key Help Item. Why: This is the on-demand help tip for the Key element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 

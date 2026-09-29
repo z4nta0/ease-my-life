@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.Fragment) throughout, instead of importing individual named hooks.
+import cssModObj from './day-log.module.css'; // What: CSS Module Object. Why: The Day Log's own styles live in its module. How: Each className reads its hashed class from here.
+import React     from 'react';                // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.Fragment) throughout, instead of importing individual named hooks.
 
 
 import { CAD_NAM_OBJ } from '../../core/cadence.js';      // What: Cadence Namespace Object. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
@@ -342,7 +343,17 @@ function iteSubFun ( picRcdObj, iteRcdObj, booValNum ) {
 
 
 				{ `weight ${ iteRcdObj.weight ?? 1 }` }{ /* What: Weight Text. Why: Every dynamic item still shows its own base weight first. How: This renders iteRcdObj's own weight, defaulting to 1 for an older item with none set. */ }
-				{ booRouNum == null ? null : <span className={ ` dl-boost   ${ booRouNum ? '' : 'is-zero' } ` }> (+{ booRouNum })</span> }{ /* What: Boost Span Visibility Check. Why: A boost is only ever known at generation time, not for a manually-added item with no snapshot. How: This renders the "(+N)" boost span, muted via its own is-zero class when booRouNum is exactly 0. */ }
+				{ booRouNum == null ? null : ( // What: Boost Span Visibility Check. Why: A boost is only ever known at generation time, not for a manually-added item with no snapshot. How: This renders the "(+N)" boost span, muted via data-boost-zero-active when booRouNum is exactly 0.
+
+
+					<span
+						className={ cssModObj.dlBoost }
+
+						data-boost-zero-active={ !booRouNum || undefined } // What: Boost Zero Active Attribute. Why: No boost reads faint. How: This sets the presence-only attribute while booRouNum is 0.
+					> (+{ booRouNum })</span> // What: Boost Span Element. Why: A dynamic item's boost shows beside its weight. How: This renders booRouNum in parentheses, faint when it's zero.
+
+
+				) }
 
 
 			</React.Fragment>
@@ -506,7 +517,7 @@ function StaChiCom ( { iteFlaObj } ) {
 
 
 			<span
-				className='dl-none dl-mk-status'
+				className={ cssModObj.dlNone }
 
 				data-element-name-hook='logStaSpa'
 			>—</span> // What: No Rows Span Element. Why: An item with no pick-log rows today still needs a placeholder in its status column. How: This renders an em-dash display glyph. Its data-element-name-hook is read by help mode's Today catalog.
@@ -546,7 +557,7 @@ function StaChiCom ( { iteFlaObj } ) {
 
 
 		<span
-			className='dl-status dl-mk-status'
+			className={ cssModObj.dlStatus }
 
 			data-element-name-hook='logStaSpa'
 		>{ /* What: Status Chip Row Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -558,10 +569,10 @@ function StaChiCom ( { iteFlaObj } ) {
 				<span
 					key={ chiKeyStr }
 
-					className={ ` dl-ico   dl-c-${ chiKeyStr } ` }
+					className={` ${ cssModObj.dlIco }   ${ chiKeyStr === 'auto' ? cssModObj.dlCAuto : '' }   ${ chiKeyStr === 'push' ? cssModObj.dlCPush : '' }   ${ chiKeyStr === 'roll' ? cssModObj.dlCRoll : '' }   ${ chiKeyStr === 'skip' ? cssModObj.dlCSkip : '' }   ${ chiKeyStr === 'done' ? cssModObj.dlCDone : '' } `}
 
 					title={ chiTitStr }
-				>{ /* What: Status Chip Span Element. Why: Each earned status gets its own small colored icon. How: This wraps IcoSetCom for chiIcoStr/chiWidNum, tinted by its own dl-c-{chiKeyStr} modifier class. */ }
+				>{ /* What: Status Chip Span Element. Why: Each earned status gets its own small colored icon. How: This wraps IcoSetCom for chiIcoStr/chiWidNum, tinted by the dl-c modifier class matching chiKeyStr. */ }
 
 
 					<IcoSetCom
@@ -618,35 +629,31 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 	return (
 
 
-		<div className='dl-thead'>{ /* What: Table Head Div Element. Why: This is TabHeaCom's own root element. How: This renders the 5 shared column headers below. */ }
+		<div className={ cssModObj.dlThead }>{ /* What: Table Head Div Element. Why: This is TabHeaCom's own root element. How: This renders the 5 shared column headers below. */ }
 
 
-			<span
-				className='dl-mk-item'
-
-				data-element-name-hook='logIteSpa'
-			>{ heaLabStr }</span>{ /* What: Item Header Span Element. Why: The first column's own label varies by caller. How: This renders heaLabStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			<span data-element-name-hook='logIteSpa'>{ heaLabStr }</span>{ /* What: Item Header Span Element. Why: The first column's own label varies by caller. How: This renders heaLabStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 			<span
-				className='r dl-mk-atgen'
+				className={ cssModObj.r }
 
 				data-element-name-hook='logGenSpa'
 			>{ /* What: At Generation Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders an open-circle glyph plus a visually-hidden "At generation" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 				<span
-					className='dl-th-ic dl-th-ic--open'
+					className={ cssModObj.dlThIcOpen }
 
 					aria-hidden='true'
 				>○</span>{ /* What: At Generation Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders ○ hidden from screen readers. */ }
 
-				<span className='dl-vh'>At generation</span>{ /* What: At Generation Label Span Element. Why: Screen readers need the column's real name. How: This renders "At generation" visually hidden. */ }
+				<span className={ cssModObj.dlVh }>At generation</span>{ /* What: At Generation Label Span Element. Why: Screen readers need the column's real name. How: This renders "At generation" visually hidden. */ }
 
 
 			</span>
 
 			<span
-				className='r dl-mk-delta'
+				className={` ${ cssModObj.r }   ${ cssModObj.dlMkDelta } `}
 
 				data-element-name-hook='logDelSpa'
 			>{ /* What: Delta Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a delta glyph plus a visually-hidden "Change" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -654,31 +661,27 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 
 				<span aria-hidden='true'>Δ</span>{ /* What: Delta Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders Δ hidden from screen readers. */ }
 
-				<span className='dl-vh'>Change</span>{ /* What: Delta Label Span Element. Why: Screen readers need the column's real name. How: This renders "Change" visually hidden. */ }
+				<span className={ cssModObj.dlVh }>Change</span>{ /* What: Delta Label Span Element. Why: Screen readers need the column's real name. How: This renders "Change" visually hidden. */ }
 
 
 			</span>
 
 			<span
-				className='r dl-mk-after'
+				className={` ${ cssModObj.r }   ${ cssModObj.dlMkAfter } `}
 
 				data-element-name-hook='logAftSpa'
 			>{ /* What: After Header Span Element. Why: This column needs both a compact glyph and a real, screen-reader-only label. How: This renders a filled-circle glyph plus a visually-hidden "After" span. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-				<span
-					className='dl-th-ic'
+				<span aria-hidden='true'>●</span>{ /* What: After Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders ● hidden from screen readers. */ }
 
-					aria-hidden='true'
-				>●</span>{ /* What: After Glyph Span Element. Why: A compact glyph keeps the narrow column header short. How: This renders ● hidden from screen readers. */ }
-
-				<span className='dl-vh'>After</span>{ /* What: After Label Span Element. Why: Screen readers need the column's real name. How: This renders "After" visually hidden. */ }
+				<span className={ cssModObj.dlVh }>After</span>{ /* What: After Label Span Element. Why: Screen readers need the column's real name. How: This renders "After" visually hidden. */ }
 
 
 			</span>
 
 			<span
-				className='r dl-mk-status'
+				className={ cssModObj.r }
 
 				data-element-name-hook='logStaSpa'
 			>Status</span>{ /* What: Status Header Span Element. Why: The last column is a plain text header, no glyph needed. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -748,22 +751,22 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } ) {
 
 
 				<span
-					className='dl-val dl-mk-atgen r'
+					className={` ${ cssModObj.dlVal }   ${ cssModObj.r } `}
 
 					data-element-name-hook='logGenSpa'
-				><span className='dl-na'>N/A</span></span>{ /* What: At Generation Not Available Span Element. Why: There is no generation-time value to show. How: This renders the shared dl-na "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				><span className={ cssModObj.dlNa }>N/A</span></span>{ /* What: At Generation Not Available Span Element. Why: There is no generation-time value to show. How: This renders the shared dl-na "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 				<span
-					className='dl-delta dl-mk-delta flat r'
+					className={` ${ cssModObj.dlDelta }   ${ cssModObj.dlMkDelta }   ${ cssModObj.flat }   ${ cssModObj.r } `}
 
 					data-element-name-hook='logDelSpa'
 				>—</span>{ /* What: Delta Placeholder Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 				<span
-					className='dl-val dl-mk-after r'
+					className={` ${ cssModObj.dlVal }   ${ cssModObj.dlMkAfter }   ${ cssModObj.r } `}
 
 					data-element-name-hook='logAftSpa'
-				><span className='dl-na'>N/A</span></span>{ /* What: After Not Available Span Element. Why: There is no current value to show either. How: This renders the shared dl-na "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				><span className={ cssModObj.dlNa }>N/A</span></span>{ /* What: After Not Available Span Element. Why: There is no current value to show either. How: This renders the shared dl-na "N/A" placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			</React.Fragment>
@@ -791,19 +794,19 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } ) {
 
 
 			<span
-				className='dl-val dl-mk-atgen r'
+				className={` ${ cssModObj.dlVal }   ${ cssModObj.r } `}
 
 				data-element-name-hook='logGenSpa'
 			>{ effGenNum }</span>{ /* What: At Generation Value Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 			<span
-				className={ ` dl-delta   dl-mk-delta   ${ treClaStr }   r ` }
+				className={` ${ cssModObj.dlDelta }   ${ cssModObj.dlMkDelta }   ${ treClaStr === 'up' ? cssModObj.up : '' }   ${ treClaStr === 'down' ? cssModObj.down : '' }   ${ treClaStr === 'flat' ? cssModObj.flat : '' }   ${ cssModObj.r } `}
 
 				data-element-name-hook='logDelSpa'
 			>{ disTexStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 			<span
-				className='dl-val dl-after dl-mk-after r'
+				className={` ${ cssModObj.dlVal }   ${ cssModObj.dlAfter }   ${ cssModObj.dlMkAfter }   ${ cssModObj.r } `}
 
 				data-element-name-hook='logAftSpa'
 			>{ effAftNum }</span>{ /* What: After Value Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -868,23 +871,23 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 
 		<div
-			className='dl-block dl-cond-sec'
+			className={` ${ cssModObj.dlBlock }   ${ cssModObj.dlCondSec } `}
 
 			data-element-name-hook='logConDiv'
 		>{ /* What: Conditional Section Div Element. Why: This is ConSecCom's own root element, tinted blue via its own dl-cond-sec class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-			<div className='dl-block-h dl-block-h--static'>{ /* What: Conditional Section Header Div Element. Why: This mirrors PicBloCom's own static header shape. How: This renders the section's own title plus a count pill. */ }
+			<div className={` ${ cssModObj.dlBlockH }   ${ cssModObj.dlBlockHStatic } `}>{ /* What: Conditional Section Header Div Element. Why: This mirrors PicBloCom's own static header shape. How: This renders the section's own title plus a count pill. */ }
 
 
-				<span className='dl-block-name dl-cond-title'>Conditionals</span>{ /* What: Conditional Section Title Span Element. Why: This section needs its own plain title. How: This renders the literal text "Conditionals". */ }
+				<span className={` ${ cssModObj.dlBlockName }   ${ cssModObj.dlCondTitle } `}>Conditionals</span>{ /* What: Conditional Section Title Span Element. Why: This section needs its own plain title. How: This renders the literal text "Conditionals". */ }
 
-				<span className='dl-mode'>{ conRcdArr.length }</span>{ /* What: Conditional Count Span Element. Why: The header shows how many conditionals this section covers. How: This renders conRcdArr's own length. */ }
+				<span className={ cssModObj.dlMode }>{ conRcdArr.length }</span>{ /* What: Conditional Count Span Element. Why: The header shows how many conditionals this section covers. How: This renders conRcdArr's own length. */ }
 
 
 			</div>
 
-			<div className='dl-table'>{ /* What: Conditional Table Div Element. Why: This groups the shared header row with every conditional row below it. How: This renders TabHeaCom followed by one row per conRcdArr entry. */ }
+			<div className={ cssModObj.dlTable }>{ /* What: Conditional Table Div Element. Why: This groups the shared header row with every conditional row below it. How: This renders TabHeaCom followed by one row per conRcdArr entry. */ }
 
 
 				<TabHeaCom heaLabStr='Conditional' />{ /* What: Table Head Component. Why: This table's first column needs its own "Conditional" label instead of the default "Item". How: This renders with heaLabStr explicitly set. */ }
@@ -910,21 +913,21 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 						<React.Fragment key={ conRcdObj.id }>{ /* What: Conditional Row Fragment Element. Why: The row itself and its own affected-pickers strip are siblings, not nested. How: This groups the dl-trow row and the dl-cond-aff strip below without an extra wrapping element. */ }
 
 
-							<div className='dl-trow dl-cond-row'>{ /* What: Conditional Row Div Element. Why: This is one conditional's own full row, spanning name/subline, value cells and its own triggered pill. How: This renders the name/mode span, ValCelCom, and the triggered pill below. */ }
+							<div className={` ${ cssModObj.dlTrow }   ${ cssModObj.dlCondRow } `}>{ /* What: Conditional Row Div Element. Why: This is one conditional's own full row, spanning name/subline, value cells and its own triggered pill. How: This renders the name/mode span, ValCelCom, and the triggered pill below. */ }
 
 
 								<span
-									className='dl-item dl-mk-item'
+									className={ cssModObj.dlItem }
 
 									data-element-name-hook='logIteSpa'
 								>{ /* What: Conditional Name Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-									<span className='dl-nrow'>{ /* What: Name Row Span Element. Why: The name and mode pill sit side by side on their own row above the subline. How: This renders conRcdObj's own name plus its modLabStr pill. */ }
+									<span className={ cssModObj.dlNrow }>{ /* What: Name Row Span Element. Why: The name and mode pill sit side by side on their own row above the subline. How: This renders conRcdObj's own name plus its modLabStr pill. */ }
 
 
 										<InfTipCom
-											className='dl-name'
+											className={ cssModObj.dlName }
 
 											labTexStr={ conRcdObj.name }
 											trnOnlBoo
@@ -933,7 +936,9 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 
 										<InfTipCom
-											className={ ` dl-mode   dl-mode--cond   ${ neuModBoo ? 'is-neutral' : '' } ` }
+											className={` ${ cssModObj.dlMode }   ${ cssModObj.dlModeCond } `}
+
+											data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random conditionals read neutral. How: This sets the presence-only attribute while neuModBoo is true, which InfTipCom forwards to its trigger.
 
 											labTexStr={ modLabStr }
 											trnOnlBoo
@@ -942,7 +947,7 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 									</span>
 
-									<span className='dl-sub'>{ conSubFun( conRcdObj ) }</span>{ /* What: Conditional Subline Span Element. Why: Every conditional shows its own odds/range text beneath its name. How: This renders conSubFun's own result for conRcdObj. */ }
+									<span className={ cssModObj.dlSub }>{ conSubFun( conRcdObj ) }</span>{ /* What: Conditional Subline Span Element. Why: Every conditional shows its own odds/range text beneath its name. How: This renders conSubFun's own result for conRcdObj. */ }
 
 
 								</span>
@@ -958,13 +963,13 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 
 								<span
-									className='dl-status dl-mk-status'
+									className={ cssModObj.dlStatus }
 
 									data-element-name-hook='logStaSpa'
 								>{ /* What: Conditional Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-									<span className={ ` dl-st-pill   ${ trgFlaBoo ? 'dl-st-trig' : 'dl-st-nottrig' } ` }>{ trgFlaBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Triggered Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from trgFlaBoo. */ }
+									<span className={` ${ cssModObj.dlStPill }   ${ trgFlaBoo ? cssModObj.dlStTrig : cssModObj.dlStNottrig } `}>{ trgFlaBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Triggered Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from trgFlaBoo. */ }
 
 
 								</span>
@@ -972,7 +977,7 @@ function ConSecCom ( { picGroArr, staAppObj } ) {
 
 							</div>
 
-							<div className='dl-cond-aff'>{ /* What: Conditional Affected Div Element. Why: This strip names which pickers this conditional actually governs. How: This renders a branch glyph plus attJsxArr, worded differently depending on trgFlaBoo. */ }
+							<div className={ cssModObj.dlCondAff }>{ /* What: Conditional Affected Div Element. Why: This strip names which pickers this conditional actually governs. How: This renders a branch glyph plus attJsxArr, worded differently depending on trgFlaBoo. */ }
 
 
 								<IcoSetCom icoKeyStr='braEle' />{ /* What: Icon Shape Component. Why: This strip needs a small branch glyph marking it as a "this affects these" note. How: This renders IcoSetCom's own "branch" shape. */ }
@@ -1070,24 +1075,26 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 
 			<div
-				className='dl-block'
+				className={ cssModObj.dlBlock }
 
 				data-element-name-hook='logBloDiv'
 			>{ /* What: Rested Picker Block Div Element. Why: This is the whole static-rested variant's own root element. How: This renders a single non-interactive header row, no table beneath it. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-				<div className='dl-block-h dl-block-h--static'>{ /* What: Rested Block Header Div Element. Why: This mirrors the interactive header's own layout without being a button. How: This renders the picker's own name/mode pill plus the rested strip. */ }
+				<div className={` ${ cssModObj.dlBlockH }   ${ cssModObj.dlBlockHStatic } `}>{ /* What: Rested Block Header Div Element. Why: This mirrors the interactive header's own layout without being a button. How: This renders the picker's own name/mode pill plus the rested strip. */ }
 
 
-					<span className='dl-name-mode'>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
+					<span className={ cssModObj.dlNameMode }>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
 
 
-						<span className='dl-block-name'>{ picRcdObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRcdObj's own name directly. */ }
+						<span className={ cssModObj.dlBlockName }>{ picRcdObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRcdObj's own name directly. */ }
 
 
 
 						<InfTipCom
-							className={ ` dl-mode   ${ neuModBoo ? 'neutral' : '' } ` }
+							className={ cssModObj.dlMode }
+
+							data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random pickers read neutral. How: This sets the presence-only attribute while neuModBoo is true, which InfTipCom forwards to its trigger.
 
 							labTexStr={ modLabStr }
 							trnOnlBoo
@@ -1096,12 +1103,12 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 					</span>
 
-					<span className='dl-rest'>{ /* What: Rest Span Element. Why: This groups the rested icon/text with which conditional caused it. How: This renders the "Rested" strip plus conRcdObj's own name when found. */ }
+					<span className={ cssModObj.dlRest }>{ /* What: Rest Span Element. Why: This groups the rested icon/text with which conditional caused it. How: This renders the "Rested" strip plus conRcdObj's own name when found. */ }
 
 
-						<span className='dl-rest-l1'><IcoSetCom icoKeyStr='mooEle' />Rested</span>{ /* What: Rest Label Span Element. Why: This is the actual "rested today" indicator. How: This renders a moon glyph plus the literal text "Rested". */ }
+						<span className={ cssModObj.dlRestL1 }><IcoSetCom icoKeyStr='mooEle' />Rested</span>{ /* What: Rest Label Span Element. Why: This is the actual "rested today" indicator. How: This renders a moon glyph plus the literal text "Rested". */ }
 
-						{ conRcdObj && <span className='dl-rest-cond'>{ conRcdObj.name }</span> }{ /* What: Rest Conditional Visibility Check. Why: Naming which conditional caused the rest is only possible when one was actually found. How: This renders conRcdObj's own name only while conRcdObj is truthy. */ }
+						{ conRcdObj && <span className={ cssModObj.dlRestCond }>{ conRcdObj.name }</span> }{ /* What: Rest Conditional Visibility Check. Why: Naming which conditional caused the rest is only possible when one was actually found. How: This renders conRcdObj's own name only while conRcdObj is truthy. */ }
 
 
 					</span>
@@ -1128,14 +1135,14 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 
 		<div
-			className={ ` dl-block   ${ bloOpeBoo ? '' : 'is-closed' } ` }
+			className={ cssModObj.dlBlock }
 
 			data-element-name-hook='logBloDiv'
-		>{ /* What: Picker Block Div Element. Why: This is the interactive variant's own root element. How: This toggles its own is-closed class per bloOpeBoo, wrapping the header button and the collapsible table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Picker Block Div Element. Why: This is the interactive variant's own root element. How: This wraps the header button, whose aria-expanded reflects bloOpeBoo, and the collapsible table below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<button
-				className='dl-block-h'
+				className={ cssModObj.dlBlockH }
 
 				type='button'
 
@@ -1145,17 +1152,19 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 			>{ /* What: Block Header Button Element. Why: The whole header is the actual expand/collapse control. How: This flips bloOpeBoo on click and reflects it via aria-expanded. */ }
 
 
-				<span className='dl-chev'><IcoSetCom icoKeyStr='chvEle' /></span>{ /* What: Chevron Span Element. Why: A chevron glyph signals this header is expandable. How: This renders IcoSetCom's own "chevron" shape, rotated via CSS from bloOpeBoo's own is-closed class above. */ }
+				<span className={ cssModObj.dlChev }><IcoSetCom icoKeyStr='chvEle' /></span>{ /* What: Chevron Span Element. Why: A chevron glyph signals this header is expandable. How: This renders IcoSetCom's own "chevron" shape, rotated via CSS from its header's own aria-expanded. */ }
 
-				<span className='dl-name-mode'>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
+				<span className={ cssModObj.dlNameMode }>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picRcdObj's own name plus its modLabStr pill. */ }
 
 
-					<span className='dl-block-name'>{ picRcdObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRcdObj's own name directly. */ }
+					<span className={ cssModObj.dlBlockName }>{ picRcdObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRcdObj's own name directly. */ }
 
 
 
 					<InfTipCom
-						className={ ` dl-mode   ${ neuModBoo ? 'neutral' : '' } ` }
+						className={ cssModObj.dlMode }
+
+						data-mode-neutral-active={ neuModBoo || undefined } // What: Mode Neutral Active Attribute. Why: Weighted and random pickers read neutral. How: This sets the presence-only attribute while neuModBoo is true, which InfTipCom forwards to its trigger.
 
 						labTexStr={ modLabStr }
 						trnOnlBoo
@@ -1164,7 +1173,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 				</span>
 
-				<span className='dl-sum'>{ /* What: Summary Span Element. Why: The header's own right-hand side summarizes this picker's own item/done counts. How: This renders the item count, plus a done chip once donCouNum is positive. */ }
+				<span className={ cssModObj.dlSum }>{ /* What: Summary Span Element. Why: The header's own right-hand side summarizes this picker's own item/done counts. How: This renders the item count, plus a done chip once donCouNum is positive. */ }
 
 
 					<span>{ picIteArr.length } item{ picIteArr.length === 1 ? '' : 's' }</span>{ /* What: Item Count Span Element. Why: The header always shows how many items this picker has. How: This renders picIteArr's own length, pluralized. */ }
@@ -1172,7 +1181,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 					{ donCouNum > 0 && ( // What: Done Chip Visibility Check. Why: The done chip only makes sense once at least 1 item is actually completed. How: This renders the chip only while donCouNum is positive.
 
 
-						<span className='dl-dchip'>{ /* What: Done Chip Span Element. Why: The done count reads with its own check glyph. How: This wraps the glyph and the count. */ }
+						<span className={ cssModObj.dlDchip }>{ /* What: Done Chip Span Element. Why: The done count reads with its own check glyph. How: This wraps the glyph and the count. */ }
 
 
 							<IcoSetCom
@@ -1201,20 +1210,20 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 			<ColDisCom open={ bloOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The item table below should only exist in the DOM while this block is actually expanded. How: This wraps the table, driven by bloOpeBoo. */ }
 
 
-				<div className='dl-table'>{ /* What: Item Table Div Element. Why: This groups the shared header row with every item row below it. How: This renders TabHeaCom followed by one row per picIteArr entry. */ }
+				<div className={ cssModObj.dlTable }>{ /* What: Item Table Div Element. Why: This groups the shared header row with every item row below it. How: This renders TabHeaCom followed by one row per picIteArr entry. */ }
 
 
 					<TabHeaCom />{ /* What: Table Head Component. Why: This item table needs the shared column headers. How: This renders with its own default 'Item' first-column label. */ }
 
 
 
-					{ picIteArr.length === 0 && <div className='dl-empty'>This picker has no items.</div> }{ /* What: Empty Picker Visibility Check. Why: A picker with no items at all needs an explanatory row instead of an empty table. How: This renders only while picIteArr's own length is 0. */ }
+					{ picIteArr.length === 0 && <div className={ cssModObj.dlEmpty }>This picker has no items.</div> }{ /* What: Empty Picker Visibility Check. Why: A picker with no items at all needs an explanatory row instead of an empty table. How: This renders only while picIteArr's own length is 0. */ }
 
 					{ picIteArr.map( ( iteRcdObj ) => { // What: Item Row Map Callback. Why: One row is needed per item in picIteArr. How: This builds each row's own flags, done state and value-mode check before returning its JSX below.
 
 
 						const iteFlaObj = iteFlaMap.get( iteRcdObj.id );                      // What: Item Flags Object. Why: This row's own status chips and done state both read from the same flags object. How: This reads iteFlaMap's own entry for iteRcdObj's own id.
-						const iteDonBoo = iteFlaObj && iteFlaObj.comBoo;                      // What: Item Done Boolean. Why: A completed item gets its own is-done row styling. How: This is true only when iteFlaObj exists and its own comBoo flag is set.
+						const iteDonBoo = iteFlaObj && iteFlaObj.comBoo;                      // What: Item Done Boolean. Why: A completed item gets its own done row styling. How: This is true only when iteFlaObj exists and its own comBoo flag is set.
 						const hasValBoo = hasValFun( picRcdObj.mode ) && !iteRcdObj.vacation; // What: Has Value Boolean. Why: An item on vacation never shows a value, even under a value-tracking mode. How: This combines hasValFun's own mode check with iteRcdObj's own vacation flag.
 
 
@@ -1225,19 +1234,22 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 							<div
 								key={ iteRcdObj.id }
 
-								className={ ` dl-trow   ${ iteDonBoo ? 'is-done' : '' }   ${ iteRcdObj.vacation ? 'is-dim' : '' } ` }
-							>{ /* What: Item Row Div Element. Why: This is one item's own full row, spanning name/subline, value cells and status. How: This toggles its own is-done/is-dim classes from iteDonBoo/iteRcdObj.vacation. */ }
+								className={ cssModObj.dlTrow }
+
+								data-row-done-active={ iteDonBoo || undefined } // What: Row Done Active Attribute. Why: A completed item's row reads green. How: This sets the presence-only attribute while iteDonBoo is true.
+								data-row-vacation-active={ iteRcdObj.vacation || undefined } // What: Row Vacation Active Attribute. Why: An item on vacation reads quieter. How: This sets the presence-only attribute while the item is on vacation.
+							>{ /* What: Item Row Div Element. Why: This is one item's own full row, spanning name/subline, value cells and status. How: This marks itself with data-row-done-active/data-row-vacation-active from iteDonBoo/iteRcdObj.vacation. */ }
 
 
 								<span
-									className='dl-item dl-mk-item'
+									className={ cssModObj.dlItem }
 
 									data-element-name-hook='logIteSpa'
 								>{ /* What: Item Name Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 									<InfTipCom
-										className='dl-name'
+										className={ cssModObj.dlName }
 
 										labTexStr={ iteRcdObj.name }
 										trnOnlBoo
@@ -1245,7 +1257,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 
 
-									<span className='dl-sub'>{ iteSubFun( picRcdObj, iteRcdObj, hasValBoo ? genIteObj[ iteRcdObj.id ] : null ) }</span>{ /* What: Item Subline Span Element. Why: Every item shows its own weight/range/boost text beneath its name. How: This renders iteSubFun's own result, passing the generation snapshot only while hasValBoo. */ }
+									<span className={ cssModObj.dlSub }>{ iteSubFun( picRcdObj, iteRcdObj, hasValBoo ? genIteObj[ iteRcdObj.id ] : null ) }</span>{ /* What: Item Subline Span Element. Why: Every item shows its own weight/range/boost text beneath its name. How: This renders iteSubFun's own result, passing the generation snapshot only while hasValBoo. */ }
 
 
 								</span>
@@ -1263,10 +1275,10 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } ) {
 
 								{ iteRcdObj.vacation // What: Vacation Status Check. Why: A vacationing item shows a plain "Inactive" label instead of the normal status chips. How: This renders the inactive span for a vacationing item, StaChiCom otherwise.
 									? <span
-										className='dl-status dl-mk-status'
+										className={ cssModObj.dlStatus }
 
 										data-element-name-hook='logStaSpa'
-									><span className='dl-vac'>Inactive</span></span> // What: Inactive Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column. Its data-element-name-hook is read by help mode's Today catalog.
+									><span className={ cssModObj.dlVac }>Inactive</span></span> // What: Inactive Status Span Element. Why: A vacationing item has no chips to show. How: This renders the plain Inactive label in the status column. Its data-element-name-hook is read by help mode's Today catalog.
 									: <StaChiCom iteFlaObj={ iteFlaObj } />                                                    // What: Status Chip Component. Why: Every other item shows its own status chips. How: This passes the item's own flags.
 								}
 
@@ -1370,13 +1382,13 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 	return (
 
 
-		<div className='dl-panel'>{ /* What: Group Log Panel Div Element. Why: This is GroLogCom's own root element. How: This renders the panel header, the shared key/legend, and the conditionals/pickers body below. */ }
+		<div className={ cssModObj.dlPanel }>{ /* What: Group Log Panel Div Element. Why: This is GroLogCom's own root element. How: This renders the panel header, the shared key/legend, and the conditionals/pickers body below. */ }
 
 
-			<div className='dl-panel-h'>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
+			<div className={ cssModObj.dlPanelH }>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
 
 
-				<span className='dl-kicker'>{ /* What: Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus groNamStr and forTimFun's own formatted time. */ }
+				<span className={ cssModObj.dlKicker }>{ /* What: Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus groNamStr and forTimFun's own formatted time. */ }
 
 
 					<IcoSetCom icoKeyStr='logEle' />{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable log glyph. How: This renders IcoSetCom's own "log" shape. */ }
@@ -1392,7 +1404,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 
 					<button
-						className='dl-close'
+						className={ cssModObj.dlClose }
 
 						type='button'
 
@@ -1417,21 +1429,21 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 			</div>
 
 			<div
-				className='dl-key'
+				className={ cssModObj.dlKey }
 
 				data-element-name-hook='logKeyDiv'
 			>{ /* What: Key Legend Div Element. Why: The panel needs a one-time legend explaining every status chip's own meaning. How: This renders 5 icon/label pairs, one per possible status. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-				<span className='dl-kicker'>Key</span>{ /* What: Key Kicker Span Element. Why: The legend needs its own small title. How: This renders the literal text "Key". */ }
+				<span className={ cssModObj.dlKicker }>Key</span>{ /* What: Key Kicker Span Element. Why: The legend needs its own small title. How: This renders the literal text "Key". */ }
 
-				<span className='dl-key-items'>{ /* What: Key Items Span Element. Why: All 5 legend entries are grouped as one inline run. How: This renders one dl-ki span per possible status chip. */ }
-
-
-					<span className='dl-ki'>{ /* What: Auto Key Item Span Element. Why: The legend needs an entry explaining the auto-picked chip. How: This renders the shuffle glyph plus its own bold label. */ }
+				<span className={ cssModObj.dlKeyItems }>{ /* What: Key Items Span Element. Why: All 5 legend entries are grouped as one inline run. How: This renders one dl-ki span per possible status chip. */ }
 
 
-						<span className='dl-ico dl-c-auto'>{ /* What: Auto Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+					<span className={ cssModObj.dlKi }>{ /* What: Auto Key Item Span Element. Why: The legend needs an entry explaining the auto-picked chip. How: This renders the shuffle glyph plus its own bold label. */ }
+
+
+						<span className={` ${ cssModObj.dlIco }   ${ cssModObj.dlCAuto } `}>{ /* What: Auto Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom icoKeyStr='shuEle' />{ /* What: Icon Set Component. Why: The legend shows the same glyph the chip uses. How: This draws the shuEle shape. */ }
@@ -1444,10 +1456,10 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 					</span>
 
-					<span className='dl-ki'>{ /* What: Pushed Key Item Span Element. Why: The legend needs an entry explaining the pushed chip. How: This renders the push glyph plus its own bold label. */ }
+					<span className={ cssModObj.dlKi }>{ /* What: Pushed Key Item Span Element. Why: The legend needs an entry explaining the pushed chip. How: This renders the push glyph plus its own bold label. */ }
 
 
-						<span className='dl-ico dl-c-push'>{ /* What: Pushed Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.dlIco }   ${ cssModObj.dlCPush } `}>{ /* What: Pushed Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1463,10 +1475,10 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 					</span>
 
-					<span className='dl-ki'>{ /* What: Rolled Off Key Item Span Element. Why: The legend needs an entry explaining the rolled-off chip. How: This renders the roll glyph plus its own bold label. */ }
+					<span className={ cssModObj.dlKi }>{ /* What: Rolled Off Key Item Span Element. Why: The legend needs an entry explaining the rolled-off chip. How: This renders the roll glyph plus its own bold label. */ }
 
 
-						<span className='dl-ico dl-c-roll'>{ /* What: Rolled Off Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.dlIco }   ${ cssModObj.dlCRoll } `}>{ /* What: Rolled Off Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1482,10 +1494,10 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 					</span>
 
-					<span className='dl-ki'>{ /* What: Skipped Key Item Span Element. Why: The legend needs an entry explaining the skipped chip. How: This renders the x glyph plus its own bold label. */ }
+					<span className={ cssModObj.dlKi }>{ /* What: Skipped Key Item Span Element. Why: The legend needs an entry explaining the skipped chip. How: This renders the x glyph plus its own bold label. */ }
 
 
-						<span className='dl-ico dl-c-skip'>{ /* What: Skipped Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.dlIco }   ${ cssModObj.dlCSkip } `}>{ /* What: Skipped Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1501,10 +1513,10 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 					</span>
 
-					<span className='dl-ki'>{ /* What: Completed Key Item Span Element. Why: The legend needs an entry explaining the completed chip. How: This renders the check glyph plus its own bold label. */ }
+					<span className={ cssModObj.dlKi }>{ /* What: Completed Key Item Span Element. Why: The legend needs an entry explaining the completed chip. How: This renders the check glyph plus its own bold label. */ }
 
 
-						<span className='dl-ico dl-c-done'>{ /* What: Completed Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
+						<span className={` ${ cssModObj.dlIco }   ${ cssModObj.dlCDone } `}>{ /* What: Completed Key Icon Span Element. Why: The legend icon is tinted like the real chip. How: This wraps the glyph in the chip's own color class. */ }
 
 
 							<IcoSetCom
@@ -1526,7 +1538,7 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
 
 			</div>
 
-			<div className='dl-body'>{ /* What: Group Body Div Element. Why: This groups the conditionals section with every picker block below it. How: This renders ConSecCom followed by one PicBloCom per sorPicArr entry. */ }
+			<div className={ cssModObj.dlBody }>{ /* What: Group Body Div Element. Why: This groups the conditionals section with every picker block below it. How: This renders ConSecCom followed by one PicBloCom per sorPicArr entry. */ }
 
 
 				<ConSecCom
@@ -1582,8 +1594,8 @@ function GroLogCom ( { groNamStr, onCloLogFun, staAppObj } ) {
  *                            clicked; the caller owns actually toggling its
  *                            own log panel open state.
  * @param props.open        - Open: Whether this section's own log panel is
- *                            currently open; drives the chip's own "is-on"
- *                            styling and aria-pressed state.
+ *                            currently open; drives the chip's own
+ *                            aria-pressed state, which its styling keys off.
  *
  * @returns This component's own single rendered button.
  *
@@ -1601,7 +1613,7 @@ function LogChiCom ( { onTogLogFun, open } ) {
 
 
 		<button
-			className={ ` dl-chip   ${ open ? 'is-on' : '' } ` }
+			className={ cssModObj.dlChip }
 
 			data-element-name-hook='logChiBut'
 
@@ -1619,7 +1631,7 @@ function LogChiCom ( { onTogLogFun, open } ) {
 
 
 			} }
-		>{ /* What: Day Log Toggle Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open as both its "is-on" class and its aria-pressed state, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
+		>{ /* What: Day Log Toggle Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 			<IcoSetCom icoKeyStr='logEle' />{ /* What: Icon Shape Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
@@ -1745,13 +1757,13 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 	return (
 
 
-		<div className='dl-panel'>{ /* What: Reminders Log Panel Div Element. Why: This is RemLogCom's own root element. How: This renders the panel header plus the reminder rows body below. */ }
+		<div className={ cssModObj.dlPanel }>{ /* What: Reminders Log Panel Div Element. Why: This is RemLogCom's own root element. How: This renders the panel header plus the reminder rows body below. */ }
 
 
-			<div className='dl-panel-h'>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
+			<div className={ cssModObj.dlPanelH }>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onCloLogFun's own button when provided. */ }
 
 
-				<span className='dl-kicker'>{ /* What: Kicker Span Element. Why: The panel names which anchor date this snapshot covers. How: This renders a clock glyph plus ancDatObj's own formatted weekday/date. */ }
+				<span className={ cssModObj.dlKicker }>{ /* What: Kicker Span Element. Why: The panel names which anchor date this snapshot covers. How: This renders a clock glyph plus ancDatObj's own formatted weekday/date. */ }
 
 
 					<IcoSetCom icoKeyStr='clcEle' />{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable clock glyph. How: This renders IcoSetCom's own "clock" shape. */ }
@@ -1767,7 +1779,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 
 					<button
-						className='dl-close'
+						className={ cssModObj.dlClose }
 
 						type='button'
 
@@ -1792,26 +1804,22 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 			</div>
 
 
-			<div className='dl-body dl-body--rem'>{ /* What: Reminders Body Div Element. Why: dl-mk-r* below are pure selector hooks for help mode (see help/content.jsx), kept separate from .dl-r-name/.dl-r-when/.dl-r-st, which carry their own font styling meant for data rows; reusing those directly on the header would restyle it away from the small-caps look every other header cell has. How: This renders the header row plus one row per remRowArr entry below. */ }
+			<div className={` ${ cssModObj.dlBody }   ${ cssModObj.dlBodyRem } `}>{ /* What: Reminders Body Div Element. Why: The reminders table sits inset under the panel header, its header cells carrying their own data-element-name-hook values for help mode instead of borrowing the data rows' styled classes. How: This renders the header row plus one row per remRowArr entry below. */ }
 
 
-				<div className='dl-rt-head'>{ /* What: Reminders Table Head Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 shared column-header spans. */ }
+				<div className={ cssModObj.dlRtHead }>{ /* What: Reminders Table Head Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 shared column-header spans. */ }
 
 
-					<span
-						className='dl-mk-rname'
-
-						data-element-name-hook='remNamSpa'
-					>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode's Today catalog. */ }
+					<span data-element-name-hook='remNamSpa'>Reminder</span>{ /* What: Reminder Header Span Element. Why: This labels the name column. How: This renders the literal text "Reminder". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 					<span
-						className='dl-mk-rwhen'
+						className={ cssModObj.dlMkRwhen }
 
 						data-element-name-hook='remWheSpa'
 					>When</span>{ /* What: When Header Span Element. Why: This labels the schedule column. How: This renders the literal text "When". Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 					<span
-						className='r dl-mk-rst'
+						className={ cssModObj.r }
 
 						data-element-name-hook='remStaSpa'
 					>Status</span>{ /* What: Status Header Span Element. Why: This labels the status column. How: This renders the literal text "Status". Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -1819,7 +1827,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 				</div>
 
-				{ remRowArr.length === 0 && <div className='dl-empty'>No reminders yet.</div> }{ /* What: Empty Reminders Visibility Check. Why: No non-hidden tasks at all needs an explanatory row instead of an empty table. How: This renders only while remRowArr's own length is 0. */ }
+				{ remRowArr.length === 0 && <div className={ cssModObj.dlEmpty }>No reminders yet.</div> }{ /* What: Empty Reminders Visibility Check. Why: No non-hidden tasks at all needs an explanatory row instead of an empty table. How: This renders only while remRowArr's own length is 0. */ }
 
 				{ remRowArr.map( ( { dueLabStr, rowStaStr, tasRcdObj, wheSumStr } ) => ( // What: Reminder Row Map Callback. Why: One row is needed per remRowArr entry. How: This destructures each row and renders its own name/when/status cells.
 
@@ -1827,12 +1835,16 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 					<div
 						key={ tasRcdObj.id }
 
-						className={ ` dl-rt-row   ${ rowStaStr === 'done' ? 'is-done' : rowStaStr === 'due' ? 'is-due' : rowStaStr === 'notdue' ? 'is-notdue' : '' } ` } // What: Row Status Class Pick. Why: Each status tints its row differently, and a skipped row takes no extra class. How: This maps done, due and notdue to their own classes and anything else to none.
-					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This toggles its own is-done/is-due/is-notdue classes from rowStaStr. */ }
+						className={ cssModObj.dlRtRow }
+
+						data-row-done-active={ rowStaStr === 'done' || undefined } // What: Row Done Active Attribute. Why: A done reminder's row reads green. How: This sets the presence-only attribute while rowStaStr is 'done'.
+						data-row-due-active={ rowStaStr === 'due' || undefined } // What: Row Due Active Attribute. Why: A reminder due today reads in the accent. How: This sets the presence-only attribute while rowStaStr is 'due'.
+						data-row-upcoming-active={ rowStaStr === 'notdue' || undefined } // What: Row Upcoming Active Attribute. Why: A reminder not due yet reads quieter. How: This sets the presence-only attribute while rowStaStr is 'notdue'.
+					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This marks itself with data-row-done-active, data-row-due-active, or data-row-upcoming-active from rowStaStr. */ }
 
 
 						<InfTipCom
-							className='dl-r-name dl-mk-rname'
+							className={ cssModObj.dlRName }
 
 							data-element-name-hook='remNamSpa'
 
@@ -1843,13 +1855,13 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 
 						<span
-							className='dl-r-when dl-mk-rwhen'
+							className={` ${ cssModObj.dlRWhen }   ${ cssModObj.dlMkRwhen } `}
 
 							data-element-name-hook='remWheSpa'
 						>{ wheSumStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheSumStr directly. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 						<span
-							className='dl-r-st dl-mk-rst'
+							className={ cssModObj.dlRSt }
 
 							data-element-name-hook='remStaSpa'
 						>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -1861,7 +1873,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 								<React.Fragment>{ /* What: Done Status Fragment Element. Why: The check icon and its own Done pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-									<span className='dl-ico dl-c-done'>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
+									<span className={` ${ cssModObj.dlIco }   ${ cssModObj.dlCDone } `}>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
 
 
 										<IcoSetCom
@@ -1872,7 +1884,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 									</span>
 
-									<span className='dl-st-pill dl-st-done'>Done</span>{ /* What: Done Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
+									<span className={` ${ cssModObj.dlStPill }   ${ cssModObj.dlStDone } `}>Done</span>{ /* What: Done Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
 
 
 								</React.Fragment>
@@ -1881,7 +1893,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 
 
-							{ rowStaStr === 'due' && <span className='dl-st-pill dl-st-due'>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while rowStaStr is 'due'. */ }
+							{ rowStaStr === 'due' && <span className={` ${ cssModObj.dlStPill }   ${ cssModObj.dlStDue } `}>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while rowStaStr is 'due'. */ }
 
 
 
@@ -1891,7 +1903,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 								<React.Fragment>{ /* What: Skip Status Fragment Element. Why: The x icon and its own Skipped pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-									<span className='dl-ico dl-c-skip'>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
+									<span className={` ${ cssModObj.dlIco }   ${ cssModObj.dlCSkip } `}>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
 
 
 										<IcoSetCom
@@ -1902,7 +1914,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 									</span>
 
-									<span className='dl-st-pill dl-st-skip'>Skipped</span>{ /* What: Skip Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
+									<span className={` ${ cssModObj.dlStPill }   ${ cssModObj.dlStSkip } `}>Skipped</span>{ /* What: Skip Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
 
 
 								</React.Fragment>
@@ -1911,7 +1923,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } ) {
 
 
 
-							{ rowStaStr === 'notdue' && <span className='dl-st-not'>{ dueLabStr }</span> }{ /* What: Not Due Status Visibility Check. Why: A not-yet-due row shows its own relative due label instead of a pill. How: This renders only while rowStaStr is 'notdue'. */ }
+							{ rowStaStr === 'notdue' && <span className={ cssModObj.dlStNot }>{ dueLabStr }</span> }{ /* What: Not Due Status Visibility Check. Why: A not-yet-due row shows its own relative due label instead of a pill. How: This renders only while rowStaStr is 'notdue'. */ }
 
 
 						</span>
