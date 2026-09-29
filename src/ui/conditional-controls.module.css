@@ -1,0 +1,801 @@
+
+
+
+/**
+ * conditional-controls.module.css = Conditional Controls Module
+ *
+ * @summary
+ * Styles for CodConCom, the conditional editor shared by the picker form and
+ * the Data tab's Conditionals section: the name and card-text fields, the
+ * type radio with each mode's hint, and the setting rows under the selected
+ * mode (odds, boost, charge, fill, and the Active switch). The picker form
+ * shows it as spaced fields with the radio in a bordered card; the Data tab
+ * passes isaInlBoo, which adds the --inline modifier and lays every field out
+ * as a full-bleed row with hairline dividers, matching the other Data editors.
+ * The selected mode keys off data-option-select-active, the Active switch off
+ * its own aria-checked, and an invalid name off its own aria-invalid.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region cnd-controls */
+
+.cnd-controls { /* What: Conditional Controls. Why: The editor's fields stack as spaced blocks. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 20px;
+	padding-top    : 4px;
+
+
+}
+.cnd-controls--inline { /* What: Inline Conditional Controls. Why: In the Data tab every field is a flush full-bleed row. How: This drops the gap and padding. */
+
+
+	gap     : 0;
+	padding : 0;
+
+
+}
+
+/* #region np-field */
+
+.np-field { /* What: Editor Field. Why: Each field stacks its label over its input. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 8px;
+
+
+}
+.cnd-controls--inline > .np-field { /* What: Inline Editor Field. Why: In the Data tab each field is a full-bleed row divided from the one above. How: This pads the field as a row under a hairline. */
+
+
+	border-top : 0.5px solid var(--border);
+	gap        : 6px;
+	margin     : 0;
+	padding    : 12px 16px;
+
+
+}
+.cnd-controls--inline > .np-field:first-child { /* What: First Inline Editor Field. Why: The editor's own top edge already closes the first row. How: This drops its hairline. */
+
+
+	border-top : 0;
+
+
+}
+.cnd-controls--inline > .np-field--cardtext { /* What: Inline Card Text Field. Why: In the Data tab the card text's label and help sit left of its input. How: This lays the field out as a centered row. */
+
+
+	align-items     : center;
+	flex-direction  : row;
+	gap             : 16px;
+	justify-content : space-between;
+
+
+}
+
+.np-label { /* What: Field Label. Why: Each field is named above its input. How: This sets the label in medium weight. */
+
+
+	font-size      : 15px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+
+
+}
+
+.cnd-controls--inline > .np-field--cardtext .np-cardtext-text { /* What: Inline Card Text Label. Why: The card text's label and help stack together beside the input. How: This stacks them in a capped column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 4px;
+	max-width      : 300px;
+
+
+}
+
+.np-help { /* What: Field Help. Why: The help line explains what the card text is for. How: This sets muted body text with a capped line length. */
+
+
+	color       : var(--muted);
+	font-size   : 13px;
+	line-height : 1.5;
+	margin      : 0;
+	max-width   : 60ch;
+	text-wrap   : pretty;
+
+
+}
+
+.np-input { /* What: Field Input. Why: Names and card text are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
+
+
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-sm);
+	color         : var(--text);
+	font-family   : var(--font-sans);
+	font-size     : 14px;
+	margin-top    : 2px;
+	max-width     : 360px;
+	outline       : none;
+	padding       : 10px 12px;
+	transition    : border-color .12s;
+	width         : 100%;
+
+
+}
+.np-input[aria-invalid="true"] { /* What: Invalid Field Input. Why: A blank or colliding name has to stand out. How: This borders and insets the field in red, keying off the aria-invalid it already sets. */
+
+
+	border-color : oklch(0.55 0.18 25);
+	box-shadow   : 0 0 0 1px oklch(0.55 0.18 25) inset;
+
+
+}
+.np-input::placeholder { /* What: Field Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.np-input:focus { /* What: Focused Field Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+.cnd-controls--inline > .np-field--cardtext .np-input { /* What: Inline Card Text Input. Why: Beside its label, the input takes the row's remaining width up to a cap. How: This lets it grow and shrink within 260px. */
+
+
+	flex      : 1 1 auto;
+	max-width : 260px;
+	min-width : 0;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Field Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.np-input { /* What: Still Field Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.np-error { /* What: Field Error. Why: A blank or colliding name explains itself under the field. How: This sets a small red message. */
+
+
+	color       : oklch(0.5 0.18 25);
+	font-size   : 12.5px;
+	line-height : 1.4;
+	margin      : 6px 0 0;
+
+
+}
+
+/* #endregion np-field */
+
+
+
+/* #region cnd-type-group */
+
+.cnd-type-group { /* What: Type Group. Why: The type radio and the chosen type's settings read as one group. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 6px;
+
+
+}
+.cnd-controls--inline .cnd-type-group { /* What: Inline Type Group. Why: In the Data tab the rows sit flush. How: This drops the gap. */
+
+
+	gap : 0;
+
+
+}
+
+fieldset.np-field { /* What: Type Fieldset. Why: The type radio is a real fieldset for its group name, stripped of the browser's frame. How: This clears its border, margin, and padding and lets it shrink. */
+
+
+	border    : 0;
+	margin    : 0;
+	min-width : 0;
+	padding   : 0;
+
+
+}
+.cnd-controls--inline .cnd-type-group > .np-field { /* What: Inline Type Fieldset. Why: In the Data tab the type's heading sits in a row under a hairline, its options full-bleed below. How: This pads only the top and draws the hairline. */
+
+
+	border-top : 0.5px solid var(--border);
+	gap        : 8px;
+	margin     : 0;
+	padding    : 12px 0 0;
+
+
+}
+
+legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like any other field label. How: This clears the legend's own padding and float. */
+
+
+	float   : none;
+	padding : 0;
+	width   : 100%;
+
+
+}
+.cnd-controls--inline .cnd-type-group > .np-field > .np-label { /* What: Inline Type Heading. Why: The heading lines up with the row padding around it. How: This insets it 16px on each side. */
+
+
+	padding : 0 16px;
+
+
+}
+
+
+
+/* #region cnd-mode-card */
+
+.cnd-mode-card { /* What: Mode Card. Why: In the picker form the type options sit in a bordered card. How: This draws a rounded border that clips the options. */
+
+
+	border        : 0.5px solid var(--border);
+	border-radius : 12px;
+	overflow      : hidden;
+
+
+}
+
+/* #region rd-mode-radio */
+
+.rd-mode-radio { /* What: Mode Radio. Why: The type options stack edge to edge, pulled past the editor's padding between hairlines. How: This stacks them in a column bleeding 16px each side. */
+
+
+	border-bottom  : 0.5px solid var(--border);
+	border-top     : 0.5px solid var(--border);
+	display        : flex;
+	flex-direction : column;
+	margin         : 0 -16px;
+
+
+}
+.cnd-mode-card .rd-mode-radio { /* What: Carded Mode Radio. Why: Inside its card the card's border already frames the options. How: This drops the bleed and both hairlines. */
+
+
+	border-bottom : 0;
+	border-top    : 0;
+	margin        : 0;
+
+
+}
+.cnd-controls--inline .rd-mode-radio { /* What: Inline Mode Radio. Why: In the Data tab the options sit flush between the rows' hairlines. How: This drops the bleed and keeps the top hairline. */
+
+
+	border-top : 0.5px solid var(--border);
+	margin     : 0;
+
+
+}
+
+/* #region rd-mode-opt */
+
+.rd-mode-opt { /* What: Mode Option. Why: Each conditional type is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at. */
+
+
+	--collapse-inner-offset     : translateY(-8px);
+	--collapse-inner-transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
+	--collapse-row-duration     : .8s;
+	align-items                 : flex-start;
+	border-bottom               : 0.5px solid var(--border);
+	cursor                      : pointer;
+	display                     : flex;
+	gap                         : 11px;
+	padding                     : 12px 16px;
+	position                    : relative;
+	transition                  : background .24s ease;
+
+
+}
+.rd-mode-opt:last-child { /* What: Last Mode Option. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.rd-mode-opt:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.02) c h);
+
+
+}
+.rd-mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
+
+
+	outline        : 2px solid var(--accent);
+	outline-offset : -2px;
+
+
+}
+.rd-mode-opt[data-option-select-active] { /* What: Selected Mode Option. Why: The chosen type should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.rd-mode-opt[data-option-select-active]:hover { /* What: Hovered Selected Mode Option. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.rd-mode-opt[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen type. How: This draws a thin accent strip down the option's left side. */
+
+
+	background : var(--accent);
+	bottom     : 0;
+	content    : '';
+	left       : 0;
+	position   : absolute;
+	top        : 0;
+	width      : 2px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-mode-opt { /* What: Still Mode Option. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rd-mode-opt input { /* What: Mode Option Radio. Why: The native radio keeps keyboard and screen reader behavior while the dot draws the state. How: This hides it without removing it. */
+
+
+	height         : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	width          : 0;
+
+
+}
+
+.rd-mode-dot { /* What: Mode Option Dot. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
+
+
+	border        : 1.5px solid var(--border);
+	border-radius : 50%;
+	flex          : 0 0 auto;
+	height        : 16px;
+	margin-top    : 1px;
+	position      : relative;
+	transition    : border-color .12s;
+	width         : 16px;
+
+
+}
+.rd-mode-opt[data-option-select-active] .rd-mode-dot { /* What: Selected Mode Option Dot. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
+
+
+	border-color : var(--accent);
+
+
+}
+.rd-mode-opt[data-option-select-active] .rd-mode-dot::after { /* What: Selected Mode Option Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
+
+
+	background    : var(--accent);
+	border-radius : 50%;
+	content       : '';
+	inset         : 3px;
+	position      : absolute;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option Dot. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-mode-dot { /* What: Still Mode Option Dot. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #region rd-mode-text */
+
+.rd-mode-text { /* What: Mode Option Text. Why: The type's name sits over its hints. How: This stacks them in a column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 3px;
+	min-width      : 0;
+
+
+}
+
+.rd-mode-name { /* What: Mode Option Name. Why: The type's name leads the option. How: This sets it in medium weight. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+.rd-mode-hint { /* What: Mode Option Hint. Why: Each type explains itself under its name. How: This sets small muted text on its own line. */
+
+
+	color       : var(--muted);
+	display     : block;
+	font-size   : 12px;
+	line-height : 1.45;
+	text-wrap   : pretty;
+
+
+}
+.rd-mode-hint + .rd-mode-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+
+
+	margin-top : 8px;
+
+
+}
+
+/* #endregion rd-mode-text */
+
+/* #endregion rd-mode-opt */
+
+/* #endregion rd-mode-radio */
+
+/* #endregion cnd-mode-card */
+
+
+
+/* #region cnd-typectl */
+
+.cnd-typectl { /* What: Type Settings. Why: The chosen type's settings sit just under the radio. How: This stacks the setting rows in a flush column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 0;
+	margin-top     : 4px;
+
+
+}
+.cnd-controls--inline .cnd-typectl { /* What: Inline Type Settings. Why: In the Data tab the rows sit flush against the radio. How: This drops the margin. */
+
+
+	margin : 0;
+
+
+}
+
+/* #region pie-row */
+
+.cnd-typectl .pie-row { /* What: Setting Row. Why: Each setting under the chosen type is one row, name left and control right. How: This spreads them across a short row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	min-height      : 38px;
+	padding         : 4px 0;
+
+
+}
+.cnd-controls--inline .cnd-typectl .pie-row { /* What: Inline Setting Row. Why: In the Data tab each setting is a full-bleed row divided from the one above. How: This pads the row taller under a hairline. */
+
+
+	border-top : 0.5px solid var(--border);
+	min-height : 44px;
+	padding    : 10px 16px;
+
+
+}
+.cnd-controls--inline > .cnd-type-group > .cnd-typectl:last-child .pie-row { /* What: Inline Active Row. Why: The standalone Active row doubles its bottom hairline against the footer's top one, like the other Data editors. How: This adds a bottom hairline. */
+
+
+	border-bottom : 0.5px solid var(--border);
+
+
+}
+
+/* #region pie-rowlabel */
+
+.cnd-typectl .pie-rowlabel { /* What: Setting Label. Why: A setting's name sits over its live explanation. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 1px;
+
+
+}
+
+.pie-lbl-row { /* What: Setting Label Row. Why: A setting's name can carry an inline note. How: This lines them up in an inline row. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	gap         : 6px;
+
+
+}
+
+.cnd-typectl .pie-lbl { /* What: Setting Name. Why: Each setting row leads with its name. How: This sets it in medium weight. */
+
+
+	font-size   : 15px;
+	font-weight : 500;
+
+
+}
+
+.cnd-typectl .pie-sub { /* What: Setting Explanation. Why: The line under a setting explains its current value. How: This sets it small and muted. */
+
+
+	color     : var(--muted);
+	font-size : 11px;
+
+
+}
+
+.set-sub-fade { /* What: Fading Setting Text. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+
+
+	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Setting Text. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-sub-fade { /* What: Still Fading Setting Text. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion pie-rowlabel */
+
+
+
+/* #region pie-ctl */
+
+.cnd-typectl .pie-ctl { /* What: Setting Control. Why: A setting's field and unit stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+
+
+}
+
+.np-ease-unit { /* What: Setting Unit. Why: The unit after a number reads quieter than the number. How: This sets it muted, centered on the field. */
+
+
+	align-self : center;
+	color      : var(--muted);
+	font-size  : 13px;
+
+
+}
+.cnd-typectl .pie-ctl .np-ease-unit { /* What: Row Setting Unit. Why: Inside a setting row the unit sits a size smaller. How: This drops it to 12px. */
+
+
+	font-size : 12px;
+
+
+}
+
+/* #endregion pie-ctl */
+
+
+
+/* #region weight-stepper */
+
+.weight-stepper { /* What: Odds Stepper. Why: The odds step up and down in a compact pill. How: This draws a rounded outlined pill around the two buttons and the value. */
+
+
+	align-items   : center;
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : 999px;
+	display       : inline-flex;
+
+
+}
+
+.weight-stepper button { /* What: Odds Step Button. Why: Each end of the pill is a small step button. How: This sizes a square hit area with a muted glyph. */
+
+
+	align-items     : center;
+	color           : var(--muted);
+	display         : inline-flex;
+	font-size       : 14px;
+	height          : 26px;
+	justify-content : center;
+	width           : 26px;
+
+
+}
+.weight-stepper button:hover:not(:disabled) { /* What: Hovered Odds Step Button. Why: A live step button should respond to the pointer. How: This darkens its glyph. */
+
+
+	color : var(--text);
+
+
+}
+.weight-stepper button:disabled { /* What: Disabled Odds Step Button. Why: A step past the odds' limit is unavailable and should look it. How: This dims the button and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.35;
+
+
+}
+
+.weight-val { /* What: Odds Value. Why: The current odds read between the step buttons. How: This sets them in small muted tabular mono type. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 11px;
+	font-variant-numeric : tabular-nums;
+	padding              : 0 8px;
+
+
+}
+
+/* #endregion weight-stepper */
+
+
+
+.cnd-typectl .pie-noweight { /* What: No Weight Note. Why: A random conditional has no odds to set, and says so where the control would be. How: This sets the note small and muted at its natural size. */
+
+
+	color     : var(--muted);
+	flex      : 0 0 auto;
+	font-size : 13px;
+
+
+}
+
+
+
+/* #region switch */
+
+.switch { /* What: Active Switch. Why: A conditional turns active or inactive with a switch. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var(--border);
+	border-radius : 999px;
+	height        : 20px;
+	position      : relative;
+	transition    : background .15s;
+	width         : 36px;
+
+
+}
+.switch[aria-checked="true"] { /* What: On Active Switch. Why: An active conditional reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
+
+
+	background : var(--accent);
+
+
+}
+.cnd-typectl .switch { /* What: Row Active Switch. Why: In a setting row the switch keeps its size and reads as clickable. How: This stops it shrinking and sets the pointer cursor. */
+
+
+	cursor : pointer;
+	flex   : 0 0 auto;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Active Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch { /* What: Still Active Switch. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.switch i { /* What: Active Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var(--bg);
+	border-radius : 50%;
+	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	height        : 16px;
+	left          : 2px;
+	position      : absolute;
+	top           : 2px;
+	transition    : transform .15s;
+	width         : 16px;
+
+
+}
+.switch[aria-checked="true"] i { /* What: On Active Switch Knob. Why: An active switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX(16px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Active Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch i { /* What: Still Active Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion switch */
+
+/* #endregion pie-row */
+
+/* #endregion cnd-typectl */
+
+/* #endregion cnd-type-group */
+
+/* #endregion cnd-controls */
+
+

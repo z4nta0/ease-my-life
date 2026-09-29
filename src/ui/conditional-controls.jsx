@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This file's single component is built directly on React's own APIs. How: This is used directly (React.useId) below, instead of importing an individual named hook.
+import cssModObj from './conditional-controls.module.css'; // What: CSS Module Object. Why: CodConCom's own styles live in its module. How: Each className reads its hashed class from here.
+import React     from 'react';                            // What: React. Why: This file's single component is built directly on React's own APIs. How: This is used directly (React.useId) below, instead of importing an individual named hook.
 
 
 import { BooResCom   } from './boost-reset.jsx';    // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
@@ -286,7 +287,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 		<div
-			className={ ` cnd-controls   ${ isaInlBoo ? 'cnd-controls--inline' : '' } ` }
+			className={` ${ cssModObj.cndControls }   ${ isaInlBoo ? cssModObj.cndControlsInline : '' } `}
 
 			data-element-name-hook='conConDiv'
 		>{ /* What: Controls Container Div Element. Why: This is CodConCom's own root element, holding every field and settings block below. How: This renders as a plain div, switching to the tighter inline layout via a modifier class when isaInlBoo is true. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
@@ -296,14 +297,14 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 				<div
-					className='np-field'
+					className={ cssModObj.npField }
 
 					data-element-name-hook='forFieDiv'
 				>{ /* What: Name Field Div Element. Why: This groups the conditional-name label, input, and its own validation error as one field. How: This is omitted entirely whenever the caller passed hidNamBoo. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<label
-						className='np-label'
+						className={ cssModObj.npLabel }
 
 						htmlFor={ `${ insIdeStr }-name` }
 					>Conditional name</label>{ /* What: Name Label Element. Why: This is the name field's own visible label, tied to the input below via htmlFor. How: This renders the literal text "Conditional name". */ }
@@ -311,7 +312,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 					<input
 						id={ `${ insIdeStr }-name` }
 
-						className={ ` np-input   ${ namErrStr ? 'is-error' : '' } ` }
+						className={ cssModObj.npInput }
 
 						maxLength={ 40 }
 						placeholder='Conditional name'
@@ -337,7 +338,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 					{ namErrStr && ( // What: Name Error Visibility Check. Why: The error message should only show once a real validation problem exists. How: This renders the error paragraph only while namErrStr holds a value.
 
 
-						<p className='np-error'>{ namErrStr }</p> // What: Name Error Paragraph Element. Why: A colliding or otherwise invalid typed name needs a visible reason why. How: This renders the caller-supplied namErrStr message only while one is present.
+						<p className={ cssModObj.npError }>{ namErrStr }</p> // What: Name Error Paragraph Element. Why: A colliding or otherwise invalid typed name needs a visible reason why. How: This renders the caller-supplied namErrStr message only while one is present.
 
 
 					) }
@@ -350,26 +351,26 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 			<div
-				className='np-field np-field--cardtext'
+				className={` ${ cssModObj.npField }   ${ cssModObj.npFieldCardtext } `}
 
 				data-element-name-hook='forFieDiv'
 			>{ /* What: Card Text Field Div Element. Why: This groups the day-off replacement card text's own label, help text, and input as one field. How: This is always shown, unlike the name field, since every conditional needs a card text. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 				<div
-					className='np-cardtext-text'
+					className={ cssModObj.npCardtextText }
 
 					data-element-name-hook='carTexDiv'
 				>{ /* What: Cardtext Text Div Element. Why: The label and its own help paragraph read best grouped together, apart from the input itself. How: This wraps the label and help paragraph below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 					<label
-						className='np-label'
+						className={ cssModObj.npLabel }
 
 						htmlFor={ `${ insIdeStr }-cardtext` }
 					>Replacement card text</label>{ /* What: Cardtext Label Element. Why: This is the card-text field's own visible label. How: This renders the literal text "Replacement card text". */ }
 
-					<p className='np-help'>This is the text that is shown on the card that appears on your todo list when this conditional suppresses its picker.</p>{ /* What: Cardtext Help Paragraph Element. Why: A user configuring this field for the first time needs to know exactly where and when this text appears. How: This renders a fixed explanatory sentence beneath the label. */ }
+					<p className={ cssModObj.npHelp }>This is the text that is shown on the card that appears on your todo list when this conditional suppresses its picker.</p>{ /* What: Cardtext Help Paragraph Element. Why: A user configuring this field for the first time needs to know exactly where and when this text appears. How: This renders a fixed explanatory sentence beneath the label. */ }
 
 
 				</div>
@@ -377,7 +378,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 				<input
 					id={ `${ insIdeStr }-cardtext` }
 
-					className='np-input'
+					className={ cssModObj.npInput }
 
 					maxLength={ 60 }
 					placeholder='Picker suppressed for today'
@@ -392,24 +393,24 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 
-			<div className='cnd-type-group'>{ /* What: Type Group Div Element. Why: The mode radio and every per-mode settings block below need one shared wrapping element for layout. How: This wraps the mode fieldset and every ColDisCom-gated settings block that follows it. */ }
+			<div className={ cssModObj.cndTypeGroup }>{ /* What: Type Group Div Element. Why: The mode radio and every per-mode settings block below need one shared wrapping element for layout. How: This wraps the mode fieldset and every ColDisCom-gated settings block that follows it. */ }
 
 
 				<fieldset
-					className='np-field'
+					className={ cssModObj.npField }
 
 					data-element-name-hook='forFieFie'
 				>{ /* What: Type Fieldset Element. Why: The mode radio's own options are a single logical group of controls. How: This wraps the legend and the mode radio list below. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-					<legend className='np-label'>Conditional type</legend>{ /* What: Type Legend Element. Why: A fieldset needs its own legend to label the group for assistive tech. How: This renders the literal text "Conditional type". */ }
+					<legend className={ cssModObj.npLabel }>Conditional type</legend>{ /* What: Type Legend Element. Why: A fieldset needs its own legend to label the group for assistive tech. How: This renders the literal text "Conditional type". */ }
 
 
-					<div className={ isaInlBoo ? '' : 'cnd-mode-card style-radio-card' }>{ /* What: Mode Card Div Element. Why: The card variant wraps the radio list in its own bordered card, while the inline variant needs no extra wrapper styling. How: This applies the card classes only when isaInlBoo is false. */ }
+					<div className={ isaInlBoo ? '' : cssModObj.cndModeCard }>{ /* What: Mode Card Div Element. Why: The card variant wraps the radio list in its own bordered card, while the inline variant needs no extra wrapper styling. How: This applies the card class only when isaInlBoo is false. */ }
 
 
 						<div
-							className='rd-mode-radio'
+							className={ cssModObj.rdModeRadio }
 
 							data-element-name-hook='conModDiv'
 						>{ /* What: Mode Radio Div Element. Why: This is the actual list of mode options the user picks from. How: This maps SED_NAM_OBJ.MOD_DEF_OBJ below into one option label per mode. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
@@ -418,7 +419,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							{ Object.entries( SED_NAM_OBJ.MOD_DEF_OBJ ).map( ( [ modKeyStr, modConObj ] ) => { // What: Mode Option List Render. Why: One radio option is needed per configured mode, and the set of modes is data shared with the picker editor, not hardcoded markup. How: This maps SED_NAM_OBJ.MOD_DEF_OBJ to one label per entry, keyed by its own mode key.
 
 
-								const modSelBoo = curModStr === modKeyStr; // What: Mode Selected Boolean. Why: Both the label's own "is-on" styling and the nested ColDisCom below need to know whether this specific option is the currently-selected one. How: This compares modKeyStr against curModStr.
+								const modSelBoo = curModStr === modKeyStr; // What: Mode Selected Boolean. Why: Both the label's own selected styling and the nested ColDisCom below need to know whether this specific option is the currently-selected one. How: This compares modKeyStr against curModStr.
 
 
 								return (
@@ -427,8 +428,10 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 									<label
 										key={ modKeyStr }
 
-										className={ ` rd-mode-opt   ${ modSelBoo ? 'is-on' : '' } ` }
-									>{ /* What: Mode Option Label Element. Why: This is one clickable mode option, marking itself "is-on" when it is the current selection. How: This wraps the radio input, the dot, and the name/hint text below. */ }
+										className={ cssModObj.rdModeOpt }
+
+										data-option-select-active={ modSelBoo || undefined }
+									>{ /* What: Mode Option Label Element. Why: This is one clickable mode option, marking itself with data-option-select-active when it is the current selection. How: This wraps the radio input, the dot, and the name/hint text below. */ }
 
 
 										<input
@@ -449,15 +452,15 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 										/>{ /* What: Mode Radio Input Element. Why: This is the actual selectable control for this mode option. How: This checks itself against modSelBoo and, on selection, patches mode plus the value/triggered reset every mode switch needs. */ }
 
 										<span
-											className='rd-mode-dot'
+											className={ cssModObj.rdModeDot }
 
 											aria-hidden='true'
-										/>{ /* What: Mode Dot Span Element. Why: This is the small decorative marker showing the option's own on/off state via CSS. How: This renders empty, styled purely through the "is-on" class on its parent label. */ }
+										/>{ /* What: Mode Dot Span Element. Why: This is the small decorative marker showing the option's own on/off state via CSS. How: This renders empty, styled purely off its parent label's own data-option-select-active. */ }
 
-										<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The option's own name and its expandable hint text need to sit together as one unit. How: This wraps the name span and the ColDisCom below. */ }
+										<span className={ cssModObj.rdModeText }>{ /* What: Mode Text Span Element. Why: The option's own name and its expandable hint text need to sit together as one unit. How: This wraps the name span and the ColDisCom below. */ }
 
 
-											<span className='rd-mode-name'>{ modConObj.labStr }</span>{ /* What: Mode Name Span Element. Why: This is the option's own visible mode name. How: This renders modConObj's own label. */ }
+											<span className={ cssModObj.rdModeName }>{ modConObj.labStr }</span>{ /* What: Mode Name Span Element. Why: This is the option's own visible mode name. How: This renders modConObj's own label. */ }
 
 
 
@@ -473,7 +476,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 														<span
 															key={ parIndNum }
 
-															className='rd-mode-hint'
+															className={ cssModObj.rdModeHint }
 														>{ parTexStr }</span> // What: Hint Paragraph Span Element. Why: This is one paragraph of the selected mode's own explanation. How: This renders parTexStr, keyed by its own index.
 
 
@@ -483,7 +486,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 												) : ( // What: Fallback Hint Branch. Why: A mode with no conditional-specific override still needs its own hint text. How: This renders a single span from CON_HIN_OBJ or, failing that, SED_NAM_OBJ.MOD_DEF_OBJ.
 
 
-													<span className='rd-mode-hint'>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hinArr }</span> // What: Fallback Hint Span Element. Why: This is the selected mode's own single-paragraph hint. How: This renders the override string when present, else modConObj's own hint.
+													<span className={ cssModObj.rdModeHint }>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hinArr }</span> // What: Fallback Hint Span Element. Why: This is the selected mode's own single-paragraph hint. How: This renders the override string when present, else modConObj's own hint.
 
 
 												) }
@@ -518,31 +521,31 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 					<div
-						className='cnd-typectl pie-rows'
+						className={ cssModObj.cndTypectl }
 
 						data-element-name-hook='conTypDiv'
 					>{ /* What: Random Type Control Div Element. Why: This groups the random mode's own single explanatory row using the shared pie-rows layout every other mode's settings reuse. How: This wraps the one pie-row below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 						<div
-							className='pie-row'
+							className={ cssModObj.pieRow }
 
 							data-element-name-hook='ediRowDiv'
 						>{ /* What: Random Row Div Element. Why: This is the shared row layout (a label plus a control) reused across every mode's settings. How: This wraps the label block and the "No weight" text in place of an actual control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<div className='pie-rowlabel'>{ /* What: Random Rowlabel Div Element. Why: The row's own title and explanatory sub-text need to sit together. How: This wraps the "Weight" title span and the RAN_NOT_STR sub span below. */ }
+							<div className={ cssModObj.pieRowlabel }>{ /* What: Random Rowlabel Div Element. Why: The row's own title and explanatory sub-text need to sit together. How: This wraps the "Weight" title span and the RAN_NOT_STR sub span below. */ }
 
 
-								<span className='pie-lbl'>Weight</span>{ /* What: Random Label Span Element. Why: This names what the row would otherwise control. How: This renders the literal text "Weight". */ }
+								<span className={ cssModObj.pieLbl }>Weight</span>{ /* What: Random Label Span Element. Why: This names what the row would otherwise control. How: This renders the literal text "Weight". */ }
 
-								<span className='pie-sub'>{ RAN_NOT_STR }</span>{ /* What: Random Sub Span Element. Why: The user needs to understand why there is no weight control at all for this mode. How: This renders the fixed RAN_NOT_STR explanation. */ }
+								<span className={ cssModObj.pieSub }>{ RAN_NOT_STR }</span>{ /* What: Random Sub Span Element. Why: The user needs to understand why there is no weight control at all for this mode. How: This renders the fixed RAN_NOT_STR explanation. */ }
 
 
 							</div>
 
 							<span
-								className='pie-noweight'
+								className={ cssModObj.pieNoweight }
 
 								data-element-name-hook='weiNonSpa'
 							>No weight</span>{ /* What: Random Noweight Span Element. Why: This fills the control slot the other modes use for an actual adjustable value. How: This renders the fixed literal text "No weight". Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
@@ -562,31 +565,31 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 					<div
-						className='cnd-typectl pie-rows'
+						className={ cssModObj.cndTypectl }
 
 						data-element-name-hook='conTypDiv'
 					>{ /* What: Weight Type Control Div Element. Why: This groups the Odds row and the dynamic-only Boost row using the shared pie-rows layout. How: This wraps the Odds pie-row and the nested Boost ColDisCom below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 						<div
-							className='pie-row'
+							className={ cssModObj.pieRow }
 
 							data-element-name-hook='ediRowDiv'
 						>{ /* What: Odds Row Div Element. Why: This is the shared row layout for the odds percentage control. How: This wraps the label block and the plus/minus stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<div className='pie-rowlabel'>{ /* What: Odds Rowlabel Div Element. Why: The row's own title and live percentage summary need to sit together. How: This wraps the "Odds" title span and the live sub span below. */ }
+							<div className={ cssModObj.pieRowlabel }>{ /* What: Odds Rowlabel Div Element. Why: The row's own title and live percentage summary need to sit together. How: This wraps the "Odds" title span and the live sub span below. */ }
 
 
-								<span className='pie-lbl'>Odds</span>{ /* What: Odds Label Span Element. Why: This names the row's own control. How: This renders the literal text "Odds". */ }
+								<span className={ cssModObj.pieLbl }>Odds</span>{ /* What: Odds Label Span Element. Why: This names the row's own control. How: This renders the literal text "Odds". */ }
 
-								<span className='pie-sub'><strong>{ conDraObj.oddsPct ?? 50 }%</strong>{ ` chance to trigger${ isaDynBoo ? ' (before boost)' : '' }` }</span>{ /* What: Odds Sub Span Element. Why: The user needs to see the current odds value plainly, with a dynamic-mode caveat that boost adds on top of it. How: This bolds the resolved oddsPct and appends the caveat only while isaDynBoo is true. */ }
+								<span className={ cssModObj.pieSub }><strong>{ conDraObj.oddsPct ?? 50 }%</strong>{ ` chance to trigger${ isaDynBoo ? ' (before boost)' : '' }` }</span>{ /* What: Odds Sub Span Element. Why: The user needs to see the current odds value plainly, with a dynamic-mode caveat that boost adds on top of it. How: This bolds the resolved oddsPct and appends the caveat only while isaDynBoo is true. */ }
 
 
 							</div>
 
 							<div
-								className='weight-stepper'
+								className={ cssModObj.weightStepper }
 
 								data-element-name-hook='weiSteDiv'
 							>{ /* What: Odds Stepper Div Element. Why: The odds percentage needs a plain plus/minus control, distinct from the drag-free NumSteCom used elsewhere. How: This wraps the lower button, the live value, and the raise button below. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
@@ -600,7 +603,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 									onClick={ () => patSetFun( { oddsPct : Math.max( 10, ( conDraObj.oddsPct ?? 50 ) - 10 ) } ) } // What: Odds Step Down. Why: Odds move in 10-point steps and never drop below 10%. How: This lowers the resolved oddsPct by 10, clamped at 10.
 								>−</button>{ /* What: Odds Lower Button Element. Why: This is the actual control for decreasing the odds percentage. How: This steps oddsPct down by 10, disabling itself at the 10 floor. */ }
 
-								<span className='weight-val'>{ conDraObj.oddsPct ?? 50 }%</span>{ /* What: Odds Value Span Element. Why: The stepper needs its own plain numeric readout between the two buttons. How: This renders the resolved oddsPct directly. */ }
+								<span className={ cssModObj.weightVal }>{ conDraObj.oddsPct ?? 50 }%</span>{ /* What: Odds Value Span Element. Why: The stepper needs its own plain numeric readout between the two buttons. How: This renders the resolved oddsPct directly. */ }
 
 								<button
 									disabled={ ( conDraObj.oddsPct ?? 50 ) >= 90 }
@@ -622,27 +625,27 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 							<div
-								className='pie-row'
+								className={ cssModObj.pieRow }
 
 								data-element-name-hook='ediRowDiv'
 							>{ /* What: Boost Row Div Element. Why: This is the shared row layout for the dynamic mode's own boost display and reset control. How: This wraps the label block and the BooResCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-								<div className='pie-rowlabel'>{ /* What: Boost Rowlabel Div Element. Why: The row's own title and live boost summary need to sit together. How: This wraps the "Boost" title span and the fading summary span below. */ }
+								<div className={ cssModObj.pieRowlabel }>{ /* What: Boost Rowlabel Div Element. Why: The row's own title and live boost summary need to sit together. How: This wraps the "Boost" title span and the fading summary span below. */ }
 
 
-									<span className='pie-lbl'>Boost</span>{ /* What: Boost Label Span Element. Why: This names the row's own control. How: This renders the literal text "Boost". */ }
+									<span className={ cssModObj.pieLbl }>Boost</span>{ /* What: Boost Label Span Element. Why: This names the row's own control. How: This renders the literal text "Boost". */ }
 
 									<span
 										key={ ( conDraObj.value || 0 ) === 0 ? 'none' : 'boost' } // What: Boost State Key. Why: The summary should re-fade only when the boost starts or clears, not on every value change. How: This keys on whether any boost has accrued.
 
-										className='pie-sub set-sub-fade'
+										className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
 									>{ ( conDraObj.value || 0 ) === 0 ? <><strong>no bonus</strong> to odds, will increase when not triggered</> : <><strong>+{ conDraObj.value }%</strong> to odds, resets when triggered</> }</span>{ /* What: Boost Sub Span Element. Why: The user needs to see whether a miss-boost has accrued yet, and what it is worth. How: This re-keys, and so re-fades, whenever the boost goes from zero to nonzero or back. */ }
 
 
 								</div>
 
-								<div className='pie-ctl'>{ /* What: Boost Control Div Element. Why: The control itself sits apart from the row's own label block. How: This wraps the BooResCom control below. */ }
+								<div className={ cssModObj.pieCtl }>{ /* What: Boost Control Div Element. Why: The control itself sits apart from the row's own label block. How: This wraps the BooResCom control below. */ }
 
 
 									<BooResCom
@@ -673,14 +676,14 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 					<div
-						className='cnd-typectl pie-rows'
+						className={ cssModObj.cndTypectl }
 
 						data-element-name-hook='conTypDiv'
 					>{ /* What: Ease Type Control Div Element. Why: Its rows carry data-ease-up-active/data-ease-down-active state so help mode's newCondEaseUp/newCondEaseDown can tell the two directions apart, split the same way EntEdiCom's own rows are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 						<div
-							className='pie-row'
+							className={ cssModObj.pieRow }
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -688,21 +691,21 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 						>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<div className='pie-rowlabel'>{ /* What: Soonest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
+							<div className={ cssModObj.pieRowlabel }>{ /* What: Soonest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
 
 
-								<span className='pie-lbl-row'><span className='pie-lbl'>{ sooLabStr }</span>{ /* What: Soonest Inner Label Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders sooLabStr. */ }</span>{ /* What: Soonest Label Span Element. Why: This names the row's own control, Shortest or Soonest depending on direction. How: This renders sooLabStr. */ }
+								<span className={ cssModObj.pieLblRow }><span className={ cssModObj.pieLbl }>{ sooLabStr }</span>{ /* What: Soonest Inner Label Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders sooLabStr. */ }</span>{ /* What: Soonest Label Span Element. Why: This names the row's own control, Shortest or Soonest depending on direction. How: This renders sooLabStr. */ }
 
 								<span
 									key={ sooDayNum }
 
-									className='pie-sub set-sub-fade'
+									className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
 								>{ sooSubStr }</span>{ /* What: Soonest Sub Span Element. Why: The user needs a plain-English read of what this day count actually means for the current direction. How: This re-keys, and so re-fades, whenever sooDayNum changes. */ }
 
 
 							</div>
 
-							<div className='pie-ctl'>{ /* What: Soonest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
+							<div className={ cssModObj.pieCtl }>{ /* What: Soonest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
 
 
 								<NumSteCom
@@ -718,7 +721,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 								<span
-									className='np-ease-unit'
+									className={ cssModObj.npEaseUnit }
 
 									data-element-name-hook='easUniSpa'
 								>{ sooDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Soonest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on sooDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
@@ -731,7 +734,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 						<div
-							className='pie-row'
+							className={ cssModObj.pieRow }
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -739,21 +742,21 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 						>{ /* What: Latest Row Div Element. Why: This is the shared row layout for the upper drift bound, labeled Longest instead for ease-down. How: This wraps the label block and the NumSteCom control below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<div className='pie-rowlabel'>{ /* What: Latest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
+							<div className={ cssModObj.pieRowlabel }>{ /* What: Latest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
 
 
-								<span className='pie-lbl-row'><span className='pie-lbl'>{ latLabStr }</span>{ /* What: Latest Inner Label Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders latLabStr. */ }</span>{ /* What: Latest Label Span Element. Why: This names the row's own control, Longest or Latest depending on direction. How: This renders latLabStr. */ }
+								<span className={ cssModObj.pieLblRow }><span className={ cssModObj.pieLbl }>{ latLabStr }</span>{ /* What: Latest Inner Label Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders latLabStr. */ }</span>{ /* What: Latest Label Span Element. Why: This names the row's own control, Longest or Latest depending on direction. How: This renders latLabStr. */ }
 
 								<span
 									key={ latDayNum }
 
-									className='pie-sub set-sub-fade'
+									className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
 								>{ latSubStr }</span>{ /* What: Latest Sub Span Element. Why: The user needs a plain-English read of what this day count actually means for the current direction. How: This re-keys, and so re-fades, whenever latDayNum changes. */ }
 
 
 							</div>
 
-							<div className='pie-ctl'>{ /* What: Latest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
+							<div className={ cssModObj.pieCtl }>{ /* What: Latest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
 
 
 								<NumSteCom
@@ -769,7 +772,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 								<span
-									className='np-ease-unit'
+									className={ cssModObj.npEaseUnit }
 
 									data-element-name-hook='easUniSpa'
 								>{ latDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Latest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on latDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
@@ -785,22 +788,22 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 							<div
-								className='pie-row'
+								className={ cssModObj.pieRow }
 
 								data-ease-up-active // What: Ease Up Active Attribute. Why: Help mode finds this Fill row as an ease-up row without reading its classes. How: This is always present, since Fill only ever renders for an ease-up conditional.
 								data-element-name-hook='ediRowDiv'
 							>{ /* What: Fill Row Div Element. Why: Ease-up's own charge can be jumped straight to full instead of waiting out the drift. How: This wraps the label block and the Fill button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-								<div className='pie-rowlabel'>{ /* What: Fill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Fill" title span and the fading charge summary span below. */ }
+								<div className={ cssModObj.pieRowlabel }>{ /* What: Fill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Fill" title span and the fading charge summary span below. */ }
 
 
-									<span className='pie-lbl'>Fill</span>{ /* What: Fill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Fill". */ }
+									<span className={ cssModObj.pieLbl }>Fill</span>{ /* What: Fill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Fill". */ }
 
 									<span
 										key={ ( conDraObj.value ?? 0 ) >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether value has reached thrValNum.
 
-										className='pie-sub set-sub-fade'
+										className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
 									>{ ( conDraObj.value ?? 0 ) >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( conDraObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Fill Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to fill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
 
 
@@ -826,22 +829,22 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 							<div
-								className='pie-row'
+								className={ cssModObj.pieRow }
 
 								data-ease-down-active // What: Ease Down Active Attribute. Why: Help mode finds this Refill row as an ease-down row without reading its classes. How: This is always present, since Refill only ever renders for an ease-down conditional.
 								data-element-name-hook='ediRowDiv'
 							>{ /* What: Refill Row Div Element. Why: Ease-down's own charge can be jumped straight back to full instead of waiting out a fresh streak. How: This wraps the label block and the Refill button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-								<div className='pie-rowlabel'>{ /* What: Refill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Refill" title span and the fading charge summary span below. */ }
+								<div className={ cssModObj.pieRowlabel }>{ /* What: Refill Rowlabel Div Element. Why: The row's own title and live charge summary need to sit together. How: This wraps the "Refill" title span and the fading charge summary span below. */ }
 
 
-									<span className='pie-lbl'>Refill</span>{ /* What: Refill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Refill". */ }
+									<span className={ cssModObj.pieLbl }>Refill</span>{ /* What: Refill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Refill". */ }
 
 									<span
 										key={ ( conDraObj.value ?? 0 ) >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether value has reached thrValNum.
 
-										className='pie-sub set-sub-fade'
+										className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
 									>{ ( conDraObj.value ?? 0 ) >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( conDraObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Refill Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to refill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
 
 
@@ -871,39 +874,39 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 				<div
-					className='cnd-typectl pie-rows'
+					className={ cssModObj.cndTypectl }
 
 					data-element-name-hook='conTypDiv'
 				>{ /* What: Active Type Control Div Element. Why: The Active toggle applies regardless of mode, so it sits outside every mode-gated ColDisCom above. How: This wraps the one Active pie-row below. Its data-element-name-hook is read by help mode's Pickers catalog and help mode's Data catalog. */ }
 
 
 					<div
-						className='pie-row'
+						className={ cssModObj.pieRow }
 
 						data-element-name-hook='ediRowDiv'
 					>{ /* What: Active Row Div Element. Why: This is the shared row layout for the enabled/disabled toggle. How: This wraps the label block and the switch button below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<div className='pie-rowlabel'>{ /* What: Active Rowlabel Div Element. Why: The row's own state title and live explanation need to sit together. How: This wraps the fading state span and the fading explanation span below. */ }
+						<div className={ cssModObj.pieRowlabel }>{ /* What: Active Rowlabel Div Element. Why: The row's own state title and live explanation need to sit together. How: This wraps the fading state span and the fading explanation span below. */ }
 
 
 							<span
 								key={ conDraObj.active !== false ? 'active' : 'inactive' } // What: Active State Key. Why: The title should re-fade only when the toggle flips. How: This keys on active, treating a missing value as active.
 
-								className='pie-lbl set-sub-fade'
+								className={` ${ cssModObj.pieLbl }   ${ cssModObj.setSubFade } `}
 							>{ conDraObj.active !== false ? 'Active' : 'Inactive' }</span>{ /* What: Active Label Span Element. Why: The row's own title should read Active or Inactive to match the current toggle state. How: This re-keys, and so re-fades, whenever conDraObj.active flips. */ }
 
 							<span
 								key={ conDraObj.active !== false ? ( isaDowBoo ? 'on-down' : 'on' ) : 'off' } // What: Active Summary Key. Why: The summary text changes with both the toggle and the ease-down direction, so either change should re-fade it. How: This keys on active, splitting the active case by isaDowBoo.
 
-								className='pie-sub set-sub-fade'
+								className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
 							>{ conDraObj.active !== false ? ( isaDowBoo ? <>conditional <strong>is active</strong>, picker will not run until conditional fully discharges</> : <>conditional <strong>is active</strong>, if triggered picker will not run for one cycle</> ) : <>conditional is <strong>inactive</strong>, picker will always run</> }</span>{ /* What: Active Sub Span Element. Why: The user needs a plain-English read of what the current toggle state actually does, which differs for ease-down. How: This re-keys, and so re-fades, whenever the active/direction combination changes. */ }
 
 
 						</div>
 
 						<button
-							className={ ` switch   ${ conDraObj.active !== false ? 'is-on' : '' } ` }
+							className={ cssModObj.switch }
 
 							data-element-name-hook='togSwiBut'
 
@@ -914,7 +917,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							role='switch'
 
 							onClick={ () => patSetFun( { active : conDraObj.active === false } ) } // What: Active Toggle Patch. Why: A conditional with no active field counts as active, so a plain negation would misread it. How: This sets active to true only when it is currently exactly false.
-						><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off the "is-on" class on its parent button. */ }</button>{ /* What: Active Switch Button Element. Why: This is the actual enabled/disabled toggle control. How: This flips conDraObj.active and marks itself pressed via aria-checked and the "is-on" class. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						><i />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }</button>{ /* What: Active Switch Button Element. Why: This is the actual enabled/disabled toggle control. How: This flips conDraObj.active and marks itself pressed via aria-checked, which its own styling also keys off. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					</div>
