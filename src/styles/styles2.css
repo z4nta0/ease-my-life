@@ -848,10 +848,6 @@ button.heat-cell.is-sel {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: none; }
 }
-/* Mode-option hint rows: the hint is one short line, so a height glide reads as
-   janky. ColDisCom's own module reads these to carry the swap with a slower,
-   stronger content fade instead. */
-.rd-mode-opt { --collapse-row-duration: .8s; --collapse-inner-transition: opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s; --collapse-inner-offset: translateY(-8px); }
 
 .item-del {
   width: 28px; height: 28px;
@@ -862,11 +858,6 @@ button.heat-cell.is-sel {
 }
 .item-del:hover { background: var(--bg); color: var(--text); }
 .item-del:hover { color: oklch(0.5 0.18 25); }
-
-/* Inline delete confirmation — shared by item rows and picker rows. */
-.confirm-msg {
-  font-size: 13px; color: var(--text); text-wrap: pretty;
-}
 
 /* ─── Tab: Settings ──────────────────────────────────────────────────────── */
 
@@ -1078,37 +1069,6 @@ button.heat-cell.is-sel {
 .mode-opt-name { font-weight: 500; font-size: 14px; }
 .mode-opt-hint { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
 
-.ease-config {
-  display: flex; flex-direction: column; gap: 12px;
-  padding: 12px 14px;
-  background: oklch(from var(--surface) calc(l - 0.008) c h);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-md);
-}
-
-/* Data picker Controls: the ease drift default renders as full-bleed rows
-   (label + explanation left, day stepper right — matching the item editor).
-   Sits flush under the mode list (single divider) and its last row's bottom
-   border doubles against the "When it runs" top border. Scoped to .rd-ctl-body
-   so the new-picker form's .ease-config keeps its original card styling. */
-/* The parent .rd-ctl-group--picks is ALREADY full-bleed (margin: 0 -16px), so
-   ease-config needs NO negative margin of its own: a horizontal -16px double-bled
-   it past the card edge, and a -12px top pull hoisted its kicker's top padding up
-   out of the section into the mode list. The group stacks with zero gap, so the
-   kicker's own 12px top padding provides the spacing under the mode list. */
-.rd-ctl-body .ease-config {
-  margin: 0; padding: 0;
-  background: none; border: 0; border-radius: 0; display: block;
-}
-.rd-ctl-body .ease-config .pie-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 10px 16px; min-height: 44px;
-  border-bottom: 0.5px solid var(--border);
-}
-.rd-ctl-body .ease-config .pie-rowlabel { display: flex; flex-direction: column; gap: 1px; }
-.rd-ctl-body .ease-config .pie-lbl { font-size: 13.5px; }
-.rd-ctl-body .ease-config .pie-sub { font-size: 11px; color: var(--muted); }
-
 .daily-list { display: flex; flex-direction: column; }
 .daily-list li {
   display: flex; justify-content: space-between; align-items: center;
@@ -1279,27 +1239,10 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 .np-sched-toggle .switch { flex-shrink: 0; margin-top: 2px; cursor: pointer; }
 
-/* ─── Data tab: schedule section ──────────────────────────────────────────── */
-.sched-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.sched-line-lbl { font-size: 13.5px; color: var(--muted); }
-.sched-line .switch { cursor: pointer; }
-.sched-off-note { font-size: 13px; color: var(--muted); }
 /* Data tab: the item editor sits inside a full-bleed row (.rd-edit), so it
    strips its card chrome (border, tint, radius, padding), while Today keeps
    its card. */
 .rd-edit { --entry-editor-background: none; --entry-editor-border: 0; --entry-editor-border-radius: 0; --entry-editor-margin: 0; --entry-editor-padding: 0; }
-.rem-del-actions { display: flex; gap: 8px; flex: 0 0 auto; }
-.rem-foot-right { display: flex; gap: 8px; flex: 0 0 auto; margin-left: auto; }
-
-/* Data-tab cadence row: cadence + anchor selects, wrap on narrow. flex-start
-   (not flex-end) so a wrapped second line (Monthly/Yearly nth-weekday, or
-   Yearly date mode, both wide enough to wrap before Weekly ever does) starts
-   flush with the first line instead of hugging the right edge on its own —
-   consistent with how an unwrapped row (Weekly, or Monthly's plain date
-   select) already reads as left-aligned once its own slack space is this
-   short. */
-.sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; }
-.rd-cad-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; font-size: 13px; }
 
 /* ── Data tab: Reminders section (finalized) ──────────────────────────────────
    One collapsible .cat section. Inside: a nested "Controls" disclosure + a
@@ -1331,60 +1274,11 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rd-name-input:focus { outline: none; border-bottom-color: var(--accent); }
 .rd-name-input::placeholder { color: var(--muted); opacity: 0.7; }
 .rd-edit { padding: 2px 16px 14px; }
-/* Picker Controls body — the pick-algorithm config, on the same recessed tint
-   as the Reminders matrix so both sections' Controls read identically. */
-.rd-ctl-body {
-  background: oklch(from var(--surface) calc(l - 0.012) c h);
-  border-bottom: 0.5px solid var(--border);
-  padding: 14px 16px;
-  display: flex; flex-direction: column; gap: 0;
-}
-/* Full-bleed picker-type radio (Data controls). Edge-to-edge rows with hairline
-   dividers instead of card-in-card boxes; the selected row gets an accent tint +
-   left bar and reveals its hint, unselected rows show the name only. The bottom
-   border pairs with the next section's top border for a subtle double-line
-   separator (matching the Reminders controls → footer divider). */
-.rd-mode-radio {
-  display: flex; flex-direction: column;
-  margin: 0 -16px;
-  border-top: 0.5px solid var(--border);
-  border-bottom: 0.5px solid var(--border);
-}
 /* Appearance's Picker animation / Completion celebration cards go unpadded +
    overflow:hidden (see style-radio-card) so the option list can bleed edge-
    to-edge without a padding gap top/bottom — the radio list's own -16px
    horizontal bleed isn't needed there since there's no padding to eat into. */
 .style-radio-card { overflow: hidden; }
-.style-radio-card .rd-mode-radio { margin: 0; border-top: 0; }
-.rd-mode-opt {
-  position: relative; display: flex; align-items: flex-start; gap: 11px;
-  padding: 12px 16px; cursor: pointer;
-  border-bottom: 0.5px solid var(--border);
-  transition: background .24s ease;
-}
-.rd-mode-opt:last-child { border-bottom: 0; }
-.rd-mode-opt:hover { background: oklch(from var(--surface) calc(l - 0.02) c h); }
-.rd-mode-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
-.rd-mode-opt.is-on { background: var(--accent-soft); }
-.rd-mode-opt.is-on:hover { background: var(--accent-soft); }
-.rd-mode-opt.is-on::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-  background: var(--accent);
-}
-.rd-mode-opt input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
-.rd-mode-dot {
-  flex: 0 0 auto; width: 16px; height: 16px; margin-top: 1px;
-  border-radius: 50%; border: 1.5px solid var(--border); position: relative;
-  transition: border-color .12s;
-}
-.rd-mode-opt.is-on .rd-mode-dot { border-color: var(--accent); }
-.rd-mode-opt.is-on .rd-mode-dot::after {
-  content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--accent);
-}
-.rd-mode-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.rd-mode-name { font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
-/* Label + (?) help trigger on one line, with the explanation beneath. */
-.pie-lbl-row { display: inline-flex; align-items: center; gap: 6px; }
 .pie-help {
   display: inline-flex; align-items: center; justify-content: center;
   width: 16px; height: 16px; flex: 0 0 auto;
@@ -1398,196 +1292,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    (.rem-flabel / .sched-line-lbl), and the fixed-size badge reads as
    slightly oversized/off-center next to that shorter line-box. */
 .pie-help--sm { width: 14.5px; height: 14.5px; }
-.rd-mode-hint { display: block; font-size: 12px; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
-.rd-mode-hint + .rd-mode-hint { margin-top: 8px; }
-/* Two labeled subgroups inside a picker's Controls: how it picks / when it runs.
-   The sched + footer groups are full-bleed with top+bottom borders; with the body
-   gap removed, each border touches its neighbour's for the subtle doubled-line
-   separator (matching the Reminders controls → footer divider). */
-.rd-ctl-group { display: flex; flex-direction: column; gap: 12px; }
-.rd-ctl-group--sched, .rd-ctl-group--items, .rd-ctl-group--foot {
-  margin: 0 -16px; padding: 16px; border-top: 0.5px solid var(--border);
-}
-/* Picker Details: subhead, then each control row (Name, Group) carries a
-   full-bleed top border to separate it from the previous row — the same
-   row-divider pattern the scheduling section uses. The section's own bottom
-   border pairs with "How it picks" top border for the inter-section double line. */
-.rd-ctl-group--basics {
-  margin: 0 -16px; padding: 0; gap: 0;
-  border-bottom: 0.5px solid var(--border);
-}
-.rd-ctl-group--basics .rd-ctl-subhead { padding: 0 16px 8px; }
-/* "How it picks" gains a full-bleed top border that pairs flush with Picker
-   Details' bottom border (double hairline, no gap — body gap is 0), mirroring
-   the mode-list → "When it runs" separator. Top padding gives the subhead room. */
-.rd-ctl-group--picks {
-  margin: 0 -16px; padding: 0; gap: 0; min-width: 0;
-  border: 0;
-  /* box-shadow, not border-top — now that this is a <fieldset>, an actual
-     border interacts with its <legend> (the browser "carves out" a gap in
-     the border exactly where the legend sits, then resumes it right after
-     the legend's own text), leaving a stray line trailing off after "How it
-     picks" instead of the intended full-bleed separator. An inset shadow
-     paints the same 0.5px hairline without going through that carving. */
-  box-shadow: inset 0 0.5px 0 0 var(--border);
-}
-.rd-ctl-group--picks .rd-ctl-subhead { padding: 14px 16px 8px; }
-.rd-ctl-group--picks .rd-mode-radio { margin: 0; }
-.rd-basics-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 12px 16px;
-  border-top: 0.5px solid var(--border);
-}
-.rd-basics-row--group { align-items: flex-start; }
-.rd-basics-lbl {
-  flex: 0 0 52px;
-  font-size: 13px; color: var(--muted);
-  padding-top: 6px;
-}
-.rd-basics-row:not(.rd-basics-row--group) .rd-basics-lbl { padding-top: 0; }
-.rd-basics-name {
-  flex: 1; min-width: 0;
-  height: 34px; padding: 0 12px;
-  border: 1px solid var(--border); border-radius: 9px;
-  background: var(--surface); color: var(--text);
-  font-size: 14px; font-family: inherit;
-  outline: none; transition: border-color .12s;
-}
-.rd-basics-name:focus { border-color: var(--accent); }
-.rd-basics-name::placeholder { color: var(--muted); opacity: 0.7; }
-.rd-basics-row--group .rd-group-pills { flex: 1; min-width: 0; }
-/* On small screens the wrapped pills look ragged (uneven lengths across rows),
-   so collapse to a single horizontally-scrolling row — the same convention as
-   the Pickers/Stats/Data filter pill rails. */
-@container app (max-width: 640px) {
-  .rd-basics-row--group .rd-group-pills {
-    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-    /* Edge-fade cue (JS toggles [data-scroll-start-active]/[data-scroll-end-active]) matching the filter rails. */
-    --fade: 24px; --fade-l: var(--fade); --fade-r: var(--fade);
-    mask-image: linear-gradient(to right,
-      transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right,
-      transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
-  }
-  .rd-basics-row--group .rd-group-pills[data-scroll-start-active] { --fade-l: 0px; }
-  .rd-basics-row--group .rd-group-pills[data-scroll-end-active]   { --fade-r: 0px; }
-  .rd-basics-row--group .rd-group-pills::-webkit-scrollbar { display: none; }
-  .rd-basics-row--group .picker-group-pill,
-  .rd-basics-row--group .rd-group-new { flex-shrink: 0; }
-}
-/* Footer with Delete/Cancel/Save — no bottom padding (the Controls body already
-   pads its bottom edge) so it matches the item editor footer's height. */
-.rd-ctl-group--foot { padding-bottom: 0; }
-.rd-ctl-group--sched, .rd-ctl-group--items { border-bottom: 0.5px solid var(--border); }
-.rd-ctl-subhead {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--muted);
-}
-/* Group selector — single-select pills + inline "New group" create. Reuses the
-   .picker-group-pill vocabulary from the filter rows, wrapping instead of
-   scrolling since these sit inside the narrow controls body. */
-.rd-group-pills { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-bottom: 4px; }
-.picker-group-pill--new {
-  border-style: dashed;
-  color: var(--muted);
-  gap: 5px;
-}
-.picker-group-pill--new:hover { color: var(--accent); border-color: var(--accent); }
-.rd-group-new { display: inline-flex; align-items: center; gap: 6px; }
-/* Open animation: the field unfurls (grows + fades in) from where the "+ New
-   group" pill sat, then the confirm/cancel buttons pop in just after. */
-.rd-group-new { animation: rdGroupNewIn .16s ease-out both; }
-@keyframes rdGroupNewIn { from { opacity: 0; } to { opacity: 1; } }
-.rd-group-new-input {
-  animation: rdGroupInputGrow .2s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-@keyframes rdGroupInputGrow {
-  from { width: 32px; opacity: 0.3; }
-  to   { width: 130px; opacity: 1; }
-}
-.rd-group-new-ok, .rd-group-new-cancel {
-  animation: rdGroupBtnIn .16s ease-out both; animation-delay: .11s;
-}
-@keyframes rdGroupBtnIn {
-  from { opacity: 0; transform: scale(0.5); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .rd-group-new, .rd-group-new-input, .rd-group-new-ok, .rd-group-new-cancel { animation: none; }
-}
-/* On close, the returning "+ New group" pill animates in (fade + slight grow),
-   mirroring how opening animates the input in while the pill vanishes at once. */
-.picker-group-pill--new.is-returning { animation: rdNewPillIn .18s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
-@keyframes rdNewPillIn {
-  from { opacity: 0; transform: scale(0.7); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .picker-group-pill--new.is-returning { animation: none; }
-}
-.rd-group-new-input {
-  height: 32px; width: 130px;
-  padding: 0 10px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  background: var(--surface); color: var(--text);
-  font-size: 13px; font-family: inherit;
-  outline: none;
-}
-.rd-group-new-ok, .rd-group-new-cancel {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; border-radius: 50%;
-  border: 1px solid var(--border); background: var(--surface);
-  color: var(--muted); cursor: pointer;
-  transition: color .15s, border-color .15s, background .15s;
-}
-.rd-group-new-ok:not(:disabled):hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-.rd-group-new-ok:disabled { opacity: 0.4; cursor: default; }
-.rd-group-new-cancel:hover { color: var(--danger, #c0392b); border-color: var(--danger, #c0392b); }
-/* "When it runs" and "Item Controls" rows use the same full-bleed divider
-   system as the ease cadence + item editor: a border under the kicker, then
-   a hairline between every control row (last row's own border is dropped so
-   only the group's bottom border shows at the section boundary). */
-.rd-ctl-group--sched, .rd-ctl-group--items { padding: 0; gap: 0; }
-.rd-ctl-group--sched .rd-ctl-subhead, .rd-ctl-group--items .rd-ctl-subhead { padding: 12px 16px 8px; }
-.rd-ctl-group--sched .rd-ctl-subhead + .sched-line,
-.rd-ctl-group--items .rd-ctl-subhead + .sched-line { border-top: 0.5px solid var(--border); }
-.rd-ctl-group--sched .sched-line,
-.rd-ctl-group--sched .sched-off-note,
-.rd-ctl-group--items .sched-line {
-  padding: 10px 16px; min-height: 44px; box-sizing: border-box;
-  border-bottom: 0.5px solid var(--border);
-}
-.rd-ctl-group--sched .sched-line:last-child,
-.rd-ctl-group--sched .sched-off-note:last-child,
-.rd-ctl-group--items:not(:has(.ease-config)) .sched-line:last-child { border-bottom: 0; }
-/* Item Controls' own ease-config (Fill/Refill) sits after the always-shown
-   Avoid-duplicates row when ease mode is active — the last VISIBLE .pie-row
-   inside it should drop its own trailing border the same way the group's
-   other last-child rows do, so only the group's own bottom border shows. */
-.rd-ctl-group--items .ease-config .pie-row:last-child { border-bottom: 0; }
-/* Attach-a-conditional rail inside the Data-tab "When it runs" section. Full-
-   bleed row matching the sched-line horizontal padding, with a divider below. */
-.rd-ctl-group--sched .rd-cnd-rail-row { padding: 8px 16px 12px; border-bottom: 0.5px solid var(--border); }
-.rd-ctl-group--sched .rd-cnd-rail-row .cnd-rail { gap: 8px; }
-.rd-cnd-empty { font-size: 12.5px; line-height: 1.4; color: var(--muted); margin: 2px 0; text-wrap: pretty; }
-.rd-ctl-group .sched-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.rd-ctl-group .sched-line-lbl { font-size: 13.5px; }
-/* Optional label + explanation column for a schedule line (e.g. Daily generator). */
-.rd-ctl-group .sched-line-label { display: flex; flex-direction: column; gap: 1px; flex: 1 1 0; min-width: 130px; }
-.rd-ctl-group .sched-line-sub { font-size: 11px; line-height: 1.35; color: var(--muted); }
-.rd-ctl-group .sched-off-note { font-size: 12.5px; color: var(--muted); font-style: italic; }
-.rd-ctl-foot-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-/* The "Create Picker" draft's own footer has no Delete button on the left —
-   .rd-ctl-foot-row's own space-between would otherwise leave its one
-   remaining child (.rem-foot-right) flush left instead of right. */
-.rd-ctl-foot-row--new { justify-content: flex-end; }
-.rd-pk-del-confirm { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; width: 100%; }
-.rd-pk-del-confirm .confirm-msg { flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--text); text-wrap: pretty; }
-.rd-pk-del-confirm .rem-del-actions { justify-content: flex-end; flex: 0 0 auto; }
-/* Delete anchored bottom-left, opposite Done (destructive-left / confirm-right). */
 /* Tab switch: the incoming tab's content fades + rises in (peer tabs, so no
    directional slide). Keyed on the active tab so it replays each switch. */
 .tab-fade { animation: tabFadeIn .2s ease both; }
@@ -1606,9 +1310,9 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 @keyframes footSwapIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 @keyframes footSwapOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(3px); } }
 .pool-confirm.is-leaving { animation: footSwapOut .14s ease both; }
-.rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .pool-confirm { animation: footSwapIn .16s ease both; }
+.rd-ctl-confirm, .pool-confirm { animation: footSwapIn .16s ease both; }
 @media (prefers-reduced-motion: reduce) {
-  .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .pool-confirm { animation: none; }
+  .rd-ctl-confirm, .pool-confirm { animation: none; }
 }
 
 .rd-edit { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0 -16px; --rem-inline-foot-padding: 14px 16px 0; }

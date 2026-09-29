@@ -1,0 +1,1457 @@
+
+
+
+/**
+ * picker-controls.module.css = Picker Controls Module
+ *
+ * @summary
+ * Styles for PicConCom, the Controls body of each picker card on the Data
+ * tab: the Picker Details group (name field and group pills, with the inline
+ * new-group input), the How it picks mode radio, the When it runs group
+ * (conditional rail, daily generator, cadence selects, days, and holidays),
+ * the Item Controls group with its ease settings, and the Delete, Cancel,
+ * and Save footer with its delete confirm. Each group runs edge to edge
+ * inside the body's padding as full-bleed rows divided by hairlines. A
+ * chosen group pill keys off its own aria-checked, a switch off its own
+ * aria-checked or aria-pressed, the chosen mode off
+ * data-option-select-active, and the attached conditional's pill off
+ * data-pill-select-active.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region rd-ctl-body */
+
+.rd-ctl-body { /* What: Controls Body. Why: The controls read as a recessed panel under the card's Controls toggle. How: This shades it, pads it, and stacks its groups flush in a column. */
+
+
+	background     : oklch(from var(--surface) calc(l - 0.012) c h);
+	border-bottom  : 0.5px solid var(--border);
+	display        : flex;
+	flex-direction : column;
+	gap            : 0;
+	padding        : 14px 16px;
+
+
+}
+
+/* #region rd-ctl-group */
+
+.rd-ctl-group { /* What: Controls Group. Why: Each group of controls stacks its pieces. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 12px;
+
+
+}
+.rd-ctl-group--basics { /* What: Picker Details Group. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
+
+
+	border-bottom : 0.5px solid var(--border);
+	gap           : 0;
+	margin        : 0 -16px;
+	padding       : 0;
+
+
+}
+.rd-ctl-group--picks { /* What: How It Picks Group. Why: The mode radio runs edge to edge under its heading, with a hairline above drawn as a shadow since the fieldset's own border is cleared. How: This pulls the fieldset past the body's padding, flush and borderless, with an inset top shadow line. */
+
+
+	border     : 0;
+	box-shadow : inset 0 0.5px 0 0 var(--border);
+	gap        : 0;
+	margin     : 0 -16px;
+	min-width  : 0;
+	padding    : 0;
+
+
+}
+.rd-ctl-group--sched,
+.rd-ctl-group--items { /* What: Schedule And Item Groups. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
+
+
+	border-bottom : 0.5px solid var(--border);
+	border-top    : 0.5px solid var(--border);
+	gap           : 0;
+	margin        : 0 -16px;
+	padding       : 0;
+
+
+}
+.rd-ctl-group--foot { /* What: Footer Group. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
+
+
+	border-top     : 0.5px solid var(--border);
+	margin         : 0 -16px;
+	padding        : 16px;
+	padding-bottom : 0;
+
+
+}
+
+/* #region rd-ctl-subhead */
+
+.rd-ctl-subhead { /* What: Group Subhead. Why: Each group is named in quiet mono type. How: This sets it small, uppercase, and muted. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.05em;
+	text-transform : uppercase;
+
+
+}
+.rd-ctl-group--basics .rd-ctl-subhead { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 0 16px 8px. */
+
+
+	padding : 0 16px 8px;
+
+
+}
+.rd-ctl-group--picks .rd-ctl-subhead { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 14px 16px 8px. */
+
+
+	padding : 14px 16px 8px;
+
+
+}
+.rd-ctl-group--sched .rd-ctl-subhead,
+.rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 12px 16px 8px. */
+
+
+	padding : 12px 16px 8px;
+
+
+}
+.rd-ctl-subhead + .sched-line { /* What: First Setting Row. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
+
+
+	border-top : 0.5px solid var(--border);
+
+
+}
+
+/* #endregion rd-ctl-subhead */
+
+
+
+/* #region rd-basics-row */
+
+.rd-basics-row { /* What: Details Row. Why: The name and group each sit in a labeled row. How: This lines the label and its control up in a padded row under a hairline. */
+
+
+	align-items : center;
+	border-top  : 0.5px solid var(--border);
+	display     : flex;
+	gap         : 14px;
+	padding     : 12px 16px;
+
+
+}
+.rd-basics-row--group { /* What: Group Details Row. Why: The group pills can wrap onto several lines, so the label stays at the top. How: This aligns the row to its start. */
+
+
+	align-items : flex-start;
+
+
+}
+
+.rd-basics-lbl { /* What: Details Label. Why: Each row is named in a fixed-width muted column. How: This sets a 52px column nudged down to line up with the pills. */
+
+
+	color       : var(--muted);
+	flex        : 0 0 52px;
+	font-size   : 13px;
+	padding-top : 6px;
+
+
+}
+.rd-basics-row:not(.rd-basics-row--group) .rd-basics-lbl { /* What: Name Label. Why: The name row is centered, so its label needs no nudge. How: This drops the top padding. */
+
+
+	padding-top : 0;
+
+
+}
+
+.rd-basics-name { /* What: Picker Name Input. Why: The picker is renamed in place in a field that takes the row's width. How: This draws a rounded outlined field that borders in the accent on focus. */
+
+
+	background    : var(--surface);
+	border        : 1px solid var(--border);
+	border-radius : 9px;
+	color         : var(--text);
+	flex          : 1;
+	font-family   : inherit;
+	font-size     : 14px;
+	height        : 34px;
+	min-width     : 0;
+	outline       : none;
+	padding       : 0 12px;
+	transition    : border-color .12s;
+
+
+}
+.rd-basics-name:focus { /* What: Focused Picker Name Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+.rd-basics-name::placeholder { /* What: Picker Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-basics-name { /* What: Still Picker Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #region rd-group-pills */
+
+.rd-group-pills { /* What: Group Pills. Why: The groups wrap as pills beside their label, taking the row's remaining width. How: This lays them out in a wrapping row that can shrink. */
+
+
+	align-items    : center;
+	display        : flex;
+	flex           : 1;
+	flex-wrap      : wrap;
+	gap            : 8px;
+	min-width      : 0;
+	padding-bottom : 4px;
+
+
+}
+@container app (max-width: 640px) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+
+
+	.rd-group-pills { /* What: Scrolling Group Pills. Why: The pills stay on one line and scroll, with their edges faded as a cue. How: This stops wrapping, hides the scrollbar, and masks each end. */
+
+
+		--fade             : 24px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+		--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+		--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+		-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+		flex-wrap          : nowrap;
+		mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+		overflow-x         : auto;
+		overflow-y         : hidden;
+		padding-bottom     : 2px;
+		scrollbar-width    : none;
+
+
+	}
+
+	.rd-group-pills::-webkit-scrollbar { /* What: Group Pills Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+		display : none;
+
+
+	}
+	.rd-group-pills[data-scroll-start-active] { /* What: Group Pills At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+		--fade-l : 0px;
+
+
+	}
+	.rd-group-pills[data-scroll-end-active] { /* What: Group Pills At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+		--fade-r : 0px;
+
+
+	}
+
+
+}
+
+/* #region picker-group-pill */
+
+.picker-group-pill { /* What: Group Pill. Why: Each group is a pill that moves this picker into it. How: This draws an outlined pill that fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	cursor         : pointer;
+	display        : inline-flex;
+	flex-shrink    : 0;
+	font-size      : 13px;
+	font-weight    : 500;
+	gap            : 7px;
+	letter-spacing : -0.01em;
+	padding        : 6px 13px;
+	transition     : border-color .24s ease, background .24s ease, color .24s ease;
+
+
+}
+.picker-group-pill:hover { /* What: Hovered Group Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var(--muted);
+	color        : var(--text);
+
+
+}
+.picker-group-pill[aria-checked="true"] { /* What: Chosen Group Pill. Why: The picker's current group should stand out. How: This fills it in the soft accent, keying off the aria-checked the pill already sets. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picker-group-pill { /* What: Still Group Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+.picker-group-pill--new { /* What: New Group Pill. Why: Adding a group reads as a dashed placeholder pill. How: This dashes the border and tightens the icon gap. */
+
+
+	border-style : dashed;
+	color        : var(--muted);
+	gap          : 5px;
+
+
+}
+.picker-group-pill--new:hover { /* What: Hovered New Group Pill. Why: The pill should respond to the pointer. How: This turns it the accent color. */
+
+
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.picker-group-pill--new.is-returning { /* What: Returning New Group Pill. Why: After the inline input closes, the pill pops back in, mirroring how it left. How: This plays a springy scale-in while the returning class is set. */
+
+
+	animation : rdNewPillIn .18s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Returning New Group Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picker-group-pill--new.is-returning { /* What: Still Returning New Group Pill. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes rdNewPillIn { /* What: New Group Pill Return Keyframes. Why: The pill springs back in from smaller. How: This fades it in while scaling it up to full size. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : scale(0.7);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+/* #endregion picker-group-pill */
+
+
+
+/* #region rd-group-new */
+
+.rd-group-new { /* What: New Group Control. Why: The inline input and its two buttons read as one control that fades in. How: This lines them up in an inline row. */
+
+
+	align-items : center;
+	animation   : rdGroupNewIn .16s ease-out both;
+	display     : inline-flex;
+	gap         : 6px;
+
+
+}
+@container app (max-width: 640px) { /* What: Narrow Group Row. Why: On a narrow app the group pills scroll sideways instead of wrapping. How: This applies only when the app is 640px wide or less. */
+
+
+	.rd-group-new { /* What: Unshrinking New Group Control. Why: In the scrolling rail the control keeps its size. How: This stops it shrinking. */
+
+
+		flex-shrink : 0;
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion New Group Control. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-group-new { /* What: Still New Group Control. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes rdGroupNewIn { /* What: New Group Control Keyframes. Why: The control fades in as it replaces the pill. How: This runs its opacity up from zero. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+
+.rd-group-new-input { /* What: New Group Input. Why: The new group's name is typed into a pill-shaped field that grows open. How: This draws an accent-outlined pill that widens from the plus pill's size. */
+
+
+	animation     : rdGroupInputGrow .2s cubic-bezier(0.4, 0, 0.2, 1) both;
+	background    : var(--surface);
+	border        : 1px solid var(--accent);
+	border-radius : 999px;
+	color         : var(--text);
+	font-family   : inherit;
+	font-size     : 13px;
+	height        : 32px;
+	outline       : none;
+	padding       : 0 10px;
+	width         : 130px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion New Group Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-group-new-input { /* What: Still New Group Input. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes rdGroupInputGrow { /* What: New Group Input Keyframes. Why: The field grows out of the pill it replaces. How: This widens it from 32px while fading it in. */
+
+
+	from {
+
+
+		opacity : 0.3;
+		width   : 32px;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+		width   : 130px;
+
+
+	}
+
+
+}
+
+.rd-group-new-ok,
+.rd-group-new-cancel { /* What: New Group Buttons. Why: Confirm and cancel sit beside the field as small round buttons that pop in just after it. How: This draws outlined circles that scale in after a short delay and fade between colors. */
+
+
+	align-items     : center;
+	animation       : rdGroupBtnIn .16s ease-out both;
+	animation-delay : .11s;
+	background      : var(--surface);
+	border          : 1px solid var(--border);
+	border-radius   : 50%;
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : inline-flex;
+	height          : 30px;
+	justify-content : center;
+	transition      : color .15s, border-color .15s, background .15s;
+	width           : 30px;
+
+
+}
+.rd-group-new-ok:not(:disabled):hover { /* What: Hovered Confirm Button. Why: A live confirm should respond to the pointer. How: This tints it in the accent. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.rd-group-new-ok:disabled { /* What: Disabled Confirm Button. Why: A blank or colliding name can't be confirmed and should look it. How: This dims it and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+.rd-group-new-cancel:hover { /* What: Hovered Cancel Button. Why: Cancel should read as backing out. How: This tints it in the danger color. */
+
+
+	border-color : var(--danger, #c0392b);
+	color        : var(--danger, #c0392b);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion New Group Buttons. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-group-new-ok,
+	.rd-group-new-cancel { /* What: Still New Group Buttons. Why: The change should happen at once. How: This turns their animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+@keyframes rdGroupBtnIn { /* What: New Group Button Keyframes. Why: The buttons pop in beside the field. How: This fades them in while scaling them up to full size. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : scale(0.5);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+/* #endregion rd-group-new */
+
+/* #endregion rd-group-pills */
+
+/* #endregion rd-basics-row */
+
+
+
+/* #region rd-mode-radio */
+
+.rd-mode-radio { /* What: Mode Radio. Why: The pick modes stack edge to edge between hairlines. How: This stacks them in a column. */
+
+
+	border-bottom  : 0.5px solid var(--border);
+	border-top     : 0.5px solid var(--border);
+	display        : flex;
+	flex-direction : column;
+	margin         : 0;
+
+
+}
+
+/* #region rd-mode-opt */
+
+.rd-mode-opt { /* What: Mode Option. Why: Each pick mode is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at. */
+
+
+	--collapse-inner-offset     : translateY(-8px);
+	--collapse-inner-transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
+	--collapse-row-duration     : .8s;
+	align-items                 : flex-start;
+	border-bottom               : 0.5px solid var(--border);
+	cursor                      : pointer;
+	display                     : flex;
+	gap                         : 11px;
+	padding                     : 12px 16px;
+	position                    : relative;
+	transition                  : background .24s ease;
+
+
+}
+.rd-mode-opt:last-child { /* What: Last Mode Option. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.rd-mode-opt:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.02) c h);
+
+
+}
+.rd-mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
+
+
+	outline        : 2px solid var(--accent);
+	outline-offset : -2px;
+
+
+}
+.rd-mode-opt[data-option-select-active] { /* What: Selected Mode Option. Why: The picker's mode should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.rd-mode-opt[data-option-select-active]:hover { /* What: Hovered Selected Mode Option. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
+
+
+	background : var(--accent-soft);
+
+
+}
+.rd-mode-opt[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen mode. How: This draws a thin accent strip down the option's left side. */
+
+
+	background : var(--accent);
+	bottom     : 0;
+	content    : '';
+	left       : 0;
+	position   : absolute;
+	top        : 0;
+	width      : 2px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-mode-opt { /* What: Still Mode Option. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rd-mode-opt input { /* What: Mode Option Radio. Why: The native radio keeps keyboard and screen reader behavior while the dot draws the state. How: This hides it without removing it. */
+
+
+	height         : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	width          : 0;
+
+
+}
+
+.rd-mode-dot { /* What: Mode Option Dot. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
+
+
+	border        : 1.5px solid var(--border);
+	border-radius : 50%;
+	flex          : 0 0 auto;
+	height        : 16px;
+	margin-top    : 1px;
+	position      : relative;
+	transition    : border-color .12s;
+	width         : 16px;
+
+
+}
+.rd-mode-opt[data-option-select-active] .rd-mode-dot { /* What: Selected Mode Option Dot. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
+
+
+	border-color : var(--accent);
+
+
+}
+.rd-mode-opt[data-option-select-active] .rd-mode-dot::after { /* What: Selected Mode Option Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
+
+
+	background    : var(--accent);
+	border-radius : 50%;
+	content       : '';
+	inset         : 3px;
+	position      : absolute;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option Dot. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-mode-dot { /* What: Still Mode Option Dot. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #region rd-mode-text */
+
+.rd-mode-text { /* What: Mode Option Text. Why: The mode's name sits over its hints. How: This stacks them in a column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 3px;
+	min-width      : 0;
+
+
+}
+
+.rd-mode-name { /* What: Mode Option Name. Why: The mode's name leads the option. How: This sets it in medium weight. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+
+.rd-mode-hint { /* What: Mode Option Hint. Why: Each mode explains itself under its name. How: This sets small muted text on its own line. */
+
+
+	color       : var(--muted);
+	display     : block;
+	font-size   : 12px;
+	line-height : 1.45;
+	text-wrap   : pretty;
+
+
+}
+.rd-mode-hint + .rd-mode-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+
+
+	margin-top : 8px;
+
+
+}
+
+/* #endregion rd-mode-text */
+
+/* #endregion rd-mode-opt */
+
+/* #endregion rd-mode-radio */
+
+
+
+/* #region sched-line */
+
+.sched-line { /* What: Setting Row. Why: Each setting is a full-width row, its label left and its control right, wrapping when narrow. How: This spreads them across a padded row divided from the next. */
+
+
+	align-items     : center;
+	border-bottom   : 0.5px solid var(--border);
+	box-sizing      : border-box;
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : 12px;
+	justify-content : space-between;
+	min-height      : 44px;
+	padding         : 10px 16px;
+
+
+}
+.rd-ctl-group--sched .sched-line:last-child,
+.rd-ctl-group--items:not(:has(.ease-config)) .sched-line:last-child { /* What: Last Setting Row. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+/* #region sched-line-label */
+
+.sched-line-label { /* What: Setting Label. Why: A setting's name sits over its live explanation, taking the row's spare width. How: This stacks them in a column that grows from zero but never narrows past 130px. */
+
+
+	display        : flex;
+	flex           : 1 1 0;
+	flex-direction : column;
+	gap            : 1px;
+	min-width      : 130px;
+
+
+}
+
+/* #region sched-line-lbl */
+
+.sched-line-lbl { /* What: Setting Name. Why: Each setting leads with its name. How: This sets it in muted body text. */
+
+
+	color     : var(--muted);
+	font-size : 13.5px;
+
+
+}
+
+.pie-lbl-row { /* What: Setting Name Row. Why: The cadence setting's name carries an inline help tip. How: This lines them up in an inline row. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	gap         : 6px;
+
+
+}
+
+.pie-help { /* What: Help Tip. Why: A small question mark explains the cadence setting on hover or tap. How: This draws a small outlined circle with a help cursor that tints on hover. */
+
+
+	align-items     : center;
+	border          : 1px solid var(--muted);
+	border-radius   : 50%;
+	color           : var(--muted);
+	cursor          : help;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : 11px;
+	font-weight     : 700;
+	height          : 14.5px;
+	justify-content : center;
+	line-height     : 1;
+	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	width           : 14.5px;
+
+
+}
+.pie-help:hover { /* What: Hovered Help Tip. Why: The tip should respond to the pointer. How: This tints it in the accent. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Help Tip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pie-help { /* What: Still Help Tip. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion sched-line-lbl */
+
+
+
+.sched-line-sub { /* What: Setting Explanation. Why: The line under a setting explains its current value. How: This sets it small and muted. */
+
+
+	color       : var(--muted);
+	font-size   : 11px;
+	line-height : 1.35;
+
+
+}
+
+.set-sub-fade { /* What: Fading Setting Explanation. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+
+
+	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Setting Explanation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-sub-fade { /* What: Still Fading Setting Explanation. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion sched-line-label */
+
+
+
+/* #region switch */
+
+.switch { /* What: Setting Switch. Why: Each schedule and item setting turns on or off with a switch. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var(--border);
+	border-radius : 999px;
+	cursor        : pointer;
+	height        : 20px;
+	position      : relative;
+	transition    : background .15s;
+	width         : 36px;
+
+
+}
+.switch[aria-checked="true"],
+.switch[aria-pressed="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked or aria-pressed the switch already sets. */
+
+
+	background : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch { /* What: Still Setting Switch. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.switch i { /* What: Setting Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var(--bg);
+	border-radius : 50%;
+	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	height        : 16px;
+	left          : 2px;
+	position      : absolute;
+	top           : 2px;
+	transition    : transform .15s;
+	width         : 16px;
+
+
+}
+.switch[aria-checked="true"] i,
+.switch[aria-pressed="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX(16px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch i { /* What: Still Setting Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion switch */
+
+
+
+/* #region rd-cnd-rail-row */
+
+.rd-cnd-rail-row { /* What: Conditional Rail Row. Why: The conditional pills sit in their own padded row under the Attach switch. How: This pads the row and divides it from the next. */
+
+
+	border-bottom : 0.5px solid var(--border);
+	padding       : 8px 16px 12px;
+
+
+}
+
+/* #region cnd-rail */
+
+.cnd-rail { /* What: Conditional Rail. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fade             : 28px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	gap                : 8px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	overflow-x         : auto;
+	padding-bottom     : 2px;
+	scrollbar-width    : none;
+
+
+}
+.cnd-rail::-webkit-scrollbar { /* What: Conditional Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.cnd-rail[data-scroll-start-active] { /* What: Conditional Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.cnd-rail[data-scroll-end-active] { /* What: Conditional Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+
+/* #region cnd-pill */
+
+.cnd-pill { /* What: Conditional Pill. Why: Each conditional is a card-like pill that attaches it to this picker. How: This draws a bordered card with the name over the mode, fading between states. */
+
+
+	background      : var(--surface);
+	border          : 0.5px solid var(--border);
+	border-radius   : 12px;
+	cursor          : pointer;
+	display         : flex;
+	flex-direction  : column;
+	flex-shrink     : 0;
+	gap             : 3px;
+	justify-content : center;
+	min-width       : 132px;
+	padding         : 10px 14px;
+	text-align      : left;
+	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
+
+
+}
+.cnd-pill:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.cnd-pill[data-pill-select-active] { /* What: Attached Conditional Pill. Why: The attached conditional should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	box-shadow   : 0 0 0 1px var(--accent) inset;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Conditional Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cnd-pill { /* What: Still Conditional Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.cnd-pill-name { /* What: Conditional Pill Name. Why: The conditional's name leads its pill. How: This sets it in medium weight body color. */
+
+
+	color       : var(--text);
+	font-size   : 14px;
+	font-weight : 500;
+
+
+}
+
+.cnd-pill-mode { /* What: Conditional Pill Mode. Why: Each pill names its conditional's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion cnd-pill */
+
+/* #endregion cnd-rail */
+
+
+
+.rd-cnd-empty { /* What: No Conditionals Message. Why: With no conditionals yet, the row says where to make one. How: This sets a small muted note. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.4;
+	margin      : 2px 0;
+	text-wrap   : pretty;
+
+
+}
+
+/* #endregion rd-cnd-rail-row */
+
+
+
+/* #region sched-cad-ctls */
+
+.sched-cad-ctls { /* What: Cadence Controls. Why: The cadence and its anchor selects sit together and wrap on narrow widths, starting flush left. How: This lines them up in a wrapping row. */
+
+
+	align-items     : center;
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : 6px;
+	justify-content : flex-start;
+
+
+}
+
+.rd-cad-sel { /* What: Cadence Select. Why: The cadence selects look like the app's other fields, sized to their content. How: This draws a compact bordered field with a border fade on focus. */
+
+
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-sm);
+	color         : var(--text);
+	cursor        : pointer;
+	font-family   : var(--font-sans);
+	font-size     : 13px;
+	margin-top    : 0;
+	max-width     : none;
+	outline       : none;
+	padding       : 10px 12px;
+	transition    : border-color .12s;
+	width         : auto;
+
+
+}
+.rd-cad-sel::placeholder { /* What: Cadence Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+.rd-cad-sel:focus { /* What: Focused Cadence Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Select. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-cad-sel { /* What: Still Cadence Select. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion sched-cad-ctls */
+
+/* #endregion sched-line */
+
+
+
+.sched-off-note { /* What: On-Demand Note. Why: A picker left out of the daily generator says it only runs on demand, where its schedule rows would be. How: This sets a small italic muted note padded like a row. */
+
+
+	border-bottom : 0.5px solid var(--border);
+	box-sizing    : border-box;
+	color         : var(--muted);
+	font-size     : 12.5px;
+	font-style    : italic;
+	min-height    : 44px;
+	padding       : 10px 16px;
+
+
+}
+.sched-off-note:last-child { /* What: Last On-Demand Note. Why: The group's own bottom border already closes it. How: This drops the note's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+
+
+/* #region ease-config */
+
+.ease-config { /* What: Ease Settings. Why: The ease picker's Fill or Refill row sits flush in the Item Controls group. How: This clears its box chrome so its row runs full-bleed. */
+
+
+	background    : none;
+	border        : 0;
+	border-radius : 0;
+	display       : block;
+	margin        : 0;
+	padding       : 0;
+
+
+}
+
+/* #region pie-row */
+
+.pie-row { /* What: Ease Setting Row. Why: Fill or Refill reads like the other setting rows. How: This spreads the label and button across a padded row divided from the next. */
+
+
+	align-items     : center;
+	border-bottom   : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	min-height      : 44px;
+	padding         : 10px 16px;
+
+
+}
+.pie-row:last-child { /* What: Last Ease Setting Row. Why: The group's own bottom border already closes it. How: This drops the row's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+
+/* #region pie-rowlabel */
+
+.pie-rowlabel { /* What: Ease Setting Label. Why: The setting's name sits over its charge summary. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 1px;
+
+
+}
+
+.pie-lbl { /* What: Ease Setting Name. Why: The row leads with its setting's name. How: This sets it at the row's label size. */
+
+
+	font-size : 13.5px;
+
+
+}
+
+.pie-sub { /* What: Ease Setting Summary. Why: The line under the name summarizes the charge. How: This sets it small and muted. */
+
+
+	color     : var(--muted);
+	font-size : 11px;
+
+
+}
+
+/* #endregion pie-rowlabel */
+
+/* #endregion pie-row */
+
+/* #endregion ease-config */
+
+
+
+/* #region rd-pk-del-confirm */
+
+.rd-pk-del-confirm { /* What: Delete Confirm Row. Why: Delete morphs the footer into a confirm, message left and buttons right, swapping in. How: This spreads them across a full-width row and plays the shared footer swap. */
+
+
+	align-items     : center;
+	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display         : flex;
+	flex-direction  : row;
+	gap             : 16px;
+	justify-content : space-between;
+	width           : 100%;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Delete Confirm Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-pk-del-confirm { /* What: Still Delete Confirm Row. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.confirm-msg { /* What: Delete Confirm Message. Why: The message says what deleting takes with it and takes the row's spare width. How: This sets body text that can shrink. */
+
+
+	color     : var(--text);
+	flex      : 1 1 auto;
+	font-size : 13px;
+	min-width : 0;
+	text-wrap : pretty;
+
+
+}
+
+.rem-del-actions { /* What: Delete Confirm Actions. Why: Cancel and Delete pair up at the row's end. How: This lines them up in a fixed-size row pushed right. */
+
+
+	display         : flex;
+	flex            : 0 0 auto;
+	gap             : 8px;
+	justify-content : flex-end;
+
+
+}
+
+/* #endregion rd-pk-del-confirm */
+
+
+
+/* #region rd-ctl-foot-row */
+
+.rd-ctl-foot-row { /* What: Footer Row. Why: Delete sits left while Cancel and Save sit right, swapping in when the confirm closes. How: This spreads them across a full-width row and plays the shared footer swap. */
+
+
+	align-items     : center;
+	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	display         : flex;
+	justify-content : space-between;
+	width           : 100%;
+
+
+}
+.rd-ctl-foot-row--new { /* What: New Picker Footer Row. Why: A draft picker has no Delete, so its buttons sit right. How: This pushes the row's contents to its end. */
+
+
+	justify-content : flex-end;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Footer Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-ctl-foot-row { /* What: Still Footer Row. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.rem-foot-right { /* What: Footer Right Group. Why: Cancel and Save pair up on the right. How: This lays them out in a fixed-size row pushed right. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+	margin-left : auto;
+
+
+}
+
+/* #endregion rd-ctl-foot-row */
+
+/* #endregion rd-ctl-group */
+
+/* #endregion rd-ctl-body */
+
+
