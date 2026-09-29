@@ -66,29 +66,8 @@ body {
   text-transform: uppercase;
   color: var(--muted);
 }
-.kicker-time {
-  margin-left: 6px;
-  padding-left: 8px;
-  border-left: 0.5px solid var(--border);
-}
-/* Below 400px the date + " | " + time no longer fit on one line without
-   awkward wrapping mid-timestamp — drop the divider (it was only ever
-   there to visually separate the two on a shared line) and let the time
-   fall to its own line instead. */
-@container app (max-width: 399px) {
-  .kicker-time {
-    display: block;
-    margin-left: 0;
-    padding-left: 0;
-    border-left: none;
-    text-align: center;
-  }
-}
 
 /* ─── App shell ────────────────────────────────────────────────────────── */
-
-/* Today runs edge to edge; its own tab root lifts the shared column cap. */
-.tab--today { max-width: none; }
 
 /* ─── Tab-header brand mark ──────────────────────────────────────────── */
 
@@ -109,8 +88,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 .btn:active { transform: translateY(0.5px); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 .btn--sm { height: 30px; padding: 0 11px; font-size: 13px; gap: 5px; border-radius: 999px; }
-.btn--primary { background: var(--text); color: var(--bg); }
-.btn--primary:hover { background: oklch(from var(--text) calc(l + 0.06) c h); }
 .btn--ghost { color: var(--muted); }
 .btn--ghost:hover { color: var(--text); background: var(--surface); }
 .btn--danger { color: oklch(0.5 0.18 25); border: 0.5px solid currentColor; background: transparent; }
@@ -132,51 +109,12 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 .sub-tablink:hover { text-decoration-thickness: 2px; }
 
 /* ─── Tab: Today ─────────────────────────────────────────────────────────── */
-
-.tab--today { gap: 0; }
-.today-h {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  padding: 28px 20px 24px;
-  background: var(--bg);
-  border-bottom: 0.5px solid var(--border);
-}
-.today-h-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  gap: 20px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-.today-h-l {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  width: 100%;
-  justify-content: space-between;
-  gap: 16px;
-  min-width: 0;
-}
-/* Row that holds the date + day-streak pill. The streak's pill height
-   matches the kicker's line-height box so the row reads as a single line. */
+/* Row that holds a tab's kicker and the controls at its end. */
 .kicker-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-width: 0;
-}
-/* Groups the streak indicator with the help-mode toggle (see
-   help/mode.jsx) so kicker-row's own space-between still reads as
-   "date/time on the left, everything else on the right" with the new
-   button added, rather than splitting into three evenly-spaced columns. */
-.kicker-row-r { display: flex; align-items: center; gap: 20px; flex: 0 0 auto; }
-.today-h-lead {
-  display: flex;
-  align-items: center;
-  gap: 16px;
   min-width: 0;
 }
 .brand-mark {
@@ -196,110 +134,6 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   height: 100%;
   display: block;
 }
-@media (max-width: 640px) {
-  .today-h-lead { gap: 12px; }
-}
-.today-body {
-  position: relative;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 20px 20px 0;
-}
-.today-title {
-  font-size: 34px;
-  line-height: 1.1;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  margin: 0;
-  align-items: center;
-  /* Stack the default + celebratory titles on top of each other so they can
-     cross-fade cleanly without the header reflowing. */
-  display: grid;
-}
-.today-title .title-state {
-  grid-area: 1 / 1;
-  transition: opacity 280ms ease, transform 280ms ease;
-  will-change: opacity, transform;
-}
-.today-title .title-state.is-out {
-  opacity: 0;
-  transform: translateY(-4px);
-  pointer-events: none;
-}
-.today-title .title-state.is-in {
-  opacity: 1;
-  transform: none;
-}
-/* Celebratory title: words enter one by one. "Your" + "life," fade-rise;
-   "eased!" lands with a spring-bounce to match the word's meaning. */
-.today-title .title-state--done .title-word {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: titleWordRise 420ms cubic-bezier(.22,.9,.3,1) forwards;
-}
-.today-title .title-state--done.is-in .title-word--1 { animation-delay: 60ms; }
-.today-title .title-state--done.is-in .title-word--2 { animation-delay: 200ms; }
-.today-title .title-state--done.is-in .title-word--3 {
-  animation: titleWordSpring 720ms cubic-bezier(.22,1.5,.36,1) 380ms forwards;
-  color: var(--accent);
-  transform-origin: 0% 70%;
-}
-/* When the celebratory title is not active, hold all words at their start
-   state so the reveal plays cleanly on next entry. */
-.today-title .title-state--done.is-out .title-word { animation: none; }
-@keyframes titleWordRise {
-  0%   { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: none; }
-}
-@keyframes titleWordSpring {
-  0%   { opacity: 0; transform: translateY(10px) scale(0.86); }
-  55%  { opacity: 1; transform: translateY(0)    scale(1.12); }
-  78%  {            transform: translateY(0)    scale(0.97); }
-  100% { opacity: 1; transform: translateY(0)    scale(1); }
-}
-
-.today-h-lead .today-title { flex: 1 1 auto; min-width: 0; }
-.today-h-lead .ring { margin-left: auto; flex: 0 0 auto; }
-/* Sized to match the brand-mark's height so the title row reads as a
-   logo / title / ring triad of equal vertical weight. */
-.ring { position: relative; width: calc(34px * 1.1 * 2); height: calc(34px * 1.1 * 2); }
-.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.ring-bg { fill: none; stroke: var(--border); stroke-width: 2.8; }
-.ring-fg { fill: none; stroke: var(--accent); stroke-width: 2.8; stroke-linecap: round;
-  transition: stroke-dasharray .55s cubic-bezier(.3,1.3,.5,1); }
-.ring-glow {
-  position: absolute; inset: -4px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--accent), transparent 65%);
-  opacity: 0;
-  pointer-events: none;
-  z-index: -1;
-}
-.ring.is-pulsing svg {
-  animation: ringPulse 620ms cubic-bezier(.22,1.4,.36,1);
-}
-.ring.is-pulsing .ring-num {
-  animation: ringNumPulse 620ms cubic-bezier(.22,1.4,.36,1);
-}
-.ring.is-pulsing .ring-glow {
-  animation: ringGlow 700ms ease-out;
-}
-@keyframes ringPulse {
-  0%   { transform: rotate(-90deg) scale(1); }
-  35%  { transform: rotate(-90deg) scale(1.10); }
-  100% { transform: rotate(-90deg) scale(1); }
-}
-@keyframes ringNumPulse {
-  0%   { transform: scale(1); color: var(--text); }
-  35%  { transform: scale(1.18); color: var(--accent); }
-  100% { transform: scale(1); color: var(--text); }
-}
-@keyframes ringGlow {
-  0%   { opacity: 0; transform: scale(0.85); }
-  35%  { opacity: 0.35; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.05); }
-}
 
 /* Completion-celebration style variables (Appearance → Completion
    celebration). "Ripple" is the pure-CSS default (ripple-ring + card-exhale,
@@ -316,157 +150,19 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   --exhale-glow: 6px;
   --exhale-glow-op: 0.18;
 }
-
-/* Ring completion — runs once when the ring fills. The ring itself
-   stays put; only the number pulses to the accent color, while the wider
-   celebration-ripple + card-exhale cascade carry the moment. */
-.ring.is-celebrating .ring-num {
-  animation: ringCompleteNum 1200ms cubic-bezier(.22,1.4,.36,1);
-}
-.ring.is-celebrating .ring-glow {
-  animation: ringCompleteGlow 1200ms ease-out;
-}
-.ring-ripple {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.5px solid var(--accent);
-  opacity: 0;
-  pointer-events: none;
-}
-@keyframes ringCompleteScale {
-  0%   { transform: rotate(-90deg) scale(1); }
-  30%  { transform: rotate(-90deg) scale(1.14); }
-  60%  { transform: rotate(-90deg) scale(0.98); }
-  100% { transform: rotate(-90deg) scale(1); }
-}
-@keyframes ringCompleteNum {
-  0%   { transform: scale(1); color: var(--text); }
-  30%  { transform: scale(1.35); color: var(--accent); }
-  60%  { transform: scale(0.96); color: var(--accent); }
-  100% { transform: scale(1); color: var(--text); }
-}
-@keyframes ringCompleteGlow {
-  0%   { opacity: 0; transform: scale(0.85); }
-  30%  { opacity: 0.55; transform: scale(1.15); }
-  100% { opacity: 0; transform: scale(1.45); }
-}
-@keyframes ringCompleteRipple {
-  0%   { opacity: 0.85; transform: scale(1); border-width: 1.5px; }
-  100% { opacity: 0;    transform: scale(2.4); border-width: 0.5px; }
-}
-
-/* Celebration ripple — fires after the ring + title resolve, as part of the
-   broader "all-done" moment. Bigger, slower, more atmospheric than the
-   ring-ripple. Positioned absolute over the ring so it expands past it. */
-.celebration-ripple {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.5px solid var(--accent);
-  pointer-events: none;
-  opacity: 0;
-}
-.ring.is-celebrating .celebration-ripple {
-  animation: celebrationRipple var(--celeb-ripple-dur) cubic-bezier(.2,.6,.3,1) forwards;
-}
-@keyframes celebrationRipple {
-  0%   { opacity: var(--celeb-ripple-opacity); transform: scale(1);  border-width: 1.5px; }
-  100% { opacity: 0;    transform: scale(var(--celeb-ripple-scale)); border-width: 0.5px; }
-}
 @keyframes cardExhale {
   0%   { transform: none;          box-shadow: 0 0 0 0 oklch(from var(--accent) l c h / 0); }
   35%  { transform: scale(var(--exhale-scale));  box-shadow: 0 0 0 var(--exhale-glow) oklch(from var(--accent) l c h / var(--exhale-glow-op)); }
   100% { transform: none;          box-shadow: 0 0 0 0 oklch(from var(--accent) l c h / 0); }
 }
-
-/* Confetti + Sparkle — the two completion-celebration styles that use actual
-   generated particles (tab-today.jsx) rather than pure CSS variants of the
-   ripple. They overlay the cards area only (not the group rail), positioned
-   fixed at a snapshot of that area's on-screen rect so "center of the
-   viewable area" holds regardless of scroll position or list length.
-   Overflow is clipped so pieces stay contained to the cards area per the
-   "subtle, not a party popper" brief. */
-.celeb-overlay { position: fixed; pointer-events: none; overflow: hidden; z-index: 5; }
-.confetti-piece {
-  position: absolute; top: 50%; left: 50%;
-  width: 9px; height: 14px; border-radius: 2px;
-  background: var(--accent);
-  opacity: 0;
-  animation: confettiBurst 850ms cubic-bezier(.2,.7,.3,1) both;
-}
 @keyframes confettiBurst {
   0%   { opacity: var(--piece-opacity, 0.9); transform: translate(-50%, -50%) rotate(0deg); }
   100% { opacity: 0;   transform: translate(calc(-50% + cos(var(--angle)) * var(--dist)), calc(-50% + sin(var(--angle)) * var(--dist) + 14px)) rotate(var(--rot)); }
-}
-.sparkle-piece {
-  position: absolute;
-  transform: translate(-50%, -50%) scale(0.4);
-  font-size: 18px; line-height: 1; color: var(--accent);
-  opacity: 0;
-  animation: sparkleTwinkle 780ms ease-in-out both;
 }
 @keyframes sparkleTwinkle {
   0%, 100% { opacity: 0;   transform: translate(-50%, -50%) scale(0.4); }
   50%      { opacity: 0.9; transform: translate(-50%, -50%) scale(1.15); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .confetti-piece, .sparkle-piece { animation: none; opacity: 0; }
-}
-.ring-text {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center; gap: 2px;
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-.ring-num { font-size: 23px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
-.ring-den { font-size: 12px; color: var(--muted); line-height: 1; }
-
-/* Small inline pill that sits on the kicker row. Its height matches the
-   kicker's line-height box so the row stays tight. */
-.streak {
-  display: inline-flex; align-items: center; gap: 6px;
-  height: 22px;
-  padding: 0 10px;
-  font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--muted);
-  background: var(--surface); border: 0.5px solid var(--border);
-  border-radius: 999px;
-  white-space: nowrap;
-  transition: background .2s, border-color .2s;
-}
-.streak svg { flex: 0 0 auto; color: var(--warm); transition: filter .2s, transform .2s; }
-.streak.is-bumped {
-  animation: streakBump 800ms cubic-bezier(.22,1.4,.36,1);
-  background: oklch(from var(--warm) calc(l + 0.32) calc(c - 0.05) h);
-  border-color: oklch(from var(--warm) calc(l + 0.2) calc(c - 0.03) h);
-}
-.streak.is-bumped svg {
-  animation: streakFlame 800ms cubic-bezier(.22,1.4,.36,1);
-}
-.streak.is-bumped span {
-  animation: streakNum 800ms cubic-bezier(.22,1.4,.36,1);
-}
-@keyframes streakBump {
-  0%   { transform: scale(1); }
-  35%  { transform: scale(1.10); }
-  100% { transform: scale(1); }
-}
-@keyframes streakFlame {
-  0%   { transform: scale(1) rotate(0); filter: drop-shadow(0 0 0 transparent); }
-  35%  { transform: scale(1.4) rotate(-6deg); filter: drop-shadow(0 0 5px var(--warm)); }
-  70%  { transform: scale(1.1) rotate(3deg); }
-  100% { transform: scale(1) rotate(0); filter: drop-shadow(0 0 0 transparent); }
-}
-@keyframes streakNum {
-  0%   { color: var(--muted); }
-  35%  { color: var(--warm); font-weight: 600; }
-  100% { color: var(--muted); }
-}
-
-.today-list { display: flex; flex-direction: column; }
 @keyframes cardSkipOut {
   0% {
     opacity: 1;
@@ -499,27 +195,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 }
 
 /* ── Today: group layout ──────────────────────────────────────────────── */
-
-.today-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 32px;
-  align-items: start;
-}
-
-.group-rail {
-  position: sticky;
-  top: calc(var(--today-h-h, 140px) + 16px);
-  align-self: start;
-  display: flex; flex-direction: column;
-  gap: 6px;
-  max-height: calc(100dvh - var(--today-h-h, 140px) - 120px);
-  overflow-y: auto;
-  scrollbar-width: none;
-}
-.group-rail::-webkit-scrollbar { display: none; }
 .rail-kicker { padding: 0 12px 4px; }
-.group-rail ul { display: flex; flex-direction: column; gap: 2px; }
 .rail-btn {
   width: 100%;
   display: flex; justify-content: space-between; align-items: center;
@@ -539,131 +215,14 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   background: var(--accent-soft);
 }
 .rail-name { text-wrap: pretty; }
-.rail-count {
-  display: inline-flex; align-items: baseline; gap: 1px;
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  color: inherit;
-  opacity: 0.7;
-}
-.rail-of { opacity: 0.6; }
-
-/* Edit Mode entry point in the group sidebar (desktop). Its own block with a
-   dashed divider + light fill so it reads as a list action, not a group link.
-   Hidden on mobile (the horizontal rail); the footer button takes over there. */
-.rail-editmode { margin-top: 12px; padding-top: 14px; border-top: 1px dashed var(--border); }
-.em-rail-btn {
-  width: 100%;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 10px 12px;
-  border: 1px dashed var(--border); border-radius: 8px;
-  background: oklch(from var(--surface) calc(l - 0.015) c h);
-  color: var(--muted);
-  font-size: 12.5px; font-weight: 600; letter-spacing: -0.005em;
-  cursor: pointer;
-  transition: color .12s, border-color .12s, background .12s;
-}
-.em-rail-btn:hover { color: var(--accent); border-color: var(--accent); }
-.em-rail-btn.is-on {
-  color: var(--accent); border-style: solid; border-color: var(--accent);
-  background: var(--accent-soft);
-}
-/* Desktop shows the sidebar button, so the footer's duplicate is hidden there. */
-.foot-editmode { display: none; }
-
-.today-groups {
-  display: flex; flex-direction: column;
-  gap: 28px;
-  min-width: 0;
-  /* No transition here on purpose: the Welcome Tour's dynamic top-reserve
-     (padding-top, set inline via onboarding.jsx's emlTouObj bus) is measured
-     back out of the target's live position every frame while a step is up
-     (see the reserve-space effect in onboarding.jsx) — an animated change
-     would read as a moving target mid-transition and fight its own math. */
-}
-
-/* Holds the reorderable Reminders + group sections. Mirrors .today-groups' own
-   column gap so each section's top-border separator keeps its 28px of breathing
-   room above it (the sections used to inherit that gap from .today-groups). */
-.groups-dnd { display: flex; flex-direction: column; gap: 28px; }
-
-.group-section {
-  display: flex; flex-direction: column;
-  gap: 12px;
-  scroll-margin-top: calc(var(--sticky-top-h, 140px) + 16px);
-}
-.groups-dnd > .group-section:not(:first-child) {
-  border-top: 0.5px solid var(--border);
-  padding-top: 28px;
-}
 @keyframes dashSweep {
   0%   { transform: scaleX(0); }
   100% { transform: scaleX(1); }
 }
 
-/* Mobile: rail collapses, sections stack with dividers */
+/* Mobile: the rail collapses into a scrolling pill row */
 @container app (max-width: 760px) {
-  /* .today-body's own 20px top padding is meant for the DESKTOP layout,
-     where .group-rail is just a normal sidebar sitting inside it. At this
-     width the rail becomes sticky and sits flush under the header instead
-     (see .group-rail's own top: var(--today-h-h) below) — that padding
-     doesn't collapse against the header's own border-bottom, since they're
-     not adjacent margins, so it was adding a visible extra gap between the
-     header and the pill rail on top of whatever spacing the rail's own
-     padding already provides. .today-layout's own 16px gap (below) still
-     covers the rail-to-content spacing beneath it. */
-  .today-body { padding-top: 0; }
-  .today-layout {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .group-rail {
-    position: sticky;
-    top: var(--today-h-h, 132px);
-    z-index: 18;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    max-height: none;
-    margin: 0 -20px;
-    padding: 14px 20px;
-    gap: 6px;
-    background: oklch(from var(--bg) l c h / 0.92);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-    backdrop-filter: blur(18px) saturate(140%);
-    border-bottom: 0.5px solid var(--border);
-    /* Same edge-fade treatment as .picker-tabs — JS toggles
-       [data-scroll-start-active] / [data-scroll-end-active] so the fade only appears on the side that
-       has more content to scroll into. */
-    --fade: 36px;
-    --fade-l: var(--fade);
-    --fade-r: var(--fade);
-    mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      #000 var(--fade-l),
-      #000 calc(100% - var(--fade-r)),
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      #000 var(--fade-l),
-      #000 calc(100% - var(--fade-r)),
-      transparent 100%
-    );
-  }
-  .group-rail[data-scroll-start-active] { --fade-l: 0px; }
-  .group-rail[data-scroll-end-active]   { --fade-r: 0px; }
-  .group-rail::-webkit-scrollbar { display: none; }
   .rail-kicker { display: none; }
-  .group-rail ul {
-    flex: 0 0 auto;
-    flex-direction: row;
-    gap: 6px;
-    width: max-content;
-  }
   .rail-btn {
     flex-shrink: 0;
     padding: 6px 12px;
@@ -673,19 +232,10 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
     font-size: 13px;
     white-space: nowrap;
   }
-  /* Mobile: the sidebar Edit Mode block is hidden (no room in the horizontal
-     pill row); the footer button takes over instead. */
-  .rail-editmode { display: none; }
-  .foot-editmode { display: inline-flex; }
   .rail-btn.is-on {
     border-color: var(--accent);
     background: var(--accent-soft);
   }
-  .groups-dnd > .group-section:not(:first-child) {
-    padding-top: 20px;
-  }
-  /* Mobile header trims its padding a touch */
-  .today-h { padding: 16px 20px 14px; }
 }
 /* Screen-reader-only live region (window.announce). Present from load so status
    changes are reliably announced; clipped rather than display:none, which would
@@ -701,72 +251,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   100% { opacity: 0;    transform: scale(2.6); border-width: 0.5px; }
 }
 /* Same InfoTip-trigger pattern as the entry cards' disabled icon buttons
-   (entry-card.module.css), for a full .btn (e.g. the mini-tour checklist's
-   blocked Generate button). */
+   (entry-card.module.css), for a full .btn standing in for a blocked action
+   inside an info tip. */
 .btn.is-disabled { opacity: 0.4; cursor: default; }
 .btn.is-disabled:hover { background: var(--bg); color: inherit; }
-
-.today-footer {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  padding: 12px 0;
-  color: var(--muted);
-}
-.today-foot-actions { display: flex; gap: 10px; align-items: center; justify-content: center; }
-.today-foot-actions + .today-foot-sub { margin-top: 8px; }
-.today-footer .btn { font-variant-numeric: tabular-nums; }
-.today-footer { --btn-font-variant-numeric: tabular-nums; }
-.today-foot-sub { font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
-
-/* Inline "regenerate" confirmation that replaces the footer button, matching the
-   inline-delete-confirm convention used elsewhere. */
-.gen-confirm { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 420px; text-align: center; }
-.gen-confirm-msg { margin: 0; font-size: 13px; line-height: 1.5; color: var(--text); text-wrap: pretty; }
-.gen-confirm-actions { display: flex; gap: 8px; }
-
-
-/* ─── Reduced motion: gaps closed ────────────────────────────────────────────
-   Each rule pairs animation removal with an EXPLICIT end state. Several of the
-   keyframes below start at opacity 0 or scale 0, so removing the animation alone
-   would leave the element permanently invisible (the pre-existing
-   .confetti-piece rule is the pattern being followed here).
-   Three categories:
-     • decorative/additive (glow, ripple, exhale, spin) — removed outright
-     • entrance/exit of real content — snapped to its finished state
-     • state feedback that must stay legible — motion dropped, visibility kept */
-@media (prefers-reduced-motion: reduce) {
-  /* Celebratory title: words animate IN from opacity 0 — must be pinned visible. */
-  .today-title .title-state--done .title-word,
-  .today-title .title-state--done.is-in .title-word--1,
-  .today-title .title-state--done.is-in .title-word--2,
-  .today-title .title-state--done.is-in .title-word--3 {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-  /* Progress ring: pulse/glow are purely decorative. The ring's own stroke
-     transition is untouched so progress still reads. */
-  .ring.is-pulsing svg,
-  .ring.is-pulsing .ring-num,
-  .ring.is-celebrating .ring-num,
-  .ring.is-celebrating svg {
-    animation: none;
-    transform: none;
-  }
-  .ring.is-pulsing .ring-glow,
-  .ring.is-celebrating .ring-glow,
-  .ring.is-celebrating .celebration-ripple {
-    animation: none;
-    opacity: 0;
-  }
-  /* Streak chip: the background/border-colour fade STAYS — a colour change is
-     not motion, and it is the signal that the streak advanced. Only the icon's
-     transform transition is movement. */
-  .streak svg { transition: filter .2s; }
-  .streak.is-bumped,
-  .streak.is-bumped svg,
-  .streak.is-bumped span {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-}

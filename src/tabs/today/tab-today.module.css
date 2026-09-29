@@ -1,0 +1,2268 @@
+
+
+
+/**
+ * tab-today.module.css = Today Tab Module
+ *
+ * @summary
+ * Styles for the Today tab's own markup: the sticky header with its date
+ * kicker, streak chip, brand mark, cross-fading title, and progress ring;
+ * the Edit Mode banner; the group rail (a sticky sidebar that becomes a
+ * scrolling pill row on narrow widths); the group sections the cards stack
+ * in; the confetti and sparkle celebration overlay; the onboarding Generate
+ * and empty-state cards; and the footer with its regenerate confirm. The
+ * ring's pulse and celebration classes, the streak's bump class, the banner's
+ * closing class, and the onboarding card's removing and pulse classes are
+ * animation triggers this file adds itself. A title state keys off its own
+ * aria-hidden, a selected rail button off data-rail-select-active, the Edit
+ * Mode button off data-edit-mode-active, a blocked Generate card off
+ * data-card-needed-active, and a disabled-looking tip button off the
+ * aria-disabled its info tip sets. The footer's Edit Mode button hides
+ * through --btn-display, which ButBasCom reads.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region tab--today */
+
+.tab--today { /* What: Today Tab. Why: The header and body stack flush and full width, with extra room below while a tour runs. How: This clears the tab gap and width cap and reads --tab-tour-padding, which the body sets while a tour is active. */
+
+
+	gap            : 0;
+	max-width      : none;
+	padding-bottom : var(--tab-tour-padding, 0);
+
+
+}
+
+/* #region today-h */
+
+.today-h { /* What: Today Header. Why: The header stays pinned at the top while the list scrolls under it. How: This makes it a sticky padded bar on the page background above a hairline. */
+
+
+	background    : var(--bg);
+	border-bottom : 0.5px solid var(--border);
+	padding       : 28px 20px 24px;
+	position      : sticky;
+	top           : 0;
+	z-index       : 20;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.today-h { /* What: Trimmed Today Header. Why: The narrow header needs less padding. How: This tightens its padding. */
+
+
+		padding : 16px 20px 14px;
+
+
+	}
+
+
+}
+
+/* #region today-h-inner */
+
+.today-h-inner { /* What: Header Inner. Why: The header's content caps at the page width. How: This centers a 960px row that stretches its column. */
+
+
+	align-items     : stretch;
+	display         : flex;
+	gap             : 20px;
+	justify-content : space-between;
+	margin          : 0 auto;
+	max-width       : 960px;
+
+
+}
+
+/* #region today-h-l */
+
+.today-h-l { /* What: Header Column. Why: The kicker row sits above the lead row, spread to the header's height. How: This stacks them in a full-width column spaced apart. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : 16px;
+	justify-content : space-between;
+	min-width       : 0;
+	width           : 100%;
+
+
+}
+
+/* #region kicker-row */
+
+.kicker-row { /* What: Kicker Row. Why: The date kicker and the streak and help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.kicker { /* What: Kicker. Why: A small eyebrow label names the day above the title and heads the rail. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : 22px;
+	text-transform : uppercase;
+
+
+}
+
+.kicker-time { /* What: Kicker Time. Why: The time reads apart from the date. How: This divides it from the date with a hairline. */
+
+
+	border-left  : 0.5px solid var(--border);
+	margin-left  : 6px;
+	padding-left : 8px;
+
+
+}
+@container app (max-width: 399px) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 399px wide or less. */
+
+
+	.kicker-time { /* What: Stacked Kicker Time. Why: The time needs its own line. How: This makes it a centered block without its divider. */
+
+
+		border-left  : none;
+		display      : block;
+		margin-left  : 0;
+		padding-left : 0;
+		text-align   : center;
+
+
+	}
+
+
+}
+
+/* #region kicker-row-r */
+
+.kicker-row-r { /* What: Kicker Row End. Why: The streak and help toggle pair up at the row's end. How: This lines them up in a fixed-size row. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 20px;
+
+
+}
+
+/* #region streak */
+
+.streak { /* What: Streak Chip. Why: The current streak sits on the kicker row as a small pill matching the kicker's line height. How: This draws a small outlined mono pill that fades its colors. */
+
+
+	align-items    : center;
+	background     : var(--surface);
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	display        : inline-flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 6px;
+	height         : 22px;
+	letter-spacing : 0.08em;
+	padding        : 0 10px;
+	text-transform : uppercase;
+	transition     : background .2s, border-color .2s;
+	white-space    : nowrap;
+
+
+}
+.streak.is-bumped { /* What: Bumped Streak Chip. Why: A streak that just grew should pop and warm up for a moment. How: This plays a springy scale and tints the chip warm while the bumped class is set. */
+
+
+	animation    : streakBump 800ms cubic-bezier(.22,1.4,.36,1);
+	background   : oklch(from var(--warm) calc(l + 0.32) calc(c - 0.05) h);
+	border-color : oklch(from var(--warm) calc(l + 0.2) calc(c - 0.03) h);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Streak Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.streak { /* What: Still Streak Chip. Why: The warm tint should switch at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+	.streak.is-bumped { /* What: Still Bumped Streak Chip. Why: The chip shouldn't pop, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes streakBump { /* What: Streak Bump Keyframes. Why: The chip swells briefly. How: This scales it up and back. */
+
+
+	0% {
+
+
+		transform : scale(1);
+
+
+	}
+
+	35% {
+
+
+		transform : scale(1.10);
+
+
+	}
+
+	100% {
+
+
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+.streak svg { /* What: Streak Flame. Why: The flame icon reads warm beside the count. How: This colors it warm at its natural size, easing its transform and glow. */
+
+
+	color      : var(--warm);
+	flex       : 0 0 auto;
+	transition : filter .2s, transform .2s;
+
+
+}
+.streak.is-bumped svg { /* What: Bumped Streak Flame. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
+
+
+	animation : streakFlame 800ms cubic-bezier(.22,1.4,.36,1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Streak Flame. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.streak svg { /* What: Still Streak Flame. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+	.streak.is-bumped svg { /* What: Still Bumped Streak Flame. Why: The flame shouldn't flare, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes streakFlame { /* What: Streak Flame Keyframes. Why: The flame flares and settles. How: This scales, tilts, and glows it, then eases back. */
+
+
+	0% {
+
+
+		filter    : drop-shadow(0 0 0 transparent);
+		transform : scale(1) rotate(0);
+
+
+	}
+
+	35% {
+
+
+		filter    : drop-shadow(0 0 5px var(--warm));
+		transform : scale(1.4) rotate(-6deg);
+
+
+	}
+
+	70% {
+
+
+		transform : scale(1.1) rotate(3deg);
+
+
+	}
+
+	100% {
+
+
+		filter    : drop-shadow(0 0 0 transparent);
+		transform : scale(1) rotate(0);
+
+
+	}
+
+
+}
+
+.streak.is-bumped span { /* What: Bumped Streak Count. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
+
+
+	animation : streakNum 800ms cubic-bezier(.22,1.4,.36,1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Streak Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.streak.is-bumped span { /* What: Still Bumped Streak Count. Why: The count shouldn't flash, but should stay fully shown. How: This turns its animation off and pins it visible and unscaled. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes streakNum { /* What: Streak Count Keyframes. Why: The count warms and bolds for a beat. How: This runs its color to warm and back. */
+
+
+	0% {
+
+
+		color : var(--muted);
+
+
+	}
+
+	35% {
+
+
+		color       : var(--warm);
+		font-weight : 600;
+
+
+	}
+
+	100% {
+
+
+		color : var(--muted);
+
+
+	}
+
+
+}
+
+/* #endregion streak */
+
+/* #endregion kicker-row-r */
+
+/* #endregion kicker-row */
+
+
+
+/* #region today-h-lead */
+
+.today-h-lead { /* What: Header Lead. Why: The brand mark, title, and ring sit on one row. How: This lines them up in a centered row that can shrink. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 16px;
+	min-width   : 0;
+
+
+}
+@media (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the viewport is 640px wide or less. */
+
+
+	.today-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : 12px;
+
+
+	}
+
+
+}
+
+/* #region brand-mark */
+
+.brand-mark { /* What: Brand Mark. Why: The logo beside the title is also a button back to Today's top, sized to match the ring. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	aspect-ratio       : 1 / 1;
+	background         : none;
+	border             : 0;
+	border-radius      : 11px;
+	color              : var(--accent);
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : calc(34px * 1.1 * 2);
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform 180ms ease;
+
+
+}
+.brand-mark:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY(-1px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.brand-mark { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.brand-mark svg { /* What: Brand Mark Glyph. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion brand-mark */
+
+
+
+/* #region today-title */
+
+.today-title { /* What: Today Title. Why: The default and celebratory titles stack on each other so they can cross-fade without the header reflowing. How: This sets the heading large and tight on a one-cell grid. */
+
+
+	align-items    : center;
+	display        : grid;
+	flex           : 1 1 auto;
+	font-size      : 34px;
+	font-weight    : 500;
+	letter-spacing : -0.03em;
+	line-height    : 1.1;
+	margin         : 0;
+	min-width      : 0;
+
+
+}
+@container app (max-width: 520px) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 520px wide or less. */
+
+
+	.today-title { /* What: Smaller Today Title. Why: The heading has less room. How: This drops it to 28px. */
+
+
+		font-size : 28px;
+
+
+	}
+
+
+}
+
+/* #region title-state */
+
+.today-title .title-state { /* What: Title State. Why: Both titles share one cell and cross-fade. How: This places each in the grid's one cell and eases its opacity and position. */
+
+
+	grid-area   : 1 / 1;
+	transition  : opacity 280ms ease, transform 280ms ease;
+	will-change : opacity, transform;
+
+
+}
+.today-title .title-state[aria-hidden="true"] { /* What: Hidden Title State. Why: The inactive title fades up and away. How: This hides it, nudged up, keying off the aria-hidden it already sets. */
+
+
+	opacity        : 0;
+	pointer-events : none;
+	transform      : translateY(-4px);
+
+
+}
+.today-title .title-state[aria-hidden="false"] { /* What: Shown Title State. Why: The active title rests in place. How: This shows it unmoved. */
+
+
+	opacity   : 1;
+	transform : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Title State. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-title .title-state { /* What: Still Title State. Why: The titles should swap at once. How: This turns their transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.today-title .title-state--done .title-word { /* What: Celebration Title Word. Why: The celebratory title's words enter one by one. How: This starts each word hidden and low and plays a fade-rise. */
+
+
+	animation : titleWordRise 420ms cubic-bezier(.22,.9,.3,1) forwards;
+	display   : inline-block;
+	opacity   : 0;
+	transform : translateY(8px);
+
+
+}
+.today-title .title-state--done[aria-hidden="false"] .title-word--1 { /* What: First Celebration Word. Why: The words stagger in. How: This delays the first by 60ms. */
+
+
+	animation-delay : 60ms;
+
+
+}
+.today-title .title-state--done[aria-hidden="false"] .title-word--2 { /* What: Second Celebration Word. Why: The words stagger in. How: This delays the second by 200ms. */
+
+
+	animation-delay : 200ms;
+
+
+}
+.today-title .title-state--done[aria-hidden="false"] .title-word--3 { /* What: Third Celebration Word. Why: "eased!" lands last with a spring to match its meaning. How: This plays a delayed spring scale in the accent color. */
+
+
+	animation        : titleWordSpring 720ms cubic-bezier(.22,1.5,.36,1) 380ms forwards;
+	color            : var(--accent);
+	transform-origin : 0% 70%;
+
+
+}
+.today-title .title-state--done[aria-hidden="true"] .title-word { /* What: Held Celebration Word. Why: While the celebration title is hidden, its words wait at their start state so the reveal replays cleanly next time. How: This turns their animation off. */
+
+
+	animation : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Celebration Title Word. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.today-title .title-state--done .title-word,
+	.today-title .title-state--done[aria-hidden="false"] .title-word--1,
+	.today-title .title-state--done[aria-hidden="false"] .title-word--2,
+	.today-title .title-state--done[aria-hidden="false"] .title-word--3 { /* What: Still Celebration Title Word. Why: The words animate in from hidden, so without motion they must be pinned visible. How: This turns their animation off and pins them shown and unmoved. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes titleWordRise { /* What: Title Word Rise Keyframes. Why: Each word fades up into place. How: This runs opacity up while lifting it 8px. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : translateY(8px);
+
+
+	}
+
+	100% {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes titleWordSpring { /* What: Title Word Spring Keyframes. Why: The last word bounces into place. How: This lifts, overshoots, and settles its scale. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : translateY(10px) scale(0.86);
+
+
+	}
+
+	55% {
+
+
+		opacity   : 1;
+		transform : translateY(0) scale(1.12);
+
+
+	}
+
+	78% {
+
+
+		transform : translateY(0) scale(0.97);
+
+
+	}
+
+	100% {
+
+
+		opacity   : 1;
+		transform : translateY(0) scale(1);
+
+
+	}
+
+
+}
+
+/* #endregion title-state */
+
+/* #endregion today-title */
+
+
+
+/* #region ring */
+
+.ring { /* What: Progress Ring. Why: The ring shows how much of the day is done and matches the brand mark's height, so the title row reads as a triad. How: This sizes a positioned square pushed to the row's end. */
+
+
+	flex        : 0 0 auto;
+	height      : calc(34px * 1.1 * 2);
+	margin-left : auto;
+	position    : relative;
+	width       : calc(34px * 1.1 * 2);
+
+
+}
+
+/* #region ring-svg */
+
+.ring svg { /* What: Ring Graphic. Why: The arc starts at the top rather than the right. How: This fills the ring and turns it a quarter back. */
+
+
+	height    : 100%;
+	transform : rotate(-90deg);
+	width     : 100%;
+
+
+}
+.ring.is-pulsing svg { /* What: Pulsing Ring Graphic. Why: Each completed item gives the ring a small pop. How: This plays a springy scale while the pulsing class is set. */
+
+
+	animation : ringPulse 620ms cubic-bezier(.22,1.4,.36,1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Ring Graphic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ring.is-pulsing svg,
+	.ring.is-celebrating svg { /* What: Still Ring Graphic. Why: The ring shouldn't pop. How: This turns its animation and transform off. */
+
+
+		animation : none;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes ringPulse { /* What: Ring Pulse Keyframes. Why: The ring swells briefly without losing its rotation. How: This scales it up and back while keeping the quarter turn. */
+
+
+	0% {
+
+
+		transform : rotate(-90deg) scale(1);
+
+
+	}
+
+	35% {
+
+
+		transform : rotate(-90deg) scale(1.10);
+
+
+	}
+
+	100% {
+
+
+		transform : rotate(-90deg) scale(1);
+
+
+	}
+
+
+}
+
+.ring-bg { /* What: Ring Track. Why: The unfilled track sits under the progress arc. How: This strokes the circle in the border color. */
+
+
+	fill         : none;
+	stroke       : var(--border);
+	stroke-width : 2.8;
+
+
+}
+
+.ring-fg { /* What: Ring Progress. Why: The arc grows with each completed item, springing to its new length. How: This strokes the circle in the accent with round caps and eases its dash length. */
+
+
+	fill           : none;
+	stroke         : var(--accent);
+	stroke-linecap : round;
+	stroke-width   : 2.8;
+	transition     : stroke-dasharray .55s cubic-bezier(.3,1.3,.5,1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Ring Progress. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ring-fg { /* What: Still Ring Progress. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion ring-svg */
+
+
+
+/* #region ring-text */
+
+.ring-text { /* What: Ring Text. Why: The done count sits centered over the ring. How: This centers the fraction in a tabular mono row over the whole ring. */
+
+
+	align-items          : center;
+	display              : flex;
+	font-family          : var(--font-mono);
+	font-variant-numeric : tabular-nums;
+	gap                  : 2px;
+	inset                : 0;
+	justify-content      : center;
+	line-height          : 1;
+	position             : absolute;
+
+
+}
+
+.ring-num { /* What: Ring Count. Why: The done count leads the fraction. How: This sets it large and tight. */
+
+
+	font-size      : 23px;
+	font-weight    : 500;
+	letter-spacing : -0.04em;
+	line-height    : 1;
+
+
+}
+.ring.is-pulsing .ring-num { /* What: Pulsing Ring Count. Why: The count flashes as it grows. How: This plays a springy scale and accent flash. */
+
+
+	animation : ringNumPulse 620ms cubic-bezier(.22,1.4,.36,1);
+
+
+}
+.ring.is-celebrating .ring-num { /* What: Celebrating Ring Count. Why: Completing the day gives the count a bigger flash. How: This plays a larger springy scale and accent flash. */
+
+
+	animation : ringCompleteNum 1200ms cubic-bezier(.22,1.4,.36,1);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Ring Count. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ring.is-pulsing .ring-num,
+	.ring.is-celebrating .ring-num { /* What: Still Ring Count. Why: The count shouldn't pop. How: This turns its animation and transform off. */
+
+
+		animation : none;
+		transform : none;
+
+
+	}
+
+
+}
+@keyframes ringNumPulse { /* What: Ring Count Pulse Keyframes. Why: The count swells in the accent and settles. How: This scales it and flashes its color. */
+
+
+	0% {
+
+
+		color     : var(--text);
+		transform : scale(1);
+
+
+	}
+
+	35% {
+
+
+		color     : var(--accent);
+		transform : scale(1.18);
+
+
+	}
+
+	100% {
+
+
+		color     : var(--text);
+		transform : scale(1);
+
+
+	}
+
+
+}
+@keyframes ringCompleteNum { /* What: Ring Count Complete Keyframes. Why: The count swells bigger for the finished day. How: This overshoots its scale in the accent and settles. */
+
+
+	0% {
+
+
+		color     : var(--text);
+		transform : scale(1);
+
+
+	}
+
+	30% {
+
+
+		color     : var(--accent);
+		transform : scale(1.35);
+
+
+	}
+
+	60% {
+
+
+		color     : var(--accent);
+		transform : scale(0.96);
+
+
+	}
+
+	100% {
+
+
+		color     : var(--text);
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+.ring-den { /* What: Ring Total. Why: The total reads quieter than the count. How: This sets it small and muted. */
+
+
+	color       : var(--muted);
+	font-size   : 12px;
+	line-height : 1;
+
+
+}
+
+/* #endregion ring-text */
+
+
+
+.ring-glow { /* What: Ring Glow. Why: A soft glow blooms behind the ring when it pulses or completes. How: This draws an invisible accent radial disc behind the ring. */
+
+
+	background     : radial-gradient(circle, var(--accent), transparent 65%);
+	border-radius  : 50%;
+	inset          : -4px;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+	z-index        : -1;
+
+
+}
+.ring.is-pulsing .ring-glow { /* What: Pulsing Ring Glow. Why: Each completed item blooms a small glow. How: This plays a short glow bloom. */
+
+
+	animation : ringGlowPulse 700ms ease-out;
+
+
+}
+.ring.is-celebrating .ring-glow { /* What: Celebrating Ring Glow. Why: Completing the day blooms a bigger glow. How: This plays a longer, wider glow bloom. */
+
+
+	animation : ringCompleteGlow 1200ms ease-out;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Ring Glow. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ring.is-pulsing .ring-glow,
+	.ring.is-celebrating .ring-glow { /* What: Still Ring Glow. Why: The glow is purely decorative. How: This turns its animation off and keeps it hidden. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+@keyframes ringGlowPulse { /* What: Ring Glow Pulse Keyframes. Why: The glow blooms and fades. How: This raises its opacity while scaling it slightly. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : scale(0.85);
+
+
+	}
+
+	35% {
+
+
+		opacity   : 0.35;
+		transform : scale(1);
+
+
+	}
+
+	100% {
+
+
+		opacity   : 0;
+		transform : scale(1.05);
+
+
+	}
+
+
+}
+@keyframes ringCompleteGlow { /* What: Ring Complete Glow Keyframes. Why: The glow blooms wider for the finished day. How: This raises its opacity while scaling it well past the ring. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : scale(0.85);
+
+
+	}
+
+	30% {
+
+
+		opacity   : 0.55;
+		transform : scale(1.15);
+
+
+	}
+
+	100% {
+
+
+		opacity   : 0;
+		transform : scale(1.45);
+
+
+	}
+
+
+}
+
+.ring-ripple { /* What: Ring Ripple. Why: This is an accent ring outline over the progress ring. How: This draws an invisible accent circle over the ring. */
+
+
+	border         : 1.5px solid var(--accent);
+	border-radius  : 50%;
+	inset          : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+
+.celebration-ripple { /* What: Celebration Ripple. Why: The finished day sends a big, slow ripple out past the ring. How: This draws an invisible accent circle over the ring that expands when celebrating. */
+
+
+	border         : 1.5px solid var(--accent);
+	border-radius  : 50%;
+	inset          : 0;
+	opacity        : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+.ring.is-celebrating .celebration-ripple { /* What: Celebrating Ripple. Why: The ripple carries the all-done moment out across the page. How: This plays the expansion at the chosen style's duration. */
+
+
+	animation : celebrationRippleExpand var(--celeb-ripple-dur) cubic-bezier(.2,.6,.3,1) forwards;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Celebration Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ring.is-celebrating .celebration-ripple { /* What: Still Celebration Ripple. Why: The ripple is purely decorative. How: This turns its animation off and keeps it hidden. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+@keyframes celebrationRippleExpand { /* What: Celebration Ripple Keyframes. Why: The ripple grows and fades as it spreads. How: This scales it by the celebration's --celeb-ripple-scale while fading it from --celeb-ripple-opacity. */
+
+
+	0% {
+
+
+		border-width : 1.5px;
+		opacity      : var(--celeb-ripple-opacity);
+		transform    : scale(1);
+
+
+	}
+
+	100% {
+
+
+		border-width : 0.5px;
+		opacity      : 0;
+		transform    : scale(var(--celeb-ripple-scale));
+
+
+	}
+
+
+}
+
+/* #endregion ring */
+
+/* #endregion today-h-lead */
+
+/* #endregion today-h-l */
+
+/* #endregion today-h-inner */
+
+/* #endregion today-h */
+
+
+
+/* #region today-body */
+
+.today-body { /* What: Today Body. Why: The banner, layout, and footer cap at the page width below the header. How: This centers a padded 960px column that anchors its overlays. */
+
+
+	margin    : 0 auto;
+	max-width : 960px;
+	padding   : 20px 20px 0;
+	position  : relative;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.today-body { /* What: Flush Today Body. Why: The narrow pill row's own padding already spaces it from the header. How: This drops the top padding. */
+
+
+		padding-top : 0;
+
+
+	}
+
+
+}
+
+/* #region editmode-banner */
+
+.editmode-banner { /* What: Edit Mode Banner. Why: While Edit Mode is on, a pinned banner says so under the header, sliding in. How: This draws a sticky soft-accent bar with its message and actions spread apart. */
+
+
+	align-items     : center;
+	animation       : emBannerIn 0.26s cubic-bezier(0.4, 0, 0.2, 1) both;
+	background      : var(--accent-soft);
+	border          : 1px solid oklch(from var(--accent) l c h / 0.35);
+	border-radius   : var(--r-md, 12px);
+	display         : flex;
+	gap             : 16px;
+	justify-content : space-between;
+	margin          : 0 0 20px;
+	padding         : 11px 16px;
+	position        : sticky;
+	top             : calc(var(--today-h-h, 140px) + 8px);
+	z-index         : 60;
+
+
+}
+.editmode-banner.is-closing { /* What: Closing Edit Mode Banner. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, ended by its animationend handler. */
+
+
+	animation : emBannerOut 0.24s cubic-bezier(0.4, 0, 0.2, 1) both;
+	overflow  : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Edit Mode Banner. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.editmode-banner.is-closing { /* What: Quick Closing Edit Mode Banner. Why: The banner should go at once, while still ending the animation its handler waits on. How: This shortens the fold to .01ms. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+	.editmode-banner { /* What: Still Edit Mode Banner. Why: The banner should simply appear. How: This turns its entrance off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+@keyframes emBannerIn { /* What: Edit Mode Banner Entrance Keyframes. Why: The banner drops into place. How: This fades it in from 6px up. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-6px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : translateY(0);
+
+
+	}
+
+
+}
+@keyframes emBannerOut { /* What: Edit Mode Banner Exit Keyframes. Why: The banner fades and folds its space shut. How: This fades it up while collapsing its height, margin, and padding. */
+
+
+	from {
+
+
+		margin-bottom  : 20px;
+		max-height     : 100px;
+		opacity        : 1;
+		padding-bottom : 11px;
+		padding-top    : 11px;
+		transform      : translateY(0);
+
+
+	}
+
+	to {
+
+
+		margin-bottom  : 0;
+		max-height     : 0;
+		opacity        : 0;
+		padding-bottom : 0;
+		padding-top    : 0;
+		transform      : translateY(-6px);
+
+
+	}
+
+
+}
+
+/* #region editmode-banner-msg */
+
+.editmode-banner-msg { /* What: Edit Mode Message. Why: The banner leads with its icon and message in the accent. How: This lines them up in a bold accent row. */
+
+
+	align-items : center;
+	color       : var(--accent);
+	display     : inline-flex;
+	font-size   : 13px;
+	font-weight : 600;
+	gap         : 9px;
+
+
+}
+
+.editmode-banner-msg svg { /* What: Edit Mode Icon. Why: The icon reads a touch quieter than the text. How: This fades it slightly. */
+
+
+	opacity : 0.85;
+
+
+}
+
+/* #endregion editmode-banner-msg */
+
+
+
+.editmode-banner-actions { /* What: Edit Mode Actions. Why: The banner's buttons sit together at its end. How: This lines them up in a row that never shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : none;
+	gap         : 8px;
+
+
+}
+
+/* #endregion editmode-banner */
+
+
+
+/* #region today-layout */
+
+.today-layout { /* What: Today Layout. Why: The rail and the list sit side by side. How: This lays them out on a two-column grid. */
+
+
+	align-items           : start;
+	display               : grid;
+	gap                   : 32px;
+	grid-template-columns : 200px 1fr;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.today-layout { /* What: Stacked Today Layout. Why: The rail becomes a row above the list. How: This collapses the grid to one column. */
+
+
+		gap                   : 16px;
+		grid-template-columns : 1fr;
+
+
+	}
+
+
+}
+
+/* #region group-rail */
+
+.group-rail { /* What: Group Rail. Why: The rail of groups stays in view beside the list, scrolling on its own when long. How: This makes it a sticky column below the header, capped to the viewport, with its scrollbar hidden. */
+
+
+	align-self      : start;
+	display         : flex;
+	flex-direction  : column;
+	gap             : 6px;
+	max-height      : calc(100dvh - var(--today-h-h, 140px) - 120px);
+	overflow-y      : auto;
+	position        : sticky;
+	scrollbar-width : none;
+	top             : calc(var(--today-h-h, 140px) + 16px);
+
+
+}
+.group-rail::-webkit-scrollbar { /* What: Group Rail Scrollbar. Why: The rail scrolls without a visible bar. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.group-rail { /* What: Group Pill Row. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
+
+
+		--fade                  : 36px; /* What: Fade Width. Why: This is how far each edge fade reaches into the row. How: --fade-l and --fade-r start from it. */
+		--fade-l                : var(--fade); /* What: Left Fade. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+		--fade-r                : var(--fade); /* What: Right Fade. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+		-webkit-backdrop-filter : blur(18px) saturate(140%);
+		-webkit-mask-image      : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+		backdrop-filter         : blur(18px) saturate(140%);
+		background              : oklch(from var(--bg) l c h / 0.92);
+		border-bottom           : 0.5px solid var(--border);
+		flex-direction          : row;
+		gap                     : 6px;
+		margin                  : 0 -20px;
+		mask-image              : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+		max-height              : none;
+		overflow-x              : auto;
+		overflow-y              : hidden;
+		padding                 : 14px 20px;
+		position                : sticky;
+		top                     : var(--today-h-h, 132px);
+		z-index                 : 18;
+
+
+	}
+
+	.group-rail[data-scroll-start-active] { /* What: Group Pill Row At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+		--fade-l : 0px;
+
+
+	}
+
+	.group-rail[data-scroll-end-active] { /* What: Group Pill Row At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+		--fade-r : 0px;
+
+
+	}
+
+
+}
+
+.rail-kicker { /* What: Rail Kicker. Why: The rail's heading lines up with its buttons. How: This insets it like a button. */
+
+
+	padding : 0 12px 4px;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.rail-kicker { /* What: Hidden Rail Kicker. Why: The pill row has no room for a heading. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+/* #region group-rail-ul */
+
+.group-rail ul { /* What: Rail List. Why: The rail's buttons stack tightly. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 2px;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.group-rail ul { /* What: Rail Pill List. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
+
+
+		flex           : 0 0 auto;
+		flex-direction : row;
+		gap            : 6px;
+		width          : max-content;
+
+
+	}
+
+
+}
+
+/* #region rail-btn */
+
+.rail-btn { /* What: Rail Button. Why: Each group is a rail button that jumps to its section, with its name and done count spread apart. How: This lays them out in a full-width rounded row that fades between colors. */
+
+
+	align-items     : center;
+	border-radius   : 8px;
+	color           : var(--muted);
+	display         : flex;
+	font-size       : 13.5px;
+	font-weight     : 500;
+	gap             : 10px;
+	justify-content : space-between;
+	letter-spacing  : -0.005em;
+	padding         : 8px 12px;
+	text-align      : left;
+	transition      : background .12s, color .12s;
+	width           : 100%;
+
+
+}
+.rail-btn:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
+
+
+	color : var(--text);
+
+
+}
+.rail-btn[data-rail-select-active] { /* What: Selected Rail Button. Why: The group in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
+
+
+	background : var(--accent-soft);
+	color      : var(--accent);
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.rail-btn { /* What: Rail Pill. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
+
+
+		background    : var(--surface);
+		border        : 0.5px solid var(--border);
+		border-radius : 999px;
+		flex-shrink   : 0;
+		font-size     : 13px;
+		padding       : 6px 12px;
+		white-space   : nowrap;
+
+
+	}
+
+	.rail-btn[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
+
+
+		background   : var(--accent-soft);
+		border-color : var(--accent);
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rail-btn { /* What: Still Rail Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rail-name { /* What: Rail Name. Why: A long group name should wrap evenly. How: This balances its line breaks. */
+
+
+	text-wrap : pretty;
+
+
+}
+.rail-btn--rem[data-rail-select-active] .rail-name { /* What: Selected Reminders Rail Name. Why: The Reminders entry's name follows its selected color. How: This colors it in the accent. */
+
+
+	color : var(--accent);
+
+
+}
+
+/* #region rail-count */
+
+.rail-count { /* What: Rail Count. Why: The done and total counts read as a quiet mono cluster. How: This sets them on one baseline in faded tabular mono type. */
+
+
+	align-items          : baseline;
+	color                : inherit;
+	display              : inline-flex;
+	font-family          : var(--font-mono);
+	font-size            : 11px;
+	font-variant-numeric : tabular-nums;
+	gap                  : 1px;
+	opacity              : 0.7;
+
+
+}
+
+.rail-of { /* What: Rail Total. Why: The total reads quieter than the done count. How: This fades it further. */
+
+
+	opacity : 0.6;
+
+
+}
+
+/* #endregion rail-count */
+
+/* #endregion rail-btn */
+
+/* #endregion group-rail-ul */
+
+
+
+/* #region rail-editmode */
+
+.rail-editmode { /* What: Rail Edit Mode Block. Why: Edit Mode is a list action under the groups, divided from them. How: This spaces it below a dashed divider. */
+
+
+	border-top  : 1px dashed var(--border);
+	margin-top  : 12px;
+	padding-top : 14px;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.rail-editmode { /* What: Hidden Rail Edit Mode Block. Why: The pill row has no room for it, so the footer button takes over. How: This hides it. */
+
+
+		display : none;
+
+
+	}
+
+
+}
+
+.em-rail-btn { /* What: Edit Mode Rail Button. Why: The toggle reads as a list action, not a group link. How: This draws a full-width dashed button on a slightly darker fill that fades between colors. */
+
+
+	align-items     : center;
+	background      : oklch(from var(--surface) calc(l - 0.015) c h);
+	border          : 1px dashed var(--border);
+	border-radius   : 8px;
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : flex;
+	font-size       : 12.5px;
+	font-weight     : 600;
+	gap             : 8px;
+	justify-content : center;
+	letter-spacing  : -0.005em;
+	padding         : 10px 12px;
+	transition      : color .12s, border-color .12s, background .12s;
+	width           : 100%;
+
+
+}
+.em-rail-btn:hover { /* What: Hovered Edit Mode Rail Button. Why: The toggle should respond to the pointer. How: This tints it in the accent. */
+
+
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.em-rail-btn[data-edit-mode-active] { /* What: Active Edit Mode Rail Button. Why: While Edit Mode is on, its toggle reads as on. How: This solidifies its accent border over the soft accent fill, keying off data-edit-mode-active. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	border-style : solid;
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Edit Mode Rail Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.em-rail-btn { /* What: Still Edit Mode Rail Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion rail-editmode */
+
+/* #endregion group-rail */
+
+
+
+/* #region today-groups */
+
+.today-groups { /* What: Today Groups. Why: The list column stacks its sections and can shrink beside the rail. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 28px;
+	min-width      : 0;
+
+
+}
+
+/* #region celeb-overlay */
+
+.celeb-overlay { /* What: Celebration Overlay. Why: The confetti and sparkle particles cover the cards area, fixed at its on-screen rect and clipped so they stay contained. How: This fixes a clipped, click-through layer above the cards. */
+
+
+	overflow       : hidden;
+	pointer-events : none;
+	position       : fixed;
+	z-index        : 5;
+
+
+}
+
+.confetti-piece { /* What: Confetti Piece. Why: Each piece bursts out from the center along its own angle and distance. How: This draws a small accent chip at the center that plays the shared burst, reading its inline angle, distance, rotation, and opacity. */
+
+
+	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global confettiBurst Keyframes. Why: The confettiBurst keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var(--accent);
+	border-radius : 2px;
+	height        : 14px;
+	left          : 50%;
+	opacity       : 0;
+	position      : absolute;
+	top           : 50%;
+	width         : 9px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Confetti Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.confetti-piece { /* What: Still Confetti Piece. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+.sparkle-piece { /* What: Sparkle Piece. Why: Each sparkle twinkles at its own spot. How: This draws a small accent glyph centered on its inline position that plays the shared twinkle. */
+
+
+	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global sparkleTwinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var(--accent);
+	font-size   : 18px;
+	line-height : 1;
+	opacity     : 0;
+	position    : absolute;
+	transform   : translate(-50%, -50%) scale(0.4);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Sparkle Piece. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.sparkle-piece { /* What: Still Sparkle Piece. Why: Particles are purely decorative, so they stay hidden. How: This turns its animation and opacity off. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+
+/* #endregion celeb-overlay */
+
+
+
+/* #region groups-dnd */
+
+.groups-dnd { /* What: Group Sections. Why: The sections stack with room between them. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 28px;
+
+
+}
+
+/* #region group-section */
+
+.group-section { /* What: Group Section. Why: Each group's header and cards stack, and a jump to it lands clear of the sticky header and rail. How: This stacks them and offsets its scroll margin by --sticky-top-h, which the tab root sets. */
+
+
+	display           : flex;
+	flex-direction    : column;
+	gap               : 12px;
+	scroll-margin-top : calc(var(--sticky-top-h, 140px) + 16px);
+
+
+}
+.groups-dnd > .group-section:not(:first-child) { /* What: Following Group Section. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
+
+
+	border-top  : 0.5px solid var(--border);
+	padding-top : 28px;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.groups-dnd > .group-section:not(:first-child) { /* What: Tighter Following Group Section. Why: The narrow list needs less room above each divider. How: This trims the space to 20px. */
+
+
+		padding-top : 20px;
+
+
+	}
+
+
+}
+.group-section[data-item-drag-active] { /* What: Dragged Group Section. Why: A section being dragged lifts off the page as a card, without its divider. How: This raises it on a shadowed surface card and drops its divider and top padding, which reorder.js marks with data-item-drag-active. */
+
+
+	background    : var(--surface);
+	border-radius : var(--r-lg, 16px);
+	border-top    : 0!important;
+	box-shadow    : 0 20px 46px -14px oklch(0 0 0 / 0.32);
+	padding-top   : 0!important;
+
+
+}
+
+/* #region today-list */
+
+.today-list { /* What: Today List. Why: A group's cards stack in order. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+
+
+}
+
+.today-entry-editor { /* What: Today Item Editor. Why: An item editor opened under its card sits inset without a divider above its rows. How: This sets the --entry-editor-* properties EntEdiCom reads. */
+
+
+	--entry-editor-padding         : 0 16px 16px; /* What: Editor Padding. Why: The editor lines up with the card above it. How: EntEdiCom reads this for its own padding. */
+	--entry-editor-rows-border-top : 0; /* What: Editor Rows Divider. Why: The card above already divides the editor. How: EntEdiCom reads this for its rows' top border. */
+
+
+}
+
+/* #endregion today-list */
+
+/* #endregion group-section */
+
+/* #endregion groups-dnd */
+
+
+
+/* #region ob-create */
+
+.ob-create { /* What: Onboarding Card. Why: The Generate and empty-state cards read as dashed accent prompts in the list. How: This draws a centered dashed soft-accent card stacking its icon, heading, text, and action. */
+
+
+	align-items    : center;
+	background     : var(--accent-soft);
+	border         : 1px dashed oklch(from var(--accent) l c h/0.5);
+	border-radius  : var(--r-md);
+	display        : flex;
+	flex-direction : column;
+	gap            : 6px;
+	margin-bottom  : 16px;
+	padding        : 18px 16px;
+	text-align     : center;
+
+
+}
+.ob-create--generate[data-card-needed-active] { /* What: Blocked Generate Card. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
+
+
+	background   : oklch(from var(--warm) l c h/0.07);
+	border-color : oklch(from var(--warm) l c h/0.55);
+
+
+}
+.ob-create.is-removing { /* What: Removing Onboarding Card. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
+
+
+	animation : global(cardSkipOut) 380ms cubic-bezier(.4,.05,.7,.4) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Removing Onboarding Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ob-create.is-removing { /* What: Still Removing Onboarding Card. Why: The card should go at once. How: This turns its animation and opacity off. */
+
+
+		animation : none;
+		opacity   : 0;
+
+
+	}
+
+
+}
+.ob-generate-pulse { /* What: Ready Generate Card. Why: A Generate card ready to click sends a sonar ping out onto the page, which needs a positioned card to anchor it. How: This positions the card for its ping. */
+
+
+	position : relative;
+
+
+}
+.ob-generate-pulse::after { /* What: Generate Card Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
+
+
+	animation      : obGeneratePing 1.8s ease-out infinite;
+	border-radius  : inherit;
+	content        : "";
+	inset          : 0;
+	pointer-events : none;
+	position       : absolute;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Generate Card Ping. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ob-generate-pulse::after { /* What: Still Generate Card Ping. Why: The ping is purely decorative. How: This turns its animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+@keyframes obGeneratePing { /* What: Generate Card Ping Keyframes. Why: The ring spreads and fades. How: This grows an accent box shadow to 20px while fading it out. */
+
+
+	0% {
+
+
+		box-shadow : 0 0 0 0 oklch(from var(--accent) l c h/0.55);
+
+
+	}
+
+	40% {
+
+
+		box-shadow : 0 0 0 10px oklch(from var(--accent) l c h/0.35);
+
+
+	}
+
+	100% {
+
+
+		box-shadow : 0 0 0 20px oklch(from var(--accent) l c h/0);
+
+
+	}
+
+
+}
+
+.ob-create-i { /* What: Onboarding Card Icon. Why: Each card leads with an icon on a raised tile. How: This centers the accent icon in a small bordered surface tile. */
+
+
+	align-items     : center;
+	background      : var(--surface);
+	border          : 0.5px solid var(--border);
+	border-radius   : 11px;
+	color           : var(--accent);
+	display         : flex;
+	height          : 40px;
+	justify-content : center;
+	width           : 40px;
+
+
+}
+
+.ob-create b { /* What: Onboarding Card Heading. Why: The card's bold line reads as its heading. How: This sets it a size up in semibold. */
+
+
+	font-size   : 15px;
+	font-weight : 600;
+
+
+}
+
+.ob-create p { /* What: Onboarding Card Text. Why: The explanation reads small and muted, capped so it wraps comfortably. How: This sets muted text capped at 34ch. */
+
+
+	color       : var(--muted);
+	font-size   : 12.5px;
+	line-height : 1.5;
+	margin      : 0 0 6px;
+	max-width   : 34ch;
+
+
+}
+@container app (min-width:600px) { /* What: Wider Onboarding Card. Why: A wider app gives the text more room before it wraps. How: This applies only when the app is 600px wide or more. */
+
+
+	.ob-create p { /* What: Wider Onboarding Card Text. Why: The line wraps too early otherwise. How: This widens its cap to 47ch. */
+
+
+		max-width : 47ch;
+
+
+	}
+
+
+}
+@container app (min-width:760px) { /* What: Widest Onboarding Card. Why: The Today tab's main-content width gives the text still more room. How: This applies only when the app is 760px wide or more. */
+
+
+	.ob-create p { /* What: Widest Onboarding Card Text. Why: The line wraps too early otherwise. How: This widens its cap to 60ch. */
+
+
+		max-width : 60ch;
+
+
+	}
+
+
+}
+.ob-create--norun p { /* What: No-Run Card Text. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin and caps the line at 38ch. */
+
+
+	margin    : 0;
+	max-width : 38ch;
+
+
+}
+
+.sub-tablink { /* What: Card Link. Why: The no-run card links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var(--accent);
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.sub-tablink:hover { /* What: Hovered Card Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+.btn { /* What: Tip Button. Why: A blocked action stands in as an info tip styled like the button it replaces. How: This lays out the label in a rounded pill that eases its colors and press. */
+
+
+	align-items    : center;
+	border-radius  : 999px;
+	display        : inline-flex;
+	font-size      : 14px;
+	font-weight    : 500;
+	gap            : 7px;
+	height         : 38px;
+	letter-spacing : -0.005em;
+	padding        : 0 14px;
+	transition     : background .12s, color .12s, transform .08s;
+
+
+}
+.btn:active { /* What: Pressed Tip Button. Why: A press should feel physical. How: This nudges it down half a pixel. */
+
+
+	transform : translateY(0.5px);
+
+
+}
+.btn--sm { /* What: Small Tip Button. Why: The onboarding card's button is compact. How: This shrinks its height, padding, text, and gap. */
+
+
+	border-radius : 999px;
+	font-size     : 13px;
+	gap           : 5px;
+	height        : 30px;
+	padding       : 0 11px;
+
+
+}
+.btn--primary { /* What: Primary Tip Button. Why: Generate is the card's main action. How: This fills it with the text color. */
+
+
+	background : var(--text);
+	color      : var(--bg);
+
+
+}
+.btn--primary:hover { /* What: Hovered Primary Tip Button. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
+
+
+	background : oklch(from var(--text) calc(l + 0.06) c h);
+
+
+}
+.btn--secondary { /* What: Secondary Tip Button. Why: Regenerate is an outlined action. How: This gives it a surface fill and a hairline border. */
+
+
+	background : var(--surface);
+	border     : 0.5px solid var(--border);
+	color      : var(--text);
+
+
+}
+.btn--secondary:hover { /* What: Hovered Secondary Tip Button. Why: An outlined button should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.btn[aria-disabled="true"] { /* What: Disabled Tip Button. Why: The stand-in should read as unavailable. How: This dims it and drops the pointer cursor, keying off the aria-disabled its info tip sets. */
+
+
+	cursor  : default;
+	opacity : 0.4;
+
+
+}
+.btn[aria-disabled="true"]:hover { /* What: Hovered Disabled Tip Button. Why: A disabled stand-in shouldn't light up on hover. How: This holds a flat page-background fill and inherited text. */
+
+
+	background : var(--bg);
+	color      : inherit;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Tip Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.btn { /* What: Still Tip Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion ob-create */
+
+/* #endregion today-groups */
+
+/* #endregion today-layout */
+
+
+
+/* #region today-footer */
+
+.today-footer { /* What: Today Footer. Why: The regenerate controls and the generated time sit centered under the list, with steady button widths as counts change. How: This stacks them centered in muted text and sets --btn-font-variant-numeric, which ButBasCom reads. */
+
+
+	--btn-font-variant-numeric : tabular-nums; /* What: Button Figures. Why: A button label with a count shouldn't change width. How: ButBasCom reads this for its font-variant-numeric. */
+	align-items                : center;
+	color                      : var(--muted);
+	display                    : flex;
+	flex-direction             : column;
+	gap                        : 4px;
+	padding                    : 12px 0;
+
+
+}
+
+.today-footer .btn { /* What: Footer Tip Button. Why: The blocked Regenerate stand-in keeps the same steady figures. How: This sets tabular numerals. */
+
+
+	font-variant-numeric : tabular-nums;
+
+
+}
+
+/* #region gen-confirm */
+
+.gen-confirm { /* What: Regenerate Confirm. Why: Confirming a regenerate replaces the footer button with an inline question. How: This stacks the message and actions centered at a readable width. */
+
+
+	align-items    : center;
+	display        : flex;
+	flex-direction : column;
+	gap            : 10px;
+	max-width      : 420px;
+	text-align     : center;
+
+
+}
+
+.gen-confirm-msg { /* What: Regenerate Confirm Message. Why: The question explains what regenerating replaces. How: This sets it in body text. */
+
+
+	color       : var(--text);
+	font-size   : 13px;
+	line-height : 1.5;
+	margin      : 0;
+	text-wrap   : pretty;
+
+
+}
+
+.gen-confirm-actions { /* What: Regenerate Confirm Actions. Why: Cancel and Continue pair up. How: This lines them up in a row. */
+
+
+	display : flex;
+	gap     : 8px;
+
+
+}
+
+/* #endregion gen-confirm */
+
+
+
+/* #region today-foot-actions */
+
+.today-foot-actions { /* What: Footer Actions. Why: The footer's buttons sit centered in a row. How: This centers them in a spaced row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 10px;
+	justify-content : center;
+
+
+}
+
+.foot-editmode { /* What: Footer Edit Mode Button. Why: On a wide app Edit Mode lives in the rail, so the footer copy stays hidden. How: This sets --btn-display, which ButBasCom reads, to none. */
+
+
+	--btn-display : none;
+
+
+}
+@container app (max-width: 760px) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+
+
+	.foot-editmode { /* What: Shown Footer Edit Mode Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --btn-display back to inline-flex. */
+
+
+		--btn-display : inline-flex;
+
+
+	}
+
+
+}
+
+/* #endregion today-foot-actions */
+
+
+
+.today-foot-actions + .today-foot-sub { /* What: Spaced Footer Note. Why: The generated time needs room below the buttons. How: This spaces it 8px down. */
+
+
+	margin-top : 8px;
+
+
+}
+
+.today-foot-sub { /* What: Footer Note. Why: When the list was generated reads as quiet metadata. How: This sets it in small uppercase mono type. */
+
+
+	font-family    : var(--font-mono);
+	font-size      : 12px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion today-footer */
+
+/* #endregion today-body */
+
+/* #endregion tab--today */
+
+

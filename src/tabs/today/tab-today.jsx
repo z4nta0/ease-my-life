@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, React.useCallback, React.forwardRef, React.useImperativeHandle, React.Fragment) throughout, instead of importing individual named hooks.
+import cssModObj from './tab-today.module.css'; // What: CSS Module Object. Why: The Today tab's own styles live in its module. How: Each className and animation trigger reads its hashed class from here.
+import React     from 'react';                 // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, React.useCallback, React.forwardRef, React.useImperativeHandle, React.Fragment) throughout, instead of importing individual named hooks.
 
 
 import { APP_FEA_ARR  } from '../../onboarding/app-features.jsx';   // What: App Feature Array. Why: This is the fixed catalog of App Features tutorial cards rendered once the checklist concludes. How: This is mapped over to render one AppFeaCom per entry and to compute the section's own done/total counts.
@@ -720,9 +721,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const rinCurEle = rinEleRef.current; // What: Ring Current Element. Why: Every DOM manipulation below targets this same node. How: This reads rinEleRef.current once and reuses it throughout this branch.
 
 
-			rinCurEle.classList.remove( 'is-pulsing', 'is-celebrating' ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes both classes unconditionally before the reflow forcing line below.
-			void rinCurEle.offsetWidth;                                   // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between, or the browser coalesces the two and never replays the animation. How: Reading offsetWidth forces a synchronous layout pass.
-			setCelNonNum( ( curNonNum ) => curNonNum + 1 );               // What: Completion Nonce Bump. Why: The celebratory title needs to re-mount and replay its per-word reveal. How: This increments celNonNum by 1.
+			rinCurEle.classList.remove( cssModObj.isPulsing, cssModObj.isCelebrating ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes both classes unconditionally before the reflow forcing line below.
+			void rinCurEle.offsetWidth;                                                 // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between, or the browser coalesces the two and never replays the animation. How: Reading offsetWidth forces a synchronous layout pass.
+			setCelNonNum( ( curNonNum ) => curNonNum + 1 );                             // What: Completion Nonce Bump. Why: The celebratory title needs to re-mount and replay its per-word reveal. How: This increments celNonNum by 1.
 
 			if ( celStyStr === 'confetti' || celStyStr === 'sparkle' ) { // What: Rect Measurement Branch. Why: Only the confetti/sparkle styles need a measured overlay rect at all. How: This measures the cards column and its scroller, falling back to the full viewport if either is missing.
 
@@ -807,7 +808,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			 *
 			*/
 
-			rinCurEle.classList.add( 'is-celebrating' ); // What: Celebrating Class Add. Why: This is the actual CSS trigger for the ring's own celebration animation. How: This adds the is-celebrating class to rinCurEle.
+			rinCurEle.classList.add( cssModObj.isCelebrating ); // What: Celebrating Class Add. Why: This is the actual CSS trigger for the ring's own celebration animation. How: This adds the is-celebrating class to rinCurEle.
 
 
 			const carEleLis = ( celStyStr === 'ripple' && maiScrRef.current ) // What: Card Element List. Why: Only the Ripple style needs the per-card exhale cascade at all. How: This queries every rendered card only under that style, otherwise an empty array.
@@ -831,7 +832,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const celEndTim = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotNum, clearing every piece of state/CSS this branch set.
 
 
-				if ( rinEleRef.current ) rinEleRef.current.classList.remove( 'is-celebrating' ); // What: Ring Celebration Clear. Why: The ring's own celebration class must not linger after the animation ends. How: This removes is-celebrating when the ring is still mounted.
+				if ( rinEleRef.current ) rinEleRef.current.classList.remove( cssModObj.isCelebrating ); // What: Ring Celebration Clear. Why: The ring's own celebration class must not linger after the animation ends. How: This removes is-celebrating when the ring is still mounted.
 
 
 
@@ -871,11 +872,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const rinCurEle = rinEleRef.current; // What: Ring Current Element. Why: Every DOM manipulation below targets this same node. How: This reads rinEleRef.current once and reuses it throughout this branch.
 
 
-			rinCurEle.classList.remove( 'is-pulsing', 'is-completing' ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes both classes unconditionally before the reflow forcing line below.
-			void rinCurEle.offsetWidth;                                  // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
-			rinCurEle.classList.add( 'is-pulsing' );                     // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the is-pulsing class to rinCurEle.
+			rinCurEle.classList.remove( cssModObj.isPulsing ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes the class unconditionally before the reflow forcing line below.
+			void rinCurEle.offsetWidth;                        // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
+			rinCurEle.classList.add( cssModObj.isPulsing );    // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the is-pulsing class to rinCurEle.
 
-			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( 'is-pulsing' ), 700 ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing 700ms later.
+			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.isPulsing ), 700 ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing 700ms later.
 
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
@@ -910,11 +911,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const stkCurEle = stkEleRef.current; // What: Streak Current Element. Why: Every DOM manipulation below targets this same node. How: This reads stkEleRef.current once and reuses it below.
 
 
-			stkCurEle.classList.remove( 'is-bumped' ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes is-bumped unconditionally before the reflow forcing line below.
-			void stkCurEle.offsetWidth;                // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
-			stkCurEle.classList.add( 'is-bumped' );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the is-bumped class to stkCurEle.
+			stkCurEle.classList.remove( cssModObj.isBumped ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes is-bumped unconditionally before the reflow forcing line below.
+			void stkCurEle.offsetWidth;                       // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
+			stkCurEle.classList.add( cssModObj.isBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the is-bumped class to stkCurEle.
 
-			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( 'is-bumped' ), 900 ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped 900ms later.
+			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.isBumped ), 900 ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped 900ms later.
 
 
 			preClaRef.current = claNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClaRef with claNowBoo.
@@ -3276,7 +3277,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		<div
-			className={ ` tab   tab--today   ${ ediModBoo ? 'is-editmode' : '' } ` }
+			className={ cssModObj.tabToday }
 
 			data-element-name-hook='todTabDiv'
 		>{ /* What: Today Tab Div Element. Why: This is TabTodCom's own root wrapper. How: This renders the sticky header, the scrollable body (rail + groups + footer), and any reminder mini-tour/App Features intro overlay currently running. Its data-element-name-hook is read by Today's own scroll code. */ }
@@ -3294,37 +3295,37 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			<header
 				ref={ heaEleRef }
 
-				className='today-h'
+				className={ cssModObj.todayH }
 
 				data-element-name-hook='todPagHea'
 			>{ /* What: Today Header Element. Why: This is the sticky header every scroll-spy/offset calculation in this file measures against. How: This renders the date/streak/help row and the brand mark/title/ring row beneath it. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks and help mode's chrome clipping. */ }
 
 
-				<div className='today-h-inner'>{ /* What: Header Inner Div Element. Why: The header's own content needs an inner wrapper distinct from the sticky element itself. How: This wraps the header-left column below. */ }
+				<div className={ cssModObj.todayHInner }>{ /* What: Header Inner Div Element. Why: The header's own content needs an inner wrapper distinct from the sticky element itself. How: This wraps the header-left column below. */ }
 
 
-					<div className='today-h-l'>{ /* What: Header Left Div Element. Why: Every piece of header content reads as one left-aligned column. How: This wraps the kicker row and the brand/title/ring row below. */ }
+					<div className={ cssModObj.todayHL }>{ /* What: Header Left Div Element. Why: Every piece of header content reads as one left-aligned column. How: This wraps the kicker row and the brand/title/ring row below. */ }
 
 
-						<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The date/time and the streak/help cluster sit on one shared row. How: This wraps the kicker span and the kicker-row-right div below. */ }
+						<div className={ cssModObj.kickerRow }>{ /* What: Kicker Row Div Element. Why: The date/time and the streak/help cluster sit on one shared row. How: This wraps the kicker span and the kicker-row-right div below. */ }
 
 
-							<div className='kicker'>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders forDatFun and forTimFun against curNowDat. */ }
+							<div className={ cssModObj.kicker }>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders forDatFun and forTimFun against curNowDat. */ }
 
 
-								{ forDatFun( curNowDat ) }{ /* What: Kicker Date Expression. Why: The header leads with today's own date. How: This formats curNowDat through forDatFun. */ } <span className='kicker-time'>{ forTimFun( curNowDat ) }</span>{ /* What: Kicker Time Span Element. Why: The current time sits beside the date in its own styled span. How: This formats curNowDat through forTimFun, re-rendered every minute by the Live Clock effect. */ }
+								{ forDatFun( curNowDat ) }{ /* What: Kicker Date Expression. Why: The header leads with today's own date. How: This formats curNowDat through forDatFun. */ } <span className={ cssModObj.kickerTime }>{ forTimFun( curNowDat ) }</span>{ /* What: Kicker Time Span Element. Why: The current time sits beside the date in its own styled span. How: This formats curNowDat through forTimFun, re-rendered every minute by the Live Clock effect. */ }
 
 
 							</div>
 
 
-							<div className='kicker-row-r'>{ /* What: Kicker Row Right Div Element. Why: The streak badge and the help toggle read as one right-aligned cluster. How: This wraps the streak div and HelButCom below. */ }
+							<div className={ cssModObj.kickerRowR }>{ /* What: Kicker Row Right Div Element. Why: The streak badge and the help toggle read as one right-aligned cluster. How: This wraps the streak div and HelButCom below. */ }
 
 
 								<div
 									ref={ stkEleRef }
 
-									className='streak'
+									className={ cssModObj.streak }
 
 									data-element-name-hook='todStrDiv'
 								>{ /* What: Streak Div Element. Why: This is the badge the streak-pulse effect above targets directly. How: This renders a flame icon plus the current streak count. Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -3357,14 +3358,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 						<div
-							className='today-h-lead'
+							className={ cssModObj.todayHLead }
 
 							data-element-name-hook='heaLeaDiv'
 						>{ /* What: Header Lead Div Element. Why: The brand mark, the title, and the completion ring read as one shared row beneath the kicker. How: This wraps all 3 below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<button
-								className='brand-mark'
+								className={ cssModObj.brandMark }
 
 								data-element-name-hook='braMarBut'
 
@@ -3472,11 +3473,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							</button>
 
 
-							<h1 className='today-title'>{ /* What: Today Title Heading Element. Why: The default hero line and the "all done" celebratory line swap visibility based on isaFulBoo, but both stay mounted so the swap can animate. How: This renders both title-state spans below, keyed so the done state re-plays its per-word reveal on every fresh completion. */ }
+							<h1 className={ cssModObj.todayTitle }>{ /* What: Today Title Heading Element. Why: The default hero line and the "all done" celebratory line swap visibility based on isaFulBoo, but both stay mounted so the swap can animate. How: This renders both title-state spans below, keyed so the done state re-plays its per-word reveal on every fresh completion. */ }
 
 
 								<span
-									className={ ` title-state   title-state--default   ${ isaFulBoo ? 'is-out' : 'is-in' } ` }
+									className={` ${ cssModObj.titleState }   ${ cssModObj.titleStateDefault } `}
 
 									aria-hidden={ isaFulBoo }
 								>{ /* What: Default Title State Span Element. Why: This is the everyday hero line, visible whenever the day isn't yet complete. How: This renders the fixed "Your day, eased just for you." copy. */ }
@@ -3490,17 +3491,17 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<span
 									key={ isaFulBoo ? celNonNum : 'idle' }
 
-									className={ ` title-state   title-state--done   ${ isaFulBoo ? 'is-in' : 'is-out' } ` }
+									className={` ${ cssModObj.titleState }   ${ cssModObj.titleStateDone } `}
 
 									aria-hidden={ !isaFulBoo }
 								>{ /* What: Done Title State Span Element. Why: This is the celebratory line, visible only once the whole day is complete, keyed on celNonNum so it re-mounts and replays its per-word reveal on every fresh completion. How: This renders 3 individually-classed words. */ }
 
 
-									<span className='title-word title-word--1'>Your</span>{ /* What: First Title Word Span Element. Why: Each word of the celebratory line reveals on its own beat. How: This renders "Your" with the first word's own animation delay. */ }{ ' ' }
+									<span className={` ${ cssModObj.titleWord }   ${ cssModObj.titleWord1 } `}>Your</span>{ /* What: First Title Word Span Element. Why: Each word of the celebratory line reveals on its own beat. How: This renders "Your" with the first word's own animation delay. */ }{ ' ' }
 
-									<span className='title-word title-word--2'>life,</span>{ /* What: Second Title Word Span Element. Why: Each word of the celebratory line reveals on its own beat. How: This renders "life," with the second word's own animation delay, followed by the line break. */ }<br />
+									<span className={` ${ cssModObj.titleWord }   ${ cssModObj.titleWord2 } `}>life,</span>{ /* What: Second Title Word Span Element. Why: Each word of the celebratory line reveals on its own beat. How: This renders "life," with the second word's own animation delay, followed by the line break. */ }<br />
 
-									<span className='title-word title-word--3'>eased!</span>{ /* What: Third Title Word Span Element. Why: Each word of the celebratory line reveals on its own beat. How: This renders "eased!" with the third word's own animation delay. */ }
+									<span className={` ${ cssModObj.titleWord }   ${ cssModObj.titleWord3 } `}>eased!</span>{ /* What: Third Title Word Span Element. Why: Each word of the celebratory line reveals on its own beat. How: This renders "eased!" with the third word's own animation delay. */ }
 
 
 								</span>
@@ -3512,7 +3513,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							<div
 								ref={ rinEleRef }
 
-								className='ring'
+								className={ cssModObj.ring }
 
 								data-element-name-hook='proRinDiv'
 							>{ /* What: Ring Div Element. Why: This is the completion ring the celebration effect above targets directly. How: This renders the SVG ring itself, its numeric label, and 3 purely decorative overlay elements the celebration effect's own CSS classes animate. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
@@ -3522,7 +3523,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<circle
-										className='ring-bg'
+										className={ cssModObj.ringBg }
 
 										cx='18'
 										cy='18'
@@ -3530,7 +3531,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									/>{ /* What: Ring Background Circle Element. Why: The foreground progress arc needs a full, dim track to sit on top of. How: This draws a plain full circle. */ }
 
 									<circle
-										className='ring-fg'
+										className={ cssModObj.ringFg }
 
 										cx='18'
 										cy='18'
@@ -3541,30 +3542,30 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								</svg>
 
-								<div className='ring-text'>{ /* What: Ring Text Div Element. Why: The numeric label needs to sit centered over the ring itself. How: This renders donCouNum and totCouNum as a fraction. */ }
+								<div className={ cssModObj.ringText }>{ /* What: Ring Text Div Element. Why: The numeric label needs to sit centered over the ring itself. How: This renders donCouNum and totCouNum as a fraction. */ }
 
 
-									<span className='ring-num'>{ donCouNum }</span>{ /* What: Ring Numerator Span Element. Why: This is the ring's own live numerator. How: This renders donCouNum directly. */ }
+									<span className={ cssModObj.ringNum }>{ donCouNum }</span>{ /* What: Ring Numerator Span Element. Why: This is the ring's own live numerator. How: This renders donCouNum directly. */ }
 
-									<span className='ring-den'>/ { totCouNum }</span>{ /* What: Ring Denominator Span Element. Why: The numerator alone is meaningless without its own total. How: This renders the literal "/" plus totCouNum. */ }
+									<span className={ cssModObj.ringDen }>/ { totCouNum }</span>{ /* What: Ring Denominator Span Element. Why: The numerator alone is meaningless without its own total. How: This renders the literal "/" plus totCouNum. */ }
 
 
 								</div>
 
 								<i
-									className='ring-glow'
+									className={ cssModObj.ringGlow }
 
 									aria-hidden='true'
 								/>{ /* What: Ring Glow Element. Why: The ring needs a purely decorative glow layer the celebration/pulse CSS classes animate. How: This is an empty, presentation-only element. */ }
 
 								<i
-									className='ring-ripple'
+									className={ cssModObj.ringRipple }
 
 									aria-hidden='true'
 								/>{ /* What: Ring Ripple Element. Why: The ring needs a purely decorative ripple layer for the per-tick pulse. How: This is an empty, presentation-only element. */ }
 
 								<i
-									className='celebration-ripple'
+									className={ cssModObj.celebrationRipple }
 
 									aria-hidden='true'
 								/>{ /* What: Celebration Ripple Element. Why: The ring needs its own separate ripple layer for the richer "all done" celebration, distinct from the per-tick pulse ripple above. How: This is an empty, presentation-only element. */ }
@@ -3589,7 +3590,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			<div
 				ref={ todBodRef }
 
-				className='today-body'
+				className={ cssModObj.todayBody }
 			>{ /* What: Today Body Div Element. Why: Today manages its own centered-column body distinct from app.jsx's shared .main-inner, since it needs its own flourish measurement point. How: This renders the background flourish, the Edit Mode banner (while relevant), and the whole rail/groups/footer layout below. */ }
 
 
@@ -3604,7 +3605,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 					<div
-						className={ ` editmode-banner   ${ banCloBoo ? 'is-closing' : '' } ` }
+						className={` ${ cssModObj.editmodeBanner }   ${ banCloBoo ? cssModObj.isClosing : '' } `}
 
 						data-element-name-hook='ediBanDiv'
 
@@ -3612,7 +3613,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					>{ /* What: Edit Mode Banner Div Element. Why: This is the explanatory banner shown while Edit Mode is active. How: This renders the fixed explanatory copy plus a Cancel/Done pair. Its data-element-name-hook is read by the tour runner's safe-area math and help mode's chrome clipping. */ }
 
 
-						<span className='editmode-banner-msg'>{ /* What: Banner Message Span Element. Why: The icon and the explanatory text read as one inline cluster. How: This wraps the grip icon and the fixed copy below. */ }
+						<span className={ cssModObj.editmodeBannerMsg }>{ /* What: Banner Message Span Element. Why: The icon and the explanatory text read as one inline cluster. How: This wraps the grip icon and the fixed copy below. */ }
 
 
 							<IcoSvgCom
@@ -3626,7 +3627,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						</span>
 
 						<span
-							className='editmode-banner-actions'
+							className={ cssModObj.editmodeBannerActions }
 
 							data-element-name-hook='ediBanSpa'
 						>{ /* What: Banner Actions Span Element. Why: The Cancel/Done pair reads as one right-aligned cluster. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
@@ -3665,14 +3666,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				<div
 					ref={ maiScrRef }
 
-					className='today-layout'
+					className={ cssModObj.todayLayout }
 				>{ /* What: Today Layout Div Element. Why: This is the shared scroll wrapper the scroll-spy/generate/jumGroFun logic above all measure against. How: This renders the group rail and the groups/footer column side by side. */ }
 
 
 					<aside
 						ref={ raiEleRef }
 
-						className='group-rail'
+						className={ cssModObj.groupRail }
 
 						data-element-name-hook='groRaiAsi'
 
@@ -3680,7 +3681,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tour runner's safe-area math and outside-click checks, help mode's chrome clipping, and help mode's Today catalog. */ }
 
 
-						<div className='kicker rail-kicker'>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
+						<div className={` ${ cssModObj.kicker }   ${ cssModObj.railKicker } `}>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
 
 
 
@@ -3700,18 +3701,20 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 											<button
-												className={ ` rail-btn   rail-btn--rem   ${ actGroStr === '__reminders' ? 'is-on' : '' } ` }
+												className={` ${ cssModObj.railBtn }   ${ cssModObj.railBtnRem } `}
+
+												data-rail-select-active={ actGroStr === '__reminders' || undefined } // What: Rail Select Active Attribute. Why: The group in view should stand out in the rail. How: This sets the presence-only attribute while this entry is the active group.
 
 												onClick={ () => jumGroFun( '__reminders' ) }
 											>{ /* What: Reminders Rail Button Element. Why: This is the actual clickable rail entry for the Reminders block. How: This scrolls to '__reminders' via jumGroFun on click. */ }
 
 
-												<span className='rail-name'>Reminders</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible label. How: This renders the literal word "Reminders". */ }
+												<span className={ cssModObj.railName }>Reminders</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible label. How: This renders the literal word "Reminders". */ }
 
-												<span className='rail-count'>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
+												<span className={ cssModObj.railCount }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-													<span>{ visDonNum + tasDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className='rail-of'>/{ dueTasArr.length + tasCarNum }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+													<span>{ visDonNum + tasDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.railOf }>/{ dueTasArr.length + tasCarNum }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
 
 
 												</span>
@@ -3748,18 +3751,20 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 											<button
-												className={ ` rail-btn   ${ actGroStr === '__pageTours' ? 'is-on' : '' } ` }
+												className={ cssModObj.railBtn }
+
+												data-rail-select-active={ actGroStr === '__pageTours' || undefined } // What: Rail Select Active Attribute. Why: The group in view should stand out in the rail. How: This sets the presence-only attribute while this entry is the active group.
 
 												onClick={ () => jumGroFun( '__pageTours' ) }
 											>{ /* What: Page Tours Rail Button Element. Why: This is the actual clickable rail entry for the Page Tours block. How: This scrolls to '__pageTours' via jumGroFun on click. */ }
 
 
-												<span className='rail-name'>{ pagNamStr }</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible (possibly user-renamed) label. How: This renders pagNamStr. */ }
+												<span className={ cssModObj.railName }>{ pagNamStr }</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible (possibly user-renamed) label. How: This renders pagNamStr. */ }
 
-												<span className='rail-count'>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
+												<span className={ cssModObj.railCount }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-													<span>{ touDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className='rail-of'>/{ ONB_EPT_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+													<span>{ touDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.railOf }>/{ ONB_EPT_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
 
 
 												</span>
@@ -3796,18 +3801,20 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 										<button
-											className={ ` rail-btn   ${ actGroStr === curGroObj.namStr ? 'is-on' : '' } ` }
+											className={ cssModObj.railBtn }
+
+											data-rail-select-active={ actGroStr === curGroObj.namStr || undefined } // What: Rail Select Active Attribute. Why: The group in view should stand out in the rail. How: This sets the presence-only attribute while this entry is the active group.
 
 											onClick={ () => jumGroFun( curGroObj.namStr ) }
 										>{ /* What: Group Rail Button Element. Why: This is the actual clickable rail entry for this one group. How: This scrolls to curGroObj's own name via jumGroFun on click. */ }
 
 
-											<span className='rail-name'>{ curGroObj.namStr }</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible label. How: This renders curGroObj's own name. */ }
+											<span className={ cssModObj.railName }>{ curGroObj.namStr }</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible label. How: This renders curGroObj's own name. */ }
 
-											<span className='rail-count'>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
+											<span className={ cssModObj.railCount }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-												<span>{ curDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className='rail-of'>/{ curGroObj.entArr.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+												<span>{ curDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.railOf }>/{ curGroObj.entArr.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
 
 
 											</span>
@@ -3832,18 +3839,20 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<button
-										className={ ` rail-btn   ${ actGroStr === '__appFeatures' ? 'is-on' : '' } ` }
+										className={ cssModObj.railBtn }
+
+										data-rail-select-active={ actGroStr === '__appFeatures' || undefined } // What: Rail Select Active Attribute. Why: The group in view should stand out in the rail. How: This sets the presence-only attribute while this entry is the active group.
 
 										onClick={ () => jumGroFun( '__appFeatures' ) }
 									>{ /* What: App Features Rail Button Element. Why: This is the actual clickable rail entry for the App Features block. How: This scrolls to '__appFeatures' via jumGroFun on click. */ }
 
 
-										<span className='rail-name'>App Features</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible label. How: This renders the fixed literal "App Features". */ }
+										<span className={ cssModObj.railName }>App Features</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible label. How: This renders the fixed literal "App Features". */ }
 
-										<span className='rail-count'>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
+										<span className={ cssModObj.railCount }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className='rail-of'>/{ APP_FEA_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.railOf }>/{ APP_FEA_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
 
 
 										</span>
@@ -3862,11 +3871,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-						<div className='rail-editmode'>{ /* What: Rail Edit Mode Div Element. Why: The Edit Mode toggle sits pinned at the rail's own bottom. How: This wraps the toggle button below. */ }
+						<div className={ cssModObj.railEditmode }>{ /* What: Rail Edit Mode Div Element. Why: The Edit Mode toggle sits pinned at the rail's own bottom. How: This wraps the toggle button below. */ }
 
 
 							<button
-								className={ ` em-rail-btn   ${ ediModBoo ? 'is-on' : '' } ` }
+								className={ cssModObj.emRailBtn }
 
 								data-edit-mode-active={ ediModBoo || undefined } // What: Edit Mode Active Attribute. Why: Code that needs to know whether Edit Mode is on reads it from this attribute rather than from the button's own classes. How: This is present only while ediModBoo is true, since undefined drops the attribute entirely.
 								data-element-name-hook='ediRaiBut'
@@ -3899,7 +3908,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					<div
 						ref={ carAreRef }
 
-						className='today-groups'
+						className={ cssModObj.todayGroups }
 
 						style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
 					>{ /* What: Today Groups Div Element. Why: This is the actual scrollable content column, reserving extra top space while a tour coach card asks for it. How: This renders the celebration overlay portal, every block in genOrdArr, the App Features section, the checklist/empty-state CTAs, and the footer. */ }
@@ -3927,7 +3936,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							*/
 
 							<div
-								className={ ` celeb-overlay   celeb-overlay--${ celStyStr } ` }
+								className={ cssModObj.celebOverlay }
 
 								style={{
 									height : celRecObj.height,
@@ -3946,7 +3955,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<i
 										key={ curParObj.ideNum }
 
-										className='confetti-piece'
+										className={ cssModObj.confettiPiece }
 
 										style={{
 											'--angle'         : `${ curParObj.angNum }deg`,
@@ -3966,7 +3975,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									<span
 										key={ curParObj.ideNum }
 
-										className='sparkle-piece'
+										className={ cssModObj.sparklePiece }
 
 										style={{
 											animationDelay : `${ curParObj.delNum }ms`,
@@ -3992,7 +4001,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						<div
 							ref={ groDndRef }
 
-							className='groups-dnd'
+							className={ cssModObj.groupsDnd }
 
 							data-element-name-hook='groDraDiv'
 						>{ /* What: Groups Dnd Div Element. Why: This is the actual drag container REO_NAM_OBJ scopes group drags to. How: This maps genOrdArr to one Reminders/Page-Tours/group section per entry. Its data-element-name-hook is read by the Welcome Tour. */ }
@@ -4057,7 +4066,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											key='__pageTours'
 											ref={ ( secCurEle ) => { secRefObj.current[ '__pageTours' ] = secCurEle; } }
 
-											className='group-section pt-section'
+											className={ cssModObj.groupSection }
 
 											data-element-name-hook='pagTouSec todGroSec'
 										>{ /* What: Page Tours Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the page tours' own group-rename steps, help mode's Today catalog, Today's own drag-to-reorder and scroll code, and the Welcome Tour. */ }
@@ -4077,7 +4086,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 											<div
-												className='today-list'
+												className={ cssModObj.todayList }
 
 												data-element-name-hook='todLisDiv'
 											>{ /* What: Page Tours List Div Element. Why: Every visible tour card shares this one list column. How: This maps visTouArr to one PagTouCom per entry. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
@@ -4133,7 +4142,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										key={ curGroObj.namStr }
 										ref={ ( secCurEle ) => { secRefObj.current[ curGroObj.namStr ] = secCurEle; } }
 
-										className='group-section'
+										className={ cssModObj.groupSection }
 
 										data-element-name-hook='todGroSec'
 									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and help mode's Today catalog. */ }
@@ -4179,7 +4188,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 										<div
-											className='today-list'
+											className={ cssModObj.todayList }
 
 											data-element-name-hook='todLisDiv'
 										>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
@@ -4247,7 +4256,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 															{ curIteObj && ( // What: Item Exists Check. Why: The inline editor needs a real item to edit, which can briefly go missing right after a delete. How: This renders the editor wrapper only while curIteObj still resolves to something.
 
 
-																<div className='today-entry-editor'>{ /* What: Entry Editor Wrapper Div Element. Why: The inline editor needs its own dedicated wrapper for layout/animation. How: This renders EntEdiCom below. */ }
+																<div className={ cssModObj.todayEntryEditor }>{ /* What: Entry Editor Wrapper Div Element. Why: The inline editor needs its own dedicated wrapper for layout/animation. How: This renders EntEdiCom below. */ }
 
 
 																	<EntEdiCom
@@ -4317,7 +4326,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							<section
 								ref={ ( secCurEle ) => { secRefObj.current[ '__appFeatures' ] = secCurEle; } }
 
-								className='group-section af-section'
+								className={ cssModObj.groupSection }
 
 								data-element-name-hook='todGroSec appFeaSec'
 							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the App Features tours. */ }
@@ -4333,7 +4342,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 								<div
-									className='today-list'
+									className={ cssModObj.todayList }
 
 									data-element-name-hook='todLisDiv'
 								>{ /* What: App Features List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
@@ -4372,11 +4381,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							<div
 								ref={ genCarRef }
 
-								className={ ` ob-create   ob-create--generate   ${ cheExiBoo ? 'is-removing' : '' }   ${ !onbReaBoo ? 'is-needed' : '' }   ${ onbReaBoo ? 'ob-generate-pulse' : '' } ` }
+								className={` ${ cssModObj.obCreate }   ${ cssModObj.obCreateGenerate }   ${ cheExiBoo ? cssModObj.isRemoving : '' }   ${ onbReaBoo ? cssModObj.obGeneratePulse : '' } `}
+
+								data-card-needed-active={ !onbReaBoo || undefined } // What: Card Needed Active Attribute. Why: A Generate card still waiting on its tutorials reads as unfinished. How: This sets the presence-only attribute while onbReaBoo is false.
 							>{ /* What: Generate Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. */ }
 
 
-								<div className='ob-create-i'>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed check icon. */ }
+								<div className={ cssModObj.obCreateI }>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed check icon. */ }
 
 
 									<IcoSvgCom
@@ -4409,7 +4420,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<InfTipCom
-										className='btn btn--primary btn--sm is-disabled'
+										className={` ${ cssModObj.btn }   ${ cssModObj.btnPrimary }   ${ cssModObj.btnSm } `}
 
 										actNamStr='Generate your list'
 										labTexStr='Complete at least one "Create a picker" tutorial above first.'
@@ -4428,10 +4439,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						{ onbEmpBoo && ( // What: Empty State Visibility Check. Why: This CTA only belongs to a brand-new user with no pickers at all. How: This renders the empty-state card only while onbEmpBoo is true.
 
 
-							<div className='ob-create ob-create--empty'>{ /* What: Empty State Div Element. Why: A brand-new user with no pickers at all needs a plain, non-tour empty-state CTA. How: This renders its own icon/heading/explanation plus a Create-a-picker button. */ }
+							<div className={ cssModObj.obCreate }>{ /* What: Empty State Div Element. Why: A brand-new user with no pickers at all needs a plain, non-tour empty-state CTA. How: This renders its own icon/heading/explanation plus a Create-a-picker button. */ }
 
 
-								<div className='ob-create-i'>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed plus icon. */ }
+								<div className={ cssModObj.obCreateI }>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed plus icon. */ }
 
 
 									<IcoSvgCom
@@ -4466,10 +4477,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						{ shoIdlBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while shoIdlBoo is true.
 
 
-							<div className='ob-create ob-create--empty ob-create--norun'>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
+							<div className={` ${ cssModObj.obCreate }   ${ cssModObj.obCreateNorun } `}>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
 
 
-								<div className='ob-create-i'>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed calendar icon. */ }
+								<div className={ cssModObj.obCreateI }>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed calendar icon. */ }
 
 
 									<IcoSvgCom
@@ -4489,11 +4500,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									You can either change your pickers&rsquo; settings in the <button
 										type='button'
-										className='sub-tablink'
+										className={ cssModObj.subTablink }
 										onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }
 									>Data tab</button> to change this behavior or you can run them manually via the <button
 										type='button'
-										className='sub-tablink'
+										className={ cssModObj.subTablink }
 										onClick={ () => onNavTabFun && onNavTabFun( 'picker' ) }
 									>Pickers tab</button> and then push them here to the Today tab.
 
@@ -4508,22 +4519,22 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-						<div className='today-footer'>{ /* What: Today Footer Div Element. Why: The footer's own content swaps between the confirm prompt, Edit Mode actions, and the normal Regenerate/generated-on pair. How: This renders exactly one of the 3 branches below. */ }
+						<div className={ cssModObj.todayFooter }>{ /* What: Today Footer Div Element. Why: The footer's own content swaps between the confirm prompt, Edit Mode actions, and the normal Regenerate/generated-on pair. How: This renders exactly one of the 3 branches below. */ }
 
 
 							{ conGenBoo && !genActBoo ? ( // What: Confirm Gated Check. Why: The footer's own content depends on which of 3 mutually-exclusive states currently applies. How: This renders the regenerate-confirm prompt while conGenBoo is true and no generation is in flight, otherwise one of the 2 branches below.
 
 
 								<div
-									className='gen-confirm'
+									className={ cssModObj.genConfirm }
 
 									data-element-name-hook='genConDiv'
 								>{ /* What: Generate Confirm Div Element. Why: Regenerate is confirm-gated since it replaces any completed items. How: This renders the fixed warning message plus a Cancel/Continue pair. Its data-element-name-hook is read by the Welcome Tour. */ }
 
 
-									<p className='gen-confirm-msg'>This will replace any items marked as completed and these will not show up in the Stats tab. Continue?</p>{ /* What: Confirm Message Element. Why: The user needs to understand the real consequence before confirming. How: This renders a fixed warning sentence. */ }
+									<p className={ cssModObj.genConfirmMsg }>This will replace any items marked as completed and these will not show up in the Stats tab. Continue?</p>{ /* What: Confirm Message Element. Why: The user needs to understand the real consequence before confirming. How: This renders a fixed warning sentence. */ }
 
-									<div className='gen-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: The Cancel/Continue pair reads as one cluster. How: This wraps both ButBasCom elements below. */ }
+									<div className={ cssModObj.genConfirmActions }>{ /* What: Confirm Actions Div Element. Why: The Cancel/Continue pair reads as one cluster. How: This wraps both ButBasCom elements below. */ }
 
 
 										<ButBasCom
@@ -4536,8 +4547,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 										<ButBasCom
-											className='gen-confirm-continue'
-
 											data-element-name-hook='genConBut'
 
 											icoNamStr='refEle'
@@ -4558,7 +4567,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 								<div
-									className='today-foot-actions editmode-foot-actions'
+									className={ cssModObj.todayFootActions }
 
 									data-element-name-hook='fooActDiv ediActDiv'
 								>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by the Today page tour and help mode's Today catalog. */ }
@@ -4592,14 +4601,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									<div
-										className='today-foot-actions'
+										className={ cssModObj.todayFootActions }
 
 										data-element-name-hook='fooActDiv'
 									>{ /* What: Foot Actions Div Element. Why: The Edit Mode and Regenerate buttons read as one row. How: This wraps both controls below. Its data-element-name-hook is read by the Today page tour. */ }
 
 
 										<ButBasCom
-											className='foot-editmode'
+											className={ cssModObj.footEditmode }
 
 											data-element-name-hook='fooEdiBut'
 
@@ -4616,7 +4625,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 											<InfTipCom
-												className='btn btn--secondary btn--md ob-generate is-disabled'
+												className={` ${ cssModObj.btn }   ${ cssModObj.btnSecondary } `}
 
 												data-element-name-hook='genLisSpa'
 
@@ -4638,8 +4647,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 											<ButBasCom
-												className='ob-generate'
-
 												data-element-name-hook='genLisBut'
 
 												disabled={ genActBoo }
@@ -4655,7 +4662,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									</div>
 
-									<div className='today-foot-sub'>List generated on { forLonFun( staAppObj.today.generatedAt ) } at { forTimFun( staAppObj.today.generatedAt ) }</div>{ /* What: Foot Sub Div Element. Why: The user still deserves to know exactly when the current list was built. How: This renders staAppObj.today.generatedAt formatted 2 ways. */ }
+									<div className={ cssModObj.todayFootSub }>List generated on { forLonFun( staAppObj.today.generatedAt ) } at { forTimFun( staAppObj.today.generatedAt ) }</div>{ /* What: Foot Sub Div Element. Why: The user still deserves to know exactly when the current list was built. How: This renders staAppObj.today.generatedAt formatted 2 ways. */ }
 
 
 								</React.Fragment>
