@@ -354,17 +354,14 @@
 @keyframes pvNewItemIn { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .pv-newitem { animation: none; } }
 .pv-newitem.rd-item:last-child { border-bottom: 0.5px solid var(--border); }
-/* In the Pickers-tab new-item editor the name row already provides the divider,
-   so drop the pie-rows top border + top margin to avoid a doubled border. */
-.pv-newitem .entry-editor .pie-rows { border-top: 0; margin-top: 0; }
-/* Today-card inline item editor: drop the top padding + pie-rows top border so
-   it sits flush under the card without a doubled gap/hairline (this UI only). */
-.today-entry-editor .rem-inline-editor { padding-top: 0; }
-.today-entry-editor .entry-editor .pie-rows { border-top: 0; }
-/* A brand-new item is discarded via Cancel, so the footer Delete button is
-   redundant here — hide it (this UI only). */
-.pv-newitem .rd-edit-foot { --btn-danger-display: none; }
-.pv-newitem .rd-edit-foot { justify-content: flex-end; }
+/* In the Pickers-tab new-item editor the name row already provides the
+   divider, so the item editor (entry-editor.module.css) drops its rows' top
+   border and top margin, and since a brand-new item is discarded with Cancel,
+   its footer hides the redundant Delete and right-aligns Cancel and Save. */
+.pv-newitem { --entry-editor-delete-display: none; --entry-editor-foot-justify: flex-end; --entry-editor-rows-border-top: 0; --entry-editor-rows-margin-top: 0; }
+/* Today-card inline item editor: drop the top padding and the rows' top border
+   so it sits flush under the card without a doubled gap or hairline. */
+.today-entry-editor { --entry-editor-padding: 0 16px 16px; --entry-editor-rows-border-top: 0; }
 .pv-newitem .rd-row { cursor: default; }
 .pv-newitem .rd-edit { border-top: 0.5px solid var(--border); }
 /* Save animation: a just-saved item glides into place at the bottom of the pool. */
@@ -1674,76 +1671,14 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .sched-line-lbl { font-size: 13.5px; color: var(--muted); }
 .sched-line .switch { cursor: pointer; }
 .sched-off-note { font-size: 13px; color: var(--muted); }
-
-/* Picker-item editor: one setting per full-bleed row (label left / control
-   right), with hairline dividers — same shape as the "When it runs" controls.
-   Full-bleed via -16px margins (both Today's card and Data's .rd-edit inset 16px). */
-.entry-editor .pie-rows {
-  display: flex; flex-direction: column;
-  margin: 2px -16px 0;
-  border-top: 0.5px solid var(--border);
-}
-.entry-editor .pie-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 10px 16px; min-height: 44px;
-  border-bottom: 0.5px solid var(--border);
-}
-.entry-editor .pie-rowlabel { display: flex; flex-direction: column; gap: 1px; }
-.entry-editor .pie-lbl { font-size: 13.5px; }
-.entry-editor .pie-sub { font-size: 11px; color: var(--muted); }
-.entry-editor .pie-note { font-size: 13px; color: var(--muted); }
-.entry-editor .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-.entry-editor .pie-ctl .np-ease-unit { font-size: 12px; }
 /* Data picker items: dim an inactive item's name in the resting row. */
 .rd-item.is-vac .rd-name { color: var(--muted); }
-
-/* Inline editor shown under a Today card when its pencil is toggled. This
-   sits inside a <ColDisCom> (collapse.jsx), whose .collapse-inner has a permanent
-   overflow: hidden — a negative top margin here pulls the border above that
-   boundary and gets clipped, cutting off the top border. Every other
-   consumer (.rd-edit, .rem-quickadd-wrap) already resets margin-top to 0 for
-   its own context, so 0 here too rather than -4px. */
-.rem-inline-editor {
-  margin: 0 0 4px;
-  padding: 16px;
-  background: oklch(from var(--surface) calc(l - 0.006) c h);
-  border: 0.5px solid var(--border); border-radius: var(--r-md);
-  animation: np-row-in .16s ease;
-}
-.rem-inline-foot { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
-/* Data tab: the item/reminder editors sit inside a full-bleed row (.rd-edit),
-   so strip the Today card chrome (border, tint, radius, padding) — Today keeps
-   its card since the override is scoped to .rd-edit. */
-.rd-edit > .rem-inline-editor,
-.rd-edit > .entry-editor {
-  margin: 0; padding: 0; background: none; border: 0; border-radius: 0;
-}
-/* Inline delete confirm: footer morphs in place — message left, actions right. */
-.rem-foot-confirm { justify-content: space-between; align-items: center; }
-.rem-del-msg { font-size: 13px; color: var(--text); text-wrap: pretty; }
+/* Data tab: the item editor sits inside a full-bleed row (.rd-edit), so it
+   strips its card chrome (border, tint, radius, padding), while Today keeps
+   its card. */
+.rd-edit { --entry-editor-background: none; --entry-editor-border: 0; --entry-editor-border-radius: 0; --entry-editor-margin: 0; --entry-editor-padding: 0; }
 .rem-del-actions { display: flex; gap: 8px; flex: 0 0 auto; }
-/* Reminder editor footer: Delete anchored left, Cancel + Done grouped right.
-   Extra top margin separates the destructive/confirm row from the schedule
-   controls — clearer, and safer against accidental taps on mobile. */
-.rd-edit-foot, .rem-foot-confirm { margin-top: 18px; }
 .rem-foot-right { display: flex; gap: 8px; flex: 0 0 auto; margin-left: auto; }
-/* Picker-item editor: the footer doubles its top border against the Active row's
-   bottom border (full-bleed, no gap) — the same doubled-line section divider used
-   in the Controls sections. Scoped to .entry-editor so the reminders editor's
-   footer keeps its plain 18px gap. */
-.entry-editor .rd-edit-foot,
-.entry-editor .rem-foot-confirm {
-  margin: 0 -16px; padding: 14px 16px 0;
-  border-top: 0.5px solid var(--border);
-}
-
-/* Today inline reminder editor: the schedule editor's stacked layout draws its
-   own row dividers edge to edge, so the card drops its side padding, and the
-   footer's top border doubles against the editor's closing line. */
-.today-list .rem-inline-editor .rem-inline-foot { border-top: 0.5px solid var(--border); padding: 14px 16px 0; margin-top: 0; }
-.today-list .rem-inline-editor .rem-inline-foot.rd-edit-foot { margin-top: 0; }
-/* EdiFooCom's module footer reads the same divider through custom properties. */
-.today-list .rem-inline-editor { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0; --rem-inline-foot-padding: 14px 16px 0; }
 
 /* Data-tab cadence row: cadence + anchor selects, wrap on narrow. flex-start
    (not flex-end) so a wrapped second line (Monthly/Yearly nth-weekday, or
@@ -2180,26 +2115,17 @@ button.rd-chev {
 .heat-slide-next { animation: heatSlideNext .26s cubic-bezier(.2,.7,.3,1) both; }
 .heat-slide-prev { animation: heatSlidePrev .26s cubic-bezier(.2,.7,.3,1) both; }
 @media (prefers-reduced-motion: reduce) { .heat-slide-next, .heat-slide-prev { animation: none; } }
-
-.rd-edit-foot { justify-content: space-between; }
-/* InfoTip wraps the disabled Delete button in a plain span (see EntEdiCom's
-   atMinItems branch, tab-today.jsx) — match the Btn it replaces so the footer's
-   space-between layout doesn't shift. */
-.rd-del-disabled-tip { display: inline-flex; }
 /* Footer ↔ delete-confirm swap: whichever row appears fades + slides in (the
    ternary branches carry distinct keys so React remounts them to replay this).
    Covers every editor footer — picker item, reminder, picker settings, conditional. */
 @keyframes footSwapIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 @keyframes footSwapOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(3px); } }
 .pool-confirm.is-leaving { animation: footSwapOut .14s ease both; }
-.rem-foot-confirm, .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .rd-edit-foot, .pool-confirm { animation: footSwapIn .16s ease both; }
+.rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .pool-confirm { animation: footSwapIn .16s ease both; }
 @media (prefers-reduced-motion: reduce) {
-  .rem-foot-confirm, .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .rd-edit-foot, .pool-confirm { animation: none; }
+  .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .pool-confirm { animation: none; }
 }
 
-/* Doubled border between the last control row and the footer. */
-.rd-edit .rd-edit-foot,
-.rd-edit .rem-foot-confirm { margin: 0 -16px; padding: 14px 16px 0; border-top: 0.5px solid var(--border); }
 .rd-edit { --rem-inline-foot-border-top: 0.5px solid var(--border); --rem-inline-foot-margin: 0 -16px; --rem-inline-foot-padding: 14px 16px 0; }
 
 /* Rail entry for Reminders — subtle accent tint to set it apart as pinned. */
@@ -2834,12 +2760,6 @@ body[data-tour-active]{--tab-tour-padding:200px}
   .stage-sent,
   .stage-sent-check,
   .pv-act--send.is-sent {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-  /* The inline editors: all entrance fades. */
-  .rem-inline-editor {
     animation: none;
     opacity: 1;
     transform: none;

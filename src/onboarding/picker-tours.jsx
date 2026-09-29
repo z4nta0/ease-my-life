@@ -491,9 +491,9 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
  * SAV_STE_OBJ = Save Step Object
  *
  * @summary
- * Highlights the item editor's own Save button, .ob-item-save (tagged
- * alongside .ob-item-cancel, see EntEdiCom in tab-today.jsx). cirBoo since
- * this closes the editor for good, the same real-interface-teaching pattern as
+ * Highlights the item editor's own Save button, found by its iteSavBut hook
+ * (see EntEdiCom in ui/entry-editor.jsx). cirBoo since this closes the editor
+ * for good, the same real-interface-teaching pattern as
  * buiNewFun/ITE_STE_OBJ/buiAddFun.
  *
  * @author z4nta0 <https://github.com/z4nta0>

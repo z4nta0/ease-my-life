@@ -1,0 +1,479 @@
+
+
+
+/**
+ * entry-editor.module.css = Entry Editor Module
+ *
+ * @summary
+ * Styles for EntEdiCom, the item editor opened on Today, in the Data tab's
+ * item rows, and in the Pickers tab's item and new-item rows: a column of
+ * full-bleed setting rows (labels left, controls right) above either the
+ * Delete/Cancel/Save footer or the delete confirm that replaces it. Where the
+ * editor sits changes a few values, so it reads them from custom properties
+ * its parent sets, falling back to the standalone card: Today's wrapper drops
+ * the card's top padding and the rows' top border, a Data or Pickers row
+ * strips the card chrome entirely, and a new-item row also drops the rows'
+ * top margin, right-aligns the footer, and hides Delete. The Active switch
+ * keys off its own aria-pressed.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region entry-editor */
+
+.entry-editor { /* What: Entry Editor. Why: The editor opens as a recessed card of settings, except where its context strips or trims the card. How: This draws the card from custom properties its parent may set, falling back to the standalone card, and fades it in. */
+
+
+	animation     : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var(--entry-editor-background, oklch(from var(--surface) calc(l - 0.006) c h)); /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
+	border        : var(--entry-editor-border, 0.5px solid var(--border)); /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
+	border-radius : var(--entry-editor-border-radius, var(--r-md)); /* What: Card Radius. Why: A Data or Pickers row strips the card's rounding. How: Its parent sets this to 0. */
+	margin        : var(--entry-editor-margin, 0 0 4px); /* What: Card Margin. Why: A Data or Pickers row sits the editor flush, and the top stays 0 everywhere, since a negative one would be clipped by the overflow of the collapse the editor opens in. How: Its parent sets this to 0, falling back to a small gap below. */
+	padding       : var(--entry-editor-padding, 16px); /* What: Card Padding. Why: Today's card drops the top padding, and a Data or Pickers row drops it all. How: Their parents set this, falling back to 16px on every side. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Entry Editor. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.entry-editor { /* What: Still Entry Editor. Why: The editor should simply appear. How: This turns its fade off and pins it fully shown. */
+
+
+		animation : none;
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #region pie-rows */
+
+.pie-rows { /* What: Setting Rows. Why: The rows run edge to edge under a hairline, apart from where the editor's context already draws one. How: This stacks them in a column pulled 16px past each side, since every context insets the editor's content 16px, reading its top border and top margin from the parent. */
+
+
+	border-top     : var(--entry-editor-rows-border-top, 0.5px solid var(--border)); /* What: Rows Top Border. Why: Today's card and a new-item row already draw a divider above the rows. How: Their parents set this to 0, falling back to a hairline. */
+	display        : flex;
+	flex-direction : column;
+	margin         : var(--entry-editor-rows-margin-top, 2px) -16px 0; /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to 2px. */
+
+
+}
+
+/* #region pie-row */
+
+.pie-row { /* What: Setting Row. Why: Each setting is one full-bleed row, name on the left and control on the right. How: This spreads them across a padded row closed by a hairline. */
+
+
+	align-items     : center;
+	border-bottom   : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	min-height      : 44px;
+	padding         : 10px 16px;
+
+
+}
+
+/* #region pie-rowlabel */
+
+.pie-rowlabel { /* What: Setting Label. Why: Each setting's name sits over its live explanation. How: This stacks them in a tight column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 1px;
+
+
+}
+
+/* #region pie-lbl-row */
+
+.pie-lbl-row { /* What: Setting Label Row. Why: A setting that needs a warning shows its help icon beside its name. How: This lines them up in an inline row. */
+
+
+	align-items : center;
+	display     : inline-flex;
+	gap         : 6px;
+
+
+}
+
+.pie-help { /* What: Setting Help Icon. Why: A small circled question mark marks a setting with a warning tip. How: This draws a muted outlined circle that tints on hover. */
+
+
+	align-items     : center;
+	border          : 1px solid var(--muted);
+	border-radius   : 50%;
+	color           : var(--muted);
+	cursor          : help;
+	display         : inline-flex;
+	flex            : 0 0 auto;
+	font-size       : 11px;
+	font-weight     : 700;
+	height          : 16px;
+	justify-content : center;
+	line-height     : 1;
+	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	width           : 16px;
+
+
+}
+.pie-help:hover { /* What: Hovered Setting Help Icon. Why: The icon should respond to the pointer. How: This tints it in the accent color. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Help Icon. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.pie-help { /* What: Still Setting Help Icon. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion pie-lbl-row */
+
+
+.pie-lbl { /* What: Setting Name. Why: Each setting row leads with its name. How: This sets it at body size. */
+
+
+	font-size : 13.5px;
+
+
+}
+
+.pie-sub { /* What: Setting Explanation. Why: The line under a setting explains its current value. How: This sets it small and muted. */
+
+
+	color     : var(--muted);
+	font-size : 11px;
+
+
+}
+
+.set-sub-fade { /* What: Fading Setting Text. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+
+
+	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Setting Text. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-sub-fade { /* What: Still Fading Setting Text. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion pie-rowlabel */
+
+
+
+/* #region pie-ctl */
+
+.pie-ctl { /* What: Setting Control. Why: A setting's field and unit stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+
+
+}
+
+.np-ease-unit { /* What: Setting Unit. Why: The unit after a number reads quieter than the number. How: This sets it small and muted, centered on the field. */
+
+
+	align-self : center;
+	color      : var(--muted);
+	font-size  : 12px;
+
+
+}
+
+/* #endregion pie-ctl */
+
+
+
+/* #region weight-stepper */
+
+.weight-stepper { /* What: Weight Stepper. Why: A weighted item's weight steps up and down in a compact pill. How: This draws a rounded outlined pill around the two buttons and the value. */
+
+
+	align-items   : center;
+	background    : var(--bg);
+	border        : 0.5px solid var(--border);
+	border-radius : 999px;
+	display       : inline-flex;
+
+
+}
+
+.weight-stepper button { /* What: Weight Step Button. Why: Each end of the pill is a small step button. How: This sizes a square hit area with a muted glyph. */
+
+
+	align-items     : center;
+	color           : var(--muted);
+	display         : inline-flex;
+	font-size       : 14px;
+	height          : 26px;
+	justify-content : center;
+	width           : 26px;
+
+
+}
+.weight-stepper button:hover:not(:disabled) { /* What: Hovered Weight Step Button. Why: A live step button should respond to the pointer. How: This darkens its glyph. */
+
+
+	color : var(--text);
+
+
+}
+.weight-stepper button:disabled { /* What: Disabled Weight Step Button. Why: A step past the weight's limit is unavailable and should look it. How: This dims the button and drops the pointer cursor. */
+
+
+	cursor  : default;
+	opacity : 0.35;
+
+
+}
+
+.weight-val { /* What: Weight Value. Why: The current weight reads between the step buttons. How: This sets it in small muted tabular mono type. */
+
+
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 11px;
+	font-variant-numeric : tabular-nums;
+	padding              : 0 8px;
+
+
+}
+
+/* #endregion weight-stepper */
+
+
+
+.pie-note { /* What: Setting Note. Why: A setting that doesn't apply says so in place of a control. How: This sets the note small and muted. */
+
+
+	color     : var(--muted);
+	font-size : 13px;
+
+
+}
+
+
+
+/* #region switch */
+
+.switch { /* What: Active Switch. Why: An item turns active or inactive with a switch. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var(--border);
+	border-radius : 999px;
+	height        : 20px;
+	position      : relative;
+	transition    : background .15s;
+	width         : 36px;
+
+
+}
+.switch[aria-pressed="true"] { /* What: On Active Switch. Why: An active item reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
+
+
+	background : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Active Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch { /* What: Still Active Switch. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.switch i { /* What: Active Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+
+
+	background    : var(--bg);
+	border-radius : 50%;
+	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	height        : 16px;
+	left          : 2px;
+	position      : absolute;
+	top           : 2px;
+	transition    : transform .15s;
+	width         : 16px;
+
+
+}
+.switch[aria-pressed="true"] i { /* What: On Active Switch Knob. Why: An active switch has its knob on the right. How: This slides the knob across. */
+
+
+	transform : translateX(16px);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Active Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.switch i { /* What: Still Active Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion switch */
+
+/* #endregion pie-row */
+
+/* #endregion pie-rows */
+
+
+
+/* #region rem-foot-confirm */
+
+.rem-foot-confirm { /* What: Delete Confirm Footer. Why: Asking before a delete replaces the footer in place, below a doubled divider. How: This spreads the question and its actions across a centered row and slides it in each time it mounts. */
+
+
+	align-items     : center;
+	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	border-top      : 0.5px solid var(--border);
+	display         : flex;
+	gap             : 8px;
+	justify-content : space-between;
+	margin          : 0 -16px;
+	padding         : 14px 16px 0;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Delete Confirm Footer. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rem-foot-confirm { /* What: Still Delete Confirm Footer. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.rem-del-msg { /* What: Delete Question. Why: The question reads as plain body text that wraps cleanly on narrow screens. How: This sets it in the text color with balanced wrapping. */
+
+
+	color     : var(--text);
+	font-size : 13px;
+	text-wrap : pretty;
+
+
+}
+
+.rem-del-actions { /* What: Delete Confirm Actions. Why: The confirm's Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+
+
+	display : flex;
+	flex    : 0 0 auto;
+	gap     : 8px;
+
+
+}
+
+/* #endregion rem-foot-confirm */
+
+
+
+/* #region rd-edit-foot */
+
+.rd-edit-foot { /* What: Editor Footer. Why: Delete sits apart on the left while Cancel and Save pair up on the right, below a divider that doubles against the last row's, except in a new-item row, which has nothing to delete. How: This spreads the row out, slides it in each time it mounts, and reads its alignment and Delete visibility from the parent. */
+
+
+	--btn-danger-display : var(--entry-editor-delete-display); /* What: Delete Visibility. Why: A brand-new item is discarded with Cancel, so its Delete is redundant. How: A new-item row sets --entry-editor-delete-display to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
+	animation            : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	border-top           : 0.5px solid var(--border);
+	display              : flex;
+	gap                  : 8px;
+	justify-content      : var(--entry-editor-foot-justify, space-between); /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A new-item row sets this to flex-end, falling back to space-between. */
+	margin               : 0 -16px;
+	padding              : 14px 16px 0;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Editor Footer. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-edit-foot { /* What: Still Editor Footer. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+.rd-del-disabled-tip { /* What: Blocked Delete Tip. Why: A delete blocked by the two-item minimum is wrapped in its tip's span, which must sit like the button it replaces so the footer doesn't shift. How: This makes the tip's trigger an inline flex box. */
+
+
+	display : inline-flex;
+
+
+}
+
+.rem-foot-right { /* What: Footer Right Group. Why: Cancel and Save pair up on the right, even when there's no Delete. How: This lays them out in a fixed-size row pushed right. */
+
+
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+	margin-left : auto;
+
+
+}
+
+/* #endregion rd-edit-foot */
+
+/* #endregion entry-editor */
+
+
