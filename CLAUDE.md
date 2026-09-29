@@ -669,7 +669,10 @@ src/
   component during the CSS pass (see "### CSS modules and JS hooks");
   `styles/` keeps only global CSS that can't belong to one component
   (design tokens/themes, base element styles, `@font-face`, shared
-  keyframes). How that global CSS is split is decided in the CSS pass.
+  keyframes). Decided 2026-09-29: that global CSS is `styles/fonts.css`
+  (the `@font-face` rules) plus one `styles/styles.css` for everything
+  else, formatted per "The global stylesheet" under "### CSS modules and
+  JS hooks".
 
 ### Top-level (module scope)
 - Between any two distinct top-level declarations (a comment block, a
@@ -2130,6 +2133,34 @@ still passes.
   - Splitting rules across module files changes the order they apply in,
     so every move is checked for a rule that relied on appearing later in
     the global file to win.
+- **The global stylesheet** (`styles/styles.css`, decided 2026-09-29)
+  follows every CSS rule above that isn't about markup (declarations,
+  comments, `@media` placement, keyframe formatting, multi-selector rules,
+  file boundaries and header), with these additions, since a global sheet
+  has no markup to order it by:
+  - **Purpose regions, in this order**: `Tokens`, `Base Elements` (resets
+    and element styles), `Body State` (states set on `<html>`/`<body>`,
+    plus elements created outside React such as the live region), and
+    `Shared Keyframes` (alphabetical by keyframe name). Siblings inside a
+    region sit 1 blank line apart, and regions 3 apart. Decorative banner
+    comments are deleted, and the header lists the regions as its
+    `Sections:` table of contents.
+  - **One `:root`** holds every token, split into token sections, each a
+    `/* #region <Name> Tokens */` fold region inside the rule (the CSS
+    counterpart of the themed-region object variant under "### Sectioning
+    / fold regions"): the sections are ordered alphabetically by name, the
+    tokens alphabetically within each, 1 blank line between a marker and
+    its tokens, and 3 blank lines between sections. A token gets its own
+    comment only when its name doesn't say what it is (e.g. `--r-sm`).
+  - **A long explanatory comment** becomes a design-rationale block per
+    "### Large / design-rationale comments": attached to a rule, its name
+    line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
+    Root`), with 3 blank lines before the block and after its rule (or the
+    region's own 1 blank line at an edge), and 1 blank line between the
+    block and its rule; inside a token section, it's `styles.css =
+    <Section> Tokens`, sitting between the section's marker and its
+    tokens. A short note folds into the rule's own one-line What/Why/How
+    instead. The rule keeps its own one-line comment either way.
 
 ### Arrays and objects
 - **Once an array literal cannot stay on a single line, every one of its
