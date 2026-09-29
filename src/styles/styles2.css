@@ -665,30 +665,12 @@ button.heat-cell.is-sel {
   to   { opacity: 1; transform: none; }
 }
 
-.item-del {
-  width: 28px; height: 28px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 8px;
-  color: var(--muted);
-  transition: background .12s, color .12s;
-}
-.item-del:hover { background: var(--bg); color: var(--text); }
-.item-del:hover { color: oklch(0.5 0.18 25); }
-
 @keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }
 /* Breakdown lists (conditionals / reminders / pick breakdown): fade+rise when
    the metric pill or sort direction changes (keyed remount). */
 .bd-list-fade { animation: setSubFade .3s ease, bdListRise .3s cubic-bezier(.2,.7,.3,1); }
 @keyframes bdListRise { from { transform: translateY(5px); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .bd-list-fade { animation: none; } }
-
-.daily-list { display: flex; flex-direction: column; }
-.daily-list li {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 0;
-  border-bottom: 0.5px solid var(--border);
-}
-.daily-list li:last-child { border-bottom: 0; }
 
 .switch {
   position: relative;
