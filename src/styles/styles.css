@@ -136,15 +136,12 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 }
 
 /* Completion-celebration style variables (Appearance → Completion
-   celebration). "Ripple" is the pure-CSS default (ripple-ring + card-exhale,
-   values below); "Confetti" and "Sparkle" are separate particle-based
-   effects rendered in tab-today.jsx (see .confetti-piece/.sparkle-piece) —
-   the ring number pulse and title text-swap stay constant across all three
+   celebration). "Ripple" is the pure-CSS default (the card exhale, values
+   below); "Confetti" and "Sparkle" are separate particle-based
+   effects rendered in tab-today.jsx (see .confetti-piece/.sparkle-piece).
+   The ring number pulse and title text-swap stay constant across all three
    per the design decision (those aren't "ripple" effects). */
 :root {
-  --celeb-ripple-dur: 1600ms;
-  --celeb-ripple-scale: 10;
-  --celeb-ripple-opacity: 0.55;
   --exhale-dur: 900ms;
   --exhale-scale: 1.012;
   --exhale-glow: 6px;

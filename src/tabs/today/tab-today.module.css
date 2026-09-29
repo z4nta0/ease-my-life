@@ -1043,7 +1043,7 @@
 
 }
 
-.ring-ripple { /* What: Ring Ripple. Why: This is an accent ring outline over the progress ring. How: This draws an invisible accent circle over the ring. */
+.ring-ripple { /* What: Ring Ripple. Why: Completing the day sends a ripple off the ring itself. How: This draws an invisible accent circle over the ring that expands when celebrating. */
 
 
 	border         : 1.5px solid var(--accent);
@@ -1055,30 +1055,17 @@
 
 
 }
+.ring.is-celebrating .ring-ripple { /* What: Celebrating Ring Ripple. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over 1200ms, matching the ring's other completion animations. */
 
-.celebration-ripple { /* What: Celebration Ripple. Why: The finished day sends a big, slow ripple out past the ring. How: This draws an invisible accent circle over the ring that expands when celebrating. */
 
-
-	border         : 1.5px solid var(--accent);
-	border-radius  : 50%;
-	inset          : 0;
-	opacity        : 0;
-	pointer-events : none;
-	position       : absolute;
+	animation : ringCompleteRipple 1200ms ease-out;
 
 
 }
-.ring.is-celebrating .celebration-ripple { /* What: Celebrating Ripple. Why: The ripple carries the all-done moment out across the page. How: This plays the expansion at the chosen style's duration. */
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Ring Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	animation : celebrationRippleExpand var(--celeb-ripple-dur) cubic-bezier(.2,.6,.3,1) forwards;
-
-
-}
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Celebration Ripple. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
-
-
-	.ring.is-celebrating .celebration-ripple { /* What: Still Celebration Ripple. Why: The ripple is purely decorative. How: This turns its animation off and keeps it hidden. */
+	.ring.is-celebrating .ring-ripple { /* What: Still Ring Ripple. Why: The ripple is purely decorative. How: This turns its animation off and keeps it hidden. */
 
 
 		animation : none;
@@ -1089,14 +1076,14 @@
 
 
 }
-@keyframes celebrationRippleExpand { /* What: Celebration Ripple Keyframes. Why: The ripple grows and fades as it spreads. How: This scales it by the celebration's --celeb-ripple-scale while fading it from --celeb-ripple-opacity. */
+@keyframes ringCompleteRipple { /* What: Ring Complete Ripple Keyframes. Why: The ripple grows off the ring and fades as it thins. How: This scales it to 2.4 times while fading it from 0.85 and thinning its border. */
 
 
 	0% {
 
 
 		border-width : 1.5px;
-		opacity      : var(--celeb-ripple-opacity);
+		opacity      : 0.85;
 		transform    : scale(1);
 
 
@@ -1107,7 +1094,7 @@
 
 		border-width : 0.5px;
 		opacity      : 0;
-		transform    : scale(var(--celeb-ripple-scale));
+		transform    : scale(2.4);
 
 
 	}

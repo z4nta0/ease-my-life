@@ -3562,13 +3562,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									className={ cssModObj.ringRipple }
 
 									aria-hidden='true'
-								/>{ /* What: Ring Ripple Element. Why: The ring needs a purely decorative ripple layer for the per-tick pulse. How: This is an empty, presentation-only element. */ }
-
-								<i
-									className={ cssModObj.celebrationRipple }
-
-									aria-hidden='true'
-								/>{ /* What: Celebration Ripple Element. Why: The ring needs its own separate ripple layer for the richer "all done" celebration, distinct from the per-tick pulse ripple above. How: This is an empty, presentation-only element. */ }
+								/>{ /* What: Ring Ripple Element. Why: The ring needs a purely decorative ripple layer for the completion celebration. How: This is an empty, presentation-only element. */ }
 
 
 							</div>
