@@ -2064,6 +2064,13 @@ still passes.
   conditional interpolation (`${ tonValStr === 'warm' ?
   cssModObj.progWarm : '' }`), and a modifier with no rule behind it
   (e.g. `prog--accent`) is dropped.
+  - **Many values indexed by a number** (decided 2026-09-29): when the
+    string was built from a numeric index over a fixed run of values,
+    too many for readable ternaries, a module-level constant array lists
+    each value's module class in order and the className indexes it
+    instead, which still names every class explicitly. See
+    `tabs/stats/tab-stats.jsx`'s own `HEA_LEV_ARR` (`heat-${ levValNum }`
+    became `HEA_LEV_ARR[ levValNum ]`).
 - **CSS file order follows the cascade**: a parent element's rules come
   first, then its first child's, then the next child's, and so on, in the
   same order the elements appear in the component's own markup, each
