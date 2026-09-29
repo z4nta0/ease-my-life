@@ -237,7 +237,9 @@
 
 
 
-.picker-h-sub { /* What: Page Intro. Why: The intro explains the page under its title. How: This sets it muted, capped in line length. */
+/* #region picker-h-sub */
+
+.picker-h-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline. How: This sets it muted, capped in line length. */
 
 
 	color     : var(--muted);
@@ -246,6 +248,30 @@
 
 
 }
+
+.sub-tablink { /* What: Intro Link. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var(--accent);
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.sub-tablink:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+/* #endregion picker-h-sub */
 
 /* #endregion picker-h-head */
 
