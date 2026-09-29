@@ -229,7 +229,6 @@
   .pool-row { gap: 10px; }
 }
 .pool-row:last-child { border-bottom: 0; }
-.pool-row.is-vac { opacity: 0.45; }
 .pool-row--confirm { grid-template-columns: 1fr; }
 .pool-edit {
   display: inline-flex; align-items: center; justify-content: center;
@@ -368,22 +367,6 @@
   font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--muted);
 }
-/* Data tab's section-list sort — top right, below the filter rows, above the
-   section list itself. Reused as-is (see SortSelect) for each section's own
-   item-list sort control too. */
-.data-sort-bar { display: flex; justify-content: flex-end; margin: -2px 0 4px; }
-/* Item-list sort (Conditionals/Reminders/each picker's own items) sits
-   inside the section's .cat-body, between the "+ Add" row above and the
-   first item below. Its padding matches those rows (.rd-add/.rd-row), and
-   it draws the hairline above the first item along its own bottom edge,
-   since that item no longer shares .rd-add's bottom border. SorSelCom's
-   module reads both from these properties. */
-.cat-body { --data-sort-row-padding: 13px 16px; --data-sort-row-border-bottom: 0.5px solid var(--border); }
-/* Data tab has a longer "Conditionals" label — widen its filter labels (which
-   narrows the pill/card rows accordingly, since the row is flex). */
-.data-empty { padding: 40px 4px; text-align: center; }
-.data-empty-title { font-size: 15px; font-weight: 500; color: var(--text); margin: 0 0 6px; }
-.data-empty-sub { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; text-wrap: pretty; }
 .stat-filter-pills {
   display: flex; gap: 7px;
   overflow-x: auto;
@@ -841,10 +824,6 @@ button.heat-cell.is-sel {
 .rank--breakdown.rank--breakdown { margin-top: 14px; }
 
 /* ─── Tab: Data ──────────────────────────────────────────────────────────── */
-
-.tab--data { display: flex; flex-direction: column; gap: 20px; }
-
-.data-list { display: flex; flex-direction: column; gap: 14px; }
 /* Filter-change entrance: when the group/scope changes the list remounts (keyed
    on the filter) and each card fades + slides up with a small per-index stagger,
    reading as a smooth reflow to the new filter. */
@@ -852,8 +831,6 @@ button.heat-cell.is-sel {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: none; }
 }
-.cat--enter { animation: catEnter .3s cubic-bezier(.4,0,.2,1) both; }
-@media (prefers-reduced-motion: reduce) { .cat--enter { animation: none; } }
 /* Show-filter boxes slide in horizontally (staggered) when the group changes —
    the row is keyed on the group so the animation replays. */
 @keyframes pickerTabEnter {
@@ -871,144 +848,10 @@ button.heat-cell.is-sel {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: none; }
 }
-.rd-item--insert { animation: rowInsert .32s cubic-bezier(.34,1.32,.5,1) both; }
-@media (prefers-reduced-motion: reduce) { .rd-item--insert { animation-duration: .01ms; } }
-
-.cat {
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-md);
-  overflow: hidden;
-}
-.cat.is-vac { opacity: 0.7; }
-
-/* "Create Picker" trigger (Data tab) — same footprint as a collapsed .cat
-   section (.cat-h's own 14px/16px padding, .cat's own border-radius), but a
-   dashed muted-gray outline instead of .cat's solid border + solid surface,
-   so it reads as "add a new one" rather than "an existing, collapsed card". */
-.cat-create-btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%;
-  /* Vertical padding is taller than .cat-h's own 14px — its two-line name +
-     count stack (.cat-h-main) makes a collapsed card taller than this
-     button's single line of text would be at the same padding, so this
-     makes up the difference to match its real rendered height instead of
-     just copying its padding value literally. */
-  padding: 24px 16px;
-  border: 1px dashed var(--border);
-  border-radius: var(--r-md);
-  background: none;
-  color: var(--muted);
-  font-size: 14px; font-weight: 500;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-.cat-create-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-/* Its own color/border/background all override the browser's default
-   disabled dimming, so without this a disabled state (the Data tour's own
-   Step 7, see tab-data.jsx's disableCreatePicker) looked identical to a
-   clickable one. pointer-events:none also blocks :hover from reacting while
-   disabled, on top of the disabled attribute already blocking the click. */
-.cat-create-btn:disabled { opacity: 0.5; cursor: default; pointer-events: none; }
-
-.cat-h {
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-  cursor: pointer;
-  user-select: none;
-}
-.cat-h-l { display: flex; align-items: center; gap: 10px; }
-/* The left cluster is the actual disclosure button; the header remains a plain
-   container so the picker card's nested vac-toggle stays valid HTML. */
-button.cat-h-l {
-  appearance: none; -webkit-appearance: none;
-  border: 0; background: none; font: inherit; color: inherit;
-  padding: 0; margin: 0; cursor: pointer; text-align: left;
-  flex: 1 1 auto; min-width: 0;
-}
-.chev {
-  color: var(--muted);
-  display: inline-flex;
-  transition: transform .15s;
-}
-.chev.is-open { transform: rotate(90deg); }
 /* Mode-option hint rows: the hint is one short line, so a height glide reads as
    janky. ColDisCom's own module reads these to carry the swap with a slower,
    stronger content fade instead. */
 .rd-mode-opt { --collapse-row-duration: .8s; --collapse-inner-transition: opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s; --collapse-inner-offset: translateY(-8px); }
-/* Name + eligible count stack into their own two-row block (see tab-data.jsx)
-   so the name's length never pushes the group/type pills around — those live
-   in their own .cat-h-tags cluster instead, each a fixed width so they line
-   up across every picker card regardless of what any single card's name or
-   group text is (same fixed-column trick as Stats' rank-bd-vals). */
-.cat-h-main { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
-.cat-name {
-  margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-/* Tags + toggle as one group (see tab-data.jsx) — own gap since these two
-   used to be direct .cat-h children sharing its gap; now .cat-h only has
-   two children (.cat-h-l and this), so it needs the gap between ITS OWN two
-   parts restated here. */
-.cat-h-right { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
-.cat-h-tags { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-.cat-group, .cat-mode-label {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--muted);
-  padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
-  flex: 0 0 auto; text-align: center;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-/* 94px matches .vac-toggle's own natural width at its longer "Inactive"
-   state (icon + text + padding) — chosen as the common width for all 3
-   pills, per instruction, rather than sizing each to its own longest
-   possible label. */
-.cat-group, .cat-mode-label { width: 94px; }
-.cat-count {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.03em;
-  /* Own elements (not one text run — see tab-data.jsx); row+baseline gives
-     the "6 of 6" look. */
-  display: flex; align-items: baseline; gap: 3px;
-}
-/* Below 500px there's no longer room for the name next to a 3-pill row
-   without squeezing it to almost nothing. Rather than move the whole
-   cluster to its own row below the name (tried — cost too much vertical
-   space for not enough width relief) or let it wrap unpredictably, stack
-   all 3 pills into one narrow column, still in their original spot on the
-   header's right side, same row as the name — now only as wide as a
-   single pill (94px) instead of three plus gaps. */
-@container app (max-width: 500px) {
-  .data-list > .cat > .cat-h .cat-h-right,
-  .data-list > .cat > .cat-h .cat-h-tags {
-    flex-direction: column;
-    gap: 6px;
-  }
-}
-
-.vac-toggle {
-  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-  padding: 2px 8px;
-  width: 94px;
-  border-radius: 999px;
-  border: 0.5px solid var(--border);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-  transition: color .12s, background .12s;
-}
-.vac-toggle:hover { color: var(--text); background: var(--bg); }
-.cat.is-vac .vac-toggle { color: var(--warm); }
-
-.cat-body {
-  border-top: 0.5px solid var(--border);
-  background: oklch(from var(--surface) calc(l - 0.005) c h);
-}
 
 .item-del {
   width: 28px; height: 28px;
@@ -1441,8 +1284,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .sched-line-lbl { font-size: 13.5px; color: var(--muted); }
 .sched-line .switch { cursor: pointer; }
 .sched-off-note { font-size: 13px; color: var(--muted); }
-/* Data picker items: dim an inactive item's name in the resting row. */
-.rd-item.is-vac .rd-name { color: var(--muted); }
 /* Data tab: the item editor sits inside a full-bleed row (.rd-edit), so it
    strips its card chrome (border, tint, radius, padding), while Today keeps
    its card. */
@@ -1460,104 +1301,13 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; }
 .rd-cad-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; font-size: 13px; }
 
-
-/* ── Data tab: reminder manager ── */
-.data-empty {
-  padding: 18px 16px; border: 1px dashed var(--border); border-radius: var(--r-md);
-  background: oklch(from var(--surface) l c h / 0.5);
-  color: var(--muted); font-size: 13px;
-}
-
 /* ── Data tab: Reminders section (finalized) ──────────────────────────────────
    One collapsible .cat section. Inside: a nested "Controls" disclosure + a
    settings matrix, then a full-bleed items list whose rows expand into the
    exact Today scheduling editor. */
 
-/* Controls disclosure — a secondary, nested collapsible. Kept visually a rank
-   below the section header (mono kicker + small chevron, recessed tint). */
-.rd-ctl {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px; cursor: pointer; user-select: none;
-  background: oklch(from var(--surface) calc(l - 0.012) c h);
-  border-bottom: 0.5px solid var(--border);
-  /* Real <button> now (was a div with role="button" and no tabindex — announced
-     as a button but unreachable by keyboard). Reset UA chrome, keep this rule's
-     own background and bottom border. */
-  appearance: none; -webkit-appearance: none;
-  border-top: 0; border-left: 0; border-right: 0; border-radius: 0;
-  width: 100%; text-align: left; font: inherit; color: inherit;
-}
-.rd-ctl-l { display: flex; align-items: center; gap: 9px; }
-.rd-ctl-l .chev { color: var(--muted); }
-.rd-ctl-l .kicker { line-height: 1; }
-.rd-ctl-sum { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em; color: var(--muted); }
-/* Boundary between the Controls section and the Items section: the second
-   disclosure header (Items) gets a top border that doubles against the bottom
-   border of whatever precedes it — the Controls body when expanded, or the
-   Controls header when collapsed — giving the app's doubled-hairline seam in
-   both states. (Only the two disclosure headers use .rd-ctl, so the general
-   sibling combinator targets the Items header alone.) */
-.cat-body .rd-ctl ~ .rd-ctl { border-top: 0.5px solid var(--border); }
-
-/* Items zone */
-.rd-add {
-  display: flex; align-items: center; gap: 7px; width: 100%;
-  padding: 13px 16px; border-bottom: 0.5px solid var(--border);
-  color: var(--muted); font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; text-align: left;
-}
-.rd-add:hover { color: var(--accent); }
-/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
-   pointer-events:none here — these instances become InfoTip spans (not
-   real <button>s) whenever ONB_CHE_OBJ.tutProFun is true, and
-   InfoTip needs real hover/tap events reaching it to show its tooltip at
-   all (see .btn.is-disabled in styles.css, the same InfoTip pattern used
-   by the Generate card, which omits it for the same reason). Nothing
-   unsafe fires either way: the real onClick isn't wired to these elements
-   while disabled. */
-.rd-add.is-tour-disabled { opacity: 0.5; cursor: default; }
-
 .rd-item { border-bottom: 0.5px solid var(--border); }
 .rd-item:last-child { border-bottom: 0; }
-/* Tour-driven "click here" emphasis (App Features' own Edit Item tour) —
-   a thin accent outline on top of the tour engine's own bigger spotlight
-   box, pointing at the SPECIFIC element inside it the step wants clicked.
-   outline (not border) so it doesn't touch layout/spacing — safe on a
-   single element like a section header. */
-.is-tour-target { outline: 2px solid var(--accent); outline-offset: -2px; }
-/* .rd-item rows can't use the same outline: outline has no per-side
-   variant, and every highlighted row would draw its own full outline,
-   doubling into a thick line wherever two highlighted rows touch (see
-   .rd-item's own hairline-border comment above — same touching-siblings
-   shape, just with a much more visible width/color this time). Borders
-   ARE per-side, so build the same "one box around the whole group" look
-   from borders instead: every row gets left/right/bottom, but only the
-   FIRST row also gets top — the row above's own bottom border already is
-   the shared line between two adjacent highlighted rows, so giving the
-   next row its own top border too would just stack a second one on the
-   exact same pixel, reading as thicker/blurrier there than everywhere else
-   on the outline. */
-.rd-item.is-tour-target {
-  outline: none;
-  border-left: 2px solid var(--accent);
-  border-right: 2px solid var(--accent);
-  border-bottom: 2px solid var(--accent);
-}
-/* :first-of-type/:last-of-type, not :first-child/:last-child — the Items
-   section's own "+ Add" button (.rd-add, a <button>) is always the actual
-   first CHILD, sitting right before the item rows begin (see tab-data.jsx),
-   so :first-child would never match any .rd-item at all. :first-of-type
-   matches by tag name (the first <div> among siblings, ignoring .rd-add's
-   own <button> tag), which is exactly the first real item row. */
-.rd-item.is-tour-target:first-of-type {
-  border-top: 2px solid var(--accent);
-  border-top-left-radius: var(--r-md);
-  border-top-right-radius: var(--r-md);
-}
-.rd-item.is-tour-target:last-of-type {
-  border-bottom-left-radius: var(--r-md);
-  border-bottom-right-radius: var(--r-md);
-}
 /* Real <button> (conditional rows + picker item rows) — they were divs with a
    click handler and no tabindex, so keyboard users couldn't open an editor. The
    reset strips UA chrome only; layout, padding and hover stay owned here. */
@@ -1571,8 +1321,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    shouldn't still look clickable everywhere via the shared .rd-row cursor. */
 .rd-item.is-editing > .rd-row { cursor: default; }
 .rd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.rd-name { font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
-.rd-sched { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 .rd-name-input {
   border: 0; background: transparent; font: inherit;
   font-size: 14px; font-weight: 500; letter-spacing: -0.005em;
@@ -1582,15 +1330,6 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 .rd-name-input:focus { outline: none; border-bottom-color: var(--accent); }
 .rd-name-input::placeholder { color: var(--muted); opacity: 0.7; }
-.rd-chev { flex: 0 0 auto; color: var(--muted); }
-.rd-item.is-editing .rd-chev { color: var(--accent); }
-/* When it's a real <button> (the editing-state collapse control) rather
-   than the decorative span the collapsed row uses. */
-button.rd-chev {
-  appearance: none; -webkit-appearance: none; border: 0; background: none;
-  padding: 4px; margin: -4px; font: inherit; color: inherit; cursor: pointer;
-  display: inline-flex; align-items: center;
-}
 .rd-edit { padding: 2px 16px 14px; }
 /* Picker Controls body — the pick-algorithm config, on the same recessed tint
    as the Reminders matrix so both sections' Controls read identically. */
@@ -1834,7 +1573,6 @@ button.rd-chev {
 .rd-ctl-group--sched .rd-cnd-rail-row { padding: 8px 16px 12px; border-bottom: 0.5px solid var(--border); }
 .rd-ctl-group--sched .rd-cnd-rail-row .cnd-rail { gap: 8px; }
 .rd-cnd-empty { font-size: 12.5px; line-height: 1.4; color: var(--muted); margin: 2px 0; text-wrap: pretty; }
-.cat-body > .rd-cnd-empty { margin: 0; padding: 12px 14px 14px; }
 .rd-ctl-group .sched-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .rd-ctl-group .sched-line-lbl { font-size: 13.5px; }
 /* Optional label + explanation column for a schedule line (e.g. Daily generator). */
@@ -1846,10 +1584,6 @@ button.rd-chev {
    .rd-ctl-foot-row's own space-between would otherwise leave its one
    remaining child (.rem-foot-right) flush left instead of right. */
 .rd-ctl-foot-row--new { justify-content: flex-end; }
-/* Picker card delete: collapse height + fade out before removal. */
-.cat--removing { animation: catRemove .3s ease forwards; overflow: hidden; }
-@keyframes catRemove { from { opacity: 1; max-height: 800px; } to { opacity: 0; max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; transform: translateY(-4px); } }
-@media (prefers-reduced-motion: reduce) { .cat--removing { animation-duration: .01ms; } }
 .rd-pk-del-confirm { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; width: 100%; }
 .rd-pk-del-confirm .confirm-msg { flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--text); text-wrap: pretty; }
 .rd-pk-del-confirm .rem-del-actions { justify-content: flex-end; flex: 0 0 auto; }

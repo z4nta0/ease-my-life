@@ -1,0 +1,1522 @@
+
+
+
+/**
+ * tab-data.module.css = Data Tab Module
+ *
+ * @summary
+ * Styles for the Data tab's own markup: the page header with its brand mark,
+ * the Group, Type, Conditionals, and Show filter rails, the sort bar, the
+ * empty-filter message, each picker's collapsible card (its header with
+ * mode, group, and vacation tags, the Controls and Items toggles, the Add
+ * control, and each item's row above its inline editor), and the dashed
+ * Create Picker button. Many of these classes are shared with the Pickers,
+ * Stats, and the Data tab's other sections, so their rules are copies of the
+ * global ones, resolved where this tab's own overrides used to win on
+ * specificity. A selected pill keys off its own aria-selected, a selected
+ * Show tab off data-tab-select-active, an open chevron off
+ * data-chevron-open-active, an open row off data-row-edit-active, a
+ * vacationing card or row off data-card-vacation-active or
+ * data-row-vacation-active, the vacation toggle off its own aria-pressed,
+ * and the disabled Add control off data-tour-disabled-active, which its info
+ * tip forwards. The item editor reads the --entry-editor-* and
+ * --rem-inline-foot-* properties each row's editor wrapper sets.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/* #region tab--data */
+
+.tab--data { /* What: Data Tab. Why: The header, filters, sort bar, and list stack as the tab's page, with extra room below while a tour runs. How: This stacks them in a spaced column and reads --tab-tour-padding, which the body sets while a tour is active. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 20px;
+	padding-bottom : var(--tab-tour-padding, 0);
+
+
+}
+
+/* #region stat-h */
+
+.stat-h { /* What: Page Header. Why: The kicker row, lead, and intro read as one header. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 18px;
+
+
+}
+
+/* #region kicker-row */
+
+.kicker-row { /* What: Kicker Row. Why: The page kicker and the help toggle sit on one line at opposite ends. How: This spreads them across a centered row. */
+
+
+	align-items     : center;
+	display         : flex;
+	gap             : 12px;
+	justify-content : space-between;
+	min-width       : 0;
+
+
+}
+
+.kicker { /* What: Kicker. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	font-weight    : 500;
+	letter-spacing : 0.08em;
+	line-height    : 22px;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion kicker-row */
+
+
+
+/* #region stat-h-lead */
+
+.stat-h-lead { /* What: Header Lead. Why: The brand mark and title sit side by side. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 16px;
+
+
+}
+@media (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the viewport is 640px wide or less. */
+
+
+	.stat-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
+
+
+		gap : 12px;
+
+
+	}
+
+
+}
+
+/* #region brand-mark */
+
+.brand-mark { /* What: Brand Mark. Why: The logo beside the title is also a button back to Today. How: This strips the button chrome and sizes the mark as a square that lifts on hover. */
+
+
+	-webkit-appearance : none;
+	align-self         : center;
+	appearance         : none;
+	aspect-ratio       : auto;
+	background         : none;
+	border             : 0;
+	border-radius      : 11px;
+	color              : var(--accent);
+	cursor             : pointer;
+	display            : block;
+	flex               : 0 0 auto;
+	font               : inherit;
+	height             : 68px;
+	padding            : 0;
+	text-decoration    : none;
+	transition         : transform 180ms ease;
+	width              : 68px;
+
+
+}
+.brand-mark:hover { /* What: Hovered Brand Mark. Why: The mark should respond to the pointer. How: This lifts it a pixel. */
+
+
+	transform : translateY(-1px);
+
+
+}
+@media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
+
+
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark to 56px. */
+
+
+		height : 56px;
+		width  : 56px;
+
+
+	}
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Brand Mark. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.brand-mark { /* What: Still Brand Mark. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.brand-mark svg { /* What: Brand Mark Glyph. Why: The logo fills its button. How: This sizes the svg to the full box as a block. */
+
+
+	display : block;
+	height  : 100%;
+	width   : 100%;
+
+
+}
+
+/* #endregion brand-mark */
+
+
+
+/* #region section-h */
+
+.section-h { /* What: Section Header. Why: The title sits beside the brand mark, centered against it. How: This stacks the title in a column that takes the remaining width. */
+
+
+	display         : flex;
+	flex            : 1 1 auto;
+	flex-direction  : column;
+	gap             : 18px;
+	justify-content : center;
+	min-width       : 0;
+
+
+}
+
+/* #region section-title */
+
+.section-title { /* What: Section Title. Why: The page's main heading leads the tab. How: This sets it large and tight. */
+
+
+	font-size      : 30px;
+	font-weight    : 500;
+	letter-spacing : -0.025em;
+	line-height    : 1.15;
+	margin         : 0;
+
+
+}
+@container app (max-width: 520px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 520px wide or less. */
+
+
+	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it to 26px. */
+
+
+		font-size : 26px;
+
+
+	}
+
+
+}
+
+.stat-title-accent { /* What: Title Accent. Why: The heading's key word reads in the accent color. How: This colors the span. */
+
+
+	color : var(--accent);
+
+
+}
+
+/* #endregion section-title */
+
+/* #endregion section-h */
+
+/* #endregion stat-h-lead */
+
+
+
+/* #region section-sub */
+
+.section-sub { /* What: Page Intro. Why: The intro and warning explain the page under its title. How: This sets them muted, capped in line length. */
+
+
+	color     : var(--muted);
+	margin    : 0;
+	max-width : 52ch;
+
+
+}
+
+.sub-tablink { /* What: Intro Link. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text. */
+
+
+	background            : none;
+	border                : 0;
+	color                 : var(--accent);
+	cursor                : pointer;
+	font                  : inherit;
+	padding               : 0;
+	text-decoration       : underline;
+	text-underline-offset : 2px;
+
+
+}
+.sub-tablink:hover { /* What: Hovered Intro Link. Why: The link should respond to the pointer. How: This thickens its underline. */
+
+
+	text-decoration-thickness : 2px;
+
+
+}
+
+/* #endregion section-sub */
+
+/* #endregion stat-h */
+
+
+
+/* #region stat-filters */
+
+.stat-filters { /* What: Filters. Why: The Group, Type, Conditionals, and Show rows form one filter block. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 14px;
+
+
+}
+
+/* #region stat-filter-row */
+
+.stat-filter-row { /* What: Filter Row. Why: Each filter's label sits above its rail. How: This stacks them in a stretched column. */
+
+
+	align-items    : stretch;
+	display        : flex;
+	flex-direction : column;
+	gap            : 7px;
+
+
+}
+
+.stat-filter-lbl { /* What: Filter Label. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
+
+
+	color          : var(--muted);
+	flex-shrink    : 0;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.06em;
+	text-transform : uppercase;
+
+
+}
+
+/* #region picker-groups */
+
+.picker-groups { /* What: Pill Rail. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fade             : 28px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	flex               : 1 1 auto;
+	gap                : 8px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	min-width          : 0;
+	overflow-x         : auto;
+	padding-bottom     : 2px;
+	scrollbar-width    : none;
+
+
+}
+.picker-groups::-webkit-scrollbar { /* What: Pill Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.picker-groups[data-scroll-start-active] { /* What: Pill Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.picker-groups[data-scroll-end-active] { /* What: Pill Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+
+/* #region picker-group-pill */
+
+.picker-group-pill { /* What: Filter Pill. Why: Each group, type, or conditional is a pill that filters the pickers. How: This draws an outlined pill that fades between colors. */
+
+
+	align-items    : center;
+	background     : transparent;
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	cursor         : pointer;
+	display        : inline-flex;
+	flex-shrink    : 0;
+	font-size      : 13px;
+	font-weight    : 500;
+	gap            : 7px;
+	letter-spacing : -0.01em;
+	padding        : 6px 13px;
+	transition     : border-color .24s ease, background .24s ease, color .24s ease;
+
+
+}
+.picker-group-pill:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
+
+
+	border-color : var(--muted);
+	color        : var(--text);
+
+
+}
+.picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Filter Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picker-group-pill { /* What: Still Filter Pill. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.picker-group-count { /* What: Pill Count. Why: Each pill shows how many pickers it holds. How: This sets the number in a small tinted mono capsule. */
+
+
+	background           : oklch(from var(--border) calc(l + 0.02) c h);
+	border-radius        : 999px;
+	color                : var(--muted);
+	font-family          : var(--font-mono);
+	font-size            : 11px;
+	font-variant-numeric : tabular-nums;
+	min-width            : 18px;
+	padding              : 1px 6px;
+	text-align           : center;
+
+
+}
+.picker-group-pill[aria-selected="true"] .picker-group-count { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
+
+
+	background : oklch(from var(--accent) l c h / 0.16);
+	color      : var(--accent);
+
+
+}
+
+/* #endregion picker-group-pill */
+
+/* #endregion picker-groups */
+
+
+
+/* #region picker-tabs */
+
+.picker-tabs { /* What: Show Tab Strip. Why: The rail scrolls sideways when its tabs outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
+
+
+	--fade             : 36px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	display            : flex;
+	flex               : 1 1 auto;
+	gap                : 8px;
+	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	min-width          : 0;
+	overflow-x         : auto;
+	scroll-snap-type   : x mandatory;
+	scrollbar-width    : none;
+
+
+}
+.picker-tabs::-webkit-scrollbar { /* What: Show Tab Strip Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+
+
+	display : none;
+
+
+}
+.picker-tabs[data-scroll-start-active] { /* What: Show Tab Strip At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+
+
+	--fade-l : 0px;
+
+
+}
+.picker-tabs[data-scroll-end-active] { /* What: Show Tab Strip At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
+
+
+	--fade-r : 0px;
+
+
+}
+@supports (-moz-appearance: none) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+
+
+	.picker-tabs { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds 1px of bottom padding. */
+
+
+		padding-bottom : 1px;
+
+
+	}
+
+
+}
+
+/* #region picker-tab */
+
+.picker-tab { /* What: Show Tab. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
+
+
+	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background        : var(--surface);
+	border            : 0.5px solid var(--border);
+	border-radius     : var(--r-md);
+	display           : flex;
+	flex-direction    : column;
+	flex-shrink       : 0;
+	gap               : 1px;
+	min-width         : 132px;
+	padding           : 12px 16px;
+	scroll-snap-align : start;
+	text-align        : left;
+	transition        : border-color .12s, background .12s;
+
+
+}
+.picker-tab:hover { /* What: Hovered Show Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
+
+
+	border-color : var(--muted);
+
+
+}
+.picker-tab[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
+
+
+	background   : oklch(from var(--accent-soft) l c h);
+	border-color : var(--accent);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Show Tab. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picker-tab { /* What: Still Show Tab. Why: The change should happen at once. How: This turns its animation and transition off. */
+
+
+		animation  : none;
+		transition : none;
+
+
+	}
+
+
+}
+
+.picker-tab-name { /* What: Show Tab Name. Why: The scope's name leads its tab. How: This sets it in medium weight. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+
+
+}
+.picker-tab[data-tab-select-active] .picker-tab-name { /* What: Selected Show Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
+
+
+	color : var(--accent);
+
+
+}
+
+.picker-tab-mode { /* What: Show Tab Mode. Why: Each tab names its scope's kind as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion picker-tab */
+
+/* #endregion picker-tabs */
+
+/* #endregion stat-filter-row */
+
+/* #endregion stat-filters */
+
+
+
+.data-sort-bar { /* What: Sort Bar. Why: The list's sort control sits at its top right. How: This pushes it right in a row tucked close to the list. */
+
+
+	display         : flex;
+	justify-content : flex-end;
+	margin          : -2px 0 4px;
+
+
+}
+
+
+
+/* #region data-list */
+
+.data-list { /* What: Data List. Why: The sections and picker cards stack as the tab's list. How: This stacks them in a spaced column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : 14px;
+
+
+}
+
+/* #region data-empty */
+
+.data-empty { /* What: Empty Filter Message. Why: When the filters match nothing, the list says so in a dashed placeholder. How: This draws a padded dashed box with centered muted text. */
+
+
+	background    : oklch(from var(--surface) l c h / 0.5);
+	border        : 1px dashed var(--border);
+	border-radius : var(--r-md);
+	color         : var(--muted);
+	font-size     : 13px;
+	padding       : 18px 16px;
+	text-align    : center;
+
+
+}
+
+.data-empty-title { /* What: Empty Filter Title. Why: The message leads with what happened. How: This sets it in body color and medium weight. */
+
+
+	color       : var(--text);
+	font-size   : 15px;
+	font-weight : 500;
+	margin      : 0 0 6px;
+
+
+}
+
+.data-empty-sub { /* What: Empty Filter Hint. Why: The hint says how to widen the filters. How: This sets it small and muted. */
+
+
+	color       : var(--muted);
+	font-size   : 13px;
+	line-height : 1.5;
+	margin      : 0;
+	text-wrap   : pretty;
+
+
+}
+
+/* #endregion data-empty */
+
+
+
+/* #region cat */
+
+.cat { /* What: Category Card. Why: Each picker reads as one card in the list, and the list's cards slide in each time the filters remount it. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance. */
+
+
+	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var(--surface);
+	border        : 0.5px solid var(--border);
+	border-radius : var(--r-md);
+	overflow      : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cat { /* What: Still Category Card. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+.cat[data-card-vacation-active] { /* What: Vacationing Category Card. Why: A picker with every item on vacation fades back. How: This dims the card, keying off data-card-vacation-active. */
+
+
+	opacity : 0.7;
+
+
+}
+.cat--removing { /* What: Removing Category Card. Why: A deleted picker's card collapses away instead of vanishing. How: This plays the remove animation once, ending on the zero height its animationend handler waits for. */
+
+
+	animation : catRemove .3s ease forwards;
+	overflow  : hidden;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Removing Category Card. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cat--removing { /* What: Still Removing Category Card. Why: The card should go at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+@keyframes catRemove { /* What: Category Card Remove Keyframes. Why: The card fades and folds to nothing as it leaves. How: This runs opacity and max-height down to zero while clearing its spacing. */
+
+
+	from {
+
+
+		max-height : 800px;
+		opacity    : 1;
+
+
+	}
+
+	to {
+
+
+		margin         : 0;
+		max-height     : 0;
+		opacity        : 0;
+		padding-bottom : 0;
+		padding-top    : 0;
+		transform      : translateY(-4px);
+
+
+	}
+
+
+}
+.ob-tour-pulse { /* What: Tour Target. Why: The Edit Item tour points at the specific card, toggle, or row it wants clicked inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
+
+
+	animation      : global(obTourFade) 1.8s ease-in-out infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Pickers tab's tour target, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	outline        : 2px solid var(--accent);
+	outline-offset : -2px;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Tour Target. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ob-tour-pulse { /* What: Still Tour Target. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
+
+
+		animation     : none;
+		outline-color : var(--accent);
+
+
+	}
+
+
+}
+
+/* #region cat-h */
+
+.cat-h { /* What: Category Header. Why: The header opens and closes the whole card. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
+
+
+	align-items     : center;
+	cursor          : pointer;
+	display         : flex;
+	gap             : 10px;
+	justify-content : space-between;
+	padding         : 14px 16px;
+	user-select     : none;
+
+
+}
+
+/* #region cat-h-l */
+
+.cat-h-l { /* What: Category Header Toggle. Why: The chevron and the name block read as one control. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 10px;
+
+
+}
+button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a real button but should look like the header text it holds. How: This strips the button chrome and lets it fill the header's width. */
+
+
+	-webkit-appearance : none;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	flex               : 1 1 auto;
+	font               : inherit;
+	margin             : 0;
+	min-width          : 0;
+	padding            : 0;
+	text-align         : left;
+
+
+}
+
+/* #region chev */
+
+.chev { /* What: Chevron. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
+
+
+	color      : var(--muted);
+	display    : inline-flex;
+	transition : transform .15s;
+
+
+}
+.chev[data-chevron-open-active] { /* What: Open Chevron. Why: An open disclosure points down. How: This turns the chevron a quarter turn. */
+
+
+	transform : rotate(90deg);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.chev { /* What: Still Chevron. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion chev */
+
+
+
+/* #region cat-h-main */
+
+.cat-h-main { /* What: Category Header Main. Why: The name and count stack as the header's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.cat-name { /* What: Category Name. Why: The picker's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
+
+
+	font-size      : 16px;
+	font-weight    : 500;
+	letter-spacing : -0.01em;
+	margin         : 0;
+	overflow       : hidden;
+	text-overflow  : ellipsis;
+	white-space    : nowrap;
+
+
+}
+
+
+/* #region cat-count */
+
+.cat-count { /* What: Category Count. Why: The picker's counts read as small mono metadata under the name. How: This sets the count pieces on one baseline in muted mono type. */
+
+
+	align-items    : baseline;
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 3px;
+	letter-spacing : 0.03em;
+
+
+}
+
+/* #endregion cat-count */
+
+/* #endregion cat-h-main */
+
+/* #endregion cat-h-l */
+
+
+
+/* #region cat-h-right */
+
+.cat-h-right { /* What: Category Header Right. Why: The tags and the vacation toggle sit together at the header's end. How: This lines them up in a centered row that never grows or shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 10px;
+
+
+}
+@container app (max-width: 500px) { /* What: Narrow Category Header. Why: On a narrow app the header's tags and toggle stack instead of crowding the name. How: This applies only when the app is 500px wide or less. */
+
+
+	.cat-h-right { /* What: Stacked Category Header Right. Why: The tags and toggle need to stack. How: This turns the row into a tighter column. */
+
+
+		flex-direction : column;
+		gap            : 6px;
+
+
+	}
+
+
+}
+
+/* #region cat-h-tags */
+
+.cat-h-tags { /* What: Category Header Tags. Why: The mode and group tags pair up. How: This lines them up in a centered row that never grows or shrinks. */
+
+
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : 8px;
+
+
+}
+@container app (max-width: 500px) { /* What: Narrow Category Header. Why: On a narrow app the header's tags and toggle stack instead of crowding the name. How: This applies only when the app is 500px wide or less. */
+
+
+	.cat-h-tags { /* What: Stacked Category Header Tags. Why: The two tags need to stack. How: This turns the row into a tighter column. */
+
+
+		flex-direction : column;
+		gap            : 6px;
+
+
+	}
+
+
+}
+
+.cat-group,
+.cat-mode-label { /* What: Category Tag. Why: The picker's mode and group read as matching fixed-width tags. How: This sets each in a small outlined mono capsule 94px wide, ending in an ellipsis when its text runs out of room. */
+
+
+	border         : 0.5px solid var(--border);
+	border-radius  : 999px;
+	color          : var(--muted);
+	flex           : 0 0 auto;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.05em;
+	overflow       : hidden;
+	padding        : 2px 8px;
+	text-align     : center;
+	text-overflow  : ellipsis;
+	text-transform : uppercase;
+	white-space    : nowrap;
+	width          : 94px;
+
+
+}
+
+/* #endregion cat-h-tags */
+
+
+
+/* #region vac-toggle */
+
+.vac-toggle { /* What: Vacation Toggle. Why: The whole picker goes on or off vacation from its header. How: This draws an outlined mono capsule as wide as the tags, fading between colors. */
+
+
+	align-items     : center;
+	border          : 0.5px solid var(--border);
+	border-radius   : 999px;
+	color           : var(--muted);
+	display         : inline-flex;
+	font-family     : var(--font-mono);
+	font-size       : 11px;
+	gap             : 5px;
+	justify-content : center;
+	letter-spacing  : 0.04em;
+	padding         : 2px 8px;
+	text-transform  : uppercase;
+	transition      : color .12s, background .12s;
+	width           : 94px;
+
+
+}
+.vac-toggle:hover { /* What: Hovered Vacation Toggle. Why: The toggle should respond to the pointer. How: This darkens its text over the page background. */
+
+
+	background : var(--bg);
+	color      : var(--text);
+
+
+}
+.vac-toggle[aria-pressed="true"] { /* What: On Vacation Toggle. Why: A picker on vacation shows it in its toggle. How: This turns the toggle warm, keying off the aria-pressed it already sets. */
+
+
+	color : var(--warm);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Vacation Toggle. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.vac-toggle { /* What: Still Vacation Toggle. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.set-sub-fade { /* What: Fading Toggle Label. Why: The toggle's label fades in each time it flips. How: This plays the shared fade whenever its keyed span remounts. */
+
+
+	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Toggle Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.set-sub-fade { /* What: Still Fading Toggle Label. Why: The change should happen at once. How: This turns its animation off. */
+
+
+		animation : none;
+
+
+	}
+
+
+}
+
+/* #endregion vac-toggle */
+
+/* #endregion cat-h-right */
+
+/* #endregion cat-h */
+
+
+
+/* #region cat-body */
+
+.cat-body { /* What: Category Body. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
+
+
+	--data-sort-row-border-bottom : 0.5px solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--data-sort-row-padding       : 13px 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
+	border-top                    : 0.5px solid var(--border);
+
+
+}
+
+/* #region rd-ctl */
+
+.rd-ctl { /* What: Section Toggle. Why: Controls and Items each open and close under their own full-width toggle. How: This strips the button chrome down to a shaded, divided row that spreads its label and summary apart. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : oklch(from var(--surface) calc(l - 0.012) c h);
+	border-bottom      : 0.5px solid var(--border);
+	border-left        : 0;
+	border-radius      : 0;
+	border-right       : 0;
+	border-top         : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	font               : inherit;
+	justify-content    : space-between;
+	padding            : 12px 16px;
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+.rd-ctl ~ .rd-ctl { /* What: Following Section Toggle. Why: The Items toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
+
+
+	border-top : 0.5px solid var(--border);
+
+
+}
+
+/* #region rd-ctl-l */
+
+.rd-ctl-l { /* What: Section Toggle Label. Why: The chevron and the label read as one. How: This lines them up in a centered row. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : 9px;
+
+
+}
+
+.rd-ctl-l .kicker { /* What: Section Toggle Kicker. Why: The toggle's label sits centered on its chevron. How: This tightens the kicker's line height. */
+
+
+	line-height : 1;
+
+
+}
+
+/* #endregion rd-ctl-l */
+
+
+.rd-ctl-sum { /* What: Section Toggle Summary. Why: A closed toggle says how much it hides. How: This sets the count in small muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.03em;
+
+
+}
+
+/* #endregion rd-ctl */
+
+
+
+/* #region rd-add */
+
+.rd-add { /* What: Add Item Control. Why: Adding a item is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below. */
+
+
+	align-items    : center;
+	border-bottom  : 0.5px solid var(--border);
+	color          : var(--muted);
+	display        : flex;
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	gap            : 7px;
+	letter-spacing : 0.04em;
+	padding        : 13px 16px;
+	text-align     : left;
+	text-transform : uppercase;
+	width          : 100%;
+
+
+}
+.rd-add:hover { /* What: Hovered Add Item Control. Why: The control should respond to the pointer. How: This tints it in the accent color. */
+
+
+	color : var(--accent);
+
+
+}
+.rd-add[data-tour-disabled-active] { /* What: Disabled Add Item Control. Why: While the tutorials run, adding a item is unavailable and should look it. How: This dims the control and drops the pointer cursor, keying off data-tour-disabled-active, which its info tip forwards. */
+
+
+	cursor  : default;
+	opacity : 0.5;
+
+
+}
+
+/* #endregion rd-add */
+
+
+
+/* #region rd-item */
+
+.rd-item { /* What: Item Item. Why: Each item is divided from the next. How: This draws a hairline under every item but the last. */
+
+
+	border-bottom : 0.5px solid var(--border);
+
+
+}
+.rd-item:last-child { /* What: Last Item Item. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.rd-item--insert { /* What: Inserted Item. Why: A just-added item springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
+
+
+	animation : global(rowInsert) .32s cubic-bezier(.34,1.32,.5,1) both; /* What: Global rowInsert Keyframes. Why: The rowInsert keyframes are shared with the Data tab's reminder rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Inserted Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-item--insert { /* What: Still Inserted Item. Why: The row should appear at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
+
+
+		animation-duration : .01ms;
+
+
+	}
+
+
+}
+.rd-item.ob-tour-pulse { /* What: Tour Target Item. Why: The Edit Item tour points at specific rows, and touching rows can't each draw an outline without doubling it where they meet. How: This swaps the outline for side and bottom borders that fade like the outline would, so adjacent targets share one line. */
+
+
+	animation     : global(obTourFadeBorder) 1.8s ease-in-out infinite; /* What: Global obTourFadeBorder Keyframes. Why: The obTourFadeBorder keyframes are shared with the global tour pulse, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	border-bottom : 2px solid var(--accent);
+	border-left   : 2px solid var(--accent);
+	border-right  : 2px solid var(--accent);
+	outline       : none;
+
+
+}
+.rd-item.ob-tour-pulse:first-of-type { /* What: First Tour Target Item. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next; :first-of-type skips the Add button, which is always the first child. How: This adds the top border and rounds the top corners. */
+
+
+	border-top              : 2px solid var(--accent);
+	border-top-left-radius  : var(--r-md);
+	border-top-right-radius : var(--r-md);
+
+
+}
+.rd-item.ob-tour-pulse:last-of-type { /* What: Last Tour Target Item. Why: The last target row closes the box. How: This rounds its bottom corners. */
+
+
+	border-bottom-left-radius  : var(--r-md);
+	border-bottom-right-radius : var(--r-md);
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Tour Target Item. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-item.ob-tour-pulse { /* What: Still Tour Target Item. Why: A border frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the border to the accent. */
+
+
+		animation    : none;
+		border-color : var(--accent);
+
+
+	}
+
+
+}
+
+/* #region rd-row */
+
+.rd-row { /* What: Item Row. Why: A closed row is one button that opens its item. How: This strips the button chrome and lays the row's pieces out in a padded row. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : flex;
+	font               : inherit;
+	gap                : 12px;
+	padding            : 11px 16px;
+	text-align         : left;
+	user-select        : none;
+	width              : 100%;
+
+
+}
+.rd-row:hover { /* What: Hovered Item Row. Why: The row should respond to the pointer. How: This shades it slightly darker than the surface. */
+
+
+	background : oklch(from var(--surface) calc(l - 0.008) c h);
+
+
+}
+.rd-item[data-row-edit-active] > .rd-row:hover { /* What: Hovered Open Row. Why: An open row's header isn't a button, so it shouldn't react to hover. How: This keeps its background clear. */
+
+
+	background : transparent;
+
+
+}
+.rd-item[data-row-edit-active] > .rd-row { /* What: Open Row. Why: An open row's header isn't clickable. How: This resets the cursor. */
+
+
+	cursor : default;
+
+
+}
+
+/* #region rd-main */
+
+.rd-main { /* What: Row Main. Why: The name and its summary stack as the row's text. How: This stacks them in a column that takes the remaining width. */
+
+
+	display        : flex;
+	flex           : 1 1 auto;
+	flex-direction : column;
+	gap            : 2px;
+	min-width      : 0;
+
+
+}
+
+.rd-name-input { /* What: Row Name Input. Why: An open row renames its item in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+
+
+	background     : transparent;
+	border         : 0;
+	border-bottom  : 1px solid var(--border);
+	font           : inherit;
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+	padding        : 1px 0;
+	transition     : border-color .12s;
+	width          : 100%;
+
+
+}
+.rd-name-input:focus { /* What: Focused Row Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+
+
+	border-bottom-color : var(--accent);
+	outline             : none;
+
+
+}
+.rd-name-input::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+
+
+	color   : var(--muted);
+	opacity : 0.7;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Row Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.rd-name-input { /* What: Still Row Name Input. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+.rd-name { /* What: Row Name. Why: A closed row leads with its item's name. How: This sets it in medium weight. */
+
+
+	font-size      : 14px;
+	font-weight    : 500;
+	letter-spacing : -0.005em;
+
+
+}
+.rd-item[data-row-vacation-active] .rd-name { /* What: Vacationing Item Name. Why: An item on vacation reads quieter than the rest. How: This mutes its name, keying off the row's data-row-vacation-active. */
+
+
+	color : var(--muted);
+
+
+}
+
+.rd-sched { /* What: Row Summary. Why: The row's summary reads as quiet metadata. How: This sets it in small uppercase muted mono type. */
+
+
+	color          : var(--muted);
+	font-family    : var(--font-mono);
+	font-size      : 11px;
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion rd-main */
+
+
+
+/* #region rd-chev */
+
+.rd-chev { /* What: Row Chevron Holder. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color. */
+
+
+	color : var(--muted);
+	flex  : 0 0 auto;
+
+
+}
+.rd-item[data-row-edit-active] .rd-chev { /* What: Open Row Chevron Holder. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
+
+
+	color : var(--accent);
+
+
+}
+button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevron is a real button that closes it. How: This strips the button chrome and gives it a small padded hit area that doesn't shift the layout. */
+
+
+	-webkit-appearance : none;
+	align-items        : center;
+	appearance         : none;
+	background         : none;
+	border             : 0;
+	color              : inherit;
+	cursor             : pointer;
+	display            : inline-flex;
+	font               : inherit;
+	margin             : -4px;
+	padding            : 4px;
+
+
+}
+
+/* #endregion rd-chev */
+
+/* #endregion rd-row */
+
+
+
+.rd-edit { /* What: Item Editor. Why: The editor sits under its row without drawing its own card, and its footer runs edge to edge. How: This pads the editor, clears the card chrome IteEdiCom reads from the --entry-editor-* properties, and sets the --rem-inline-foot-* properties its footer reads. */
+
+
+	--entry-editor-background    : none; /* What: Editor Background. Why: The editor blends into its row. How: EntEdiCom reads this for its own background. */
+	--entry-editor-border        : 0; /* What: Editor Border. Why: The row already frames the editor. How: EntEdiCom reads this for its own border. */
+	--entry-editor-border-radius : 0; /* What: Editor Radius. Why: A borderless editor needs no rounding. How: EntEdiCom reads this for its own border radius. */
+	--entry-editor-margin        : 0; /* What: Editor Margin. Why: The wrapper already spaces the editor. How: EntEdiCom reads this for its own margin. */
+	--entry-editor-padding       : 0; /* What: Editor Padding. Why: The wrapper already pads the editor. How: EntEdiCom reads this for its own padding. */
+	--rem-inline-foot-border-top : 0.5px solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-margin     : 0 -16px; /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
+	--rem-inline-foot-padding    : 14px 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
+	padding                      : 2px 16px 14px;
+
+
+}
+
+/* #endregion rd-item */
+
+/* #endregion cat-body */
+
+/* #endregion cat */
+
+
+
+.cat-create-btn { /* What: Create Picker Button. Why: Creating a picker reads as a dashed placeholder at the end of the list. How: This draws a full-width dashed button with a centered icon and label that fades to the accent on hover. */
+
+
+	align-items     : center;
+	background      : none;
+	border          : 1px dashed var(--border);
+	border-radius   : var(--r-md);
+	color           : var(--muted);
+	cursor          : pointer;
+	display         : flex;
+	font-size       : 14px;
+	font-weight     : 500;
+	gap             : 8px;
+	justify-content : center;
+	padding         : 24px 16px;
+	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	width           : 100%;
+
+
+}
+.cat-create-btn:hover { /* What: Hovered Create Picker Button. Why: The button should respond to the pointer. How: This tints it in the accent color. */
+
+
+	background   : var(--accent-soft);
+	border-color : var(--accent);
+	color        : var(--accent);
+
+
+}
+.cat-create-btn:disabled { /* What: Disabled Create Picker Button. Why: While a new picker is being drafted, another can't start and the button should look it. How: This dims it and stops it taking the pointer. */
+
+
+	cursor         : default;
+	opacity        : 0.5;
+	pointer-events : none;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Create Picker Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.cat-create-btn { /* What: Still Create Picker Button. Why: The change should happen at once. How: This turns its transition off. */
+
+
+		transition : none;
+
+
+	}
+
+
+}
+
+/* #endregion data-list */
+
+/* #endregion tab--data */
+
+
