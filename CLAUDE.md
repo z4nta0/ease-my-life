@@ -2162,6 +2162,49 @@ still passes.
     tokens. A short note folds into the rule's own one-line What/Why/How
     instead. The rule keeps its own one-line comment either way.
 
+### Custom property naming
+Decided 2026-09-29, for the design-system pass. Every CSS custom property,
+design tokens and component-level ones alike (`--seg-flex`,
+`--btn-display`, `--entry-editor-*`, ...), is named from three lowercase,
+hyphen-joined segments of exactly three letters each: `--<what>-<descriptor>-<kind>`.
+Each segment follows the same word-truncation rules as JS names (the word's
+own first three letters, every Known miscorrection and project-scoped
+override applying, e.g. Offset is `off`, never `ofs`). Existing properties
+are renamed to this as their files come up in the design-system pass.
+- **The last segment names the kind of value**, not a JS type:
+  - **A step in a scale**: `xla` (extra large), `lar` (large), `med`
+    (medium), `sma` (small), `xsm` (extra small). `med` is the default
+    middle step; `bas` (base) replaces it in a scale whose values center on
+    that step rather than treating it as just another step, decided per
+    scale. `xxl`/`xxs` extend a scale only when consolidation leaves no
+    other choice.
+  - **A category**: `col` (color), `fon` (font family), `dur` (duration),
+    `del` (delay), `eas` (easing curve), `spr` (spread, e.g. a shadow or
+    glow's reach), `opa` (opacity), `sca` (scale factor), `sha` (a whole
+    shadow value), `off` (offset or distance), `ang` (angle). New
+    categories are added here as they come up.
+- **A scaled family ends in its step**, and the family moves to the first
+  segment: `--fon-siz-med` (font size, medium), `--gri-gap-sma` (grid gap,
+  small; the app lays out with grid first and flexbox only where needed),
+  `--rad-bor-lar` (radius, border, large).
+- **Durations split by what plays them**: `--dur-tra-med` for transitions,
+  `--dur-ani-med` for animations.
+- **Examples mapped from today's tokens**: `--bg` → `--bac-pag-col`,
+  `--surface` → `--bac-sur-col`, `--text` → `--tex-bas-col`, `--muted` →
+  `--tex-mut-col`, `--accent-soft` → `--acc-sof-col`, `--font-sans` →
+  `--san-fam-fon`, `--r-lg` → `--rad-bor-lar`, `--exhale-dur` →
+  `--exh-car-dur`, `--exhale-glow` → `--exh-glo-spr`, `--exhale-glow-op`
+  → `--exh-glo-opa`, `--exhale-scale` → `--exh-car-sca`.
+- **A component-level property** still names the child it's for (see
+  "What moves into a module" under "### CSS modules and JS hooks"), now as
+  its first segment.
+- **Breakpoints stay literal numbers**, since a custom property can't be
+  read inside an `@media` or `@container` condition, but their values still
+  come from the scale the design system defines.
+- A property that doesn't fit the pattern is raised with the user when it
+  comes up, per "### Undefined cases: stop and ask", and the decision is
+  recorded here.
+
 ### Arrays and objects
 - **Once an array literal cannot stay on a single line, every one of its
   entries gets its own line — never 2+ entries packed onto one shared
