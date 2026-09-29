@@ -1055,10 +1055,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
   50%{outline-color:oklch(from var(--accent) l c h/0.2)}
 }
-@keyframes obTourFadeBorder{
-  0%,100%{border-color:oklch(from var(--accent) l c h/1)}
-  50%{border-color:oklch(from var(--accent) l c h/0.2)}
-}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 /* While a tour runs, every tab gets room to scroll a bottom-anchored target
    clear of the tab bar; each tab's root reads the property (see CLAUDE.md's

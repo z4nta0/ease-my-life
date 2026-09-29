@@ -1221,7 +1221,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item.ob-tour-pulse { /* What: Tour Target Item. Why: The Edit Item tour points at specific rows, and touching rows can't each draw an outline without doubling it where they meet. How: This swaps the outline for side and bottom borders that fade like the outline would, so adjacent targets share one line. */
 
 
-	animation     : global(obTourFadeBorder) 1.8s ease-in-out infinite; /* What: Global obTourFadeBorder Keyframes. Why: The obTourFadeBorder keyframes are shared with the global tour pulse, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : obTourFadeBorder 1.8s ease-in-out infinite;
 	border-bottom : 2px solid var(--accent);
 	border-left   : 2px solid var(--accent);
 	border-right  : 2px solid var(--accent);
@@ -1254,6 +1254,27 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 		animation    : none;
 		border-color : var(--accent);
+
+
+	}
+
+
+}
+@keyframes obTourFadeBorder { /* What: Tour Target Item Border Fade Keyframes. Why: A target row's borders should fade in and out the way the plain tour outline does. How: This dims the border color to 20% at the midpoint and back. */
+
+
+	0%, 100% {
+
+
+		border-color : oklch(from var(--accent) l c h / 1);
+
+
+	}
+
+	50% {
+
+
+		border-color : oklch(from var(--accent) l c h / 0.2);
 
 
 	}
