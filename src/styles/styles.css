@@ -1,195 +1,788 @@
-/* ─── Reset + tokens ─────────────────────────────────────────────────────── */
-
-*, *::before, *::after { box-sizing: border-box; }
-/* One-shot theme cross-fade: while `.theme-animating` is on <html> (added by
-   applyPaletteObj on a user theme swap, ~480ms), ease the themable properties so
-   the palette change glides instead of snapping. Scoped to the swap window so it
-   never interferes with normal interaction transitions. */
-.theme-animating, .theme-animating *, .theme-animating *::before, .theme-animating *::after {
-  transition: background-color .42s ease, color .42s ease, border-color .42s ease, fill .42s ease, stroke .42s ease !important;
-}
-@media (prefers-reduced-motion: reduce) {
-  .theme-animating, .theme-animating * { transition: none !important; }
-}
-/* overflow-x:hidden exists specifically so the background flourish's
-   outermost glyphs (src/ui/bg-flourish.jsx) can be deliberately pushed half
-   past the edge of the gutter and get clipped flush at the actual viewport
-   edge, rather than causing a horizontal scrollbar. */
-html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
-button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
-ul, ol { margin: 0; padding: 0; list-style: none; }
-input { font: inherit; color: inherit; }
-
-a { color: var(--accent); }
-a:hover { color: oklch(from var(--accent) calc(l - 0.1) c h); }
-
-:root {
-  --bg: oklch(0.985 0.003 240);
-  --surface: oklch(0.975 0.004 240);
-  --border: oklch(0.91 0.005 240);
-  --text: oklch(0.17 0.012 250);
-  --muted: oklch(0.5 0.012 250);
-  --accent: oklch(0.5 0.14 250);
-  --accent-soft: oklch(0.95 0.025 250);
-  --warm: oklch(0.62 0.13 50);
-
-  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
-
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
-  --r-xl: 22px;
-
-  --shadow-sm: 0 1px 0 oklch(1 0 0 / 0.5), 0 1px 2px oklch(0 0 0 / 0.03);
-  --shadow-md: 0 1px 0 oklch(1 0 0 / 0.5), 0 6px 20px oklch(0 0 0 / 0.05);
-}
-
-body {
-  font-family: var(--font-sans);
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.005em;
-  font-feature-settings: 'ss01', 'cv11';
-}
 
 
 
+/**
+ * styles.css = Global Styles
+ *
+ * @summary
+ * The app's one global stylesheet, holding only what can't belong to a single
+ * component: the design tokens every module reads, the base element styles
+ * and resets, the states set on <html> or <body> (the theme cross-fade, a
+ * drag in progress, a running tour) plus the screen reader live region built
+ * outside React, and the keyframes several modules share, which a module
+ * plays through global(). Themes other than the default overwrite the color
+ * tokens with inline properties on <html>, so :root holds the light theme's
+ * values.
+ *
+ * Sections:
+ *  - Tokens
+ *  - Base Elements
+ *  - Body State
+ *  - Shared Keyframes
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
 
-/* ─── Tab: Today ─────────────────────────────────────────────────────────── */
 
-/* Completion-celebration style variables (Appearance → Completion
-   celebration). "Ripple" is the pure-CSS default (the card exhale, values
-   below); "Confetti" and "Sparkle" are separate particle-based
-   effects rendered in tab-today.jsx (see .confetti-piece/.sparkle-piece).
-   The ring number pulse and title text-swap stay constant across all three
-   per the design decision (those aren't "ripple" effects). */
-:root {
-  --exhale-dur: 900ms;
-  --exhale-scale: 1.012;
-  --exhale-glow: 6px;
-  --exhale-glow-op: 0.18;
-}
-@keyframes cardExhale {
-  0%   { transform: none;          box-shadow: 0 0 0 0 oklch(from var(--accent) l c h / 0); }
-  35%  { transform: scale(var(--exhale-scale));  box-shadow: 0 0 0 var(--exhale-glow) oklch(from var(--accent) l c h / var(--exhale-glow-op)); }
-  100% { transform: none;          box-shadow: 0 0 0 0 oklch(from var(--accent) l c h / 0); }
-}
-@keyframes confettiBurst {
-  0%   { opacity: var(--piece-opacity, 0.9); transform: translate(-50%, -50%) rotate(0deg); }
-  100% { opacity: 0;   transform: translate(calc(-50% + cos(var(--angle)) * var(--dist)), calc(-50% + sin(var(--angle)) * var(--dist) + 14px)) rotate(var(--rot)); }
-}
-@keyframes sparkleTwinkle {
-  0%, 100% { opacity: 0;   transform: translate(-50%, -50%) scale(0.4); }
-  50%      { opacity: 0.9; transform: translate(-50%, -50%) scale(1.15); }
-}
-@keyframes cardSkipOut {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-    max-height: 200px;
-    margin-bottom: 10px;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    border-top-width: 0.5px;
-    border-bottom-width: 0.5px;
-  }
-  50% {
-    opacity: 0;
-    transform: translateX(-18px);
-    max-height: 200px;
-    margin-bottom: 10px;
-    padding-top: 16px;
-    padding-bottom: 16px;
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-18px);
-    max-height: 0;
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
-  }
+
+/* #region Tokens */
+
+:root { /* What: Design Tokens. Why: Every module reads its colors, fonts, radii, and celebration timing from one place. How: This defines each token's default value, grouped into sections. */
+
+
+	/* #region Celebration Tokens */
+
+	/**
+	 * styles.css = Celebration Tokens
+	 *
+	 * @summary
+	 * The completion celebration's "Ripple" style is the pure-CSS default:
+	 * every card on Today exhales once, sized and timed by these values, which
+	 * the cardExhale keyframes and the card modules read. "Confetti" and
+	 * "Sparkle" are separate particle effects rendered in tab-today.jsx. The
+	 * ring number pulse and the title text swap stay the same across all three
+	 * styles, since they aren't part of the ripple itself.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	*/
+
+	--exhale-dur     : 900ms; /* What: Exhale Duration. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
+	--exhale-glow    : 6px; /* What: Exhale Glow. Why: The exhale's accent ring reaches this far out. How: cardExhale reads it as its box-shadow spread. */
+	--exhale-glow-op : 0.18; /* What: Exhale Glow Opacity. Why: The exhale's accent ring stays faint. How: cardExhale reads it as the ring's alpha. */
+	--exhale-scale   : 1.012; /* What: Exhale Scale. Why: Each card swells only slightly. How: cardExhale reads it as its peak scale. */
+
+	/* #endregion Celebration Tokens */
+
+
+
+	/* #region Color Tokens */
+
+	--accent      : oklch(0.5 0.14 250);
+	--accent-soft : oklch(0.95 0.025 250); /* What: Soft Accent. Why: Selected and highlighted surfaces need a pale tint of the accent. How: Modules use it as a background behind accent text. */
+	--bg          : oklch(0.985 0.003 240);
+	--border      : oklch(0.91 0.005 240);
+	--muted       : oklch(0.5 0.012 250); /* What: Muted Text. Why: Secondary text reads quieter than body text. How: Modules use it for hints, labels, and metadata. */
+	--surface     : oklch(0.975 0.004 240);
+	--text        : oklch(0.17 0.012 250);
+	--warm        : oklch(0.62 0.13 50); /* What: Warm Accent. Why: Streaks, warnings, and a few highlights need a second, warm color. How: Modules use it alongside the main accent. */
+
+	/* #endregion Color Tokens */
+
+
+
+	/* #region Font Tokens */
+
+	--font-mono : 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+	--font-sans : 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+	/* #endregion Font Tokens */
+
+
+
+	/* #region Radius Tokens */
+
+	--r-lg : 16px; /* What: Large Radius. Why: Cards and panels share one corner size. How: Modules read it as border-radius. */
+	--r-md : 12px; /* What: Medium Radius. Why: Rows, tabs, and inner blocks share one corner size. How: Modules read it as border-radius. */
+	--r-sm : 8px; /* What: Small Radius. Why: Inputs and small controls share one corner size. How: Modules read it as border-radius. */
+	--r-xl : 22px; /* What: Extra Large Radius. Why: The largest surfaces get the softest corners. How: Modules read it as border-radius. */
+
+	/* #endregion Radius Tokens */
+
+
 }
 
-/* ── Today: group layout ──────────────────────────────────────────────── */
-@keyframes dashSweep {
-  0%   { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
-}
-/* Screen-reader-only live region (window.announce). Present from load so status
-   changes are reliably announced; clipped rather than display:none, which would
-   remove it from the accessibility tree. */
-.sr-live { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-@keyframes checkSpring {
-  0%   { opacity: 0; transform: scale(0.4); }
-  55%  { opacity: 1; transform: scale(1.18); }
-  100% { transform: scale(1); }
-}
-@keyframes checkRipple {
-  0%   { opacity: 0.85; transform: scale(1); border-width: 1.5px; }
-  100% { opacity: 0;    transform: scale(2.6); border-width: 0.5px; }
+/* #endregion Tokens */
+
+
+
+/* #region Base Elements */
+
+*,
+*::before,
+*::after { /* What: Box Sizing Reset. Why: A width should include its padding and border, everywhere. How: This sets border-box on every element and pseudo-element. */
+
+
+	box-sizing : border-box;
+
+
 }
 
-/* ─── Tab: Picker ────────────────────────────────────────────────────────── */
-@keyframes pvNewItemIn { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
-/* Creation UI dismissal: the in-progress editor collapses + fades before the
-   saved item pops into the pool list. */
-@keyframes pvNewItemOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-6px) scale(.98); } }
 
-/* ─── Tab: Data ──────────────────────────────────────────────────────────── */
-/* Filter-change entrance: when the group/scope changes the list remounts (keyed
-   on the filter) and each card fades + slides up with a small per-index stagger,
-   reading as a smooth reflow to the new filter. */
-@keyframes catEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
-}
-/* Show-filter boxes slide in horizontally (staggered) when the group changes;
-   the row is keyed on the group so the animation replays. */
-@keyframes pickerTabEnter {
-  from { opacity: 0; transform: translateX(-10px); }
-  to   { opacity: 1; transform: none; }
-}
 
-/* A freshly-added reminder / picker item row slides down + fades in when created
-   via "+ New reminder" / "+ Add to …", so the insertion reads as a deliberate
-   action rather than the row just popping into place. The editor Collapse below
-   it expands at the same time. */
-@keyframes rowInsert {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: none; }
+/**
+ * html, body = Page Root
+ *
+ * @summary
+ * overflow-x is hidden so the background flourish's outermost glyphs
+ * (ui/bg-flourish.jsx) can be pushed half past the edge of the gutter and get
+ * clipped flush at the viewport edge, rather than causing a horizontal
+ * scrollbar.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+html,
+body { /* What: Page Root. Why: The page fills the viewport with no default spacing or sideways scroll. How: This clears the margins and padding, sets a full height, and hides horizontal overflow. */
+
+
+	height     : 100%;
+	margin     : 0;
+	overflow-x : hidden;
+	padding    : 0;
+
+
 }
 
-@keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }
 
-/* ─── New-picker form ───────────────────────────────────────────────────────  */
-@keyframes np-row-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
-@keyframes tabFadeIn { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
-/* Footer ↔ delete-confirm swap: whichever row appears fades + slides in (the
-   ternary branches carry distinct keys so React remounts them to replay this).
-   Covers every editor footer: picker item, reminder, picker settings, conditional. */
-@keyframes footSwapIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-@keyframes footSwapOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(3px); } }
 
-/* While a drag is in progress, kill the grab-hover text-selection everywhere. */
-body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-select: none !important; }
+body { /* What: Page Body Text. Why: All text starts from the app's own typeface, size, and colors. How: This sets the sans font at 15px with its stylistic sets, the text and background tokens, and smoothed rendering. */
 
-/* ── Onboarding ──────────────────────────────────────────────────────────
-   Welcome modal, get-started checklist, first-picker CTA, and the spotlight
-   tour (dim + cut-out + coach card). Uses app tokens throughout. */
-@keyframes obTourFade{
-  0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
-  50%{outline-color:oklch(from var(--accent) l c h/0.2)}
+
+	-moz-osx-font-smoothing : grayscale;
+	-webkit-font-smoothing  : antialiased;
+	background              : var(--bg);
+	color                   : var(--text);
+	font-family             : var(--font-sans);
+	font-feature-settings   : 'ss01', 'cv11';
+	font-size               : 15px;
+	letter-spacing          : -0.005em;
+	line-height             : 1.5;
+
+
 }
-@keyframes obFade{from{opacity:0}to{opacity:1}}
-/* While a tour runs, every tab gets room to scroll a bottom-anchored target
-   clear of the tab bar; each tab's root reads the property (see CLAUDE.md's
-   body-level state rule). */
-body[data-tour-active]{--tab-tour-padding:200px}
+
+a { /* What: Link. Why: Links read in the accent color. How: This colors them with the accent token. */
+
+
+	color : var(--accent);
+
+
+}
+a:hover { /* What: Hovered Link. Why: A link should respond to the pointer. How: This darkens the accent a step. */
+
+
+	color : oklch(from var(--accent) calc(l - 0.1) c h);
+
+
+}
+
+button { /* What: Button Reset. Why: Every button starts unstyled so its module draws it. How: This clears the native chrome, inherits the font and color, and sets a pointer cursor. */
+
+
+	background : none;
+	border     : 0;
+	color      : inherit;
+	cursor     : pointer;
+	font       : inherit;
+	padding    : 0;
+
+
+}
+
+input { /* What: Input Reset. Why: Text inputs should use the app's own font and color. How: This inherits both. */
+
+
+	color : inherit;
+	font  : inherit;
+
+
+}
+
+ul,
+ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This clears their spacing and markers. */
+
+
+	list-style : none;
+	margin     : 0;
+	padding    : 0;
+
+
+}
+
+/* #endregion Base Elements */
+
+
+
+/* #region Body State */
+
+/**
+ * .theme-animating = Theme Animating
+ *
+ * @summary
+ * A one-shot theme cross-fade: while .theme-animating is on <html> (added by
+ * appearance.js's applyPaletteObj on a user theme swap, for about 480ms),
+ * the themable properties ease so the palette change glides instead of
+ * snapping. It's scoped to the swap window so it never interferes with
+ * normal interaction transitions.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+.theme-animating,
+.theme-animating *,
+.theme-animating *::before,
+.theme-animating *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases every themable color on the page for the length of the swap. */
+
+
+	transition : background-color .42s ease, color .42s ease, border-color .42s ease, fill .42s ease, stroke .42s ease !important;
+
+
+}
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Theme Cross-Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.theme-animating,
+	.theme-animating * { /* What: Still Theme Cross-Fade. Why: The theme should switch at once. How: This turns the transition off. */
+
+
+		transition : none !important;
+
+
+	}
+
+
+}
+
+
+
+body.is-reordering,
+body.is-reordering * { /* What: Drag In Progress. Why: While a card is being dragged, hovering over text shouldn't select it or change the cursor. How: This holds the grabbing cursor and turns off text selection everywhere. */
+
+
+	cursor      : grabbing !important;
+	user-select : none !important;
+
+
+}
+
+body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every tab needs room to scroll a bottom-anchored target clear of the tab bar. How: This sets the padding each tab's root reads, per CLAUDE.md's body-level state rule. */
+
+
+	--tab-tour-padding : 200px; /* What: Tab Tour Padding. Why: This is how much room a tab adds below its content during a tour. How: Each tab's module reads it as padding-bottom, falling back to none. */
+
+
+}
+
+.sr-live { /* What: Screen Reader Live Region. Why: Status changes must be announced reliably, so the region exists from load and stays in the accessibility tree. How: This clips it to one invisible pixel instead of hiding it with display none. */
+
+
+	border      : 0;
+	clip-path   : inset(50%);
+	height      : 1px;
+	margin      : -1px;
+	overflow    : hidden;
+	padding     : 0;
+	position    : absolute;
+	white-space : nowrap;
+	width       : 1px;
+
+
+}
+
+/* #endregion Body State */
+
+
+
+/* #region Shared Keyframes */
+
+@keyframes cardExhale { /* What: Card Exhale Keyframes. Why: The Ripple celebration makes each card swell and glow once. How: This scales the card up with an accent ring, then settles it back. */
+
+
+	0% {
+
+
+		box-shadow : 0 0 0 0 oklch(from var(--accent) l c h / 0);
+		transform  : none;
+
+
+	}
+
+	35% {
+
+
+		box-shadow : 0 0 0 var(--exhale-glow) oklch(from var(--accent) l c h / var(--exhale-glow-op));
+		transform  : scale(var(--exhale-scale));
+
+
+	}
+
+	100% {
+
+
+		box-shadow : 0 0 0 0 oklch(from var(--accent) l c h / 0);
+		transform  : none;
+
+
+	}
+
+
+}
+
+@keyframes cardSkipOut { /* What: Card Skip Out Keyframes. Why: A skipped card should slide away and close its gap. How: This fades and slides it left, then collapses its height, spacing, and borders. */
+
+
+	0% {
+
+
+		border-bottom-width : 0.5px;
+		border-top-width    : 0.5px;
+		margin-bottom       : 10px;
+		max-height          : 200px;
+		opacity             : 1;
+		padding-bottom      : 16px;
+		padding-top         : 16px;
+		transform           : translateX(0);
+
+
+	}
+
+	50% {
+
+
+		margin-bottom  : 10px;
+		max-height     : 200px;
+		opacity        : 0;
+		padding-bottom : 16px;
+		padding-top    : 16px;
+		transform      : translateX(-18px);
+
+
+	}
+
+	100% {
+
+
+		border-bottom-width : 0;
+		border-top-width    : 0;
+		margin-bottom       : 0;
+		max-height          : 0;
+		opacity             : 0;
+		padding-bottom      : 0;
+		padding-top         : 0;
+		transform           : translateX(-18px);
+
+
+	}
+
+
+}
+
+@keyframes catEnter { /* What: Category Enter Keyframes. Why: When the Data tab's filter changes, the list remounts and each card should reflow in rather than pop. How: This fades each card in while sliding it up 8px. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(8px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes checkRipple { /* What: Check Ripple Keyframes. Why: Checking an item off sends a ring out from its checkbox. How: This grows the ring while thinning and fading it. */
+
+
+	0% {
+
+
+		border-width : 1.5px;
+		opacity      : 0.85;
+		transform    : scale(1);
+
+
+	}
+
+	100% {
+
+
+		border-width : 0.5px;
+		opacity      : 0;
+		transform    : scale(2.6);
+
+
+	}
+
+
+}
+
+@keyframes checkSpring { /* What: Check Spring Keyframes. Why: The checkmark should land with a little bounce. How: This scales it up past full size and back. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : scale(0.4);
+
+
+	}
+
+	55% {
+
+
+		opacity   : 1;
+		transform : scale(1.18);
+
+
+	}
+
+	100% {
+
+
+		transform : scale(1);
+
+
+	}
+
+
+}
+
+@keyframes confettiBurst { /* What: Confetti Burst Keyframes. Why: Each confetti piece flies out from the center along its own angle. How: This moves it by its --angle and --dist with a slight drop, spinning by --rot as it fades. */
+
+
+	0% {
+
+
+		opacity   : var(--piece-opacity, 0.9);
+		transform : translate(-50%, -50%) rotate(0deg);
+
+
+	}
+
+	100% {
+
+
+		opacity   : 0;
+		transform : translate(calc(-50% + cos(var(--angle)) * var(--dist)), calc(-50% + sin(var(--angle)) * var(--dist) + 14px)) rotate(var(--rot));
+
+
+	}
+
+
+}
+
+@keyframes dashSweep { /* What: Dash Sweep Keyframes. Why: A group's progress dash should draw in from the left. How: This scales it from nothing to full width. */
+
+
+	0% {
+
+
+		transform : scaleX(0);
+
+
+	}
+
+	100% {
+
+
+		transform : scaleX(1);
+
+
+	}
+
+
+}
+
+@keyframes footSwapIn { /* What: Foot Swap In Keyframes. Why: When an editor footer swaps with its delete confirm, the incoming row should ease in; each row is keyed so the swap replays this. How: This fades it in while rising 3px. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(3px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes footSwapOut { /* What: Foot Swap Out Keyframes. Why: The outgoing footer row should ease away rather than vanish. How: This fades it out while sinking 3px. */
+
+
+	from {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY(3px);
+
+
+	}
+
+
+}
+
+@keyframes np-row-in { /* What: New Picker Row In Keyframes. Why: A new row in the picker form should settle into place. How: This fades it in while dropping 3px. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-3px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes obFade { /* What: Onboarding Fade Keyframes. Why: Onboarding overlays should fade in rather than appear. How: This fades opacity from 0 to 1. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+
+@keyframes obTourFade { /* What: Onboarding Tour Fade Keyframes. Why: A tour target's outline should pulse gently to draw the eye. How: This fades the accent outline down to 20% and back. */
+
+
+	0%,
+	100% {
+
+
+		outline-color : oklch(from var(--accent) l c h/1);
+
+
+	}
+
+	50% {
+
+
+		outline-color : oklch(from var(--accent) l c h/0.2);
+
+
+	}
+
+
+}
+
+@keyframes pickerTabEnter { /* What: Picker Tab Enter Keyframes. Why: When the group changes, the Show tabs should slide in, staggered, rather than pop; the row is keyed on the group so this replays. How: This fades each tab in while sliding it from 10px to the left. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX(-10px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes pvNewItemIn { /* What: Picker View New Item In Keyframes. Why: The add-item editor should drop into place. How: This fades it in while lowering and growing it slightly. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-8px) scale(.98);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes pvNewItemOut { /* What: Picker View New Item Out Keyframes. Why: When an item is saved, its editor should fold away before the item pops into the pool. How: This fades it out while lifting and shrinking it slightly. */
+
+
+	from {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+	to {
+
+
+		opacity   : 0;
+		transform : translateY(-6px) scale(.98);
+
+
+	}
+
+
+}
+
+@keyframes rowInsert { /* What: Row Insert Keyframes. Why: A freshly added reminder or item row should read as a deliberate insertion, while its editor expands below it. How: This fades the row in while sliding it down 8px. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(-8px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes setSubFade { /* What: Set Sub Fade Keyframes. Why: A live explanation line should fade in its new wording when its setting changes. How: This fades opacity from 0 to 1. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+
+@keyframes sparkleTwinkle { /* What: Sparkle Twinkle Keyframes. Why: Each sparkle should glint once at its own spot. How: This grows it in and back out while fading it up and down. */
+
+
+	0%,
+	100% {
+
+
+		opacity   : 0;
+		transform : translate(-50%, -50%) scale(0.4);
+
+
+	}
+
+	50% {
+
+
+		opacity   : 0.9;
+		transform : translate(-50%, -50%) scale(1.15);
+
+
+	}
+
+
+}
+
+@keyframes tabFadeIn { /* What: Tab Fade In Keyframes. Why: A tab's content should rise in when it opens, the same for every tab. How: This fades it in while rising 9px. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY(9px);
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+/* #endregion Shared Keyframes */
+
+
