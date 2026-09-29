@@ -25,6 +25,7 @@ yarn-error.log*
 
 # Miscellaneous Directories and Files
 *.local
+design/
 dev-dist/
 dist
 dist-ssr
