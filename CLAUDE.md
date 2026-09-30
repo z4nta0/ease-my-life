@@ -2162,6 +2162,15 @@ still passes.
       time, never all at once. Unlike the rest of this doc, these core
       numbers aren't specific to this project: anything said here about
       them applies to any project unless stated otherwise.
+    - **Height is ratio based** (decided 2026-09-29, also not specific to
+      this project): everything vertical (font size, line-height, height,
+      max-height, row gaps, top and bottom margins and padding, ...) is the
+      base font size times a power of the core design number, never a
+      free-standing number. The base font size is 11px, the smallest size
+      accessibility tools accept without flagging it, so the font size
+      scale starts there and only goes up: `--fon-siz-bas` is 11px, and
+      each step above it is `var( --fon-siz-bas )` times the next
+      `--cdn-pow-*` token.
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
@@ -2188,6 +2197,9 @@ are renamed to this as their files come up in the design-system pass.
     that step rather than treating it as just another step, decided per
     scale. `xxl`/`xxs` extend a scale only when consolidation leaves no
     other choice.
+  - **Font sizes use their own steps**, since the scale starts at its base
+    and only grows: `bas` (base, 11px), `lar` (large, one power up), `xla`
+    (extra large, two), then `xl2`, `xl3`, `xl4`, `xl5` (three to six).
   - **A category**: `col` (color), `fon` (font family), `dur` (duration),
     `del` (delay), `eas` (easing curve), `spr` (spread, e.g. a shadow or
     glow's reach), `opa` (opacity), `sca` (scale factor), `sha` (a whole
