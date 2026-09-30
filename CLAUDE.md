@@ -2255,6 +2255,12 @@ are renamed to this as their files come up in the design-system pass.
 - **A component-level property** still names the child it's for (see
   "What moves into a module" under "### CSS modules and JS hooks"), now as
   its first segment.
+- **Negative values get no tokens of their own** (decided 2026-09-30): a
+  negative margin or offset multiplies its positive token at the point of
+  use, `calc( var( --spa-ver-xs4 ) * -1 )`, rather than each scale carrying
+  a mirrored set of negative tokens. The core design numbers' own negative
+  tokens (`--cdn-pow-001-neg`, ...) are the one exception, since they're
+  the raw numbers other values draw from.
 - **Breakpoints stay literal numbers**, since a custom property can't be
   read inside an `@media` or `@container` condition, but their values still
   come from the scale the design system defines.
