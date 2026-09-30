@@ -32,7 +32,7 @@
 	font-weight     : 700;
 	height          : 26px;
 	justify-content : center;
-	line-height     : var( --cdn-pow-000 );
+	line-height     : var( --ver-rhy-sma );
 	position        : relative;
 	transition      : border-color .15s ease, color .15s ease, background .15s ease;
 	width           : 26px;

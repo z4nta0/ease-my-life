@@ -46,7 +46,7 @@
 	font-size       : var( --fon-siz-lar );
 	height          : 22px;
 	justify-content : center;
-	line-height     : var( --cdn-pow-000 );
+	line-height     : var( --ver-rhy-sma );
 	transition      : color .12s, background .12s;
 	width           : 22px;
 

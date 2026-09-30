@@ -889,7 +889,7 @@
 	font-weight     : 700;
 	height          : 14.5px;
 	justify-content : center;
-	line-height     : var( --cdn-pow-000 );
+	line-height     : var( --ver-rhy-sma );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
 	width           : 14.5px;
 

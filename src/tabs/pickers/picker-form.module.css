@@ -58,7 +58,7 @@
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
-	line-height    : 22px;
+	line-height    : var( --ver-rhy-sma );
 	text-transform : uppercase;
 
 
