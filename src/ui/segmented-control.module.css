@@ -90,6 +90,7 @@
 	font-family   : var(--font-sans);
 	font-size     : var( --fon-siz-lar );
 	font-weight   : 500;
+	min-height    : calc( var( --ver-rhy-xl2 ) * 1rem );
 	padding       : var( --spa-ver-xs2 ) 14px;
 	position      : relative;
 	transition    : background .12s, color .12s;

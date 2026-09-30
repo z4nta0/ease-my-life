@@ -1449,7 +1449,8 @@
 	gap             : 10px;
 	justify-content : space-between;
 	letter-spacing  : -0.005em;
-	padding         : var( --spa-ver-xs1 ) 12px;
+	min-height      : calc( var( --ver-rhy-xl2 ) * 1rem );
+	padding         : var( --spa-ver-xs2 ) 12px;
 	text-align      : left;
 	transition      : background .12s, color .12s;
 	width           : 100%;

@@ -329,9 +329,10 @@
 	flex           : 0 0 auto;
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
+	height         : calc( var( --ver-rhy-xl1 ) * 1rem );
 	letter-spacing : 0.03em;
 	margin-left    : auto;
-	padding        : var( --spa-ver-xs3 ) 11px;
+	padding        : 0 11px;
 	transition     : background .18s ease, opacity .18s ease;
 
 

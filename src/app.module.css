@@ -732,8 +732,9 @@
 	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 12px;
+	height          : calc( var( --ver-rhy-xl3 ) * 1rem );
 	justify-content : flex-start;
-	padding         : var( --spa-ver-sma ) 12px;
+	padding         : 0 12px;
 
 
 }
@@ -754,7 +755,8 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 8px;
-	padding        : var( --spa-ver-xs1 ) 14px;
+	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
+	padding        : 0 14px;
 
 
 }
@@ -773,7 +775,7 @@
 
 
 		gap     : 0;
-		padding : var( --spa-ver-xs1 ) 8px;
+		padding : 0 8px;
 
 
 	}
