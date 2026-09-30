@@ -185,6 +185,7 @@
 
 	--ver-rhy-sma : var( --cdn-pow-000 ); /* What: Vertical Rhythm Small = 1. Why: Headings and single-line elements need no breathing room between lines. How: This is read unitless as line-height, so each line is exactly its own font size tall. */
 	--ver-rhy-bas : var( --cdn-pow-001 ); /* What: Vertical Rhythm Base ~= 1.325. Why: Line height and every other height-related value share one base rhythm drawn from the core design number. How: This is read unitless as line-height, so each element multiplies it by its own font size, and other vertical values can build on it. */
+	--ver-rhy-lar : var( --cdn-pow-002 ); /* What: Vertical Rhythm Large ~= 1.755. Why: Small labels that share a row with a taller control, like the page kickers, need a roomier line. How: This is read unitless as line-height (about 19.3px on base-size text), or multiplied by 1rem where a fixed height is needed. */
 
 	/* #endregion Vertical Rhythm Tokens */
 
