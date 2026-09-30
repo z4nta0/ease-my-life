@@ -201,7 +201,7 @@
 	font-size      : var( --fon-siz-xl3 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	line-height    : 1.15;
+	line-height    : var( --cdn-pow-000 );
 	margin         : 0;
 
 
@@ -777,7 +777,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.45;
+	line-height : var( --ver-rhy-bas );
 	text-wrap   : pretty;
 
 
@@ -922,7 +922,7 @@
 
 
 	color       : oklch(0.45 0.13 50);
-	line-height : 1.45;
+	line-height : var( --ver-rhy-bas );
 	max-width   : 52ch;
 
 

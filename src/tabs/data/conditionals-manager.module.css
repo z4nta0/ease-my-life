@@ -243,7 +243,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.4;
+	line-height : var( --ver-rhy-bas );
 	margin      : 0;
 	padding     : 12px 14px 14px;
 	text-wrap   : pretty;
@@ -479,7 +479,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 
 	color        : oklch(0.5 0.18 25);
 	font-size    : var( --fon-siz-bas );
-	line-height  : 1.4;
+	line-height  : var( --ver-rhy-bas );
 	margin       : 0 0 12px;
 	padding-left : 16px;
 
@@ -536,7 +536,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.4;
+	line-height : var( --ver-rhy-bas );
 	max-width   : 340px;
 	text-wrap   : pretty;
 

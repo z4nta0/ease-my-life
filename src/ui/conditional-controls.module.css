@@ -107,7 +107,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-lar );
-	line-height : 1.5;
+	line-height : var( --ver-rhy-bas );
 	margin      : 0;
 	max-width   : 60ch;
 	text-wrap   : pretty;
@@ -184,7 +184,7 @@
 
 	color       : oklch(0.5 0.18 25);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.4;
+	line-height : var( --ver-rhy-bas );
 	margin      : 6px 0 0;
 
 
@@ -465,7 +465,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	color       : var(--muted);
 	display     : block;
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.45;
+	line-height : var( --ver-rhy-bas );
 	text-wrap   : pretty;
 
 

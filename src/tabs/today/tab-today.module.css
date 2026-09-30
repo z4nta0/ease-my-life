@@ -486,7 +486,7 @@
 	font-size      : var( --fon-siz-xl3 );
 	font-weight    : 500;
 	letter-spacing : -0.03em;
-	line-height    : 1.1;
+	line-height    : var( --cdn-pow-000 );
 	margin         : 0;
 	min-width      : 0;
 
@@ -803,7 +803,7 @@
 	gap                  : 2px;
 	inset                : 0;
 	justify-content      : center;
-	line-height          : 1;
+	line-height          : var( --cdn-pow-000 );
 	position             : absolute;
 
 
@@ -815,7 +815,7 @@
 	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 500;
 	letter-spacing : -0.04em;
-	line-height    : 1;
+	line-height    : var( --cdn-pow-000 );
 
 
 }
@@ -927,7 +927,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1;
+	line-height : var( --cdn-pow-000 );
 
 
 }
@@ -1706,7 +1706,7 @@
 	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global sparkleTwinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var(--accent);
 	font-size   : var( --fon-siz-xla );
-	line-height : 1;
+	line-height : var( --cdn-pow-000 );
 	opacity     : 0;
 	position    : absolute;
 	transform   : translate(-50%, -50%) scale(0.4);
@@ -1957,7 +1957,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.5;
+	line-height : var( --ver-rhy-bas );
 	margin      : 0 0 6px;
 	max-width   : 34ch;
 
@@ -2167,7 +2167,7 @@
 
 	color       : var(--text);
 	font-size   : var( --fon-siz-lar );
-	line-height : 1.5;
+	line-height : var( --ver-rhy-bas );
 	margin      : 0;
 	text-wrap   : pretty;
 

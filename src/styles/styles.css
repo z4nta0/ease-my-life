@@ -63,6 +63,7 @@
 
 	--cor-des-num : calc( ( pow( 108 + 12 * sqrt( 69 ), 1 / 3 ) + pow( 108 - 12 * sqrt( 69 ), 1 / 3 ) ) / 6 ); /* What: Core Design Number ~= 1.325. Why: This is the "plastic ratio" and it is the core design number derived from the formula. How: Modules read it as a base scaling factor. */
 
+	--cdn-pow-000 : calc( pow( var( --cor-des-num ), 0 ) );  /* What: Core-Design-Number to the Power of 0 ~= 1. Why: Sometimes the zeroth power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
 	--cdn-pow-001 : calc( pow( var( --cor-des-num ), 1 ) );  /* What: Core-Design-Number to the Power of 1 ~= 1.325. Why: Sometimes the first power of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
 	--cdn-pow-002 : calc( pow( var( --cor-des-num ), 2 ) );  /* What: Core-Design-Number to the Power of 2 ~= 1.755. Why: Sometimes the square of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
 	--cdn-pow-003 : calc( pow( var( --cor-des-num ), 3 ) );  /* What: Core-Design-Number to the Power of 3 ~= 2.325. Why: Sometimes the cube of the core design number is needed for scaling. How: Modules read it as a derived scaling factor. */
@@ -179,6 +180,14 @@
 	/* #endregion Radius Tokens */
 
 
+
+	/* #region Vertical Rhythm Tokens */
+
+	--ver-rhy-bas : var( --cdn-pow-001 ); /* What: Vertical Rhythm Base ~= 1.325. Why: Line height and every other height-related value share one base rhythm drawn from the core design number. How: This is read unitless as line-height, so each element multiplies it by its own font size, and other vertical values can build on it. */
+
+	/* #endregion Vertical Rhythm Tokens */
+
+
 }
 
 /* #endregion Tokens */
@@ -245,7 +254,7 @@ body { /* What: Page Body Text. Why: All text starts from the app's own typeface
 	font-feature-settings   : 'ss01', 'cv11';
 	font-size               : var( --fon-siz-lar );
 	letter-spacing          : -0.005em;
-	line-height             : 1.5;
+	line-height             : var( --ver-rhy-bas );
 
 
 }

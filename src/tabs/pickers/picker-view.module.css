@@ -175,7 +175,7 @@
 	font-variant-numeric : tabular-nums;
 	font-weight          : 400;
 	letter-spacing       : -0.04em;
-	line-height          : 1;
+	line-height          : var( --cdn-pow-000 );
 
 
 }

@@ -167,7 +167,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.35;
+	line-height : var( --ver-rhy-bas );
 
 
 }
@@ -216,7 +216,7 @@
 
 	color       : oklch(0.45 0.13 50); /* What: Darkened Warm Text. Why: The raw warm color doesn't reach AA contrast at this size. How: This darkens it until it does. */
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.5;
+	line-height : var( --ver-rhy-bas );
 	margin      : 8px 0 0;
 	max-width   : 52ch;
 
@@ -240,7 +240,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.5;
+	line-height : var( --ver-rhy-bas );
 	margin      : 0;
 
 

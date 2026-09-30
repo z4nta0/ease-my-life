@@ -279,7 +279,7 @@
 
 	color       : oklch(from var(--text) l c h / 0.88);
 	font-size   : var( --fon-siz-lar );
-	line-height : 1.6;
+	line-height : var( --ver-rhy-bas );
 
 
 }

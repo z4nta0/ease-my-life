@@ -53,7 +53,7 @@
 	color          : var(--text);
 	font-family    : var(--font-sans);
 	font-size      : var( --fon-siz-bas );
-	line-height    : 1.45;
+	line-height    : var( --ver-rhy-bas );
 	max-width      : 248px;
 	padding        : 9px 11px;
 	pointer-events : none;

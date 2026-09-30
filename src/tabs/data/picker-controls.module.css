@@ -793,7 +793,7 @@
 	color       : var(--muted);
 	display     : block;
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.45;
+	line-height : var( --ver-rhy-bas );
 	text-wrap   : pretty;
 
 
@@ -889,7 +889,7 @@
 	font-weight     : 700;
 	height          : 14.5px;
 	justify-content : center;
-	line-height     : 1;
+	line-height     : var( --cdn-pow-000 );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
 	width           : 14.5px;
 
@@ -927,7 +927,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.35;
+	line-height : var( --ver-rhy-bas );
 
 
 }
@@ -1170,7 +1170,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.4;
+	line-height : var( --ver-rhy-bas );
 	margin      : 2px 0;
 	text-wrap   : pretty;
 

@@ -366,7 +366,7 @@
 	border-radius : var(--r-sm);
 	color         : oklch(0.45 0.13 50);
 	font-size     : var( --fon-siz-bas );
-	line-height   : 1.5;
+	line-height   : var( --ver-rhy-bas );
 	margin        : 0 0 8px;
 	padding       : 9px 12px;
 

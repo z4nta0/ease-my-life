@@ -330,7 +330,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-lar );
-	line-height : 1.5;
+	line-height : var( --ver-rhy-bas );
 	margin      : 0;
 	max-width   : 60ch;
 	text-wrap   : pretty;
@@ -624,7 +624,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.45;
+	line-height : var( --ver-rhy-bas );
 
 
 }
@@ -1099,7 +1099,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border-radius : var(--r-sm);
 	color         : var(--muted);
 	font-size     : var( --fon-siz-lar );
-	line-height   : 1.5;
+	line-height   : var( --ver-rhy-bas );
 	padding       : 18px 16px;
 	text-wrap     : pretty;
 

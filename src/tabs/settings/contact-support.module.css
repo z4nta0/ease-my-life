@@ -81,7 +81,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : 1.45;
+	line-height : var( --ver-rhy-bas );
 	text-wrap   : pretty;
 
 
@@ -203,7 +203,7 @@
 .support-textarea { /* What: Support Message Field. Why: A message can run several lines, so its field needs room and should grow only downward. How: This sets a minimum height, a relaxed line height, and vertical-only resizing. */
 
 
-	line-height : 1.5;
+	line-height : var( --ver-rhy-bas );
 	min-height  : 90px;
 	resize      : vertical;
 
@@ -316,7 +316,7 @@
 	animation    : global(importMsgPop) .34s cubic-bezier(.34,1.56,.5,1) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color        : oklch(0.45 0.13 50);
 	font-size    : var( --fon-siz-bas );
-	line-height  : 1.45;
+	line-height  : var( --ver-rhy-bas );
 	margin-right : auto;
 	max-width    : 46ch;
 
