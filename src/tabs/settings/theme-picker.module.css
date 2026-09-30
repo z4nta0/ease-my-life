@@ -110,7 +110,7 @@
 .theme-row + .theme-row { /* What: Following Theme Row. Why: Stacked rows need a little space between them. How: This adds top margin to every row after the first. */
 
 
-	margin-top : 8px;
+	margin-top : var( --spa-ver-xs1 );
 
 
 }
@@ -314,7 +314,7 @@
 	letter-spacing : 0.05em;
 	max-width      : calc(100% - 20px);
 	outline        : none;
-	padding        : 1px 4px;
+	padding        : var( --spa-ver-xs8 ) 4px;
 	position       : absolute;
 	text-transform : uppercase;
 	width          : 100px;

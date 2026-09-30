@@ -340,7 +340,7 @@
 	border-radius : 8px;
 	color         : var(--muted);
 	font-size     : var( --fon-siz-lar );
-	padding       : 8px 14px;
+	padding       : var( --spa-ver-xs1 ) 14px;
 	text-align    : var(--spot-row-text-align, inherit); /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spot-row-text-align, falling back to the inherited alignment. */
 	text-wrap     : pretty;
 	transition    : background .12s, color .12s, transform .12s;

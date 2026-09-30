@@ -100,7 +100,7 @@
 	background    : oklch(from var(--surface) calc(l + 0.006) c h);
 	border        : 0.5px solid var(--border);
 	border-radius : var(--r-md);
-	margin        : 2px 0 14px;
+	margin        : var( --spa-ver-xs6 ) 0 var( --spa-ver-bas );
 	overflow      : hidden;
 
 
@@ -116,7 +116,7 @@
 	border-bottom   : 0.5px solid var(--border);
 	display         : flex;
 	justify-content : space-between;
-	padding         : 11px 14px;
+	padding         : var( --spa-ver-sma ) 14px;
 
 
 }
@@ -220,7 +220,7 @@
 	display       : flex;
 	flex-wrap     : nowrap;
 	gap           : 16px;
-	padding       : 11px 14px;
+	padding       : var( --spa-ver-sma ) 14px;
 
 
 }
@@ -345,14 +345,14 @@
 .dl-body { /* What: Log Body. Why: The blocks sit inset under the key. How: This pads the body. */
 
 
-	padding : 2px 12px 10px;
+	padding : var( --spa-ver-xs6 ) 12px var( --spa-ver-sma );
 
 
 }
 .dl-body--rem { /* What: Reminders Log Body. Why: The reminders table needs a little more room around it. How: This pads it more evenly. */
 
 
-	padding : 8px 12px 12px;
+	padding : var( --spa-ver-xs1 ) 12px var( --spa-ver-sma );
 
 
 }
@@ -362,7 +362,7 @@
 
 	color     : var(--muted);
 	font-size : var( --fon-siz-lar );
-	padding   : 12px 10px;
+	padding   : var( --spa-ver-sma ) 10px;
 
 
 }
@@ -398,7 +398,7 @@
 	font                  : inherit;
 	gap                   : 9px;
 	grid-template-columns : 20px 1fr minmax(0,200px);
-	padding               : 13px 2px;
+	padding               : var( --spa-ver-bas ) 2px;
 	text-align            : left;
 	width                 : 100%;
 
@@ -541,7 +541,7 @@
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
-	padding        : 2px 8px;
+	padding        : var( --spa-ver-xs6 ) 8px;
 	text-align     : center;
 	text-transform : uppercase;
 	white-space    : nowrap;
@@ -694,7 +694,7 @@
 .dl-table { /* What: Log Table. Why: The table ends with room below. How: This pads its bottom. */
 
 
-	padding-bottom : 12px;
+	padding-bottom : var( --spa-ver-sma );
 
 
 }
@@ -749,7 +749,7 @@
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
-	padding        : 6px 10px;
+	padding        : var( --spa-ver-xs2 ) 10px;
 	text-transform : uppercase;
 
 
@@ -810,7 +810,7 @@
 	border      : 0;
 	clip-path   : inset(50%);
 	height      : 1px;
-	margin      : -1px;
+	margin      : calc( var( --spa-ver-xs8 ) * -1 ) -1px;
 	overflow    : hidden;
 	padding     : 0;
 	position    : absolute;
@@ -831,7 +831,7 @@
 
 	border-bottom : 0.5px solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
-	padding       : 8px 10px;
+	padding       : var( --spa-ver-xs1 ) 10px;
 
 
 }
@@ -854,7 +854,7 @@
 
 	background    : oklch(from var(--accent) 0.93 0.05 h)!important;
 	border-bottom : 0!important;
-	margin-bottom : 2px;
+	margin-bottom : var( --spa-ver-xs6 );
 
 
 }
@@ -1144,7 +1144,7 @@
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
-	padding        : 2px 0;
+	padding        : var( --spa-ver-xs6 ) 0;
 	text-transform : uppercase;
 	white-space    : nowrap;
 
@@ -1155,7 +1155,7 @@
 
 	background : var(--accent);
 	color      : var(--bg);
-	padding    : 2px 8px;
+	padding    : var( --spa-ver-xs6 ) 8px;
 
 
 }
@@ -1165,7 +1165,7 @@
 	background : var(--surface);
 	border     : 0.5px solid var(--border);
 	color      : var(--muted);
-	padding    : 2px 8px;
+	padding    : var( --spa-ver-xs6 ) 8px;
 
 
 }
@@ -1239,8 +1239,8 @@
 	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.02em;
-	margin         : 0 0 8px;
-	padding        : 6px 10px 6px 12px;
+	margin         : 0 0 var( --spa-ver-xs1 );
+	padding        : var( --spa-ver-xs2 ) 10px var( --spa-ver-xs2 ) 12px;
 
 
 }
@@ -1309,7 +1309,7 @@
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
-	padding        : 6px 10px;
+	padding        : var( --spa-ver-xs2 ) 10px;
 	text-transform : uppercase;
 
 
@@ -1339,7 +1339,7 @@
 
 	border-bottom : 0.5px solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
-	padding       : 9px 10px;
+	padding       : var( --spa-ver-xs1 ) 10px;
 
 
 }

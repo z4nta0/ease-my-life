@@ -109,11 +109,11 @@
 	font-size        : var( --fon-siz-xl1 );
 	font-weight      : 500;
 	letter-spacing   : -0.015em;
-	margin           : -3px 0;
+	margin           : calc( var( --spa-ver-xs5 ) * -1 ) 0;
 	max-width        : 240px;
 	min-width        : 0;
 	outline          : none;
-	padding          : 2px 8px;
+	padding          : var( --spa-ver-xs6 ) 8px;
 	transform-origin : left center;
 	width            : auto;
 
@@ -220,8 +220,8 @@
 	font-weight    : 500;
 	gap            : 7px;
 	letter-spacing : -0.015em;
-	margin         : -2px -6px;
-	padding        : 2px 6px;
+	margin         : calc( var( --spa-ver-xs6 ) * -1 ) -6px;
+	padding        : var( --spa-ver-xs6 ) 6px;
 	transition     : background .12s, color .12s;
 
 
@@ -413,8 +413,8 @@
 	flex-wrap       : wrap;
 	gap             : 14px;
 	justify-content : space-between;
-	margin-top      : 4px;
-	padding         : 12px 14px;
+	margin-top      : var( --spa-ver-xs4 );
+	padding         : var( --spa-ver-sma ) 14px;
 
 
 }

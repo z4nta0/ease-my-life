@@ -27,7 +27,7 @@
 .cad-ctl { /* What: Cadence Control. Why: Every segmented control inside the cadence editor needs a little room below it before the next line. How: This sets the property the segmented control reads for its bottom margin. */
 
 
-	--seg-margin-bottom : 10px; /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
+	--seg-margin-bottom : var( --spa-ver-sma ); /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
 
 
 }
@@ -205,10 +205,10 @@
 	color         : var(--text);
 	font-family   : var(--font-sans);
 	font-size     : var( --fon-siz-lar );
-	margin-top    : 2px;
+	margin-top    : var( --spa-ver-xs6 );
 	max-width     : 360px;
 	outline       : none;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s;
 	width         : 100%;
 

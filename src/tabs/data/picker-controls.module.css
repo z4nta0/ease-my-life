@@ -33,7 +33,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 0;
-	padding        : 14px 16px;
+	padding        : var( --spa-ver-bas ) 16px;
 
 
 }
@@ -88,7 +88,7 @@
 
 	border-top     : 0.5px solid var(--border);
 	margin         : 0 -16px;
-	padding        : 16px;
+	padding        : var( --spa-ver-bas ) 16px;
 	padding-bottom : 0;
 
 
@@ -107,25 +107,25 @@
 
 
 }
-.rd-ctl-group--basics .rd-ctl-subhead { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 0 16px 8px. */
+.rd-ctl-group--basics .rd-ctl-subhead { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 16px at the sides and extra small 1 vertical spacing below. */
 
 
-	padding : 0 16px 8px;
+	padding : 0 16px var( --spa-ver-xs1 );
 
 
 }
-.rd-ctl-group--picks .rd-ctl-subhead { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 14px 16px 8px. */
+.rd-ctl-group--picks .rd-ctl-subhead { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base vertical spacing above, 16px at the sides, and extra small 1 vertical spacing below. */
 
 
-	padding : 14px 16px 8px;
+	padding : var( --spa-ver-bas ) 16px var( --spa-ver-xs1 );
 
 
 }
 .rd-ctl-group--sched .rd-ctl-subhead,
-.rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 12px 16px 8px. */
+.rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it small vertical spacing above, 16px at the sides, and extra small 1 vertical spacing below. */
 
 
-	padding : 12px 16px 8px;
+	padding : var( --spa-ver-sma ) 16px var( --spa-ver-xs1 );
 
 
 }
@@ -150,7 +150,7 @@
 	border-top  : 0.5px solid var(--border);
 	display     : flex;
 	gap         : 14px;
-	padding     : 12px 16px;
+	padding     : var( --spa-ver-sma ) 16px;
 
 
 }
@@ -168,7 +168,7 @@
 	color       : var(--muted);
 	flex        : 0 0 52px;
 	font-size   : var( --fon-siz-lar );
-	padding-top : 6px;
+	padding-top : var( --spa-ver-xs2 );
 
 
 }
@@ -238,7 +238,7 @@
 	flex-wrap      : wrap;
 	gap            : 8px;
 	min-width      : 0;
-	padding-bottom : 4px;
+	padding-bottom : var( --spa-ver-xs4 );
 
 
 }
@@ -256,7 +256,7 @@
 		mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 		overflow-x         : auto;
 		overflow-y         : hidden;
-		padding-bottom     : 2px;
+		padding-bottom     : var( --spa-ver-xs6 );
 		scrollbar-width    : none;
 
 
@@ -304,7 +304,7 @@
 	font-weight    : 500;
 	gap            : 7px;
 	letter-spacing : -0.01em;
-	padding        : 6px 13px;
+	padding        : var( --spa-ver-xs2 ) 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 
@@ -637,7 +637,7 @@
 	cursor                      : pointer;
 	display                     : flex;
 	gap                         : 11px;
-	padding                     : 12px 16px;
+	padding                     : var( --spa-ver-sma ) 16px;
 	position                    : relative;
 	transition                  : background .24s ease;
 
@@ -725,7 +725,7 @@
 	border-radius : 50%;
 	flex          : 0 0 auto;
 	height        : 16px;
-	margin-top    : 1px;
+	margin-top    : var( --spa-ver-xs8 );
 	position      : relative;
 	transition    : border-color .12s;
 	width         : 16px;
@@ -801,7 +801,7 @@
 .rd-mode-hint + .rd-mode-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
-	margin-top : 8px;
+	margin-top : var( --spa-ver-xs1 );
 
 
 }
@@ -827,7 +827,7 @@
 	gap             : 12px;
 	justify-content : space-between;
 	min-height      : 44px;
-	padding         : 10px 16px;
+	padding         : var( --spa-ver-sma ) 16px;
 
 
 }
@@ -1041,7 +1041,7 @@
 
 
 	border-bottom : 0.5px solid var(--border);
-	padding       : 8px 16px 12px;
+	padding       : var( --spa-ver-xs1 ) 16px var( --spa-ver-sma );
 
 
 }
@@ -1059,7 +1059,7 @@
 	gap                : 8px;
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	overflow-x         : auto;
-	padding-bottom     : 2px;
+	padding-bottom     : var( --spa-ver-xs6 );
 	scrollbar-width    : none;
 
 
@@ -1101,7 +1101,7 @@
 	gap             : 3px;
 	justify-content : center;
 	min-width       : 132px;
-	padding         : 10px 14px;
+	padding         : var( --spa-ver-sma ) 14px;
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
 
@@ -1171,7 +1171,7 @@
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
-	margin      : 2px 0;
+	margin      : var( --spa-ver-xs6 ) 0;
 	text-wrap   : pretty;
 
 
@@ -1208,7 +1208,7 @@
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s;
 	width         : auto;
 
@@ -1258,7 +1258,7 @@
 	font-size     : var( --fon-siz-bas );
 	font-style    : italic;
 	min-height    : 44px;
-	padding       : 10px 16px;
+	padding       : var( --spa-ver-sma ) 16px;
 
 
 }
@@ -1298,7 +1298,7 @@
 	gap             : 12px;
 	justify-content : space-between;
 	min-height      : 44px;
-	padding         : 10px 16px;
+	padding         : var( --spa-ver-sma ) 16px;
 
 
 }

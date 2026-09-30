@@ -53,10 +53,10 @@
 	cursor        : pointer;
 	font-family   : var(--font-sans);
 	font-size     : var( --fon-siz-lar );
-	margin-top    : 2px;
+	margin-top    : var( --spa-ver-xs6 );
 	max-width     : 360px;
 	outline       : none;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s;
 	width         : 100%;
 

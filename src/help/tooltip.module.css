@@ -27,7 +27,7 @@
 	border         : 0.5px solid var(--border);
 	border-radius  : var(--r-md);
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
-	padding        : 14px 15px;
+	padding        : var( --spa-ver-bas ) 15px;
 	pointer-events : auto;
 	position       : fixed;
 
@@ -93,7 +93,7 @@
 
 	font-size   : var( --fon-siz-lar );
 	font-weight : 600;
-	margin      : 0 0 5px;
+	margin      : 0 0 var( --spa-ver-xs3 );
 
 
 }
@@ -122,7 +122,7 @@
 .help-tip .ob-body p+p { /* What: Following Help Tip Paragraph. Why: Consecutive paragraphs still need a small gap between them. How: This adds top margin to every paragraph after the first. */
 
 
-	margin-top : 8px;
+	margin-top : var( --spa-ver-xs1 );
 
 
 }

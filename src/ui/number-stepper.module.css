@@ -26,7 +26,7 @@
 	border-radius : 999px;
 	display       : inline-flex;
 	gap           : 4px;
-	padding       : 3px;
+	padding       : var( --spa-ver-xs5 ) 3px;
 
 
 }

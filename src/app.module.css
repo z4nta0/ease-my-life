@@ -144,7 +144,7 @@
 	bottom           : 0;
 	justify-content  : center;
 	left             : 0;
-	padding          : 8px max(env(safe-area-inset-left), 12px) calc(8px + env(safe-area-inset-bottom)) max(env(safe-area-inset-right), 12px);
+	padding          : var( --spa-ver-xs1 ) max(env(safe-area-inset-left), 12px) calc( var( --spa-ver-xs1 ) + env(safe-area-inset-bottom) ) max(env(safe-area-inset-right), 12px);
 	position         : fixed;
 	right            : 0;
 	z-index          : 100;
@@ -164,7 +164,7 @@
 		box-shadow    : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
 		gap           : 2px;
 		left          : 50%;
-		padding       : 6px 8px;
+		padding       : var( --spa-ver-xs2 ) 8px;
 		right         : auto;
 		transform     : translateX(-50%);
 		width         : max-content;
@@ -188,7 +188,7 @@
 		gap           : 2px;
 		left          : 50%;
 		max-width     : calc(100% - 24px);
-		padding       : 6px 8px;
+		padding       : var( --spa-ver-xs2 ) 8px;
 		right         : auto;
 		transform     : translateX(-50%);
 		width         : max-content;
@@ -206,7 +206,7 @@
 	flex-direction     : column;
 	gap                : 2px;
 	height             : 100dvh;
-	padding            : 24px 16px;
+	padding            : var( --spa-ver-xl1 ) 16px;
 	position           : sticky;
 	top                : 0;
 	width              : 220px;
@@ -224,7 +224,7 @@
 		flex-direction : column;
 		height         : 100dvh;
 		left           : 0;
-		padding        : 24px 16px calc(24px + env(safe-area-inset-bottom));
+		padding        : var( --spa-ver-xl1 ) 16px calc( var( --spa-ver-xl1 ) + env(safe-area-inset-bottom) );
 		position       : fixed;
 		top            : 0;
 		transform      : translateX(-100%);
@@ -251,7 +251,7 @@
 
 	border-bottom-width : 0.5px;
 	justify-content     : space-between;
-	padding             : 12px max(20px, calc((100% - 960px) / 2)); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's 960px column. How: The side padding grows to center that width, never below 20px; the other tabs' 720px column would use the same formula with 720px. */
+	padding             : var( --spa-ver-sma ) max(20px, calc((100% - 960px) / 2)); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's 960px column. How: The side padding grows to center that width, never below 20px; the other tabs' 720px column would use the same formula with 720px. */
 	position            : sticky;
 	top                 : 0;
 	z-index             : 100;
@@ -468,7 +468,7 @@
 	display     : flex;
 	font-weight : 600;
 	gap         : 9px;
-	padding     : 6px 10px 18px;
+	padding     : var( --spa-ver-xs2 ) 10px var( --spa-ver-lar );
 
 
 }
@@ -517,7 +517,7 @@
 	flex-direction : row;
 	gap            : 11px;
 	line-height    : var( --ver-rhy-sma );
-	padding        : 2px 2px 0;
+	padding        : var( --spa-ver-xs6 ) 2px 0;
 	text-transform : uppercase;
 
 
@@ -658,7 +658,7 @@
 	letter-spacing : 0.01em;
 	max-width      : 120px;
 	min-height     : 52px;
-	padding        : 6px 4px;
+	padding        : var( --spa-ver-xs2 ) 4px;
 
 
 }
@@ -683,7 +683,7 @@
 		gap            : 7px;
 		max-width      : none;
 		min-height     : 0;
-		padding        : 8px 14px;
+		padding        : var( --spa-ver-xs1 ) 14px;
 
 
 	}
@@ -702,7 +702,7 @@
 		gap            : 0;
 		max-width      : none;
 		min-height     : 0;
-		padding        : 12px 28px;
+		padding        : var( --spa-ver-sma ) 28px;
 
 
 	}
@@ -733,7 +733,7 @@
 	font-weight     : 500;
 	gap             : 12px;
 	justify-content : flex-start;
-	padding         : 10px 12px;
+	padding         : var( --spa-ver-sma ) 12px;
 
 
 }
@@ -754,7 +754,7 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 8px;
-	padding        : 8px 14px;
+	padding        : var( --spa-ver-xs1 ) 14px;
 
 
 }
@@ -773,7 +773,7 @@
 
 
 		gap     : 0;
-		padding : 8px;
+		padding : var( --spa-ver-xs1 ) 8px;
 
 
 	}
@@ -940,7 +940,7 @@
 	min-width      : 0;
 	overflow-x     : hidden; /* What: Explicit Horizontal Clip. Why: Setting overflow-y alone makes overflow-x compute to auto, giving main its own sideways scroll that the flourish's edge glyphs would push. How: This sets it to hidden explicitly. */
 	overflow-y     : auto;
-	padding-bottom : 96px;
+	padding-bottom : var( --spa-ver-xl6 );
 	padding-left   : var(--main-pad-x, 20px);
 	padding-right  : var(--main-pad-x, 20px);
 	transition     : padding 0.42s cubic-bezier(.4, 0, .2, 1);
@@ -951,14 +951,14 @@
 
 
 	--main-pad-x   : 32px;
-	padding-bottom : 32px;
+	padding-bottom : var( --spa-ver-xl2 );
 
 
 }
 .app[data-placement="top"] .main { /* What: Top Placement Main Area. Why: Under a top bar, there is no bottom bar to clear. How: This shortens its bottom padding. */
 
 
-	padding-bottom : 32px;
+	padding-bottom : var( --spa-ver-xl2 );
 
 
 }
@@ -975,7 +975,7 @@
 	.app[data-placement="bottom"] .main { /* What: Clear Wide Pill Main Area. Why: The last content should scroll clear of the pill. How: This deepens the bottom padding. */
 
 
-		padding-bottom : 110px;
+		padding-bottom : var( --spa-ver-xl6 );
 
 
 	}
@@ -1002,7 +1002,7 @@
 
 
 		--main-pad-x   : 32px;
-		padding-bottom : 110px;
+		padding-bottom : var( --spa-ver-xl6 );
 
 
 	}
@@ -1016,7 +1016,7 @@
 
 
 		--main-pad-x   : 20px;
-		padding-bottom : 32px;
+		padding-bottom : var( --spa-ver-xl2 );
 
 
 	}
@@ -1045,7 +1045,7 @@
 	gap            : 24px;
 	margin         : 0 auto;
 	max-width      : 720px;
-	padding-top    : 24px;
+	padding-top    : var( --spa-ver-xl1 );
 	position       : relative;
 
 

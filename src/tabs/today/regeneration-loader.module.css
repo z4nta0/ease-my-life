@@ -37,8 +37,8 @@
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : 10px;
-	padding               : 16px 18px;
+	margin-bottom         : var( --spa-ver-sma );
+	padding               : var( --spa-ver-bas ) 18px;
 	perspective           : 800px;
 	transition            : background .15s, opacity .2s, border-color .12s;
 	user-select           : none;

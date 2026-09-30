@@ -335,7 +335,7 @@
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
 	overflow-x         : auto;
-	padding-bottom     : 2px;
+	padding-bottom     : var( --spa-ver-xs6 );
 	scrollbar-width    : none;
 
 
@@ -379,7 +379,7 @@
 	font-weight    : 500;
 	gap            : 7px;
 	letter-spacing : -0.01em;
-	padding        : 6px 13px;
+	padding        : var( --spa-ver-xs2 ) 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 
@@ -425,7 +425,7 @@
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	min-width            : 18px;
-	padding              : 1px 6px;
+	padding              : var( --spa-ver-xs8 ) 6px;
 	text-align           : center;
 
 
@@ -489,10 +489,10 @@
 @supports (-moz-appearance: none) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
-	.picker-tabs { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds 1px of bottom padding. */
+	.picker-tabs { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
 
 
-		padding-bottom : 1px;
+		padding-bottom : var( --spa-ver-xs8 );
 
 
 	}
@@ -514,7 +514,7 @@
 	flex-shrink       : 0;
 	gap               : 1px;
 	min-width         : 132px;
-	padding           : 12px 16px;
+	padding           : var( --spa-ver-sma ) 16px;
 	scroll-snap-align : start;
 	text-align        : left;
 	transition        : border-color .12s, background .12s;
@@ -595,7 +595,7 @@
 
 	display         : flex;
 	justify-content : flex-end;
-	margin          : -2px 0 4px;
+	margin          : calc( var( --spa-ver-xs6 ) * -1 ) 0 var( --spa-ver-xs4 );
 
 
 }
@@ -624,7 +624,7 @@
 	border-radius : var(--r-md);
 	color         : var(--muted);
 	font-size     : var( --fon-siz-lar );
-	padding       : 18px 16px;
+	padding       : var( --spa-ver-lar ) 16px;
 	text-align    : center;
 
 
@@ -636,7 +636,7 @@
 	color       : var(--text);
 	font-size   : var( --fon-siz-lar );
 	font-weight : 500;
-	margin      : 0 0 6px;
+	margin      : 0 0 var( --spa-ver-xs2 );
 
 
 }
@@ -772,7 +772,7 @@
 	display         : flex;
 	gap             : 10px;
 	justify-content : space-between;
-	padding         : 14px 16px;
+	padding         : var( --spa-ver-bas ) 16px;
 	user-select     : none;
 
 
@@ -963,7 +963,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	overflow       : hidden;
-	padding        : 2px 8px;
+	padding        : var( --spa-ver-xs6 ) 8px;
 	text-align     : center;
 	text-overflow  : ellipsis;
 	text-transform : uppercase;
@@ -992,7 +992,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	gap             : 5px;
 	justify-content : center;
 	letter-spacing  : 0.04em;
-	padding         : 2px 8px;
+	padding         : var( --spa-ver-xs6 ) 8px;
 	text-transform  : uppercase;
 	transition      : color .12s, background .12s;
 	width           : 94px;
@@ -1063,7 +1063,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	--data-sort-row-border-bottom : 0.5px solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
-	--data-sort-row-padding       : 13px 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+	--data-sort-row-padding       : var( --spa-ver-bas ) 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
 	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
 	border-top                    : 0.5px solid var(--border);
 
@@ -1089,7 +1089,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display            : flex;
 	font               : inherit;
 	justify-content    : space-between;
-	padding            : 12px 16px;
+	padding            : var( --spa-ver-sma ) 16px;
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -1155,7 +1155,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.04em;
-	padding        : 13px 16px;
+	padding        : var( --spa-ver-bas ) 16px;
 	text-align     : left;
 	text-transform : uppercase;
 	width          : 100%;
@@ -1297,7 +1297,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display            : flex;
 	font               : inherit;
 	gap                : 12px;
-	padding            : 11px 16px;
+	padding            : var( --spa-ver-sma ) 16px;
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -1350,7 +1350,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : 1px 0;
+	padding        : var( --spa-ver-xs8 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -1448,8 +1448,8 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	cursor             : pointer;
 	display            : inline-flex;
 	font               : inherit;
-	margin             : -4px;
-	padding            : 4px;
+	margin             : calc( var( --spa-ver-xs4 ) * -1 ) -4px;
+	padding            : var( --spa-ver-xs4 ) 4px;
 
 
 }
@@ -1470,8 +1470,8 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	--entry-editor-padding       : 0; /* What: Editor Padding. Why: The wrapper already pads the editor. How: EntEdiCom reads this for its own padding. */
 	--rem-inline-foot-border-top : 0.5px solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0 -16px; /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
-	--rem-inline-foot-padding    : 14px 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
-	padding                      : 2px 16px 14px;
+	--rem-inline-foot-padding    : var( --spa-ver-bas ) 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
+	padding                      : var( --spa-ver-xs6 ) 16px var( --spa-ver-bas );
 
 
 }
@@ -1498,7 +1498,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	font-weight     : 500;
 	gap             : 8px;
 	justify-content : center;
-	padding         : 24px 16px;
+	padding         : var( --spa-ver-xl1 ) 16px;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
 	width           : 100%;
 

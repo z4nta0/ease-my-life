@@ -28,7 +28,7 @@
 	display         : flex;
 	inset           : 0;
 	justify-content : center;
-	padding         : 24px;
+	padding         : var( --spa-ver-xl1 ) 24px;
 	position        : fixed;
 	z-index         : 100;
 
@@ -198,7 +198,7 @@
 	flex            : 0 0 auto;
 	gap             : 12px;
 	justify-content : space-between;
-	padding         : 14px 16px 14px 20px;
+	padding         : var( --spa-ver-bas ) 16px var( --spa-ver-bas ) 20px;
 
 
 }
@@ -249,7 +249,7 @@
 
 	-webkit-overflow-scrolling : touch;
 	overflow-y                 : auto;
-	padding                    : 8px 28px 28px;
+	padding                    : var( --spa-ver-xs1 ) 28px var( --spa-ver-xl1 );
 
 
 }
@@ -259,7 +259,7 @@
 
 	font-size      : var( --fon-siz-xl2 );
 	letter-spacing : -0.02em;
-	margin         : 16px 0 0;
+	margin         : var( --spa-ver-bas ) 0 0;
 
 
 }

@@ -33,14 +33,14 @@
 	display           : flex;
 	gap               : 16px;
 	justify-content   : space-between;
-	padding           : 14px 0;
+	padding           : var( --spa-ver-bas ) 0;
 
 
 }
 .set-data-row:first-child { /* What: First Contact Trigger Row. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
 
 
-	padding-top : 4px;
+	padding-top : var( --spa-ver-xs4 );
 
 
 }
@@ -48,7 +48,7 @@
 
 
 	border-bottom  : 0;
-	padding-bottom : 4px;
+	padding-bottom : var( --spa-ver-xs4 );
 
 
 }
@@ -93,7 +93,7 @@
 	animation  : global(importMsgPop) .34s cubic-bezier(.34,1.56,.5,1) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color      : var(--accent);
 	font-size  : var( --fon-siz-bas );
-	margin-top : 2px;
+	margin-top : var( --spa-ver-xs6 );
 
 
 }
@@ -162,10 +162,10 @@
 	color         : var(--text);
 	font-family   : var(--font-sans);
 	font-size     : var( --fon-siz-lar );
-	margin-top    : 2px;
+	margin-top    : var( --spa-ver-xs6 );
 	max-width     : 360px;
 	outline       : none;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s;
 	width         : 100%;
 
@@ -278,7 +278,7 @@
 	flex-wrap       : wrap;
 	gap             : 12px;
 	justify-content : flex-end;
-	padding-top     : 14px;
+	padding-top     : var( --spa-ver-bas );
 
 
 }

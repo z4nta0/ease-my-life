@@ -28,7 +28,7 @@
 	flex-direction : column;
 	inset          : 0;
 	overflow-y     : auto;
-	padding        : 24px;
+	padding        : var( --spa-ver-xl1 ) 24px;
 	position       : fixed;
 	z-index        : 1000;
 
@@ -60,7 +60,7 @@
 	box-shadow    : 0 24px 60px -20px oklch(0 0 0/0.5);
 	margin        : auto; /* What: Card Auto Margin. Why: Center alignment on the backdrop would clip a card taller than the screen at both ends with no way to scroll to it. How: Auto margins only take up free space, so the card sits centered when it fits and falls back to top-aligned, scrollable flow when it doesn't. */
 	max-width     : 400px;
-	padding       : 28px 24px 22px;
+	padding       : var( --spa-ver-xl1 ) 24px var( --spa-ver-lar );
 	text-align    : left;
 	width         : 100%;
 
@@ -118,7 +118,7 @@
 
 	color  : var(--accent);
 	height : 54px;
-	margin : 0 auto 14px;
+	margin : 0 auto var( --spa-ver-bas );
 	width  : 54px;
 
 
@@ -142,7 +142,7 @@
 	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 600;
 	letter-spacing : -0.02em;
-	margin         : 0 0 8px;
+	margin         : 0 0 var( --spa-ver-xs1 );
 	text-align     : center;
 
 
@@ -161,7 +161,7 @@
 .ob-welcome>p+p { /* What: Following Intro Modal Paragraph. Why: Consecutive paragraphs need a gap between them. How: This adds top margin to every paragraph after the first. */
 
 
-	margin-top : 10px;
+	margin-top : var( --spa-ver-sma );
 
 
 }
@@ -176,7 +176,7 @@
 	flex-wrap       : wrap;
 	gap             : 8px;
 	justify-content : center;
-	margin          : 18px 0 4px;
+	margin          : var( --spa-ver-lar ) 0 var( --spa-ver-xs4 );
 
 
 }
@@ -191,7 +191,7 @@
 	font-family   : var(--font-mono);
 	font-size     : var( --fon-siz-bas );
 	outline       : none;
-	padding       : 5px 10px;
+	padding       : var( --spa-ver-xs3 ) 10px;
 
 
 }
@@ -207,7 +207,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 9px;
-	margin-top     : 20px;
+	margin-top     : var( --spa-ver-lar );
 
 
 }
@@ -223,7 +223,7 @@
 	font-family   : inherit;
 	font-size     : var( --fon-siz-lar );
 	font-weight   : 600;
-	padding       : 13px;
+	padding       : var( --spa-ver-bas ) 13px;
 
 
 }

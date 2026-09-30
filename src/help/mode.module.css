@@ -26,7 +26,7 @@
 .help-nav-item + .help-nav-item { /* What: Following Help Nav Item. Why: Each tab's block in the navigation tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
 
 
-	margin-top : 10px;
+	margin-top : var( --spa-ver-sma );
 
 
 }
@@ -39,7 +39,7 @@
 	align-items : center;
 	display     : flex;
 	gap         : 6px;
-	margin      : 0 0 3px;
+	margin      : 0 0 var( --spa-ver-xs5 );
 
 
 }

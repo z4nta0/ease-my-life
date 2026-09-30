@@ -131,7 +131,7 @@
 	border         : 0.5px solid var(--border);
 	border-radius  : var(--r-md);
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
-	padding        : 14px 15px;
+	padding        : var( --spa-ver-bas ) 15px;
 	pointer-events : auto;
 	position       : fixed;
 
@@ -191,7 +191,7 @@
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
-	margin         : 0 0 5px;
+	margin         : 0 0 var( --spa-ver-xs3 );
 
 
 }
@@ -201,7 +201,7 @@
 
 	font-size   : var( --fon-siz-lar );
 	font-weight : 600;
-	margin      : 0 0 5px;
+	margin      : 0 0 var( --spa-ver-xs3 );
 
 
 }
@@ -228,7 +228,7 @@
 	display         : flex;
 	gap             : 8px;
 	justify-content : space-between;
-	margin-top      : 13px;
+	margin-top      : var( --spa-ver-bas );
 
 
 }
@@ -256,7 +256,7 @@
 	cursor      : pointer;
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );
-	padding     : 4px 2px;
+	padding     : var( --spa-ver-xs4 ) 2px;
 
 
 }
@@ -271,7 +271,7 @@
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );
 	font-weight : 500;
-	padding     : 4px 2px;
+	padding     : var( --spa-ver-xs4 ) 2px;
 
 
 }
@@ -291,7 +291,7 @@
 	font-family   : inherit;
 	font-size     : var( --fon-siz-bas );
 	font-weight   : 600;
-	padding       : 8px 15px;
+	padding       : var( --spa-ver-xs1 ) 15px;
 
 
 }

@@ -70,7 +70,7 @@
 .rem-editor--stacked .rem-field { /* What: Stacked Schedule Field. Why: Each field on Today needs room around it inside the card. How: This pads the field on every side. */
 
 
-	padding : 12px 16px;
+	padding : var( --spa-ver-sma ) 16px;
 
 
 }
@@ -92,7 +92,7 @@
 
 
 	border-top  : 0.5px solid var(--border);
-	padding-top : 12px;
+	padding-top : var( --spa-ver-sma );
 
 
 }
@@ -110,7 +110,7 @@
 	justify-content         : space-between;
 	margin                  : 0 -16px;
 	min-height              : 44px;
-	padding                 : 10px 16px;
+	padding                 : var( --spa-ver-sma ) 16px;
 	row-gap                 : 8px;
 
 
@@ -203,7 +203,7 @@
 
 	clip-path : inset(50%);
 	height    : 1px;
-	margin    : -1px;
+	margin    : calc( var( --spa-ver-xs8 ) * -1 ) -1px;
 	overflow  : hidden;
 	position  : absolute;
 	width     : 1px;
@@ -217,7 +217,7 @@
 	color       : oklch(0.45 0.13 50); /* What: Darkened Warm Text. Why: The raw warm color doesn't reach AA contrast at this size. How: This darkens it until it does. */
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
-	margin      : 8px 0 0;
+	margin      : var( --spa-ver-xs1 ) 0 0;
 	max-width   : 52ch;
 
 
@@ -295,7 +295,7 @@
 	color          : var(--text);
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
-	padding        : 2px 6px;
+	padding        : var( --spa-ver-xs6 ) 6px;
 	vertical-align : baseline;
 
 
@@ -396,10 +396,10 @@
 	color         : var(--text);
 	font-family   : var(--font-sans);
 	font-size     : var( --fon-siz-lar );
-	margin-top    : 2px;
+	margin-top    : var( --spa-ver-xs6 );
 	max-width     : 360px;
 	outline       : none;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s;
 	width         : 100%;
 

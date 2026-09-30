@@ -43,7 +43,7 @@
 
 
 	border-top  : 0.5px solid var(--border);
-	padding-top : 28px;
+	padding-top : var( --spa-ver-xl1 );
 
 
 }
@@ -64,7 +64,7 @@
 	.group-section:not(:first-child) { /* What: Tighter Following Reminders Section. Why: The divider needs less room. How: This shrinks the padding above the section. */
 
 
-		padding-top : 20px;
+		padding-top : var( --spa-ver-lar );
 
 
 	}
@@ -367,8 +367,8 @@
 	color         : oklch(0.45 0.13 50);
 	font-size     : var( --fon-siz-bas );
 	line-height   : var( --ver-rhy-bas );
-	margin        : 0 0 8px;
-	padding       : 9px 12px;
+	margin        : 0 0 var( --spa-ver-xs1 );
+	padding       : var( --spa-ver-xs1 ) 12px;
 
 
 }
@@ -447,7 +447,7 @@
 	animation   : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display     : flex;
 	gap         : 8px;
-	padding     : 4px 2px 8px;
+	padding     : var( --spa-ver-xs4 ) 2px var( --spa-ver-xs1 );
 
 
 }
@@ -480,7 +480,7 @@
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s;
 	width         : 100%;
 
@@ -526,13 +526,13 @@
 
 	--rem-inline-foot-border-top : 0.5px solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0; /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
-	--rem-inline-foot-padding    : 14px 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
+	--rem-inline-foot-padding    : var( --spa-ver-bas ) 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
 	animation                    : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                   : oklch(from var(--surface) calc(l - 0.006) c h);
 	border                       : 0.5px solid var(--border);
 	border-radius                : var(--r-md);
-	margin                       : 0 0 4px;
-	padding                      : 16px 0;
+	margin                       : 0 0 var( --spa-ver-xs4 );
+	padding                      : var( --spa-ver-bas ) 0;
 
 
 }
@@ -560,7 +560,7 @@
 	gap             : 8px;
 	justify-content : flex-end;
 	margin-top      : 0;
-	padding         : 14px 16px 0;
+	padding         : var( --spa-ver-bas ) 16px 0;
 
 
 }
@@ -584,8 +584,8 @@
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : 10px;
-	padding               : 16px 18px;
+	margin-bottom         : var( --spa-ver-sma );
+	padding               : var( --spa-ver-bas ) 18px;
 	perspective           : 800px;
 	transition            : background .15s, opacity .2s, border-color .12s;
 	user-select           : none;
@@ -771,11 +771,11 @@
 	from {
 
 
-		margin-bottom  : 10px;
+		margin-bottom  : var( --spa-ver-sma );
 		max-height     : 140px;
 		opacity        : 1;
-		padding-bottom : 16px;
-		padding-top    : 16px;
+		padding-bottom : var( --spa-ver-bas );
+		padding-top    : var( --spa-ver-bas );
 		transform      : none;
 
 
@@ -1006,7 +1006,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
-	padding        : 1px 0;
+	padding        : var( --spa-ver-xs8 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -1133,8 +1133,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	flex-wrap       : wrap;
 	gap             : 16px;
 	justify-content : space-between;
-	margin          : -4px 0 4px;
-	padding         : 14px 16px;
+	margin          : calc( var( --spa-ver-xs4 ) * -1 ) 0 var( --spa-ver-xs4 );
+	padding         : var( --spa-ver-bas ) 16px;
 
 
 }

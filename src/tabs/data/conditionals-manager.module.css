@@ -58,7 +58,7 @@
 	display         : flex;
 	gap             : 10px;
 	justify-content : space-between;
-	padding         : 14px 16px;
+	padding         : var( --spa-ver-bas ) 16px;
 	user-select     : none;
 
 
@@ -191,7 +191,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	--data-sort-row-border-bottom : 0.5px solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
-	--data-sort-row-padding       : 13px 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+	--data-sort-row-padding       : var( --spa-ver-bas ) 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
 	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
 	border-top                    : 0.5px solid var(--border);
 
@@ -211,7 +211,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.04em;
-	padding        : 13px 16px;
+	padding        : var( --spa-ver-bas ) 16px;
 	text-align     : left;
 	text-transform : uppercase;
 	width          : 100%;
@@ -245,7 +245,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
-	padding     : 12px 14px 14px;
+	padding     : var( --spa-ver-sma ) 14px var( --spa-ver-bas );
 	text-wrap   : pretty;
 
 
@@ -285,7 +285,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display            : flex;
 	font               : inherit;
 	gap                : 12px;
-	padding            : 11px 16px;
+	padding            : var( --spa-ver-sma ) 16px;
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -338,7 +338,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : 1px 0;
+	padding        : var( --spa-ver-xs8 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -437,8 +437,8 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	cursor             : pointer;
 	display            : inline-flex;
 	font               : inherit;
-	margin             : -4px;
-	padding            : 4px;
+	margin             : calc( var( --spa-ver-xs4 ) * -1 ) -4px;
+	padding            : var( --spa-ver-xs4 ) 4px;
 
 
 }
@@ -480,7 +480,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	color        : oklch(0.5 0.18 25);
 	font-size    : var( --fon-siz-bas );
 	line-height  : var( --ver-rhy-bas );
-	margin       : 0 0 12px;
+	margin       : 0 0 var( --spa-ver-sma );
 	padding-left : 16px;
 
 
@@ -498,7 +498,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	flex-direction : column;
 	gap            : 12px;
 	margin         : 0;
-	padding        : 14px 16px 16px;
+	padding        : var( --spa-ver-bas ) 16px var( --spa-ver-bas );
 
 
 }

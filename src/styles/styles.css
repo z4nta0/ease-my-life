@@ -430,7 +430,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	border      : 0;
 	clip-path   : inset(50%);
 	height      : 1px;
-	margin      : -1px;
+	margin      : calc( var( --spa-ver-xs8 ) * -1 ) -1px;
 	overflow    : hidden;
 	padding     : 0;
 	position    : absolute;
@@ -487,11 +487,11 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 		border-bottom-width : 0.5px;
 		border-top-width    : 0.5px;
-		margin-bottom       : 10px;
+		margin-bottom       : var( --spa-ver-sma );
 		max-height          : 200px;
 		opacity             : 1;
-		padding-bottom      : 16px;
-		padding-top         : 16px;
+		padding-bottom      : var( --spa-ver-bas );
+		padding-top         : var( --spa-ver-bas );
 		transform           : translateX(0);
 
 
@@ -500,11 +500,11 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	50% {
 
 
-		margin-bottom  : 10px;
+		margin-bottom  : var( --spa-ver-sma );
 		max-height     : 200px;
 		opacity        : 0;
-		padding-bottom : 16px;
-		padding-top    : 16px;
+		padding-bottom : var( --spa-ver-bas );
+		padding-top    : var( --spa-ver-bas );
 		transform      : translateX(-18px);
 
 

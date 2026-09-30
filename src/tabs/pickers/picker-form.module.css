@@ -70,7 +70,7 @@
 	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	margin         : 4px 0 0;
+	margin         : var( --spa-ver-xs4 ) 0 0;
 
 
 }
@@ -87,7 +87,7 @@
 	align-items : center;
 	display     : flex;
 	gap         : 10px;
-	margin      : 2px 0 4px;
+	margin      : var( --spa-ver-xs6 ) 0 var( --spa-ver-xs4 );
 
 
 }
@@ -104,7 +104,7 @@
 	cursor      : pointer;
 	display     : inline-flex;
 	gap         : 8px;
-	padding     : 2px;
+	padding     : var( --spa-ver-xs6 ) 2px;
 
 
 }
@@ -243,14 +243,14 @@
 .picker-hint + .picker-hint { /* What: Following Step Hint. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
 
 
-	margin-top : 8px;
+	margin-top : var( --spa-ver-xs1 );
 
 
 }
-.np-weight-note { /* What: Mode Note. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up 2px. */
+.np-weight-note { /* What: Mode Note. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up by extra small 6 vertical spacing (about 2px). */
 
 
-	margin-top : -2px;
+	margin-top : calc( var( --spa-ver-xs6 ) * -1 );
 
 
 }
@@ -265,7 +265,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 24px;
-	margin-top     : 16px;
+	margin-top     : var( --spa-ver-bas );
 
 
 }
@@ -298,10 +298,10 @@ fieldset.np-field { /* What: Mode Fieldset. Why: The mode radio is a real fields
 
 
 }
-.np-tour-name { /* What: Tour Name Field. Why: The Items step's name field, shown during the tour, needs room above and below. How: This adds 16px margins. */
+.np-tour-name { /* What: Tour Name Field. Why: The Items step's name field, shown during the tour, needs room above and below. How: This adds base vertical spacing margins. */
 
 
-	margin : 16px 0 16px;
+	margin : var( --spa-ver-bas ) 0 var( --spa-ver-bas );
 
 
 }
@@ -368,10 +368,10 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color         : var(--text);
 	font-family   : var(--font-sans);
 	font-size     : var( --fon-siz-lar );
-	margin-top    : 2px;
+	margin-top    : var( --spa-ver-xs6 );
 	max-width     : 360px;
 	outline       : none;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s;
 	width         : 100%;
 
@@ -423,7 +423,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display    : flex;
 	flex-wrap  : wrap;
 	gap        : 8px;
-	margin-top : 2px;
+	margin-top : var( --spa-ver-xs6 );
 
 
 }
@@ -441,7 +441,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-size     : var( --fon-siz-lar );
 	font-weight   : 500;
 	gap           : 5px;
-	padding       : 7px 14px;
+	padding       : var( --spa-ver-xs2 ) 14px;
 	transition    : border-color .12s, background .12s, color .12s;
 
 
@@ -520,7 +520,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	cursor        : pointer;
 	display       : flex;
 	gap           : 10px;
-	padding       : 10px 12px;
+	padding       : var( --spa-ver-sma ) 12px;
 	transition    : border-color .12s, background .12s;
 
 
@@ -570,7 +570,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border             : 1px solid var(--border);
 	border-radius      : 50%;
 	height             : 14px;
-	margin-top         : 2px;
+	margin-top         : var( --spa-ver-xs6 );
 	min-width          : 14px;
 	position           : relative;
 	transition         : border-color .12s;
@@ -631,7 +631,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .mode-opt-hint + .mode-opt-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
-	margin-top : 6px;
+	margin-top : var( --spa-ver-xs2 );
 
 
 }
@@ -653,7 +653,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	flex-direction  : row;
 	gap             : 20px;
 	justify-content : space-between;
-	padding-top     : 20px;
+	padding-top     : var( --spa-ver-lar );
 
 
 }
@@ -685,7 +685,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	cursor        : pointer;
 	flex-shrink   : 0;
 	height        : 20px;
-	margin-top    : 2px;
+	margin-top    : var( --spa-ver-xs6 );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -763,7 +763,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display        : flex;
 	flex-direction : column;
 	gap            : 14px;
-	padding-top    : 12px;
+	padding-top    : var( --spa-ver-sma );
 
 
 }
@@ -781,7 +781,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	gap                : 8px;
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	overflow-x         : auto;
-	padding-bottom     : 2px;
+	padding-bottom     : var( --spa-ver-xs6 );
 	scrollbar-width    : none;
 
 
@@ -823,7 +823,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	gap             : 3px;
 	justify-content : center;
 	min-width       : 132px;
-	padding         : 10px 14px;
+	padding         : var( --spa-ver-sma ) 14px;
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
 
@@ -930,7 +930,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display        : flex;
 	flex-direction : column;
 	gap            : 22px;
-	padding        : 18px 0 0 0;
+	padding        : var( --spa-ver-lar ) 0 0 0;
 
 
 }
@@ -981,7 +981,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color         : var(--accent);
 	cursor        : pointer;
 	font-size     : var( --fon-siz-bas );
-	padding       : 4px 6px;
+	padding       : var( --spa-ver-xs4 ) 6px;
 
 
 }
@@ -1030,21 +1030,21 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display         : flex;
 	gap             : 16px;
 	justify-content : space-between;
-	padding-top     : 16px;
+	padding-top     : var( --spa-ver-bas );
 
 
 }
-.np-pool + .np-footer { /* What: Items Footer. Why: The Items footer needs room below the pool. How: This spaces it 20px down. */
+.np-pool + .np-footer { /* What: Items Footer. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
 
 
-	margin-top : 20px;
+	margin-top : var( --spa-ver-lar );
 
 
 }
-.np-footer--step1 { /* What: Details Footer. Why: The Details footer needs room below the fields. How: This spaces it 24px down. */
+.np-footer--step1 { /* What: Details Footer. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
 
 
-	margin-top : 24px;
+	margin-top : var( --spa-ver-xl1 );
 
 
 }
@@ -1086,7 +1086,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display        : flex;
 	flex-direction : column;
 	gap            : 8px;
-	margin-top     : 20px;
+	margin-top     : var( --spa-ver-lar );
 
 
 }
@@ -1100,7 +1100,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color         : var(--muted);
 	font-size     : var( --fon-siz-lar );
 	line-height   : var( --ver-rhy-bas );
-	padding       : 18px 16px;
+	padding       : var( --spa-ver-lar ) 16px;
 	text-wrap     : pretty;
 
 
@@ -1131,7 +1131,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : 1fr auto auto auto auto;
-	padding               : 18px 16px;
+	padding               : var( --spa-ver-lar ) 16px;
 
 
 }
@@ -1546,7 +1546,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display            : flex;
 	font               : inherit;
 	gap                : 12px;
-	padding            : 11px 16px;
+	padding            : var( --spa-ver-sma ) 16px;
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -1578,7 +1578,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : 1px 0;
+	padding        : var( --spa-ver-xs8 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -1629,7 +1629,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	--entry-editor-margin        : 0;
 	--entry-editor-padding       : 0;
 	border-top                   : 0.5px solid var(--border);
-	padding                      : 2px 16px 14px;
+	padding                      : var( --spa-ver-xs6 ) 16px var( --spa-ver-bas );
 
 
 }
@@ -1653,7 +1653,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-weight     : 500;
 	gap             : 6px;
 	justify-content : center;
-	padding         : 10px 14px;
+	padding         : var( --spa-ver-sma ) 14px;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
 	width           : 100%;
 

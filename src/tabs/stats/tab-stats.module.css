@@ -241,11 +241,11 @@
 
 /* #region section-sub */
 
-.section-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline, set a little below the title row. How: This sets it muted with a capped line length and an 18px top margin. */
+.section-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline, set a little below the title row. How: This sets it muted with a capped line length and a large vertical spacing top margin. */
 
 
 	color     : var(--muted);
-	margin    : 18px 0 0;
+	margin    : var( --spa-ver-lar ) 0 0;
 	max-width : 52ch;
 
 
@@ -347,7 +347,7 @@
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
 	overflow-x         : auto;
-	padding-bottom     : 2px;
+	padding-bottom     : var( --spa-ver-xs6 );
 	scrollbar-width    : none;
 
 
@@ -391,7 +391,7 @@
 	font-weight    : 500;
 	gap            : 7px;
 	letter-spacing : -0.01em;
-	padding        : 6px 13px;
+	padding        : var( --spa-ver-xs2 ) 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 
@@ -437,7 +437,7 @@
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	min-width            : 18px;
-	padding              : 1px 6px;
+	padding              : var( --spa-ver-xs8 ) 6px;
 	text-align           : center;
 
 
@@ -501,10 +501,10 @@
 @supports (-moz-appearance: none) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
-	.picker-tabs { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds 1px of bottom padding. */
+	.picker-tabs { /* What: Padded Show Tab Strip. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
 
 
-		padding-bottom : 1px;
+		padding-bottom : var( --spa-ver-xs8 );
 
 
 	}
@@ -526,7 +526,7 @@
 	flex-shrink       : 0;
 	gap               : 1px;
 	min-width         : 132px;
-	padding           : 12px 16px;
+	padding           : var( --spa-ver-sma ) 16px;
 	scroll-snap-align : start;
 	text-align        : left;
 	transition        : border-color .12s, background .12s;
@@ -611,7 +611,7 @@
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
 	overflow-x         : auto;
-	padding-bottom     : 2px;
+	padding-bottom     : var( --spa-ver-xs6 );
 	scrollbar-width    : none;
 
 
@@ -663,7 +663,7 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
-	padding        : 6px 13px;
+	padding        : var( --spa-ver-xs2 ) 13px;
 	transition     : border-color .12s, background .12s, color .12s;
 	white-space    : nowrap;
 
@@ -743,7 +743,7 @@
 
 
 	--pill-align-self : flex-start; /* What: Pill Align Self. Why: The column would otherwise stretch the pill to full width. How: PilTagCom reads this for its own align-self. */
-	--pill-margin-top : 4px; /* What: Pill Margin Top. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
+	--pill-margin-top : var( --spa-ver-xs4 ); /* What: Pill Margin Top. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
 	display           : flex;
 	flex-direction    : column;
 	gap               : 2px;
@@ -757,7 +757,7 @@
 	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	margin         : 6px 0 0;
+	margin         : var( --spa-ver-xs2 ) 0 0;
 
 
 }
@@ -767,7 +767,7 @@
 
 	color     : var(--muted);
 	font-size : var( --fon-siz-lar );
-	margin    : 8px 0 0;
+	margin    : var( --spa-ver-xs1 ) 0 0;
 	max-width : 56ch;
 	text-wrap : pretty;
 
@@ -823,7 +823,7 @@
 .stat-row > .stat-card { /* What: Stat Card. Why: A headline number needs a tighter card than the default, with room for its corner icon. How: This trims the card's padding and positions it for the icon, scoped to the row so it wins over the card's own padding. */
 
 
-	padding  : 14px 16px;
+	padding  : var( --spa-ver-bas ) 16px;
 	position : relative;
 
 
@@ -860,7 +860,7 @@
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
-	margin-top     : 8px;
+	margin-top     : var( --spa-ver-xs1 );
 	text-transform : uppercase;
 
 
@@ -880,7 +880,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 14px;
-	margin-top     : 12px;
+	margin-top     : var( --spa-ver-sma );
 
 
 }
@@ -952,7 +952,7 @@
 	display       : flex;
 	font-size     : var( --fon-siz-lar );
 	gap           : 10px;
-	padding       : 9px 0;
+	padding       : var( --spa-ver-xs1 ) 0;
 
 
 }
@@ -1022,7 +1022,7 @@
 	align-items     : center;
 	display         : flex;
 	justify-content : space-between;
-	margin-bottom   : 14px;
+	margin-bottom   : var( --spa-ver-bas );
 
 
 }
@@ -1070,7 +1070,7 @@
 	display         : flex;
 	gap             : 18px;
 	justify-content : center;
-	margin-bottom   : 14px;
+	margin-bottom   : var( --spa-ver-bas );
 
 
 }
@@ -1325,7 +1325,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
-	margin         : 14px 0 0;
+	margin         : var( --spa-ver-bas ) 0 0;
 	text-transform : uppercase;
 
 
@@ -1339,8 +1339,8 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	border-top  : 0.5px solid var(--border);
-	margin-top  : 16px;
-	padding-top : 14px;
+	margin-top  : var( --spa-ver-bas );
+	padding-top : var( --spa-ver-bas );
 
 
 }
@@ -1354,7 +1354,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	margin-bottom   : 8px;
+	margin-bottom   : var( --spa-ver-xs1 );
 
 
 }
@@ -1403,7 +1403,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-size       : var( --fon-siz-lar );
 	gap             : 12px;
 	justify-content : space-between;
-	padding         : 7px 0;
+	padding         : var( --spa-ver-xs2 ) 0;
 
 
 }
@@ -1473,7 +1473,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	flex-wrap       : wrap;
 	gap             : 16px;
 	justify-content : space-between;
-	margin-bottom   : 12px;
+	margin-bottom   : var( --spa-ver-sma );
 
 
 }
@@ -1531,7 +1531,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	display        : flex;
 	flex-direction : column;
 	list-style     : none;
-	margin         : 4px 0 0;
+	margin         : var( --spa-ver-xs4 ) 0 0;
 	padding        : 0;
 
 
@@ -1544,7 +1544,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	padding         : 9px 0;
+	padding         : var( --spa-ver-xs1 ) 0;
 
 
 }
@@ -1659,7 +1659,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-size      : var( --fon-siz-bas );
 	gap            : 5px;
 	letter-spacing : 0.04em;
-	padding        : 5px 10px;
+	padding        : var( --spa-ver-xs3 ) 10px;
 	text-transform : uppercase;
 	transition     : border-color .12s, color .12s;
 	white-space    : nowrap;
@@ -1704,11 +1704,11 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	display            : flex;
 	flex-wrap          : nowrap;
 	gap                : 6px;
-	margin             : 12px 0 4px;
+	margin             : var( --spa-ver-sma ) 0 var( --spa-ver-xs4 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
 	overflow-x         : auto;
-	padding-bottom     : 2px;
+	padding-bottom     : var( --spa-ver-xs6 );
 	scrollbar-width    : none;
 
 
@@ -1747,7 +1747,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
-	padding        : 5px 11px;
+	padding        : var( --spa-ver-xs3 ) 11px;
 	transition     : border-color .12s, background .12s, color .12s;
 
 
@@ -1793,7 +1793,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
-	margin      : 12px 0 0;
+	margin      : var( --spa-ver-sma ) 0 0;
 	text-wrap   : pretty;
 
 
@@ -1896,21 +1896,21 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	display        : flex;
 	flex-direction : column;
-	margin-top     : 8px;
+	margin-top     : var( --spa-ver-xs1 );
 
 
 }
-.rank--freq { /* What: Unit Rank List. Why: A list under a unit note needs more room above. How: This spaces it 14px down. */
+.rank--freq { /* What: Unit Rank List. Why: A list under a unit note needs more room above. How: This spaces it base vertical spacing down. */
 
 
-	margin-top : 14px;
+	margin-top : var( --spa-ver-bas );
 
 
 }
-.rank--breakdown { /* What: Breakdown Rank List. Why: A breakdown list sits under its note and pills. How: This spaces it 14px down. */
+.rank--breakdown { /* What: Breakdown Rank List. Why: A breakdown list sits under its note and pills. How: This spaces it base vertical spacing down. */
 
 
-	margin-top : 14px;
+	margin-top : var( --spa-ver-bas );
 
 
 }
@@ -1923,7 +1923,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-size       : var( --fon-siz-lar );
 	gap             : 12px;
 	justify-content : space-between;
-	padding         : 13px 0;
+	padding         : var( --spa-ver-bas ) 0;
 
 
 }
@@ -2022,7 +2022,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
-	padding        : 1px 6px;
+	padding        : var( --spa-ver-xs8 ) 6px;
 	text-transform : uppercase;
 
 
@@ -2236,7 +2236,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	padding         : 13px 0;
+	padding         : var( --spa-ver-bas ) 0;
 
 
 }
@@ -2307,7 +2307,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
-	padding        : 2px 7px;
+	padding        : var( --spa-ver-xs6 ) 7px;
 	text-transform : uppercase;
 
 
@@ -2336,8 +2336,8 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	display         : flex;
 	gap             : 14px;
 	justify-content : flex-end;
-	margin-top      : 16px;
-	padding-top     : 14px;
+	margin-top      : var( --spa-ver-bas );
+	padding-top     : var( --spa-ver-bas );
 
 
 }
@@ -2431,7 +2431,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	color     : var(--muted);
 	font-size : var( --fon-siz-lar );
-	padding   : 14px 2px;
+	padding   : var( --spa-ver-bas ) 2px;
 
 
 }
@@ -2441,7 +2441,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	color     : var(--muted);
 	font-size : var( --fon-siz-lar );
-	padding   : 6px 0;
+	padding   : var( --spa-ver-xs2 ) 0;
 
 
 }
