@@ -2043,13 +2043,13 @@
 
 
 }
-.btn--sm { /* What: Small Tip Button. Why: The onboarding card's button is compact. How: This shrinks its padding and gap, keeping the base height for now. */
+.btn--sm { /* What: Small Tip Button. Why: The onboarding card's button is compact. How: This drops its height one rhythm step and shrinks its padding and gap. */
 
 
 	border-radius : 999px;
 	font-size     : var( --fon-siz-lar );
 	gap           : 5px;
-	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height        : calc( var( --ver-rhy-xl1 ) * 1rem );
 	padding       : 0 11px;
 
 
