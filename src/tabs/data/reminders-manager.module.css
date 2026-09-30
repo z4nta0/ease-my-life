@@ -61,7 +61,8 @@
 	display         : flex;
 	gap             : 10px;
 	justify-content : space-between;
-	padding         : var( --spa-ver-bas ) 16px;
+	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding         : var( --spa-ver-sma ) 16px;
 	user-select     : none;
 
 

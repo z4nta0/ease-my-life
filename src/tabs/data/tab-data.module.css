@@ -772,7 +772,8 @@
 	display         : flex;
 	gap             : 10px;
 	justify-content : space-between;
-	padding         : var( --spa-ver-bas ) 16px;
+	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding         : var( --spa-ver-sma ) 16px;
 	user-select     : none;
 
 
@@ -1484,24 +1485,24 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 
 
 
-.cat-create-btn { /* What: Create Picker Button. Why: Creating a picker reads as a dashed placeholder at the end of the list. How: This draws a full-width dashed button with a centered icon and label that fades to the accent on hover. */
+.cat-create-btn { /* What: Create Picker Button. Why: Creating a picker reads as a dashed placeholder at the end of the list. How: This draws a dashed button the size of a collapsed row, stretched across the list, with a centered icon and label that fades to the accent on hover. */
 
 
 	align-items     : center;
 	background      : none;
-	border          : var( --bor-wid-bas ) dashed var(--border);
+	border          : var( --bor-wid-sma ) dashed var(--border);
 	border-radius   : var(--r-md);
+	box-sizing      : content-box; /* What: Content Box Sizing. Why: The button must total exactly the height of a collapsed row card, whose border sits outside its header. How: This puts the border outside the rhythm height, so both add the same snapped border to the same height. */
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : flex;
 	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 8px;
-	height          : calc( var( --ver-rhy-xl5 ) * 1rem );
+	height          : calc( var( --ver-rhy-xl4 ) * 1rem );
 	justify-content : center;
 	padding         : 0 16px;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
-	width           : 100%;
 
 
 }
