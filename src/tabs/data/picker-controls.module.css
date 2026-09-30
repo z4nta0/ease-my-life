@@ -475,7 +475,7 @@
 	color         : var(--text);
 	font-family   : inherit;
 	font-size     : var( --fon-siz-lar );
-	height        : 32px;
+	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
 	outline       : none;
 	padding       : 0 10px;
 	width         : 130px;

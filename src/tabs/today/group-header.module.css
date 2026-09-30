@@ -108,12 +108,13 @@
 	font-family      : inherit;
 	font-size        : var( --fon-siz-xl1 );
 	font-weight      : 500;
+	height           : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing   : -0.015em;
 	margin           : calc( var( --spa-ver-xs5 ) * -1 ) 0;
 	max-width        : 240px;
 	min-width        : 0;
 	outline          : none;
-	padding          : var( --spa-ver-xs6 ) 8px;
+	padding          : 0 8px;
 	transform-origin : left center;
 	width            : auto;
 

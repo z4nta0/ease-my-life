@@ -396,10 +396,11 @@
 	color         : var(--text);
 	font-family   : var(--font-sans);
 	font-size     : var( --fon-siz-lar );
+	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
 	margin-top    : var( --spa-ver-xs6 );
 	max-width     : 360px;
 	outline       : none;
-	padding       : var( --spa-ver-sma ) 12px;
+	padding       : 0 12px;
 	transition    : border-color .12s;
 	width         : 100%;
 
