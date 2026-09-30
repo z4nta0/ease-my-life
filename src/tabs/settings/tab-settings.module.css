@@ -727,6 +727,20 @@
 
 
 }
+@container app (max-width: 480px) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 480px wide or less. */
+
+
+	.set-data-row--stack { /* What: Stacked Settings Row. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
+
+
+		align-items    : flex-start;
+		flex-direction : column;
+
+
+	}
+
+
+}
 
 /* #region set-data-info */
 
@@ -808,6 +822,19 @@
 
 
 	max-width : 190px;
+
+
+}
+@container app (max-width: 480px) { /* What: Narrow Stacked Layout Description. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 480px wide or less. */
+
+
+	.set-data-row--stack .set-layout-sub { /* What: Full Width Layout Description. Why: The stacked description can use the row's full width. How: This lifts the 190px cap. */
+
+
+		max-width : none;
+
+
+	}
 
 
 }

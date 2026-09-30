@@ -1555,10 +1555,10 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<div
-									className={ cssModObj.setDataRow }
+									className={` ${ cssModObj.setDataRow }   ${ cssModObj.setDataRowStack } `}
 
 									data-element-name-hook='setRowDiv'
-								>{ /* What: Layout Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+								>{ /* What: Layout Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control, stacking them on a narrow app so the description gets the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 									<div className={ cssModObj.setDataInfo }>{ /* What: Layout Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
@@ -1918,10 +1918,10 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<div
-								className={ cssModObj.setDataRow }
+								className={` ${ cssModObj.setDataRow }   ${ cssModObj.setDataRowStack } `}
 
 								data-element-name-hook='stoRowDiv'
-							>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block, stacking them on a narrow app so the facts get the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className={ cssModObj.setDataInfo }>{ /* What: Store Info Div Element. Why: The row's own name, description, fact chips, and any persist-result message all need their own grouping. How: This wraps the name span, the description span, the facts span, and (conditionally) the persist-message span. */ }
