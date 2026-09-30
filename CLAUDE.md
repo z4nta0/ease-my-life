@@ -2261,6 +2261,14 @@ are renamed to this as their files come up in the design-system pass.
   a mirrored set of negative tokens. The core design numbers' own negative
   tokens (`--cdn-pow-001-neg`, ...) are the one exception, since they're
   the raw numbers other values draw from.
+- **Border widths use the rhythm too** (decided 2026-09-30), even though
+  browsers snap them to whole pixels (Chromium rounds down to whole CSS
+  pixels, with a 1px minimum), so the intent stays visible in the value:
+  `--bor-wid-sma` (`xs11`, about 0.499px, the hairline), `--bor-wid-bas`
+  (`xs8`, about 1.160px), `--bor-wid-lar` (`xs6`, about 2.035px), and
+  `--bor-wid-xl1` (`xs4`, about 3.571px), each a rhythm step times 1rem. A
+  step is picked so it snaps to the intended width: `xs5` (about 2.696px)
+  would draw as 2px, so 3px takes `xs4`.
 - **Breakpoints stay literal numbers**, since a custom property can't be
   read inside an `@media` or `@container` condition, but their values still
   come from the scale the design system defines.
