@@ -1497,8 +1497,9 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 8px;
+	height          : calc( var( --ver-rhy-xl5 ) * 1rem );
 	justify-content : center;
-	padding         : var( --spa-ver-xl1 ) 16px;
+	padding         : 0 16px;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
 	width           : 100%;
 

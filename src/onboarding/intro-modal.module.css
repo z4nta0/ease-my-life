@@ -223,7 +223,8 @@
 	font-family   : inherit;
 	font-size     : var( --fon-siz-lar );
 	font-weight   : 600;
-	padding       : var( --spa-ver-bas ) 13px;
+	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
+	padding       : 0 13px;
 
 
 }

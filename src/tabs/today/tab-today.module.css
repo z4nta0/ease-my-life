@@ -1598,9 +1598,10 @@
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 600;
 	gap             : 8px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	letter-spacing  : -0.005em;
-	padding         : var( --spa-ver-sma ) 12px;
+	padding         : 0 12px;
 	transition      : color .12s, border-color .12s, background .12s;
 	width           : 100%;
 
