@@ -146,12 +146,26 @@
 
 
 
-	/* #region Font Tokens */
+	/* #region Font Family Tokens */
 
 	--font-mono : 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
 	--font-sans : 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-	/* #endregion Font Tokens */
+	/* #endregion Font Family Tokens */
+
+
+
+	/* #region Font Size Tokens */
+
+	--fon-siz-bas : 11px; /* What: Font Size Base ~= 11px. Why: This is the smallest font size accessibility tools accept, and every other step multiplies it. How: Each step above reads it as its starting point. */
+	--fon-siz-lar : calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) ); /* What: Font Size Large ~= 14.572px. Why: This is one step up the scale from the base. How: This multiplies the base by the first power of the core design number. */
+	--fon-siz-xl2 : calc( var( --fon-siz-bas ) * var( --cdn-pow-003 ) ); /* What: Font Size Extra Large 2 ~= 25.572px. Why: This is three steps up the scale from the base. How: This multiplies the base by the third power of the core design number. */
+	--fon-siz-xl3 : calc( var( --fon-siz-bas ) * var( --cdn-pow-004 ) ); /* What: Font Size Extra Large 3 ~= 33.876px. Why: This is four steps up the scale from the base. How: This multiplies the base by the fourth power of the core design number. */
+	--fon-siz-xl4 : calc( var( --fon-siz-bas ) * var( --cdn-pow-005 ) ); /* What: Font Size Extra Large 4 ~= 44.876px. Why: This is five steps up the scale from the base. How: This multiplies the base by the fifth power of the core design number. */
+	--fon-siz-xl5 : calc( var( --fon-siz-bas ) * var( --cdn-pow-006 ) ); /* What: Font Size Extra Large 5 ~= 59.447px. Why: This is six steps up the scale from the base. How: This multiplies the base by the sixth power of the core design number. */
+	--fon-siz-xla : calc( var( --fon-siz-bas ) * var( --cdn-pow-002 ) ); /* What: Font Size Extra Large ~= 19.304px. Why: This is two steps up the scale from the base. How: This multiplies the base by the second power of the core design number. */
+
+	/* #endregion Font Size Tokens */
 
 
 
