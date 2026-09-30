@@ -377,7 +377,7 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -513,7 +513,7 @@
 
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global Entrance Keyframes. Why: The pickerTabEnter keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--surface);
-	border            : 0.5px solid var(--border);
+	border            : var( --bor-wid-sma ) solid var(--border);
 	border-radius     : var(--r-md);
 	display           : flex;
 	flex-direction    : column;

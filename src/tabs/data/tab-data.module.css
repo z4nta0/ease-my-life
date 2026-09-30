@@ -369,7 +369,7 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -507,7 +507,7 @@
 
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--surface);
-	border            : 0.5px solid var(--border);
+	border            : var( --bor-wid-sma ) solid var(--border);
 	border-radius     : var(--r-md);
 	display           : flex;
 	flex-direction    : column;
@@ -620,7 +620,7 @@
 
 
 	background    : oklch(from var(--surface) l c h / 0.5);
-	border        : 1px dashed var(--border);
+	border        : var( --bor-wid-bas ) dashed var(--border);
 	border-radius : var(--r-md);
 	color         : var(--muted);
 	font-size     : var( --fon-siz-lar );
@@ -664,7 +664,7 @@
 
 	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--surface);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-md);
 	overflow      : hidden;
 
@@ -742,7 +742,7 @@
 
 
 	animation      : global(obTourFade) 1.8s ease-in-out infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Pickers tab's tour target, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	outline        : 2px solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--accent);
 	outline-offset : -2px;
 
 
@@ -955,7 +955,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-mode-label { /* What: Category Tag. Why: The picker's mode and group read as matching fixed-width tags. How: This sets each in a small outlined mono capsule 94px wide, ending in an ellipsis when its text runs out of room. */
 
 
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	flex           : 0 0 auto;
@@ -983,7 +983,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items     : center;
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 999px;
 	color           : var(--muted);
 	display         : inline-flex;
@@ -1062,10 +1062,10 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-body { /* What: Category Body. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
 
 
-	--data-sort-row-border-bottom : 0.5px solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--data-sort-row-border-bottom : var( --bor-wid-sma ) solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
 	--data-sort-row-padding       : var( --spa-ver-bas ) 16px; /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
 	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
-	border-top                    : 0.5px solid var(--border);
+	border-top                    : var( --bor-wid-sma ) solid var(--border);
 
 
 }
@@ -1079,7 +1079,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	align-items        : center;
 	appearance         : none;
 	background         : oklch(from var(--surface) calc(l - 0.012) c h);
-	border-bottom      : 0.5px solid var(--border);
+	border-bottom      : var( --bor-wid-sma ) solid var(--border);
 	border-left        : 0;
 	border-radius      : 0;
 	border-right       : 0;
@@ -1099,7 +1099,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-ctl ~ .rd-ctl { /* What: Following Section Toggle. Why: The Items toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
 
 
-	border-top : 0.5px solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--border);
 
 
 }
@@ -1148,7 +1148,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items    : center;
-	border-bottom  : 0.5px solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	color          : var(--muted);
 	display        : flex;
 	font-family    : var(--font-mono);
@@ -1187,7 +1187,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item { /* What: Item Item. Why: Each item is divided from the next. How: This draws a hairline under every item but the last. */
 
 
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 
 
 }
@@ -1222,9 +1222,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	animation     : obTourFadeBorder 1.8s ease-in-out infinite;
-	border-bottom : 2px solid var(--accent);
-	border-left   : 2px solid var(--accent);
-	border-right  : 2px solid var(--accent);
+	border-bottom : var( --bor-wid-lar ) solid var(--accent);
+	border-left   : var( --bor-wid-lar ) solid var(--accent);
+	border-right  : var( --bor-wid-lar ) solid var(--accent);
 	outline       : none;
 
 
@@ -1232,7 +1232,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item.ob-tour-pulse:first-of-type { /* What: First Tour Target Item. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next; :first-of-type skips the Add button, which is always the first child. How: This adds the top border and rounds the top corners. */
 
 
-	border-top              : 2px solid var(--accent);
+	border-top              : var( --bor-wid-lar ) solid var(--accent);
 	border-top-left-radius  : var(--r-md);
 	border-top-right-radius : var(--r-md);
 
@@ -1345,7 +1345,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : 1px solid var(--border);
+	border-bottom  : var( --bor-wid-bas ) solid var(--border);
 	font           : inherit;
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
@@ -1468,7 +1468,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	--entry-editor-border-radius : 0; /* What: Editor Radius. Why: A borderless editor needs no rounding. How: EntEdiCom reads this for its own border radius. */
 	--entry-editor-margin        : 0; /* What: Editor Margin. Why: The wrapper already spaces the editor. How: EntEdiCom reads this for its own margin. */
 	--entry-editor-padding       : 0; /* What: Editor Padding. Why: The wrapper already pads the editor. How: EntEdiCom reads this for its own padding. */
-	--rem-inline-foot-border-top : 0.5px solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0 -16px; /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
 	padding                      : var( --spa-ver-xs6 ) 16px var( --spa-ver-bas );
@@ -1489,7 +1489,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 
 	align-items     : center;
 	background      : none;
-	border          : 1px dashed var(--border);
+	border          : var( --bor-wid-bas ) dashed var(--border);
 	border-radius   : var(--r-md);
 	color           : var(--muted);
 	cursor          : pointer;

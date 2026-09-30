@@ -84,7 +84,7 @@
 
 
 	align-items     : center;
-	border          : 1px solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--muted);
 	border-radius   : 50%;
 	color           : var(--muted);
 	cursor          : help;
@@ -200,7 +200,7 @@
 
 
 	background    : var(--bg);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	font-family   : var(--font-sans);

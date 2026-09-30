@@ -140,7 +140,7 @@
 .tabbar--bottom { /* What: Bottom Tab Bar. Why: At the bottom, the tabs sit in a bar pinned to the screen's bottom edge, clear of the device's safe areas. How: This fixes the bar to the bottom with a top border and safe-area-aware padding, centering the tabs. */
 
 
-	border-top-width : 0.5px;
+	border-top-width : var( --bor-wid-sma );
 	bottom           : 0;
 	justify-content  : center;
 	left             : 0;
@@ -158,7 +158,7 @@
 
 
 		background    : oklch(from var(--surface) l c h / 0.94);
-		border        : 0.5px solid var(--border);
+		border        : var( --bor-wid-sma ) solid var(--border);
 		border-radius : 999px;
 		bottom        : 20px;
 		box-shadow    : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
@@ -181,7 +181,7 @@
 
 
 		background    : oklch(from var(--surface) l c h / 0.94);
-		border        : 0.5px solid var(--border);
+		border        : var( --bor-wid-sma ) solid var(--border);
 		border-radius : 999px;
 		bottom        : calc(12px + env(safe-area-inset-bottom));
 		box-shadow    : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
@@ -202,7 +202,7 @@
 
 
 	align-items        : stretch;
-	border-right-width : 0.5px;
+	border-right-width : var( --bor-wid-sma );
 	flex-direction     : column;
 	gap                : 2px;
 	height             : 100dvh;
@@ -249,7 +249,7 @@
 .tabbar--top { /* What: Top Tab Bar. Why: At the top, the brand and tabs sit in one sticky bar whose content lines up with the page column. How: This makes a sticky bar with a bottom border and padding that centers its content in a 960px column. */
 
 
-	border-bottom-width : 0.5px;
+	border-bottom-width : var( --bor-wid-sma );
 	justify-content     : space-between;
 	padding             : var( --spa-ver-sma ) max(20px, calc((100% - 960px) / 2)); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's 960px column. How: The side padding grows to center that width, never below 20px; the other tabs' 720px column would use the same formula with 720px. */
 	position            : sticky;
@@ -476,7 +476,7 @@
 
 
 	align-items   : center;
-	border-right  : 0.5px solid var(--border);
+	border-right  : var( --bor-wid-sma ) solid var(--border);
 	display       : flex;
 	font-weight   : 600;
 	margin-right  : 8px;
@@ -860,7 +860,7 @@
 	align-items             : center;
 	backdrop-filter         : blur(20px) saturate(150%);
 	background              : oklch(from var(--bg) l c h / 0.92);
-	border                  : 0.5px solid var(--border);
+	border                  : var( --bor-wid-sma ) solid var(--border);
 	border-left             : 0;
 	border-radius           : 0 12px 12px 0;
 	box-shadow              : 6px 0 16px -8px rgba(0,0,0,0.28);

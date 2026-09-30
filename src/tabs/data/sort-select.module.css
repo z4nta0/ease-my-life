@@ -47,7 +47,7 @@
 
 
 	background    : var(--bg);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	cursor        : pointer;

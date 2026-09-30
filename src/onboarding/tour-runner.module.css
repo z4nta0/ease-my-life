@@ -50,7 +50,7 @@
 .ob-spot { /* What: Tour Spotlight. Why: The step's target should stand out against a darkened page. How: This outlines the target's box in the accent color and darkens everything around it with one huge box-shadow. */
 
 
-	border        : 2px solid oklch(from var(--accent) l c h/0.9);
+	border        : var( --bor-wid-lar ) solid oklch(from var(--accent) l c h/0.9);
 	border-radius : var(--r-md);
 	box-shadow    : 0 0 0 9999px oklch(0.15 0.02 250/0.6); /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
 	position      : fixed;
@@ -128,7 +128,7 @@
 
 	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : var(--surface);
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : var(--r-md);
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
 	padding        : var( --spa-ver-bas ) 15px;
@@ -141,7 +141,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	content    : "";
 	height     : 14px;
 	left       : var(--ob-ax,28px); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: The tour writes --ob-ax as the target's center offset from the card's left edge, falling back to 28px. */
@@ -284,7 +284,7 @@
 
 
 	background    : var(--accent);
-	border        : 0.5px solid var(--accent);
+	border        : var( --bor-wid-sma ) solid var(--accent);
 	border-radius : 999px;
 	color         : #fff;
 	cursor        : pointer;

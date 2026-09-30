@@ -128,8 +128,8 @@
 .reel-line { /* What: Picker Reel Line. Why: The center landing row needs a marker so the eye has somewhere to settle. How: This draws hairlines above and below the center row's position. */
 
 
-	border-bottom  : 0.5px solid var(--border);
-	border-top     : 0.5px solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--border);
+	border-top     : var( --bor-wid-sma ) solid var(--border);
 	height         : 56px;
 	left           : 8%;
 	pointer-events : none;

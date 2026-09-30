@@ -30,7 +30,7 @@
 
 
 	background    : var(--surface);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : 7px;
 	color         : var(--muted);
 	font-size     : var( --fon-siz-bas );

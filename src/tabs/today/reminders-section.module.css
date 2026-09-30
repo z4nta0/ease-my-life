@@ -42,7 +42,7 @@
 .group-section:not(:first-child) { /* What: Following Reminders Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since every sibling in the group column is a group section, standing in for the old sibling selector that can't reach across modules. */
 
 
-	border-top  : 0.5px solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--border);
 	padding-top : var( --spa-ver-xl1 );
 
 
@@ -294,7 +294,7 @@
 
 	align-items     : center;
 	background      : var(--bg);
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 999px;
 	color           : var(--muted);
 	cursor          : pointer;
@@ -361,7 +361,7 @@
 
 
 	background    : oklch(from var(--warm) l c h/0.07);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-color  : oklch(from var(--warm) l c h/0.35);
 	border-radius : var(--r-sm);
 	color         : oklch(0.45 0.13 50);
@@ -471,7 +471,7 @@
 
 
 	background    : var(--bg);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	flex          : 1;
@@ -524,12 +524,12 @@
 .rem-inline-editor { /* What: Reminder Inline Editor. Why: Editing a reminder or filling in a new one opens a recessed card of fields, whose rows run edge to edge. How: This draws the card with no side padding, sets the --rem-inline-foot-* properties EdiFooCom reads for its divider, and fades it in. */
 
 
-	--rem-inline-foot-border-top : 0.5px solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0; /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
 	animation                    : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                   : oklch(from var(--surface) calc(l - 0.006) c h);
-	border                       : 0.5px solid var(--border);
+	border                       : var( --bor-wid-sma ) solid var(--border);
 	border-radius                : var(--r-md);
 	margin                       : 0 0 var( --spa-ver-xs4 );
 	padding                      : var( --spa-ver-bas ) 0;
@@ -555,7 +555,7 @@
 .rem-inline-foot { /* What: Quick-Add Footer. Why: Cancel and Add end the form below a divider. How: This pushes them right in a padded row under a hairline. */
 
 
-	border-top      : 0.5px solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	gap             : 8px;
 	justify-content : flex-end;
@@ -578,7 +578,7 @@
 
 	align-items           : center;
 	background            : var(--surface);
-	border                : 0.5px solid var(--border);
+	border                : var( --bor-wid-sma ) solid var(--border);
 	border-radius         : var(--r-lg);
 	cursor                : pointer;
 	display               : grid;
@@ -806,7 +806,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : 1px solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--border);
 	border-radius      : 8px;
 	color              : inherit;
 	display            : inline-flex;
@@ -833,7 +833,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	box-shadow     : 0 0 0 3px var(--bg);
-	outline        : 2px solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--accent);
 	outline-offset : 3px;
 
 
@@ -878,7 +878,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .check-ripple { /* What: Checkbox Ripple. Why: Checking a reminder sends a ring out from its box. How: This draws a hidden accent ring just outside the box that ignores the pointer. */
 
 
-	border         : 1.5px solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--accent);
 	border-radius  : 9px;
 	inset          : -1px;
 	opacity        : 0;
@@ -999,7 +999,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	background     : none;
 	border         : none;
-	border-bottom  : 1px solid var(--border);
+	border-bottom  : var( --bor-wid-bas ) solid var(--border);
 	color          : var(--text);
 	font-family    : var(--font-sans);
 	font-size      : var( --fon-siz-xl1 );
@@ -1127,7 +1127,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	align-items     : center;
 	animation       : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background      : oklch(from var(--surface) calc(l - 0.006) c h);
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : var(--r-md);
 	display         : flex;
 	flex-wrap       : wrap;

@@ -381,7 +381,7 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -519,7 +519,7 @@
 
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--surface);
-	border            : 0.5px solid var(--border);
+	border            : var( --bor-wid-sma ) solid var(--border);
 	border-radius     : var(--r-md);
 	display           : flex;
 	flex-direction    : column;
@@ -655,7 +655,7 @@
 
 
 	background     : transparent;
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -948,7 +948,7 @@
 
 
 	align-items   : center;
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	display       : flex;
 	font-size     : var( --fon-siz-lar );
 	gap           : 10px;
@@ -1093,7 +1093,7 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 8px;
 	color           : var(--text);
 	cursor          : pointer;
@@ -1245,7 +1245,7 @@ button.heat-cell { /* What: Heat Cell Button. Why: Each day in the grid is tappa
 	border             : none;
 	cursor             : pointer;
 	margin             : 0;
-	outline            : 2px solid transparent;
+	outline            : var( --bor-wid-lar ) solid transparent;
 	outline-offset     : 2px;
 	padding            : 0;
 	transition         : outline-color 0.12s ease, transform 0.08s ease;
@@ -1338,7 +1338,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail { /* What: Day Detail. Why: A tapped day lists what was picked under the grid. How: This sets it off with a hairline above. */
 
 
-	border-top  : 0.5px solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--border);
 	margin-top  : var( --spa-ver-bas );
 	padding-top : var( --spa-ver-bas );
 
@@ -1398,7 +1398,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : baseline;
-	border-bottom   : 0.5px solid oklch(from var(--border) l c h / 0.55);
+	border-bottom   : var( --bor-wid-sma ) solid oklch(from var(--border) l c h / 0.55);
 	display         : flex;
 	font-size       : var( --fon-siz-lar );
 	gap             : 12px;
@@ -1540,7 +1540,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border-top      : 1px solid var(--border);
+	border-top      : var( --bor-wid-bas ) solid var(--border);
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
@@ -1649,7 +1649,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items    : center;
 	background     : transparent;
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -1739,7 +1739,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	background     : transparent;
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -1918,7 +1918,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : baseline;
-	border-bottom   : 0.5px solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	font-size       : var( --fon-siz-lar );
 	gap             : 12px;
@@ -2015,7 +2015,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-tag { /* What: Item Tag. Why: A status like inactive reads as a small outlined chip. How: This draws a small uppercase mono pill that never shrinks. */
 
 
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	flex           : 0 0 auto;
@@ -2232,7 +2232,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border-bottom   : 0.5px solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
@@ -2301,7 +2301,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rem-log-type { /* What: Type Pill. Why: A reminder's kind or a conditional's mode reads as a small outlined chip. How: This draws a small uppercase mono pill. */
 
 
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	font-family    : var(--font-mono);
@@ -2332,7 +2332,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border-top      : 0.5px solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	gap             : 14px;
 	justify-content : flex-end;
@@ -2378,7 +2378,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items     : center;
 	background      : transparent;
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 8px;
 	color           : var(--text);
 	cursor          : pointer;
@@ -2450,7 +2450,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border          : 1px solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--muted);
 	border-radius   : 50%;
 	color           : var(--muted);
 	cursor          : help;

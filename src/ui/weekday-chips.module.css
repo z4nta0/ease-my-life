@@ -34,7 +34,7 @@
 
 	align-items     : center;
 	background      : var(--bg);
-	border          : 1px solid var(--border);
+	border          : var( --bor-wid-bas ) solid var(--border);
 	border-radius   : 999px;
 	color           : var(--muted);
 	cursor          : pointer;

@@ -102,7 +102,7 @@
 
 	animation        : groupNameIn .16s cubic-bezier(0.4, 0, 0.2, 1) both;
 	background       : var(--surface);
-	border           : 1px solid var(--accent);
+	border           : var( --bor-wid-bas ) solid var(--accent);
 	border-radius    : 8px;
 	color            : var(--text);
 	font-family      : inherit;
@@ -407,7 +407,7 @@
 	align-items     : center;
 	animation       : groupMergeIn .18s ease-out both;
 	background      : var(--accent-soft);
-	border          : 1px solid oklch(from var(--accent) l c h / 0.3);
+	border          : var( --bor-wid-bas ) solid oklch(from var(--accent) l c h / 0.3);
 	border-radius   : var(--r-md, 12px);
 	display         : flex;
 	flex-wrap       : wrap;

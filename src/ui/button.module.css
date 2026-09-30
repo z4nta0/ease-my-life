@@ -110,7 +110,7 @@
 
 
 	background : transparent;
-	border     : 0.5px solid currentColor;
+	border     : var( --bor-wid-sma ) solid currentColor;
 	color      : oklch(0.5 0.18 25);
 	display    : var(--btn-danger-display, inline-flex); /* What: Danger Button Display. Why: A brand-new item's editor is discarded with Cancel, so its footer Delete button is redundant there. How: That form's footer sets --btn-danger-display to none, falling back to the button's normal inline-flex. */
 
@@ -127,7 +127,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--text);
 
 

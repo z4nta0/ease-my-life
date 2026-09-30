@@ -44,7 +44,7 @@
 
 
 	background    : var(--bg);
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	padding       : var( --spa-ver-xl1 ) 20px var( --spa-ver-xl1 );
 	position      : sticky;
 	top           : 0;
@@ -128,7 +128,7 @@
 .kicker-time { /* What: Kicker Time. Why: The time reads apart from the date. How: This divides it from the date with a hairline. */
 
 
-	border-left  : 0.5px solid var(--border);
+	border-left  : var( --bor-wid-sma ) solid var(--border);
 	margin-left  : 6px;
 	padding-left : 8px;
 
@@ -172,7 +172,7 @@
 
 	align-items    : center;
 	background     : var(--surface);
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	display        : inline-flex;
@@ -1046,7 +1046,7 @@
 .ring-ripple { /* What: Ring Ripple. Why: Completing the day sends a ripple off the ring itself. How: This draws an invisible accent circle over the ring that expands when celebrating. */
 
 
-	border         : 1.5px solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--accent);
 	border-radius  : 50%;
 	inset          : 0;
 	opacity        : 0;
@@ -1082,7 +1082,7 @@
 	0% {
 
 
-		border-width : 1.5px;
+		border-width : var( --bor-wid-bas );
 		opacity      : 0.85;
 		transform    : scale(1);
 
@@ -1092,7 +1092,7 @@
 	100% {
 
 
-		border-width : 0.5px;
+		border-width : var( --bor-wid-sma );
 		opacity      : 0;
 		transform    : scale(2.4);
 
@@ -1148,7 +1148,7 @@
 	align-items     : center;
 	animation       : emBannerIn 0.26s cubic-bezier(0.4, 0, 0.2, 1) both;
 	background      : var(--accent-soft);
-	border          : 1px solid oklch(from var(--accent) l c h / 0.35);
+	border          : var( --bor-wid-bas ) solid oklch(from var(--accent) l c h / 0.35);
 	border-radius   : var(--r-md, 12px);
 	display         : flex;
 	gap             : 16px;
@@ -1351,7 +1351,7 @@
 		-webkit-mask-image      : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 		backdrop-filter         : blur(18px) saturate(140%);
 		background              : oklch(from var(--bg) l c h / 0.92);
-		border-bottom           : 0.5px solid var(--border);
+		border-bottom           : var( --bor-wid-sma ) solid var(--border);
 		flex-direction          : row;
 		gap                     : 6px;
 		margin                  : 0 -20px;
@@ -1478,7 +1478,7 @@
 
 
 		background    : var(--surface);
-		border        : 0.5px solid var(--border);
+		border        : var( --bor-wid-sma ) solid var(--border);
 		border-radius : 999px;
 		flex-shrink   : 0;
 		padding       : var( --spa-ver-xs2 ) 12px;
@@ -1565,7 +1565,7 @@
 .rail-editmode { /* What: Rail Edit Mode Block. Why: Edit Mode is a list action under the groups, divided from them. How: This spaces it below a dashed divider. */
 
 
-	border-top  : 1px dashed var(--border);
+	border-top  : var( --bor-wid-bas ) dashed var(--border);
 	margin-top  : var( --spa-ver-sma );
 	padding-top : var( --spa-ver-bas );
 
@@ -1590,7 +1590,7 @@
 
 	align-items     : center;
 	background      : oklch(from var(--surface) calc(l - 0.015) c h);
-	border          : 1px dashed var(--border);
+	border          : var( --bor-wid-bas ) dashed var(--border);
 	border-radius   : 8px;
 	color           : var(--muted);
 	cursor          : pointer;
@@ -1759,7 +1759,7 @@
 .groups-dnd > .group-section:not(:first-child) { /* What: Following Group Section. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
 
 
-	border-top  : 0.5px solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--border);
 	padding-top : var( --spa-ver-xl1 );
 
 
@@ -1824,7 +1824,7 @@
 
 	align-items    : center;
 	background     : var(--accent-soft);
-	border         : 1px dashed oklch(from var(--accent) l c h/0.5);
+	border         : var( --bor-wid-bas ) dashed oklch(from var(--accent) l c h/0.5);
 	border-radius  : var(--r-md);
 	display        : flex;
 	flex-direction : column;
@@ -1932,7 +1932,7 @@
 
 	align-items     : center;
 	background      : var(--surface);
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 11px;
 	color           : var(--accent);
 	display         : flex;
@@ -2073,7 +2073,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--text);
 
 

@@ -43,7 +43,7 @@
 .rem-editor--stacked { /* What: Stacked Schedule Editor. Why: On Today, dividers separate the fields instead of a gap, and a closing line meets the footer's own divider. How: This drops the gap and draws a bottom border. */
 
 
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	gap           : 0;
 
 
@@ -84,14 +84,14 @@
 .rem-editor--stacked .rem-field + .rem-field { /* What: Following Stacked Schedule Field. Why: Consecutive fields read as separate rows. How: This draws a divider above every field after the first. */
 
 
-	border-top : 0.5px solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--border);
 
 
 }
 .rem-editor--stacked .rem-extra-fade > .rem-field { /* What: Wrapped Stacked Schedule Field. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses both the divider and the padding the rules above give. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
 
 
-	border-top  : 0.5px solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--border);
 	padding-top : var( --spa-ver-sma );
 
 
@@ -102,7 +102,7 @@
 	--seg-max-width         : 100%; /* What: Segmented Control Max Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
 	--seg-repeat-flex-basis : 100%; /* What: Repeat Control Flex Basis. Why: The Repeat control always takes its own full-width line under the label, so every browser lays it out the same way. How: The Repeat segmented control reads this as its flex basis. */
 	align-items             : center;
-	border-bottom           : 0.5px solid var(--border);
+	border-bottom           : var( --bor-wid-sma ) solid var(--border);
 	box-sizing              : border-box;
 	column-gap              : 12px;
 	flex-direction          : row;
@@ -118,7 +118,7 @@
 .rem-editor--rows .rem-field:first-child { /* What: First Rows Schedule Field. Why: The top row needs a divider above it too, matching the line under the picker item editor's name field. How: This draws a top border. */
 
 
-	border-top : 0.5px solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--border);
 
 
 }
@@ -280,7 +280,7 @@
 
 
 	border-radius  : 3px;
-	outline        : 2px solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--accent);
 	outline-offset : 2px;
 
 
@@ -290,7 +290,7 @@
 
 
 	background     : var(--bg);
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : var(--r-sm);
 	color          : var(--text);
 	font-family    : var(--font-mono);
@@ -391,7 +391,7 @@
 
 
 	background    : var(--bg);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	font-family   : var(--font-sans);

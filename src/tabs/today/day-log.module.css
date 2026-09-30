@@ -32,7 +32,7 @@
 	align-items    : center;
 	align-self     : center;
 	background     : var(--surface);
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -98,7 +98,7 @@
 
 
 	background    : oklch(from var(--surface) calc(l + 0.006) c h);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-md);
 	margin        : var( --spa-ver-xs6 ) 0 var( --spa-ver-bas );
 	overflow      : hidden;
@@ -113,7 +113,7 @@
 
 	align-items     : center;
 	background      : var(--bg);
-	border-bottom   : 0.5px solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	justify-content : space-between;
 	padding         : var( --spa-ver-sma ) 14px;
@@ -159,7 +159,7 @@
 
 	align-items     : center;
 	background      : var(--surface);
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 8px;
 	color           : var(--muted);
 	cursor          : pointer;
@@ -216,7 +216,7 @@
 
 	align-items   : baseline;
 	background    : oklch(from var(--surface) calc(l + 0.006) c h);
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	display       : flex;
 	flex-wrap     : nowrap;
 	gap           : 16px;
@@ -299,7 +299,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
 
 
@@ -372,7 +372,7 @@
 .dl-block { /* What: Log Block. Why: Each picker block, and the Conditionals block, is divided from the one above. How: This draws a hairline above every block. */
 
 
-	border-top : 0.5px solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--border);
 
 
 }
@@ -552,7 +552,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
 
 
@@ -744,7 +744,7 @@
 .dl-thead { /* What: Log Table Header. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
 
 
-	border-bottom  : 0.5px solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	color          : var(--muted);
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
@@ -829,7 +829,7 @@
 .dl-trow { /* What: Log Row. Why: Each item is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
 
 
-	border-bottom : 0.5px solid oklch(from var(--border) l c h/0.55);
+	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
 	padding       : var( --spa-ver-xs1 ) 10px;
 
@@ -975,7 +975,7 @@
 
 
 	background    : var(--bg);
-	border        : 0.5px solid oklch(from var(--accent) l c h/0.4);
+	border        : var( --bor-wid-sma ) solid oklch(from var(--accent) l c h/0.4);
 	color         : var(--accent);
 	min-width     : 0;
 	overflow      : hidden;
@@ -1163,7 +1163,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
 	padding    : var( --spa-ver-xs6 ) 8px;
 
@@ -1304,7 +1304,7 @@
 .dl-rt-head { /* What: Reminders Table Header. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
 
 
-	border-bottom  : 0.5px solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	color          : var(--muted);
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
@@ -1337,7 +1337,7 @@
 .dl-rt-row { /* What: Reminder Row. Why: Each reminder is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
 
 
-	border-bottom : 0.5px solid oklch(from var(--border) l c h/0.55);
+	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
 	padding       : var( --spa-ver-xs1 ) 10px;
 

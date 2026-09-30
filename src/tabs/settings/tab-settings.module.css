@@ -517,7 +517,7 @@
 
 
 		background    : var(--surface);
-		border        : 0.5px solid var(--border);
+		border        : var( --bor-wid-sma ) solid var(--border);
 		border-radius : 999px;
 		flex-shrink   : 0;
 		padding       : var( --spa-ver-xs2 ) 12px;
@@ -602,7 +602,7 @@
 
 
 	align-items    : center;
-	border-bottom  : 0.5px solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	display        : flex;
 	gap            : 12px;
 	padding-bottom : var( --spa-ver-sma );
@@ -675,7 +675,7 @@
 	--seg-flex        : 0 0 auto; /* What: Segmented Flex. Why: The placement control should keep its size. How: SegConCom reads this for its own flex. */
 	--seg-flex-wrap   : nowrap; /* What: Segmented Flex Wrap. Why: The placement control's pills should never wrap. How: SegConCom reads this for its own flex-wrap. */
 	align-items       : center;
-	border-bottom     : 0.5px solid var(--border);
+	border-bottom     : var( --bor-wid-sma ) solid var(--border);
 	display           : flex;
 	gap               : 16px;
 	justify-content   : space-between;
@@ -859,7 +859,7 @@
 
 	align-items    : center;
 	background     : var(--bg);
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	display        : inline-flex;
@@ -1055,7 +1055,7 @@
 
 
 	background           : var(--bg);
-	border               : 0.5px solid var(--border);
+	border               : var( --bor-wid-sma ) solid var(--border);
 	border-radius        : var(--r-sm);
 	color                : var(--text);
 	flex                 : 0 0 130px;
@@ -1165,7 +1165,7 @@
 
 	align-items    : center;
 	background     : var(--surface);
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--text);
 	display        : inline-flex;

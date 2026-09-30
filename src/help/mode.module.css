@@ -97,7 +97,7 @@
 .help-spot { /* What: Help Spot. Why: Each highlighted target needs a visible outline over its hole in the dim layer. How: This draws an accent border around a fixed box that ignores the pointer. */
 
 
-	border         : 2px solid oklch(from var(--accent) l c h/0.9);
+	border         : var( --bor-wid-lar ) solid oklch(from var(--accent) l c h/0.9);
 	border-radius  : var(--r-md);
 	pointer-events : none;
 	position       : fixed;
@@ -110,7 +110,7 @@
 
 	align-items     : center;
 	background      : var(--surface);
-	border          : 1px solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--muted);
 	border-radius   : 50%;
 	color           : var(--muted);
 	cursor          : pointer;

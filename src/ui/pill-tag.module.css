@@ -42,7 +42,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
 
 
@@ -59,7 +59,7 @@
 
 
 	background : transparent;
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
 	font-size  : var( --fon-siz-bas );
 	padding    : var( --spa-ver-xs8 ) 7px;

@@ -27,7 +27,7 @@
 
 	align-items           : center;
 	background            : var(--surface);
-	border                : 0.5px solid var(--border);
+	border                : var( --bor-wid-sma ) solid var(--border);
 	border-radius         : var(--r-lg);
 	cursor                : pointer;
 	display               : grid;
@@ -109,7 +109,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : 1px solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--border);
 	border-radius      : 8px;
 	color              : inherit;
 	display            : inline-flex;
@@ -136,7 +136,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 
 
 	box-shadow     : 0 0 0 3px var(--bg);
-	outline        : 2px solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--accent);
 	outline-offset : 3px;
 
 
@@ -219,7 +219,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 .check-ripple { /* What: App Feature Check Ripple. Why: The done check keeps the same ripple layer every done row carries. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
 
 
-	border         : 1.5px solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--accent);
 	border-radius  : 9px;
 	inset          : -1px;
 	opacity        : 0;

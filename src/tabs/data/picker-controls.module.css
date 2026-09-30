@@ -29,7 +29,7 @@
 
 
 	background     : oklch(from var(--surface) calc(l - 0.012) c h);
-	border-bottom  : 0.5px solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	display        : flex;
 	flex-direction : column;
 	gap            : 0;
@@ -52,7 +52,7 @@
 .rd-ctl-group--basics { /* What: Picker Details Group. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
 
 
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	gap           : 0;
 	margin        : 0 -16px;
 	padding       : 0;
@@ -75,8 +75,8 @@
 .rd-ctl-group--items { /* What: Schedule And Item Groups. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
 
 
-	border-bottom : 0.5px solid var(--border);
-	border-top    : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-top    : var( --bor-wid-sma ) solid var(--border);
 	gap           : 0;
 	margin        : 0 -16px;
 	padding       : 0;
@@ -86,7 +86,7 @@
 .rd-ctl-group--foot { /* What: Footer Group. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
 
 
-	border-top     : 0.5px solid var(--border);
+	border-top     : var( --bor-wid-sma ) solid var(--border);
 	margin         : 0 -16px;
 	padding        : var( --spa-ver-bas ) 16px;
 	padding-bottom : 0;
@@ -132,7 +132,7 @@
 .rd-ctl-subhead + .sched-line { /* What: First Setting Row. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
 
 
-	border-top : 0.5px solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--border);
 
 
 }
@@ -147,7 +147,7 @@
 
 
 	align-items : center;
-	border-top  : 0.5px solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--border);
 	display     : flex;
 	gap         : 14px;
 	padding     : var( --spa-ver-sma ) 16px;
@@ -184,7 +184,7 @@
 
 
 	background    : var(--surface);
-	border        : 1px solid var(--border);
+	border        : var( --bor-wid-bas ) solid var(--border);
 	border-radius : 9px;
 	color         : var(--text);
 	flex          : 1;
@@ -294,7 +294,7 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
 	cursor         : pointer;
@@ -469,7 +469,7 @@
 
 	animation     : rdGroupInputGrow .2s cubic-bezier(0.4, 0, 0.2, 1) both;
 	background    : var(--surface);
-	border        : 1px solid var(--accent);
+	border        : var( --bor-wid-bas ) solid var(--accent);
 	border-radius : 999px;
 	color         : var(--text);
 	font-family   : inherit;
@@ -526,7 +526,7 @@
 	animation       : rdGroupBtnIn .16s ease-out both;
 	animation-delay : .11s;
 	background      : var(--surface);
-	border          : 1px solid var(--border);
+	border          : var( --bor-wid-bas ) solid var(--border);
 	border-radius   : 50%;
 	color           : var(--muted);
 	cursor          : pointer;
@@ -615,8 +615,8 @@
 .rd-mode-radio { /* What: Mode Radio. Why: The pick modes stack edge to edge between hairlines. How: This stacks them in a column. */
 
 
-	border-bottom  : 0.5px solid var(--border);
-	border-top     : 0.5px solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--border);
+	border-top     : var( --bor-wid-sma ) solid var(--border);
 	display        : flex;
 	flex-direction : column;
 	margin         : 0;
@@ -633,7 +633,7 @@
 	--collapse-inner-transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
 	--collapse-row-duration     : .8s;
 	align-items                 : flex-start;
-	border-bottom               : 0.5px solid var(--border);
+	border-bottom               : var( --bor-wid-sma ) solid var(--border);
 	cursor                      : pointer;
 	display                     : flex;
 	gap                         : 11px;
@@ -660,7 +660,7 @@
 .rd-mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
 
 
-	outline        : 2px solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--accent);
 	outline-offset : -2px;
 
 
@@ -721,7 +721,7 @@
 .rd-mode-dot { /* What: Mode Option Dot. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
 
 
-	border        : 1.5px solid var(--border);
+	border        : var( --bor-wid-bas ) solid var(--border);
 	border-radius : 50%;
 	flex          : 0 0 auto;
 	height        : 16px;
@@ -820,7 +820,7 @@
 
 
 	align-items     : center;
-	border-bottom   : 0.5px solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	box-sizing      : border-box;
 	display         : flex;
 	flex-wrap       : wrap;
@@ -879,7 +879,7 @@
 
 
 	align-items     : center;
-	border          : 1px solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--muted);
 	border-radius   : 50%;
 	color           : var(--muted);
 	cursor          : help;
@@ -1040,7 +1040,7 @@
 .rd-cnd-rail-row { /* What: Conditional Rail Row. Why: The conditional pills sit in their own padded row under the Attach switch. How: This pads the row and divides it from the next. */
 
 
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	padding       : var( --spa-ver-xs1 ) 16px var( --spa-ver-sma );
 
 
@@ -1092,7 +1092,7 @@
 
 
 	background      : var(--surface);
-	border          : 0.5px solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 12px;
 	cursor          : pointer;
 	display         : flex;
@@ -1199,7 +1199,7 @@
 
 
 	background    : var(--bg);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	cursor        : pointer;
@@ -1252,7 +1252,7 @@
 .sched-off-note { /* What: On-Demand Note. Why: A picker left out of the daily generator says it only runs on demand, where its schedule rows would be. How: This sets a small italic muted note padded like a row. */
 
 
-	border-bottom : 0.5px solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	box-sizing    : border-box;
 	color         : var(--muted);
 	font-size     : var( --fon-siz-bas );
@@ -1293,7 +1293,7 @@
 
 
 	align-items     : center;
-	border-bottom   : 0.5px solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;

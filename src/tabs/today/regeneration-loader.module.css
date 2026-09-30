@@ -31,7 +31,7 @@
 
 	align-items           : center;
 	background            : var(--surface);
-	border                : 0.5px solid var(--border);
+	border                : var( --bor-wid-sma ) solid var(--border);
 	border-radius         : var(--r-lg);
 	cursor                : pointer;
 	display               : grid;
@@ -88,7 +88,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : 1px solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--border);
 	border-radius      : 8px;
 	color              : inherit;
 	display            : inline-flex;

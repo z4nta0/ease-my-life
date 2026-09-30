@@ -29,7 +29,7 @@
 
 	align-items           : center;
 	background            : var(--surface);
-	border                : 0.5px solid var(--border);
+	border                : var( --bor-wid-sma ) solid var(--border);
 	border-radius         : var(--r-lg);
 	cursor                : pointer;
 	display               : grid;
@@ -288,7 +288,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : 1px solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--border);
 	border-radius      : 8px;
 	color              : inherit;
 	display            : inline-flex;
@@ -315,7 +315,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	box-shadow     : 0 0 0 3px var(--bg);
-	outline        : 2px solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--accent);
 	outline-offset : 3px;
 
 
@@ -360,7 +360,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .check-ripple { /* What: Checkbox Ripple. Why: Checking an entry sends a ring out from its box. How: This draws a hidden accent ring just outside the box that ignores the pointer. */
 
 
-	border         : 1.5px solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--accent);
 	border-radius  : 9px;
 	inset          : -1px;
 	opacity        : 0;
@@ -544,7 +544,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	background     : none;
 	border         : none;
-	border-bottom  : 1px solid var(--border);
+	border-bottom  : var( --bor-wid-bas ) solid var(--border);
 	color          : var(--text);
 	font-family    : var(--font-sans);
 	font-size      : var( --fon-siz-xl1 );

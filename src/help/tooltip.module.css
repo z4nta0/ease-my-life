@@ -24,7 +24,7 @@
 
 	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : var(--surface);
-	border         : 0.5px solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : var(--r-md);
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
 	padding        : var( --spa-ver-bas ) 15px;
@@ -45,7 +45,7 @@
 
 
 	background : var(--surface);
-	border     : 0.5px solid var(--border);
+	border     : var( --bor-wid-sma ) solid var(--border);
 	content    : "";
 	height     : 14px;
 	left       : var(--ob-ax,28px); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: HelTipCom writes --ob-ax as the target's center offset from the tip's left edge, falling back to 28px. */

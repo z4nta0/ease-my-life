@@ -29,7 +29,7 @@
 	--btn-flex        : 0 0 auto; /* What: Button Flex. Why: The row's button should keep its full size beside long text. How: The shared button reads this and stops shrinking. */
 	--btn-white-space : nowrap; /* What: Button Wrapping. Why: The button's label shouldn't break onto two lines in the row. How: The shared button reads this and keeps its label on one line. */
 	align-items       : center;
-	border-bottom     : 0.5px solid var(--border);
+	border-bottom     : var( --bor-wid-sma ) solid var(--border);
 	display           : flex;
 	gap               : 16px;
 	justify-content   : space-between;
@@ -157,7 +157,7 @@
 
 
 	background    : var(--bg);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	font-family   : var(--font-sans);
@@ -273,7 +273,7 @@
 
 
 	align-items     : center;
-	border-top      : 0.5px solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : 12px;

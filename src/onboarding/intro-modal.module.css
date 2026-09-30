@@ -55,7 +55,7 @@
 
 
 	background    : var(--surface);
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-lg);
 	box-shadow    : 0 24px 60px -20px oklch(0 0 0/0.5);
 	margin        : auto; /* What: Card Auto Margin. Why: Center alignment on the backdrop would clip a card taller than the screen at both ends with no way to scroll to it. How: Auto margins only take up free space, so the card sits centered when it fits and falls back to top-aligned, scrollable flow when it doesn't. */
@@ -216,7 +216,7 @@
 
 
 	background    : transparent;
-	border        : 0.5px solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-md);
 	color         : var(--text);
 	cursor        : pointer;

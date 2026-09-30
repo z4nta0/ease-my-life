@@ -19,7 +19,7 @@
 
 
 	align-items     : center;
-	border          : 3px solid currentColor;
+	border          : var( --bor-wid-xl1 ) solid currentColor;
 	border-radius   : 50%;
 	display         : flex;
 	font-size       : var( --fon-siz-xl2 );

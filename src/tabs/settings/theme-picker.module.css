@@ -65,7 +65,7 @@
 .theme-row { /* What: Theme Row. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected. */
 
 
-	border        : 1.5px solid transparent;
+	border        : var( --bor-wid-bas ) solid transparent;
 	border-radius : 10px;
 	cursor        : pointer;
 	display       : flex;
@@ -80,7 +80,7 @@
 .theme-row--custom { /* What: Custom Theme Row. Why: The editable custom theme reads as a different kind of row than the presets. How: This frames it with a dashed border. */
 
 
-	border : 1.5px dashed var(--border);
+	border : var( --bor-wid-bas ) dashed var(--border);
 
 
 }

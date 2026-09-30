@@ -22,7 +22,7 @@
 
 	align-items     : center;
 	background      : none;
-	border          : 1px solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--muted);
 	border-radius   : 50%;
 	color           : var(--muted);
 	cursor          : pointer;
