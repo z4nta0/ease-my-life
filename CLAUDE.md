@@ -2022,6 +2022,12 @@ still passes.
   JS block, every rule's declarations get exactly 2 blank lines after
   the rule's opening `{` line and 2 before its closing `}`. See
   `tabs/pickers/progress-bar.module.css` for the reference example.
+- **Parentheses in CSS functions** (decided 2026-09-29) follow the same
+  spacing as JS calls under "### Parentheses spacing": a space after `(`
+  and before `)` when there's anything inside, e.g. `var( --fon-siz-lar )`
+  and `calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) )`. Values still
+  written tight (`var(--muted)`) are converted as their files come up in
+  the design-system pass.
 - **`@media` blocks**: a `@media` override is a variant of the element it
   styles, so it sits directly under that element's base rule with its
   other variants. The block gets its own What/Why/How comment after its
