@@ -303,8 +303,9 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 7px;
+	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing : -0.01em;
-	padding        : var( --spa-ver-xs2 ) 13px;
+	padding        : 0 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 

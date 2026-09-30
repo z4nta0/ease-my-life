@@ -378,8 +378,9 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 7px;
+	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing : -0.01em;
-	padding        : var( --spa-ver-xs2 ) 13px;
+	padding        : 0 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 
@@ -418,14 +419,18 @@
 .picker-group-count { /* What: Pill Count. Why: Each pill shows how many pickers it holds. How: This sets the number in a small tinted mono capsule. */
 
 
+	align-items          : center;
 	background           : oklch(from var(--border) calc(l + 0.02) c h);
 	border-radius        : 999px;
 	color                : var(--muted);
+	display              : inline-flex;
 	font-family          : var(--font-mono);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
+	height               : calc( var( --ver-rhy-lar ) * 1rem );
+	justify-content      : center;
 	min-width            : 18px;
-	padding              : var( --spa-ver-xs8 ) 6px;
+	padding              : 0 6px;
 	text-align           : center;
 
 
@@ -962,9 +967,11 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	flex           : 0 0 auto;
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
+	height         : calc( var( --ver-rhy-lar ) * 1rem );
 	letter-spacing : 0.05em;
+	line-height    : calc( var( --ver-rhy-lar ) * 1rem - 2 * var( --bor-wid-sma ) ); /* What: Border-Adjusted Line Height. Why: The tag keeps block layout so its ellipsis still works, so its text is centered by line height instead of flexbox. How: This fills the height inside both borders. */
 	overflow       : hidden;
-	padding        : var( --spa-ver-xs6 ) 8px;
+	padding        : 0 8px;
 	text-align     : center;
 	text-overflow  : ellipsis;
 	text-transform : uppercase;

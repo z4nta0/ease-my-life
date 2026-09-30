@@ -28,11 +28,12 @@
 	font-family     : var(--font-mono);
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 500;
+	height          : calc( var( --ver-rhy-lar ) * 1rem );
 	justify-content : var(--pill-justify-content, normal);
 	letter-spacing  : 0.02em;
 	margin-left     : var(--pill-margin-left, 0);
 	margin-top      : var(--pill-margin-top, 0);
-	padding         : var( --spa-ver-xs6 ) 8px;
+	padding         : 0 8px;
 	text-transform  : uppercase;
 	width           : var(--pill-width, auto);
 
@@ -62,7 +63,7 @@
 	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
 	font-size  : var( --fon-siz-bas );
-	padding    : var( --spa-ver-xs8 ) 7px;
+	padding    : 0 7px;
 
 
 }

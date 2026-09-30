@@ -184,14 +184,17 @@
 .ob-chips span { /* What: Intro Modal Chip. Why: Each topic the tour covers shows as a small label chip. How: This styles it as an accent-tinted mono pill. */
 
 
+	align-items   : center;
 	background    : var(--accent-soft);
 	border        : none;
 	border-radius : 999px;
 	color         : var(--accent);
+	display       : inline-flex;
 	font-family   : var(--font-mono);
 	font-size     : var( --fon-siz-bas );
+	height        : calc( var( --ver-rhy-xl1 ) * 1rem );
 	outline       : none;
-	padding       : var( --spa-ver-xs3 ) 10px;
+	padding       : 0 10px;
 
 
 }

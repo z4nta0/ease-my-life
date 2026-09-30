@@ -390,8 +390,9 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 7px;
+	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing : -0.01em;
-	padding        : var( --spa-ver-xs2 ) 13px;
+	padding        : 0 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 
@@ -430,14 +431,18 @@
 .picker-group-count { /* What: Pill Count. Why: Each pill shows how many pickers it covers. How: This sets the number in a small tinted mono capsule. */
 
 
+	align-items          : center;
 	background           : oklch(from var(--border) calc(l + 0.02) c h);
 	border-radius        : 999px;
 	color                : var(--muted);
+	display              : inline-flex;
 	font-family          : var(--font-mono);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
+	height               : calc( var( --ver-rhy-lar ) * 1rem );
+	justify-content      : center;
 	min-width            : 18px;
-	padding              : var( --spa-ver-xs8 ) 6px;
+	padding              : 0 6px;
 	text-align           : center;
 
 
@@ -662,8 +667,9 @@
 	flex-shrink    : 0;
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
+	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing : -0.01em;
-	padding        : var( --spa-ver-xs2 ) 13px;
+	padding        : 0 13px;
 	transition     : border-color .12s, background .12s, color .12s;
 	white-space    : nowrap;
 
@@ -2015,14 +2021,17 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-tag { /* What: Item Tag. Why: A status like inactive reads as a small outlined chip. How: This draws a small uppercase mono pill that never shrinks. */
 
 
+	align-items    : center;
 	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : 999px;
 	color          : var(--muted);
+	display        : inline-flex;
 	flex           : 0 0 auto;
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
+	height         : calc( var( --ver-rhy-lar ) * 1rem );
 	letter-spacing : 0.04em;
-	padding        : var( --spa-ver-xs8 ) 6px;
+	padding        : 0 6px;
 	text-transform : uppercase;
 
 

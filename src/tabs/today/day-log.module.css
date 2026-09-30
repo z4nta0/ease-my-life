@@ -40,7 +40,7 @@
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	gap            : 5px;
-	height         : 24px;
+	height         : calc( var( --ver-rhy-xl1 ) * 1rem );
 	letter-spacing : 0.05em;
 	padding        : 0 9px;
 	text-transform : uppercase;
@@ -1140,11 +1140,14 @@
 .dl-st-pill { /* What: Status Pill. Why: A row's status reads as a small mono pill. How: This sets small uppercase mono text on an unpadded pill that each kind fills in. */
 
 
+	align-items    : center;
 	border-radius  : 999px;
+	display        : inline-flex;
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
+	height         : calc( var( --ver-rhy-lar ) * 1rem );
 	letter-spacing : 0.04em;
-	padding        : var( --spa-ver-xs6 ) 0;
+	padding        : 0;
 	text-transform : uppercase;
 	white-space    : nowrap;
 

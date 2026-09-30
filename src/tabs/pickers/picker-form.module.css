@@ -441,7 +441,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-size     : var( --fon-siz-lar );
 	font-weight   : 500;
 	gap           : 5px;
-	padding       : var( --spa-ver-xs2 ) 14px;
+	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
+	padding       : 0 14px;
 	transition    : border-color .12s, background .12s, color .12s;
 
 
