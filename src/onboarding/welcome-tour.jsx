@@ -15,7 +15,7 @@ import { ONB_ESP_ARR } from '../state/onboarding-seed-data.js'; // What: Onboard
 import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour. How: This is spread into actStoObj.addPicFun by the seeding effect below, exactly like a real, user-created picker.
 import { ONB_SPI_ARR } from '../state/onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's runFun and by bacSteFun below.
 import { ONB_STI_ARR } from '../state/onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
-import { ONB_TAS_ARR } from '../state/onboarding-seed-data.js'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by the intro modal's onSkiTouFun below.
+import { ONB_TAS_ARR } from '../state/onboarding-seed-data.js'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by the Generate step's own runFun and by skiEndFun below.
 import { todTopFun   } from './tour-runner.jsx';                // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
 // #endregion Imports
@@ -112,7 +112,7 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
  * forward again can never duplicate them. A weekly sample is pinned to
  * today's own weekday so it actually shows up today. Called from the Generate
  * step (hidden only on a replay, which has no review moment for them to
- * appear alongside) and from the intro modal's own Skip (always hidden).
+ * appear alongside) and from skiEndFun on either Skip (always hidden).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -131,7 +131,7 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
  *
 */
 
-const sedTasFun = ( staAppObj, actStoObj, hidTasBoo ) => { // What: Seed Tasks Function. Why: The Generate step and the intro modal's own Skip both seed the same sample reminders. How: This adds each ONB_TAS_ARR entry unless one already exists, pinning a weekly one to today and hiding them when hidTasBoo is true.
+const sedTasFun = ( staAppObj, actStoObj, hidTasBoo ) => { // What: Seed Tasks Function. Why: The Generate step and skiEndFun both seed the same sample reminders. How: This adds each ONB_TAS_ARR entry unless one already exists, pinning a weekly one to today and hiding them when hidTasBoo is true.
 
 
 	if ( staAppObj.tasks.some( ( curTasObj ) => ONB_STI_ARR.includes( curTasObj.id ) ) ) return; // What: Sample Tasks Present Guard. Why: A Skip that runs twice, a Replay that already seeded these, or a Back-then-Forward through the Generate step must never duplicate the sample reminders. How: This returns early when any sample task id already exists.
@@ -278,6 +278,54 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 
 	const welDonFun = () => actStoObj.setOnbFun( { welcomed : true } ); // What: Welcome Done Function. Why: Both accepting and skipping the tour are, from the persisted state's own point of view, the same "the welcome modal is done" transition. How: This persists onboarding.welcomed as true.
+
+
+
+	// #region skiEndFun
+
+	/**
+	 * skiEndFun = Skip End Function
+	 *
+	 * @summary
+	 * Ends the Welcome Tour on a Skip, from either the intro modal or any step
+	 * of the running tour, in the same end state the full tour reaches at its
+	 * own Settings step: the sample reminders exist (seeded hidden if no step
+	 * has added them yet), and every sample picker and reminder is hidden, not
+	 * deleted. The tutorial launcher cards on Today are only shown in that
+	 * state, so skipping without it left Today with no tutorials at all.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * skiEndFun() // => void
+	 * ```
+	 *
+	*/
+
+	const skiEndFun = () => { // What: Skip End Function. Why: The intro modal's own Skip and the running tour's own Skip must both land on the tutorial checklist phase. How: This seeds the sample tasks hidden when missing, hides every sample picker and task, then finishes the tour.
+
+
+		sedTasFun( staAppObj, actStoObj, true ); // What: Sample Tasks Seed Call. Why: A Skip before the Generate step has no sample reminders yet, and no review step remains for them to be visible during. How: This seeds the sample tasks whenever none of them already exist, always hidden.
+
+
+
+		ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
+
+		ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.updTasFun( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A Skip after the Generate step leaves its visible sample reminders behind. How: This updates every ONB_TAS_ARR entry's own id to hidden:true.
+
+
+
+		finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own preFilObj field.
+
+
+	};
+
+	// #endregion skiEndFun
 
 
 
@@ -550,20 +598,12 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 
 				} }
-				onSkiTouFun={ () => { // What: On Skip Handler. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step (the Generate step's task-seeding runFun, the Settings step's hide-everything runFun, see steObjArr above), since without this Today would have nothing to show: the sample pickers would exist but not be hidden yet, and no sample reminders would exist at all; seeded straight into hidden here, unlike the tour's own Generate step, since there is no in-between "review the generated list" step for them to be visible during first. How: This persists welcomed, seeds the sample tasks (hidden) if they do not already exist, hides the sample pickers, finishes the tour, and lands back on a pristine Today.
+				onSkiTouFun={ () => { // What: On Skip Handler. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step, since without it Today would have nothing to show. How: This persists welcomed, runs skiEndFun's shared skip cleanup, and lands back on a pristine Today.
 
 
 					welDonFun(); // What: Welcome Done Call. Why: Skipping is also the point this welcome modal should never show again. How: This persists onboarding.welcomed as true.
 
-
-
-					sedTasFun( staAppObj, actStoObj, true ); // What: Sample Tasks Seed Call. Why: There is no in-between review step on this path for these to be visible during, unlike the tour's own Generate step. How: This seeds the sample tasks whenever none of them already exist, always hidden.
-
-
-
-					ONB_SPI_ARR.forEach( ( picIdeStr ) => actStoObj.updPicFun( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
-
-					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own preFilObj field.
+					skiEndFun(); // What: Skip End Call. Why: Skipping from the modal must reach the tutorial checklist phase, the same as skipping from inside the tour. How: This seeds and hides the samples, then finishes the tour.
 
 					todTopFun( actIdeStr, selTabFun ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
 
@@ -592,6 +632,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 			onBacTouFun={ bacSteFun }
 			onFinTouFun={ finTouFun }
+			onSkiTouFun={ skiEndFun }
 		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough, mounted once the intro modal has been accepted or resumed into. How: This is passed this file's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 

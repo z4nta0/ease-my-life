@@ -1258,7 +1258,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		supGuaRef.current = true; // What: Guard Suppression. Why: A caller's own onSkiTouFun can drive real synthetic clicks to undo in-progress state (e.g. clicking Edit Mode's real Cancel button), and curSteRef.current still points at the step being left, so without this the guard would read that click as off-target and block it via preventDefault/stopPropagation before the target's own handler ever runs, the same reasoning as bacSteFun's own onBacTouFun call below. How: This flips supGuaRef.current on before calling onSkiTouFun/onFinTouFun.
 
 
-		( onSkiTouFun || onFinTouFun )(); // What: Skip Or Finish Callback. Why: onSkiTouFun is optional; a caller that does not need the distinction (e.g. the Welcome Tour, which is not tracked in a per-tour checklist) can omit it and everything still funnels through onFinTouFun. How: This calls whichever of the two is actually present.
+		( onSkiTouFun || onFinTouFun )(); // What: Skip Or Finish Callback. Why: onSkiTouFun is optional; a caller that does not need the distinction (e.g. a tour with nothing to clean up on a Skip) can omit it and everything still funnels through onFinTouFun. How: This calls whichever of the two is actually present.
 
 
 		supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover onSkiTouFun/onFinTouFun's own synthetic clicks, not any real click the user makes afterward. How: This flips supGuaRef.current back off immediately after the call above returns.
