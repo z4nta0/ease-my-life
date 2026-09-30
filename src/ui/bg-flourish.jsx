@@ -517,8 +517,7 @@ function genSidFun( gutWidNum, conHeiNum ) {
 
 	const nexSymFun = makCycFun( () => shuArrFun( FLO_SYM_ARR ) );              // What: Next Symbol Function. Why: Each placed glyph needs a symbol, well-distributed across the whole pool rather than repeating nearby. How: This is a cycler drawing from a freshly-shuffled copy of FLO_SYM_ARR each time it's exhausted.
 	const nexRotFun = makCycFun( () => shuArrFun( eveSpaFun( -28, 28, 11 ) ) ); // What: Next Rotation Function. Why: Each placed glyph needs a rotation angle, well-distributed across the whole range rather than repeating nearby. How: This is a cycler drawing from a freshly-shuffled copy of 11 evenly-spaced angles between -28 and 28 degrees.
-	const nexSizFun = makCycFun( () => shuArrFun( eveSpaFun( 24, 48, 9 ) ) );   // What: Next Size Function. Why: Each normal placed glyph needs a font size, well-distributed across the whole range rather than repeating nearby. How: This is a cycler drawing from a freshly-shuffled copy of 9 evenly-spaced sizes between 24 and 48.
-	const nexBigFun = makCycFun( () => shuArrFun( eveSpaFun( 64, 66, 5 ) ) );   // What: Next Big Function. Why: A "big" placed glyph needs its own, larger font size range. How: This is a cycler drawing from a freshly-shuffled copy of 5 evenly-spaced sizes between 64 and 66.
+	const nexSizFun = makCycFun( () => shuArrFun( [ 'xl2', 'xl3', 'xl4' ] ) );  // What: Next Size Function. Why: Each normal placed glyph needs a font size, well-distributed across the scale rather than repeating nearby. How: This is a cycler drawing from a freshly-shuffled copy of the xl2, xl3, and xl4 font size steps, leaving xl5 to the big glyphs, since a larger size would spill out of a normal glyph's one-cell footprint.
 
 
 
@@ -541,7 +540,7 @@ function genSidFun( gutWidNum, conHeiNum ) {
 			insNum : insPosNum,                                      // What: Inset Number. Why: The rendered glyph needs its own absolute horizontal offset from the content edge. How: This carries the same insPosNum value computed above straight through.
 			opaNum : 0.08 + Math.random() * 0.1,                     // What: Opacity Number. Why: Glyphs should stay subtle, not compete with real content. How: This picks a random opacity in a narrow, low-visibility range.
 			rotNum : nexRotFun(),                                    // What: Rotate Number. Why: Each glyph needs its own rotation angle for visual variety. How: This draws the next well-distributed angle from the cycler built above.
-			sizNum : isaBigBoo ? nexBigFun() : nexSizFun(),          // What: Size Number. Why: A big glyph needs its own larger font-size range than a normal one. How: This draws from nexBigFun when isaBigBoo, nexSizFun otherwise.
+			sizStr : isaBigBoo ? 'xl5' : nexSizFun(),                // What: Size String. Why: A big glyph fills its 2x2 footprint at the largest step, while a normal one stays within its own cell. How: This names xl5 for isaBigBoo, and draws the next well-distributed step from nexSizFun otherwise.
 			symStr : nexSymFun(),                                    // What: Symbol String. Why: Each glyph needs an actual character to render. How: This draws the next well-distributed symbol from the cycler built above.
 			topNum : rowIndNum * ROW_HEI_NUM + rowJitNum             // What: Top Number. Why: The rendered glyph needs its own absolute vertical offset within the gutter. How: This converts the placement's own row index into pixels and adds the jittered offset.
 
@@ -701,7 +700,7 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
 						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`,
 
 						top       : `${ floCurObj.topNum }px`,
-						fontSize  : `${ floCurObj.sizNum }px`,
+						fontSize  : `var( --fon-siz-${ floCurObj.sizStr } )`,
 						opacity   : floCurObj.opaNum,
 						transform : `rotate(${ floCurObj.rotNum }deg)`
 					}}
