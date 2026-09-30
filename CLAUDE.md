@@ -1843,6 +1843,11 @@ viewport instead (e.g. a heading that grows with the screen), a viewport
 unit or another scaling unit is fine, but only when that scaling is
 actually needed. A value that really has to stay in `px` is raised when it
 comes up and recorded here, per "### Undefined cases: stop and ask".
+- **Breakpoints are expected to stay fixed `px` values** (noted
+  2026-09-29, to be confirmed when breakpoints are systematized): inside an
+  `@media` or `@container` condition, `rem` resolves against the browser's
+  own 16px default rather than this project's 11px root, so a `rem`
+  breakpoint wouldn't line up with the rem values used everywhere else.
 
 ### Reduced motion
 Decided 2026-09-28. Everything that can have a reduced-motion variant gets
