@@ -269,7 +269,7 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 .today-card-name { /* What: Page Tour Card Name. Why: The call to action reads like a real card's item name. How: This sets it in large medium-weight text. */
 
 
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;

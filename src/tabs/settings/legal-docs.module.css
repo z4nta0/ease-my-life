@@ -267,7 +267,7 @@
 .legal-modal-body h2 { /* What: Legal Document Section Heading. Why: Section headings break the document into scannable parts. How: This sizes them and spaces them from the text around them. */
 
 
-	font-size : var( --fon-siz-xla );
+	font-size : var( --fon-siz-xl1 );
 	margin    : 1.6em 0 0.4em;
 
 

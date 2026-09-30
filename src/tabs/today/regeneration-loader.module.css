@@ -169,7 +169,7 @@
 .today-card-name { /* What: Loader Card Name Row. Why: The slot's waiting dots, reel, or settled name sit where a real card's item name goes. How: This sets the row in the same large medium-weight text. */
 
 
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;

@@ -1705,7 +1705,7 @@
 
 	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global sparkleTwinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var(--accent);
-	font-size   : var( --fon-siz-xla );
+	font-size   : var( --fon-siz-xl1 );
 	line-height : var( --ver-rhy-sma );
 	opacity     : 0;
 	position    : absolute;

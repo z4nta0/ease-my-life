@@ -147,7 +147,7 @@
 .group-name { /* What: Group Name. Why: The group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
 
 
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
 	margin         : 0;
@@ -1002,7 +1002,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border-bottom  : 1px solid var(--border);
 	color          : var(--text);
 	font-family    : var(--font-sans);
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
@@ -1045,7 +1045,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card-name { /* What: Reminder Name. Why: The reminder's name is the card's headline. How: This sets it large and medium weight. */
 
 
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;

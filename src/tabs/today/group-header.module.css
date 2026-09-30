@@ -106,7 +106,7 @@
 	border-radius    : 8px;
 	color            : var(--text);
 	font-family      : inherit;
-	font-size        : var( --fon-siz-xla );
+	font-size        : var( --fon-siz-xl1 );
 	font-weight      : 500;
 	letter-spacing   : -0.015em;
 	margin           : -3px 0;
@@ -197,7 +197,7 @@
 .group-name { /* What: Group Name. Why: The group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
 
 
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
 	margin         : 0;
@@ -216,7 +216,7 @@
 	cursor         : text;
 	display        : inline-flex;
 	font-family    : inherit;
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 500;
 	gap            : 7px;
 	letter-spacing : -0.015em;

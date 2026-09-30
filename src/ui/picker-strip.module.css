@@ -69,7 +69,7 @@
 	align-items     : center;
 	color           : var(--muted);
 	display         : flex;
-	font-size       : var( --fon-siz-xla );
+	font-size       : var( --fon-siz-xl1 );
 	font-weight     : 500;
 	height          : 56px;
 	justify-content : center;
@@ -92,7 +92,7 @@
 
 
 	color     : var(--accent);
-	font-size : var( --fon-siz-xla );
+	font-size : var( --fon-siz-xl1 );
 	transform : scale(1.02);
 
 

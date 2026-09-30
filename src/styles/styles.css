@@ -172,7 +172,7 @@
 
 	--fon-siz-bas : 1rem; /* What: Font Size Base ~= 11px. Why: This is the smallest font size accessibility tools accept, and every other step multiplies it; html sets 1rem to 11px by default. How: Each step above reads it as its starting point. */
 	--fon-siz-lar : calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) ); /* What: Font Size Large ~= 14.572px. Why: This is one step up the scale from the base. How: This multiplies the base by the first power of the core design number. */
-	--fon-siz-xla : calc( var( --fon-siz-bas ) * var( --cdn-pow-002 ) ); /* What: Font Size Extra Large ~= 19.304px. Why: This is two steps up the scale from the base. How: This multiplies the base by the second power of the core design number. */
+	--fon-siz-xl1 : calc( var( --fon-siz-bas ) * var( --cdn-pow-002 ) ); /* What: Font Size Extra Large 1 ~= 19.304px. Why: This is two steps up the scale from the base. How: This multiplies the base by the second power of the core design number. */
 	--fon-siz-xl2 : calc( var( --fon-siz-bas ) * var( --cdn-pow-003 ) ); /* What: Font Size Extra Large 2 ~= 25.572px. Why: This is three steps up the scale from the base. How: This multiplies the base by the third power of the core design number. */
 	--fon-siz-xl3 : calc( var( --fon-siz-bas ) * var( --cdn-pow-004 ) ); /* What: Font Size Extra Large 3 ~= 33.876px. Why: This is four steps up the scale from the base. How: This multiplies the base by the fourth power of the core design number. */
 	--fon-siz-xl4 : calc( var( --fon-siz-bas ) * var( --cdn-pow-005 ) ); /* What: Font Size Extra Large 4 ~= 44.876px. Why: This is five steps up the scale from the base. How: This multiplies the base by the fifth power of the core design number. */
@@ -195,11 +195,11 @@
 
 	/* #region Vertical Rhythm Tokens */
 
-	--ver-rhy-xsm : var( --cdn-pow-001-rec ); /* What: Vertical Rhythm Extra Small ~= 0.755. Why: The tightest vertical spacing sits one step below the small step. How: This is the reciprocal of the first power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xs1 : var( --cdn-pow-001-rec ); /* What: Vertical Rhythm Extra Small 1 ~= 0.755. Why: The tightest vertical spacing sits one step below the small step. How: This is the reciprocal of the first power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-sma : var( --cdn-pow-000 );     /* What: Vertical Rhythm Small = 1. Why: Headings and single-line elements need no breathing room between lines. How: This is read unitless as line-height, so each line is exactly its own font size tall. */
 	--ver-rhy-bas : var( --cdn-pow-001 );     /* What: Vertical Rhythm Base ~= 1.325. Why: Line height and every other height-related value share one base rhythm drawn from the core design number. How: This is read unitless as line-height, so each element multiplies it by its own font size, and other vertical values can build on it. */
 	--ver-rhy-lar : var( --cdn-pow-002 );     /* What: Vertical Rhythm Large ~= 1.755. Why: Small labels that share a row with a taller control, like the page kickers, need a roomier line. How: This is read unitless as line-height (about 19.3px on base-size text), or multiplied by 1rem where a fixed height is needed. */
-	--ver-rhy-xla : var( --cdn-pow-003 );     /* What: Vertical Rhythm Extra Large ~= 2.325. Why: The roomiest vertical spacing sits one step above the large step. How: This is the third power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl1 : var( --cdn-pow-003 );     /* What: Vertical Rhythm Extra Large 1 ~= 2.325. Why: The roomiest vertical spacing sits one step above the large step. How: This is the third power of the core design number, multiplied by 1rem where a length is needed. */
 
 	/* #endregion Vertical Rhythm Tokens */
 

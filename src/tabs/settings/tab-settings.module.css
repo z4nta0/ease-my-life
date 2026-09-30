@@ -1240,7 +1240,7 @@
 .set-about-name { /* What: About Name. Why: The app's name leads the block. How: This sets it large and bold. */
 
 
-	font-size      : var( --fon-siz-xla );
+	font-size      : var( --fon-siz-xl1 );
 	font-weight    : 600;
 	letter-spacing : -0.015em;
 

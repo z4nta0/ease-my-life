@@ -1098,7 +1098,7 @@
 	color           : var(--text);
 	cursor          : pointer;
 	display         : flex;
-	font-size       : var( --fon-siz-xla );
+	font-size       : var( --fon-siz-xl1 );
 	height          : 30px;
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
@@ -1509,7 +1509,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	color                : var(--text);
 	font-family          : var(--font-mono);
-	font-size            : var( --fon-siz-xla );
+	font-size            : var( --fon-siz-xl1 );
 	font-variant-numeric : tabular-nums;
 	font-weight          : 600;
 	margin-right         : 4px;
@@ -2383,7 +2383,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	color           : var(--text);
 	cursor          : pointer;
 	display         : flex;
-	font-size       : var( --fon-siz-xla );
+	font-size       : var( --fon-siz-xl1 );
 	height          : 28px;
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
