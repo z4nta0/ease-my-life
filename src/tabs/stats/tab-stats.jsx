@@ -1093,7 +1093,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const preFilRef = React.useRef( { staGroStr, typFilStr } ); // What: Previous Filter Reference. Why: The repair effect below needs to remember the last-seen filter pair across renders to detect an actual change. How: This starts at the current filter pair and is updated by the effect below on every run. // Keep scoValStr coherent with the Group + Type filters: within a specific group and/or type, All/Reminders aren't offered, so if the current scope isn't one of the filtered pickers, fall back to the first one, alphabetically, matching the Show row. Also jumps whenever either filter itself just changed, not only once the OLD scope happens to fall out of view (e.g. switching between two groups that both happen to contain the same picker used to leave the view stranded there instead of jumping to the new filter's own first card).
 
 
-	React.useEffect( () => { // What: Scope Repair Effect. Why: A stale or now-unreachable scope must be corrected to the new filter's own first alphabetical picker. How: This detects a filter change or an out-of-view scope and reassigns scoValStr accordingly.
+	React.useEffect( () => { // What: Scope Repair Effect. Why: A stale or now-unreachable scope must be corrected, to All while both filters are on All, otherwise to the new filter's own first alphabetical picker. How: This detects a filter change or an out-of-view scope and reassigns scoValStr accordingly.
 
 
 		const filChaBoo = preFilRef.current.staGroStr !== staGroStr || preFilRef.current.typFilStr !== typFilStr; // What: Filters Changed Boolean. Why: The repair below must run both on a filter change and on a stale scope, not only the latter. How: This compares the previous filter pair against the current one.
@@ -1106,10 +1106,23 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		if ( filChaBoo || !visPicArr.some( ( picCurObj ) => picCurObj.id === scoValStr ) ) setScoValStr( sorVisArr[ 0 ] ? sorVisArr[ 0 ].id : 'all' ); // What: Scope Reassignment. Why: A changed filter or a scope that fell out of view both need the same fallback behavior. How: This jumps to the first sorted visible picker, or 'all' when there isn't one.
+		const allTypBoo = typFilStr === 'all';                                           // What: All Type Boolean. Why: The All, Conditionals, and Reminders tabs only appear in the Show row while the Type filter is on All. How: This checks typFilStr for 'all'.
+		const defFilBoo = staGroStr === 'all' && allTypBoo;                              // What: Default Filter Boolean. Why: The All tab only appears while both filters are on All, and that's also when the fallback should land on All. How: This checks staGroStr alongside allTypBoo.
+		const allScoBoo = scoValStr === 'all' && defFilBoo;                              // What: All Scope Boolean. Why: The All scope is only valid while its tab is in the Show row. How: This checks scoValStr for 'all' while defFilBoo holds.
+		const conScoBoo = scoValStr === 'conditionals' && allTypBoo && hasConBoo;        // What: Conditional Scope Boolean. Why: The Conditionals scope is only valid while its tab is in the Show row. How: This checks scoValStr for 'conditionals' while the Type filter is on All and conditionals exist.
+		const picScoBoo = visPicArr.some( ( picCurObj ) => picCurObj.id === scoValStr ); // What: Picker Scope Boolean. Why: A picker scope is only valid while that picker is still in view. How: This checks visPicArr for scoValStr's id.
+		const remScoBoo = scoValStr === 'reminders' && allTypBoo && remEnaBoo;           // What: Reminder Scope Boolean. Why: The Reminders scope is only valid while its tab is in the Show row. How: This checks scoValStr for 'reminders' while the Type filter is on All and a reminder type is enabled.
+
+		const scoLivBoo = allScoBoo || conScoBoo || picScoBoo || remScoBoo; // What: Scope Live Boolean. Why: The repair only needs to move a scope whose tab is no longer in the Show row. How: This combines the four scope checks above.
 
 
-	}, [ staGroStr, typFilStr, visPicArr, sorVisArr, scoValStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever either filter, the resulting visible/sorted lists, or the scope itself changes. How: staGroStr/typFilStr detect a filter change, visPicArr/sorVisArr supply the fallback target, scoValStr is what's being validated.
+		const falScoStr = defFilBoo ? 'all' : ( sorVisArr[ 0 ] ? sorVisArr[ 0 ].id : 'all' ); // What: Fallback Scope String. Why: With both filters on All the page should show the combined dashboard, the same as the Group and Type All pills ask for, while a narrowed filter lands on its first picker. How: This picks 'all' while defFilBoo holds, else the first sorted visible picker, else 'all'.
+
+
+		if ( filChaBoo || !scoLivBoo ) setScoValStr( falScoStr ); // What: Scope Reassignment. Why: A changed filter or a scope whose tab left the Show row both need the same fallback. How: This writes falScoStr into scoValStr.
+
+
+	}, [ hasConBoo, remEnaBoo, scoValStr, sorVisArr, staGroStr, typFilStr, visPicArr ] ); // What: Effect Dependency Array. Why: This must re-run whenever either filter, the resulting visible/sorted lists, the Conditionals and Reminders tabs' availability, or the scope itself changes. How: staGroStr/typFilStr detect a filter change, visPicArr/sorVisArr supply the picker checks and fallback, hasConBoo/remEnaBoo decide whether those two tabs exist, and scoValStr is what's being validated.
 
 
 
