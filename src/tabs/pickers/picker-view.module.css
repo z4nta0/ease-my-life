@@ -62,7 +62,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
 	line-height    : 22px;
@@ -74,23 +74,10 @@
 .picker-title { /* What: Picker Title. Why: The picker's name heads the view. How: This sets it large and tight. */
 
 
-	font-size      : 28px;
+	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
 	margin         : 4px 0 0;
-
-
-}
-@container app (max-width: 520px) { /* What: Narrow Picker Title. Why: A narrow app needs a smaller name. How: This applies only when the app matches (max-width: 520px). */
-
-
-	.picker-title { /* What: Smaller Picker Title. Why: The name has less room. How: This drops it to 24px. */
-
-
-		font-size : 24px;
-
-
-	}
 
 
 }
@@ -103,7 +90,7 @@
 
 
 	color     : var(--muted);
-	font-size : 14px;
+	font-size : var( --fon-siz-lar );
 	margin    : 0;
 	max-width : 56ch;
 	text-wrap : pretty;
@@ -184,7 +171,7 @@
 
 	color                : var(--text);
 	font-family          : var(--font-mono);
-	font-size            : 56px;
+	font-size            : var( --fon-siz-xl5 );
 	font-variant-numeric : tabular-nums;
 	font-weight          : 400;
 	letter-spacing       : -0.04em;
@@ -195,10 +182,10 @@
 @container app (max-width: 520px) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches (max-width: 520px). */
 
 
-	.stage-idle-num { /* What: Smaller Stage Count. Why: The figure has less room. How: This drops it to 48px. */
+	.stage-idle-num { /* What: Smaller Stage Count. Why: The figure has less room. How: This drops it one step, to the extra large 4 font size. */
 
 
-		font-size : 48px;
+		font-size : var( --fon-siz-xl4 );
 
 
 	}
@@ -211,7 +198,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	margin-bottom  : 8px;
 	max-width      : 32ch;
@@ -341,7 +328,7 @@
 
 
 	color          : var(--text);
-	font-size      : 24px;
+	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
 	max-width      : 30ch;
@@ -575,7 +562,7 @@
 	color          : var(--muted);
 	display        : inline-flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 5px;
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
@@ -782,7 +769,7 @@
 .pool-confirm-msg { /* What: Pool Delete Question. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
 
 
-	font-size : 14px;
+	font-size : var( --fon-siz-lar );
 	text-wrap : pretty;
 
 
@@ -812,7 +799,7 @@
 	--pill-width           : 80px;
 	align-items            : center;
 	display                : flex;
-	font-size              : 14px;
+	font-size              : var( --fon-siz-lar );
 	gap                    : 8px;
 	min-width              : 0;
 	text-wrap              : pretty;
@@ -872,7 +859,7 @@
 	color           : var(--muted);
 	display         : flex;
 	font-family     : var(--font-mono);
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	gap             : 12px;
 	justify-content : flex-end;
 	justify-self    : end;
@@ -1284,7 +1271,7 @@
 	border         : 0;
 	border-bottom  : 1px solid var(--border);
 	font           : inherit;
-	font-size      : 14px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 	padding        : 1px 0;
@@ -1358,7 +1345,7 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
-	font-size       : 13.5px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 6px;
 	justify-content : center;

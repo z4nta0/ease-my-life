@@ -72,7 +72,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
 	line-height    : 22px;
@@ -204,7 +204,7 @@
 .section-title { /* What: Section Title. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : 30px;
+	font-size      : var( --fon-siz-xl3 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
 	line-height    : 1.15;
@@ -215,10 +215,10 @@
 @container app (max-width: 520px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 520px wide or less. */
 
 
-	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it to 26px. */
+	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
 
 
-		font-size : 26px;
+		font-size : var( --fon-siz-xl2 );
 
 
 	}
@@ -313,7 +313,7 @@
 	color          : var(--muted);
 	flex-shrink    : 0;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	text-transform : uppercase;
 
@@ -375,7 +375,7 @@
 	cursor         : pointer;
 	display        : inline-flex;
 	flex-shrink    : 0;
-	font-size      : 13px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 7px;
 	letter-spacing : -0.01em;
@@ -422,7 +422,7 @@
 	border-radius        : 999px;
 	color                : var(--muted);
 	font-family          : var(--font-mono);
-	font-size            : 11px;
+	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	min-width            : 18px;
 	padding              : 1px 6px;
@@ -554,7 +554,7 @@
 .picker-tab-name { /* What: Show Tab Name. Why: The scope's name leads its tab. How: This sets it in medium weight. */
 
 
-	font-size      : 14px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 
@@ -573,7 +573,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -623,7 +623,7 @@
 	border        : 1px dashed var(--border);
 	border-radius : var(--r-md);
 	color         : var(--muted);
-	font-size     : 13px;
+	font-size     : var( --fon-siz-lar );
 	padding       : 18px 16px;
 	text-align    : center;
 
@@ -634,7 +634,7 @@
 
 
 	color       : var(--text);
-	font-size   : 15px;
+	font-size   : var( --fon-siz-lar );
 	font-weight : 500;
 	margin      : 0 0 6px;
 
@@ -645,7 +645,7 @@
 
 
 	color       : var(--muted);
-	font-size   : 13px;
+	font-size   : var( --fon-siz-lar );
 	line-height : 1.5;
 	margin      : 0;
 	text-wrap   : pretty;
@@ -861,7 +861,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-name { /* What: Category Name. Why: The picker's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
 
 
-	font-size      : 16px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
@@ -882,7 +882,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	color          : var(--muted);
 	display        : flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 3px;
 	letter-spacing : 0.03em;
 
@@ -960,7 +960,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	color          : var(--muted);
 	flex           : 0 0 auto;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	overflow       : hidden;
 	padding        : 2px 8px;
@@ -988,7 +988,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	color           : var(--muted);
 	display         : inline-flex;
 	font-family     : var(--font-mono);
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	gap             : 5px;
 	justify-content : center;
 	letter-spacing  : 0.04em;
@@ -1132,7 +1132,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
 
 
@@ -1152,7 +1152,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	color          : var(--muted);
 	display        : flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.04em;
 	padding        : 13px 16px;
@@ -1347,7 +1347,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border         : 0;
 	border-bottom  : 1px solid var(--border);
 	font           : inherit;
-	font-size      : 14px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 	padding        : 1px 0;
@@ -1389,7 +1389,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name { /* What: Row Name. Why: A closed row leads with its item's name. How: This sets it in medium weight. */
 
 
-	font-size      : 14px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 
@@ -1408,7 +1408,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -1494,7 +1494,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : flex;
-	font-size       : 14px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 8px;
 	justify-content : center;

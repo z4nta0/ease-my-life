@@ -189,7 +189,7 @@
 
 	color          : var(--accent);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	margin         : 0 0 5px;
 
@@ -199,7 +199,7 @@
 .ob-coach-title { /* What: Tour Coach Title. Why: The step's title leads its explanation. How: This sets it slightly larger and bold above the body. */
 
 
-	font-size   : 15px;
+	font-size   : var( --fon-siz-lar );
 	font-weight : 600;
 	margin      : 0 0 5px;
 
@@ -210,7 +210,7 @@
 
 
 	color       : var(--muted);
-	font-size   : 12.5px;
+	font-size   : var( --fon-siz-bas );
 	line-height : 1.5;
 	margin      : 0;
 
@@ -255,7 +255,7 @@
 	color       : var(--muted);
 	cursor      : pointer;
 	font-family : inherit;
-	font-size   : 12px;
+	font-size   : var( --fon-siz-bas );
 	padding     : 4px 2px;
 
 
@@ -269,7 +269,7 @@
 	color       : var(--accent);
 	cursor      : pointer;
 	font-family : inherit;
-	font-size   : 12px;
+	font-size   : var( --fon-siz-bas );
 	font-weight : 500;
 	padding     : 4px 2px;
 
@@ -289,7 +289,7 @@
 	color         : #fff;
 	cursor        : pointer;
 	font-family   : inherit;
-	font-size     : 12.5px;
+	font-size     : var( --fon-siz-bas );
 	font-weight   : 600;
 	padding       : 8px 15px;
 

@@ -483,7 +483,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	color          : var(--muted);
 	display        : flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 6px;
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
@@ -547,7 +547,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border-bottom  : 1px solid var(--border);
 	color          : var(--text);
 	font-family    : var(--font-sans);
-	font-size      : 17px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
@@ -590,7 +590,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card-name { /* What: Entry Name. Why: The entry's name is the card's headline. How: This sets it large and medium weight. */
 
 
-	font-size      : 17px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;

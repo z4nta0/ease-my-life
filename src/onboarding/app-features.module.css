@@ -22,7 +22,7 @@
 	border          : 3px solid currentColor;
 	border-radius   : 50%;
 	display         : flex;
-	font-size       : 28px;
+	font-size       : var( --fon-siz-xl2 );
 	font-weight     : 700;
 	height          : 100%;
 	justify-content : center;

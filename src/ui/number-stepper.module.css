@@ -43,7 +43,7 @@
 	display         : inline-flex;
 	flex            : 0 0 auto;
 	font-family     : var(--font-mono);
-	font-size       : 15px;
+	font-size       : var( --fon-siz-lar );
 	height          : 22px;
 	justify-content : center;
 	line-height     : 1;
@@ -91,7 +91,7 @@
 	border          : 0;
 	color           : var(--text);
 	font-family     : var(--font-mono);
-	font-size       : 14px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 600;
 	outline         : none;
 	padding         : 0;

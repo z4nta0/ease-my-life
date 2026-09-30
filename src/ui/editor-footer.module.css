@@ -59,7 +59,7 @@
 
 
 	color     : var(--text);
-	font-size : 13px;
+	font-size : var( --fon-siz-lar );
 	text-wrap : pretty;
 
 

@@ -66,7 +66,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
 	line-height    : 22px;
@@ -198,7 +198,7 @@
 .section-title { /* What: Section Title. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : 30px;
+	font-size      : var( --fon-siz-xl3 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
 	line-height    : 1.15;
@@ -209,10 +209,10 @@
 @container app (max-width: 520px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 520px wide or less. */
 
 
-	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it to 26px. */
+	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
 
 
-		font-size : 26px;
+		font-size : var( --fon-siz-xl2 );
 
 
 	}
@@ -483,7 +483,7 @@
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : flex;
-	font-size       : 13.5px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 10px;
 	justify-content : space-between;
@@ -520,7 +520,6 @@
 		border        : 0.5px solid var(--border);
 		border-radius : 999px;
 		flex-shrink   : 0;
-		font-size     : 13px;
 		padding       : 6px 12px;
 		white-space   : nowrap;
 		width         : auto;
@@ -611,11 +610,11 @@
 
 }
 
-.settings-sub { /* What: Section Intro. Why: Each section and subsection explains itself in muted copy. How: This sets it muted at 14px with no margin. */
+.settings-sub { /* What: Section Intro. Why: Each section and subsection explains itself in muted copy. How: This sets it muted at the large font size with no margin. */
 
 
 	color     : var(--muted);
-	font-size : 14px;
+	font-size : var( --fon-siz-lar );
 	margin    : 0;
 
 
@@ -647,7 +646,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
 
@@ -746,7 +745,7 @@
 .set-data-name { /* What: Row Name. Why: The row's name leads it. How: This sets it in bold body text. */
 
 
-	font-size   : 14px;
+	font-size   : var( --fon-siz-lar );
 	font-weight : 600;
 
 
@@ -763,7 +762,7 @@
 
 
 	color       : var(--muted);
-	font-size   : 12.5px;
+	font-size   : var( --fon-siz-bas );
 	line-height : 1.45;
 	text-wrap   : pretty;
 
@@ -838,7 +837,7 @@
 	color          : var(--muted);
 	display        : inline-flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 4px;
 	letter-spacing : 0.01em;
 	padding        : 3px 8px;
@@ -873,7 +872,7 @@
 
 
 	animation  : importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both;
-	font-size  : 12px;
+	font-size  : var( --fon-siz-bas );
 	margin-top : 2px;
 
 
@@ -1034,7 +1033,7 @@
 	color                : var(--text);
 	flex                 : 0 0 130px;
 	font-family          : var(--font-sans);
-	font-size            : 14px;
+	font-size            : var( --fon-siz-lar );
 	font-variant-numeric : tabular-nums;
 	margin-top           : 2px;
 	max-width            : 360px;
@@ -1144,7 +1143,7 @@
 	color          : var(--text);
 	display        : inline-flex;
 	flex           : 0 0 auto;
-	font-size      : 13px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 5px;
 	height         : 30px;
@@ -1214,7 +1213,7 @@
 .set-about-name { /* What: About Name. Why: The app's name leads the block. How: This sets it large and bold. */
 
 
-	font-size      : 18px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 600;
 	letter-spacing : -0.015em;
 
@@ -1228,7 +1227,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
 
 
@@ -1238,7 +1237,7 @@
 
 
 	color     : var(--muted);
-	font-size : 12.5px;
+	font-size : var( --fon-siz-bas );
 
 
 }

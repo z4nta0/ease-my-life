@@ -91,7 +91,7 @@
 .help-tip-title { /* What: Help Tip Title. Why: The tip's title leads its explanation. How: This sets it slightly larger and bold above the body. */
 
 
-	font-size   : 15px;
+	font-size   : var( --fon-siz-lar );
 	font-weight : 600;
 	margin      : 0 0 5px;
 
@@ -105,7 +105,7 @@
 
 
 	color       : var(--muted);
-	font-size   : 12.5px;
+	font-size   : var( --fon-siz-bas );
 	line-height : 1.5;
 	margin      : 0;
 

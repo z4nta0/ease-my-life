@@ -139,7 +139,7 @@
 .ob-welcome h2 { /* What: Intro Modal Title. Why: The title leads the card. How: This centers it in a larger, tighter heading style. */
 
 
-	font-size      : 21px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 600;
 	letter-spacing : -0.02em;
 	margin         : 0 0 8px;
@@ -152,7 +152,7 @@
 
 
 	color       : var(--muted);
-	font-size   : 13.5px;
+	font-size   : var( --fon-siz-lar );
 	line-height : 1.55;
 	margin      : 0 6px;
 
@@ -189,7 +189,7 @@
 	border-radius : 999px;
 	color         : var(--accent);
 	font-family   : var(--font-mono);
-	font-size     : 11px;
+	font-size     : var( --fon-siz-bas );
 	outline       : none;
 	padding       : 5px 10px;
 
@@ -221,7 +221,7 @@
 	color         : var(--text);
 	cursor        : pointer;
 	font-family   : inherit;
-	font-size     : 14px;
+	font-size     : var( --fon-siz-lar );
 	font-weight   : 600;
 	padding       : 13px;
 

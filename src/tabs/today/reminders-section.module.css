@@ -147,7 +147,7 @@
 .group-name { /* What: Group Name. Why: The group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
 
 
-	font-size      : 18px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
 	margin         : 0;
@@ -166,7 +166,7 @@
 	color                : var(--muted);
 	display              : inline-flex;
 	font-family          : var(--font-mono);
-	font-size            : 11.5px;
+	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	gap                  : 4px;
 	letter-spacing       : 0.02em;
@@ -365,7 +365,7 @@
 	border-color  : oklch(from var(--warm) l c h/0.35);
 	border-radius : var(--r-sm);
 	color         : oklch(0.45 0.13 50);
-	font-size     : 12.5px;
+	font-size     : var( --fon-siz-bas );
 	line-height   : 1.5;
 	margin        : 0 0 8px;
 	padding       : 9px 12px;
@@ -476,7 +476,7 @@
 	color         : var(--text);
 	flex          : 1;
 	font-family   : var(--font-sans);
-	font-size     : 14px;
+	font-size     : var( --fon-siz-lar );
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
@@ -958,7 +958,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	color          : var(--muted);
 	display        : flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 6px;
 	letter-spacing : 0.02em;
 	text-transform : none;
@@ -1002,7 +1002,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border-bottom  : 1px solid var(--border);
 	color          : var(--text);
 	font-family    : var(--font-sans);
-	font-size      : 17px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
@@ -1045,7 +1045,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card-name { /* What: Reminder Name. Why: The reminder's name is the card's headline. How: This sets it large and medium weight. */
 
 
-	font-size      : 17px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;
@@ -1158,7 +1158,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	color     : var(--text);
-	font-size : 14px;
+	font-size : var( --fon-siz-lar );
 
 
 }

@@ -28,7 +28,7 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	font-size       : 13px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 700;
 	height          : 26px;
 	justify-content : center;

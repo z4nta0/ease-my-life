@@ -40,7 +40,7 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	font-size       : 13px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 600;
 	height          : 34px;
 	justify-content : center;
@@ -69,7 +69,7 @@
 .dow-chips--sm .dow-chip { /* What: Small Weekday Chip. Why: Compact contexts need smaller chips. How: This shrinks every chip inside a small chip row. */
 
 
-	font-size : 12px;
+	font-size : var( --fon-siz-bas );
 	height    : 30px;
 	width     : 30px;
 
@@ -92,7 +92,7 @@
 .dow-chip--sm { /* What: Small Locked Weekday Chip. Why: The locked chip renders through the info tip, so it takes the small size as its own class rather than from its row. How: This shrinks it to match the small row. */
 
 
-	font-size : 12px;
+	font-size : var( --fon-siz-bas );
 	height    : 30px;
 	width     : 30px;
 

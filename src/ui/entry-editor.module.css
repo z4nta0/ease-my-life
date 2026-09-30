@@ -115,7 +115,7 @@
 	cursor          : help;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	font-weight     : 700;
 	height          : 16px;
 	justify-content : center;
@@ -154,7 +154,7 @@
 .pie-lbl { /* What: Setting Name. Why: Each setting row leads with its name. How: This sets it at body size. */
 
 
-	font-size : 13.5px;
+	font-size : var( --fon-siz-lar );
 
 
 }
@@ -163,7 +163,7 @@
 
 
 	color     : var(--muted);
-	font-size : 11px;
+	font-size : var( --fon-siz-bas );
 
 
 }
@@ -211,7 +211,7 @@
 
 	align-self : center;
 	color      : var(--muted);
-	font-size  : 12px;
+	font-size  : var( --fon-siz-bas );
 
 
 }
@@ -240,7 +240,7 @@
 	align-items     : center;
 	color           : var(--muted);
 	display         : inline-flex;
-	font-size       : 14px;
+	font-size       : var( --fon-siz-lar );
 	height          : 26px;
 	justify-content : center;
 	width           : 26px;
@@ -268,7 +268,7 @@
 
 	color                : var(--muted);
 	font-family          : var(--font-mono);
-	font-size            : 11px;
+	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	padding              : 0 8px;
 
@@ -283,7 +283,7 @@
 
 
 	color     : var(--muted);
-	font-size : 13px;
+	font-size : var( --fon-siz-lar );
 
 
 }
@@ -403,7 +403,7 @@
 
 
 	color     : var(--text);
-	font-size : 13px;
+	font-size : var( --fon-siz-lar );
 	text-wrap : pretty;
 
 

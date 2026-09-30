@@ -234,7 +234,7 @@ body { /* What: Page Root. Why: The page fills the viewport with no default spac
 
 
 
-body { /* What: Page Body Text. Why: All text starts from the app's own typeface, size, and colors. How: This sets the sans font at 15px with its stylistic sets, the text and background tokens, and smoothed rendering. */
+body { /* What: Page Body Text. Why: All text starts from the app's own typeface, size, and colors. How: This sets the sans font at the large font size with its stylistic sets, the text and background tokens, and smoothed rendering. */
 
 
 	-moz-osx-font-smoothing : grayscale;
@@ -243,7 +243,7 @@ body { /* What: Page Body Text. Why: All text starts from the app's own typeface
 	color                   : var(--text);
 	font-family             : var(--font-sans);
 	font-feature-settings   : 'ss01', 'cv11';
-	font-size               : 15px;
+	font-size               : var( --fon-siz-lar );
 	letter-spacing          : -0.005em;
 	line-height             : 1.5;
 

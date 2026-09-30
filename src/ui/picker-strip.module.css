@@ -69,7 +69,7 @@
 	align-items     : center;
 	color           : var(--muted);
 	display         : flex;
-	font-size       : 19px;
+	font-size       : var( --fon-siz-xla );
 	font-weight     : 500;
 	height          : 56px;
 	justify-content : center;
@@ -92,7 +92,7 @@
 
 
 	color     : var(--accent);
-	font-size : 22px;
+	font-size : var( --fon-siz-xla );
 	transform : scale(1.02);
 
 
@@ -163,7 +163,7 @@
 
 
 	animation      : dissolveIn 180ms ease;
-	font-size      : 30px;
+	font-size      : var( --fon-siz-xl3 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
 	text-align     : center;
@@ -339,7 +339,7 @@
 
 	border-radius : 8px;
 	color         : var(--muted);
-	font-size     : 15px;
+	font-size     : var( --fon-siz-lar );
 	padding       : 8px 14px;
 	text-align    : var(--spot-row-text-align, inherit); /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spot-row-text-align, falling back to the inherited alignment. */
 	text-wrap     : pretty;

@@ -38,7 +38,7 @@
 	cursor         : pointer;
 	display        : inline-flex;
 	font-family    : var(--font-mono);
-	font-size      : 10px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 5px;
 	height         : 24px;
 	letter-spacing : 0.05em;
@@ -130,7 +130,7 @@
 	color          : var(--muted);
 	display        : inline-flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.06em;
 	text-transform : uppercase;
@@ -249,7 +249,7 @@
 	align-items : center;
 	color       : var(--muted);
 	display     : inline-flex;
-	font-size   : 12px;
+	font-size   : var( --fon-siz-bas );
 	gap         : 7px;
 
 
@@ -361,7 +361,7 @@
 
 
 	color     : var(--muted);
-	font-size : 13px;
+	font-size : var( --fon-siz-lar );
 	padding   : 12px 10px;
 
 
@@ -510,7 +510,7 @@
 .dl-block-name { /* What: Block Name. Why: Each block leads with its picker's name, or Conditionals. How: This sets it in semibold. */
 
 
-	font-size      : 14px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 600;
 	letter-spacing : -0.01em;
 
@@ -539,7 +539,7 @@
 	border-radius  : 999px;
 	color          : var(--accent);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	padding        : 2px 8px;
 	text-align     : center;
@@ -582,7 +582,7 @@
 	display         : inline-flex;
 	flex-wrap       : wrap;
 	font-family     : var(--font-mono);
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	gap             : 8px;
 	justify-content : flex-end;
 	margin-left     : auto;
@@ -638,7 +638,7 @@
 	display        : flex;
 	flex-direction : column;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 2px;
 	letter-spacing : 0.03em;
 	margin-left    : auto;
@@ -747,7 +747,7 @@
 	border-bottom  : 0.5px solid var(--border);
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	padding        : 6px 10px;
 	text-transform : uppercase;
@@ -901,7 +901,7 @@
 .dl-name { /* What: Row Name. Why: The item or conditional name leads the row on one line. How: This sets it in medium weight, ending in an ellipsis. */
 
 
-	font-size     : 14px;
+	font-size     : var( --fon-siz-lar );
 	font-weight   : 500;
 	overflow      : hidden;
 	text-overflow : ellipsis;
@@ -1038,7 +1038,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.02em;
 
 
@@ -1052,7 +1052,7 @@
 
 
 	font-family          : var(--font-mono);
-	font-size            : 13px;
+	font-size            : var( --fon-siz-lar );
 	font-variant-numeric : tabular-nums;
 
 
@@ -1070,7 +1070,7 @@
 
 
 	font-family          : var(--font-mono);
-	font-size            : 12px;
+	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 
 
@@ -1117,7 +1117,7 @@
 
 	color       : oklch(from var(--muted) l c h/0.55);
 	font-family : var(--font-mono);
-	font-size   : 11px;
+	font-size   : var( --fon-siz-bas );
 
 
 }
@@ -1142,7 +1142,7 @@
 
 	border-radius  : 999px;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	padding        : 2px 0;
 	text-transform : uppercase;
@@ -1203,7 +1203,7 @@
 
 	color       : oklch(from var(--muted) l c h/0.4);
 	font-family : var(--font-mono);
-	font-size   : 13px;
+	font-size   : var( --fon-siz-lar );
 	text-align  : right;
 
 
@@ -1214,7 +1214,7 @@
 
 	color          : oklch(from var(--muted) l c h/0.7);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -1236,7 +1236,7 @@
 	color          : oklch(from var(--accent) calc(l - 0.02) c h);
 	display        : flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.02em;
 	margin         : 0 0 8px;
@@ -1307,7 +1307,7 @@
 	border-bottom  : 0.5px solid var(--border);
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	padding        : 6px 10px;
 	text-transform : uppercase;
@@ -1368,7 +1368,7 @@
 .dl-r-name { /* What: Reminder Name. Why: The reminder's name leads its row on one line. How: This sets it in medium weight, ending in an ellipsis. */
 
 
-	font-size     : 14px;
+	font-size     : var( --fon-siz-lar );
 	font-weight   : 500;
 	min-width     : 0;
 	overflow      : hidden;
@@ -1390,7 +1390,7 @@
 
 	color       : var(--muted);
 	font-family : var(--font-mono);
-	font-size   : 11px;
+	font-size   : var( --fon-siz-bas );
 	text-align  : center;
 
 
@@ -1414,7 +1414,7 @@
 
 	color          : oklch(from var(--muted) l c h/0.75);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-align     : right;
 	text-transform : uppercase;

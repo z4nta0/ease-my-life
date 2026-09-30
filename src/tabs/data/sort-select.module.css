@@ -36,7 +36,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	text-transform : uppercase;
 
@@ -52,7 +52,7 @@
 	color         : var(--text);
 	cursor        : pointer;
 	font-family   : var(--font-sans);
-	font-size     : 14px;
+	font-size     : var( --fon-siz-lar );
 	margin-top    : 2px;
 	max-width     : 360px;
 	outline       : none;

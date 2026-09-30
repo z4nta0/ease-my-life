@@ -52,7 +52,7 @@
 	box-shadow     : 0 8px 28px oklch(0 0 0 / 0.14), 0 1px 2px oklch(0 0 0 / 0.06);
 	color          : var(--text);
 	font-family    : var(--font-sans);
-	font-size      : 12px;
+	font-size      : var( --fon-siz-bas );
 	line-height    : 1.45;
 	max-width      : 248px;
 	padding        : 9px 11px;

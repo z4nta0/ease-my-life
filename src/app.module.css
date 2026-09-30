@@ -597,7 +597,7 @@
 
 	color          : var(--accent);
 	font-family    : "Shantell Sans", "Geist", sans-serif;
-	font-size      : 34px;
+	font-size      : var( --fon-siz-xl3 );
 	font-weight    : 600;
 	letter-spacing : -0.01em;
 
@@ -610,7 +610,7 @@
 
 	color          : var(--text);
 	font-family    : "Quicksand", "Geist", sans-serif;
-	font-size      : 25px;
+	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 700;
 	letter-spacing : -0.005em;
 
@@ -652,7 +652,7 @@
 	color          : var(--muted);
 	flex           : 1 1 0;
 	flex-direction : column;
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	gap            : 3px;
 	letter-spacing : 0.01em;
@@ -679,7 +679,7 @@
 		border-radius  : 999px;
 		flex           : 0 0 auto;
 		flex-direction : row;
-		font-size      : 13px;
+		font-size      : var( --fon-siz-lar );
 		gap            : 7px;
 		max-width      : none;
 		min-height     : 0;
@@ -729,7 +729,7 @@
 	border-radius   : 10px;
 	color           : var(--muted);
 	flex-direction  : row;
-	font-size       : 14px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 12px;
 	justify-content : flex-start;
@@ -751,7 +751,7 @@
 	border-radius  : 999px;
 	color          : var(--muted);
 	flex-direction : row;
-	font-size      : 13px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 8px;
 	padding        : 8px 14px;
@@ -794,20 +794,20 @@
 
 }
 
-.tabbar--bottom .tabbtn span { /* What: Bottom Tab Label. Why: The bottom bar's labels sit small under their icons. How: This sets them at 11px. */
+.tabbar--bottom .tabbtn span { /* What: Bottom Tab Label. Why: The bottom bar's labels sit small under their icons. How: This sets them at the base font size. */
 
 
-	font-size : 11px;
+	font-size : var( --fon-siz-bas );
 
 
 }
 @container app (min-width: 720px) { /* What: Wide Bottom Tab Label. Why: The wide pill's labels sit beside their icons at a readable size. How: This applies only when the app is at least 720px wide. */
 
 
-	.tabbar--bottom .tabbtn span { /* What: Larger Bottom Tab Label. Why: The label should match the pill's text size. How: This sets it at 13px. */
+	.tabbar--bottom .tabbtn span { /* What: Larger Bottom Tab Label. Why: The label should match the pill's text size. How: This sets it one step up, at the large font size. */
 
 
-		font-size : 13px;
+		font-size : var( --fon-siz-lar );
 
 
 	}

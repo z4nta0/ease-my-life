@@ -26,7 +26,7 @@
 	display         : inline-flex;
 	flex            : var(--pill-flex, 0 1 auto);
 	font-family     : var(--font-mono);
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	font-weight     : 500;
 	justify-content : var(--pill-justify-content, normal);
 	letter-spacing  : 0.02em;
@@ -61,7 +61,7 @@
 	background : transparent;
 	border     : 0.5px solid var(--border);
 	color      : var(--muted);
-	font-size  : 11px;
+	font-size  : var( --fon-siz-bas );
 	padding    : 1px 7px;
 
 

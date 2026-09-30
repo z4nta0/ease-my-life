@@ -41,7 +41,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
 
@@ -52,7 +52,7 @@
 
 
 	color     : var(--muted);
-	font-size : 14px;
+	font-size : var( --fon-siz-lar );
 	margin    : 0;
 
 
@@ -145,7 +145,7 @@
 	color          : rgba(0,0,0,.45);
 	cursor         : pointer;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	left           : 10px;
 	letter-spacing : 0.05em;
 	position       : absolute;
@@ -177,7 +177,7 @@
 	border-radius   : 50%;
 	color           : oklch(0.5 0.14 250);
 	display         : flex;
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	font-weight     : 700;
 	height          : 18px;
 	justify-content : center;
@@ -309,7 +309,7 @@
 	bottom         : 6px;
 	color          : rgba(0,0,0,.5);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	left           : 10px;
 	letter-spacing : 0.05em;
 	max-width      : calc(100% - 20px);

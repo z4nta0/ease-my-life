@@ -255,7 +255,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 	color          : var(--muted);
 	display        : flex;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	gap            : 6px;
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
@@ -277,7 +277,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 .today-card-name { /* What: App Feature Card Name. Why: The call to action reads like a real card's item name. How: This sets it in large medium-weight text. */
 
 
-	font-size      : 17px;
+	font-size      : var( --fon-siz-xla );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;

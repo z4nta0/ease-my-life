@@ -55,7 +55,7 @@
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
 	line-height    : 22px;
@@ -67,23 +67,10 @@
 .picker-title { /* What: Form Title. Why: The form's title, or the picker's name while editing, heads the form. How: This sets it large and tight. */
 
 
-	font-size      : 28px;
+	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
 	margin         : 4px 0 0;
-
-
-}
-@container app (max-width: 520px) { /* What: Narrow Form Title. Why: A narrow app needs a smaller title. How: This applies only when the app matches (max-width: 520px). */
-
-
-	.picker-title { /* What: Smaller Form Title. Why: The title has less room. How: This drops it to 24px. */
-
-
-		font-size : 24px;
-
-
-	}
 
 
 }
@@ -152,7 +139,7 @@
 	color           : var(--muted);
 	display         : inline-flex;
 	font-family     : var(--font-mono);
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	font-weight     : 600;
 	height          : 22px;
 	justify-content : center;
@@ -195,7 +182,7 @@
 .np-step-lbl { /* What: Step Label. Why: Each step names itself beside its number. How: This sets it in medium weight. */
 
 
-	font-size   : 13px;
+	font-size   : var( --fon-siz-lar );
 	font-weight : 500;
 
 
@@ -246,7 +233,7 @@
 
 
 	color     : var(--muted);
-	font-size : 14px;
+	font-size : var( --fon-siz-lar );
 	margin    : 0;
 	max-width : 56ch;
 	text-wrap : pretty;
@@ -322,7 +309,7 @@ fieldset.np-field { /* What: Mode Fieldset. Why: The mode radio is a real fields
 .np-label { /* What: Field Label. Why: Each field is named above its control. How: This sets the label in medium weight. */
 
 
-	font-size      : 15px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 
@@ -342,7 +329,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	color       : var(--muted);
-	font-size   : 13px;
+	font-size   : var( --fon-siz-lar );
 	line-height : 1.5;
 	margin      : 0;
 	max-width   : 60ch;
@@ -380,7 +367,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	font-family   : var(--font-sans);
-	font-size     : 14px;
+	font-size     : var( --fon-siz-lar );
 	margin-top    : 2px;
 	max-width     : 360px;
 	outline       : none;
@@ -451,7 +438,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color         : var(--text);
 	cursor        : pointer;
 	display       : inline-flex;
-	font-size     : 13px;
+	font-size     : var( --fon-siz-lar );
 	font-weight   : 500;
 	gap           : 5px;
 	padding       : 7px 14px;
@@ -626,7 +613,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .mode-opt-name { /* What: Mode Option Name. Why: The mode's name leads the card. How: This sets it in medium weight. */
 
 
-	font-size   : 14px;
+	font-size   : var( --fon-siz-lar );
 	font-weight : 500;
 
 
@@ -636,7 +623,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	color       : var(--muted);
-	font-size   : 12.5px;
+	font-size   : var( --fon-siz-bas );
 	line-height : 1.45;
 
 
@@ -894,7 +881,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	color       : var(--text);
-	font-size   : 14px;
+	font-size   : var( --fon-siz-lar );
 	font-weight : 500;
 
 
@@ -920,7 +907,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	color          : var(--muted);
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -993,7 +980,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border-radius : var(--r-sm);
 	color         : var(--accent);
 	cursor        : pointer;
-	font-size     : 12.5px;
+	font-size     : var( --fon-siz-bas );
 	padding       : 4px 6px;
 
 
@@ -1068,7 +1055,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color          : var(--muted);
 	flex           : 1 1 auto;
 	font-family    : var(--font-mono);
-	font-size      : 11px;
+	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
 	max-width      : 40ch;
 	min-width      : 0;
@@ -1111,7 +1098,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border        : 1px dashed var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--muted);
-	font-size     : 13px;
+	font-size     : var( --fon-siz-lar );
 	line-height   : 1.5;
 	padding       : 18px 16px;
 	text-wrap     : pretty;
@@ -1293,7 +1280,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-confirm-msg { /* What: Pool Delete Question. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
 
 
-	font-size : 14px;
+	font-size : var( --fon-siz-lar );
 	text-wrap : pretty;
 
 
@@ -1318,7 +1305,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	align-items : center;
 	display     : flex;
-	font-size   : 14px;
+	font-size   : var( --fon-siz-lar );
 	gap         : 8px;
 	min-width   : 0;
 	text-wrap   : pretty;
@@ -1348,7 +1335,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color           : var(--muted);
 	display         : flex;
 	font-family     : var(--font-mono);
-	font-size       : 11px;
+	font-size       : var( --fon-siz-bas );
 	gap             : 12px;
 	justify-content : flex-end;
 	justify-self    : end;
@@ -1360,7 +1347,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	color                : var(--muted);
-	font-size            : 12.5px;
+	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 
 
@@ -1588,7 +1575,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border         : 0;
 	border-bottom  : 1px solid var(--border);
 	font           : inherit;
-	font-size      : 14px;
+	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 	padding        : 1px 0;
@@ -1662,7 +1649,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
-	font-size       : 13.5px;
+	font-size       : var( --fon-siz-lar );
 	font-weight     : 500;
 	gap             : 6px;
 	justify-content : center;
