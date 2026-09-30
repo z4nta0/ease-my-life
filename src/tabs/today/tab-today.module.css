@@ -2029,7 +2029,7 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 7px;
-	height         : 38px;
+	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing : -0.005em;
 	padding        : 0 14px;
 	transition     : background .12s, color .12s, transform .08s;
@@ -2043,13 +2043,13 @@
 
 
 }
-.btn--sm { /* What: Small Tip Button. Why: The onboarding card's button is compact. How: This shrinks its height, padding, text, and gap. */
+.btn--sm { /* What: Small Tip Button. Why: The onboarding card's button is compact. How: This shrinks its padding and gap, keeping the base height for now. */
 
 
 	border-radius : 999px;
 	font-size     : var( --fon-siz-lar );
 	gap           : 5px;
-	height        : 30px;
+	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
 	padding       : 0 11px;
 
 

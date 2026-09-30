@@ -1173,7 +1173,7 @@
 	font-size      : var( --fon-siz-lar );
 	font-weight    : 500;
 	gap            : 5px;
-	height         : 30px;
+	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing : -0.005em;
 	padding        : 0 11px;
 	transition     : background .12s, color .12s, transform .08s;

@@ -29,7 +29,7 @@
 	font-variant-numeric : var(--btn-font-variant-numeric, inherit); /* What: Button Figures. Why: A button whose label counts up should keep its width steady as digits change. How: A parent sets --btn-font-variant-numeric to tabular figures, otherwise the button inherits as usual. */
 	font-weight          : 500;
 	gap                  : 7px;
-	height               : 38px;
+	height               : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing       : -0.005em;
 	padding              : 0 14px;
 	transition           : background .12s, color .12s, transform .08s;
@@ -65,13 +65,13 @@
 
 
 }
-.btn--sm { /* What: Small Button. Why: Compact rows need a shorter button. How: This shrinks the height, padding, text, and gap. */
+.btn--sm { /* What: Small Button. Why: Compact rows need a narrower button. How: This shrinks the padding and gap, keeping the base height for now. */
 
 
 	border-radius : 999px;
 	font-size     : var( --fon-siz-lar );
 	gap           : 5px;
-	height        : 30px;
+	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
 	padding       : 0 11px;
 
 
