@@ -2178,8 +2178,9 @@ still passes.
     - **Exception, a scale** (decided 2026-09-29): tokens that form a
       scale of steps (font sizes, and every scale like them) are ordered
       smallest to biggest instead of alphabetically, so the steps read in
-      order (`bas`, `lar`, `xla`, `xl2`, ... rather than `xl2` sorting
-      ahead of `xla`).
+      order (`xs1`, `sma`, `bas`, `lar`, `xl1`, `xl2`, ... rather than
+      alphabetically, which would put `lar` ahead of `sma` and `xl1`
+      ahead of `xs1`).
     - **Exception, the core design numbers** (decided 2026-09-29): the
       user's own section of core design numbers always comes first inside
       `:root`, ahead of the alphabetized token sections, and is never
@@ -2221,15 +2222,19 @@ own first three letters, every Known miscorrection and project-scoped
 override applying, e.g. Offset is `off`, never `ofs`). Existing properties
 are renamed to this as their files come up in the design-system pass.
 - **The last segment names the kind of value**, not a JS type:
-  - **A step in a scale**: `xla` (extra large), `lar` (large), `med`
-    (medium), `sma` (small), `xsm` (extra small). `med` is the default
+  - **A step in a scale**: `sma` (small), `med` (medium), `lar` (large),
+    then numbered steps outward from those: `xl1`, `xl2`, `xl3`, ... (extra
+    large 1, 2, 3, ...) above `lar`, and `xs1`, `xs2`, `xs3`, ... (extra
+    small 1, 2, 3, ...) below `sma` (decided 2026-09-30, replacing the
+    earlier `xla`/`xsm` with `xxl`/`xxs` beyond them, since numbered steps
+    read cleaner and extend as far as a scale needs). `med` is the default
     middle step; `bas` (base) replaces it in a scale whose values center on
     that step rather than treating it as just another step, decided per
-    scale. `xxl`/`xxs` extend a scale only when consolidation leaves no
-    other choice.
+    scale.
   - **Font sizes use their own steps**, since the scale starts at its base
-    and only grows: `bas` (base, 1rem, which is 11px by default), `lar` (large, one power up), `xla`
-    (extra large, two), then `xl2`, `xl3`, `xl4`, `xl5` (three to six).
+    and only grows: `bas` (base, 1rem, which is 11px by default), `lar`
+    (large, one power up), then `xl1` through `xl5` (two to six powers
+    up).
   - **A category**: `col` (color), `fon` (font family), `dur` (duration),
     `del` (delay), `eas` (easing curve), `spr` (spread, e.g. a shadow or
     glow's reach), `opa` (opacity), `sca` (scale factor), `sha` (a whole
