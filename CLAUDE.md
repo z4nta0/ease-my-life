@@ -1832,6 +1832,18 @@ later, but don't invent one for anything else yet:
   file uses a CSS module, every token is a module interpolation instead,
   in the same 3-space form (see "### CSS modules and JS hooks").
 
+### Units: rem first
+Decided 2026-09-29, and not specific to this project. Every length uses
+`rem` unless something genuinely can't: that way everything scales when a
+person changes their browser's default font size, which a `px` value
+ignores. In this project 1rem is the 11px base font size (see the core
+design numbers exception under "### CSS modules and JS hooks"), so a `px`
+value converts at 11px per rem. Where a size has to scale with the
+viewport instead (e.g. a heading that grows with the screen), a viewport
+unit or another scaling unit is fine, but only when that scaling is
+actually needed. A value that really has to stay in `px` is raised when it
+comes up and recorded here, per "### Undefined cases: stop and ask".
+
 ### Reduced motion
 Decided 2026-09-28. Everything that can have a reduced-motion variant gets
 one, whether the motion comes from CSS or from JS.
@@ -2152,6 +2164,11 @@ still passes.
     tokens alphabetically within each, 1 blank line between a marker and
     its tokens, and 3 blank lines between sections. A token gets its own
     comment only when its name doesn't say what it is (e.g. `--r-sm`).
+    - **Exception, a scale** (decided 2026-09-29): tokens that form a
+      scale of steps (font sizes, and every scale like them) are ordered
+      smallest to biggest instead of alphabetically, so the steps read in
+      order (`bas`, `lar`, `xla`, `xl2`, ... rather than `xl2` sorting
+      ahead of `xla`).
     - **Exception, the core design numbers** (decided 2026-09-29): the
       user's own section of core design numbers always comes first inside
       `:root`, ahead of the alphabetized token sections, and is never
@@ -2168,9 +2185,11 @@ still passes.
       base font size times a power of the core design number, never a
       free-standing number. The base font size is 11px, the smallest size
       accessibility tools accept without flagging it, so the font size
-      scale starts there and only goes up: `--fon-siz-bas` is 11px, and
-      each step above it is `var( --fon-siz-bas )` times the next
-      `--cdn-pow-*` token.
+      scale starts there and only goes up. `html` sets the root font size
+      to 68.75% (11/16) of the browser's own default, so 1rem is that 11px
+      base at the usual 16px default and still follows any size a person
+      sets: `--fon-siz-bas` is `1rem`, and each step above it is `var(
+      --fon-siz-bas )` times the next `--cdn-pow-*` token.
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
@@ -2198,7 +2217,7 @@ are renamed to this as their files come up in the design-system pass.
     scale. `xxl`/`xxs` extend a scale only when consolidation leaves no
     other choice.
   - **Font sizes use their own steps**, since the scale starts at its base
-    and only grows: `bas` (base, 11px), `lar` (large, one power up), `xla`
+    and only grows: `bas` (base, 1rem, which is 11px by default), `lar` (large, one power up), `xla`
     (extra large, two), then `xl2`, `xl3`, `xl4`, `xl5` (three to six).
   - **A category**: `col` (color), `fon` (font family), `dur` (duration),
     `del` (delay), `eas` (easing curve), `spr` (spread, e.g. a shadow or
