@@ -538,7 +538,7 @@ function ConSupCom () {
 								className={` ${ cssModObj.npInput }   ${ cssModObj.supportTextarea } `}
 
 								placeholder='The more detail, the better.'
-								rows={ 5 }
+								rows={ 4 }
 								value={ draMesStr }
 
 								onChange={ ( chaEveObj ) => setDraMesStr( chaEveObj.target.value ) }
