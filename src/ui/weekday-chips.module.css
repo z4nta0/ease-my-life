@@ -42,10 +42,10 @@
 	flex            : 0 0 auto;
 	font-size       : var( --fon-siz-lar );
 	font-weight     : 600;
-	height          : 34px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	transition      : border-color .24s ease, background .24s ease, color .24s ease;
-	width           : 34px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
@@ -70,8 +70,8 @@
 
 
 	font-size : var( --fon-siz-bas );
-	height    : 30px;
-	width     : 30px;
+	height    : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width     : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
@@ -93,8 +93,8 @@
 
 
 	font-size : var( --fon-siz-bas );
-	height    : 30px;
-	width     : 30px;
+	height    : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width     : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
