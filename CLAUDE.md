@@ -2238,8 +2238,10 @@ are renamed to this as their files come up in the design-system pass.
   - **A category**: `col` (color), `fon` (font family), `dur` (duration),
     `del` (delay), `eas` (easing curve), `spr` (spread, e.g. a shadow or
     glow's reach), `opa` (opacity), `sca` (scale factor), `sha` (a whole
-    shadow value), `off` (offset or distance), `ang` (angle). New
-    categories are added here as they come up.
+    shadow value), `off` (offset or distance), `ang` (angle), `hei`
+    (a height, decided 2026-09-30, e.g. `--cat-rem-hei`, the measured
+    height a removing Data card collapses from). New categories are added
+    here as they come up.
 - **A scaled family ends in its step**, and the family moves to the first
   segment: `--fon-siz-med` (font size, medium), `--gri-gap-sma` (grid gap,
   small; the app lays out with grid first and flexbox only where needed),
