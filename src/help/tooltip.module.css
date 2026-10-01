@@ -33,11 +33,11 @@
 
 
 }
-.help-tip { /* What: Help Tip. Why: Help mode's tip differs from a tour coach card only in width and pointer events. How: This fixes its width and lets it take clicks, since help mode's overlay otherwise makes the page click-through. */
+.help-tip { /* What: Help Tip. Why: Help mode's tip differs from a tour coach card only in width and pointer events. How: This sizes it to its body text and lets it take clicks, since help mode's overlay otherwise makes the page click-through. */
 
 
 	pointer-events : auto;
-	width          : 280px;
+	width          : calc( var( --cdn-pow-011 ) * var( --fon-siz-bas ) + ( var( --spa-hor-bas ) + var( --bor-wid-sma ) ) * 2 ); /* What: Help Tip Width. Why: The tip exists to hold a short explanation, so it should fit its body text at the small text width. How: This is the small text width at the body's base font size plus the card's side padding and side border, each counted twice. */
 
 
 }
