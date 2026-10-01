@@ -121,10 +121,10 @@
 
 }
 .rd-ctl-group--sched .rd-ctl-subhead,
-.rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it small vertical spacing above, base horizontal spacing at the sides, and extra small 1 vertical spacing below. */
+.rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
 
 
-	padding : var( --spa-ver-m01 ) var( --spa-hor-bas ) var( --spa-ver-m02 );
+	padding : var( --spa-ver-bas ) var( --spa-hor-bas );
 
 
 }
