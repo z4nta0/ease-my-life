@@ -2209,7 +2209,7 @@ still passes.
       rhy-min` (`100vw` over the 27th power), `--hor-rhy-001` through
       `--hor-rhy-025` (the 26th power down to the 2nd), and `--hor-rhy-max`
       (`100vw` over the 1st power, about three quarters of the viewport). Each
-      token's comment quotes its size at a 1902px-wide viewport, the
+      token's comment quotes its size at a 1920px-wide viewport, the
       reference width the user reasons in. More steps, and any absolute
       widths, are added as they're needed.
   - **A long explanatory comment** becomes a design-rationale block per
