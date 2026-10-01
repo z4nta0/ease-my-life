@@ -722,7 +722,7 @@
 	from {
 
 
-		max-height : 800px;
+		max-height : var( --cat-rem-hei, 100dvh ); /* What: Measured Ceiling. Why: An open card can be any height, so a fixed ceiling either clips it or delays the fold. How: The delete handler sets the card's measured height, falling back to the viewport height. */
 		opacity    : 1;
 
 

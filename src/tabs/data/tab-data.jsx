@@ -412,6 +412,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 	// #region Picker Removal
 
+	const [ rmvHeiNum, setRmvHeiNum ] = React.useState( 0 );    // What: Removing Height Number And Setter. Why: A deleted picker's open card can be any height, so its collapse needs its real height as the starting ceiling. How: delPicFun measures the card just before flagging it, and the card passes this to its keyframes as --cat-rem-hei.
 	const [ rmvPicStr, setRmvPicStr ] = React.useState( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
 
 
@@ -447,7 +448,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		setRmvPicStr( picIdeStr ); // What: Removing Set Call. Why: The card plays its removal animation before the store drops it. How: This flags picIdeStr, and the card's onAnimationEnd does the actual removal.
+		const catCurEle = document.querySelector( `[data-element-name-hook~="datCatSec"][data-picker-id="${ picIdeStr }"]` ); // What: Category Current Element. Why: The card's real height has to be read before its removal animation starts. How: This finds the picker's card by its hook and picker id.
+
+
+		setRmvHeiNum( catCurEle ? catCurEle.getBoundingClientRect().height : 0 ); // What: Removing Height Set Call. Why: The collapse should start from the card's real height, open or closed. How: This stores the card's measured height, or 0 when it can't be found, which leaves the keyframes on their fallback.
+		setRmvPicStr( picIdeStr );                                                // What: Removing Set Call. Why: The card plays its removal animation before the store drops it. How: This flags picIdeStr, and the card's onAnimationEnd does the actual removal.
 
 
 	};
@@ -1811,7 +1816,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
-								...( isaDraBoo ? { scrollMarginTop : 14 } : {} )
+								...( isaDraBoo ? { scrollMarginTop : 14 } : {} ),
+								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rem-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rem-hei for the catRemove keyframes only while this card is the one being removed.
 							}}
 
 							data-card-vacation-active={ allVacBoo || undefined } // What: Card Vacation Active Attribute. Why: A picker with every item on vacation fades back. How: This sets the presence-only attribute while allVacBoo is true.
