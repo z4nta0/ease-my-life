@@ -681,9 +681,10 @@
 		flex-direction : row;
 		font-size      : var( --fon-siz-lar );
 		gap            : 7px;
+		height         : calc( var( --ver-rhy-xl2 ) * 1rem );
 		max-width      : none;
 		min-height     : 0;
-		padding        : var( --spa-ver-xs1 ) 14px;
+		padding        : 0 14px;
 
 
 	}
@@ -700,9 +701,10 @@
 		flex           : 0 0 auto;
 		flex-direction : row;
 		gap            : 0;
+		height         : calc( var( --ver-rhy-xl3 ) * 1rem );
 		max-width      : none;
 		min-height     : 0;
-		padding        : var( --spa-ver-sma ) 28px;
+		padding        : 0 28px;
 
 
 	}

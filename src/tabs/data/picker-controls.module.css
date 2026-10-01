@@ -1101,8 +1101,9 @@
 	flex-shrink     : 0;
 	gap             : 3px;
 	justify-content : center;
+	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
 	min-width       : 132px;
-	padding         : var( --spa-ver-sma ) 14px;
+	padding         : var( --spa-ver-xs1 ) 14px;
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
 
