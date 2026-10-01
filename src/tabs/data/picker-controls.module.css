@@ -248,7 +248,7 @@
 	.rd-group-pills { /* What: Scrolling Group Pills. Why: The pills stay on one line and scroll, with their edges faded as a cue. How: This stops wrapping, hides the scrollbar, and masks each end. */
 
 
-		--fade             : 24px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+		--fade             : calc( var( --ver-rhy-p02 ) * 1rem ); /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
 		--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
 		--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
 		-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
@@ -478,7 +478,7 @@
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );
-	width         : 130px;
+	width         : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }
@@ -495,14 +495,14 @@
 
 
 }
-@keyframes rdGroupInputGrow { /* What: New Group Input Keyframes. Why: The field grows out of the pill it replaces. How: This widens it from 32px while fading it in. */
+@keyframes rdGroupInputGrow { /* What: New Group Input Keyframes. Why: The field grows out of the pill it replaces. How: This widens it from the plus pill's size while fading it in. */
 
 
 	from {
 
 
 		opacity : 0.3;
-		width   : 32px;
+		width   : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 	}
@@ -511,7 +511,7 @@
 
 
 		opacity : 1;
-		width   : 130px;
+		width   : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 	}

@@ -467,7 +467,7 @@
 .picker-tabs { /* What: Show Tab Strip. Why: The rail scrolls sideways when its tabs outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
 
 
-	--fade             : 36px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade             : calc( var( --ver-rhy-p03 ) * 1rem ); /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
 	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
 	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
@@ -1001,7 +1001,7 @@
 
 }
 
-.bd-pct { /* What: Legend Share. Why: The share follows the count in a fixed column. How: This sets it 44px wide, right-aligned in small muted mono. */
+.bd-pct { /* What: Legend Share. Why: The share follows the count in a fixed column. How: This sets it at a fixed rhythm-step width, right-aligned in small muted mono. */
 
 
 	color                : var(--muted);
@@ -1009,7 +1009,7 @@
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	text-align           : right;
-	width                : 44px;
+	width                : calc( var( --ver-rhy-p04 ) * 1rem );
 
 
 }
@@ -1587,16 +1587,16 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 }
 
-.cnd-sum-meta .rem-log-type { /* What: Conditional Summary Mode Pill. Why: Every mode pill should be the same size. How: This fixes it at 82px with its label centered. */
+.cnd-sum-meta .rem-log-type { /* What: Conditional Summary Mode Pill. Why: Every mode pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	text-align : center;
-	width      : 82px;
+	width      : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }
 
-.cnd-sum-frac { /* What: Conditional Summary Fraction. Why: A wider fraction would shift this row's pill out of line with its siblings. How: This fixes it at 66px, right-aligned in small muted tabular mono. */
+.cnd-sum-frac { /* What: Conditional Summary Fraction. Why: A wider fraction would shift this row's pill out of line with its siblings. How: This fixes it at a rhythm step, right-aligned in small muted tabular mono. */
 
 
 	color                : var(--muted);
@@ -1604,7 +1604,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	text-align           : right;
-	width                : 66px;
+	width                : calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 }
@@ -2077,17 +2077,17 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 }
-.rank-bd-vals .rank-frac { /* What: Item Breakdown Fraction. Why: A wider fraction would shift this row's share out of line with its siblings. How: This fixes it at 66px. */
+.rank-bd-vals .rank-frac { /* What: Item Breakdown Fraction. Why: A wider fraction would shift this row's share out of line with its siblings. How: This fixes it at a rhythm step. */
 
 
-	width : 66px;
+	width : calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 }
-.rank-bd-vals .rank-metric-n { /* What: Item Breakdown Number. Why: Every row's number should line up. How: This fixes it at 40px. */
+.rank-bd-vals .rank-metric-n { /* What: Item Breakdown Number. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
 
 
-	width : 40px;
+	width : calc( var( --ver-rhy-p04 ) * 1rem );
 
 
 }
@@ -2151,11 +2151,11 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 }
-.rank-bd-freq--freq { /* What: Frequency Value. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at 112px, right-aligned. */
+.rank-bd-freq--freq { /* What: Frequency Value. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
-	width      : 112px;
+	width      : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 }
@@ -2167,11 +2167,11 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 }
-.cnd-bd-freq--interval { /* What: Conditional Interval Value. Why: Values like every 100 days would shift the pill before them. How: This fixes it at 112px, right-aligned. */
+.cnd-bd-freq--interval { /* What: Conditional Interval Value. Why: Values like every 100 days would shift the pill before them. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
-	width      : 112px;
+	width      : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 }
@@ -2197,26 +2197,26 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 }
 
-.cnd-bd-vals .rem-log-type { /* What: Conditional Breakdown Mode Pill. Why: Every row's pill should be the same size. How: This fixes it at 82px with its label centered. */
+.cnd-bd-vals .rem-log-type { /* What: Conditional Breakdown Mode Pill. Why: Every row's pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	flex       : 0 0 auto;
 	text-align : center;
-	width      : 82px;
+	width      : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }
-.cnd-bd-vals .rank-frac { /* What: Conditional Breakdown Fraction. Why: A wider fraction would shift this row's pill out of line. How: This fixes it at 66px. */
+.cnd-bd-vals .rank-frac { /* What: Conditional Breakdown Fraction. Why: A wider fraction would shift this row's pill out of line. How: This fixes it at a rhythm step. */
 
 
-	width : 66px;
+	width : calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 }
-.cnd-bd-vals .rank-metric-n { /* What: Conditional Breakdown Number. Why: Every row's number should line up. How: This fixes it at 40px. */
+.cnd-bd-vals .rank-metric-n { /* What: Conditional Breakdown Number. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
 
 
-	width : 40px;
+	width : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -2281,16 +2281,16 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 }
 
-.rem-log-meta .rem-log-type { /* What: Reminder Log Type Pill. Why: One-time and recurring pills should be the same size. How: This fixes it at 82px with its label centered. */
+.rem-log-meta .rem-log-type { /* What: Reminder Log Type Pill. Why: One-time and recurring pills should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	text-align : center;
-	width      : 82px;
+	width      : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }
 
-.rem-log-when { /* What: Reminder Log Date. Why: A one-digit day is narrower than a two-digit one, which would shift the pill before it. How: This fixes it at 76px, right-aligned in small muted mono on one line. */
+.rem-log-when { /* What: Reminder Log Date. Why: A one-digit day is narrower than a two-digit one, which would shift the pill before it. How: This fixes it at a rhythm step, right-aligned in small muted mono on one line. */
 
 
 	color          : var(--muted);
@@ -2299,7 +2299,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	letter-spacing : 0.02em;
 	text-align     : right;
 	white-space    : nowrap;
-	width          : 76px;
+	width          : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }

@@ -346,7 +346,7 @@
 	}
 
 	.settings-rail::before,
-	.settings-rail::after { /* What: Pill Bar Edge Fades. Why: Pills cut off at an edge should fade out rather than stop hard. How: This pins a 24px overlay to each side of the rail, which never scrolls itself. */
+	.settings-rail::after { /* What: Pill Bar Edge Fades. Why: Pills cut off at an edge should fade out rather than stop hard. How: This pins a narrow overlay to each side of the rail, which never scrolls itself. */
 
 
 		bottom         : 0;
@@ -354,7 +354,7 @@
 		pointer-events : none;
 		position       : absolute;
 		top            : 0;
-		width          : 24px;
+		width          : calc( var( --ver-rhy-p02 ) * 1rem );
 		z-index        : 1;
 
 
@@ -1053,14 +1053,14 @@
 
 /* #endregion switch */
 
-.set-time-input { /* What: Run Time Input. Why: The run time is typed into a fixed-width field at the row's end. How: This draws a rounded field 130px wide with tabular digits that borders in the accent on focus. */
+.set-time-input { /* What: Run Time Input. Why: The run time is typed into a fixed-width field at the row's end. How: This draws a rounded field at a fixed rhythm-step width with tabular digits that borders in the accent on focus. */
 
 
 	background           : var(--bg);
 	border               : var( --bor-wid-sma ) solid var(--border);
 	border-radius        : var(--r-sm);
 	color                : var(--text);
-	flex                 : 0 0 130px;
+	flex                 : 0 0 calc( var( --ver-rhy-p08 ) * 1rem );
 	font-family          : var(--fon-fam-mai);
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
@@ -1070,7 +1070,7 @@
 	outline              : none;
 	padding              : 0 var( --spa-hor-m01 );
 	transition           : border-color .12s;
-	width                : 130px;
+	width                : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }

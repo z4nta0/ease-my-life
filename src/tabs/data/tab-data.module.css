@@ -455,7 +455,7 @@
 .picker-tabs { /* What: Show Tab Strip. Why: The rail scrolls sideways when its tabs outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row that takes the row's width, with its scrollbar hidden and a gradient mask on each end. */
 
 
-	--fade             : 36px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
+	--fade             : calc( var( --ver-rhy-p03 ) * 1rem ); /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
 	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
 	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
@@ -958,7 +958,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 }
 
 .cat-group,
-.cat-mode-label { /* What: Category Tag. Why: The picker's mode and group read as matching fixed-width tags. How: This sets each in a small outlined mono capsule 94px wide, ending in an ellipsis when its text runs out of room. */
+.cat-mode-label { /* What: Category Tag. Why: The picker's mode and group read as matching fixed-width tags. How: This sets each in a small outlined mono capsule at a fixed rhythm-step width, ending in an ellipsis when its text runs out of room. */
 
 
 	border         : var( --bor-wid-sma ) solid var(--border);
@@ -976,7 +976,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	text-overflow  : ellipsis;
 	text-transform : uppercase;
 	white-space    : nowrap;
-	width          : 94px;
+	width          : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 }
@@ -1003,7 +1003,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	padding         : var( --spa-ver-m07 ) var( --spa-hor-m02 );
 	text-transform  : uppercase;
 	transition      : color .12s, background .12s;
-	width           : 94px;
+	width           : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 }

@@ -1344,7 +1344,7 @@
 	.group-rail { /* What: Group Pill Row. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
 
 
-		--fade                  : 36px; /* What: Fade Width. Why: This is how far each edge fade reaches into the row. How: --fade-l and --fade-r start from it. */
+		--fade                  : calc( var( --ver-rhy-p03 ) * 1rem ); /* What: Fade Width. Why: This is how far each edge fade reaches into the row. How: --fade-l and --fade-r start from it. */
 		--fade-l                : var(--fade); /* What: Left Fade. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
 		--fade-r                : var(--fade); /* What: Right Fade. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
 		-webkit-backdrop-filter : blur(18px) saturate(140%);

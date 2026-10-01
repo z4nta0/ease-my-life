@@ -441,9 +441,9 @@
 	font-family          : var(--fon-fam-sec);
 	font-variant-numeric : tabular-nums;
 	margin-top           : 0;
-	max-width            : 72px;
+	max-width            : calc( var( --ver-rhy-p06 ) * 1rem );
 	text-align           : center;
-	width                : 72px;
+	width                : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }

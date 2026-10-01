@@ -828,7 +828,7 @@
 	position                : absolute;
 	top                     : 50%;
 	transform               : translateY(-50%);
-	width                   : 22px;
+	width                   : calc( var( --ver-rhy-p01 ) * 1rem );
 
 
 }

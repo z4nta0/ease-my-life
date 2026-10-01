@@ -317,7 +317,7 @@
 	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 );
 	position       : absolute;
 	text-transform : uppercase;
-	width          : 100px;
+	width          : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 }

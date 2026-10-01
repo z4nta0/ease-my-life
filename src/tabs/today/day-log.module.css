@@ -557,13 +557,13 @@
 
 
 }
-.dl-name-mode .dl-mode { /* What: Header Mode Pill. Why: Beside a picker's name the pill keeps a fixed width so the names line up. How: This fixes it at 140px, ending in an ellipsis. */
+.dl-name-mode .dl-mode { /* What: Header Mode Pill. Why: Beside a picker's name the pill keeps a fixed width so the names line up. How: This fixes it at a rhythm step, ending in an ellipsis. */
 
 
 	min-width     : 0;
 	overflow      : hidden;
 	text-overflow : ellipsis;
-	width         : 140px;
+	width         : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }
@@ -971,7 +971,7 @@
 
 }
 
-.dl-mode--cond { /* What: Conditional Mode Pill. Why: A conditional's mode reads as an outlined accent pill at a fixed width. How: This outlines it on the page background at 140px, ending in an ellipsis. */
+.dl-mode--cond { /* What: Conditional Mode Pill. Why: A conditional's mode reads as an outlined accent pill at a fixed width. How: This outlines it on the page background at a rhythm-step width, ending in an ellipsis. */
 
 
 	background    : var(--bg);
@@ -981,7 +981,7 @@
 	overflow      : hidden;
 	text-overflow : ellipsis;
 	white-space   : nowrap;
-	width         : 140px;
+	width         : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }
