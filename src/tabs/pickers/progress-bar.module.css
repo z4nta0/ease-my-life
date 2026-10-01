@@ -23,7 +23,7 @@
 	background    : oklch(from var(--border) calc(l + 0.03) c h);
 	border-radius : 999px;
 	flex          : 1;
-	height        : 4px;
+	height        : calc( var( --ver-rhy-xs4 ) * 1rem );
 	min-width     : 60px;
 	overflow      : hidden;
 

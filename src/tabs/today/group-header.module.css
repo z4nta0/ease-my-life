@@ -335,7 +335,7 @@
 
 	background    : var(--border);
 	border-radius : 2px;
-	height        : 4px;
+	height        : calc( var( --ver-rhy-xs4 ) * 1rem );
 	overflow      : hidden;
 	position      : relative;
 	transition    : background .25s ease;

@@ -893,13 +893,13 @@
 
 /* #region bd-bar */
 
-.bd-bar { /* What: Breakdown Bar. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped 12px pill on a faint track. */
+.bd-bar { /* What: Breakdown Bar. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped pill at the small rhythm step on a faint track. */
 
 
 	background    : oklch(from var(--border) calc(l + 0.02) c h);
 	border-radius : 999px;
 	display       : flex;
-	height        : 12px;
+	height        : calc( var( --ver-rhy-sma ) * 1rem );
 	overflow      : hidden;
 
 

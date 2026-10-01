@@ -192,12 +192,12 @@
 
 
 
-.np-step-line { /* What: Step Connector. Why: A short line joins the two steps. How: This draws a 28px hairline. */
+.np-step-line { /* What: Step Connector. Why: A short line joins the two steps. How: This draws a 28px line as a top border, so it snaps to a whole pixel. */
 
 
-	background : var(--border);
+	border-top : var( --bor-wid-bas ) solid var(--border);
 	flex       : 0 0 28px;
-	height     : 1px;
+	height     : 0;
 
 
 }

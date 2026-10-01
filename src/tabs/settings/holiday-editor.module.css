@@ -231,12 +231,12 @@
 
 
 }
-.holiday-date-main::after { /* What: Holiday Date Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin line across the date's middle, scaled to nothing until the day is off. */
+.holiday-date-main::after { /* What: Holiday Date Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin top-border line across the date's middle, scaled to nothing until the day is off. */
 
 
-	background       : currentColor;
+	border-top       : var( --bor-wid-bas ) solid currentColor;
 	content          : '';
-	height           : 1px;
+	height           : 0;
 	left             : 0;
 	position         : absolute;
 	top              : 50%;

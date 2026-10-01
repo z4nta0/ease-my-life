@@ -233,7 +233,7 @@
 	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global Burst Keyframes. Why: The confettiBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--accent);
 	border-radius : 2px;
-	height        : 14px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	left          : 50%;
 	opacity       : 0;
 	position      : absolute;
