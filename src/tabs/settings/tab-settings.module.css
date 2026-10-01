@@ -121,11 +121,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : 68px;
+	height             : calc( var( --ver-rhy-xl5 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform 180ms ease;
-	width              : 68px;
+	width              : calc( var( --ver-rhy-xl5 ) * 1rem );
 
 
 }
@@ -139,11 +139,11 @@
 @media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
 
 
-	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark to 56px. */
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to xl4. */
 
 
-		height : 56px;
-		width  : 56px;
+		height : calc( var( --ver-rhy-xl4 ) * 1rem );
+		width  : calc( var( --ver-rhy-xl4 ) * 1rem );
 
 
 	}
@@ -987,7 +987,7 @@
 	background    : var(--border);
 	border-radius : 999px;
 	flex          : 0 0 auto;
-	height        : 20px;
+	height        : calc( var( --ver-rhy-lar ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -1021,19 +1021,19 @@
 	background    : var(--bg);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
-	height        : 16px;
-	left          : 2px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
+	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : 2px;
+	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
-.switch[aria-pressed="true"] i { /* What: On Switch Knob. Why: An enabled switch has its knob at the right. How: This slides it 16px across. */
+.switch[aria-pressed="true"] i { /* What: On Switch Knob. Why: An enabled switch has its knob at the right. How: This slides it by the track width minus the track height, which leaves the same inset on the right as on the left. */
 
 
-	transform : translateX(16px);
+	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
 
 
 }

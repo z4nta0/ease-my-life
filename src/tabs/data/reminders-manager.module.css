@@ -405,7 +405,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	background    : var(--border);
 	border-radius : 999px;
 	cursor        : pointer;
-	height        : 20px;
+	height        : calc( var( --ver-rhy-lar ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -439,19 +439,19 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	background    : var(--bg);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
-	height        : 16px;
-	left          : 2px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
+	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : 2px;
+	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
 .switch[aria-pressed="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX(16px);
+	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
 
 
 }
@@ -655,9 +655,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	color           : var(--accent);
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }

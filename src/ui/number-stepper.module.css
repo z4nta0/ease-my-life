@@ -44,11 +44,11 @@
 	flex            : 0 0 auto;
 	font-family     : var(--font-mono);
 	font-size       : var( --fon-siz-lar );
-	height          : 22px;
+	height          : calc( var( --ver-rhy-lar ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	transition      : color .12s, background .12s;
-	width           : 22px;
+	width           : calc( var( --ver-rhy-lar ) * 1rem );
 
 
 }

@@ -397,11 +397,11 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	border        : var( --bor-wid-bas ) solid var(--border);
 	border-radius : 50%;
 	flex          : 0 0 auto;
-	height        : 16px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	margin-top    : var( --spa-ver-xs8 );
 	position      : relative;
 	transition    : border-color .12s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -660,9 +660,9 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	color           : var(--muted);
 	display         : inline-flex;
 	font-size       : var( --fon-siz-lar );
-	height          : 26px;
+	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content : center;
-	width           : 26px;
+	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
@@ -717,7 +717,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 	background    : var(--border);
 	border-radius : 999px;
-	height        : 20px;
+	height        : calc( var( --ver-rhy-lar ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -759,19 +759,19 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	background    : var(--bg);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
-	height        : 16px;
-	left          : 2px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
+	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : 2px;
+	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
 .switch[aria-checked="true"] i { /* What: On Active Switch Knob. Why: An active switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX(16px);
+	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
 
 
 }

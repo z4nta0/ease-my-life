@@ -127,11 +127,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : 68px;
+	height             : calc( var( --ver-rhy-xl5 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform 180ms ease;
-	width              : 68px;
+	width              : calc( var( --ver-rhy-xl5 ) * 1rem );
 
 
 }
@@ -145,11 +145,11 @@
 @media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
 
 
-	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark to 56px. */
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to xl4. */
 
 
-		height : 56px;
-		width  : 56px;
+		height : calc( var( --ver-rhy-xl4 ) * 1rem );
+		width  : calc( var( --ver-rhy-xl4 ) * 1rem );
 
 
 	}

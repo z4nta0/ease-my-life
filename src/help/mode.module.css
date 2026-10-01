@@ -117,13 +117,13 @@
 	display         : inline-flex;
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 700;
-	height          : 20px;
+	height          : calc( var( --ver-rhy-lar ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	pointer-events  : auto;
 	position        : fixed;
 	transition      : border-color .15s ease, color .15s ease, background .15s ease;
-	width           : 20px;
+	width           : calc( var( --ver-rhy-lar ) * 1rem );
 
 
 }

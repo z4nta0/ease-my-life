@@ -79,11 +79,11 @@
 
 }
 
-.dl-chip svg { /* What: Log Chip Icon. Why: The icon sits small beside the label. How: This sizes it to 13px. */
+.dl-chip svg { /* What: Log Chip Icon. Why: The icon sits small beside the label. How: This sizes it to the base rhythm step. */
 
 
-	height : 13px;
-	width  : 13px;
+	height : calc( var( --ver-rhy-bas ) * 1rem );
+	width  : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -142,8 +142,8 @@
 
 
 	color  : var(--accent);
-	height : 13px;
-	width  : 13px;
+	height : calc( var( --ver-rhy-bas ) * 1rem );
+	width  : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -165,10 +165,10 @@
 	cursor          : pointer;
 	display         : flex;
 	flex            : none;
-	height          : 26px;
+	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content : center;
 	transition      : color .14s,border-color .14s;
-	width           : 26px;
+	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
@@ -194,11 +194,11 @@
 
 }
 
-.dl-close svg { /* What: Log Close Icon. Why: The icon fits the small button. How: This sizes it to 15px. */
+.dl-close svg { /* What: Log Close Icon. Why: The icon fits the small button. How: This sizes it to the base rhythm step. */
 
 
-	height : 15px;
-	width  : 15px;
+	height : calc( var( --ver-rhy-bas ) * 1rem );
+	width  : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -266,16 +266,16 @@
 
 /* #region dl-ico */
 
-.dl-ico { /* What: Status Icon. Why: Each status shows as a small tinted icon tile, in the key and in the rows. How: This centers the icon in a 22px rounded tile. */
+.dl-ico { /* What: Status Icon. Why: Each status shows as a small tinted icon tile, in the key and in the rows. How: This centers the icon in a rounded tile at the large rhythm step. */
 
 
 	align-items     : center;
 	border-radius   : 7px;
 	display         : inline-flex;
 	flex            : none;
-	height          : 22px;
+	height          : calc( var( --ver-rhy-lar ) * 1rem );
 	justify-content : center;
-	width           : 22px;
+	width           : calc( var( --ver-rhy-lar ) * 1rem );
 
 
 }
@@ -321,11 +321,11 @@
 
 }
 
-.dl-ico svg { /* What: Status Icon Glyph. Why: The glyph sits small in its tile. How: This sizes it to 13px. */
+.dl-ico svg { /* What: Status Icon Glyph. Why: The glyph sits small in its tile. How: This sizes it to the base rhythm step. */
 
 
-	height : 13px;
-	width  : 13px;
+	height : calc( var( --ver-rhy-bas ) * 1rem );
+	width  : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -472,12 +472,12 @@
 
 }
 
-.dl-chev svg { /* What: Block Chevron Glyph. Why: The glyph sits at a fixed size. How: This sizes it to 15px as a block. */
+.dl-chev svg { /* What: Block Chevron Glyph. Why: The glyph sits at a fixed size. How: This sizes it to the base rhythm step as a block. */
 
 
 	display : block;
-	height  : 15px;
-	width   : 15px;
+	height  : calc( var( --ver-rhy-bas ) * 1rem );
+	width   : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -615,11 +615,11 @@
 
 }
 
-.dl-dchip svg { /* What: Done Count Icon. Why: The icon sits small beside the count. How: This sizes it to 12px. */
+.dl-dchip svg { /* What: Done Count Icon. Why: The icon sits small beside the count. How: This sizes it to the small rhythm step. */
 
 
-	height : 12px;
-	width  : 12px;
+	height : calc( var( --ver-rhy-sma ) * 1rem );
+	width  : calc( var( --ver-rhy-sma ) * 1rem );
 
 
 }
@@ -674,11 +674,11 @@
 
 }
 
-.dl-rest svg { /* What: Rested Icon. Why: The icon sits small. How: This sizes it to 13px. */
+.dl-rest svg { /* What: Rested Icon. Why: The icon sits small. How: This sizes it to the base rhythm step. */
 
 
-	height : 13px;
-	width  : 13px;
+	height : calc( var( --ver-rhy-bas ) * 1rem );
+	width  : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -1248,13 +1248,13 @@
 
 }
 
-.dl-cond-aff svg { /* What: Conditional Effect Icon. Why: The icon sits small and a little faded. How: This sizes it to 12px at 0.8 opacity. */
+.dl-cond-aff svg { /* What: Conditional Effect Icon. Why: The icon sits small and a little faded. How: This sizes it to the small rhythm step at 0.8 opacity. */
 
 
 	flex    : none;
-	height  : 12px;
+	height  : calc( var( --ver-rhy-sma ) * 1rem );
 	opacity : 0.8;
-	width   : 12px;
+	width   : calc( var( --ver-rhy-sma ) * 1rem );
 
 
 }

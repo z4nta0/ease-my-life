@@ -124,11 +124,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : 68px;
+	height             : calc( var( --ver-rhy-xl5 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform 180ms ease;
-	width              : 68px;
+	width              : calc( var( --ver-rhy-xl5 ) * 1rem );
 
 
 }
@@ -142,11 +142,11 @@
 @media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
 
 
-	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark to 56px. */
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to xl4. */
 
 
-		height : 56px;
-		width  : 56px;
+		height : calc( var( --ver-rhy-xl4 ) * 1rem );
+		width  : calc( var( --ver-rhy-xl4 ) * 1rem );
 
 
 	}
@@ -975,8 +975,8 @@
 
 	border-radius : 3px;
 	flex-shrink   : 0;
-	height        : 10px;
-	width         : 10px;
+	height        : calc( var( --ver-rhy-sma ) * 1rem );
+	width         : calc( var( --ver-rhy-sma ) * 1rem );
 
 
 }
@@ -1050,13 +1050,13 @@
 
 }
 
-.heat-legend .heat-cell { /* What: Legend Heat Cell. Why: The sample cells are fixed-size swatches. How: This sizes them at 13px without stretching. */
+.heat-legend .heat-cell { /* What: Legend Heat Cell. Why: The sample cells are fixed-size swatches. How: This sizes them at the base rhythm step without stretching. */
 
 
 	aspect-ratio : auto;
 	flex         : 0 0 auto;
-	height       : 13px;
-	width        : 13px;
+	height       : calc( var( --ver-rhy-bas ) * 1rem );
+	width        : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -1094,7 +1094,7 @@
 
 }
 
-.heat-year-arrow { /* What: Year Arrow. Why: Each arrow is a small square button that tints on hover. How: This draws a 30px outlined square with its glyph centered, fading between states. */
+.heat-year-arrow { /* What: Year Arrow. Why: Each arrow is a small square button that tints on hover. How: This draws an outlined square at the xl2 rhythm step with its glyph centered, fading between states. */
 
 
 	align-items     : center;
@@ -1105,11 +1105,11 @@
 	cursor          : pointer;
 	display         : flex;
 	font-size       : var( --fon-siz-xl1 );
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	transition      : background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
@@ -2383,7 +2383,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 }
 
-.pager-arrow { /* What: Pager Arrow. Why: Each arrow is a small square button that tints on hover. How: This draws a 28px outlined square with its glyph centered, fading between states. */
+.pager-arrow { /* What: Pager Arrow. Why: Each arrow is a small square button that tints on hover. How: This draws an outlined square at the xl1 rhythm step with its glyph centered, fading between states. */
 
 
 	align-items     : center;
@@ -2394,11 +2394,11 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	cursor          : pointer;
 	display         : flex;
 	font-size       : var( --fon-siz-xl1 );
-	height          : 28px;
+	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	transition      : background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
-	width           : 28px;
+	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
@@ -2468,11 +2468,11 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	flex            : 0 0 auto;
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 700;
-	height          : 14.5px;
+	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
-	width           : 14.5px;
+	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }

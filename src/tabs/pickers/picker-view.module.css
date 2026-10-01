@@ -273,9 +273,9 @@
 	border-radius   : 50%;
 	color           : var(--bg);
 	display         : flex;
-	height          : 56px;
+	height          : calc( var( --ver-rhy-xl4 ) * 1rem );
 	justify-content : center;
-	width           : 56px;
+	width           : calc( var( --ver-rhy-xl4 ) * 1rem );
 
 
 }
@@ -925,12 +925,12 @@
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
@@ -1067,12 +1067,12 @@
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
@@ -1111,12 +1111,12 @@
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }

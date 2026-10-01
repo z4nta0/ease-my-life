@@ -30,12 +30,12 @@
 	flex            : 0 0 auto;
 	font-size       : var( --fon-siz-lar );
 	font-weight     : 700;
-	height          : 26px;
+	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	position        : relative;
 	transition      : border-color .15s ease, color .15s ease, background .15s ease;
-	width           : 26px;
+	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
 	z-index         : 1001; /* What: Above The Help Dim. Why: Help mode's dim layer sits at 1000, and the toggle must stay undimmed while it's the way out. How: 1001 lifts the button just above it. */
 
 

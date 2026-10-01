@@ -433,7 +433,7 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc(34px * 1.1 * 2);
+	height             : calc( var( --ver-rhy-xl5 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform 180ms ease;
@@ -682,10 +682,10 @@
 
 
 	flex        : 0 0 auto;
-	height      : calc(34px * 1.1 * 2);
+	height      : calc( var( --ver-rhy-xl5 ) * 1rem );
 	margin-left : auto;
 	position    : relative;
-	width       : calc(34px * 1.1 * 2);
+	width       : calc( var( --ver-rhy-xl5 ) * 1rem );
 
 
 }
@@ -1939,9 +1939,9 @@
 	border-radius   : 11px;
 	color           : var(--accent);
 	display         : flex;
-	height          : 40px;
+	height          : calc( var( --ver-rhy-xl3 ) * 1rem );
 	justify-content : center;
-	width           : 40px;
+	width           : calc( var( --ver-rhy-xl3 ) * 1rem );
 
 
 }

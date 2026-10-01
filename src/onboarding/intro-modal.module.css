@@ -117,9 +117,9 @@
 
 
 	color  : var(--accent);
-	height : 54px;
+	height : calc( var( --ver-rhy-xl4 ) * 1rem );
 	margin : 0 auto var( --spa-ver-bas );
-	width  : 54px;
+	width  : calc( var( --ver-rhy-xl4 ) * 1rem );
 
 
 }

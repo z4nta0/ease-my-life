@@ -532,10 +532,10 @@
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	transition      : color .15s, border-color .15s, background .15s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
@@ -725,11 +725,11 @@
 	border        : var( --bor-wid-bas ) solid var(--border);
 	border-radius : 50%;
 	flex          : 0 0 auto;
-	height        : 16px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	margin-top    : var( --spa-ver-xs8 );
 	position      : relative;
 	transition    : border-color .12s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -888,11 +888,11 @@
 	flex            : 0 0 auto;
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 700;
-	height          : 14.5px;
+	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
-	width           : 14.5px;
+	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -966,7 +966,7 @@
 	background    : var(--border);
 	border-radius : 999px;
 	cursor        : pointer;
-	height        : 20px;
+	height        : calc( var( --ver-rhy-lar ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -1001,12 +1001,12 @@
 	background    : var(--bg);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
-	height        : 16px;
-	left          : 2px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
+	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : 2px;
+	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -1014,7 +1014,7 @@
 .switch[aria-pressed="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX(16px);
+	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
 
 
 }

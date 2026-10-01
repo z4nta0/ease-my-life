@@ -129,13 +129,13 @@
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : 24px;
+	height             : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
 	transition         : background .12s, border-color .12s, color .12s;
-	width              : 24px;
+	width              : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }

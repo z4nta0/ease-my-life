@@ -106,12 +106,12 @@
 	color           : var(--muted);
 	cursor          : grab;
 	display         : inline-flex;
-	height          : 26px;
+	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content : center;
 	margin-left     : -4px;
 	touch-action    : none; /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
 	transition      : color .12s, background .12s;
-	width           : 26px;
+	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
@@ -300,10 +300,10 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	transition      : border-color .12s, color .12s, background .12s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
@@ -813,13 +813,13 @@
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : 24px;
+	height             : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
 	transition         : background .12s, border-color .12s, color .12s;
-	width              : 24px;
+	width              : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
@@ -1085,10 +1085,10 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	transition      : background .12s, color .12s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }

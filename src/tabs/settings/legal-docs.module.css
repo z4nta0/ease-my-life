@@ -224,9 +224,9 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : 32px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
-	width           : 32px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }

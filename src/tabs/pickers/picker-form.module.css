@@ -130,7 +130,7 @@
 
 }
 
-.np-step-num { /* What: Step Number. Why: Each step shows its number, or a check once done, in a small circle. How: This centers it in an outlined 22px circle that fades between states. */
+.np-step-num { /* What: Step Number. Why: Each step shows its number, or a check once done, in a small circle. How: This centers it in an outlined circle at the large rhythm step that fades between states. */
 
 
 	align-items     : center;
@@ -141,10 +141,10 @@
 	font-family     : var(--font-mono);
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 600;
-	height          : 22px;
+	height          : calc( var( --ver-rhy-lar ) * 1rem );
 	justify-content : center;
 	transition      : border-color .12s, background .12s, color .12s;
-	width           : 22px;
+	width           : calc( var( --ver-rhy-lar ) * 1rem );
 
 
 }
@@ -564,19 +564,19 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.mode-opt input { /* What: Mode Option Radio. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look and draws an outlined 14px circle. */
+.mode-opt input { /* What: Mode Option Radio. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look and draws an outlined circle at the base rhythm step. */
 
 
 	-webkit-appearance : none;
 	appearance         : none;
 	border             : var( --bor-wid-bas ) solid var(--border);
 	border-radius      : 50%;
-	height             : 14px;
+	height             : calc( var( --ver-rhy-bas ) * 1rem );
 	margin-top         : var( --spa-ver-xs6 );
 	min-width          : 14px;
 	position           : relative;
 	transition         : border-color .12s;
-	width              : 14px;
+	width              : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -686,7 +686,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
-	height        : 20px;
+	height        : calc( var( --ver-rhy-lar ) * 1rem );
 	margin-top    : var( --spa-ver-xs6 );
 	position      : relative;
 	transition    : background .15s;
@@ -721,19 +721,19 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	background    : var(--bg);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
-	height        : 16px;
-	left          : 2px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
+	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : 2px;
+	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
 .switch[aria-checked="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX(16px);
+	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
 
 
 }
@@ -1378,12 +1378,12 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
@@ -1420,12 +1420,12 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }

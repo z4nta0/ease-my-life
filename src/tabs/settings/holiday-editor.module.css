@@ -303,7 +303,7 @@
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
-	height        : 20px;
+	height        : calc( var( --ver-rhy-lar ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -337,19 +337,19 @@
 	background    : var(--bg);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
-	height        : 16px;
-	left          : 2px;
+	height        : calc( var( --ver-rhy-bas ) * 1rem );
+	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : 2px;
+	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
-	width         : 16px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
 .switch[aria-pressed="true"] i { /* What: On Holiday Switch Knob. Why: An on switch's knob sits at the right end. How: This slides the knob across. */
 
 
-	transform : translateX(16px);
+	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
 
 
 }
@@ -378,10 +378,10 @@
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : inline-flex;
-	height          : 28px;
+	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content : center;
 	transition      : background .12s, color .12s;
-	width           : 28px;
+	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }

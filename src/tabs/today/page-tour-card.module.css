@@ -122,13 +122,13 @@
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : 24px;
+	height             : calc( var( --ver-rhy-xl1 ) * 1rem );
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
 	transition         : background .12s, border-color .12s, color .12s;
-	width              : 24px;
+	width              : calc( var( --ver-rhy-xl1 ) * 1rem );
 
 
 }
@@ -308,10 +308,10 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : inline-flex;
-	height          : 30px;
+	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
 	justify-content : center;
 	transition      : background .12s, color .12s;
-	width           : 30px;
+	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }

@@ -92,11 +92,11 @@
 	flex            : 0 0 auto;
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 700;
-	height          : 16px;
+	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-sma );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
-	width           : 16px;
+	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
@@ -112,8 +112,8 @@
 .pie-help--sm { /* What: Small Cadence Help Bubble. Why: The standard bubble reads oversized beside the cadence field's short caption. How: This shrinks it slightly. */
 
 
-	height : 14.5px;
-	width  : 14.5px;
+	height : calc( var( --ver-rhy-bas ) * 1rem );
+	width  : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }

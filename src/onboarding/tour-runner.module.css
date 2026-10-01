@@ -143,11 +143,11 @@
 	background : var(--surface);
 	border     : var( --bor-wid-sma ) solid var(--border);
 	content    : "";
-	height     : 14px;
+	height     : calc( var( --ver-rhy-bas ) * 1rem );
 	left       : var(--ob-ax,28px); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: The tour writes --ob-ax as the target's center offset from the card's left edge, falling back to 28px. */
 	position   : absolute;
 	transform  : translateX(-50%) rotate(45deg); /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would sit half its width right of the target's center. How: Shifting it back by half its width first centers it, then the turn makes it a diamond. */
-	width      : 14px;
+	width      : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }

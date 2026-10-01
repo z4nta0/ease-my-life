@@ -530,8 +530,8 @@
 	color   : var(--accent);
 	display : inline-flex;
 	flex    : none;
-	height  : 30px;
-	width   : 30px;
+	height  : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width   : calc( var( --ver-rhy-xl2 ) * 1rem );
 
 
 }
