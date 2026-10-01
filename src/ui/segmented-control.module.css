@@ -43,13 +43,13 @@
 
 
 }
-.seg[aria-label="Repeat"] { /* What: Repeat Segmented Control. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, which renders the same as flex when everything fits. */
+.seg[aria-label="Repeat"] { /* What: Repeat Segmented Control. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
 
 
 	display               : grid;
 	flex-basis            : var(--seg-repeat-flex-basis, auto); /* What: Repeat Flex Basis. Why: The schedule editor's rows layout gives Repeat its own full-width line. How: A parent sets --seg-repeat-flex-basis, falling back to auto. */
 	grid-template-columns : repeat(auto-fit, minmax(70px, max-content));
-	justify-content       : start;
+	justify-content       : space-between;
 
 
 }
@@ -95,6 +95,13 @@
 	position      : relative;
 	transition    : background .12s, color .12s;
 	z-index       : 1;
+
+
+}
+.seg[aria-label="Repeat"] .seg-btn { /* What: Repeat Segmented Control Button. Why: At the larger font size Repeat's five labels squeeze and wrap on a narrow screen, turning the pills tall and nearly round. How: This sets its options at the base font size, so each label stays on one line. */
+
+
+	font-size : var( --fon-siz-bas );
 
 
 }
