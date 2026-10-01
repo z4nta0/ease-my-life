@@ -843,14 +843,14 @@
 
 /* #region sched-line-label */
 
-.sched-line-label { /* What: Setting Label. Why: A setting's name sits over its live explanation, taking the row's spare width. How: This stacks them in a column that grows from zero but never narrows past 130px. */
+.sched-line-label { /* What: Setting Label. Why: A setting's name sits over its live explanation, taking the row's spare width. How: This stacks them in a column that grows from zero but never narrows past a rhythm step. */
 
 
 	display        : flex;
 	flex           : 1 1 0;
 	flex-direction : column;
 	gap            : 1px;
-	min-width      : 130px;
+	min-width      : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }
@@ -1102,7 +1102,7 @@
 	gap             : 3px;
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
-	min-width       : 132px;
+	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;

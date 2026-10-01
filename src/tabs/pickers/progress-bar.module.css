@@ -24,7 +24,7 @@
 	border-radius : 999px;
 	flex          : 1;
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
-	min-width     : 60px;
+	min-width     : calc( var( --ver-rhy-p05 ) * 1rem );
 	overflow      : hidden;
 
 

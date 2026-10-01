@@ -471,7 +471,7 @@
 	flex        : 1;
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
-	min-width   : 180px;
+	min-width   : calc( var( --ver-rhy-p09 ) * 1rem );
 	text-wrap   : pretty;
 
 

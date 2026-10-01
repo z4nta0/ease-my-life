@@ -481,7 +481,7 @@
 .holiday-date-input { /* What: Holiday Add Date Field. Why: The native date picker needs enough room to show a full date. How: This gives it a minimum width. */
 
 
-	min-width : 150px;
+	min-width : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }

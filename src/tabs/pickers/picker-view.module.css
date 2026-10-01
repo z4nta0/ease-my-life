@@ -866,23 +866,23 @@
 
 }
 
-.pool-prog { /* What: Pool Item Progress. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least 100px wide. */
+.pool-prog { /* What: Pool Item Progress. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least a rhythm step wide. */
 
 
 	align-items : center;
 	display     : flex;
 	gap         : 8px;
-	min-width   : 100px;
+	min-width   : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 }
 @media (max-width: 640px) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the viewport matches (max-width: 640px). */
 
 
-	.pool-prog { /* What: Narrower Pool Item Progress. Why: The name needs the room. How: This lowers the minimum to 70px. */
+	.pool-prog { /* What: Narrower Pool Item Progress. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */
 
 
-		min-width : 70px;
+		min-width : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 	}
@@ -894,7 +894,7 @@
 
 
 	font-variant-numeric : tabular-nums;
-	min-width            : 22px;
+	min-width            : calc( var( --ver-rhy-p01 ) * 1rem );
 	text-align           : right;
 
 

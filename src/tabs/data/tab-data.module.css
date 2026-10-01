@@ -429,7 +429,7 @@
 	font-variant-numeric : tabular-nums;
 	height               : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content      : center;
-	min-width            : 18px;
+	min-width            : calc( var( --ver-rhy-p01 ) * 1rem );
 	padding              : 0 var( --spa-hor-m03 );
 	text-align           : center;
 
@@ -518,7 +518,7 @@
 	flex-direction    : column;
 	flex-shrink       : 0;
 	gap               : 1px;
-	min-width         : 132px;
+	min-width         : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	scroll-snap-align : start;
 	text-align        : left;

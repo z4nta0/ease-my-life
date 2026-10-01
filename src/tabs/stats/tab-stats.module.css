@@ -441,7 +441,7 @@
 	font-variant-numeric : tabular-nums;
 	height               : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content      : center;
-	min-width            : 18px;
+	min-width            : calc( var( --ver-rhy-p01 ) * 1rem );
 	padding              : 0 var( --spa-hor-m03 );
 	text-align           : center;
 
@@ -530,7 +530,7 @@
 	flex-direction    : column;
 	flex-shrink       : 0;
 	gap               : 1px;
-	min-width         : 132px;
+	min-width         : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	scroll-snap-align : start;
 	text-align        : left;
@@ -1617,7 +1617,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
 	font-weight          : 600;
-	min-width            : 40px;
+	min-width            : calc( var( --ver-rhy-p04 ) * 1rem );
 	text-align           : right;
 
 
@@ -2099,7 +2099,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
-	min-width            : 38px;
+	min-width            : calc( var( --ver-rhy-p03 ) * 1rem );
 	text-align           : right;
 
 
@@ -2112,7 +2112,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
-	min-width            : 52px;
+	min-width            : calc( var( --ver-rhy-p04 ) * 1rem );
 	text-align           : right;
 
 
@@ -2126,7 +2126,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
-	min-width            : 32px;
+	min-width            : calc( var( --ver-rhy-p03 ) * 1rem );
 	text-align           : right;
 
 

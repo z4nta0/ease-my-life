@@ -138,7 +138,7 @@
 
 
 	flex      : 1 1 0;
-	min-width : 160px;
+	min-width : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }

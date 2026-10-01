@@ -573,7 +573,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	border-radius      : 50%;
 	height             : calc( var( --ver-rhy-bas ) * 1rem );
 	margin-top         : var( --spa-ver-m07 );
-	min-width          : 14px;
+	min-width          : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Radio Minimum Width. Why: In its flex row the radio could otherwise shrink below its own width when space runs short. How: This holds it at the same rhythm step as its width. */
 	position           : relative;
 	transition         : border-color .12s;
 	width              : calc( var( --ver-rhy-bas ) * 1rem );
@@ -825,7 +825,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	gap             : 3px;
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
-	min-width       : 132px;
+	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
