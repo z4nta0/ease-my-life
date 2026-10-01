@@ -709,7 +709,7 @@
 	from {
 
 
-		max-height : 160px;
+		max-height : calc( var( --ver-rhy-xl8 ) * 1rem );
 		opacity    : 1;
 
 

@@ -505,7 +505,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 		border-bottom-width : var( --bor-wid-sma );
 		border-top-width    : var( --bor-wid-sma );
 		margin-bottom       : var( --spa-ver-sma );
-		max-height          : 200px;
+		max-height          : calc( var( --ver-rhy-xl8 ) * 1rem );
 		opacity             : 1;
 		padding-bottom      : var( --spa-ver-bas );
 		padding-top         : var( --spa-ver-bas );
@@ -518,7 +518,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		margin-bottom  : var( --spa-ver-sma );
-		max-height     : 200px;
+		max-height     : calc( var( --ver-rhy-xl8 ) * 1rem );
 		opacity        : 0;
 		padding-bottom : var( --spa-ver-bas );
 		padding-top    : var( --spa-ver-bas );
