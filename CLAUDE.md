@@ -2202,6 +2202,16 @@ still passes.
       base at the usual 16px default and still follows any size a person
       sets: `--fon-siz-bas` is `1rem`, and each step above it is `var(
       --fon-siz-bas )` times the next `--cdn-pow-*` token.
+    - **Width is viewport based** (decided 2026-09-30, also not specific to
+      this project): horizontal sizes come from the horizontal rhythm, the
+      full viewport width divided by a power of the core design number, so
+      they scale with the screen. The user named and set the steps: `--hor-
+      rhy-min` (`100vw` over the 27th power), `--hor-rhy-001` through
+      `--hor-rhy-025` (the 26th power down to the 2nd), and `--hor-rhy-max`
+      (`100vw` over the 1st power, about three quarters of the viewport). Each
+      token's comment quotes its size at a 1902px-wide viewport, the
+      reference width the user reasons in. More steps, and any absolute
+      widths, are added as they're needed.
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
