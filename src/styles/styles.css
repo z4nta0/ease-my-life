@@ -264,6 +264,15 @@
 
 
 
+	/* #region Text Width Tokens */
+
+	--tex-wid-sma : calc( var( --cdn-pow-011 ) * 1em ); /* What: Text Width Small Maximum ~= 22.047em. Why: Small or secondary text (hints, captions, subtitles) reads best near 50 characters per line. How: Geist averages about 2.22 characters per em, so this caps a line at about 49 characters at any font size. */
+	--tex-wid-bas : calc( var( --cdn-pow-012 ) * 1em ); /* What: Text Width Base Maximum ~= 29.207em. Why: Paragraph text reads best near 66 characters per line. How: Geist averages about 2.22 characters per em, so this caps a line at about 65 characters at any font size. */
+
+	/* #endregion Text Width Tokens */
+
+
+
 	/* #region Vertical Rhythm Tokens */
 
 	--ver-rhy-xs11 : var( --cdn-pow-011-rec ); /* What: Vertical Rhythm Extra Small 11 ~= 0.045. Why: This is 11 steps below the small step, for hairline widths. How: This is the reciprocal of the eleventh power of the core design number, multiplied by 1rem where a length is needed. */
