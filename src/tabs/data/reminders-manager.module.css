@@ -408,7 +408,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
-	width         : 36px;
+	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -451,7 +451,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .switch[aria-pressed="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }

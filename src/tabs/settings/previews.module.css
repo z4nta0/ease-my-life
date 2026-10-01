@@ -238,7 +238,7 @@
 	opacity       : 0;
 	position      : absolute;
 	top           : 50%;
-	width         : 9px;
+	width         : calc( var( --ver-rhy-m02 ) * 1rem );
 
 
 }

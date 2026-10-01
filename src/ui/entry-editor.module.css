@@ -300,7 +300,7 @@
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
-	width         : 36px;
+	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -343,7 +343,7 @@
 .switch[aria-pressed="true"] i { /* What: On Active Switch Knob. Why: An active switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }

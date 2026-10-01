@@ -990,7 +990,7 @@
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
-	width         : 36px;
+	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -1033,7 +1033,7 @@
 .switch[aria-pressed="true"] i { /* What: On Switch Knob. Why: An enabled switch has its knob at the right. How: This slides it by the track width minus the track height, which leaves the same inset on the right as on the left. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }

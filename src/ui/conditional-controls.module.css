@@ -361,7 +361,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	left       : 0;
 	position   : absolute;
 	top        : 0;
-	width      : 2px;
+	width      : calc( var( --ver-rhy-m07 ) * 1rem );
 
 
 }
@@ -720,7 +720,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
-	width         : 36px;
+	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -771,7 +771,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .switch[aria-checked="true"] i { /* What: On Active Switch Knob. Why: An active switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }

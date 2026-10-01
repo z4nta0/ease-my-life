@@ -194,7 +194,7 @@
 	padding            : var( --spa-ver-p02 ) var( --spa-hor-bas );
 	position           : sticky;
 	top                : 0;
-	width              : 220px;
+	width              : calc( var( --ver-rhy-p10 ) * 1rem );
 
 
 }
@@ -214,7 +214,7 @@
 		top            : 0;
 		transform      : translateX(-100%);
 		transition     : transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-		width          : 232px;
+		width          : calc( var( --ver-rhy-p10 ) * 1rem );
 		z-index        : 200;
 
 

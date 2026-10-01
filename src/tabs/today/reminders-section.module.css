@@ -228,7 +228,7 @@
 	overflow      : hidden;
 	position      : relative;
 	transition    : background .25s ease;
-	width         : 14px;
+	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
 }
