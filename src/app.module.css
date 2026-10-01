@@ -137,61 +137,46 @@
 
 
 }
-.tabbar--bottom { /* What: Bottom Tab Bar. Why: At the bottom, the tabs sit in a bar pinned to the screen's bottom edge, clear of the device's safe areas. How: This fixes the bar to the bottom with a top border and safe-area-aware padding, centering the tabs. */
+.tabbar--bottom { /* What: Bottom Tab Bar. Why: At the bottom, the tabs float in a centered pill above the screen's bottom edge. How: This fixes a content-width rounded pill with a border, shadow, and surface fill, centered across the screen, while the width rules below set how far it sits from the edge. */
 
 
-	border-top-width : var( --bor-wid-sma );
-	bottom           : 0;
-	justify-content  : center;
-	left             : 0;
-	padding          : var( --spa-ver-xs1 ) max(env(safe-area-inset-left), 12px) calc( var( --spa-ver-xs1 ) + env(safe-area-inset-bottom) ) max(env(safe-area-inset-right), 12px);
-	position         : fixed;
-	right            : 0;
-	z-index          : 100;
+	background      : oklch(from var(--surface) l c h / 0.94);
+	border          : var( --bor-wid-sma ) solid var(--border);
+	border-radius   : 999px;
+	box-shadow      : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
+	gap             : 2px;
+	justify-content : center;
+	left            : 50%;
+	padding         : var( --spa-ver-xs2 ) 8px;
+	position        : fixed;
+	right           : auto;
+	transform       : translateX(-50%);
+	width           : max-content;
+	z-index         : 100;
 
 
 }
-@container app (min-width: 720px) { /* What: Wide Bottom Tab Bar. Why: On a wide screen the bottom bar floats as a centered pill instead of spanning the edge. How: This applies only when the app is at least 720px wide. */
+@container app (min-width: 720px) { /* What: Wide Bottom Tab Bar. Why: On a wide screen the pill floats well clear of the bottom edge. How: This applies only when the app is at least 720px wide. */
 
 
-	.tabbar--bottom { /* What: Floating Bottom Tab Bar. Why: A full-width bar looks sparse on a wide screen. How: This centers a content-width rounded pill above the bottom edge with a border, shadow, and surface fill. */
+	.tabbar--bottom { /* What: Floating Bottom Tab Bar. Why: A wide screen has room to lift the pill off the edge. How: This sets it 20px above the bottom edge. */
 
 
-		background    : oklch(from var(--surface) l c h / 0.94);
-		border        : var( --bor-wid-sma ) solid var(--border);
-		border-radius : 999px;
-		bottom        : 20px;
-		box-shadow    : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
-		gap           : 2px;
-		left          : 50%;
-		padding       : var( --spa-ver-xs2 ) 8px;
-		right         : auto;
-		transform     : translateX(-50%);
-		width         : max-content;
+		bottom : 20px;
 
 
 	}
 
 
 }
-@container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Bar. Why: On a small screen the bottom bar is a floating icon-only pill, consistent with the wider one; deleting this block restores the edge-to-edge bar. How: This applies only when the app is narrower than 720px. */
+@container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Bar. Why: On a small screen the pill has to fit the phone and clear its home indicator. How: This applies only when the app is narrower than 720px. */
 
 
-	.tabbar--bottom { /* What: Floating Narrow Bottom Tab Bar. Why: The pill must fit a phone and clear its home indicator. How: This centers a content-width pill capped to the screen width, above the safe area, with a border, shadow, and surface fill. */
+	.tabbar--bottom { /* What: Floating Narrow Bottom Tab Bar. Why: The pill must fit a phone and clear its home indicator. How: This sets it just above the safe area and caps its width to the screen. */
 
 
-		background    : oklch(from var(--surface) l c h / 0.94);
-		border        : var( --bor-wid-sma ) solid var(--border);
-		border-radius : 999px;
-		bottom        : calc(12px + env(safe-area-inset-bottom));
-		box-shadow    : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
-		gap           : 2px;
-		left          : 50%;
-		max-width     : calc(100% - 24px);
-		padding       : var( --spa-ver-xs2 ) 8px;
-		right         : auto;
-		transform     : translateX(-50%);
-		width         : max-content;
+		bottom    : calc(12px + env(safe-area-inset-bottom));
+		max-width : calc(100% - 24px);
 
 
 	}
@@ -645,20 +630,15 @@
 
 
 }
-.tabbar--bottom .tabbtn { /* What: Bottom Tab Button. Why: In the edge-to-edge bottom bar, each tab is a tall evenly-sized cell with its icon over its label. How: This stacks icon and label in a shared-width column cell in small muted text. */
+.tabbar--bottom .tabbtn { /* What: Bottom Tab Button. Why: In the floating pill, each tab is a compact rounded pill. How: This lays its icon and label in a row in muted text, while the width rules below set its size. */
 
 
-	border-radius  : 10px;
+	border-radius  : 999px;
 	color          : var(--muted);
-	flex           : 1 1 0;
-	flex-direction : column;
-	font-size      : var( --fon-siz-bas );
+	flex           : 0 0 auto;
+	flex-direction : row;
 	font-weight    : 500;
-	gap            : 3px;
 	letter-spacing : 0.01em;
-	max-width      : 120px;
-	min-height     : 52px;
-	padding        : var( --spa-ver-xs2 ) 4px;
 
 
 }
@@ -673,18 +653,13 @@
 @container app (min-width: 720px) { /* What: Wide Bottom Tab Button. Why: In the floating wide pill, tabs sit as compact rounded pills with the icon beside the label. How: This applies only when the app is at least 720px wide. */
 
 
-	.tabbar--bottom .tabbtn { /* What: Pill Bottom Tab Button. Why: Each tab should size to its content as a pill. How: This lays icon and label in a row with pill padding and rounding. */
+	.tabbar--bottom .tabbtn { /* What: Pill Bottom Tab Button. Why: Each tab sizes to its icon and label. How: This sets the large text, the label gap, its side padding, and the xl2 rhythm height. */
 
 
-		border-radius  : 999px;
-		flex           : 0 0 auto;
-		flex-direction : row;
-		font-size      : var( --fon-siz-lar );
-		gap            : 7px;
-		height         : calc( var( --ver-rhy-xl2 ) * 1rem );
-		max-width      : none;
-		min-height     : 0;
-		padding        : 0 14px;
+		font-size : var( --fon-siz-lar );
+		gap       : 7px;
+		height    : calc( var( --ver-rhy-xl2 ) * 1rem );
+		padding   : 0 14px;
 
 
 	}
@@ -694,7 +669,7 @@
 @container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Button. Why: In the floating narrow pill, tabs are icon-only pills. How: This applies only when the app is narrower than 720px. */
 
 
-	.tabbar--bottom .tabbtn { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and pads the icon into a pill. */
+	.tabbar--bottom .tabbtn { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the xl3 touch-target height. */
 
 
 		border-radius  : 999px;
@@ -717,6 +692,9 @@
 	.tabbar--bottom .tabbtn { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to 20px. */
 
 
+		gap           : 0;
+		height        : calc( var( --ver-rhy-xl3 ) * 1rem );
+		padding       : 0 28px;
 		padding-left  : 20px;
 		padding-right : 20px;
 
@@ -798,26 +776,6 @@
 
 }
 
-.tabbar--bottom .tabbtn span { /* What: Bottom Tab Label. Why: The bottom bar's labels sit small under their icons. How: This sets them at the base font size. */
-
-
-	font-size : var( --fon-siz-bas );
-
-
-}
-@container app (min-width: 720px) { /* What: Wide Bottom Tab Label. Why: The wide pill's labels sit beside their icons at a readable size. How: This applies only when the app is at least 720px wide. */
-
-
-	.tabbar--bottom .tabbtn span { /* What: Larger Bottom Tab Label. Why: The label should match the pill's text size. How: This sets it one step up, at the large font size. */
-
-
-		font-size : var( --fon-siz-lar );
-
-
-	}
-
-
-}
 @container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Label. Why: The narrow pill is icon-only. How: This applies only when the app is narrower than 720px. */
 
 
