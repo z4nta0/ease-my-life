@@ -2159,11 +2159,12 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 }
-.rank-bd-freq--last { /* What: Last Picked Value. Why: Values like N days ago and Yesterday differ in width, which would shift the tag before them. How: This fixes it at 112px, right-aligned. */
+.rank-bd-freq--last { /* What: Last Picked Value. Why: Values like 12 days and Yesterday differ in width, which would shift the tag before them, and the longest needs a smaller size to fit beside its tag. How: This sets it at the base font size, fixed at a rhythm step, right-aligned. */
 
 
+	font-size  : var( --fon-siz-bas );
 	text-align : right;
-	width      : 112px;
+	width      : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 }

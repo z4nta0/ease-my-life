@@ -2098,28 +2098,28 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	};
 
 
-	const lasForFun = ( dayCouNum, uniModStr ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct "ago"-phrased label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string. // Human label for "last picked", in the active unit.
+	const lasForFun = ( dayCouNum, uniModStr ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string. // Human label for "last picked", in the active unit.
 
 
-		if ( uniModStr === 'eligible' ) { // What: Eligible Mode Branch. Why: Eligible-mode "last picked" is already a period count, phrased differently from the calendar branch below. How: This special-cases zero, then a cadenced or plain "ago" phrase.
+		if ( uniModStr === 'eligible' ) { // What: Eligible Mode Branch. Why: Eligible-mode "last picked" is already a period count, phrased differently from the calendar branch below. How: This special-cases zero, then a cadenced or plain count.
 
 
 			if ( dayCouNum === 0 ) return 'Most recent'; // What: Eligible Zero Case. Why: A pick on the latest run reads more naturally as "Most recent". How: This short-circuits before the phrased branches below.
 
 
 
-			if ( isaCadBoo ) return `${ ( Math.round( dayCouNum * 10 ) / 10 ).toFixed( 1 ) } ${ CAD_NAM_OBJ.uniWorFun( staCadStr, dayCouNum ) } ago`; // What: Eligible Cadenced Case. Why: A cadenced picker's own eligible reading is already a period count. How: This phrases it with one decimal and the matching period word.
+			if ( isaCadBoo ) return `${ ( Math.round( dayCouNum * 10 ) / 10 ).toFixed( 1 ) } ${ CAD_NAM_OBJ.uniWorFun( staCadStr, dayCouNum ) }`; // What: Eligible Cadenced Case. Why: A cadenced picker's own eligible reading is already a period count. How: This phrases it with one decimal and the matching period word.
 
 
 
-			return `${ dayCouNum } ${ uniForFun( dayCouNum ) } ago`; // What: Eligible Daily Return. Why: A daily picker's own eligible reading is a plain run count. How: This phrases it with uniForFun's own unit word.
+			return `${ dayCouNum } ${ uniForFun( dayCouNum ) }`; // What: Eligible Daily Return. Why: A daily picker's own eligible reading is a plain run count. How: This phrases it with uniForFun's own unit word.
 
 
 		}
 
 
 
-		if ( dayCouNum === 0 ) return 'Most recent'; // What: Calendar Zero Case. Why: A same-day pick reads more naturally as "Most recent" than "0 days ago" in calendar mode too. How: This short-circuits before the cadence/plain branches below.
+		if ( dayCouNum === 0 ) return 'Most recent'; // What: Calendar Zero Case. Why: A same-day pick reads more naturally as "Most recent" than "0 days" in calendar mode too. How: This short-circuits before the cadence/plain branches below.
 
 
 
@@ -2130,14 +2130,14 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-			return `${ ( Math.round( perValNum * 10 ) / 10 ).toFixed( 1 ) } ${ CAD_NAM_OBJ.uniWorFun( staCadStr, perValNum ) } ago`; // What: Calendar Cadenced Return. Why: This is the phrased period-count reading. How: This formats perValNum with one decimal and the matching period word.
+			return `${ ( Math.round( perValNum * 10 ) / 10 ).toFixed( 1 ) } ${ CAD_NAM_OBJ.uniWorFun( staCadStr, perValNum ) }`; // What: Calendar Cadenced Return. Why: This is the phrased period-count reading. How: This formats perValNum with one decimal and the matching period word.
 
 
 		}
 
 
 
-		return dayCouNum === 1 ? 'Yesterday' : `${ dayCouNum } days ago`; // What: Calendar Daily Case. Why: A plain daily picker's own calendar-mode reading is just literal days. How: This special-cases exactly one day as "Yesterday", otherwise a plain "N days ago" string.
+		return dayCouNum === 1 ? 'Yesterday' : `${ dayCouNum } days`; // What: Calendar Daily Case. Why: A plain daily picker's own calendar-mode reading is just literal days. How: This special-cases exactly one day as "Yesterday", otherwise a plain "N days" string.
 
 
 	};
