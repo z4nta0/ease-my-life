@@ -59,15 +59,14 @@
 
 
 }
-.rd-ctl-group--picks { /* What: How It Picks Group. Why: The mode radio runs edge to edge under its heading, with a hairline above drawn as a shadow since the fieldset's own border is cleared. How: This pulls the fieldset past the body's padding, flush and borderless, with an inset top shadow line. */
+.rd-ctl-group--picks { /* What: How It Picks Group. Why: The mode radio runs edge to edge under its heading, and the details group above already closes with a hairline, so no line of its own is needed. How: This pulls the fieldset past the body's padding, flush and borderless. */
 
 
-	border     : 0;
-	box-shadow : inset 0 0.5px 0 0 var(--border);
-	gap        : 0;
-	margin     : 0 calc( var( --spa-hor-bas ) * -1 );
-	min-width  : 0;
-	padding    : 0;
+	border    : 0;
+	gap       : 0;
+	margin    : 0 calc( var( --spa-hor-bas ) * -1 );
+	min-width : 0;
+	padding   : 0;
 
 
 }
