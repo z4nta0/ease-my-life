@@ -2205,16 +2205,22 @@ still passes.
       base at the usual 16px default and still follows any size a person
       sets: `--fon-siz-bas` is `1rem`, and each step above it is `var(
       --fon-siz-bas )` times the next `--cdn-pow-*` token.
-    - **Width is viewport based** (decided 2026-09-30, also not specific to
-      this project): horizontal sizes come from the horizontal rhythm, the
-      full viewport width divided by a power of the core design number, so
-      they scale with the screen. The user named and set the steps: `--hor-
-      rhy-min` (`100vw` over the 27th power), `--hor-rhy-001` through
-      `--hor-rhy-025` (the 26th power down to the 2nd), and `--hor-rhy-max`
-      (`100vw` over the 1st power, about three quarters of the viewport). Each
-      token's comment quotes its size at a 1920px-wide viewport, the
-      reference width the user reasons in. More steps, and any absolute
-      widths, are added as they're needed.
+    - **Width is decided per project** (decided 2026-10-01, replacing an
+      earlier viewport-based rule): horizontal sizes are responsive, and
+      layouts vary too much between projects for one approach to fit all
+      of them. So whenever a project's horizontal sizes first need a
+      system, stop and discuss its horizontal layout design with the user
+      before converting anything, per "### Undefined cases: stop and
+      ask". The two options are the vertical rhythm (a `--ver-rhy-*` step
+      times `1rem`, the same steps heights use) or the plastic ratio
+      dividing the viewport width proportionally (a horizontal rhythm of
+      `100vw` over a power of the core design number, e.g. this project's
+      `--hor-rhy-*` tokens, whose comments quote each step at a 1920px
+      viewport). Record the project's choice here. In this project the
+      viewport steps were tried on the Today tab and didn't hold up below
+      about 1100px, so maximum widths use the vertical rhythm, e.g.
+      `max-width : calc( var( --ver-rhy-xl10 ) * 1rem )`, with the steps
+      above `xl8` added as these caps needed them.
     - **Text measure is font based** (decided 2026-10-01, also not
       specific to this project): a paragraph's `max-width` comes from the
       project's main body font, not from either rhythm. Paragraph text
