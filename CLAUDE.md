@@ -2229,8 +2229,9 @@ still passes.
       comment records the measured characters per unit and the line length
       it gives, so the choice can be rechecked if the font changes. In
       this project (Geist, about 2.22 characters per `em` and 1.49 per
-      `ch`), paragraphs use `pow-012 * 1em` (about 65 characters) and
-      small text `pow-011 * 1em` (about 49).
+      `ch`), paragraphs use `--tex-wid-bas` (`pow-012 * 1em`, about 65
+      characters) and small text `--tex-wid-sma` (`pow-011 * 1em`, about
+      49).
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
