@@ -1843,6 +1843,9 @@ viewport instead (e.g. a heading that grows with the screen), a viewport
 unit or another scaling unit is fine, but only when that scaling is
 actually needed. A value that really has to stay in `px` is raised when it
 comes up and recorded here, per "### Undefined cases: stop and ask".
+- **Text measure uses `em` or `ch`** (decided 2026-10-01): a paragraph's
+  `max-width` follows its own font rather than the root, per "Text measure
+  is font based" under "### CSS modules and JS hooks".
 - **Breakpoints are expected to stay fixed `px` values** (noted
   2026-09-29, to be confirmed when breakpoints are systematized): inside an
   `@media` or `@container` condition, `rem` resolves against the browser's
@@ -2212,6 +2215,22 @@ still passes.
       token's comment quotes its size at a 1920px-wide viewport, the
       reference width the user reasons in. More steps, and any absolute
       widths, are added as they're needed.
+    - **Text measure is font based** (decided 2026-10-01, also not
+      specific to this project): a paragraph's `max-width` comes from the
+      project's main body font, not from either rhythm. Paragraph text
+      targets 66 characters per line and must land within 45 to 75; small
+      or secondary text (hints, captions, subtitles) targets 50 and must
+      land within 40 to 60. To pick a value, measure the main font's
+      average character width on real prose against both `1ch` (the width
+      of its "0") and `1em`, then use whichever unit and `--cdn-pow-*`
+      power lands closest to the target, written as `calc( var(
+      --cdn-pow-NNN ) * 1em )` or `* 1ch`. Both units follow the element's
+      own font size, so the measure holds at any text size. The token's
+      comment records the measured characters per unit and the line length
+      it gives, so the choice can be rechecked if the font changes. In
+      this project (Geist, about 2.22 characters per `em` and 1.49 per
+      `ch`), paragraphs use `pow-012 * 1em` (about 65 characters) and
+      small text `pow-011 * 1em` (about 49).
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
