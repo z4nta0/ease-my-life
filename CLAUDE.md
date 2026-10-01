@@ -2237,10 +2237,11 @@ still passes.
         its width.
       - **A container that exists to hold reading text** (a modal, a card)
         takes its `max-width` from its text's width plus its own horizontal
-        padding, rather than a free-standing number, e.g. `calc( var(
-        --cdn-pow-012 ) * var( --fon-siz-lar ) + 56px )` for a panel whose
-        paragraphs are set at `--fon-siz-lar` with 28px of padding on each
-        side. The text's font size is written out, since an `em` on the
+        padding and borders (boxes are `border-box`), rather than a
+        free-standing number, e.g. `calc( var( --cdn-pow-012 ) * var(
+        --fon-siz-lar ) + 56px + var( --bor-wid-sma ) * 2 )` for a panel
+        whose paragraphs are set at `--fon-siz-lar` with 28px of padding on
+        each side. The text's font size is written out, since an `em` on the
         container would resolve against the container's own font size.
       - **Every font follows the same caps**: text in a secondary font (e.g.
         a mono caption) still uses the main font's `--tex-wid-*` tokens,
