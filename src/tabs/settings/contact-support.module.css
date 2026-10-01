@@ -40,7 +40,7 @@
 .set-data-row:first-child { /* What: First Contact Trigger Row. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
 
 
-	padding-top : var( --spa-ver-xs4 );
+	padding-top : var( --spa-ver-m05 );
 
 
 }
@@ -48,7 +48,7 @@
 
 
 	border-bottom  : 0;
-	padding-bottom : var( --spa-ver-xs4 );
+	padding-bottom : var( --spa-ver-m05 );
 
 
 }
@@ -70,7 +70,7 @@
 .set-data-name { /* What: Contact Trigger Name. Why: The row's name leads it like every other Settings row. How: This sets it in bold body text. */
 
 
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 
 
@@ -93,7 +93,7 @@
 	animation  : global(importMsgPop) .34s cubic-bezier(.34,1.56,.5,1) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color      : var(--accent);
 	font-size  : var( --fon-siz-bas );
-	margin-top : var( --spa-ver-xs6 );
+	margin-top : var( --spa-ver-m07 );
 
 
 }
@@ -145,7 +145,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
@@ -160,11 +160,11 @@
 	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
-	font-family   : var(--font-sans);
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
-	margin-top    : var( --spa-ver-xs6 );
-	max-width     : calc( var( --ver-rhy-xl10 ) * 1rem );
+	font-family   : var(--fon-fam-mai);
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );
+	margin-top    : var( --spa-ver-m07 );
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
 	padding       : 0 12px;
 	transition    : border-color .12s;
@@ -206,8 +206,8 @@
 
 	height      : auto; /* What: Automatic Height. Why: The message box also carries the shared single-line field class, whose fixed height would squash it. How: This lets it size from its minimum height and its own content instead. */
 	line-height : var( --ver-rhy-bas );
-	min-height  : calc( var( --ver-rhy-xl6 ) * 1rem );
-	padding     : var( --spa-ver-sma ) 12px;
+	min-height  : calc( var( --ver-rhy-p07 ) * 1rem );
+	padding     : var( --spa-ver-m01 ) 12px;
 	resize      : vertical;
 
 
@@ -245,7 +245,7 @@
 
 
 	color     : var(--text);
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 
 
 }
@@ -343,7 +343,7 @@
 
 
 	color         : var(--text);
-	font-family   : var(--font-mono);
+	font-family   : var(--fon-fam-sec);
 	font-size     : var( --fon-siz-bas );
 	overflow-wrap : anywhere;
 

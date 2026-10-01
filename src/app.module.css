@@ -147,7 +147,7 @@
 	gap             : 2px;
 	justify-content : center;
 	left            : 50%;
-	padding         : var( --spa-ver-xs2 ) 8px;
+	padding         : var( --spa-ver-m03 ) 8px;
 	position        : fixed;
 	right           : auto;
 	transform       : translateX(-50%);
@@ -191,7 +191,7 @@
 	flex-direction     : column;
 	gap                : 2px;
 	height             : 100dvh;
-	padding            : var( --spa-ver-xl1 ) 16px;
+	padding            : var( --spa-ver-p02 ) 16px;
 	position           : sticky;
 	top                : 0;
 	width              : 220px;
@@ -209,7 +209,7 @@
 		flex-direction : column;
 		height         : 100dvh;
 		left           : 0;
-		padding        : var( --spa-ver-xl1 ) 16px calc( var( --spa-ver-xl1 ) + env(safe-area-inset-bottom) );
+		padding        : var( --spa-ver-p02 ) 16px calc( var( --spa-ver-p02 ) + env(safe-area-inset-bottom) );
 		position       : fixed;
 		top            : 0;
 		transform      : translateX(-100%);
@@ -236,7 +236,7 @@
 
 	border-bottom-width : var( --bor-wid-sma );
 	justify-content     : space-between;
-	padding             : var( --spa-ver-sma ) max( 20px, calc( ( 100% - var( --ver-rhy-xl14 ) * 1rem ) / 2 ) ); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the xl14 rhythm step. How: The side padding grows to center that width, never below 20px; the other tabs' column would use the same formula with the xl13 step. */
+	padding             : var( --spa-ver-m01 ) max( 20px, calc( ( 100% - var( --ver-rhy-p15 ) * 1rem ) / 2 ) ); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the p15 rhythm step. How: The side padding grows to center that width, never below 20px; the other tabs' column would use the same formula with the p14 step. */
 	position            : sticky;
 	top                 : 0;
 	z-index             : 100;
@@ -453,7 +453,7 @@
 	display     : flex;
 	font-weight : 600;
 	gap         : 9px;
-	padding     : var( --spa-ver-xs2 ) 10px var( --spa-ver-lar );
+	padding     : var( --spa-ver-m03 ) 10px var( --spa-ver-p01 );
 
 
 }
@@ -501,8 +501,8 @@
 	display        : flex;
 	flex-direction : row;
 	gap            : 11px;
-	line-height    : var( --ver-rhy-sma );
-	padding        : var( --spa-ver-xs6 ) 2px 0;
+	line-height    : var( --ver-rhy-m01 );
+	padding        : var( --spa-ver-m07 ) 2px 0;
 	text-transform : uppercase;
 
 
@@ -530,8 +530,8 @@
 	color   : var(--accent);
 	display : inline-flex;
 	flex    : none;
-	height  : calc( var( --ver-rhy-xl2 ) * 1rem );
-	width   : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height  : calc( var( --ver-rhy-p03 ) * 1rem );
+	width   : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -581,8 +581,8 @@
 
 
 	color          : var(--accent);
-	font-family    : "Shantell Sans", "Geist", sans-serif;
-	font-size      : var( --fon-siz-xl3 );
+	font-family    : var( --fon-fam-br1 );
+	font-size      : var( --fon-siz-p04 );
 	font-weight    : 600;
 	letter-spacing : -0.01em;
 
@@ -594,8 +594,8 @@
 
 
 	color          : var(--text);
-	font-family    : "Quicksand", "Geist", sans-serif;
-	font-size      : var( --fon-siz-xl2 );
+	font-family    : var( --fon-fam-br2 );
+	font-size      : var( --fon-siz-p03 );
 	font-weight    : 700;
 	letter-spacing : -0.005em;
 
@@ -653,12 +653,12 @@
 @container app (min-width: 720px) { /* What: Wide Bottom Tab Button. Why: In the floating wide pill, tabs sit as compact rounded pills with the icon beside the label. How: This applies only when the app is at least 720px wide. */
 
 
-	.tabbar--bottom .tabbtn { /* What: Pill Bottom Tab Button. Why: Each tab sizes to its icon and label. How: This sets the large text, the label gap, its side padding, and the xl2 rhythm height. */
+	.tabbar--bottom .tabbtn { /* What: Pill Bottom Tab Button. Why: Each tab sizes to its icon and label. How: This sets the large text, the label gap, its side padding, and the p03 rhythm height. */
 
 
-		font-size : var( --fon-siz-lar );
+		font-size : var( --fon-siz-p01 );
 		gap       : 7px;
-		height    : calc( var( --ver-rhy-xl2 ) * 1rem );
+		height    : calc( var( --ver-rhy-p03 ) * 1rem );
 		padding   : 0 14px;
 
 
@@ -669,11 +669,11 @@
 @container app (max-width: 719.98px) { /* What: Narrow Bottom Tab Button. Why: In the floating narrow pill, tabs are icon-only pills. How: This applies only when the app is narrower than 720px. */
 
 
-	.tabbar--bottom .tabbtn { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the xl3 touch-target height. */
+	.tabbar--bottom .tabbtn { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the p04 touch-target height. */
 
 
 		gap     : 0;
-		height  : calc( var( --ver-rhy-xl3 ) * 1rem );
+		height  : calc( var( --ver-rhy-p04 ) * 1rem );
 		padding : 0 28px;
 
 
@@ -701,10 +701,10 @@
 	border-radius   : 10px;
 	color           : var(--muted);
 	flex-direction  : row;
-	font-size       : var( --fon-siz-lar );
+	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
 	gap             : 12px;
-	height          : calc( var( --ver-rhy-xl3 ) * 1rem );
+	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : flex-start;
 	padding         : 0 12px;
 
@@ -724,10 +724,10 @@
 	border-radius  : 999px;
 	color          : var(--muted);
 	flex-direction : row;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	gap            : 8px;
-	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	padding        : 0 14px;
 
 
@@ -821,7 +821,7 @@
 	color                   : var(--muted);
 	cursor                  : pointer;
 	display                 : none;
-	height                  : calc( var( --ver-rhy-xl4 ) * 1rem );
+	height                  : calc( var( --ver-rhy-p05 ) * 1rem );
 	justify-content         : center;
 	left                    : 100%;
 	padding                 : 0;
@@ -894,7 +894,7 @@
 	min-width      : 0;
 	overflow-x     : hidden; /* What: Explicit Horizontal Clip. Why: Setting overflow-y alone makes overflow-x compute to auto, giving main its own sideways scroll that the flourish's edge glyphs would push. How: This sets it to hidden explicitly. */
 	overflow-y     : auto;
-	padding-bottom : var( --spa-ver-xl6 );
+	padding-bottom : var( --spa-ver-p07 );
 	padding-left   : var(--main-pad-x, 20px);
 	padding-right  : var(--main-pad-x, 20px);
 	transition     : padding 0.42s cubic-bezier(.4, 0, .2, 1);
@@ -905,14 +905,14 @@
 
 
 	--main-pad-x   : 32px;
-	padding-bottom : var( --spa-ver-xl2 );
+	padding-bottom : var( --spa-ver-p03 );
 
 
 }
 .app[data-placement="top"] .main { /* What: Top Placement Main Area. Why: Under a top bar, there is no bottom bar to clear. How: This shortens its bottom padding. */
 
 
-	padding-bottom : var( --spa-ver-xl2 );
+	padding-bottom : var( --spa-ver-p03 );
 
 
 }
@@ -929,7 +929,7 @@
 	.app[data-placement="bottom"] .main { /* What: Clear Wide Pill Main Area. Why: The last content should scroll clear of the pill. How: This deepens the bottom padding. */
 
 
-		padding-bottom : var( --spa-ver-xl6 );
+		padding-bottom : var( --spa-ver-p07 );
 
 
 	}
@@ -956,7 +956,7 @@
 
 
 		--main-pad-x   : 32px;
-		padding-bottom : var( --spa-ver-xl6 );
+		padding-bottom : var( --spa-ver-p07 );
 
 
 	}
@@ -970,7 +970,7 @@
 
 
 		--main-pad-x   : 20px;
-		padding-bottom : var( --spa-ver-xl2 );
+		padding-bottom : var( --spa-ver-p03 );
 
 
 	}
@@ -998,8 +998,8 @@
 	flex-direction : column;
 	gap            : 24px;
 	margin         : 0 auto;
-	max-width      : calc( var( --ver-rhy-xl13 ) * 1rem );
-	padding-top    : var( --spa-ver-xl1 );
+	max-width      : calc( var( --ver-rhy-p14 ) * 1rem );
+	padding-top    : var( --spa-ver-p02 );
 	position       : relative;
 
 

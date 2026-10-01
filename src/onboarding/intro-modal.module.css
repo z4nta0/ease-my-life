@@ -28,7 +28,7 @@
 	flex-direction : column;
 	inset          : 0;
 	overflow-y     : auto;
-	padding        : var( --spa-ver-xl1 ) 24px;
+	padding        : var( --spa-ver-p02 ) 24px;
 	position       : fixed;
 	z-index        : 1000;
 
@@ -59,8 +59,8 @@
 	border-radius : var(--r-lg);
 	box-shadow    : 0 24px 60px -20px oklch(0 0 0/0.5);
 	margin        : auto; /* What: Card Auto Margin. Why: Center alignment on the backdrop would clip a card taller than the screen at both ends with no way to scroll to it. How: Auto margins only take up free space, so the card sits centered when it fits and falls back to top-aligned, scrollable flow when it doesn't. */
-	max-width     : calc( var( --cdn-pow-012 ) * var( --fon-siz-lar ) + 60px + var( --bor-wid-sma ) * 2 ); /* What: Intro Modal Maximum Width. Why: The card should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the card's 24px of padding and the paragraphs' 6px of margin on each side, and the card's two side borders, since the box is border-box. */
-	padding       : var( --spa-ver-xl1 ) 24px var( --spa-ver-lar );
+	max-width     : calc( var( --cdn-pow-012 ) * var( --fon-siz-p01 ) + 60px + var( --bor-wid-sma ) * 2 ); /* What: Intro Modal Maximum Width. Why: The card should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the card's 24px of padding and the paragraphs' 6px of margin on each side, and the card's two side borders, since the box is border-box. */
+	padding       : var( --spa-ver-p02 ) 24px var( --spa-ver-p01 );
 	text-align    : left;
 	width         : 100%;
 
@@ -117,9 +117,9 @@
 
 
 	color  : var(--accent);
-	height : calc( var( --ver-rhy-xl4 ) * 1rem );
+	height : calc( var( --ver-rhy-p05 ) * 1rem );
 	margin : 0 auto var( --spa-ver-bas );
-	width  : calc( var( --ver-rhy-xl4 ) * 1rem );
+	width  : calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 }
@@ -139,10 +139,10 @@
 .ob-welcome h2 { /* What: Intro Modal Title. Why: The title leads the card. How: This centers it in a larger, tighter heading style. */
 
 
-	font-size      : var( --fon-siz-xl1 );
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 600;
 	letter-spacing : -0.02em;
-	margin         : 0 0 var( --spa-ver-xs1 );
+	margin         : 0 0 var( --spa-ver-m02 );
 	text-align     : center;
 
 
@@ -152,7 +152,7 @@
 
 
 	color       : var(--muted);
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0 6px;
 
@@ -161,7 +161,7 @@
 .ob-welcome>p+p { /* What: Following Intro Modal Paragraph. Why: Consecutive paragraphs need a gap between them. How: This adds top margin to every paragraph after the first. */
 
 
-	margin-top : var( --spa-ver-sma );
+	margin-top : var( --spa-ver-m01 );
 
 
 }
@@ -176,7 +176,7 @@
 	flex-wrap       : wrap;
 	gap             : 8px;
 	justify-content : center;
-	margin          : var( --spa-ver-lar ) 0 var( --spa-ver-xs4 );
+	margin          : var( --spa-ver-p01 ) 0 var( --spa-ver-m05 );
 
 
 }
@@ -190,9 +190,9 @@
 	border-radius : 999px;
 	color         : var(--accent);
 	display       : inline-flex;
-	font-family   : var(--font-mono);
+	font-family   : var(--fon-fam-sec);
 	font-size     : var( --fon-siz-bas );
-	height        : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height        : calc( var( --ver-rhy-p02 ) * 1rem );
 	outline       : none;
 	padding       : 0 10px;
 
@@ -210,7 +210,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 9px;
-	margin-top     : var( --spa-ver-lar );
+	margin-top     : var( --spa-ver-p01 );
 
 
 }
@@ -224,9 +224,9 @@
 	color         : var(--text);
 	cursor        : pointer;
 	font-family   : inherit;
-	font-size     : var( --fon-siz-lar );
+	font-size     : var( --fon-siz-p01 );
 	font-weight   : 600;
-	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );
 	padding       : 0 13px;
 
 

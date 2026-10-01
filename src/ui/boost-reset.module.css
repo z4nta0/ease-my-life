@@ -19,8 +19,8 @@
 
 
 	color       : var(--text);
-	font-family : var(--font-mono);
-	font-size   : var( --fon-siz-lar );
+	font-family : var(--fon-fam-sec);
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 
 
@@ -34,7 +34,7 @@
 	border-radius : 7px;
 	color         : var(--muted);
 	font-size     : var( --fon-siz-bas );
-	padding       : var( --spa-ver-xs4 ) 9px;
+	padding       : var( --spa-ver-m05 ) 9px;
 	transition    : color .12s, border-color .12s;
 
 

@@ -91,9 +91,9 @@
 .help-tip-title { /* What: Help Tip Title. Why: The tip's title leads its explanation. How: This sets it slightly larger and bold above the body. */
 
 
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
-	margin      : 0 0 var( --spa-ver-xs3 );
+	margin      : 0 0 var( --spa-ver-m04 );
 
 
 }
@@ -122,7 +122,7 @@
 .help-tip .ob-body p+p { /* What: Following Help Tip Paragraph. Why: Consecutive paragraphs still need a small gap between them. How: This adds top margin to every paragraph after the first. */
 
 
-	margin-top : var( --spa-ver-xs1 );
+	margin-top : var( --spa-ver-m02 );
 
 
 }

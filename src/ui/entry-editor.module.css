@@ -31,7 +31,7 @@
 	background    : var(--entry-editor-background, oklch(from var(--surface) calc(l - 0.006) c h)); /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
 	border        : var(--entry-editor-border, var( --bor-wid-sma ) solid var(--border)); /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
 	border-radius : var(--entry-editor-border-radius, var(--r-md)); /* What: Card Radius. Why: A Data or Pickers row strips the card's rounding. How: Its parent sets this to 0. */
-	margin        : var(--entry-editor-margin, 0 0 var( --spa-ver-xs4 )); /* What: Card Margin. Why: A Data or Pickers row sits the editor flush, and the top stays 0 everywhere, since a negative one would be clipped by the overflow of the collapse the editor opens in. How: Its parent sets this to 0, falling back to a small gap below. */
+	margin        : var(--entry-editor-margin, 0 0 var( --spa-ver-m05 )); /* What: Card Margin. Why: A Data or Pickers row sits the editor flush, and the top stays 0 everywhere, since a negative one would be clipped by the overflow of the collapse the editor opens in. How: Its parent sets this to 0, falling back to a small gap below. */
 	padding       : var(--entry-editor-padding, var( --spa-ver-bas ) 16px); /* What: Card Padding. Why: Today's card drops the top padding, and a Data or Pickers row drops it all. How: Their parents set this, falling back to base vertical spacing above and below and 16px at the sides. */
 
 
@@ -60,7 +60,7 @@
 	border-top     : var(--entry-editor-rows-border-top, var( --bor-wid-sma ) solid var(--border)); /* What: Rows Top Border. Why: Today's card and a new-item row already draw a divider above the rows. How: Their parents set this to 0, falling back to a hairline. */
 	display        : flex;
 	flex-direction : column;
-	margin         : var(--entry-editor-rows-margin-top, var( --spa-ver-xs6 )) -16px 0; /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to extra small 6 vertical spacing. */
+	margin         : var(--entry-editor-rows-margin-top, var( --spa-ver-m07 )) -16px 0; /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to extra small 6 vertical spacing. */
 
 
 }
@@ -75,8 +75,8 @@
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
-	padding         : var( --spa-ver-xs2 ) 16px;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
+	padding         : var( --spa-ver-m03 ) 16px;
 
 
 }
@@ -119,7 +119,7 @@
 	font-weight     : 700;
 	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
-	line-height     : var( --ver-rhy-sma );
+	line-height     : var( --ver-rhy-m01 );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
 	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -154,7 +154,7 @@
 .pie-lbl { /* What: Setting Name. Why: Each setting row leads with its name. How: This sets it at body size. */
 
 
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 
 
 }
@@ -240,10 +240,10 @@
 	align-items     : center;
 	color           : var(--muted);
 	display         : inline-flex;
-	font-size       : var( --fon-siz-lar );
-	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
+	font-size       : var( --fon-siz-p01 );
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
-	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -267,7 +267,7 @@
 
 
 	color                : var(--muted);
-	font-family          : var(--font-mono);
+	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	padding              : 0 8px;
@@ -283,7 +283,7 @@
 
 
 	color     : var(--muted);
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 
 
 }
@@ -297,7 +297,7 @@
 
 	background    : var(--border);
 	border-radius : 999px;
-	height        : calc( var( --ver-rhy-lar ) * 1rem );
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -332,9 +332,9 @@
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -343,7 +343,7 @@
 .switch[aria-pressed="true"] i { /* What: On Active Switch Knob. Why: An active switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
+	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }
@@ -403,7 +403,7 @@
 
 
 	color     : var(--text);
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 	text-wrap : pretty;
 
 

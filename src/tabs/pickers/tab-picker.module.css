@@ -66,11 +66,11 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-lar );
+	line-height    : var( --ver-rhy-p01 );
 	text-transform : uppercase;
 
 
@@ -122,11 +122,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-xl5 ) * 1rem );
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform 180ms ease;
-	width              : calc( var( --ver-rhy-xl5 ) * 1rem );
+	width              : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }
@@ -140,11 +140,11 @@
 @media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
 
 
-	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to xl4. */
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
 
 
-		height : calc( var( --ver-rhy-xl4 ) * 1rem );
-		width  : calc( var( --ver-rhy-xl4 ) * 1rem );
+		height : calc( var( --ver-rhy-p05 ) * 1rem );
+		width  : calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 	}
@@ -199,10 +199,10 @@
 .section-title { /* What: Section Title. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-xl3 );
+	font-size      : var( --fon-siz-p04 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	line-height    : var( --ver-rhy-sma );
+	line-height    : var( --ver-rhy-m01 );
 	margin         : 0;
 
 
@@ -213,7 +213,7 @@
 	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
 
 
-		font-size : var( --fon-siz-xl2 );
+		font-size : var( --fon-siz-p03 );
 
 
 	}
@@ -243,7 +243,7 @@
 
 
 	color     : var(--muted);
-	margin    : var( --spa-ver-lar ) 0 0;
+	margin    : var( --spa-ver-p01 ) 0 0;
 	max-width : var( --tex-wid-bas );
 
 
@@ -320,7 +320,7 @@
 
 	color          : var(--muted);
 	flex-shrink    : 0;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	text-transform : uppercase;
@@ -343,7 +343,7 @@
 	gap                : 8px;
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	overflow-x         : auto;
-	padding-bottom     : var( --spa-ver-xs6 );
+	padding-bottom     : var( --spa-ver-m07 );
 	scrollbar-width    : none;
 
 
@@ -383,10 +383,10 @@
 	cursor         : pointer;
 	display        : inline-flex;
 	flex-shrink    : 0;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	gap            : 7px;
-	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
@@ -432,10 +432,10 @@
 	border-radius        : 999px;
 	color                : var(--muted);
 	display              : inline-flex;
-	font-family          : var(--font-mono);
+	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
-	height               : calc( var( --ver-rhy-lar ) * 1rem );
+	height               : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content      : center;
 	min-width            : 18px;
 	padding              : 0 6px;
@@ -503,7 +503,7 @@
 	.picker-tabs { /* What: Padded Picker Tab Strip. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
 
 
-		padding-bottom : var( --spa-ver-xs8 );
+		padding-bottom : var( --spa-ver-m09 );
 
 
 	}
@@ -525,7 +525,7 @@
 	flex-shrink       : 0;
 	gap               : 1px;
 	min-width         : 132px;
-	padding           : var( --spa-ver-sma ) 16px;
+	padding           : var( --spa-ver-m01 ) 16px;
 	scroll-snap-align : start;
 	text-align        : left;
 	transition        : border-color .12s, background .12s;
@@ -613,7 +613,7 @@
 .picker-tab-name { /* What: Picker Tab Name. Why: The picker's name leads its tab. How: This sets it in medium weight. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 
@@ -630,7 +630,7 @@
 
 
 	color     : inherit;
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 
 
 }
@@ -639,7 +639,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;

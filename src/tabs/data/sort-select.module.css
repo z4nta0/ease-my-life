@@ -35,7 +35,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	text-transform : uppercase;
@@ -51,11 +51,11 @@
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	cursor        : pointer;
-	font-family   : var(--font-sans);
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
-	margin-top    : var( --spa-ver-xs6 );
-	max-width     : calc( var( --ver-rhy-xl10 ) * 1rem );
+	font-family   : var(--fon-fam-mai);
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );
+	margin-top    : var( --spa-ver-m07 );
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
 	padding       : 0 12px;
 	transition    : border-color .12s;

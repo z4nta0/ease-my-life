@@ -59,12 +59,12 @@
 	color           : var(--muted);
 	cursor          : grab;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
 	margin-left     : -4px;
 	touch-action    : none; /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
 	transition      : color .12s, background .12s;
-	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -106,12 +106,12 @@
 	border-radius    : 8px;
 	color            : var(--text);
 	font-family      : inherit;
-	font-size        : var( --fon-siz-xl1 );
+	font-size        : var( --fon-siz-p02 );
 	font-weight      : 500;
-	height           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height           : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing   : -0.015em;
-	margin           : calc( var( --spa-ver-xs5 ) * -1 ) 0;
-	max-width        : calc( var( --ver-rhy-xl9 ) * 1rem );
+	margin           : calc( var( --spa-ver-m06 ) * -1 ) 0;
+	max-width        : calc( var( --ver-rhy-p10 ) * 1rem );
 	min-width        : 0;
 	outline          : none;
 	padding          : 0 8px;
@@ -198,7 +198,7 @@
 .group-name { /* What: Group Name. Why: The group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
 
 
-	font-size      : var( --fon-siz-xl1 );
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
 	margin         : 0;
@@ -217,12 +217,12 @@
 	cursor         : text;
 	display        : inline-flex;
 	font-family    : inherit;
-	font-size      : var( --fon-siz-xl1 );
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
 	gap            : 7px;
 	letter-spacing : -0.015em;
-	margin         : calc( var( --spa-ver-xs6 ) * -1 ) -6px;
-	padding        : var( --spa-ver-xs6 ) 6px;
+	margin         : calc( var( --spa-ver-m07 ) * -1 ) -6px;
+	padding        : var( --spa-ver-m07 ) 6px;
 	transition     : background .12s, color .12s;
 
 
@@ -288,7 +288,7 @@
 	align-items          : baseline;
 	color                : var(--muted);
 	display              : inline-flex;
-	font-family          : var(--font-mono);
+	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	gap                  : 4px;
@@ -335,7 +335,7 @@
 
 	background    : var(--border);
 	border-radius : 2px;
-	height        : calc( var( --ver-rhy-xs4 ) * 1rem );
+	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
 	position      : relative;
 	transition    : background .25s ease;
@@ -414,8 +414,8 @@
 	flex-wrap       : wrap;
 	gap             : 14px;
 	justify-content : space-between;
-	margin-top      : var( --spa-ver-xs4 );
-	padding         : var( --spa-ver-sma ) 14px;
+	margin-top      : var( --spa-ver-m05 );
+	padding         : var( --spa-ver-m01 ) 14px;
 
 
 }
@@ -469,7 +469,7 @@
 
 	color       : var(--text);
 	flex        : 1;
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	min-width   : 180px;
 	text-wrap   : pretty;

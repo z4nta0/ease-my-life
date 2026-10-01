@@ -47,7 +47,7 @@
 	display         : flex;
 	gap             : 16px;
 	justify-content : space-between;
-	padding         : var( --spa-ver-sma ) 0;
+	padding         : var( --spa-ver-m01 ) 0;
 
 
 }
@@ -124,10 +124,10 @@
 	from {
 
 
-		max-height     : calc( var( --ver-rhy-xl5 ) * 1rem );
+		max-height     : calc( var( --ver-rhy-p06 ) * 1rem );
 		opacity        : 1;
-		padding-bottom : var( --spa-ver-sma );
-		padding-top    : var( --spa-ver-sma );
+		padding-bottom : var( --spa-ver-m01 );
+		padding-top    : var( --spa-ver-m01 );
 		transform      : none;
 
 
@@ -167,7 +167,7 @@
 .holiday-name { /* What: Holiday Name. Why: The day off's name leads its row, and mutes when the day is turned off. How: This sets it in medium-weight body text that fades its color. */
 
 
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 500;
 	transition  : color .28s ease;
 
@@ -204,7 +204,7 @@
 	color          : var(--muted);
 	display        : flex;
 	flex-direction : column;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 2px;
 	letter-spacing : 0.02em;
@@ -272,7 +272,7 @@
 
 
 	color          : var(--accent);
-	font-family    : var(--font-sans, inherit);
+	font-family    : var(--fon-fam-mai, inherit);
 	font-size      : var( --fon-siz-bas );
 	font-style     : italic;
 	letter-spacing : 0;
@@ -303,7 +303,7 @@
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
-	height        : calc( var( --ver-rhy-lar ) * 1rem );
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -338,9 +338,9 @@
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -349,7 +349,7 @@
 .switch[aria-pressed="true"] i { /* What: On Holiday Switch Knob. Why: An on switch's knob sits at the right end. How: This slides the knob across. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
+	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }
@@ -378,10 +378,10 @@
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
 	transition      : background .12s, color .12s;
-	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -437,11 +437,11 @@
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	flex          : 1 1 180px;
-	font-family   : var(--font-sans);
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
-	margin-top    : var( --spa-ver-xs6 );
-	max-width     : calc( var( --ver-rhy-xl9 ) * 1rem );
+	font-family   : var(--fon-fam-mai);
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );
+	margin-top    : var( --spa-ver-m07 );
+	max-width     : calc( var( --ver-rhy-p10 ) * 1rem );
 	outline       : none;
 	padding       : 0 12px;
 	transition    : border-color .12s;

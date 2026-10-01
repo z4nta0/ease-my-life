@@ -19,14 +19,14 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-xl1 ) solid currentColor;
+	border          : var( --bor-wid-xla ) solid currentColor;
 	border-radius   : 50%;
 	display         : flex;
-	font-size       : var( --fon-siz-xl2 );
+	font-size       : var( --fon-siz-p03 );
 	font-weight     : 700;
 	height          : 100%;
 	justify-content : center;
-	line-height     : var( --ver-rhy-sma );
+	line-height     : var( --ver-rhy-m01 );
 	width           : 100%;
 
 

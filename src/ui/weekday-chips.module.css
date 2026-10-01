@@ -40,12 +40,12 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	font-size       : var( --fon-siz-lar );
+	font-size       : var( --fon-siz-p01 );
 	font-weight     : 600;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	transition      : border-color .24s ease, background .24s ease, color .24s ease;
-	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -70,8 +70,8 @@
 
 
 	font-size : var( --fon-siz-bas );
-	height    : calc( var( --ver-rhy-xl1 ) * 1rem );
-	width     : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height    : calc( var( --ver-rhy-p02 ) * 1rem );
+	width     : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -93,8 +93,8 @@
 
 
 	font-size : var( --fon-siz-bas );
-	height    : calc( var( --ver-rhy-xl1 ) * 1rem );
-	width     : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height    : calc( var( --ver-rhy-p02 ) * 1rem );
+	width     : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }

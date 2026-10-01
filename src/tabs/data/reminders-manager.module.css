@@ -61,8 +61,8 @@
 	display         : flex;
 	gap             : 10px;
 	justify-content : space-between;
-	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
-	padding         : var( --spa-ver-sma ) 16px;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
+	padding         : var( --spa-ver-m01 ) 16px;
 	user-select     : none;
 
 
@@ -151,7 +151,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-name { /* What: Category Name. Why: The section's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
@@ -171,7 +171,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	align-items    : baseline;
 	color          : var(--muted);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 3px;
 	letter-spacing : 0.03em;
@@ -221,7 +221,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display            : flex;
 	font               : inherit;
 	justify-content    : space-between;
-	padding            : var( --spa-ver-sma ) 16px;
+	padding            : var( --spa-ver-m01 ) 16px;
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -252,11 +252,11 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-sma );
+	line-height    : var( --ver-rhy-m01 );
 	text-transform : uppercase;
 
 
@@ -269,7 +269,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
 
@@ -299,7 +299,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	align-items           : center;
 	display               : grid;
 	grid-template-columns : 1fr 76px 76px;
-	padding               : var( --spa-ver-xs1 ) 16px;
+	padding               : var( --spa-ver-m02 ) 16px;
 
 
 }
@@ -308,7 +308,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	text-align     : center;
@@ -330,7 +330,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border-bottom         : var( --bor-wid-sma ) solid var(--border);
 	display               : grid;
 	grid-template-columns : 1fr 76px 76px;
-	padding               : var( --spa-ver-sma ) 16px;
+	padding               : var( --spa-ver-m01 ) 16px;
 
 
 }
@@ -349,7 +349,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	display        : flex;
 	flex-direction : column;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	gap            : 1px;
 	padding-right  : 12px;
 
@@ -405,7 +405,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	background    : var(--border);
 	border-radius : 999px;
 	cursor        : pointer;
-	height        : calc( var( --ver-rhy-lar ) * 1rem );
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -440,9 +440,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -451,7 +451,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .switch[aria-pressed="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
+	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }
@@ -485,7 +485,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border-top      : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	justify-content : flex-end;
-	padding         : var( --spa-ver-sma ) 16px;
+	padding         : var( --spa-ver-m01 ) 16px;
 
 
 }
@@ -520,7 +520,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	color          : var(--muted);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.04em;
@@ -555,8 +555,8 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	color     : var(--muted);
-	font-size : var( --fon-siz-lar );
-	padding   : var( --spa-ver-bas ) 16px var( --spa-ver-lar );
+	font-size : var( --fon-siz-p01 );
+	padding   : var( --spa-ver-bas ) 16px var( --spa-ver-p01 );
 
 
 }
@@ -615,7 +615,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display            : flex;
 	font               : inherit;
 	gap                : 12px;
-	padding            : var( --spa-ver-sma ) 16px;
+	padding            : var( --spa-ver-m01 ) 16px;
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -655,9 +655,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	color           : var(--accent);
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -695,10 +695,10 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border         : 0;
 	border-bottom  : var( --bor-wid-bas ) solid var(--border);
 	font           : inherit;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : var( --spa-ver-xs8 ) 0;
+	padding        : var( --spa-ver-m09 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -737,7 +737,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name { /* What: Row Name. Why: A closed row leads with its reminder's name. How: This sets it in medium weight. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 
@@ -748,7 +748,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
@@ -789,8 +789,8 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	cursor             : pointer;
 	display            : inline-flex;
 	font               : inherit;
-	margin             : calc( var( --spa-ver-xs4 ) * -1 ) -4px;
-	padding            : var( --spa-ver-xs4 ) 4px;
+	margin             : calc( var( --spa-ver-m05 ) * -1 ) -4px;
+	padding            : var( --spa-ver-m05 ) 4px;
 
 
 }
@@ -809,7 +809,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0 -16px; /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) 16px 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
-	padding                      : var( --spa-ver-xs6 ) 16px var( --spa-ver-bas );
+	padding                      : var( --spa-ver-m07 ) 16px var( --spa-ver-bas );
 
 
 }

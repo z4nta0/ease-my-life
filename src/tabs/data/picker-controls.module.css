@@ -100,7 +100,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
@@ -110,14 +110,14 @@
 .rd-ctl-group--basics .rd-ctl-subhead { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 16px at the sides and extra small 1 vertical spacing below. */
 
 
-	padding : 0 16px var( --spa-ver-xs1 );
+	padding : 0 16px var( --spa-ver-m02 );
 
 
 }
 .rd-ctl-group--picks .rd-ctl-subhead { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base vertical spacing above, 16px at the sides, and extra small 1 vertical spacing below. */
 
 
-	padding : var( --spa-ver-bas ) 16px var( --spa-ver-xs1 );
+	padding : var( --spa-ver-bas ) 16px var( --spa-ver-m02 );
 
 
 }
@@ -125,7 +125,7 @@
 .rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it small vertical spacing above, 16px at the sides, and extra small 1 vertical spacing below. */
 
 
-	padding : var( --spa-ver-sma ) 16px var( --spa-ver-xs1 );
+	padding : var( --spa-ver-m01 ) 16px var( --spa-ver-m02 );
 
 
 }
@@ -150,7 +150,7 @@
 	border-top  : var( --bor-wid-sma ) solid var(--border);
 	display     : flex;
 	gap         : 14px;
-	padding     : var( --spa-ver-sma ) 16px;
+	padding     : var( --spa-ver-m01 ) 16px;
 
 
 }
@@ -167,8 +167,8 @@
 
 	color       : var(--muted);
 	flex        : 0 0 52px;
-	font-size   : var( --fon-siz-lar );
-	padding-top : var( --spa-ver-xs2 );
+	font-size   : var( --fon-siz-p01 );
+	padding-top : var( --spa-ver-m03 );
 
 
 }
@@ -189,8 +189,8 @@
 	color         : var(--text);
 	flex          : 1;
 	font-family   : inherit;
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	min-width     : 0;
 	outline       : none;
 	padding       : 0 12px;
@@ -238,7 +238,7 @@
 	flex-wrap      : wrap;
 	gap            : 8px;
 	min-width      : 0;
-	padding-bottom : var( --spa-ver-xs4 );
+	padding-bottom : var( --spa-ver-m05 );
 
 
 }
@@ -256,7 +256,7 @@
 		mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 		overflow-x         : auto;
 		overflow-y         : hidden;
-		padding-bottom     : var( --spa-ver-xs6 );
+		padding-bottom     : var( --spa-ver-m07 );
 		scrollbar-width    : none;
 
 
@@ -300,10 +300,10 @@
 	cursor         : pointer;
 	display        : inline-flex;
 	flex-shrink    : 0;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	gap            : 7px;
-	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 13px;
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
@@ -474,8 +474,8 @@
 	border-radius : 999px;
 	color         : var(--text);
 	font-family   : inherit;
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	outline       : none;
 	padding       : 0 10px;
 	width         : 130px;
@@ -532,10 +532,10 @@
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	transition      : color .15s, border-color .15s, background .15s;
-	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -638,7 +638,7 @@
 	cursor                      : pointer;
 	display                     : flex;
 	gap                         : 11px;
-	padding                     : var( --spa-ver-sma ) 16px;
+	padding                     : var( --spa-ver-m01 ) 16px;
 	position                    : relative;
 	transition                  : background .24s ease;
 
@@ -726,7 +726,7 @@
 	border-radius : 50%;
 	flex          : 0 0 auto;
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	margin-top    : var( --spa-ver-xs8 );
+	margin-top    : var( --spa-ver-m09 );
 	position      : relative;
 	transition    : border-color .12s;
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
@@ -781,7 +781,7 @@
 .rd-mode-name { /* What: Mode Option Name. Why: The mode's name leads the option. How: This sets it in medium weight. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 
@@ -802,7 +802,7 @@
 .rd-mode-hint + .rd-mode-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
-	margin-top : var( --spa-ver-xs1 );
+	margin-top : var( --spa-ver-m02 );
 
 
 }
@@ -827,8 +827,8 @@
 	flex-wrap       : wrap;
 	gap             : 12px;
 	justify-content : space-between;
-	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
-	padding         : var( --spa-ver-xs2 ) 16px;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
+	padding         : var( --spa-ver-m03 ) 16px;
 
 
 }
@@ -861,7 +861,7 @@
 
 
 	color     : var(--muted);
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 
 
 }
@@ -890,7 +890,7 @@
 	font-weight     : 700;
 	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
-	line-height     : var( --ver-rhy-sma );
+	line-height     : var( --ver-rhy-m01 );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
 	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -966,7 +966,7 @@
 	background    : var(--border);
 	border-radius : 999px;
 	cursor        : pointer;
-	height        : calc( var( --ver-rhy-lar ) * 1rem );
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -1002,9 +1002,9 @@
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -1014,7 +1014,7 @@
 .switch[aria-pressed="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
+	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }
@@ -1042,7 +1042,7 @@
 
 
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
-	padding       : var( --spa-ver-xs1 ) 16px var( --spa-ver-sma );
+	padding       : var( --spa-ver-m02 ) 16px var( --spa-ver-m01 );
 
 
 }
@@ -1060,7 +1060,7 @@
 	gap                : 8px;
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	overflow-x         : auto;
-	padding-bottom     : var( --spa-ver-xs6 );
+	padding-bottom     : var( --spa-ver-m07 );
 	scrollbar-width    : none;
 
 
@@ -1101,9 +1101,9 @@
 	flex-shrink     : 0;
 	gap             : 3px;
 	justify-content : center;
-	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	min-width       : 132px;
-	padding         : var( --spa-ver-xs1 ) 14px;
+	padding         : var( --spa-ver-m02 ) 14px;
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
 
@@ -1143,7 +1143,7 @@
 
 
 	color       : var(--text);
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 500;
 
 
@@ -1153,7 +1153,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
@@ -1173,7 +1173,7 @@
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
-	margin      : var( --spa-ver-xs6 ) 0;
+	margin      : var( --spa-ver-m07 ) 0;
 	text-wrap   : pretty;
 
 
@@ -1205,12 +1205,12 @@
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	cursor        : pointer;
-	font-family   : var(--font-sans);
-	font-size     : var( --fon-siz-lar );
+	font-family   : var(--fon-fam-mai);
+	font-size     : var( --fon-siz-p01 );
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
-	padding       : var( --spa-ver-sma ) 12px;
+	padding       : var( --spa-ver-m01 ) 12px;
 	transition    : border-color .12s;
 	width         : auto;
 
@@ -1260,8 +1260,8 @@
 	color         : var(--muted);
 	font-size     : var( --fon-siz-bas );
 	font-style    : italic;
-	min-height    : calc( var( --ver-rhy-xl4 ) * 1rem );
-	padding       : var( --spa-ver-xs2 ) 16px;
+	min-height    : calc( var( --ver-rhy-p05 ) * 1rem );
+	padding       : var( --spa-ver-m03 ) 16px;
 
 
 }
@@ -1300,8 +1300,8 @@
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
-	padding         : var( --spa-ver-xs2 ) 16px;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
+	padding         : var( --spa-ver-m03 ) 16px;
 
 
 }
@@ -1328,7 +1328,7 @@
 .pie-lbl { /* What: Ease Setting Name. Why: The row leads with its setting's name. How: This sets it at the row's label size. */
 
 
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 
 
 }
@@ -1384,7 +1384,7 @@
 
 	color     : var(--text);
 	flex      : 1 1 auto;
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 	min-width : 0;
 	text-wrap : pretty;
 

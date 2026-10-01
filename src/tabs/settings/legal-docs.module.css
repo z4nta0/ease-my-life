@@ -28,7 +28,7 @@
 	display         : flex;
 	inset           : 0;
 	justify-content : center;
-	padding         : var( --spa-ver-xl1 ) 24px;
+	padding         : var( --spa-ver-p02 ) 24px;
 	position        : fixed;
 	z-index         : 100;
 
@@ -112,7 +112,7 @@
 	display        : flex;
 	flex-direction : column;
 	max-height     : 85vh;
-	max-width      : calc( var( --cdn-pow-012 ) * var( --fon-siz-lar ) + 56px + var( --bor-wid-sma ) * 2 ); /* What: Legal Modal Maximum Width. Why: The panel should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the body's 28px of padding on each side and its two side borders, since the box is border-box. */
+	max-width      : calc( var( --cdn-pow-012 ) * var( --fon-siz-p01 ) + 56px + var( --bor-wid-sma ) * 2 ); /* What: Legal Modal Maximum Width. Why: The panel should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the body's 28px of padding on each side and its two side borders, since the box is border-box. */
 	outline        : none;
 	overflow       : hidden;
 	width          : 100%;
@@ -207,7 +207,7 @@
 
 
 	color       : var(--text);
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 
 
@@ -224,9 +224,9 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -249,7 +249,7 @@
 
 	-webkit-overflow-scrolling : touch;
 	overflow-y                 : auto;
-	padding                    : var( --spa-ver-xs1 ) 28px var( --spa-ver-xl1 );
+	padding                    : var( --spa-ver-m02 ) 28px var( --spa-ver-p02 );
 
 
 }
@@ -257,7 +257,7 @@
 .legal-modal-body h1 { /* What: Legal Document Title. Why: The document opens with its own name. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-xl2 );
+	font-size      : var( --fon-siz-p03 );
 	letter-spacing : -0.02em;
 	margin         : var( --spa-ver-bas ) 0 0;
 
@@ -267,7 +267,7 @@
 .legal-modal-body h2 { /* What: Legal Document Section Heading. Why: Section headings break the document into scannable parts. How: This sizes them and spaces them from the text around them. */
 
 
-	font-size : var( --fon-siz-xl1 );
+	font-size : var( --fon-siz-p02 );
 	margin    : 1.6em 0 0.4em;
 
 
@@ -278,7 +278,7 @@
 
 
 	color       : oklch(from var(--text) l c h / 0.88);
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 
 

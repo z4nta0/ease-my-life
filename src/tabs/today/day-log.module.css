@@ -37,10 +37,10 @@
 	color          : var(--muted);
 	cursor         : pointer;
 	display        : inline-flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 5px;
-	height         : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.05em;
 	padding        : 0 9px;
 	text-transform : uppercase;
@@ -100,7 +100,7 @@
 	background    : oklch(from var(--surface) calc(l + 0.006) c h);
 	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-md);
-	margin        : var( --spa-ver-xs6 ) 0 var( --spa-ver-bas );
+	margin        : var( --spa-ver-m07 ) 0 var( --spa-ver-bas );
 	overflow      : hidden;
 
 
@@ -116,7 +116,7 @@
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	justify-content : space-between;
-	padding         : var( --spa-ver-sma ) 14px;
+	padding         : var( --spa-ver-m01 ) 14px;
 
 
 }
@@ -129,7 +129,7 @@
 	align-items    : center;
 	color          : var(--muted);
 	display        : inline-flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.06em;
@@ -165,10 +165,10 @@
 	cursor          : pointer;
 	display         : flex;
 	flex            : none;
-	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
 	transition      : color .14s,border-color .14s;
-	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -220,7 +220,7 @@
 	display       : flex;
 	flex-wrap     : nowrap;
 	gap           : 16px;
-	padding       : var( --spa-ver-sma ) 14px;
+	padding       : var( --spa-ver-m01 ) 14px;
 
 
 }
@@ -273,9 +273,9 @@
 	border-radius   : 7px;
 	display         : inline-flex;
 	flex            : none;
-	height          : calc( var( --ver-rhy-lar ) * 1rem );
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content : center;
-	width           : calc( var( --ver-rhy-lar ) * 1rem );
+	width           : calc( var( --ver-rhy-p01 ) * 1rem );
 
 
 }
@@ -345,14 +345,14 @@
 .dl-body { /* What: Log Body. Why: The blocks sit inset under the key. How: This pads the body. */
 
 
-	padding : var( --spa-ver-xs6 ) 12px var( --spa-ver-sma );
+	padding : var( --spa-ver-m07 ) 12px var( --spa-ver-m01 );
 
 
 }
 .dl-body--rem { /* What: Reminders Log Body. Why: The reminders table needs a little more room around it. How: This pads it more evenly. */
 
 
-	padding : var( --spa-ver-xs1 ) 12px var( --spa-ver-sma );
+	padding : var( --spa-ver-m02 ) 12px var( --spa-ver-m01 );
 
 
 }
@@ -361,8 +361,8 @@
 
 
 	color     : var(--muted);
-	font-size : var( --fon-siz-lar );
-	padding   : var( --spa-ver-sma ) 10px;
+	font-size : var( --fon-siz-p01 );
+	padding   : var( --spa-ver-m01 ) 10px;
 
 
 }
@@ -510,7 +510,7 @@
 .dl-block-name { /* What: Block Name. Why: Each block leads with its picker's name, or Conditionals. How: This sets it in semibold. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 600;
 	letter-spacing : -0.01em;
 
@@ -538,10 +538,10 @@
 	background     : var(--accent-soft);
 	border-radius  : 999px;
 	color          : var(--accent);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
-	padding        : var( --spa-ver-xs6 ) 8px;
+	padding        : var( --spa-ver-m07 ) 8px;
 	text-align     : center;
 	text-transform : uppercase;
 	white-space    : nowrap;
@@ -581,7 +581,7 @@
 	color           : var(--muted);
 	display         : inline-flex;
 	flex-wrap       : wrap;
-	font-family     : var(--font-mono);
+	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
 	gap             : 8px;
 	justify-content : flex-end;
@@ -618,8 +618,8 @@
 .dl-dchip svg { /* What: Done Count Icon. Why: The icon sits small beside the count. How: This sizes it to the small rhythm step. */
 
 
-	height : calc( var( --ver-rhy-sma ) * 1rem );
-	width  : calc( var( --ver-rhy-sma ) * 1rem );
+	height : calc( var( --ver-rhy-m01 ) * 1rem );
+	width  : calc( var( --ver-rhy-m01 ) * 1rem );
 
 
 }
@@ -637,7 +637,7 @@
 	color          : var(--accent);
 	display        : flex;
 	flex-direction : column;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 2px;
 	letter-spacing : 0.03em;
@@ -694,7 +694,7 @@
 .dl-table { /* What: Log Table. Why: The table ends with room below. How: This pads its bottom. */
 
 
-	padding-bottom : var( --spa-ver-sma );
+	padding-bottom : var( --spa-ver-m01 );
 
 
 }
@@ -746,10 +746,10 @@
 
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
-	padding        : var( --spa-ver-xs2 ) 10px;
+	padding        : var( --spa-ver-m03 ) 10px;
 	text-transform : uppercase;
 
 
@@ -810,7 +810,7 @@
 	border      : 0;
 	clip-path   : inset(50%);
 	height      : 1px;
-	margin      : calc( var( --spa-ver-xs8 ) * -1 ) -1px;
+	margin      : calc( var( --spa-ver-m09 ) * -1 ) -1px;
 	overflow    : hidden;
 	padding     : 0;
 	position    : absolute;
@@ -831,7 +831,7 @@
 
 	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
-	padding       : var( --spa-ver-xs1 ) 10px;
+	padding       : var( --spa-ver-m02 ) 10px;
 
 
 }
@@ -854,7 +854,7 @@
 
 	background    : oklch(from var(--accent) 0.93 0.05 h)!important;
 	border-bottom : 0!important;
-	margin-bottom : var( --spa-ver-xs6 );
+	margin-bottom : var( --spa-ver-m07 );
 
 
 }
@@ -901,7 +901,7 @@
 .dl-name { /* What: Row Name. Why: The item or conditional name leads the row on one line. How: This sets it in medium weight, ending in an ellipsis. */
 
 
-	font-size     : var( --fon-siz-lar );
+	font-size     : var( --fon-siz-p01 );
 	font-weight   : 500;
 	overflow      : hidden;
 	text-overflow : ellipsis;
@@ -1002,7 +1002,7 @@
 
 		display     : block;
 		margin-left : -4px;
-		max-width   : calc( var( --ver-rhy-xl7 ) * 1rem );
+		max-width   : calc( var( --ver-rhy-p08 ) * 1rem );
 		text-align  : left;
 		width       : auto;
 
@@ -1019,7 +1019,7 @@
 
 		display     : block;
 		margin-left : -4px;
-		max-width   : calc( var( --ver-rhy-xl7 ) * 1rem );
+		max-width   : calc( var( --ver-rhy-p08 ) * 1rem );
 		text-align  : left;
 		width       : auto;
 
@@ -1037,7 +1037,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.02em;
 
@@ -1051,8 +1051,8 @@
 .dl-val { /* What: Row Value. Why: The values line up in their columns. How: This sets them in tabular mono numerals. */
 
 
-	font-family          : var(--font-mono);
-	font-size            : var( --fon-siz-lar );
+	font-family          : var(--fon-fam-sec);
+	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
 
 
@@ -1069,7 +1069,7 @@
 .dl-delta { /* What: Row Change. Why: The change reads in tabular mono numerals, colored by direction. How: This sets it small in tabular mono type. */
 
 
-	font-family          : var(--font-mono);
+	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 
@@ -1116,7 +1116,7 @@
 
 
 	color       : oklch(from var(--muted) l c h/0.55);
-	font-family : var(--font-mono);
+	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-bas );
 
 
@@ -1143,9 +1143,9 @@
 	align-items    : center;
 	border-radius  : 999px;
 	display        : inline-flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	height         : calc( var( --ver-rhy-lar ) * 1rem );
+	height         : calc( var( --ver-rhy-p01 ) * 1rem );
 	letter-spacing : 0.04em;
 	padding        : 0;
 	text-transform : uppercase;
@@ -1158,7 +1158,7 @@
 
 	background : var(--accent);
 	color      : var(--bg);
-	padding    : var( --spa-ver-xs6 ) 8px;
+	padding    : var( --spa-ver-m07 ) 8px;
 
 
 }
@@ -1168,7 +1168,7 @@
 	background : var(--surface);
 	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
-	padding    : var( --spa-ver-xs6 ) 8px;
+	padding    : var( --spa-ver-m07 ) 8px;
 
 
 }
@@ -1205,8 +1205,8 @@
 
 
 	color       : oklch(from var(--muted) l c h/0.4);
-	font-family : var(--font-mono);
-	font-size   : var( --fon-siz-lar );
+	font-family : var(--fon-fam-sec);
+	font-size   : var( --fon-siz-p01 );
 	text-align  : right;
 
 
@@ -1216,7 +1216,7 @@
 
 
 	color          : oklch(from var(--muted) l c h/0.7);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
@@ -1238,12 +1238,12 @@
 	border-radius  : 0 0 8px 8px;
 	color          : oklch(from var(--accent) calc(l - 0.02) c h);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.02em;
-	margin         : 0 0 var( --spa-ver-xs1 );
-	padding        : var( --spa-ver-xs2 ) 10px var( --spa-ver-xs2 ) 12px;
+	margin         : 0 0 var( --spa-ver-m02 );
+	padding        : var( --spa-ver-m03 ) 10px var( --spa-ver-m03 ) 12px;
 
 
 }
@@ -1252,9 +1252,9 @@
 
 
 	flex    : none;
-	height  : calc( var( --ver-rhy-sma ) * 1rem );
+	height  : calc( var( --ver-rhy-m01 ) * 1rem );
 	opacity : 0.8;
-	width   : calc( var( --ver-rhy-sma ) * 1rem );
+	width   : calc( var( --ver-rhy-m01 ) * 1rem );
 
 
 }
@@ -1309,10 +1309,10 @@
 
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
-	padding        : var( --spa-ver-xs2 ) 10px;
+	padding        : var( --spa-ver-m03 ) 10px;
 	text-transform : uppercase;
 
 
@@ -1342,7 +1342,7 @@
 
 	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
-	padding       : var( --spa-ver-xs1 ) 10px;
+	padding       : var( --spa-ver-m02 ) 10px;
 
 
 }
@@ -1371,7 +1371,7 @@
 .dl-r-name { /* What: Reminder Name. Why: The reminder's name leads its row on one line. How: This sets it in medium weight, ending in an ellipsis. */
 
 
-	font-size     : var( --fon-siz-lar );
+	font-size     : var( --fon-siz-p01 );
 	font-weight   : 500;
 	min-width     : 0;
 	overflow      : hidden;
@@ -1392,7 +1392,7 @@
 
 
 	color       : var(--muted);
-	font-family : var(--font-mono);
+	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-bas );
 	text-align  : center;
 
@@ -1416,7 +1416,7 @@
 
 
 	color          : oklch(from var(--muted) l c h/0.75);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-align     : right;

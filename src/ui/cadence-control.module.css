@@ -27,7 +27,7 @@
 .cad-ctl { /* What: Cadence Control. Why: Every segmented control inside the cadence editor needs a little room below it before the next line. How: This sets the property the segmented control reads for its bottom margin. */
 
 
-	--seg-margin-bottom : var( --spa-ver-sma ); /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
+	--seg-margin-bottom : var( --spa-ver-m01 ); /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
 
 
 }
@@ -62,7 +62,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
@@ -94,7 +94,7 @@
 	font-weight     : 700;
 	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
-	line-height     : var( --ver-rhy-sma );
+	line-height     : var( --ver-rhy-m01 );
 	transition      : border-color .2s ease, color .2s ease, background .2s ease;
 	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -177,7 +177,7 @@
 	align-items : center;
 	color       : var(--muted);
 	display     : flex;
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	gap         : 8px;
 
 
@@ -203,11 +203,11 @@
 	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : var(--r-sm);
 	color         : var(--text);
-	font-family   : var(--font-sans);
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
-	margin-top    : var( --spa-ver-xs6 );
-	max-width     : calc( var( --ver-rhy-xl10 ) * 1rem );
+	font-family   : var(--fon-fam-mai);
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );
+	margin-top    : var( --spa-ver-m07 );
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
 	padding       : 0 12px;
 	transition    : border-color .12s;

@@ -51,8 +51,8 @@
 
 	--flourish-color : oklch(from var(--accent) calc(l + 0.3) c h); /* What: Flourish Color. Why: The accent itself read as too loud at these sizes for a background decoration. How: This lightens the accent rather than fading it, so each glyph's own random opacity stays the only thing controlling how faint it is. */
 	color            : var(--flourish-color);
-	font-family      : var(--font-mono);
-	line-height      : var( --ver-rhy-sma );
+	font-family      : var(--fon-fam-sec);
+	line-height      : var( --ver-rhy-m01 );
 	position         : absolute;
 	user-select      : none;
 

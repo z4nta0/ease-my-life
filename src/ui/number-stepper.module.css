@@ -26,7 +26,7 @@
 	border-radius : 999px;
 	display       : inline-flex;
 	gap           : 4px;
-	padding       : var( --spa-ver-xs5 ) 3px;
+	padding       : var( --spa-ver-m06 ) 3px;
 
 
 }
@@ -42,13 +42,13 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	font-family     : var(--font-mono);
-	font-size       : var( --fon-siz-lar );
-	height          : calc( var( --ver-rhy-lar ) * 1rem );
+	font-family     : var(--fon-fam-sec);
+	font-size       : var( --fon-siz-p01 );
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content : center;
-	line-height     : var( --ver-rhy-sma );
+	line-height     : var( --ver-rhy-m01 );
 	transition      : color .12s, background .12s;
-	width           : calc( var( --ver-rhy-lar ) * 1rem );
+	width           : calc( var( --ver-rhy-p01 ) * 1rem );
 
 
 }
@@ -90,8 +90,8 @@
 	background      : transparent;
 	border          : 0;
 	color           : var(--text);
-	font-family     : var(--font-mono);
-	font-size       : var( --fon-siz-lar );
+	font-family     : var(--fon-fam-sec);
+	font-size       : var( --fon-siz-p01 );
 	font-weight     : 600;
 	outline         : none;
 	padding         : 0;

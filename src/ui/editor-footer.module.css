@@ -29,7 +29,7 @@
 	display         : flex;
 	gap             : 8px;
 	justify-content : space-between;
-	margin          : var(--rem-inline-foot-margin, var( --spa-ver-lar ) 0 0); /* What: Footer Margin. Why: A full-bleed editor pulls the footer out to its edges and drops the gap above it. How: A parent sets --rem-inline-foot-margin, falling back to a large vertical spacing gap above. */
+	margin          : var(--rem-inline-foot-margin, var( --spa-ver-p01 ) 0 0); /* What: Footer Margin. Why: A full-bleed editor pulls the footer out to its edges and drops the gap above it. How: A parent sets --rem-inline-foot-margin, falling back to a large vertical spacing gap above. */
 	padding         : var(--rem-inline-foot-padding, 0); /* What: Footer Padding. Why: A full-bleed footer needs its buttons pulled back in from the edges and clear of the divider. How: A parent sets --rem-inline-foot-padding, falling back to none. */
 
 
@@ -59,7 +59,7 @@
 
 
 	color     : var(--text);
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 	text-wrap : pretty;
 
 

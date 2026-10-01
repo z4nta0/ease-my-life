@@ -25,11 +25,11 @@
 	border-radius        : 999px;
 	display              : var(--btn-display, inline-flex); /* What: Button Display. Why: A button that only belongs at some widths, like Today's footer Edit Mode button, is hidden by its caller. How: A caller sets --btn-display on the button, falling back to the normal inline flex. */
 	flex                 : var(--btn-flex, 0 1 auto); /* What: Button Flex. Why: Some rows need their buttons to keep their size instead of shrinking. How: A parent sets --btn-flex, falling back to the normal flex sizing. */
-	font-size            : var( --fon-siz-lar );
+	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : var(--btn-font-variant-numeric, inherit); /* What: Button Figures. Why: A button whose label counts up should keep its width steady as digits change. How: A parent sets --btn-font-variant-numeric to tabular figures, otherwise the button inherits as usual. */
 	font-weight          : 500;
 	gap                  : 7px;
-	height               : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height               : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing       : -0.005em;
 	padding              : 0 14px;
 	transition           : background .12s, color .12s, transform .08s;
@@ -69,9 +69,9 @@
 
 
 	border-radius : 999px;
-	font-size     : var( --fon-siz-lar );
+	font-size     : var( --fon-siz-p01 );
 	gap           : 5px;
-	height        : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height        : calc( var( --ver-rhy-p02 ) * 1rem );
 	padding       : 0 11px;
 
 

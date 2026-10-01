@@ -28,7 +28,7 @@
 .reel { /* What: Picker Reel. Why: The reel shows a window of names sliding past a fixed center line. How: This clips a full-width, capped-width window over the sliding track. */
 
 
-	max-width : calc( var( --ver-rhy-xl11 ) * 1rem );
+	max-width : calc( var( --ver-rhy-p12 ) * 1rem );
 	overflow  : hidden;
 	position  : relative;
 	width     : 100%;
@@ -69,9 +69,9 @@
 	align-items     : center;
 	color           : var(--muted);
 	display         : flex;
-	font-size       : var( --fon-siz-xl1 );
+	font-size       : var( --fon-siz-p02 );
 	font-weight     : 500;
-	height          : calc( var( --ver-rhy-xl4 ) * 1rem );
+	height          : calc( var( --ver-rhy-p05 ) * 1rem );
 	justify-content : center;
 	letter-spacing  : -0.015em;
 	padding         : 0 12px;
@@ -92,7 +92,7 @@
 
 
 	color     : var(--accent);
-	font-size : var( --fon-siz-xl1 );
+	font-size : var( --fon-siz-p02 );
 	transform : scale(1.02);
 
 
@@ -130,12 +130,12 @@
 
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	border-top     : var( --bor-wid-sma ) solid var(--border);
-	height         : calc( var( --ver-rhy-xl4 ) * 1rem );
+	height         : calc( var( --ver-rhy-p05 ) * 1rem );
 	left           : 8%;
 	pointer-events : none;
 	position       : absolute;
 	right          : 8%;
-	top            : calc( 50% - var( --ver-rhy-xl4 ) * 1rem / 2 ); /* What: Center Row Top. Why: The line must frame the middle row exactly. How: This sits the row-high band half its height above the reel's midpoint. */
+	top            : calc( 50% - var( --ver-rhy-p05 ) * 1rem / 2 ); /* What: Center Row Top. Why: The line must frame the middle row exactly. How: This sits the row-high band half its height above the reel's midpoint. */
 
 
 }
@@ -152,7 +152,7 @@
 	align-items     : center;
 	display         : flex;
 	justify-content : center;
-	min-height      : calc( var( --ver-rhy-xl6 ) * 1rem );
+	min-height      : calc( var( --ver-rhy-p07 ) * 1rem );
 	position        : relative;
 	width           : 100%;
 
@@ -163,7 +163,7 @@
 
 
 	animation      : dissolveIn 180ms ease;
-	font-size      : var( --fon-siz-xl3 );
+	font-size      : var( --fon-siz-p04 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
 	text-align     : center;
@@ -313,8 +313,8 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 2px;
-	max-height     : calc( var( --ver-rhy-xl2 ) * 1rem * 10 ); /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten spotlight rows. */
-	max-width      : calc( var( --ver-rhy-xl11 ) * 1rem );
+	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten spotlight rows. */
+	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );
 	overflow       : hidden;
 	width          : 100%;
 
@@ -326,7 +326,7 @@
 	.spot { /* What: Squeezed Picker Spotlight. Why: The list should fit a short screen. How: This lowers its maximum height. */
 
 
-		max-height : calc( var( --ver-rhy-xl2 ) * 1rem * 5.5 ); /* What: Short Spotlight Cap. Why: A short screen shows about five rows. How: This caps the list at five and a half spotlight rows. */
+		max-height : calc( var( --ver-rhy-p03 ) * 1rem * 5.5 ); /* What: Short Spotlight Cap. Why: A short screen shows about five rows. How: This caps the list at five and a half spotlight rows. */
 
 
 	}
@@ -339,8 +339,8 @@
 
 	border-radius : 8px;
 	color         : var(--muted);
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl2 ) * 1rem );
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	padding       : 0 14px;
 	text-align    : var(--spot-row-text-align, inherit); /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spot-row-text-align, falling back to the inherited alignment. */
 	text-wrap     : pretty;

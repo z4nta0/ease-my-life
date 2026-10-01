@@ -43,7 +43,7 @@
 
 
 	border-top  : var( --bor-wid-sma ) solid var(--border);
-	padding-top : var( --spa-ver-xl1 );
+	padding-top : var( --spa-ver-p02 );
 
 
 }
@@ -64,7 +64,7 @@
 	.group-section:not(:first-child) { /* What: Tighter Following Reminders Section. Why: The divider needs less room. How: This shrinks the padding above the section. */
 
 
-		padding-top : var( --spa-ver-lar );
+		padding-top : var( --spa-ver-p01 );
 
 
 	}
@@ -106,12 +106,12 @@
 	color           : var(--muted);
 	cursor          : grab;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
 	margin-left     : -4px;
 	touch-action    : none; /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
 	transition      : color .12s, background .12s;
-	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -147,7 +147,7 @@
 .group-name { /* What: Group Name. Why: The group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
 
 
-	font-size      : var( --fon-siz-xl1 );
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
 	margin         : 0;
@@ -165,7 +165,7 @@
 	align-items          : baseline;
 	color                : var(--muted);
 	display              : inline-flex;
-	font-family          : var(--font-mono);
+	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	gap                  : 4px;
@@ -224,7 +224,7 @@
 
 	background    : var(--border);
 	border-radius : 2px;
-	height        : calc( var( --ver-rhy-xs4 ) * 1rem );
+	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
 	position      : relative;
 	transition    : background .25s ease;
@@ -300,10 +300,10 @@
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	transition      : border-color .12s, color .12s, background .12s;
-	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -367,8 +367,8 @@
 	color         : oklch(0.45 0.13 50);
 	font-size     : var( --fon-siz-bas );
 	line-height   : var( --ver-rhy-bas );
-	margin        : 0 0 var( --spa-ver-xs1 );
-	padding       : var( --spa-ver-xs1 ) 12px;
+	margin        : 0 0 var( --spa-ver-m02 );
+	padding       : var( --spa-ver-m02 ) 12px;
 
 
 }
@@ -447,7 +447,7 @@
 	animation   : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display     : flex;
 	gap         : 8px;
-	padding     : var( --spa-ver-xs4 ) 2px var( --spa-ver-xs1 );
+	padding     : var( --spa-ver-m05 ) 2px var( --spa-ver-m02 );
 
 
 }
@@ -475,9 +475,9 @@
 	border-radius : var(--r-sm);
 	color         : var(--text);
 	flex          : 1;
-	font-family   : var(--font-sans);
-	font-size     : var( --fon-siz-lar );
-	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
+	font-family   : var(--fon-fam-mai);
+	font-size     : var( --fon-siz-p01 );
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
@@ -532,7 +532,7 @@
 	background                   : oklch(from var(--surface) calc(l - 0.006) c h);
 	border                       : var( --bor-wid-sma ) solid var(--border);
 	border-radius                : var(--r-md);
-	margin                       : 0 0 var( --spa-ver-xs4 );
+	margin                       : 0 0 var( --spa-ver-m05 );
 	padding                      : var( --spa-ver-bas ) 0;
 
 
@@ -585,7 +585,7 @@
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : var( --spa-ver-sma );
+	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) 18px;
 	perspective           : 800px;
 	transition            : background .15s, opacity .2s, border-color .12s;
@@ -745,7 +745,7 @@
 	from {
 
 
-		max-height : calc( var( --ver-rhy-xl7 ) * 1rem );
+		max-height : calc( var( --ver-rhy-p08 ) * 1rem );
 		opacity    : 1;
 
 
@@ -772,8 +772,8 @@
 	from {
 
 
-		margin-bottom  : var( --spa-ver-sma );
-		max-height     : calc( var( --ver-rhy-xl7 ) * 1rem );
+		margin-bottom  : var( --spa-ver-m01 );
+		max-height     : calc( var( --ver-rhy-p08 ) * 1rem );
 		opacity        : 1;
 		padding-bottom : var( --spa-ver-bas );
 		padding-top    : var( --spa-ver-bas );
@@ -813,13 +813,13 @@
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
 	transition         : background .12s, border-color .12s, color .12s;
-	width              : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -958,7 +958,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	align-items    : center;
 	color          : var(--muted);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 6px;
 	letter-spacing : 0.02em;
@@ -1002,12 +1002,12 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border         : none;
 	border-bottom  : var( --bor-wid-bas ) solid var(--border);
 	color          : var(--text);
-	font-family    : var(--font-sans);
-	font-size      : var( --fon-siz-xl1 );
+	font-family    : var(--fon-fam-mai);
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
-	padding        : var( --spa-ver-xs8 ) 0;
+	padding        : var( --spa-ver-m09 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -1046,7 +1046,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card-name { /* What: Reminder Name. Why: The reminder's name is the card's headline. How: This sets it large and medium weight. */
 
 
-	font-size      : var( --fon-siz-xl1 );
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;
@@ -1085,10 +1085,10 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	transition      : background .12s, color .12s;
-	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }
@@ -1134,7 +1134,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	flex-wrap       : wrap;
 	gap             : 16px;
 	justify-content : space-between;
-	margin          : calc( var( --spa-ver-xs4 ) * -1 ) 0 var( --spa-ver-xs4 );
+	margin          : calc( var( --spa-ver-m05 ) * -1 ) 0 var( --spa-ver-m05 );
 	padding         : var( --spa-ver-bas ) 16px;
 
 
@@ -1159,7 +1159,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	color     : var(--text);
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 
 
 }

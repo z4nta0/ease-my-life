@@ -58,8 +58,8 @@
 	display         : flex;
 	gap             : 10px;
 	justify-content : space-between;
-	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
-	padding         : var( --spa-ver-sma ) 16px;
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
+	padding         : var( --spa-ver-m01 ) 16px;
 	user-select     : none;
 
 
@@ -148,7 +148,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-name { /* What: Category Name. Why: The section's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
@@ -168,7 +168,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	align-items    : baseline;
 	color          : var(--muted);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 3px;
 	letter-spacing : 0.03em;
@@ -208,7 +208,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	color          : var(--muted);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 7px;
 	letter-spacing : 0.04em;
@@ -246,7 +246,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
-	padding     : var( --spa-ver-sma ) 14px var( --spa-ver-bas );
+	padding     : var( --spa-ver-m01 ) 14px var( --spa-ver-bas );
 	text-wrap   : pretty;
 
 
@@ -286,7 +286,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display            : flex;
 	font               : inherit;
 	gap                : 12px;
-	padding            : var( --spa-ver-sma ) 16px;
+	padding            : var( --spa-ver-m01 ) 16px;
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -336,10 +336,10 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	border         : 0;
 	border-bottom  : var( --bor-wid-bas ) solid var(--border);
 	font           : inherit;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : var( --spa-ver-xs8 ) 0;
+	padding        : var( --spa-ver-m09 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -386,7 +386,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name { /* What: Row Name. Why: A closed row leads with its conditional's name. How: This sets it in medium weight. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 
@@ -397,7 +397,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
@@ -438,8 +438,8 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	cursor             : pointer;
 	display            : inline-flex;
 	font               : inherit;
-	margin             : calc( var( --spa-ver-xs4 ) * -1 ) -4px;
-	padding            : var( --spa-ver-xs4 ) 4px;
+	margin             : calc( var( --spa-ver-m05 ) * -1 ) -4px;
+	padding            : var( --spa-ver-m05 ) 4px;
 
 
 }
@@ -481,7 +481,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	color        : oklch(0.5 0.18 25);
 	font-size    : var( --fon-siz-bas );
 	line-height  : var( --ver-rhy-bas );
-	margin       : 0 0 var( --spa-ver-sma );
+	margin       : 0 0 var( --spa-ver-m01 );
 	padding-left : 16px;
 
 
@@ -538,7 +538,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
-	max-width   : calc( var( --ver-rhy-xl10 ) * 1rem );
+	max-width   : calc( var( --ver-rhy-p11 ) * 1rem );
 	text-wrap   : pretty;
 
 

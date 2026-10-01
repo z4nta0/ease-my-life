@@ -65,11 +65,11 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-lar );
+	line-height    : var( --ver-rhy-p01 );
 	text-transform : uppercase;
 
 
@@ -121,11 +121,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-xl5 ) * 1rem );
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform 180ms ease;
-	width              : calc( var( --ver-rhy-xl5 ) * 1rem );
+	width              : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }
@@ -139,11 +139,11 @@
 @media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
 
 
-	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to xl4. */
+	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
 
 
-		height : calc( var( --ver-rhy-xl4 ) * 1rem );
-		width  : calc( var( --ver-rhy-xl4 ) * 1rem );
+		height : calc( var( --ver-rhy-p05 ) * 1rem );
+		width  : calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 	}
@@ -198,10 +198,10 @@
 .section-title { /* What: Section Title. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-xl3 );
+	font-size      : var( --fon-siz-p04 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	line-height    : var( --ver-rhy-sma );
+	line-height    : var( --ver-rhy-m01 );
 	margin         : 0;
 
 
@@ -212,7 +212,7 @@
 	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
 
 
-		font-size : var( --fon-siz-xl2 );
+		font-size : var( --fon-siz-p03 );
 
 
 	}
@@ -285,7 +285,7 @@
 	display               : grid;
 	gap                   : 32px;
 	grid-template-columns : 200px 1fr;
-	margin-top            : var( --spa-ver-xl1 );
+	margin-top            : var( --spa-ver-p02 );
 
 
 }
@@ -400,7 +400,7 @@
 .rail-kicker { /* What: Rail Kicker. Why: The rail's heading lines up with its buttons. How: This insets it like a button. */
 
 
-	padding : 0 12px var( --spa-ver-xs4 );
+	padding : 0 12px var( --spa-ver-m05 );
 
 
 }
@@ -483,13 +483,13 @@
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : flex;
-	font-size       : var( --fon-siz-lar );
+	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
 	gap             : 10px;
 	justify-content : space-between;
 	letter-spacing  : -0.005em;
-	min-height      : calc( var( --ver-rhy-xl2 ) * 1rem );
-	padding         : var( --spa-ver-xs2 ) 12px;
+	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
+	padding         : var( --spa-ver-m03 ) 12px;
 	text-align      : left;
 	transition      : background .12s, color .12s;
 	width           : 100%;
@@ -521,7 +521,7 @@
 		border        : var( --bor-wid-sma ) solid var(--border);
 		border-radius : 999px;
 		flex-shrink   : 0;
-		padding       : var( --spa-ver-xs2 ) 12px;
+		padding       : var( --spa-ver-m03 ) 12px;
 		white-space   : nowrap;
 		width         : auto;
 
@@ -606,7 +606,7 @@
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	display        : flex;
 	gap            : 12px;
-	padding-bottom : var( --spa-ver-sma );
+	padding-bottom : var( --spa-ver-m01 );
 
 
 }
@@ -615,7 +615,7 @@
 
 
 	color     : var(--muted);
-	font-size : var( --fon-siz-lar );
+	font-size : var( --fon-siz-p01 );
 	margin    : 0;
 
 
@@ -646,7 +646,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
@@ -687,7 +687,7 @@
 .set-data-row:first-child { /* What: First Settings Row. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
 
 
-	padding-top : var( --spa-ver-xs4 );
+	padding-top : var( --spa-ver-m05 );
 
 
 }
@@ -695,7 +695,7 @@
 
 
 	border-bottom  : 0;
-	padding-bottom : var( --spa-ver-xs4 );
+	padding-bottom : var( --spa-ver-m05 );
 
 
 }
@@ -760,7 +760,7 @@
 .set-data-name { /* What: Row Name. Why: The row's name leads it. How: This sets it in bold body text. */
 
 
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 
 
@@ -793,7 +793,7 @@
 .set-store-ios .set-data-sub + .set-data-sub { /* What: Following Install Note Description. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
 
 
-	margin-top : var( --spa-ver-xs1 );
+	margin-top : var( --spa-ver-m02 );
 
 
 }
@@ -822,7 +822,7 @@
 .set-layout-sub { /* What: Layout Description. Why: The placement description must leave the segmented control room on one line. How: This caps it at a rhythm step. */
 
 
-	max-width : calc( var( --ver-rhy-xl8 ) * 1rem );
+	max-width : calc( var( --ver-rhy-p09 ) * 1rem );
 
 
 }
@@ -850,7 +850,7 @@
 	display    : flex;
 	flex-wrap  : wrap;
 	gap        : 6px;
-	margin-top : var( --spa-ver-xs1 );
+	margin-top : var( --spa-ver-m02 );
 
 
 }
@@ -864,10 +864,10 @@
 	border-radius  : 999px;
 	color          : var(--muted);
 	display        : inline-flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 4px;
-	height         : calc( var( --ver-rhy-lar ) * 1rem );
+	height         : calc( var( --ver-rhy-p01 ) * 1rem );
 	letter-spacing : 0.01em;
 	padding        : 0 8px;
 	white-space    : nowrap;
@@ -902,7 +902,7 @@
 
 	animation  : importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both;
 	font-size  : var( --fon-siz-bas );
-	margin-top : var( --spa-ver-xs6 );
+	margin-top : var( --spa-ver-m07 );
 
 
 }
@@ -987,7 +987,7 @@
 	background    : var(--border);
 	border-radius : 999px;
 	flex          : 0 0 auto;
-	height        : calc( var( --ver-rhy-lar ) * 1rem );
+	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
 	transition    : background .15s;
 	width         : 36px;
@@ -1022,9 +1022,9 @@
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	left          : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : calc( ( var( --ver-rhy-lar ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	transition    : transform .15s;
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -1033,7 +1033,7 @@
 .switch[aria-pressed="true"] i { /* What: On Switch Knob. Why: An enabled switch has its knob at the right. How: This slides it by the track width minus the track height, which leaves the same inset on the right as on the left. */
 
 
-	transform : translateX( calc( 36px - var( --ver-rhy-lar ) * 1rem ) );
+	transform : translateX( calc( 36px - var( --ver-rhy-p01 ) * 1rem ) );
 
 
 }
@@ -1061,11 +1061,11 @@
 	border-radius        : var(--r-sm);
 	color                : var(--text);
 	flex                 : 0 0 130px;
-	font-family          : var(--font-sans);
-	font-size            : var( --fon-siz-lar );
+	font-family          : var(--fon-fam-mai);
+	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
-	height               : calc( var( --ver-rhy-xl3 ) * 1rem );
-	margin-top           : var( --spa-ver-xs6 );
+	height               : calc( var( --ver-rhy-p04 ) * 1rem );
+	margin-top           : var( --spa-ver-m07 );
 	max-width            : 360px;
 	outline              : none;
 	padding              : 0 12px;
@@ -1173,10 +1173,10 @@
 	color          : var(--text);
 	display        : inline-flex;
 	flex           : 0 0 auto;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	gap            : 5px;
-	height         : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : -0.005em;
 	padding        : 0 11px;
 	transition     : background .12s, color .12s, transform .08s;
@@ -1243,7 +1243,7 @@
 .set-about-name { /* What: About Name. Why: The app's name leads the block. How: This sets it large and bold. */
 
 
-	font-size      : var( --fon-siz-xl1 );
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 600;
 	letter-spacing : -0.015em;
 
@@ -1256,7 +1256,7 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
 

@@ -26,7 +26,7 @@
 .card--p { /* What: Padded Card Surface. Why: Most cards hold loose content that needs breathing room from the edge, while a few lay out their own full-bleed rows. How: This adds the standard inner padding when CarSurCom's isaPadBoo is on. */
 
 
-	padding : var( --spa-ver-lar ) 20px;
+	padding : var( --spa-ver-p01 ) 20px;
 
 
 }

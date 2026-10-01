@@ -35,7 +35,7 @@
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : var( --spa-ver-sma );
+	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) 18px;
 	perspective           : 800px;
 	transition            : background .15s, opacity .2s, border-color .12s;
@@ -238,11 +238,11 @@
 	color           : var(--muted);
 	cursor          : grab;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
 	touch-action    : none;
 	transition      : color .12s, background .12s;
-	width           : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -294,13 +294,13 @@
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
 	transition         : background .12s, border-color .12s, color .12s;
-	width              : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -482,7 +482,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	align-items    : center;
 	color          : var(--muted);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 6px;
 	letter-spacing : 0.04em;
@@ -546,12 +546,12 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border         : none;
 	border-bottom  : var( --bor-wid-bas ) solid var(--border);
 	color          : var(--text);
-	font-family    : var(--font-sans);
-	font-size      : var( --fon-siz-xl1 );
+	font-family    : var(--fon-fam-mai);
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	margin         : 0;
-	padding        : var( --spa-ver-xs8 ) 0;
+	padding        : var( --spa-ver-m09 ) 0;
 	transition     : border-color .12s;
 	width          : 100%;
 
@@ -590,7 +590,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card-name { /* What: Entry Name. Why: The entry's name is the card's headline. How: This sets it large and medium weight. */
 
 
-	font-size      : var( --fon-siz-xl1 );
+	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;
@@ -637,10 +637,10 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	transition      : background .12s, color .12s;
-	width           : calc( var( --ver-rhy-xl2 ) * 1rem );
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
 }

@@ -21,7 +21,7 @@
 .help-nav-item + .help-nav-item { /* What: Following Help Nav Item. Why: Each button's block in a tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
 
 
-	margin-top : var( --spa-ver-sma );
+	margin-top : var( --spa-ver-m01 );
 
 
 }
@@ -34,7 +34,7 @@
 	align-items : center;
 	display     : flex;
 	gap         : 6px;
-	margin      : 0 0 var( --spa-ver-xs5 );
+	margin      : 0 0 var( --spa-ver-m06 );
 
 
 }
@@ -68,7 +68,7 @@
 .help-inline-icon svg { /* What: Help Inline Icon Glyph. Why: Even centered on the line, the glyph reads slightly low against the text beside it. How: This nudges the icon up inside its centered box, where a negative extra small 3 vertical margin lifts it a couple of pixels. */
 
 
-	margin-top : calc( var( --spa-ver-xs3 ) * -1 );
+	margin-top : calc( var( --spa-ver-m04 ) * -1 );
 
 
 }

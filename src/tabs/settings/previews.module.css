@@ -33,7 +33,7 @@
 	border-top : var( --bor-wid-sma ) solid var(--border);
 	display    : block;
 	overflow   : hidden;
-	padding    : var( --spa-ver-lar ) 18px;
+	padding    : var( --spa-ver-p01 ) 18px;
 	position   : relative;
 
 
@@ -69,7 +69,7 @@
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : var( --spa-ver-sma );
+	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) 18px;
 	perspective           : 800px;
 	transition            : background .15s, opacity .2s, border-color .12s;
@@ -129,13 +129,13 @@
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
 	transition         : background .12s, border-color .12s, color .12s;
-	width              : calc( var( --ver-rhy-xl1 ) * 1rem );
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
 }
@@ -184,7 +184,7 @@
 	align-items    : center;
 	color          : var(--muted);
 	display        : flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 6px;
 	letter-spacing : 0.04em;
@@ -197,7 +197,7 @@
 
 
 	color                     : var(--muted);
-	font-size                 : var( --fon-siz-xl1 );
+	font-size                 : var( --fon-siz-p02 );
 	font-weight               : 500;
 	letter-spacing            : -0.01em;
 	text-decoration           : line-through;
@@ -248,8 +248,8 @@
 
 	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global Twinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var(--accent);
-	font-size   : var( --fon-siz-xl1 );
-	line-height : var( --ver-rhy-sma );
+	font-size   : var( --fon-siz-p02 );
+	line-height : var( --ver-rhy-m01 );
 	opacity     : 0;
 	position    : absolute;
 	transform   : translate(-50%, -50%) scale(0.4);
@@ -272,7 +272,7 @@
 	align-items           : center;
 	display               : flex;
 	justify-content       : center;
-	min-height            : calc( var( --ver-rhy-xl8 ) * 1rem );
+	min-height            : calc( var( --ver-rhy-p09 ) * 1rem );
 	width                 : 100%;
 
 
@@ -282,8 +282,8 @@
 
 
 	color       : var(--accent);
-	font-family : var(--font-mono);
-	font-size   : var( --fon-siz-lar );
+	font-family : var(--fon-fam-sec);
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 
 

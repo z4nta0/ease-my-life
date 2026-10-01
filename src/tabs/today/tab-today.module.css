@@ -45,7 +45,7 @@
 
 	background    : var(--bg);
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
-	padding       : var( --spa-ver-xl1 ) 20px var( --spa-ver-xl1 );
+	padding       : var( --spa-ver-p02 ) 20px var( --spa-ver-p02 );
 	position      : sticky;
 	top           : 0;
 	z-index       : 20;
@@ -76,7 +76,7 @@
 	gap             : 20px;
 	justify-content : space-between;
 	margin          : 0 auto;
-	max-width       : calc( var( --ver-rhy-xl14 ) * 1rem );
+	max-width       : calc( var( --ver-rhy-p15 ) * 1rem );
 
 
 }
@@ -115,11 +115,11 @@
 
 
 	color          : var(--muted);
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
 	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-xl1 );
+	line-height    : var( --ver-rhy-p02 );
 	text-transform : uppercase;
 
 
@@ -176,10 +176,10 @@
 	border-radius  : 999px;
 	color          : var(--muted);
 	display        : inline-flex;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	gap            : 6px;
-	height         : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.08em;
 	padding        : 0 10px;
 	text-transform : uppercase;
@@ -433,7 +433,7 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-xl5 ) * 1rem );
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform 180ms ease;
@@ -483,10 +483,10 @@
 	align-items    : center;
 	display        : grid;
 	flex           : 1 1 auto;
-	font-size      : var( --fon-siz-xl3 );
+	font-size      : var( --fon-siz-p04 );
 	font-weight    : 500;
 	letter-spacing : -0.03em;
-	line-height    : var( --ver-rhy-sma );
+	line-height    : var( --ver-rhy-m01 );
 	margin         : 0;
 	min-width      : 0;
 
@@ -498,7 +498,7 @@
 	.today-title { /* What: Smaller Today Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
 
 
-		font-size : var( --fon-siz-xl2 );
+		font-size : var( --fon-siz-p03 );
 
 
 	}
@@ -682,10 +682,10 @@
 
 
 	flex        : 0 0 auto;
-	height      : calc( var( --ver-rhy-xl5 ) * 1rem );
+	height      : calc( var( --ver-rhy-p06 ) * 1rem );
 	margin-left : auto;
 	position    : relative;
-	width       : calc( var( --ver-rhy-xl5 ) * 1rem );
+	width       : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 }
@@ -798,12 +798,12 @@
 
 	align-items          : center;
 	display              : flex;
-	font-family          : var(--font-mono);
+	font-family          : var(--fon-fam-sec);
 	font-variant-numeric : tabular-nums;
 	gap                  : 2px;
 	inset                : 0;
 	justify-content      : center;
-	line-height          : var( --ver-rhy-sma );
+	line-height          : var( --ver-rhy-m01 );
 	position             : absolute;
 
 
@@ -812,10 +812,10 @@
 .ring-num { /* What: Ring Count. Why: The done count leads the fraction. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-xl2 );
+	font-size      : var( --fon-siz-p03 );
 	font-weight    : 500;
 	letter-spacing : -0.04em;
-	line-height    : var( --ver-rhy-sma );
+	line-height    : var( --ver-rhy-m01 );
 
 
 }
@@ -927,7 +927,7 @@
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-sma );
+	line-height : var( --ver-rhy-m01 );
 
 
 }
@@ -1120,8 +1120,8 @@
 
 
 	margin    : 0 auto;
-	max-width : calc( var( --ver-rhy-xl14 ) * 1rem );
-	padding   : var( --spa-ver-lar ) 20px 0;
+	max-width : calc( var( --ver-rhy-p15 ) * 1rem );
+	padding   : var( --spa-ver-p01 ) 20px 0;
 	position  : relative;
 
 
@@ -1153,8 +1153,8 @@
 	display         : flex;
 	gap             : 16px;
 	justify-content : space-between;
-	margin          : 0 0 var( --spa-ver-lar );
-	padding         : var( --spa-ver-sma ) 16px;
+	margin          : 0 0 var( --spa-ver-p01 );
+	padding         : var( --spa-ver-m01 ) 16px;
 	position        : sticky;
 	top             : calc(var(--today-h-h, 140px) + 8px);
 	z-index         : 60;
@@ -1219,11 +1219,11 @@
 	from {
 
 
-		margin-bottom  : var( --spa-ver-lar );
-		max-height     : calc( var( --ver-rhy-xl8 ) * 1rem );
+		margin-bottom  : var( --spa-ver-p01 );
+		max-height     : calc( var( --ver-rhy-p09 ) * 1rem );
 		opacity        : 1;
-		padding-bottom : var( --spa-ver-sma );
-		padding-top    : var( --spa-ver-sma );
+		padding-bottom : var( --spa-ver-m01 );
+		padding-top    : var( --spa-ver-m01 );
 		transform      : translateY(0);
 
 
@@ -1253,7 +1253,7 @@
 	align-items : center;
 	color       : var(--accent);
 	display     : inline-flex;
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 	gap         : 9px;
 
@@ -1389,8 +1389,8 @@
 .rail-kicker { /* What: Rail Kicker. Why: The rail's heading lines up with its buttons and keeps the kicker's usual line height, since only the date row beside the streak chip needs the taller one. How: This insets it like a button and restores the large rhythm line height. */
 
 
-	line-height : var( --ver-rhy-lar );
-	padding     : 0 12px var( --spa-ver-xs4 );
+	line-height : var( --ver-rhy-p01 );
+	padding     : 0 12px var( --spa-ver-m05 );
 
 
 }
@@ -1445,13 +1445,13 @@
 	border-radius   : 8px;
 	color           : var(--muted);
 	display         : flex;
-	font-size       : var( --fon-siz-lar );
+	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
 	gap             : 10px;
 	justify-content : space-between;
 	letter-spacing  : -0.005em;
-	min-height      : calc( var( --ver-rhy-xl2 ) * 1rem );
-	padding         : var( --spa-ver-xs2 ) 12px;
+	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
+	padding         : var( --spa-ver-m03 ) 12px;
 	text-align      : left;
 	transition      : background .12s, color .12s;
 	width           : 100%;
@@ -1483,7 +1483,7 @@
 		border        : var( --bor-wid-sma ) solid var(--border);
 		border-radius : 999px;
 		flex-shrink   : 0;
-		padding       : var( --spa-ver-xs2 ) 12px;
+		padding       : var( --spa-ver-m03 ) 12px;
 		white-space   : nowrap;
 
 
@@ -1537,7 +1537,7 @@
 	align-items          : baseline;
 	color                : inherit;
 	display              : inline-flex;
-	font-family          : var(--font-mono);
+	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 	gap                  : 1px;
@@ -1568,7 +1568,7 @@
 
 
 	border-top  : var( --bor-wid-bas ) dashed var(--border);
-	margin-top  : var( --spa-ver-sma );
+	margin-top  : var( --spa-ver-m01 );
 	padding-top : var( --spa-ver-bas );
 
 
@@ -1600,7 +1600,7 @@
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 600;
 	gap             : 8px;
-	height          : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	letter-spacing  : -0.005em;
 	padding         : 0 12px;
@@ -1708,8 +1708,8 @@
 
 	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global sparkleTwinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var(--accent);
-	font-size   : var( --fon-siz-xl1 );
-	line-height : var( --ver-rhy-sma );
+	font-size   : var( --fon-siz-p02 );
+	line-height : var( --ver-rhy-m01 );
 	opacity     : 0;
 	position    : absolute;
 	transform   : translate(-50%, -50%) scale(0.4);
@@ -1763,7 +1763,7 @@
 
 
 	border-top  : var( --bor-wid-sma ) solid var(--border);
-	padding-top : var( --spa-ver-xl1 );
+	padding-top : var( --spa-ver-p02 );
 
 
 }
@@ -1773,7 +1773,7 @@
 	.groups-dnd > .group-section:not(:first-child) { /* What: Tighter Following Group Section. Why: The narrow list needs less room above each divider. How: This trims the space to large vertical spacing. */
 
 
-		padding-top : var( --spa-ver-lar );
+		padding-top : var( --spa-ver-p01 );
 
 
 	}
@@ -1833,7 +1833,7 @@
 	flex-direction : column;
 	gap            : 6px;
 	margin-bottom  : var( --spa-ver-bas );
-	padding        : var( --spa-ver-lar ) 16px;
+	padding        : var( --spa-ver-p01 ) 16px;
 	text-align     : center;
 
 
@@ -1939,9 +1939,9 @@
 	border-radius   : 11px;
 	color           : var(--accent);
 	display         : flex;
-	height          : calc( var( --ver-rhy-xl3 ) * 1rem );
+	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : center;
-	width           : calc( var( --ver-rhy-xl3 ) * 1rem );
+	width           : calc( var( --ver-rhy-p04 ) * 1rem );
 
 
 }
@@ -1949,7 +1949,7 @@
 .ob-create b { /* What: Onboarding Card Heading. Why: The card's bold line reads as its heading. How: This sets it a size up in semibold. */
 
 
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 
 
@@ -1961,7 +1961,7 @@
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
-	margin      : 0 0 var( --spa-ver-xs2 );
+	margin      : 0 0 var( --spa-ver-m03 );
 	max-width   : var( --tex-wid-sma );
 
 
@@ -2002,10 +2002,10 @@
 	align-items    : center;
 	border-radius  : 999px;
 	display        : inline-flex;
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	gap            : 7px;
-	height         : calc( var( --ver-rhy-xl2 ) * 1rem );
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.005em;
 	padding        : 0 14px;
 	transition     : background .12s, color .12s, transform .08s;
@@ -2023,9 +2023,9 @@
 
 
 	border-radius : 999px;
-	font-size     : var( --fon-siz-lar );
+	font-size     : var( --fon-siz-p01 );
 	gap           : 5px;
-	height        : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height        : calc( var( --ver-rhy-p02 ) * 1rem );
 	padding       : 0 11px;
 
 
@@ -2110,7 +2110,7 @@
 	display                    : flex;
 	flex-direction             : column;
 	gap                        : 4px;
-	padding                    : var( --spa-ver-sma ) 0;
+	padding                    : var( --spa-ver-m01 ) 0;
 
 
 }
@@ -2132,7 +2132,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 10px;
-	max-width      : calc( var( --ver-rhy-xl11 ) * 1rem );
+	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );
 	text-align     : center;
 
 
@@ -2142,7 +2142,7 @@
 
 
 	color       : var(--text);
-	font-size   : var( --fon-siz-lar );
+	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
 	text-wrap   : pretty;
@@ -2204,7 +2204,7 @@
 .today-foot-actions + .today-foot-sub { /* What: Spaced Footer Note. Why: The generated time needs room below the buttons. How: This spaces it extra small 1 vertical spacing down. */
 
 
-	margin-top : var( --spa-ver-xs1 );
+	margin-top : var( --spa-ver-m02 );
 
 
 }
@@ -2212,7 +2212,7 @@
 .today-foot-sub { /* What: Footer Note. Why: When the list was generated reads as quiet metadata. How: This sets it in small uppercase mono type. */
 
 
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;

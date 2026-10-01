@@ -122,10 +122,10 @@
 
 	/* #region Border Width Tokens */
 
-	--bor-wid-sma : calc( var( --ver-rhy-xs11 ) * 1rem ); /* What: Border Width Small ~= 0.499px. Why: This is the border width for the hairline most borders use. How: This multiplies the xs11 rhythm step by 1rem, which browsers snap to whole pixels. */
-	--bor-wid-bas : calc( var( --ver-rhy-xs8 ) * 1rem );  /* What: Border Width Base ~= 1.160px. Why: This is the border width for stronger borders and controls. How: This multiplies the xs8 rhythm step by 1rem, which browsers snap to whole pixels. */
-	--bor-wid-lar : calc( var( --ver-rhy-xs6 ) * 1rem );  /* What: Border Width Large ~= 2.035px. Why: This is the border width for focus outlines and spotlight borders. How: This multiplies the xs6 rhythm step by 1rem, which browsers snap to whole pixels. */
-	--bor-wid-xl1 : calc( var( --ver-rhy-xs4 ) * 1rem );  /* What: Border Width Extra Large 1 ~= 3.571px. Why: This is the border width for the heaviest ring. How: This multiplies the xs4 rhythm step by 1rem, which browsers snap to whole pixels. */
+	--bor-wid-sma : calc( var( --ver-rhy-m12 ) * 1rem ); /* What: Border Width Small ~= 0.499px. Why: This is the border width for the hairline most borders use. How: This multiplies the m12 rhythm step by 1rem, which browsers snap to whole pixels. */
+	--bor-wid-bas : calc( var( --ver-rhy-m09 ) * 1rem );  /* What: Border Width Base ~= 1.160px. Why: This is the border width for stronger borders and controls. How: This multiplies the m09 rhythm step by 1rem, which browsers snap to whole pixels. */
+	--bor-wid-lar : calc( var( --ver-rhy-m07 ) * 1rem );  /* What: Border Width Large ~= 2.035px. Why: This is the border width for focus outlines and spotlight borders. How: This multiplies the m07 rhythm step by 1rem, which browsers snap to whole pixels. */
+	--bor-wid-xla : calc( var( --ver-rhy-m05 ) * 1rem );  /* What: Border Width Extra Large ~= 3.571px. Why: This is the border width for the heaviest ring. How: This multiplies the m05 rhythm step by 1rem, which browsers snap to whole pixels. */
 
 	/* #endregion Border Width Tokens */
 
@@ -174,8 +174,10 @@
 
 	/* #region Font Family Tokens */
 
-	--font-mono : 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
-	--font-sans : 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+	--fon-fam-br1 : 'Shantell Sans', var( --fon-fam-mai );                        /* What: Font Family Brand 1. Why: The main brand face sets the wordmark's lead word. How: This names Shantell Sans, falling back to the main font. */
+	--fon-fam-br2 : 'Quicksand', var( --fon-fam-mai );                            /* What: Font Family Brand 2. Why: The second brand face completes the wordmark. How: This names Quicksand, falling back to the main font. */
+	--fon-fam-mai : 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif; /* What: Font Family Main. Why: Body text and most of the interface share one main face. How: This names Geist, falling back to the system sans-serif stack. */
+	--fon-fam-sec : 'Geist Mono', ui-monospace, SFMono-Regular, monospace;        /* What: Font Family Secondary. Why: Numbers, captions, and chips read as quieter supporting text in a second face. How: This names Geist Mono, falling back to the system monospace stack. */
 
 	/* #endregion Font Family Tokens */
 
@@ -184,12 +186,12 @@
 	/* #region Font Size Tokens */
 
 	--fon-siz-bas : 1rem; /* What: Font Size Base ~= 11px. Why: This is the smallest font size accessibility tools accept, and every other step multiplies it; html sets 1rem to 11px by default. How: Each step above reads it as its starting point. */
-	--fon-siz-lar : calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) ); /* What: Font Size Large ~= 14.572px. Why: This is one step up the scale from the base. How: This multiplies the base by the first power of the core design number. */
-	--fon-siz-xl1 : calc( var( --fon-siz-bas ) * var( --cdn-pow-002 ) ); /* What: Font Size Extra Large 1 ~= 19.304px. Why: This is two steps up the scale from the base. How: This multiplies the base by the second power of the core design number. */
-	--fon-siz-xl2 : calc( var( --fon-siz-bas ) * var( --cdn-pow-003 ) ); /* What: Font Size Extra Large 2 ~= 25.572px. Why: This is three steps up the scale from the base. How: This multiplies the base by the third power of the core design number. */
-	--fon-siz-xl3 : calc( var( --fon-siz-bas ) * var( --cdn-pow-004 ) ); /* What: Font Size Extra Large 3 ~= 33.876px. Why: This is four steps up the scale from the base. How: This multiplies the base by the fourth power of the core design number. */
-	--fon-siz-xl4 : calc( var( --fon-siz-bas ) * var( --cdn-pow-005 ) ); /* What: Font Size Extra Large 4 ~= 44.876px. Why: This is five steps up the scale from the base. How: This multiplies the base by the fifth power of the core design number. */
-	--fon-siz-xl5 : calc( var( --fon-siz-bas ) * var( --cdn-pow-006 ) ); /* What: Font Size Extra Large 5 ~= 59.447px. Why: This is six steps up the scale from the base. How: This multiplies the base by the sixth power of the core design number. */
+	--fon-siz-p01 : calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) ); /* What: Font Size Base Plus 1 ~= 14.572px. Why: This is one step up the scale from the base. How: This multiplies the base by the first power of the core design number. */
+	--fon-siz-p02 : calc( var( --fon-siz-bas ) * var( --cdn-pow-002 ) ); /* What: Font Size Base Plus 2 ~= 19.304px. Why: This is two steps up the scale from the base. How: This multiplies the base by the second power of the core design number. */
+	--fon-siz-p03 : calc( var( --fon-siz-bas ) * var( --cdn-pow-003 ) ); /* What: Font Size Base Plus 3 ~= 25.572px. Why: This is three steps up the scale from the base. How: This multiplies the base by the third power of the core design number. */
+	--fon-siz-p04 : calc( var( --fon-siz-bas ) * var( --cdn-pow-004 ) ); /* What: Font Size Base Plus 4 ~= 33.876px. Why: This is four steps up the scale from the base. How: This multiplies the base by the fourth power of the core design number. */
+	--fon-siz-p05 : calc( var( --fon-siz-bas ) * var( --cdn-pow-005 ) ); /* What: Font Size Base Plus 5 ~= 44.876px. Why: This is five steps up the scale from the base. How: This multiplies the base by the fifth power of the core design number. */
+	--fon-siz-p06 : calc( var( --fon-siz-bas ) * var( --cdn-pow-006 ) ); /* What: Font Size Base Plus 6 ~= 59.447px. Why: This is six steps up the scale from the base. How: This multiplies the base by the sixth power of the core design number. */
 
 	/* #endregion Font Size Tokens */
 
@@ -242,23 +244,23 @@
 
 	/* #region Spacing Tokens */
 
-	--spa-ver-xs8 : calc( var( --ver-rhy-xs8 ) * 1rem ); /* What: Spacing Vertical Extra Small 8 ~= 1.160px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs8 rhythm step by 1rem. */
-	--spa-ver-xs7 : calc( var( --ver-rhy-xs7 ) * 1rem ); /* What: Spacing Vertical Extra Small 7 ~= 1.537px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs7 rhythm step by 1rem. */
-	--spa-ver-xs6 : calc( var( --ver-rhy-xs6 ) * 1rem ); /* What: Spacing Vertical Extra Small 6 ~= 2.035px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs6 rhythm step by 1rem. */
-	--spa-ver-xs5 : calc( var( --ver-rhy-xs5 ) * 1rem ); /* What: Spacing Vertical Extra Small 5 ~= 2.696px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs5 rhythm step by 1rem. */
-	--spa-ver-xs4 : calc( var( --ver-rhy-xs4 ) * 1rem ); /* What: Spacing Vertical Extra Small 4 ~= 3.571px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs4 rhythm step by 1rem. */
-	--spa-ver-xs3 : calc( var( --ver-rhy-xs3 ) * 1rem ); /* What: Spacing Vertical Extra Small 3 ~= 4.731px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs3 rhythm step by 1rem. */
-	--spa-ver-xs2 : calc( var( --ver-rhy-xs2 ) * 1rem ); /* What: Spacing Vertical Extra Small 2 ~= 6.268px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs2 rhythm step by 1rem. */
-	--spa-ver-xs1 : calc( var( --ver-rhy-xs1 ) * 1rem ); /* What: Spacing Vertical Extra Small 1 ~= 8.304px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xs1 rhythm step by 1rem. */
-	--spa-ver-sma : calc( var( --ver-rhy-sma ) * 1rem ); /* What: Spacing Vertical Small = 11px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the sma rhythm step by 1rem. */
+	--spa-ver-m09 : calc( var( --ver-rhy-m09 ) * 1rem ); /* What: Spacing Vertical Base Minus 9 ~= 1.160px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m09 rhythm step by 1rem. */
+	--spa-ver-m08 : calc( var( --ver-rhy-m08 ) * 1rem ); /* What: Spacing Vertical Base Minus 8 ~= 1.537px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m08 rhythm step by 1rem. */
+	--spa-ver-m07 : calc( var( --ver-rhy-m07 ) * 1rem ); /* What: Spacing Vertical Base Minus 7 ~= 2.035px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m07 rhythm step by 1rem. */
+	--spa-ver-m06 : calc( var( --ver-rhy-m06 ) * 1rem ); /* What: Spacing Vertical Base Minus 6 ~= 2.696px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m06 rhythm step by 1rem. */
+	--spa-ver-m05 : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Spacing Vertical Base Minus 5 ~= 3.571px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m05 rhythm step by 1rem. */
+	--spa-ver-m04 : calc( var( --ver-rhy-m04 ) * 1rem ); /* What: Spacing Vertical Base Minus 4 ~= 4.731px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m04 rhythm step by 1rem. */
+	--spa-ver-m03 : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Spacing Vertical Base Minus 3 ~= 6.268px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m03 rhythm step by 1rem. */
+	--spa-ver-m02 : calc( var( --ver-rhy-m02 ) * 1rem ); /* What: Spacing Vertical Base Minus 2 ~= 8.304px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m02 rhythm step by 1rem. */
+	--spa-ver-m01 : calc( var( --ver-rhy-m01 ) * 1rem ); /* What: Spacing Vertical Base Minus 1 = 11px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m01 rhythm step by 1rem. */
 	--spa-ver-bas : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Spacing Vertical Base ~= 14.572px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the bas rhythm step by 1rem. */
-	--spa-ver-lar : calc( var( --ver-rhy-lar ) * 1rem ); /* What: Spacing Vertical Large ~= 19.304px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the lar rhythm step by 1rem. */
-	--spa-ver-xl1 : calc( var( --ver-rhy-xl1 ) * 1rem ); /* What: Spacing Vertical Extra Large 1 ~= 25.572px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xl1 rhythm step by 1rem. */
-	--spa-ver-xl2 : calc( var( --ver-rhy-xl2 ) * 1rem ); /* What: Spacing Vertical Extra Large 2 ~= 33.876px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xl2 rhythm step by 1rem. */
-	--spa-ver-xl3 : calc( var( --ver-rhy-xl3 ) * 1rem ); /* What: Spacing Vertical Extra Large 3 ~= 44.876px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xl3 rhythm step by 1rem. */
-	--spa-ver-xl4 : calc( var( --ver-rhy-xl4 ) * 1rem ); /* What: Spacing Vertical Extra Large 4 ~= 59.447px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xl4 rhythm step by 1rem. */
-	--spa-ver-xl5 : calc( var( --ver-rhy-xl5 ) * 1rem ); /* What: Spacing Vertical Extra Large 5 ~= 78.750px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xl5 rhythm step by 1rem. */
-	--spa-ver-xl6 : calc( var( --ver-rhy-xl6 ) * 1rem ); /* What: Spacing Vertical Extra Large 6 ~= 104.323px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the xl6 rhythm step by 1rem. */
+	--spa-ver-p01 : calc( var( --ver-rhy-p01 ) * 1rem ); /* What: Spacing Vertical Base Plus 1 ~= 19.304px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p01 rhythm step by 1rem. */
+	--spa-ver-p02 : calc( var( --ver-rhy-p02 ) * 1rem ); /* What: Spacing Vertical Base Plus 2 ~= 25.572px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p02 rhythm step by 1rem. */
+	--spa-ver-p03 : calc( var( --ver-rhy-p03 ) * 1rem ); /* What: Spacing Vertical Base Plus 3 ~= 33.876px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p03 rhythm step by 1rem. */
+	--spa-ver-p04 : calc( var( --ver-rhy-p04 ) * 1rem ); /* What: Spacing Vertical Base Plus 4 ~= 44.876px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p04 rhythm step by 1rem. */
+	--spa-ver-p05 : calc( var( --ver-rhy-p05 ) * 1rem ); /* What: Spacing Vertical Base Plus 5 ~= 59.447px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p05 rhythm step by 1rem. */
+	--spa-ver-p06 : calc( var( --ver-rhy-p06 ) * 1rem ); /* What: Spacing Vertical Base Plus 6 ~= 78.750px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p06 rhythm step by 1rem. */
+	--spa-ver-p07 : calc( var( --ver-rhy-p07 ) * 1rem ); /* What: Spacing Vertical Base Plus 7 ~= 104.323px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p07 rhythm step by 1rem. */
 
 	/* #endregion Spacing Tokens */
 
@@ -275,34 +277,34 @@
 
 	/* #region Vertical Rhythm Tokens */
 
-	--ver-rhy-xs11 : var( --cdn-pow-011-rec ); /* What: Vertical Rhythm Extra Small 11 ~= 0.045. Why: This is 11 steps below the small step, for hairline widths. How: This is the reciprocal of the eleventh power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs10 : var( --cdn-pow-010-rec ); /* What: Vertical Rhythm Extra Small 10 ~= 0.060. Why: This is 10 steps below the small step, for hairline widths. How: This is the reciprocal of the tenth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs9  : var( --cdn-pow-009-rec ); /* What: Vertical Rhythm Extra Small 9 ~= 0.080. Why: This is 9 steps below the small step, for hairline widths. How: This is the reciprocal of the ninth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs8  : var( --cdn-pow-008-rec ); /* What: Vertical Rhythm Extra Small 8 ~= 0.105. Why: This is 8 steps below the small step, for the finest vertical spacing. How: This is the reciprocal of the eighth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs7  : var( --cdn-pow-007-rec ); /* What: Vertical Rhythm Extra Small 7 ~= 0.140. Why: This is 7 steps below the small step, for the finest vertical spacing. How: This is the reciprocal of the seventh power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs6  : var( --cdn-pow-006-rec ); /* What: Vertical Rhythm Extra Small 6 ~= 0.185. Why: This is 6 steps below the small step, for the finest vertical spacing. How: This is the reciprocal of the sixth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs5  : var( --cdn-pow-005-rec ); /* What: Vertical Rhythm Extra Small 5 ~= 0.245. Why: This is 5 steps below the small step, for the finest vertical spacing. How: This is the reciprocal of the fifth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs4  : var( --cdn-pow-004-rec ); /* What: Vertical Rhythm Extra Small 4 ~= 0.325. Why: This is 4 steps below the small step, for the finest vertical spacing. How: This is the reciprocal of the fourth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs3  : var( --cdn-pow-003-rec ); /* What: Vertical Rhythm Extra Small 3 ~= 0.430. Why: This is 3 steps below the small step, for the finest vertical spacing. How: This is the reciprocal of the third power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs2  : var( --cdn-pow-002-rec ); /* What: Vertical Rhythm Extra Small 2 ~= 0.570. Why: This is 2 steps below the small step, for the finest vertical spacing. How: This is the reciprocal of the second power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xs1  : var( --cdn-pow-001-rec ); /* What: Vertical Rhythm Extra Small 1 ~= 0.755. Why: This is 1 step below the small step, for tight vertical spacing. How: This is the reciprocal of the first power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-sma  : var( --cdn-pow-000 );     /* What: Vertical Rhythm Small = 1. Why: Headings and single-line elements need no breathing room between lines. How: This is read unitless as line-height, so each line is exactly its own font size tall. */
-	--ver-rhy-bas  : var( --cdn-pow-001 );     /* What: Vertical Rhythm Base ~= 1.325. Why: Line height and every other height-related value share one base rhythm drawn from the core design number. How: This is read unitless as line-height, so each element multiplies it by its own font size, and other vertical values can build on it. */
-	--ver-rhy-lar  : var( --cdn-pow-002 );     /* What: Vertical Rhythm Large ~= 1.755. Why: Small labels that share a row with a taller control, like the page kickers, need a roomier line. How: This is read unitless as line-height (about 19.3px on base-size text), or multiplied by 1rem where a fixed height is needed. */
-	--ver-rhy-xl1  : var( --cdn-pow-003 );     /* What: Vertical Rhythm Extra Large 1 ~= 2.325. Why: This is 1 step above the large step, for roomy vertical spacing. How: This is the third power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl2  : var( --cdn-pow-004 );     /* What: Vertical Rhythm Extra Large 2 ~= 3.080. Why: This is 2 steps above the large step, for the roomiest vertical spacing. How: This is the fourth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl3  : var( --cdn-pow-005 );     /* What: Vertical Rhythm Extra Large 3 ~= 4.080. Why: This is 3 steps above the large step, for the roomiest vertical spacing. How: This is the fifth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl4  : var( --cdn-pow-006 );     /* What: Vertical Rhythm Extra Large 4 ~= 5.404. Why: This is 4 steps above the large step, for the roomiest vertical spacing. How: This is the sixth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl5  : var( --cdn-pow-007 );     /* What: Vertical Rhythm Extra Large 5 ~= 7.159. Why: This is 5 steps above the large step, for the roomiest vertical spacing. How: This is the seventh power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl6  : var( --cdn-pow-008 );     /* What: Vertical Rhythm Extra Large 6 ~= 9.484. Why: This is 6 steps above the large step, for the roomiest vertical spacing. How: This is the eighth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl7  : var( --cdn-pow-009 );     /* What: Vertical Rhythm Extra Large 7 ~= 12.564. Why: This is 7 steps above the large step, for large fixed areas. How: This is the ninth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl8  : var( --cdn-pow-010 );     /* What: Vertical Rhythm Extra Large 8 ~= 16.643. Why: This is 8 steps above the large step, for large fixed areas. How: This is the tenth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl9  : var( --cdn-pow-011 );     /* What: Vertical Rhythm Extra Large 9 ~= 22.047. Why: This is 9 steps above the large step, for maximum widths. How: This is the eleventh power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl10 : var( --cdn-pow-012 );     /* What: Vertical Rhythm Extra Large 10 ~= 29.207. Why: This is 10 steps above the large step, for maximum widths. How: This is the twelfth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl11 : var( --cdn-pow-013 );     /* What: Vertical Rhythm Extra Large 11 ~= 38.691. Why: This is 11 steps above the large step, for maximum widths. How: This is the thirteenth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl12 : var( --cdn-pow-014 );     /* What: Vertical Rhythm Extra Large 12 ~= 51.254. Why: This is 12 steps above the large step, for maximum widths. How: This is the fourteenth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl13 : var( --cdn-pow-015 );     /* What: Vertical Rhythm Extra Large 13 ~= 67.897. Why: This is 13 steps above the large step, for maximum widths. How: This is the fifteenth power of the core design number, multiplied by 1rem where a length is needed. */
-	--ver-rhy-xl14 : var( --cdn-pow-016 );     /* What: Vertical Rhythm Extra Large 14 ~= 89.945. Why: This is 14 steps above the large step, for maximum widths. How: This is the sixteenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m12 : var( --cdn-pow-011-rec ); /* What: Vertical Rhythm Base Minus 12 ~= 0.045. Why: This is 12 steps below the base step, for hairline widths. How: This is the reciprocal of the eleventh power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m11 : var( --cdn-pow-010-rec ); /* What: Vertical Rhythm Base Minus 11 ~= 0.060. Why: This is 11 steps below the base step, for hairline widths. How: This is the reciprocal of the tenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m10 : var( --cdn-pow-009-rec ); /* What: Vertical Rhythm Base Minus 10 ~= 0.080. Why: This is 10 steps below the base step, for hairline widths. How: This is the reciprocal of the ninth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m09 : var( --cdn-pow-008-rec ); /* What: Vertical Rhythm Base Minus 9 ~= 0.105. Why: This is 9 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the eighth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m08 : var( --cdn-pow-007-rec ); /* What: Vertical Rhythm Base Minus 8 ~= 0.140. Why: This is 8 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the seventh power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m07 : var( --cdn-pow-006-rec ); /* What: Vertical Rhythm Base Minus 7 ~= 0.185. Why: This is 7 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the sixth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m06 : var( --cdn-pow-005-rec ); /* What: Vertical Rhythm Base Minus 6 ~= 0.245. Why: This is 6 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the fifth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m05 : var( --cdn-pow-004-rec ); /* What: Vertical Rhythm Base Minus 5 ~= 0.325. Why: This is 5 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the fourth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m04 : var( --cdn-pow-003-rec ); /* What: Vertical Rhythm Base Minus 4 ~= 0.430. Why: This is 4 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the third power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m03 : var( --cdn-pow-002-rec ); /* What: Vertical Rhythm Base Minus 3 ~= 0.570. Why: This is 3 steps below the base step, for the finest vertical spacing. How: This is the reciprocal of the second power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m02 : var( --cdn-pow-001-rec ); /* What: Vertical Rhythm Base Minus 2 ~= 0.755. Why: This is 2 steps below the base step, for tight vertical spacing. How: This is the reciprocal of the first power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-m01 : var( --cdn-pow-000 );     /* What: Vertical Rhythm Base Minus 1 = 1. Why: Headings and single-line elements need no breathing room between lines. How: This is read unitless as line-height, so each line is exactly its own font size tall. */
+	--ver-rhy-bas : var( --cdn-pow-001 );     /* What: Vertical Rhythm Base ~= 1.325. Why: Line height and every other height-related value share one base rhythm drawn from the core design number. How: This is read unitless as line-height, so each element multiplies it by its own font size, and other vertical values can build on it. */
+	--ver-rhy-p01 : var( --cdn-pow-002 );     /* What: Vertical Rhythm Base Plus 1 ~= 1.755. Why: Small labels that share a row with a taller control, like the page kickers, need a roomier line. How: This is read unitless as line-height (about 19.3px on base-size text), or multiplied by 1rem where a fixed height is needed. */
+	--ver-rhy-p02 : var( --cdn-pow-003 );     /* What: Vertical Rhythm Base Plus 2 ~= 2.325. Why: This is 2 steps above the base step, for roomy vertical spacing. How: This is the third power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p03 : var( --cdn-pow-004 );     /* What: Vertical Rhythm Base Plus 3 ~= 3.080. Why: This is 3 steps above the base step, for the roomiest vertical spacing. How: This is the fourth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p04 : var( --cdn-pow-005 );     /* What: Vertical Rhythm Base Plus 4 ~= 4.080. Why: This is 4 steps above the base step, for the roomiest vertical spacing. How: This is the fifth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p05 : var( --cdn-pow-006 );     /* What: Vertical Rhythm Base Plus 5 ~= 5.404. Why: This is 5 steps above the base step, for the roomiest vertical spacing. How: This is the sixth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p06 : var( --cdn-pow-007 );     /* What: Vertical Rhythm Base Plus 6 ~= 7.159. Why: This is 6 steps above the base step, for the roomiest vertical spacing. How: This is the seventh power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p07 : var( --cdn-pow-008 );     /* What: Vertical Rhythm Base Plus 7 ~= 9.484. Why: This is 7 steps above the base step, for the roomiest vertical spacing. How: This is the eighth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p08 : var( --cdn-pow-009 );     /* What: Vertical Rhythm Base Plus 8 ~= 12.564. Why: This is 8 steps above the base step, for large fixed areas. How: This is the ninth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p09 : var( --cdn-pow-010 );     /* What: Vertical Rhythm Base Plus 9 ~= 16.643. Why: This is 9 steps above the base step, for large fixed areas. How: This is the tenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p10 : var( --cdn-pow-011 );     /* What: Vertical Rhythm Base Plus 10 ~= 22.047. Why: This is 10 steps above the base step, for maximum widths. How: This is the eleventh power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p11 : var( --cdn-pow-012 );     /* What: Vertical Rhythm Base Plus 11 ~= 29.207. Why: This is 11 steps above the base step, for maximum widths. How: This is the twelfth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p12 : var( --cdn-pow-013 );     /* What: Vertical Rhythm Base Plus 12 ~= 38.691. Why: This is 12 steps above the base step, for maximum widths. How: This is the thirteenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p13 : var( --cdn-pow-014 );     /* What: Vertical Rhythm Base Plus 13 ~= 51.254. Why: This is 13 steps above the base step, for maximum widths. How: This is the fourteenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p14 : var( --cdn-pow-015 );     /* What: Vertical Rhythm Base Plus 14 ~= 67.897. Why: This is 14 steps above the base step, for maximum widths. How: This is the fifteenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-p15 : var( --cdn-pow-016 );     /* What: Vertical Rhythm Base Plus 15 ~= 89.945. Why: This is 15 steps above the base step, for maximum widths. How: This is the sixteenth power of the core design number, multiplied by 1rem where a length is needed. */
 
 	/* #endregion Vertical Rhythm Tokens */
 
@@ -369,9 +371,9 @@ body { /* What: Page Body Text. Why: All text starts from the app's own typeface
 	-webkit-font-smoothing  : antialiased;
 	background              : var(--bg);
 	color                   : var(--text);
-	font-family             : var(--font-sans);
+	font-family             : var(--fon-fam-mai);
 	font-feature-settings   : 'ss01', 'cv11';
-	font-size               : var( --fon-siz-lar );
+	font-size               : var( --fon-siz-p01 );
 	letter-spacing          : -0.005em;
 	line-height             : var( --ver-rhy-bas );
 
@@ -497,7 +499,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	border      : 0;
 	clip-path   : inset(50%);
 	height      : 1px;
-	margin      : calc( var( --spa-ver-xs8 ) * -1 ) -1px;
+	margin      : calc( var( --spa-ver-m09 ) * -1 ) -1px;
 	overflow    : hidden;
 	padding     : 0;
 	position    : absolute;
@@ -554,8 +556,8 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 		border-bottom-width : var( --bor-wid-sma );
 		border-top-width    : var( --bor-wid-sma );
-		margin-bottom       : var( --spa-ver-sma );
-		max-height          : calc( var( --ver-rhy-xl8 ) * 1rem );
+		margin-bottom       : var( --spa-ver-m01 );
+		max-height          : calc( var( --ver-rhy-p09 ) * 1rem );
 		opacity             : 1;
 		padding-bottom      : var( --spa-ver-bas );
 		padding-top         : var( --spa-ver-bas );
@@ -567,8 +569,8 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	50% {
 
 
-		margin-bottom  : var( --spa-ver-sma );
-		max-height     : calc( var( --ver-rhy-xl8 ) * 1rem );
+		margin-bottom  : var( --spa-ver-m01 );
+		max-height     : calc( var( --ver-rhy-p09 ) * 1rem );
 		opacity        : 0;
 		padding-bottom : var( --spa-ver-bas );
 		padding-top    : var( --spa-ver-bas );

@@ -25,10 +25,10 @@
 	border-radius   : 999px;
 	display         : inline-flex;
 	flex            : var(--pill-flex, 0 1 auto);
-	font-family     : var(--font-mono);
+	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 500;
-	height          : calc( var( --ver-rhy-lar ) * 1rem );
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content : var(--pill-justify-content, normal);
 	letter-spacing  : 0.02em;
 	margin-left     : var(--pill-margin-left, 0);

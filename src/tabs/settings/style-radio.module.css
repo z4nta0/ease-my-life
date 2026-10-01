@@ -42,7 +42,7 @@
 	border      : 0;
 	clip-path   : inset(50%);
 	height      : 1px;
-	margin      : calc( var( --spa-ver-xs8 ) * -1 ) -1px;
+	margin      : calc( var( --spa-ver-m09 ) * -1 ) -1px;
 	overflow    : hidden;
 	padding     : 0;
 	position    : absolute;
@@ -76,7 +76,7 @@
 	cursor        : pointer;
 	display       : flex;
 	gap           : 11px;
-	padding       : var( --spa-ver-sma ) 16px;
+	padding       : var( --spa-ver-m01 ) 16px;
 	position      : relative;
 	transition    : background .24s ease;
 
@@ -164,7 +164,7 @@
 	border-radius : 50%;
 	flex          : 0 0 auto;
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	margin-top    : var( --spa-ver-xs8 );
+	margin-top    : var( --spa-ver-m09 );
 	position      : relative;
 	transition    : border-color .12s;
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
@@ -221,7 +221,7 @@
 .rd-mode-name { /* What: Style Radio Name. Why: The option's name leads the row. How: This sets it in medium-weight body text. */
 
 
-	font-size      : var( --fon-siz-lar );
+	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 
@@ -327,9 +327,9 @@
 	color          : var(--accent);
 	cursor         : pointer;
 	flex           : 0 0 auto;
-	font-family    : var(--font-mono);
+	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	height         : calc( var( --ver-rhy-xl1 ) * 1rem );
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.03em;
 	margin-left    : auto;
 	padding        : 0 11px;
