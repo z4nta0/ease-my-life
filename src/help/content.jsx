@@ -574,7 +574,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
-				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
 				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -3211,7 +3211,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
-				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
 				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
@@ -3288,7 +3288,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
-				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 
 				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 

@@ -91,7 +91,7 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 
 
 		keyStr : 'interval',
-		labStr : 'Every N days',
+		labStr : 'N Days',
 		subEle : <>included in the Today page <strong>as often as specified below</strong></>
 
 
