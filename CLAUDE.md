@@ -2232,6 +2232,19 @@ still passes.
       `ch`), paragraphs use `--tex-wid-bas` (`pow-012 * 1em`, about 65
       characters) and small text `--tex-wid-sma` (`pow-011 * 1em`, about
       49).
+      - **Headings are exempt** (decided 2026-10-01): a heading is never a
+        long line of text, so it gets no text width cap; its container sets
+        its width.
+      - **A container that exists to hold reading text** (a modal, a card)
+        takes its `max-width` from its text's width plus its own horizontal
+        padding, rather than a free-standing number, e.g. `calc( var(
+        --cdn-pow-012 ) * var( --fon-siz-lar ) + 56px )` for a panel whose
+        paragraphs are set at `--fon-siz-lar` with 28px of padding on each
+        side. The text's font size is written out, since an `em` on the
+        container would resolve against the container's own font size.
+      - **Every font follows the same caps**: text in a secondary font (e.g.
+        a mono caption) still uses the main font's `--tex-wid-*` tokens,
+        which land a little differently in that font but stay close.
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
