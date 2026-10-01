@@ -2175,11 +2175,11 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 }
-.cnd-bd-freq--last { /* What: Conditional Last Fired Value. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at 50px, right-aligned. */
+.cnd-bd-freq--last { /* What: Conditional Last Fired Value. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
-	width      : 50px;
+	width      : calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 }
