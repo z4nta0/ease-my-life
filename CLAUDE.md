@@ -2221,6 +2221,16 @@ still passes.
       about 1100px, so maximum widths use the vertical rhythm, e.g.
       `max-width : calc( var( --ver-rhy-p11 ) * 1rem )`, with the steps
       above `p09` added as these caps needed them.
+    - **Horizontal spacing is its own family** (decided 2026-10-01):
+      left and right padding and margin use `--spa-hor-*` (spacing,
+      horizontal), never `--spa-ver-*`, even where the two currently hold
+      the same values, so the intent reads clearly and a project can tune
+      the two directions separately. In this project its steps mirror the
+      vertical spacing's (`m09` to `p07`, each a vertical rhythm step
+      times `1rem`), and each px value moved to its nearest step. A
+      negative margin takes the same step as the padding it cancels,
+      written `calc( var( --spa-hor-bas ) * -1 )`. The `-1px` margin of
+      the visually-hidden technique isn't spacing and stays literal.
     - **Text measure is font based** (decided 2026-10-01, also not
       specific to this project): a paragraph's `max-width` comes from the
       project's main body font, not from either rhythm. Paragraph text
