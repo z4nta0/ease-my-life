@@ -1955,48 +1955,21 @@
 
 }
 
-.ob-create p { /* What: Onboarding Card Text. Why: The explanation reads small and muted, capped so it wraps comfortably. How: This sets muted text capped at 34ch. */
+.ob-create p { /* What: Onboarding Card Text. Why: The explanation reads small and muted, capped so it wraps comfortably. How: This sets muted text capped at the small text width. */
 
 
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0 0 var( --spa-ver-xs2 );
-	max-width   : 34ch;
+	max-width   : var( --tex-wid-sma );
 
 
 }
-@container app (min-width:600px) { /* What: Wider Onboarding Card. Why: A wider app gives the text more room before it wraps. How: This applies only when the app is 600px wide or more. */
+.ob-create--norun p { /* What: No-Run Card Text. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
 
 
-	.ob-create p { /* What: Wider Onboarding Card Text. Why: The line wraps too early otherwise. How: This widens its cap to 47ch. */
-
-
-		max-width : 47ch;
-
-
-	}
-
-
-}
-@container app (min-width:760px) { /* What: Widest Onboarding Card. Why: The Today tab's main-content width gives the text still more room. How: This applies only when the app is 760px wide or more. */
-
-
-	.ob-create p { /* What: Widest Onboarding Card Text. Why: The line wraps too early otherwise. How: This widens its cap to 60ch. */
-
-
-		max-width : 60ch;
-
-
-	}
-
-
-}
-.ob-create--norun p { /* What: No-Run Card Text. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin and caps the line at 38ch. */
-
-
-	margin    : 0;
-	max-width : 38ch;
+	margin : 0;
 
 
 }

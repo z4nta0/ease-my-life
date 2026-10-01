@@ -92,7 +92,7 @@
 	color     : var(--muted);
 	font-size : var( --fon-siz-lar );
 	margin    : 0;
-	max-width : 56ch;
+	max-width : var( --tex-wid-bas );
 	text-wrap : pretty;
 
 
@@ -193,7 +193,7 @@
 
 }
 
-.stage-idle-lbl { /* What: Stage Label. Why: The figure's label reads as quiet metadata under it. How: This sets it in small uppercase muted mono type with a capped width. */
+.stage-idle-lbl { /* What: Stage Label. Why: The figure's label reads as quiet metadata under it. How: This sets it in small uppercase muted mono type, capped at the small text width. */
 
 
 	color          : var(--muted);
@@ -201,7 +201,7 @@
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
 	margin-bottom  : var( --spa-ver-xs1 );
-	max-width      : 32ch;
+	max-width      : var( --tex-wid-sma );
 	text-transform : uppercase;
 
 
@@ -331,7 +331,6 @@
 	font-size      : var( --fon-siz-xl2 );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
-	max-width      : 30ch;
 	text-wrap      : pretty;
 
 

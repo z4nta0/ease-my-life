@@ -59,7 +59,7 @@
 	border-radius : var(--r-lg);
 	box-shadow    : 0 24px 60px -20px oklch(0 0 0/0.5);
 	margin        : auto; /* What: Card Auto Margin. Why: Center alignment on the backdrop would clip a card taller than the screen at both ends with no way to scroll to it. How: Auto margins only take up free space, so the card sits centered when it fits and falls back to top-aligned, scrollable flow when it doesn't. */
-	max-width     : 400px;
+	max-width     : calc( var( --cdn-pow-012 ) * var( --fon-siz-lar ) + 60px + var( --bor-wid-sma ) * 2 ); /* What: Intro Modal Maximum Width. Why: The card should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the card's 24px of padding and the paragraphs' 6px of margin on each side, and the card's two side borders, since the box is border-box. */
 	padding       : var( --spa-ver-xl1 ) 24px var( --spa-ver-lar );
 	text-align    : left;
 	width         : 100%;

@@ -243,7 +243,7 @@
 
 	color     : var(--muted);
 	margin    : 0;
-	max-width : 52ch;
+	max-width : var( --tex-wid-bas );
 
 
 }
@@ -786,7 +786,7 @@
 .set-store-ios .set-data-sub { /* What: Install Note Description. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
 
 
-	max-width : 60ch;
+	max-width : var( --tex-wid-sma );
 
 
 }
@@ -925,7 +925,7 @@
 
 	color       : oklch(0.45 0.13 50);
 	line-height : var( --ver-rhy-bas );
-	max-width   : 52ch;
+	max-width   : var( --tex-wid-sma );
 
 
 }

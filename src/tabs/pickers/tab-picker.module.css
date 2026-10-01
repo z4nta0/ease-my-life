@@ -244,7 +244,7 @@
 
 	color     : var(--muted);
 	margin    : var( --spa-ver-lar ) 0 0;
-	max-width : 52ch;
+	max-width : var( --tex-wid-bas );
 
 
 }

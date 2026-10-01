@@ -112,7 +112,7 @@
 	display        : flex;
 	flex-direction : column;
 	max-height     : 85vh;
-	max-width      : 680px;
+	max-width      : calc( var( --cdn-pow-012 ) * var( --fon-siz-lar ) + 56px + var( --bor-wid-sma ) * 2 ); /* What: Legal Modal Maximum Width. Why: The panel should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the body's 28px of padding on each side and its two side borders, since the box is border-box. */
 	outline        : none;
 	overflow       : hidden;
 	width          : 100%;

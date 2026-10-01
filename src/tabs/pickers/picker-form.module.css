@@ -235,7 +235,7 @@
 	color     : var(--muted);
 	font-size : var( --fon-siz-lar );
 	margin    : 0;
-	max-width : 56ch;
+	max-width : var( --tex-wid-bas );
 	text-wrap : pretty;
 
 
@@ -332,7 +332,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-size   : var( --fon-siz-lar );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
-	max-width   : 60ch;
+	max-width   : var( --tex-wid-sma );
 	text-wrap   : pretty;
 
 
@@ -1060,7 +1060,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-family    : var(--font-mono);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
-	max-width      : 40ch;
+	max-width      : var( --tex-wid-sma );
 	min-width      : 0;
 
 

@@ -246,7 +246,7 @@
 
 	color     : var(--muted);
 	margin    : var( --spa-ver-lar ) 0 0;
-	max-width : 52ch;
+	max-width : var( --tex-wid-bas );
 
 
 }
@@ -774,7 +774,7 @@
 	color     : var(--muted);
 	font-size : var( --fon-siz-lar );
 	margin    : var( --spa-ver-xs1 ) 0 0;
-	max-width : 56ch;
+	max-width : var( --tex-wid-bas );
 	text-wrap : pretty;
 
 

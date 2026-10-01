@@ -321,7 +321,7 @@
 	font-size    : var( --fon-siz-bas );
 	line-height  : var( --ver-rhy-bas );
 	margin-right : auto;
-	max-width    : 46ch;
+	max-width    : var( --tex-wid-sma );
 
 
 }
