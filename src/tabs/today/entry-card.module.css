@@ -36,7 +36,7 @@
 	gap                   : 16px;
 	grid-template-columns : auto 1fr auto;
 	margin-bottom         : var( --spa-ver-m01 );
-	padding               : var( --spa-ver-bas ) 18px;
+	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
 	perspective           : 800px;
 	transition            : background .15s, opacity .2s, border-color .12s;
 	user-select           : none;

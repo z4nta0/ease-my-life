@@ -147,7 +147,7 @@
 	gap             : 2px;
 	justify-content : center;
 	left            : 50%;
-	padding         : var( --spa-ver-m03 ) 8px;
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-m02 );
 	position        : fixed;
 	right           : auto;
 	transform       : translateX(-50%);
@@ -191,7 +191,7 @@
 	flex-direction     : column;
 	gap                : 2px;
 	height             : 100dvh;
-	padding            : var( --spa-ver-p02 ) 16px;
+	padding            : var( --spa-ver-p02 ) var( --spa-hor-bas );
 	position           : sticky;
 	top                : 0;
 	width              : 220px;
@@ -209,7 +209,7 @@
 		flex-direction : column;
 		height         : 100dvh;
 		left           : 0;
-		padding        : var( --spa-ver-p02 ) 16px calc( var( --spa-ver-p02 ) + env(safe-area-inset-bottom) );
+		padding        : var( --spa-ver-p02 ) var( --spa-hor-bas ) calc( var( --spa-ver-p02 ) + env(safe-area-inset-bottom) );
 		position       : fixed;
 		top            : 0;
 		transform      : translateX(-100%);
@@ -236,7 +236,7 @@
 
 	border-bottom-width : var( --bor-wid-sma );
 	justify-content     : space-between;
-	padding             : var( --spa-ver-m01 ) max( 20px, calc( ( 100% - var( --ver-rhy-p15 ) * 1rem ) / 2 ) ); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the p15 rhythm step. How: The side padding grows to center that width, never below 20px; the other tabs' column would use the same formula with the p14 step. */
+	padding             : var( --spa-ver-m01 ) max( var( --spa-hor-p01 ), calc( ( 100% - var( --ver-rhy-p15 ) * 1rem ) / 2 ) ); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the p15 rhythm step. How: The side padding grows to center that width, never below the p01 horizontal spacing step; the other tabs' column would use the same formula with the p14 step. */
 	position            : sticky;
 	top                 : 0;
 	z-index             : 100;
@@ -453,7 +453,7 @@
 	display     : flex;
 	font-weight : 600;
 	gap         : 9px;
-	padding     : var( --spa-ver-m03 ) 10px var( --spa-ver-p01 );
+	padding     : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-p01 );
 
 
 }
@@ -464,8 +464,8 @@
 	border-right  : var( --bor-wid-sma ) solid var(--border);
 	display       : flex;
 	font-weight   : 600;
-	margin-right  : 8px;
-	padding-right : 16px;
+	margin-right  : var( --spa-hor-m02 );
+	padding-right : var( --spa-hor-bas );
 
 
 }
@@ -475,8 +475,8 @@
 	.tabbar--top .tabbar-brand { /* What: Tight Top Tab Bar Brand. Why: The brand should give the icon-only tabs more room. How: This tightens its divider spacing. */
 
 
-		margin-right  : 4px;
-		padding-right : 12px;
+		margin-right  : var( --spa-hor-m05 );
+		padding-right : var( --spa-hor-m01 );
 
 
 	}
@@ -502,7 +502,7 @@
 	flex-direction : row;
 	gap            : 11px;
 	line-height    : var( --ver-rhy-m01 );
-	padding        : var( --spa-ver-m07 ) 2px 0;
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m07 ) 0;
 	text-transform : uppercase;
 
 
@@ -659,7 +659,7 @@
 		font-size : var( --fon-siz-p01 );
 		gap       : 7px;
 		height    : calc( var( --ver-rhy-p03 ) * 1rem );
-		padding   : 0 14px;
+		padding   : 0 var( --spa-hor-bas );
 
 
 	}
@@ -674,21 +674,21 @@
 
 		gap     : 0;
 		height  : calc( var( --ver-rhy-p04 ) * 1rem );
-		padding : 0 28px;
+		padding : 0 var( --spa-hor-p02 );
 
 
 	}
 
 
 }
-@container app (max-width: 430px) { /* What: Narrowest Bottom Tab Button. Why: Around 430px and below, five buttons at 28px of side padding overflow the pill's rounded edges. How: This applies only when the app is 430px wide or less. */
+@container app (max-width: 430px) { /* What: Narrowest Bottom Tab Button. Why: Around 430px and below, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 430px wide or less. */
 
 
-	.tabbar--bottom .tabbtn { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to 20px. */
+	.tabbar--bottom .tabbtn { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to the p01 step. */
 
 
-		padding-left  : 20px;
-		padding-right : 20px;
+		padding-left  : var( --spa-hor-p01 );
+		padding-right : var( --spa-hor-p01 );
 
 
 	}
@@ -706,7 +706,7 @@
 	gap             : 12px;
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : flex-start;
-	padding         : 0 12px;
+	padding         : 0 var( --spa-hor-m01 );
 
 
 }
@@ -728,7 +728,7 @@
 	font-weight    : 500;
 	gap            : 8px;
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding        : 0 14px;
+	padding        : 0 var( --spa-hor-bas );
 
 
 }
@@ -747,7 +747,7 @@
 
 
 		gap     : 0;
-		padding : 0 8px;
+		padding : 0 var( --spa-hor-m02 );
 
 
 	}
@@ -895,8 +895,8 @@
 	overflow-x     : hidden; /* What: Explicit Horizontal Clip. Why: Setting overflow-y alone makes overflow-x compute to auto, giving main its own sideways scroll that the flourish's edge glyphs would push. How: This sets it to hidden explicitly. */
 	overflow-y     : auto;
 	padding-bottom : var( --spa-ver-p07 );
-	padding-left   : var(--main-pad-x, 20px);
-	padding-right  : var(--main-pad-x, 20px);
+	padding-left   : var( --main-pad-x, var( --spa-hor-p01 ) );
+	padding-right  : var( --main-pad-x, var( --spa-hor-p01 ) );
 	transition     : padding 0.42s cubic-bezier(.4, 0, .2, 1);
 
 
@@ -904,7 +904,7 @@
 .app[data-placement="side"] .main { /* What: Side Placement Main Area. Why: Beside a rail, the content has no bottom bar to clear and more room to pad. How: This widens its side padding and shortens its bottom padding. */
 
 
-	--main-pad-x   : 32px;
+	--main-pad-x   : var( --spa-hor-p03 );
 	padding-bottom : var( --spa-ver-p03 );
 
 
@@ -955,7 +955,7 @@
 	.app[data-placement="bottom"] .main { /* What: Roomy Main Area. Why: Wider screens read better with more margin. How: This widens the side padding and keeps room to clear the pill. */
 
 
-		--main-pad-x   : 32px;
+		--main-pad-x   : var( --spa-hor-p03 );
 		padding-bottom : var( --spa-ver-p07 );
 
 
@@ -969,7 +969,7 @@
 	.app[data-placement="side"] .main { /* What: Full-Width Main Area. Why: The content no longer shares the row with the rail. How: This returns to the standard side padding. */
 
 
-		--main-pad-x   : 20px;
+		--main-pad-x   : var( --spa-hor-p01 );
 		padding-bottom : var( --spa-ver-p03 );
 
 

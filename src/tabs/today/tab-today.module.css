@@ -45,7 +45,7 @@
 
 	background    : var(--bg);
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
-	padding       : var( --spa-ver-p02 ) 20px var( --spa-ver-p02 );
+	padding       : var( --spa-ver-p02 ) var( --spa-hor-p01 ) var( --spa-ver-p02 );
 	position      : sticky;
 	top           : 0;
 	z-index       : 20;
@@ -58,7 +58,7 @@
 	.today-h { /* What: Trimmed Today Header. Why: The narrow header needs less padding. How: This tightens its padding. */
 
 
-		padding : var( --spa-ver-bas ) 20px var( --spa-ver-bas );
+		padding : var( --spa-ver-bas ) var( --spa-hor-p01 ) var( --spa-ver-bas );
 
 
 	}
@@ -129,8 +129,8 @@
 
 
 	border-left  : var( --bor-wid-sma ) solid var(--border);
-	margin-left  : 6px;
-	padding-left : 8px;
+	margin-left  : var( --spa-hor-m03 );
+	padding-left : var( --spa-hor-m02 );
 
 
 }
@@ -181,7 +181,7 @@
 	gap            : 6px;
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.08em;
-	padding        : 0 10px;
+	padding        : 0 var( --spa-hor-m01 );
 	text-transform : uppercase;
 	transition     : background .2s, border-color .2s;
 	white-space    : nowrap;
@@ -1121,7 +1121,7 @@
 
 	margin    : 0 auto;
 	max-width : calc( var( --ver-rhy-p15 ) * 1rem );
-	padding   : var( --spa-ver-p01 ) 20px 0;
+	padding   : var( --spa-ver-p01 ) var( --spa-hor-p01 ) 0;
 	position  : relative;
 
 
@@ -1154,7 +1154,7 @@
 	gap             : 16px;
 	justify-content : space-between;
 	margin          : 0 0 var( --spa-ver-p01 );
-	padding         : var( --spa-ver-m01 ) 16px;
+	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position        : sticky;
 	top             : calc(var(--today-h-h, 140px) + 8px);
 	z-index         : 60;
@@ -1354,12 +1354,12 @@
 		border-bottom           : var( --bor-wid-sma ) solid var(--border);
 		flex-direction          : row;
 		gap                     : 6px;
-		margin                  : 0 -20px;
+		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );
 		mask-image              : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 		max-height              : none;
 		overflow-x              : auto;
 		overflow-y              : hidden;
-		padding                 : var( --spa-ver-bas ) 20px;
+		padding                 : var( --spa-ver-bas ) var( --spa-hor-p01 );
 		position                : sticky;
 		top                     : var(--today-h-h, 132px);
 		z-index                 : 18;
@@ -1390,7 +1390,7 @@
 
 
 	line-height : var( --ver-rhy-p01 );
-	padding     : 0 12px var( --spa-ver-m05 );
+	padding     : 0 var( --spa-hor-m01 ) var( --spa-ver-m05 );
 
 
 }
@@ -1451,7 +1451,7 @@
 	justify-content : space-between;
 	letter-spacing  : -0.005em;
 	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding         : var( --spa-ver-m03 ) 12px;
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 );
 	text-align      : left;
 	transition      : background .12s, color .12s;
 	width           : 100%;
@@ -1483,7 +1483,7 @@
 		border        : var( --bor-wid-sma ) solid var(--border);
 		border-radius : 999px;
 		flex-shrink   : 0;
-		padding       : var( --spa-ver-m03 ) 12px;
+		padding       : var( --spa-ver-m03 ) var( --spa-hor-m01 );
 		white-space   : nowrap;
 
 
@@ -1603,7 +1603,7 @@
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	letter-spacing  : -0.005em;
-	padding         : 0 12px;
+	padding         : 0 var( --spa-hor-m01 );
 	transition      : color .12s, border-color .12s, background .12s;
 	width           : 100%;
 
@@ -1806,7 +1806,7 @@
 .today-entry-editor { /* What: Today Item Editor. Why: An item editor opened under its card sits inset without a divider above its rows. How: This sets the --entry-editor-* properties EntEdiCom reads. */
 
 
-	--entry-editor-padding         : 0 16px var( --spa-ver-bas ); /* What: Editor Padding. Why: The editor lines up with the card above it. How: EntEdiCom reads this for its own padding. */
+	--entry-editor-padding         : 0 var( --spa-hor-bas ) var( --spa-ver-bas ); /* What: Editor Padding. Why: The editor lines up with the card above it. How: EntEdiCom reads this for its own padding. */
 	--entry-editor-rows-border-top : 0; /* What: Editor Rows Divider. Why: The card above already divides the editor. How: EntEdiCom reads this for its rows' top border. */
 
 
@@ -1833,7 +1833,7 @@
 	flex-direction : column;
 	gap            : 6px;
 	margin-bottom  : var( --spa-ver-bas );
-	padding        : var( --spa-ver-p01 ) 16px;
+	padding        : var( --spa-ver-p01 ) var( --spa-hor-bas );
 	text-align     : center;
 
 
@@ -2007,7 +2007,7 @@
 	gap            : 7px;
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.005em;
-	padding        : 0 14px;
+	padding        : 0 var( --spa-hor-bas );
 	transition     : background .12s, color .12s, transform .08s;
 
 
@@ -2026,7 +2026,7 @@
 	font-size     : var( --fon-siz-p01 );
 	gap           : 5px;
 	height        : calc( var( --ver-rhy-p02 ) * 1rem );
-	padding       : 0 11px;
+	padding       : 0 var( --spa-hor-m01 );
 
 
 }

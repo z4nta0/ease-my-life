@@ -132,7 +132,7 @@
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem * 5 + 2 * var( --spa-ver-p03 ) ); /* What: Stage Minimum. Why: The stage stays the reel's height so the buttons under it never jump. How: This fits five reel rows plus the stage's own padding. */
 	overflow        : hidden;
-	padding         : var( --spa-ver-p03 ) 20px;
+	padding         : var( --spa-ver-p03 ) var( --spa-hor-p01 );
 	position        : relative;
 
 
@@ -605,7 +605,7 @@
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : 1fr auto auto auto auto;
-	padding               : var( --spa-ver-p01 ) 16px;
+	padding               : var( --spa-ver-p01 ) var( --spa-hor-bas );
 
 
 }
@@ -808,12 +808,12 @@
 @media (max-width: 480px) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the viewport matches (max-width: 480px). */
 
 
-	.pool-name { /* What: Wrapped Pool Item Name. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it 7px left to cancel its own padding. */
+	.pool-name { /* What: Wrapped Pool Item Name. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
 
 
 		--pill-flex            : 0 0 auto;
 		--pill-justify-content : flex-start;
-		--pill-margin-left     : -7px;
+		--pill-margin-left     : calc( var( --spa-hor-m03 ) * -1 );
 		--pill-width           : auto;
 		flex-wrap              : wrap;
 
@@ -1241,7 +1241,7 @@
 	display            : flex;
 	font               : inherit;
 	gap                : 12px;
-	padding            : var( --spa-ver-m01 ) 16px;
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -1324,7 +1324,7 @@
 	--entry-editor-margin        : 0;
 	--entry-editor-padding       : 0;
 	border-top                   : var( --bor-wid-sma ) solid var(--border);
-	padding                      : var( --spa-ver-m07 ) 16px var( --spa-ver-bas );
+	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );
 
 
 }
@@ -1349,7 +1349,7 @@
 	gap             : 6px;
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : center;
-	padding         : 0 14px;
+	padding         : 0 var( --spa-hor-bas );
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
 	width           : 100%;
 

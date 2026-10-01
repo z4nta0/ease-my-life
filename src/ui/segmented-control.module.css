@@ -38,7 +38,7 @@
 	justify-content : space-between;
 	margin-bottom   : var(--seg-margin-bottom, 0); /* What: Segmented Control Bottom Margin. Why: The cadence editor wants room below its controls. How: A parent sets --seg-margin-bottom, falling back to none. */
 	max-width       : var(--seg-max-width, none); /* What: Segmented Control Max Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-width, falling back to no limit. */
-	padding         : var( --spa-ver-m05 ) 4px;
+	padding         : var( --spa-ver-m05 ) var( --spa-hor-m05 );
 	position        : relative;
 
 
@@ -91,7 +91,7 @@
 	font-size     : var( --fon-siz-p01 );
 	font-weight   : 500;
 	min-height    : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding       : var( --spa-ver-m03 ) 14px;
+	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );
 	position      : relative;
 	transition    : background .12s, color .12s;
 	z-index       : 1;

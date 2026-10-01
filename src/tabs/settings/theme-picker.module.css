@@ -314,7 +314,7 @@
 	letter-spacing : 0.05em;
 	max-width      : calc(100% - 20px);
 	outline        : none;
-	padding        : var( --spa-ver-m09 ) 4px;
+	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 );
 	position       : absolute;
 	text-transform : uppercase;
 	width          : 100px;

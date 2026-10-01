@@ -388,7 +388,7 @@
 	gap            : 7px;
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
-	padding        : 0 13px;
+	padding        : 0 var( --spa-hor-bas );
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 
@@ -438,7 +438,7 @@
 	height               : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content      : center;
 	min-width            : 18px;
-	padding              : 0 6px;
+	padding              : 0 var( --spa-hor-m03 );
 	text-align           : center;
 
 
@@ -525,7 +525,7 @@
 	flex-shrink       : 0;
 	gap               : 1px;
 	min-width         : 132px;
-	padding           : var( --spa-ver-m01 ) 16px;
+	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	scroll-snap-align : start;
 	text-align        : left;
 	transition        : border-color .12s, background .12s;

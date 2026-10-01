@@ -55,7 +55,7 @@
 	font-size      : var( --fon-siz-bas );
 	line-height    : var( --ver-rhy-bas );
 	max-width      : calc( var( --ver-rhy-p10 ) * 1rem );
-	padding        : var( --spa-ver-m02 ) 11px;
+	padding        : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 	pointer-events : none;
 	position       : fixed;
 	text-wrap      : pretty;

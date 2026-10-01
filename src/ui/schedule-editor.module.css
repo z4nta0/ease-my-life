@@ -70,7 +70,7 @@
 .rem-editor--stacked .rem-field { /* What: Stacked Schedule Field. Why: Each field on Today needs room around it inside the card. How: This pads the field on every side. */
 
 
-	padding : var( --spa-ver-m01 ) 16px;
+	padding : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 
 }
@@ -108,9 +108,9 @@
 	flex-direction          : row;
 	flex-wrap               : wrap;
 	justify-content         : space-between;
-	margin                  : 0 -16px;
+	margin                  : 0 calc( var( --spa-hor-bas ) * -1 );
 	min-height              : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding                 : var( --spa-ver-m03 ) 16px;
+	padding                 : var( --spa-ver-m03 ) var( --spa-hor-bas );
 	row-gap                 : 8px;
 
 
@@ -295,7 +295,7 @@
 	color          : var(--text);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	padding        : var( --spa-ver-m07 ) 6px;
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );
 	vertical-align : baseline;
 
 
@@ -400,7 +400,7 @@
 	margin-top    : var( --spa-ver-m07 );
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
-	padding       : 0 12px;
+	padding       : 0 var( --spa-hor-m01 );
 	transition    : border-color .12s;
 	width         : 100%;
 

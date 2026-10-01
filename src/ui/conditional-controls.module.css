@@ -59,7 +59,7 @@
 	border-top : var( --bor-wid-sma ) solid var(--border);
 	gap        : 6px;
 	margin     : 0;
-	padding    : var( --spa-ver-m01 ) 16px;
+	padding    : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 
 }
@@ -128,7 +128,7 @@
 	margin-top    : var( --spa-ver-m07 );
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
-	padding       : 0 12px;
+	padding       : 0 var( --spa-hor-m01 );
 	transition    : border-color .12s;
 	width         : 100%;
 
@@ -244,10 +244,10 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 }
-.cnd-controls--inline .cnd-type-group > .np-field > .np-label { /* What: Inline Type Heading. Why: The heading lines up with the row padding around it. How: This insets it 16px on each side. */
+.cnd-controls--inline .cnd-type-group > .np-field > .np-label { /* What: Inline Type Heading. Why: The heading lines up with the row padding around it. How: This insets it base horizontal spacing on each side. */
 
 
-	padding : 0 16px;
+	padding : 0 var( --spa-hor-bas );
 
 
 }
@@ -268,14 +268,14 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 /* #region rd-mode-radio */
 
-.rd-mode-radio { /* What: Mode Radio. Why: The type options stack edge to edge, pulled past the editor's padding between hairlines. How: This stacks them in a column bleeding 16px each side. */
+.rd-mode-radio { /* What: Mode Radio. Why: The type options stack edge to edge, pulled past the editor's padding between hairlines. How: This stacks them in a column bleeding base horizontal spacing each side. */
 
 
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	border-top     : var( --bor-wid-sma ) solid var(--border);
 	display        : flex;
 	flex-direction : column;
-	margin         : 0 -16px;
+	margin         : 0 calc( var( --spa-hor-bas ) * -1 );
 
 
 }
@@ -310,7 +310,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	cursor                      : pointer;
 	display                     : flex;
 	gap                         : 11px;
-	padding                     : var( --spa-ver-m01 ) 16px;
+	padding                     : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position                    : relative;
 	transition                  : background .24s ease;
 
@@ -528,7 +528,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 	border-top : var( --bor-wid-sma ) solid var(--border);
 	min-height : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding    : var( --spa-ver-m03 ) 16px;
+	padding    : var( --spa-ver-m03 ) var( --spa-hor-bas );
 
 
 }
@@ -689,7 +689,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
-	padding              : 0 8px;
+	padding              : 0 var( --spa-hor-m02 );
 
 
 }

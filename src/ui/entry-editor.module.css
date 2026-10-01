@@ -32,7 +32,7 @@
 	border        : var(--entry-editor-border, var( --bor-wid-sma ) solid var(--border)); /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
 	border-radius : var(--entry-editor-border-radius, var(--r-md)); /* What: Card Radius. Why: A Data or Pickers row strips the card's rounding. How: Its parent sets this to 0. */
 	margin        : var(--entry-editor-margin, 0 0 var( --spa-ver-m05 )); /* What: Card Margin. Why: A Data or Pickers row sits the editor flush, and the top stays 0 everywhere, since a negative one would be clipped by the overflow of the collapse the editor opens in. How: Its parent sets this to 0, falling back to a small gap below. */
-	padding       : var(--entry-editor-padding, var( --spa-ver-bas ) 16px); /* What: Card Padding. Why: Today's card drops the top padding, and a Data or Pickers row drops it all. How: Their parents set this, falling back to base vertical spacing above and below and 16px at the sides. */
+	padding       : var( --entry-editor-padding, var( --spa-ver-bas ) var( --spa-hor-bas ) ); /* What: Card Padding. Why: Today's card drops the top padding, and a Data or Pickers row drops it all. How: Their parents set this, falling back to base vertical spacing above and below and base horizontal spacing at the sides. */
 
 
 }
@@ -54,13 +54,13 @@
 
 /* #region pie-rows */
 
-.pie-rows { /* What: Setting Rows. Why: The rows run edge to edge under a hairline, apart from where the editor's context already draws one. How: This stacks them in a column pulled 16px past each side, since every context insets the editor's content 16px, reading its top border and top margin from the parent. */
+.pie-rows { /* What: Setting Rows. Why: The rows run edge to edge under a hairline, apart from where the editor's context already draws one. How: This stacks them in a column pulled base horizontal spacing past each side, since every context insets the editor's content by that much, reading its top border and top margin from the parent. */
 
 
 	border-top     : var(--entry-editor-rows-border-top, var( --bor-wid-sma ) solid var(--border)); /* What: Rows Top Border. Why: Today's card and a new-item row already draw a divider above the rows. How: Their parents set this to 0, falling back to a hairline. */
 	display        : flex;
 	flex-direction : column;
-	margin         : var(--entry-editor-rows-margin-top, var( --spa-ver-m07 )) -16px 0; /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to extra small 6 vertical spacing. */
+	margin         : var(--entry-editor-rows-margin-top, var( --spa-ver-m07 )) calc( var( --spa-hor-bas ) * -1 ) 0; /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to extra small 6 vertical spacing. */
 
 
 }
@@ -76,7 +76,7 @@
 	gap             : 12px;
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding         : var( --spa-ver-m03 ) 16px;
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );
 
 
 }
@@ -270,7 +270,7 @@
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
-	padding              : 0 8px;
+	padding              : 0 var( --spa-hor-m02 );
 
 
 }
@@ -380,8 +380,8 @@
 	display         : flex;
 	gap             : 8px;
 	justify-content : space-between;
-	margin          : 0 -16px;
-	padding         : var( --spa-ver-bas ) 16px 0;
+	margin          : 0 calc( var( --spa-hor-bas ) * -1 );
+	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;
 
 
 }
@@ -434,8 +434,8 @@
 	display              : flex;
 	gap                  : 8px;
 	justify-content      : var(--entry-editor-foot-justify, space-between); /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A new-item row sets this to flex-end, falling back to space-between. */
-	margin               : 0 -16px;
-	padding              : var( --spa-ver-bas ) 16px 0;
+	margin               : 0 calc( var( --spa-hor-bas ) * -1 );
+	padding              : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;
 
 
 }

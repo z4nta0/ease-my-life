@@ -131,7 +131,7 @@
 	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : var(--r-md);
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
-	padding        : var( --spa-ver-bas ) 15px;
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	pointer-events : auto;
 	position       : fixed;
 
@@ -256,7 +256,7 @@
 	cursor      : pointer;
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );
-	padding     : var( --spa-ver-m05 ) 2px;
+	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 );
 
 
 }
@@ -271,7 +271,7 @@
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );
 	font-weight : 500;
-	padding     : var( --spa-ver-m05 ) 2px;
+	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 );
 
 
 }
@@ -291,7 +291,7 @@
 	font-family   : inherit;
 	font-size     : var( --fon-siz-bas );
 	font-weight   : 600;
-	padding       : var( --spa-ver-m02 ) 15px;
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-bas );
 
 
 }

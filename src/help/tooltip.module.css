@@ -27,7 +27,7 @@
 	border         : var( --bor-wid-sma ) solid var(--border);
 	border-radius  : var(--r-md);
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
-	padding        : var( --spa-ver-bas ) 15px;
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	pointer-events : auto;
 	position       : fixed;
 

@@ -26,7 +26,7 @@
 	border-radius : 999px;
 	display       : inline-flex;
 	gap           : 4px;
-	padding       : var( --spa-ver-m06 ) 3px;
+	padding       : var( --spa-ver-m06 ) var( --spa-hor-m06 );
 
 
 }

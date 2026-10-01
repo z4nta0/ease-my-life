@@ -76,7 +76,7 @@
 	cursor        : pointer;
 	display       : flex;
 	gap           : 11px;
-	padding       : var( --spa-ver-m01 ) 16px;
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position      : relative;
 	transition    : background .24s ease;
 
@@ -332,7 +332,7 @@
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.03em;
 	margin-left    : auto;
-	padding        : 0 11px;
+	padding        : 0 var( --spa-hor-m01 );
 	transition     : background .18s ease, opacity .18s ease;
 
 

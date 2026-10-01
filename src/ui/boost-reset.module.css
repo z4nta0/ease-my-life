@@ -34,7 +34,7 @@
 	border-radius : 7px;
 	color         : var(--muted);
 	font-size     : var( --fon-siz-bas );
-	padding       : var( --spa-ver-m05 ) 9px;
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );
 	transition    : color .12s, border-color .12s;
 
 

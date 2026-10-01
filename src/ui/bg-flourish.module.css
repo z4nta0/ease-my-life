@@ -32,7 +32,7 @@
 .bg-flourish--left { /* What: Left Flourish Column. Why: The left gutter's column sits just past the content's left edge. How: This anchors it at the content's left side with a small gap. */
 
 
-	margin-right : 16px;
+	margin-right : var( --spa-hor-bas );
 	right        : 100%;
 
 
@@ -41,7 +41,7 @@
 
 
 	left        : 100%;
-	margin-left : 16px;
+	margin-left : var( --spa-hor-bas );
 
 
 }

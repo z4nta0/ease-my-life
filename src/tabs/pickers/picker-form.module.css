@@ -104,7 +104,7 @@
 	cursor      : pointer;
 	display     : inline-flex;
 	gap         : 8px;
-	padding     : var( --spa-ver-m07 ) 2px;
+	padding     : var( --spa-ver-m07 ) var( --spa-hor-m07 );
 
 
 }
@@ -372,7 +372,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	margin-top    : var( --spa-ver-m07 );
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
-	padding       : 0 12px;
+	padding       : 0 var( --spa-hor-m01 );
 	transition    : border-color .12s;
 	width         : 100%;
 
@@ -443,7 +443,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-weight   : 500;
 	gap           : 5px;
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding       : 0 14px;
+	padding       : 0 var( --spa-hor-bas );
 	transition    : border-color .12s, background .12s, color .12s;
 
 
@@ -522,7 +522,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	cursor        : pointer;
 	display       : flex;
 	gap           : 10px;
-	padding       : var( --spa-ver-m01 ) 12px;
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 	transition    : border-color .12s, background .12s;
 
 
@@ -826,7 +826,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	min-width       : 132px;
-	padding         : var( --spa-ver-m02 ) 14px;
+	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
 
@@ -984,7 +984,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color         : var(--accent);
 	cursor        : pointer;
 	font-size     : var( --fon-siz-bas );
-	padding       : var( --spa-ver-m05 ) 6px;
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 );
 
 
 }
@@ -1103,7 +1103,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	color         : var(--muted);
 	font-size     : var( --fon-siz-p01 );
 	line-height   : var( --ver-rhy-bas );
-	padding       : var( --spa-ver-p01 ) 16px;
+	padding       : var( --spa-ver-p01 ) var( --spa-hor-bas );
 	text-wrap     : pretty;
 
 
@@ -1134,7 +1134,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display               : grid;
 	gap                   : 16px;
 	grid-template-columns : 1fr auto auto auto auto;
-	padding               : var( --spa-ver-p01 ) 16px;
+	padding               : var( --spa-ver-p01 ) var( --spa-hor-bas );
 
 
 }
@@ -1549,7 +1549,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display            : flex;
 	font               : inherit;
 	gap                : 12px;
-	padding            : var( --spa-ver-m01 ) 16px;
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -1632,7 +1632,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	--entry-editor-margin        : 0;
 	--entry-editor-padding       : 0;
 	border-top                   : var( --bor-wid-sma ) solid var(--border);
-	padding                      : var( --spa-ver-m07 ) 16px var( --spa-ver-bas );
+	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );
 
 
 }
@@ -1657,7 +1657,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	gap             : 6px;
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : center;
-	padding         : 0 14px;
+	padding         : 0 var( --spa-hor-bas );
 	transition      : color 0.15s, border-color 0.15s, background 0.15s;
 	width           : 100%;
 

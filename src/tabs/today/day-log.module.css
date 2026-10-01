@@ -42,7 +42,7 @@
 	gap            : 5px;
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.05em;
-	padding        : 0 9px;
+	padding        : 0 var( --spa-hor-m02 );
 	text-transform : uppercase;
 	transition     : background .14s,color .14s,border-color .14s;
 
@@ -116,7 +116,7 @@
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	justify-content : space-between;
-	padding         : var( --spa-ver-m01 ) 14px;
+	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 
 }
@@ -220,7 +220,7 @@
 	display       : flex;
 	flex-wrap     : nowrap;
 	gap           : 16px;
-	padding       : var( --spa-ver-m01 ) 14px;
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 
 }
@@ -345,14 +345,14 @@
 .dl-body { /* What: Log Body. Why: The blocks sit inset under the key. How: This pads the body. */
 
 
-	padding : var( --spa-ver-m07 ) 12px var( --spa-ver-m01 );
+	padding : var( --spa-ver-m07 ) var( --spa-hor-m01 ) var( --spa-ver-m01 );
 
 
 }
 .dl-body--rem { /* What: Reminders Log Body. Why: The reminders table needs a little more room around it. How: This pads it more evenly. */
 
 
-	padding : var( --spa-ver-m02 ) 12px var( --spa-ver-m01 );
+	padding : var( --spa-ver-m02 ) var( --spa-hor-m01 ) var( --spa-ver-m01 );
 
 
 }
@@ -362,7 +362,7 @@
 
 	color     : var(--muted);
 	font-size : var( --fon-siz-p01 );
-	padding   : var( --spa-ver-m01 ) 10px;
+	padding   : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 
 
 }
@@ -398,7 +398,7 @@
 	font                  : inherit;
 	gap                   : 9px;
 	grid-template-columns : 20px 1fr minmax(0,200px);
-	padding               : var( --spa-ver-bas ) 2px;
+	padding               : var( --spa-ver-bas ) var( --spa-hor-m07 );
 	text-align            : left;
 	width                 : 100%;
 
@@ -541,7 +541,7 @@
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
-	padding        : var( --spa-ver-m07 ) 8px;
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m02 );
 	text-align     : center;
 	text-transform : uppercase;
 	white-space    : nowrap;
@@ -749,7 +749,7 @@
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
-	padding        : var( --spa-ver-m03 ) 10px;
+	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 );
 	text-transform : uppercase;
 
 
@@ -831,7 +831,7 @@
 
 	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
-	padding       : var( --spa-ver-m02 ) 10px;
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
 
 }
@@ -1001,7 +1001,7 @@
 
 
 		display     : block;
-		margin-left : -4px;
+		margin-left : calc( var( --spa-hor-m05 ) * -1 );
 		max-width   : calc( var( --ver-rhy-p08 ) * 1rem );
 		text-align  : left;
 		width       : auto;
@@ -1018,7 +1018,7 @@
 
 
 		display     : block;
-		margin-left : -4px;
+		margin-left : calc( var( --spa-hor-m05 ) * -1 );
 		max-width   : calc( var( --ver-rhy-p08 ) * 1rem );
 		text-align  : left;
 		width       : auto;
@@ -1158,7 +1158,7 @@
 
 	background : var(--accent);
 	color      : var(--bg);
-	padding    : var( --spa-ver-m07 ) 8px;
+	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 );
 
 
 }
@@ -1168,7 +1168,7 @@
 	background : var(--surface);
 	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
-	padding    : var( --spa-ver-m07 ) 8px;
+	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 );
 
 
 }
@@ -1243,7 +1243,7 @@
 	gap            : 7px;
 	letter-spacing : 0.02em;
 	margin         : 0 0 var( --spa-ver-m02 );
-	padding        : var( --spa-ver-m03 ) 10px var( --spa-ver-m03 ) 12px;
+	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-m03 ) var( --spa-hor-m01 );
 
 
 }
@@ -1312,7 +1312,7 @@
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
-	padding        : var( --spa-ver-m03 ) 10px;
+	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 );
 	text-transform : uppercase;
 
 
@@ -1342,7 +1342,7 @@
 
 	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
 	border-radius : 8px;
-	padding       : var( --spa-ver-m02 ) 10px;
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
 
 }

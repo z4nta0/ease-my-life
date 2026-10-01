@@ -33,7 +33,7 @@
 	letter-spacing  : 0.02em;
 	margin-left     : var(--pill-margin-left, 0);
 	margin-top      : var(--pill-margin-top, 0);
-	padding         : 0 8px;
+	padding         : 0 var( --spa-hor-m02 );
 	text-transform  : uppercase;
 	width           : var(--pill-width, auto);
 
@@ -63,7 +63,7 @@
 	border     : var( --bor-wid-sma ) solid var(--border);
 	color      : var(--muted);
 	font-size  : var( --fon-siz-bas );
-	padding    : 0 7px;
+	padding    : 0 var( --spa-hor-m03 );
 
 
 }

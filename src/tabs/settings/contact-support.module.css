@@ -166,7 +166,7 @@
 	margin-top    : var( --spa-ver-m07 );
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
-	padding       : 0 12px;
+	padding       : 0 var( --spa-hor-m01 );
 	transition    : border-color .12s;
 	width         : 100%;
 
@@ -207,7 +207,7 @@
 	height      : auto; /* What: Automatic Height. Why: The message box also carries the shared single-line field class, whose fixed height would squash it. How: This lets it size from its minimum height and its own content instead. */
 	line-height : var( --ver-rhy-bas );
 	min-height  : calc( var( --ver-rhy-p07 ) * 1rem );
-	padding     : var( --spa-ver-m01 ) 12px;
+	padding     : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 	resize      : vertical;
 
 

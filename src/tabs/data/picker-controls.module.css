@@ -33,7 +33,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 0;
-	padding        : var( --spa-ver-bas ) 16px;
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 
 
 }
@@ -54,7 +54,7 @@
 
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	gap           : 0;
-	margin        : 0 -16px;
+	margin        : 0 calc( var( --spa-hor-bas ) * -1 );
 	padding       : 0;
 
 
@@ -65,7 +65,7 @@
 	border     : 0;
 	box-shadow : inset 0 0.5px 0 0 var(--border);
 	gap        : 0;
-	margin     : 0 -16px;
+	margin     : 0 calc( var( --spa-hor-bas ) * -1 );
 	min-width  : 0;
 	padding    : 0;
 
@@ -78,7 +78,7 @@
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	border-top    : var( --bor-wid-sma ) solid var(--border);
 	gap           : 0;
-	margin        : 0 -16px;
+	margin        : 0 calc( var( --spa-hor-bas ) * -1 );
 	padding       : 0;
 
 
@@ -87,8 +87,8 @@
 
 
 	border-top     : var( --bor-wid-sma ) solid var(--border);
-	margin         : 0 -16px;
-	padding        : var( --spa-ver-bas ) 16px;
+	margin         : 0 calc( var( --spa-hor-bas ) * -1 );
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	padding-bottom : 0;
 
 
@@ -107,25 +107,25 @@
 
 
 }
-.rd-ctl-group--basics .rd-ctl-subhead { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it 16px at the sides and extra small 1 vertical spacing below. */
+.rd-ctl-group--basics .rd-ctl-subhead { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and extra small 1 vertical spacing below. */
 
 
-	padding : 0 16px var( --spa-ver-m02 );
+	padding : 0 var( --spa-hor-bas ) var( --spa-ver-m02 );
 
 
 }
-.rd-ctl-group--picks .rd-ctl-subhead { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base vertical spacing above, 16px at the sides, and extra small 1 vertical spacing below. */
+.rd-ctl-group--picks .rd-ctl-subhead { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base vertical spacing above, base horizontal spacing at the sides, and extra small 1 vertical spacing below. */
 
 
-	padding : var( --spa-ver-bas ) 16px var( --spa-ver-m02 );
+	padding : var( --spa-ver-bas ) var( --spa-hor-bas ) var( --spa-ver-m02 );
 
 
 }
 .rd-ctl-group--sched .rd-ctl-subhead,
-.rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it small vertical spacing above, 16px at the sides, and extra small 1 vertical spacing below. */
+.rd-ctl-group--items .rd-ctl-subhead { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it small vertical spacing above, base horizontal spacing at the sides, and extra small 1 vertical spacing below. */
 
 
-	padding : var( --spa-ver-m01 ) 16px var( --spa-ver-m02 );
+	padding : var( --spa-ver-m01 ) var( --spa-hor-bas ) var( --spa-ver-m02 );
 
 
 }
@@ -150,7 +150,7 @@
 	border-top  : var( --bor-wid-sma ) solid var(--border);
 	display     : flex;
 	gap         : 14px;
-	padding     : var( --spa-ver-m01 ) 16px;
+	padding     : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 
 }
@@ -193,7 +193,7 @@
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	min-width     : 0;
 	outline       : none;
-	padding       : 0 12px;
+	padding       : 0 var( --spa-hor-m01 );
 	transition    : border-color .12s;
 
 
@@ -305,7 +305,7 @@
 	gap            : 7px;
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
-	padding        : 0 13px;
+	padding        : 0 var( --spa-hor-bas );
 	transition     : border-color .24s ease, background .24s ease, color .24s ease;
 
 
@@ -477,7 +477,7 @@
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	outline       : none;
-	padding       : 0 10px;
+	padding       : 0 var( --spa-hor-m01 );
 	width         : 130px;
 
 
@@ -638,7 +638,7 @@
 	cursor                      : pointer;
 	display                     : flex;
 	gap                         : 11px;
-	padding                     : var( --spa-ver-m01 ) 16px;
+	padding                     : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position                    : relative;
 	transition                  : background .24s ease;
 
@@ -828,7 +828,7 @@
 	gap             : 12px;
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding         : var( --spa-ver-m03 ) 16px;
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );
 
 
 }
@@ -1042,7 +1042,7 @@
 
 
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
-	padding       : var( --spa-ver-m02 ) 16px var( --spa-ver-m01 );
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-bas ) var( --spa-ver-m01 );
 
 
 }
@@ -1103,7 +1103,7 @@
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	min-width       : 132px;
-	padding         : var( --spa-ver-m02 ) 14px;
+	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );
 	text-align      : left;
 	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
 
@@ -1210,7 +1210,7 @@
 	margin-top    : 0;
 	max-width     : none;
 	outline       : none;
-	padding       : var( --spa-ver-m01 ) 12px;
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 	transition    : border-color .12s;
 	width         : auto;
 
@@ -1261,7 +1261,7 @@
 	font-size     : var( --fon-siz-bas );
 	font-style    : italic;
 	min-height    : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding       : var( --spa-ver-m03 ) 16px;
+	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );
 
 
 }
@@ -1301,7 +1301,7 @@
 	gap             : 12px;
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding         : var( --spa-ver-m03 ) 16px;
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );
 
 
 }
