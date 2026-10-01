@@ -2032,7 +2032,7 @@ still passes.
   `tabs/pickers/progress-bar.module.css` for the reference example.
 - **Parentheses in CSS functions** (decided 2026-09-29) follow the same
   spacing as JS calls under "### Parentheses spacing": a space after `(`
-  and before `)` when there's anything inside, e.g. `var( --fon-siz-lar )`
+  and before `)` when there's anything inside, e.g. `var( --fon-siz-p01 )`
   and `calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) )`. Values still
   written tight (`var(--muted)`) are converted as their files come up in
   the design-system pass.
@@ -2181,9 +2181,9 @@ still passes.
     - **Exception, a scale** (decided 2026-09-29): tokens that form a
       scale of steps (font sizes, and every scale like them) are ordered
       smallest to biggest instead of alphabetically, so the steps read in
-      order (`xs1`, `sma`, `bas`, `lar`, `xl1`, `xl2`, ... rather than
-      alphabetically, which would put `lar` ahead of `sma` and `xl1`
-      ahead of `xs1`).
+      order (`m02`, `m01`, `bas`, `p01`, `p02`, ... rather than
+      alphabetically, which would put `bas` first and `m02` after
+      `m01`).
     - **Exception, the core design numbers** (decided 2026-09-29): the
       user's own section of core design numbers always comes first inside
       `:root`, ahead of the alphabetized token sections, and is never
@@ -2219,8 +2219,8 @@ still passes.
       viewport). Record the project's choice here. In this project the
       viewport steps were tried on the Today tab and didn't hold up below
       about 1100px, so maximum widths use the vertical rhythm, e.g.
-      `max-width : calc( var( --ver-rhy-xl10 ) * 1rem )`, with the steps
-      above `xl8` added as these caps needed them.
+      `max-width : calc( var( --ver-rhy-p11 ) * 1rem )`, with the steps
+      above `p09` added as these caps needed them.
     - **Text measure is font based** (decided 2026-10-01, also not
       specific to this project): a paragraph's `max-width` comes from the
       project's main body font, not from either rhythm. Paragraph text
@@ -2245,8 +2245,8 @@ still passes.
         takes its `max-width` from its text's width plus its own horizontal
         padding and borders (boxes are `border-box`), rather than a
         free-standing number, e.g. `calc( var( --cdn-pow-012 ) * var(
-        --fon-siz-lar ) + 56px + var( --bor-wid-sma ) * 2 )` for a panel
-        whose paragraphs are set at `--fon-siz-lar` with 28px of padding on
+        --fon-siz-p01 ) + 56px + var( --bor-wid-sma ) * 2 )` for a panel
+        whose paragraphs are set at `--fon-siz-p01` with 28px of padding on
         each side. The text's font size is written out, since an `em` on the
         container would resolve against the container's own font size.
       - **Every font follows the same caps**: text in a secondary font (e.g.
@@ -2273,18 +2273,39 @@ override applying, e.g. Offset is `off`, never `ofs`). Existing properties
 are renamed to this as their files come up in the design-system pass.
 - **The last segment names the kind of value**, not a JS type:
   - **A step in a scale**: `sma` (small), `med` (medium), `lar` (large),
-    then numbered steps outward from those: `xl1`, `xl2`, `xl3`, ... (extra
-    large 1, 2, 3, ...) above `lar`, and `xs1`, `xs2`, `xs3`, ... (extra
-    small 1, 2, 3, ...) below `sma` (decided 2026-09-30, replacing the
-    earlier `xla`/`xsm` with `xxl`/`xxs` beyond them, since numbered steps
-    read cleaner and extend as far as a scale needs). `med` is the default
-    middle step; `bas` (base) replaces it in a scale whose values center on
-    that step rather than treating it as just another step, decided per
-    scale.
-  - **Font sizes use their own steps**, since the scale starts at its base
-    and only grows: `bas` (base, 1rem, which is 11px by default), `lar`
-    (large, one power up), then `xl1` through `xl5` (two to six powers
-    up).
+    with `xsm` (extra small) and `xla` (extra large) at either end. `med`
+    is the default middle step; `bas` (base) replaces it in a scale whose
+    values center on that step rather than treating it as just another
+    step, decided per scale.
+  - **A scale that needs more steps than those** (decided 2026-10-01,
+    replacing the earlier numbered `xl1`/`xs1` steps, since small and
+    large stop reading logically once a scale runs past them) names every
+    step by its distance from `bas`: `p01`, `p02`, `p03`, ... (base plus
+    1, 2, 3, ...) above it and `m01`, `m02`, `m03`, ... (base minus 1, 2,
+    3, ...) below it, always two digits. The steps next to the base
+    become `m01` and `p01` too, so the whole scale follows one pattern,
+    and a comment's `What:` reads `Base Plus 3` or `Base Minus 8` (e.g.
+    `--ver-rhy-p15` is `What: Vertical Rhythm Base Plus 15.`). Each family
+    counts from its own base, so the same suffix can stand for different
+    sizes in different families (`--fon-siz-p03` and `--ver-rhy-p03` are
+    one power apart, since the font size base is 1rem and the vertical
+    rhythm base is the first power). In this project the vertical rhythm
+    runs `m12` to `p15`, the vertical spacing `m09` to `p07`, and the
+    font sizes `bas` to `p06`. A scale that fits within `xsm` to `xla`
+    keeps the plain names (e.g. the border widths).
+  - **Font sizes start at their base and only grow**: `bas` (base, 1rem,
+    which is 11px by default), then `p01` through `p06` (one to six
+    powers up).
+  - **Font families are named by role, not by typeface** (decided
+    2026-10-01), so the same names fit any project: `--fon-fam-mai` (the
+    main font), `--fon-fam-sec` (the secondary font, e.g. a mono font for
+    numbers and captions), and `--fon-fam-bra` for a single brand font, or
+    `--fon-fam-br1`, `--fon-fam-br2`, ... when there are several, with 1
+    the main brand face. A brand token falls back through the main font
+    (`'Shantell Sans', var( --fon-fam-mai )`), and every font a project
+    uses gets a token, even one used only once, so all of them are set in
+    one place. In this project the brand faces are Shantell Sans (1) and
+    Quicksand (2).
   - **A category**: `col` (color), `fon` (font family), `dur` (duration),
     `del` (delay), `eas` (easing curve), `spr` (spread, e.g. a shadow or
     glow's reach), `opa` (opacity), `sca` (scale factor), `sha` (a whole
@@ -2293,7 +2314,7 @@ are renamed to this as their files come up in the design-system pass.
     height a removing Data card collapses from). New categories are added
     here as they come up.
 - **A scaled family ends in its step**, and the family moves to the first
-  segment: `--fon-siz-med` (font size, medium), `--gri-gap-sma` (grid gap,
+  segment: `--fon-siz-p01` (font size, base plus 1), `--gri-gap-sma` (grid gap,
   small; the app lays out with grid first and flexbox only where needed),
   `--rad-bor-lar` (radius, border, large).
 - **Durations split by what plays them**: `--dur-tra-med` for transitions,
@@ -2301,7 +2322,7 @@ are renamed to this as their files come up in the design-system pass.
 - **Examples mapped from today's tokens**: `--bg` → `--bac-pag-col`,
   `--surface` → `--bac-sur-col`, `--text` → `--tex-bas-col`, `--muted` →
   `--tex-mut-col`, `--accent-soft` → `--acc-sof-col`, `--font-sans` →
-  `--san-fam-fon`, `--r-lg` → `--rad-bor-lar`, `--exhale-dur` →
+  `--fon-fam-mai`, `--r-lg` → `--rad-bor-lar`, `--exhale-dur` →
   `--exh-car-dur`, `--exhale-glow` → `--exh-glo-spr`, `--exhale-glow-op`
   → `--exh-glo-opa`, `--exhale-scale` → `--exh-car-sca`.
 - **A component-level property** still names the child it's for (see
@@ -2309,18 +2330,18 @@ are renamed to this as their files come up in the design-system pass.
   its first segment.
 - **Negative values get no tokens of their own** (decided 2026-09-30): a
   negative margin or offset multiplies its positive token at the point of
-  use, `calc( var( --spa-ver-xs4 ) * -1 )`, rather than each scale carrying
+  use, `calc( var( --spa-ver-m05 ) * -1 )`, rather than each scale carrying
   a mirrored set of negative tokens. The core design numbers' own negative
   tokens (`--cdn-pow-001-neg`, ...) are the one exception, since they're
   the raw numbers other values draw from.
 - **Border widths use the rhythm too** (decided 2026-09-30), even though
   browsers snap them to whole pixels (Chromium rounds down to whole CSS
   pixels, with a 1px minimum), so the intent stays visible in the value:
-  `--bor-wid-sma` (`xs11`, about 0.499px, the hairline), `--bor-wid-bas`
-  (`xs8`, about 1.160px), `--bor-wid-lar` (`xs6`, about 2.035px), and
-  `--bor-wid-xl1` (`xs4`, about 3.571px), each a rhythm step times 1rem. A
-  step is picked so it snaps to the intended width: `xs5` (about 2.696px)
-  would draw as 2px, so 3px takes `xs4`.
+  `--bor-wid-sma` (`m12`, about 0.499px, the hairline), `--bor-wid-bas`
+  (`m09`, about 1.160px), `--bor-wid-lar` (`m07`, about 2.035px), and
+  `--bor-wid-xla` (`m05`, about 3.571px), each a rhythm step times 1rem. A
+  step is picked so it snaps to the intended width: `m06` (about 2.696px)
+  would draw as 2px, so 3px takes `m05`.
 - **Breakpoints stay literal numbers**, since a custom property can't be
   read inside an `@media` or `@container` condition, but their values still
   come from the scale the design system defines.
