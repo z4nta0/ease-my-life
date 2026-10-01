@@ -370,7 +370,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-size     : var( --fon-siz-lar );
 	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
 	margin-top    : var( --spa-ver-xs6 );
-	max-width     : 360px;
+	max-width     : calc( var( --ver-rhy-xl10 ) * 1rem );
 	outline       : none;
 	padding       : 0 12px;
 	transition    : border-color .12s;
@@ -393,10 +393,10 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 }
-.np-input--sm { /* What: Short Text Input. Why: The new group's name needs less width. How: This caps it at 260px. */
+.np-input--sm { /* What: Short Text Input. Why: The new group's name needs less width. How: This caps it at a smaller rhythm step. */
 
 
-	max-width : 260px;
+	max-width : calc( var( --ver-rhy-xl9 ) * 1rem );
 
 
 }
@@ -669,10 +669,10 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 }
-.np-cond .np-field--toggle .np-toggle-text { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at 440px. */
+.np-cond .np-field--toggle .np-toggle-text { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
 
 
-	max-width : 440px;
+	max-width : calc( var( --ver-rhy-xl11 ) * 1rem );
 
 
 }

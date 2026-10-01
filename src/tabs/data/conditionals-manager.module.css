@@ -538,7 +538,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	color       : var(--muted);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
-	max-width   : 340px;
+	max-width   : calc( var( --ver-rhy-xl10 ) * 1rem );
 	text-wrap   : pretty;
 
 

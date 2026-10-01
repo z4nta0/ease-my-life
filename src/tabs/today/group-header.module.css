@@ -111,7 +111,7 @@
 	height           : calc( var( --ver-rhy-xl2 ) * 1rem );
 	letter-spacing   : -0.015em;
 	margin           : calc( var( --spa-ver-xs5 ) * -1 ) 0;
-	max-width        : 240px;
+	max-width        : calc( var( --ver-rhy-xl9 ) * 1rem );
 	min-width        : 0;
 	outline          : none;
 	padding          : 0 8px;

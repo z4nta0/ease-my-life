@@ -231,12 +231,12 @@
 
 
 }
-.tabbar--top { /* What: Top Tab Bar. Why: At the top, the brand and tabs sit in one sticky bar whose content lines up with the page column. How: This makes a sticky bar with a bottom border and padding that centers its content in a 960px column. */
+.tabbar--top { /* What: Top Tab Bar. Why: At the top, the brand and tabs sit in one sticky bar whose content lines up with the page column. How: This makes a sticky bar with a bottom border and padding that centers its content in the Today column's width. */
 
 
 	border-bottom-width : var( --bor-wid-sma );
 	justify-content     : space-between;
-	padding             : var( --spa-ver-sma ) max(20px, calc((100% - 960px) / 2)); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's 960px column. How: The side padding grows to center that width, never below 20px; the other tabs' 720px column would use the same formula with 720px. */
+	padding             : var( --spa-ver-sma ) max( 20px, calc( ( 100% - var( --ver-rhy-xl14 ) * 1rem ) / 2 ) ); /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the xl14 rhythm step. How: The side padding grows to center that width, never below 20px; the other tabs' column would use the same formula with the xl13 step. */
 	position            : sticky;
 	top                 : 0;
 	z-index             : 100;
@@ -991,14 +991,14 @@
 
 }
 
-.main-inner { /* What: Main Content Column. Why: Every tab but Today reads in one centered, capped column. How: This centers a 720px flex column with a top offset and a gap between sections. */
+.main-inner { /* What: Main Content Column. Why: Every tab but Today reads in one centered, capped column. How: This centers a capped flex column with a top offset and a gap between sections. */
 
 
 	display        : flex;
 	flex-direction : column;
 	gap            : 24px;
 	margin         : 0 auto;
-	max-width      : 720px;
+	max-width      : calc( var( --ver-rhy-xl13 ) * 1rem );
 	padding-top    : var( --spa-ver-xl1 );
 	position       : relative;
 

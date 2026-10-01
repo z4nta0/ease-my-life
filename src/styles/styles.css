@@ -297,6 +297,12 @@
 	--ver-rhy-xl6  : var( --cdn-pow-008 );     /* What: Vertical Rhythm Extra Large 6 ~= 9.484. Why: This is 6 steps above the large step, for the roomiest vertical spacing. How: This is the eighth power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-xl7  : var( --cdn-pow-009 );     /* What: Vertical Rhythm Extra Large 7 ~= 12.564. Why: This is 7 steps above the large step, for large fixed areas. How: This is the ninth power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-xl8  : var( --cdn-pow-010 );     /* What: Vertical Rhythm Extra Large 8 ~= 16.643. Why: This is 8 steps above the large step, for large fixed areas. How: This is the tenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl9  : var( --cdn-pow-011 );     /* What: Vertical Rhythm Extra Large 9 ~= 22.047. Why: This is 9 steps above the large step, for maximum widths. How: This is the eleventh power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl10 : var( --cdn-pow-012 );     /* What: Vertical Rhythm Extra Large 10 ~= 29.207. Why: This is 10 steps above the large step, for maximum widths. How: This is the twelfth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl11 : var( --cdn-pow-013 );     /* What: Vertical Rhythm Extra Large 11 ~= 38.691. Why: This is 11 steps above the large step, for maximum widths. How: This is the thirteenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl12 : var( --cdn-pow-014 );     /* What: Vertical Rhythm Extra Large 12 ~= 51.254. Why: This is 12 steps above the large step, for maximum widths. How: This is the fourteenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl13 : var( --cdn-pow-015 );     /* What: Vertical Rhythm Extra Large 13 ~= 67.897. Why: This is 13 steps above the large step, for maximum widths. How: This is the fifteenth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl14 : var( --cdn-pow-016 );     /* What: Vertical Rhythm Extra Large 14 ~= 89.945. Why: This is 14 steps above the large step, for maximum widths. How: This is the sixteenth power of the core design number, multiplied by 1rem where a length is needed. */
 
 	/* #endregion Vertical Rhythm Tokens */
 

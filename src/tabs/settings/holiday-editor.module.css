@@ -429,7 +429,7 @@
 
 }
 
-.np-input { /* What: Holiday Add Field. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from 180px, caps them at 260px, and fades the border on focus. */
+.np-input { /* What: Holiday Add Field. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from 180px, caps them at a rhythm stepx, and fades the border on focus. */
 
 
 	background    : var(--bg);
@@ -441,7 +441,7 @@
 	font-size     : var( --fon-siz-lar );
 	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
 	margin-top    : var( --spa-ver-xs6 );
-	max-width     : 260px;
+	max-width     : calc( var( --ver-rhy-xl9 ) * 1rem );
 	outline       : none;
 	padding       : 0 12px;
 	transition    : border-color .12s;

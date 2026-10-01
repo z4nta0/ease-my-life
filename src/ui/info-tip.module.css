@@ -54,7 +54,7 @@
 	font-family    : var(--font-sans);
 	font-size      : var( --fon-siz-bas );
 	line-height    : var( --ver-rhy-bas );
-	max-width      : 248px;
+	max-width      : calc( var( --ver-rhy-xl9 ) * 1rem );
 	padding        : var( --spa-ver-xs1 ) 11px;
 	pointer-events : none;
 	position       : fixed;

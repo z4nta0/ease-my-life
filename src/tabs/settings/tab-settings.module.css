@@ -819,10 +819,10 @@
 
 }
 
-.set-layout-sub { /* What: Layout Description. Why: The placement description must leave the segmented control room on one line. How: This caps it at 190px. */
+.set-layout-sub { /* What: Layout Description. Why: The placement description must leave the segmented control room on one line. How: This caps it at a rhythm step. */
 
 
-	max-width : 190px;
+	max-width : calc( var( --ver-rhy-xl8 ) * 1rem );
 
 
 }

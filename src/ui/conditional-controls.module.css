@@ -97,7 +97,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 4px;
-	max-width      : 300px;
+	max-width      : calc( var( --ver-rhy-xl10 ) * 1rem );
 
 
 }
@@ -126,7 +126,7 @@
 	font-size     : var( --fon-siz-lar );
 	height        : calc( var( --ver-rhy-xl3 ) * 1rem );
 	margin-top    : var( --spa-ver-xs6 );
-	max-width     : 360px;
+	max-width     : calc( var( --ver-rhy-xl10 ) * 1rem );
 	outline       : none;
 	padding       : 0 12px;
 	transition    : border-color .12s;
@@ -157,11 +157,11 @@
 
 
 }
-.cnd-controls--inline > .np-field--cardtext .np-input { /* What: Inline Card Text Input. Why: Beside its label, the input takes the row's remaining width up to a cap. How: This lets it grow and shrink within 260px. */
+.cnd-controls--inline > .np-field--cardtext .np-input { /* What: Inline Card Text Input. Why: Beside its label, the input takes the row's remaining width up to a cap. How: This lets it grow and shrink within a rhythm step. */
 
 
 	flex      : 1 1 auto;
-	max-width : 260px;
+	max-width : calc( var( --ver-rhy-xl9 ) * 1rem );
 	min-width : 0;
 
 

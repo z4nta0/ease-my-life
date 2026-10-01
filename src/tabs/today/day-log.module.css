@@ -997,12 +997,12 @@
 @container app (min-width:761px) and (max-width:843px) { /* What: Mid-Width Log. Why: Between 761px and 843px the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
 
 
-	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at 140px, nudged left to align. */
+	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
 
 
 		display     : block;
 		margin-left : -4px;
-		max-width   : 140px;
+		max-width   : calc( var( --ver-rhy-xl7 ) * 1rem );
 		text-align  : left;
 		width       : auto;
 
@@ -1014,12 +1014,12 @@
 @container app (max-width:600px) { /* What: Narrow Log. Why: At 600px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 600px wide or less. */
 
 
-	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at 140px, nudged left to align. */
+	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
 
 
 		display     : block;
 		margin-left : -4px;
-		max-width   : 140px;
+		max-width   : calc( var( --ver-rhy-xl7 ) * 1rem );
 		text-align  : left;
 		width       : auto;
 

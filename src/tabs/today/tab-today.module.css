@@ -68,7 +68,7 @@
 
 /* #region today-h-inner */
 
-.today-h-inner { /* What: Header Inner. Why: The header's content caps at the page width. How: This centers a 960px row that stretches its column. */
+.today-h-inner { /* What: Header Inner. Why: The header's content caps at the page width. How: This centers a capped row that stretches its column. */
 
 
 	align-items     : stretch;
@@ -76,7 +76,7 @@
 	gap             : 20px;
 	justify-content : space-between;
 	margin          : 0 auto;
-	max-width       : 960px;
+	max-width       : calc( var( --ver-rhy-xl14 ) * 1rem );
 
 
 }
@@ -1116,11 +1116,11 @@
 
 /* #region today-body */
 
-.today-body { /* What: Today Body. Why: The banner, layout, and footer cap at the page width below the header. How: This centers a padded 960px column that anchors its overlays. */
+.today-body { /* What: Today Body. Why: The banner, layout, and footer cap at the page width below the header. How: This centers a padded, capped column that anchors its overlays. */
 
 
 	margin    : 0 auto;
-	max-width : 960px;
+	max-width : calc( var( --ver-rhy-xl14 ) * 1rem );
 	padding   : var( --spa-ver-lar ) 20px 0;
 	position  : relative;
 
@@ -2132,7 +2132,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : 10px;
-	max-width      : 420px;
+	max-width      : calc( var( --ver-rhy-xl11 ) * 1rem );
 	text-align     : center;
 
 
