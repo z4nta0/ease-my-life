@@ -284,7 +284,7 @@
 	align-items           : start;
 	display               : grid;
 	gap                   : 32px;
-	grid-template-columns : 200px 1fr;
+	grid-template-columns : calc( var( --ver-rhy-p09 ) * 1rem ) 1fr;
 	margin-top            : var( --spa-ver-p02 );
 
 

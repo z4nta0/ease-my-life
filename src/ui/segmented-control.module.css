@@ -48,7 +48,7 @@
 
 	display               : grid;
 	flex-basis            : var(--seg-repeat-flex-basis, auto); /* What: Repeat Flex Basis. Why: The schedule editor's rows layout gives Repeat its own full-width line. How: A parent sets --seg-repeat-flex-basis, falling back to auto. */
-	grid-template-columns : repeat(auto-fit, minmax(70px, max-content));
+	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) );
 	justify-content       : space-between;
 
 

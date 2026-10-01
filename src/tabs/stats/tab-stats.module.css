@@ -1149,12 +1149,12 @@
 
 /* #region heat */
 
-.heat { /* What: Heatmap Grid. Why: The days fill a grid of squares. How: This lays them out in as many 32px-minimum columns as fit. */
+.heat { /* What: Heatmap Grid. Why: The days fill a grid of squares. How: This lays them out in as many rhythm-step-minimum columns as fit. */
 
 
 	display               : grid;
 	gap                   : 4px;
-	grid-template-columns : repeat(auto-fill, minmax(32px, 1fr));
+	grid-template-columns : repeat( auto-fill, minmax( calc( var( --ver-rhy-p03 ) * 1rem ), 1fr ) );
 
 
 }

@@ -298,7 +298,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	align-items           : center;
 	display               : grid;
-	grid-template-columns : 1fr 76px 76px;
+	grid-template-columns : 1fr calc( var( --ver-rhy-p06 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem );
 	padding               : var( --spa-ver-m02 ) var( --spa-hor-bas );
 
 
@@ -329,7 +329,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	align-items           : center;
 	border-bottom         : var( --bor-wid-sma ) solid var(--border);
 	display               : grid;
-	grid-template-columns : 1fr 76px 76px;
+	grid-template-columns : 1fr calc( var( --ver-rhy-p06 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem );
 	padding               : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 

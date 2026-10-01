@@ -234,7 +234,7 @@
 	display               : grid;
 	flex                  : 1;
 	gap                   : 9px 16px;
-	grid-template-columns : repeat(auto-fit, minmax(90px, max-content));
+	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) );
 	justify-content       : start;
 	min-width             : 0;
 
@@ -397,7 +397,7 @@
 	display               : grid;
 	font                  : inherit;
 	gap                   : 9px;
-	grid-template-columns : 20px 1fr minmax(0,200px);
+	grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p09 ) * 1rem ) );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-m07 );
 	text-align            : left;
 	width                 : 100%;
@@ -422,10 +422,10 @@
 @container app (max-width:500px) { /* What: Narrow Block Header. Why: A narrow app gives the summary column less room. How: This applies only when the app is 500px wide or less. */
 
 
-	.dl-block-h { /* What: Tighter Block Header. Why: The summary column needs to shrink. How: This caps it at 100px. */
+	.dl-block-h { /* What: Tighter Block Header. Why: The summary column needs to shrink. How: This caps it at a smaller rhythm step. */
 
 
-		grid-template-columns : 20px 1fr minmax(0,100px);
+		grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p07 ) * 1rem ) );
 
 
 	}
@@ -708,7 +708,7 @@
 	align-items           : center;
 	display               : grid;
 	gap                   : 6px;
-	grid-template-columns : 1fr 46px 44px 46px 126px;
+	grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }
@@ -720,7 +720,7 @@
 
 
 		gap                   : 4px;
-		grid-template-columns : 1fr 40px 35px 35px 126px;
+		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 	}
@@ -734,7 +734,7 @@
 	.dl-trow { /* What: Tightest Log Table Grid. Why: The status column needs to shrink too. How: This halves it. */
 
 
-		grid-template-columns : 1fr 40px 35px 35px 63px;
+		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p05 ) * 1rem );
 
 
 	}
@@ -757,10 +757,10 @@
 @container app (max-width:450px) { /* What: Very Narrow Log Table. Why: At 450px and below the status column shrinks too. How: This applies only when the app is 450px wide or less. */
 
 
-	.dl-cond-sec .dl-thead { /* What: Conditionals Table Header. Why: The Conditionals header keeps room for its Triggered pills. How: This keeps a wider status column. */
+	.dl-cond-sec .dl-thead { /* What: Conditionals Table Header. Why: The Conditionals header keeps room for its Triggered pills. How: This narrows the three value columns so the wider status column still fits. */
 
 
-		grid-template-columns : 1fr 40px 35px 35px 110px;
+		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 	}
@@ -861,10 +861,10 @@
 @container app (max-width:450px) { /* What: Very Narrow Log Table. Why: At 450px and below the status column shrinks too. How: This applies only when the app is 450px wide or less. */
 
 
-	.dl-cond-row { /* What: Tightest Conditional Row. Why: The row keeps room for its Triggered pill. How: This keeps a wider status column. */
+	.dl-cond-row { /* What: Tightest Conditional Row. Why: The row keeps room for its Triggered pill. How: This narrows the three value columns so the wider status column still fits. */
 
 
-		grid-template-columns : 1fr 40px 35px 35px 110px;
+		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem );
 
 
 	}
@@ -1285,7 +1285,7 @@
 	align-items           : center;
 	display               : grid;
 	gap                   : 8px;
-	grid-template-columns : 1fr 150px 130px;
+	grid-template-columns : 1fr calc( var( --ver-rhy-p08 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
 
 
 }
@@ -1297,7 +1297,7 @@
 
 
 		gap                   : 6px;
-		grid-template-columns : 1fr 104px 104px;
+		grid-template-columns : 1fr calc( var( --ver-rhy-p07 ) * 1rem ) calc( var( --ver-rhy-p07 ) * 1rem );
 
 
 	}
