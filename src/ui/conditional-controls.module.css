@@ -518,7 +518,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	min-height      : 38px;
+	min-height      : calc( var( --ver-rhy-xl2 ) * 1rem );
 	padding         : var( --spa-ver-xs4 ) 0;
 
 
@@ -527,8 +527,8 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 	border-top : var( --bor-wid-sma ) solid var(--border);
-	min-height : 44px;
-	padding    : var( --spa-ver-sma ) 16px;
+	min-height : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding    : var( --spa-ver-xs2 ) 16px;
 
 
 }

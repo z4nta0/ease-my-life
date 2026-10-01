@@ -827,8 +827,8 @@
 	flex-wrap       : wrap;
 	gap             : 12px;
 	justify-content : space-between;
-	min-height      : 44px;
-	padding         : var( --spa-ver-sma ) 16px;
+	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding         : var( --spa-ver-xs2 ) 16px;
 
 
 }
@@ -1251,16 +1251,17 @@
 
 
 
-.sched-off-note { /* What: On-Demand Note. Why: A picker left out of the daily generator says it only runs on demand, where its schedule rows would be. How: This sets a small italic muted note padded like a row. */
+.sched-off-note { /* What: On-Demand Note. Why: A picker left out of the daily generator says it only runs on demand, where its schedule rows would be. How: This sets a small italic muted note sized like a row, with its text vertically centered. */
 
 
+	align-content : center;
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	box-sizing    : border-box;
 	color         : var(--muted);
 	font-size     : var( --fon-siz-bas );
 	font-style    : italic;
-	min-height    : 44px;
-	padding       : var( --spa-ver-sma ) 16px;
+	min-height    : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding       : var( --spa-ver-xs2 ) 16px;
 
 
 }
@@ -1299,8 +1300,8 @@
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	min-height      : 44px;
-	padding         : var( --spa-ver-sma ) 16px;
+	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding         : var( --spa-ver-xs2 ) 16px;
 
 
 }

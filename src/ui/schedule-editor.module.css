@@ -109,8 +109,8 @@
 	flex-wrap               : wrap;
 	justify-content         : space-between;
 	margin                  : 0 -16px;
-	min-height              : 44px;
-	padding                 : var( --spa-ver-sma ) 16px;
+	min-height              : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding                 : var( --spa-ver-xs2 ) 16px;
 	row-gap                 : 8px;
 
 

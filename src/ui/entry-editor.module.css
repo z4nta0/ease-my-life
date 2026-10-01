@@ -75,8 +75,8 @@
 	display         : flex;
 	gap             : 12px;
 	justify-content : space-between;
-	min-height      : 44px;
-	padding         : var( --spa-ver-sma ) 16px;
+	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem );
+	padding         : var( --spa-ver-xs2 ) 16px;
 
 
 }
