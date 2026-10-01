@@ -672,14 +672,9 @@
 	.tabbar--bottom .tabbtn { /* What: Icon Pill Bottom Tab Button. Why: Each tab is a roomy icon-only pill. How: This drops the label gap and sets roomy side padding and the xl3 touch-target height. */
 
 
-		border-radius  : 999px;
-		flex           : 0 0 auto;
-		flex-direction : row;
-		gap            : 0;
-		height         : calc( var( --ver-rhy-xl3 ) * 1rem );
-		max-width      : none;
-		min-height     : 0;
-		padding        : 0 28px;
+		gap     : 0;
+		height  : calc( var( --ver-rhy-xl3 ) * 1rem );
+		padding : 0 28px;
 
 
 	}
@@ -692,9 +687,6 @@
 	.tabbar--bottom .tabbtn { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to 20px. */
 
 
-		gap           : 0;
-		height        : calc( var( --ver-rhy-xl3 ) * 1rem );
-		padding       : 0 28px;
 		padding-left  : 20px;
 		padding-right : 20px;
 
