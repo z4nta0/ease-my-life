@@ -516,10 +516,10 @@
 
 
 }
-.dl-name-mode .dl-block-name { /* What: Header Block Name. Why: Beside its pill the name takes up to 140px. How: This lets it shrink from a 140px basis. */
+.dl-name-mode .dl-block-name { /* What: Header Block Name. Why: Beside its pill the name takes up to a rhythm step's width. How: This lets it shrink from that basis. */
 
 
-	flex      : 0 1 140px;
+	flex      : 0 1 calc( var( --ver-rhy-p08 ) * 1rem );
 	min-width : 0;
 
 
@@ -909,10 +909,10 @@
 
 
 }
-.dl-nrow .dl-name { /* What: Conditional Row Name. Why: Beside its mode pill the name keeps a fixed 140px so the pills line up. How: This fixes its basis at 140px. */
+.dl-nrow .dl-name { /* What: Conditional Row Name. Why: Beside its mode pill the name keeps a fixed width so the pills line up. How: This fixes its basis at a rhythm step. */
 
 
-	flex      : 0 0 140px;
+	flex      : 0 0 calc( var( --ver-rhy-p08 ) * 1rem );
 	min-width : 0;
 
 

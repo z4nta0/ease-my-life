@@ -161,11 +161,11 @@
 
 }
 
-.rd-basics-lbl { /* What: Details Label. Why: Each row is named in a fixed-width muted column. How: This sets a 52px column nudged down to line up with the pills. */
+.rd-basics-lbl { /* What: Details Label. Why: Each row is named in a fixed-width muted column. How: This sets a fixed rhythm-step column nudged down to line up with the pills. */
 
 
 	color       : var(--muted);
-	flex        : 0 0 52px;
+	flex        : 0 0 calc( var( --ver-rhy-p04 ) * 1rem );
 	font-size   : var( --fon-siz-p01 );
 	padding-top : var( --spa-ver-m03 );
 

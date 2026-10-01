@@ -192,11 +192,11 @@
 
 
 
-.np-step-line { /* What: Step Connector. Why: A short line joins the two steps. How: This draws a 28px line as a top border, so it snaps to a whole pixel. */
+.np-step-line { /* What: Step Connector. Why: A short line joins the two steps. How: This draws a short line as a top border, so it snaps to a whole pixel. */
 
 
 	border-top : var( --bor-wid-bas ) solid var(--border);
-	flex       : 0 0 28px;
+	flex       : 0 0 calc( var( --ver-rhy-p02 ) * 1rem );
 	height     : 0;
 
 
