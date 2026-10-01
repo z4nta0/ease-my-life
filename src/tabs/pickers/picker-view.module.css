@@ -121,7 +121,7 @@
 
 /* #region picker-stage */
 
-.picker-stage { /* What: Picker Stage. Why: The run plays out on a card whose height stays fixed at the reel's, so the buttons under it never jump as the phase changes. How: This centers the phase's content in a padded, rounded card held at 344px, the reel's 280px plus padding. */
+.picker-stage { /* What: Picker Stage. Why: The run plays out on a card whose height stays fixed at the reel's, so the buttons under it never jump as the phase changes. How: This centers the phase's content in a padded, rounded card held at the reel's height, five reel rows plus padding. */
 
 
 	align-items     : center;
@@ -130,7 +130,7 @@
 	border-radius   : var(--r-xl);
 	display         : flex;
 	justify-content : center;
-	min-height      : 344px;
+	min-height      : calc( var( --ver-rhy-xl4 ) * 1rem * 5 + 2 * var( --spa-ver-xl2 ) ); /* What: Stage Minimum. Why: The stage stays the reel's height so the buttons under it never jump. How: This fits five reel rows plus the stage's own padding. */
 	overflow        : hidden;
 	padding         : var( --spa-ver-xl2 ) 20px;
 	position        : relative;
@@ -140,10 +140,10 @@
 @media (max-height: 750px) { /* What: Short Picker Stage. Why: On a short viewport the full stage would push the buttons below the fold, and clipping the reel a little is the better tradeoff. How: This applies only when the viewport matches (max-height: 750px). */
 
 
-	.picker-stage { /* What: Shorter Picker Stage. Why: The buttons must stay reachable. How: This lowers the stage to 260px. */
+	.picker-stage { /* What: Shorter Picker Stage. Why: The buttons must stay reachable. How: This lowers the stage to three reel rows plus padding. */
 
 
-		min-height : 260px;
+		min-height : calc( var( --ver-rhy-xl4 ) * 1rem * 3 + 2 * var( --spa-ver-xl2 ) ); /* What: Short Stage Minimum. Why: A short screen shows three reel rows. How: This fits three reel rows plus the stage's own padding. */
 
 
 	}

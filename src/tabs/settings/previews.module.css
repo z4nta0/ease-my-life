@@ -272,7 +272,7 @@
 	align-items           : center;
 	display               : flex;
 	justify-content       : center;
-	min-height            : 180px;
+	min-height            : calc( var( --ver-rhy-xl8 ) * 1rem );
 	width                 : 100%;
 
 

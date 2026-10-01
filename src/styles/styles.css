@@ -251,6 +251,8 @@
 	--ver-rhy-xl4  : var( --cdn-pow-006 );     /* What: Vertical Rhythm Extra Large 4 ~= 5.404. Why: This is 4 steps above the large step, for the roomiest vertical spacing. How: This is the sixth power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-xl5  : var( --cdn-pow-007 );     /* What: Vertical Rhythm Extra Large 5 ~= 7.159. Why: This is 5 steps above the large step, for the roomiest vertical spacing. How: This is the seventh power of the core design number, multiplied by 1rem where a length is needed. */
 	--ver-rhy-xl6  : var( --cdn-pow-008 );     /* What: Vertical Rhythm Extra Large 6 ~= 9.484. Why: This is 6 steps above the large step, for the roomiest vertical spacing. How: This is the eighth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl7  : var( --cdn-pow-009 );     /* What: Vertical Rhythm Extra Large 7 ~= 12.564. Why: This is 7 steps above the large step, for large fixed areas. How: This is the ninth power of the core design number, multiplied by 1rem where a length is needed. */
+	--ver-rhy-xl8  : var( --cdn-pow-010 );     /* What: Vertical Rhythm Extra Large 8 ~= 16.643. Why: This is 8 steps above the large step, for large fixed areas. How: This is the tenth power of the core design number, multiplied by 1rem where a length is needed. */
 
 	/* #endregion Vertical Rhythm Tokens */
 

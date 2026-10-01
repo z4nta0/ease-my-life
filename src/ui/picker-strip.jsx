@@ -103,7 +103,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 	// #region Short Viewport Tracking
 
-	const [ shoVieBoo, setShoVieBoo ] = React.useState( // What: Short Viewport Boolean And Setter. Why: This mirrors picker-strip.module.css's own `@media (max-height: 750px)` rule (.picker-stage's min-height drops there), but that alone can't help the 'reel' style: its own height is a fixed inline style (rowHeiNum * visRowNum, computed in JS), not CSS, so nothing in the stylesheet can shrink it. Without also reducing the row count here, the reel's own real content would stay exactly as tall as before, growing .picker-stage right back past its reduced min-height as soon as a pick starts running. How: This starts from the media query's current match state and is kept live by the effect right below.
+	const [ shoVieBoo, setShoVieBoo ] = React.useState( // What: Short Viewport Boolean And Setter. Why: This mirrors picker-strip.module.css's own `@media (max-height: 750px)` rule (.picker-stage's min-height drops there), but that alone can't help the 'reel' style: its own height is an inline style (rowHeiStr times visRowNum, computed in JS), not CSS, so nothing in the stylesheet can shrink it. Without also reducing the row count here, the reel's own real content would stay exactly as tall as before, growing .picker-stage right back past its reduced min-height as soon as a pick starts running. How: This starts from the media query's current match state and is kept live by the effect right below.
 
 		() => typeof matchMedia === 'function' && matchMedia( '(max-height: 750px)' ).matches // What: Initial Short Viewport Check. Why: The starting value must reflect the current viewport height immediately, without waiting for the effect below to run. How: This safely checks matchMedia support before querying the max-height media query's current match state.
 
@@ -259,10 +259,10 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 	if ( styKeyStr === 'reel' ) { // What: Reel Style Branch. Why: One of the three requested animation styles is a vertical strip that shifts upward. How: This computes the reel's own row geometry and renders its scrolling track.
 
 
-		const rowHeiNum = 56;                                                                       // What: Row Height Number. Why: Every reel row is drawn at this fixed pixel height. How: This sizes both the stage's own height below and the translateY offset applied to the track.
-		const visRowNum = shoVieBoo ? 3 : 5;                                                        // What: Visible Row Number. Why: An odd count keeps the picked row centered in the stage; a short viewport needs fewer visible rows to fit. How: This picks 3 rows under shoVieBoo, otherwise 5.
-		const topOffNum = -( rowPosNum * rowHeiNum ) + ( Math.floor( visRowNum / 2 ) * rowHeiNum ); // What: Top Offset Number. Why: The track must be shifted so the current row sits in the center of the visible window. How: This offsets by the current row's own pixel position, then re-centers by half the visible row count.
-		const totRowNum = staPosNum + totSteNum + visRowNum + 4;                                    // What: Total Row Number. Why: Enough rows must actually exist in the DOM to cover the full monotonic travel plus the visible window above the landing row. How: This sums the start position, every scheduled step, the visible window, and a small buffer.
+		const rowHeiStr = 'calc( var( --ver-rhy-xl4 ) * 1rem )';   // What: Row Height String. Why: Every reel row is one rhythm step tall, the same token the module's reel rows use, so the JS geometry can never drift from the CSS. How: This is multiplied by row counts in the reel's height and the track's offset below.
+		const visRowNum = shoVieBoo ? 3 : 5;                       // What: Visible Row Number. Why: An odd count keeps the picked row centered in the stage; a short viewport needs fewer visible rows to fit. How: This picks 3 rows under shoVieBoo, otherwise 5.
+		const offRowNum = Math.floor( visRowNum / 2 ) - rowPosNum; // What: Offset Row Number. Why: The track must be shifted so the current row sits in the center of the visible window. How: This counts rows up by the current row's position, then back down by half the visible row count.
+		const totRowNum = staPosNum + totSteNum + visRowNum + 4;   // What: Total Row Number. Why: Enough rows must actually exist in the DOM to cover the full monotonic travel plus the visible window above the landing row. How: This sums the start position, every scheduled step, the visible window, and a small buffer.
 
 
 
@@ -272,7 +272,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 			<div
 				className={` ${ cssModObj.reel }   ${ cycPhaStr === 'settled' ? cssModObj.reelSettled : '' } `}
 
-				style={{ height : rowHeiNum * visRowNum }}
+				style={{ height : `calc( ${ rowHeiStr } * ${ visRowNum } )` }}
 
 				data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
 			>{ /* What: Reel Div Element. Why: This is the reel style's own root, sized to exactly fit its visible row window. How: This wraps the scrolling track plus its top/bottom fade masks and center landing line. */ }
@@ -282,10 +282,10 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 					className={ cssModObj.reelTrack }
 
 					style={{
-						transform          : `translateY(${ topOffNum }px)`,
+						transform          : `translateY( calc( ${ rowHeiStr } * ${ offRowNum } ) )`,
 						transitionDuration : `${ traDurNum }ms`
 					}}
-				>{ /* What: Track Div Element. Why: This is the actual scrolling element the animation slides. How: This is translated vertically by topOffNum, over a duration of traDurNum, and holds one row per rendered candidate below. */ }
+				>{ /* What: Track Div Element. Why: This is the actual scrolling element the animation slides. How: This is translated vertically by offRowNum rows, over a duration of traDurNum, and holds one row per rendered candidate below. */ }
 
 
 					{ Array.from( Array( totRowNum ).keys(), ( rowIndNum ) => ( // What: Reel Row List Render. Why: totRowNum rows must actually exist so the track has real content to slide through for the whole travel distance. How: This maps a fresh array of that length into one row per rowIndNum, each showing the candidate at rowIndNum modulo lenCanNum.
