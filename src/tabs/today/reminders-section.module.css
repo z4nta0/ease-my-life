@@ -360,9 +360,9 @@
 .rem-added-msg { /* What: Add Result Message. Why: After adding, a short note says where the new reminder went, in a warning tone unless it lands today. How: This draws a small bordered note tinted warm. */
 
 
-	background    : oklch(from var(--acc-sec-col) l c h/0.07);
+	background    : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-009-rec ));
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-color  : oklch(from var(--acc-sec-col) l c h/0.35);
+	border-color  : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-004-rec ));
 	border-radius : var( --rad-bor-sma );
 	color         : var( --war-dar-col );
 	font-size     : var( --fon-siz-bas );
@@ -375,8 +375,8 @@
 .rem-added-msg[data-message-ok-active] { /* What: Ok Add Result Message. Why: A reminder that lands in today's list reads as a success. How: This tints the note green. */
 
 
-	background   : oklch( from var( --suc-mai-col ) l c h / 0.06 );
-	border-color : oklch( from var( --suc-mai-col ) l c h / 0.3 );
+	background   : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-010-rec ));
+	border-color : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-004-rec ));
 	color        : var( --suc-dar-col );
 
 
@@ -529,7 +529,7 @@
 	--rem-inline-foot-margin     : 0; /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) var( --spa-hor-bas ) 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
 	animation                    : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background                   : oklch(from var(--bac-sur-col) calc(l - 0.006) c h);
+	background                   : var( --bac-sun-col );
 	border                       : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                : var( --rad-bor-med );
 	margin                       : 0 0 var( --spa-ver-m05 );
@@ -610,14 +610,14 @@
 .today-card:hover { /* What: Hovered Reminder Card. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
+	border-color : var( --bor-hov-col );
 
 
 }
 .today-card:active { /* What: Pressed Reminder Card. Why: A press should register before the toggle lands. How: This shades the card. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.01) c h);
+	background : var( --bac-pre-col );
 
 
 }
@@ -633,7 +633,7 @@
 .today-card[data-card-done-active] { /* What: Done Reminder Card. Why: A done reminder reads as settled. How: This shades the card slightly darker than the surface. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	background : var( --bac-sun-col );
 
 
 }
@@ -1127,7 +1127,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	align-items     : center;
 	animation       : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background      : oklch(from var(--bac-sur-col) calc(l - 0.006) c h);
+	background      : var( --bac-sun-col );
 	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
 	display         : flex;

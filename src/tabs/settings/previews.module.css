@@ -29,7 +29,7 @@
 .celeb-preview-stage { /* What: Celebration Preview Stage. Why: The preview should echo the Today cards area it stands in for, and keep its particles inside it. How: This pads a clipped, slightly darker block under a top divider. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.015) c h);
+	background : var( --bac-wel-col );
 	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display    : block;
 	overflow   : hidden;
@@ -62,7 +62,7 @@
 
 
 	align-items           : center;
-	background            : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	background            : var( --bac-sun-col );
 	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius         : var( --rad-bor-lar );
 	cursor                : default;
@@ -87,7 +87,7 @@
 .today-card:hover { /* What: Hovered Preview Card. Why: The mock card responds to the pointer like a real one. How: This darkens its border slightly. */
 
 
-	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
+	border-color : var( --bor-hov-col );
 
 
 }

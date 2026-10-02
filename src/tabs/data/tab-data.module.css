@@ -396,7 +396,7 @@
 .picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	color        : var(--acc-mai-col);
 
@@ -420,7 +420,7 @@
 
 
 	align-items          : center;
-	background           : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
+	background           : var( --bor-fil-col );
 	border-radius        : 999px;
 	color                : var(--tex-mut-col);
 	display              : inline-flex;
@@ -536,7 +536,7 @@
 .picker-tab[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 
 
@@ -1072,7 +1072,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	--data-sort-row-border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
 	--data-sort-row-padding       : var( --spa-ver-bas ) var( --spa-hor-bas ); /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
-	background                    : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	background                    : var( --bac-sun-col );
 	border-top                    : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
@@ -1086,7 +1086,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	-webkit-appearance : none;
 	align-items        : center;
 	appearance         : none;
-	background         : oklch(from var(--bac-sur-col) calc(l - 0.012) c h);
+	background         : var( --bac-wel-col );
 	border-bottom      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-left        : 0;
 	border-radius      : 0;
@@ -1282,7 +1282,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	50% {
 
 
-		border-color : oklch(from var(--acc-mai-col) l c h / 0.2);
+		border-color : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-006-rec ));
 
 
 	}
@@ -1315,7 +1315,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-row:hover { /* What: Hovered Item Row. Why: The row should respond to the pointer. How: This shades it slightly darker than the surface. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.008) c h);
+	background : var( --bac-pre-col );
 
 
 }

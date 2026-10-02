@@ -24,7 +24,7 @@
 
 	align-items     : center;
 	animation       : legalBackdropIn var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
-	background      : oklch( from var( --scr-mai-col ) l c h / 0.42 );
+	background      : oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-003-rec ));
 	display         : flex;
 	inset           : 0;
 	justify-content : center;

@@ -28,7 +28,7 @@
 .rd-ctl-body { /* What: Controls Body. Why: The controls read as a recessed panel under the card's Controls toggle. How: This shades it, pads it, and stacks its groups flush in a column. */
 
 
-	background     : oklch(from var(--bac-sur-col) calc(l - 0.012) c h);
+	background     : var( --bac-wel-col );
 	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display        : flex;
 	flex-direction : column;
@@ -320,7 +320,7 @@
 .picker-group-pill[aria-checked="true"] { /* What: Chosen Group Pill. Why: The picker's current group should stand out. How: This fills it in the soft accent, keying off the aria-checked the pill already sets. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	color        : var(--acc-mai-col);
 
@@ -653,7 +653,7 @@
 .rd-mode-opt:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.02) c h);
+	background : var( --bac-wel-col );
 
 
 }

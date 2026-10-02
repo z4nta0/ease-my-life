@@ -408,7 +408,7 @@
 .picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	color        : var(--acc-mai-col);
 
@@ -432,7 +432,7 @@
 
 
 	align-items          : center;
-	background           : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
+	background           : var( --bor-fil-col );
 	border-radius        : 999px;
 	color                : var(--tex-mut-col);
 	display              : inline-flex;
@@ -548,7 +548,7 @@
 .picker-tab[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 
 
@@ -686,7 +686,7 @@
 .stat-pill[data-pill-select-active] { /* What: Selected Range Pill. Why: The active range should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	color        : var(--acc-mai-col);
 
@@ -896,7 +896,7 @@
 .bd-bar { /* What: Breakdown Bar. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped pill at the small rhythm step on a faint track. */
 
 
-	background    : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
+	background    : var( --bor-fil-col );
 	border-radius : 999px;
 	display       : flex;
 	height        : calc( var( --ver-rhy-m01 ) * 1rem );
@@ -1116,7 +1116,7 @@
 .heat-year-arrow:hover:not(:disabled) { /* What: Hovered Year Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
 
 
-	background   : oklch(from var(--acc-mai-col) l c h / 0.08);
+	background   : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-009-rec ));
 	border-color : oklch(from var(--acc-mai-col) l c h / 0.5);
 
 
@@ -1237,7 +1237,7 @@
 
 
 	aspect-ratio  : 1;
-	background    : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
+	background    : var( --bor-fil-col );
 	border-radius : var( --rad-bor-xsm );
 	display       : block;
 
@@ -1289,28 +1289,28 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-0 { /* What: Empty Heat Level. Why: A day with nothing done stays on the faint track color. How: This sets that color. */
 
 
-	background : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
+	background : var( --bor-fil-col );
 
 
 }
 .heat-1 { /* What: First Heat Level. Why: A little done reads as a pale accent. How: This lightens and desaturates the accent. */
 
 
-	background : oklch(from var(--acc-mai-col) calc(l + 0.30) calc(c - 0.10) h);
+	background : var( --hea-lev-sma );
 
 
 }
 .heat-2 { /* What: Second Heat Level. Why: Some done reads a step stronger. How: This lightens the accent less. */
 
 
-	background : oklch(from var(--acc-mai-col) calc(l + 0.18) calc(c - 0.06) h);
+	background : var( --hea-lev-med );
 
 
 }
 .heat-3 { /* What: Third Heat Level. Why: Most done reads nearly full strength. How: This lightens the accent slightly. */
 
 
-	background : oklch(from var(--acc-mai-col) calc(l + 0.08) calc(c - 0.03) h);
+	background : var( --hea-lev-lar );
 
 
 }
@@ -1327,7 +1327,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-tap-hint { /* What: Tap Hint. Why: Under the grid, a quiet hint says a day can be tapped. How: This sets small faded uppercase mono. */
 
 
-	color          : oklch(from var(--tex-mut-col) l c h / 0.7);
+	color          : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-001-rec ));
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -1404,7 +1404,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : baseline;
-	border-bottom   : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h / 0.55);
+	border-bottom   : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h / var( --cdn-pow-002-rec ));
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
 	gap             : var( --spa-hor-m01 );
@@ -1439,7 +1439,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail-mark { /* What: Day Detail Mark. Why: Each item ends in a check or a dash. How: This sets it in faded mono. */
 
 
-	color       : oklch(from var(--tex-mut-col) l c h / 0.6);
+	color       : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-002-rec ));
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-p01 );
 
@@ -1770,7 +1770,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .bd-metric[data-pill-select-active] { /* What: Selected Metric Pill. Why: The showing metric should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	color        : var(--acc-mai-col);
 
@@ -1963,7 +1963,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank--cold .rank-n { /* What: Cold Rank Count. Why: The coldest items' counts read fainter still. How: This fades the muted color. */
 
 
-	color : oklch(from var(--tex-mut-col) l c h / 0.7);
+	color : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-001-rec ));
 
 
 }
@@ -2040,8 +2040,8 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-tag--was { /* What: Was Inactive Tag. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
-	border-color : oklch(from var(--acc-mai-col) l c h / 0.4);
+	background   : var( --acc-tin-col );
+	border-color : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-003-rec ));
 	color        : var(--acc-mai-col);
 
 
@@ -2049,8 +2049,8 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-tag--deleted { /* What: Deleted Tag. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
 
 
-	background   : oklch( from var( --err-mai-col ) l c h / 0.08 );
-	border-color : oklch( from var( --err-mai-col ) l c h / 0.4 );
+	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ));
+	border-color : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-003-rec ));
 	color        : var( --err-mai-col );
 
 
@@ -2147,7 +2147,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-freq-val[data-value-dim-active] { /* What: Placeholder Unit Value. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
 
 
-	color : oklch(from var(--tex-mut-col) l c h / 0.7);
+	color : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-001-rec ));
 
 
 }
@@ -2327,7 +2327,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	background   : oklch(from var(--acc-tin-col) l c h / 0.5);
-	border-color : oklch(from var(--acc-mai-col) l c h / 0.4);
+	border-color : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-003-rec ));
 	color        : var(--acc-mai-col);
 
 
@@ -2406,7 +2406,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .pager-arrow:hover:not(:disabled) { /* What: Hovered Pager Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
 
 
-	background   : oklch(from var(--acc-mai-col) l c h / 0.08);
+	background   : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-009-rec ));
 	border-color : oklch(from var(--acc-mai-col) l c h / 0.5);
 
 

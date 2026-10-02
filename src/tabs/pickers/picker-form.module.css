@@ -458,7 +458,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-chip[data-chip-select-active] { /* What: Chosen Group Chip. Why: The picker's group should stand out. How: This fills it in the soft accent, keying off data-chip-select-active. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	color        : var(--acc-mai-col);
 
@@ -516,7 +516,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items   : flex-start;
-	background    : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	background    : var( --bac-sun-col );
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
 	cursor        : pointer;
@@ -991,7 +991,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-preset:hover { /* What: Hovered Day Preset. Why: The preset should respond to the pointer. How: This tints it in the soft accent. */
 
 
-	background : oklch(from var(--acc-tin-col) l c h);
+	background : var( --acc-tin-col );
 
 
 }
@@ -1416,7 +1416,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-del:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
 
 
-	background   : oklch( from var( --err-mai-col ) l c h / 0.08 );
+	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ));
 	border-color : var( --err-mai-col );
 	color        : var( --err-mai-col );
 

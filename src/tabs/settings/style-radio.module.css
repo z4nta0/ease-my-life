@@ -92,7 +92,7 @@
 .rd-mode-opt:hover { /* What: Hovered Style Radio Row. Why: A row should respond to the pointer. How: This darkens its background slightly. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.02) c h);
+	background : var( --bac-wel-col );
 
 
 }

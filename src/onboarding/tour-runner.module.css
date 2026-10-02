@@ -40,7 +40,7 @@
 .ob-dim { /* What: Tour Dim. Why: Before a step's target is found, the whole page stays dimmed. How: This covers the overlay with a dark translucent scrim. */
 
 
-	background : oklch( from var( --scr-mai-col ) l c h / 0.55 );
+	background : oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-002-rec ));
 	inset      : 0;
 	position   : absolute;
 
@@ -52,7 +52,7 @@
 
 	border        : var( --bor-wid-lar ) solid oklch(from var(--acc-mai-col) l c h/0.9);
 	border-radius : var( --rad-bor-med );
-	box-shadow    : 0 0 0 9999px oklch( from var( --scr-mai-col ) l c h / 0.6 ); /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
+	box-shadow    : 0 0 0 9999px oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-002-rec )); /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
 	position      : fixed;
 
 

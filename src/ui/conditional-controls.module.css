@@ -326,7 +326,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .rd-mode-opt:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.02) c h);
+	background : var( --bac-wel-col );
 
 
 }

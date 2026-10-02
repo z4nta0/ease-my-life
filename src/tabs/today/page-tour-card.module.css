@@ -49,21 +49,21 @@
 .today-card:hover { /* What: Hovered Page Tour Card. Why: The card should respond to the pointer. How: This darkens its border slightly. */
 
 
-	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
+	border-color : var( --bor-hov-col );
 
 
 }
 .today-card:active { /* What: Pressed Page Tour Card. Why: A press should register on the card. How: This darkens its surface slightly. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.01) c h);
+	background : var( --bac-pre-col );
 
 
 }
 .today-card[data-card-done-active] { /* What: Done Page Tour Card. Why: A finished tour should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	background : var( --bac-sun-col );
 
 
 }

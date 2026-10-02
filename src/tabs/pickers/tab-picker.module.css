@@ -404,7 +404,7 @@
 .picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	color        : var(--acc-mai-col);
 
@@ -428,7 +428,7 @@
 
 
 	align-items          : center;
-	background           : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
+	background           : var( --bor-fil-col );
 	border-radius        : 999px;
 	color                : var(--tex-mut-col);
 	display              : inline-flex;
@@ -542,7 +542,7 @@
 .picker-tab[data-tab-select-active] { /* What: Selected Picker Tab. Why: The picker showing below should stand out in the strip. How: This fills the tab in the soft accent. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 
 
@@ -586,7 +586,7 @@
 .picker-tab--add[data-tab-select-active] { /* What: Selected Add Picker Tab. Why: While the create form is open, its tab reads as selected. How: This solidifies the border and fills it in the soft accent. */
 
 
-	background   : oklch(from var(--acc-tin-col) l c h);
+	background   : var( --acc-tin-col );
 	border-color : var(--acc-mai-col);
 	border-style : solid;
 	color        : var(--acc-mai-col);

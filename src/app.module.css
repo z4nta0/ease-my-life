@@ -860,7 +860,7 @@
 .rail-scrim { /* What: Rail Scrim. Why: An open drawer dims the content behind it, and only exists on a small screen. How: This covers the viewport with a translucent layer below the drawer, hidden until the narrow-screen query shows it. */
 
 
-	background : oklch(from var(--tex-mai-col) l c h / 0.32);
+	background : oklch(from var(--tex-mai-col) l c h / var( --cdn-pow-004-rec ));
 	display    : none;
 	inset      : 0;
 	position   : fixed;

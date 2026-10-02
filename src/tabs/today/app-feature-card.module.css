@@ -51,36 +51,36 @@
 .today-card:hover { /* What: Hovered App Feature Card. Why: The card should respond to the pointer. How: This darkens its border slightly. */
 
 
-	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
+	border-color : var( --bor-hov-col );
 
 
 }
 .today-card:active { /* What: Pressed App Feature Card. Why: A press should register on the card. How: This darkens its surface slightly. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.01) c h);
+	background : var( --bac-pre-col );
 
 
 }
 .today-card[data-card-done-active] { /* What: Done App Feature Card. Why: A finished tutorial should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	background : var( --bac-sun-col );
 
 
 }
 .today-card[data-card-needed-active] { /* What: Needs Attention App Feature Card. Why: A tutorial that can't run yet is flagged as unfinished, warm rather than red, since nothing is wrong. How: This tints the card's border and surface with the warm color, and must stay after the hover and pressed rules so it wins. */
 
 
-	background   : oklch(from var(--acc-sec-col) l c h/0.06);
-	border-color : oklch(from var(--acc-sec-col) l c h/0.55);
+	background   : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-010-rec ));
+	border-color : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-002-rec ));
 
 
 }
 .today-card[data-card-needed-active]:hover { /* What: Hovered Needs Attention App Feature Card. Why: The flagged card should still respond to the pointer. How: This deepens its warm border. */
 
 
-	border-color : oklch(from var(--acc-sec-col) l c h/0.7);
+	border-color : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-001-rec ));
 
 
 }

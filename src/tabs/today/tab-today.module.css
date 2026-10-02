@@ -1148,7 +1148,7 @@
 	align-items     : center;
 	animation       : emBannerIn var( --dur-ani-p02 ) var( --mot-sta-eas ) both;
 	background      : var(--acc-tin-col);
-	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / 0.35);
+	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-004-rec ));
 	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	gap             : var( --spa-hor-bas );
@@ -1591,7 +1591,7 @@
 
 
 	align-items     : center;
-	background      : oklch(from var(--bac-sur-col) calc(l - 0.015) c h);
+	background      : var( --bac-wel-col );
 	border          : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
 	color           : var(--tex-mut-col);
@@ -1841,8 +1841,8 @@
 .ob-create--generate[data-card-needed-active] { /* What: Blocked Generate Card. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
 
 
-	background   : oklch(from var(--acc-sec-col) l c h/0.07);
-	border-color : oklch(from var(--acc-sec-col) l c h/0.55);
+	background   : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-009-rec ));
+	border-color : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-002-rec ));
 
 
 }
@@ -1906,7 +1906,7 @@
 	0% {
 
 
-		box-shadow : 0 0 0 0 oklch(from var(--acc-mai-col) l c h/0.55);
+		box-shadow : 0 0 0 0 oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-002-rec ));
 
 
 	}
@@ -1914,7 +1914,7 @@
 	40% {
 
 
-		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem / 2 ) oklch(from var(--acc-mai-col) l c h/0.35);
+		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem / 2 ) oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-004-rec ));
 
 
 	}

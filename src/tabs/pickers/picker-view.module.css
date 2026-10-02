@@ -1122,7 +1122,7 @@
 .pool-del:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
 
 
-	background   : oklch( from var( --err-mai-col ) l c h / 0.08 );
+	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ));
 	border-color : var( --err-mai-col );
 	color        : var( --err-mai-col );
 

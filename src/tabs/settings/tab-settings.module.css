@@ -877,8 +877,8 @@
 .set-store-chip[data-chip-ok-active] { /* What: Good Storage Chip. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
 
 
-	background   : oklch( from var( --suc-mai-col ) l c h / 0.08 );
-	border-color : oklch( from var( --suc-mai-col ) l c h / 0.35 );
+	background   : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-009-rec ));
+	border-color : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-004-rec ));
 	color        : var( --suc-dar-col );
 
 
@@ -886,8 +886,8 @@
 .set-store-chip[data-chip-warn-active] { /* What: Warning Storage Chip. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
 
 
-	background   : oklch(from var(--acc-sec-col) l c h/0.08);
-	border-color : oklch(from var(--acc-sec-col) l c h/0.4);
+	background   : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-009-rec ));
+	border-color : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-003-rec ));
 	color        : var( --war-dar-col );
 
 

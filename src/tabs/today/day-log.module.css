@@ -97,7 +97,7 @@
 .dl-panel { /* What: Log Panel. Why: The log opens as its own inset card under the group header. How: This draws a bordered, rounded, slightly lifted card that clips its content. */
 
 
-	background    : oklch(from var(--bac-sur-col) calc(l + 0.006) c h);
+	background    : var( --bac-rai-col );
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
 	margin        : var( --spa-ver-m07 ) 0 var( --spa-ver-bas );
@@ -215,7 +215,7 @@
 
 
 	align-items   : baseline;
-	background    : oklch(from var(--bac-sur-col) calc(l + 0.006) c h);
+	background    : var( --bac-rai-col );
 	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display       : flex;
 	flex-wrap     : nowrap;
@@ -829,7 +829,7 @@
 .dl-trow { /* What: Log Row. Why: Each item is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h/0.55);
+	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h / var( --cdn-pow-002-rec ));
 	border-radius : var( --rad-bor-sma );
 	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
@@ -975,7 +975,7 @@
 
 
 	background    : var(--bac-pag-col);
-	border        : var( --bor-wid-sma ) solid oklch(from var(--acc-mai-col) l c h/0.4);
+	border        : var( --bor-wid-sma ) solid oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-003-rec ));
 	color         : var(--acc-mai-col);
 	min-width     : 0;
 	overflow      : hidden;
@@ -1115,7 +1115,7 @@
 .dl-na { /* What: Not Applicable Value. Why: A value that doesn't apply reads faint. How: This sets it in small faded mono type. */
 
 
-	color       : oklch(from var(--tex-mut-col) l c h/0.55);
+	color       : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-002-rec ));
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-bas );
 
@@ -1204,7 +1204,7 @@
 .dl-none { /* What: No Status. Why: A row with no status shows a faint dash. How: This sets it faint and right-aligned in mono. */
 
 
-	color       : oklch(from var(--tex-mut-col) l c h/0.4);
+	color       : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-003-rec ));
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-p01 );
 	text-align  : right;
@@ -1215,7 +1215,7 @@
 .dl-vac { /* What: Inactive Note. Why: An item on vacation says so where its status would be. How: This sets small uppercase faded mono text. */
 
 
-	color          : oklch(from var(--tex-mut-col) l c h/0.7);
+	color          : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-001-rec ));
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -1340,7 +1340,7 @@
 .dl-rt-row { /* What: Reminder Row. Why: Each reminder is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h/0.55);
+	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h / var( --cdn-pow-002-rec ));
 	border-radius : var( --rad-bor-sma );
 	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
@@ -1415,7 +1415,7 @@
 .dl-st-not { /* What: Not Due Label. Why: A reminder not due yet shows when it will be, quieter than a pill. How: This sets right-aligned small uppercase faded mono text. */
 
 
-	color          : oklch(from var(--tex-mut-col) l c h/0.75);
+	color          : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-001-rec ));
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;

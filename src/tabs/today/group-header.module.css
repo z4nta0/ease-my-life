@@ -408,7 +408,7 @@
 	align-items     : center;
 	animation       : groupMergeIn var( --dur-ani-p01 ) var( --mot-dec-eas ) both;
 	background      : var(--acc-tin-col);
-	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / 0.3);
+	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-004-rec ));
 	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	flex-wrap       : wrap;
@@ -422,8 +422,8 @@
 .group-name-conflict { /* What: Group Name Conflict Banner. Why: A rename that collides with an existing name has nothing to confirm, only an error to fix. How: This recolors the same bar in warm tones. */
 
 
-	background   : oklch(from var(--acc-sec-col) l c h / 0.08);
-	border-color : oklch(from var(--acc-sec-col) l c h / 0.35);
+	background   : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-009-rec ));
+	border-color : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-004-rec ));
 
 
 }

@@ -85,7 +85,7 @@
 .help-dim-fill { /* What: Help Dim Fill. Why: Everything outside the highlighted targets should read as dimmed. How: This fills the masked rect with a dark translucent scrim. */
 
 
-	fill : oklch( from var( --scr-mai-col ) l c h / 0.55 );
+	fill : oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-002-rec ));
 
 
 }

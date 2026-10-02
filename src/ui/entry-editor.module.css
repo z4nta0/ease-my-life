@@ -28,7 +28,7 @@
 
 
 	animation     : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background    : var(--entry-editor-background, oklch(from var(--bac-sur-col) calc(l - 0.006) c h)); /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
+	background    : var(--entry-editor-background, var( --bac-sun-col )); /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
 	border        : var(--entry-editor-border, var( --bor-wid-sma ) solid var(--bor-mai-col)); /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
 	border-radius : var(--entry-editor-border-radius, var( --rad-bor-med )); /* What: Card Radius. Why: A Data or Pickers row strips the card's rounding. How: Its parent sets this to 0. */
 	margin        : var(--entry-editor-margin, 0 0 var( --spa-ver-m05 )); /* What: Card Margin. Why: A Data or Pickers row sits the editor flush, and the top stays 0 everywhere, since a negative one would be clipped by the overflow of the collapse the editor opens in. How: Its parent sets this to 0, falling back to a small gap below. */

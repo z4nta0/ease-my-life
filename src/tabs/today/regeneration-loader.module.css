@@ -63,7 +63,7 @@
 .today-card--loader[data-slot-pending-active] { /* What: Pending Loader Card. Why: A slot still waiting its turn should read as not started yet. How: This lightens the card's surface slightly. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l + 0.005) c h);
+	background : var( --bac-rai-col );
 
 
 }

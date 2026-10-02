@@ -60,14 +60,14 @@
 .today-card:hover { /* What: Hovered Entry Card. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
+	border-color : var( --bor-hov-col );
 
 
 }
 .today-card:active { /* What: Pressed Entry Card. Why: A press should register before the toggle lands. How: This shades the card. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.01) c h);
+	background : var( --bac-pre-col );
 
 
 }
@@ -83,7 +83,7 @@
 .today-card[data-card-done-active] { /* What: Done Entry Card. Why: A done entry reads as settled. How: This shades the card slightly darker than the surface. */
 
 
-	background : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	background : var( --bac-sun-col );
 
 
 }
@@ -112,7 +112,7 @@
 
 
 	animation    : emUnlock var( --dur-ani-p02 ) var( --mot-sta-eas ) both;
-	border-color : oklch(from var(--acc-mai-col) l c h / 0.4);
+	border-color : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-003-rec ));
 	border-style : dashed;
 	cursor       : grab;
 	perspective  : none; /* What: Flat Perspective. Why: In Firefox the card's 3D context interferes with the drag's translate. How: This drops the perspective while the card can be dragged. */
@@ -123,7 +123,7 @@
 
 
 	background   : var(--bac-sur-col);
-	border-color : oklch(from var(--acc-mai-col) l c h / 0.6);
+	border-color : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-002-rec ));
 
 
 }
@@ -137,7 +137,7 @@
 .today-card[data-item-drag-active] { /* What: Dragged Entry Card. Why: The card under the pointer lifts above the rest. How: This solidifies its border, shadows it, and scales it up slightly. */
 
 
-	border-color : oklch(from var(--acc-mai-col) l c h / 0.55);
+	border-color : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-002-rec ));
 	border-style : solid;
 	box-shadow   : var( --ele-lar-sha );
 	cursor       : grabbing;
@@ -148,15 +148,15 @@
 .today-card--tutorial[data-card-needed-active] { /* What: Needed Tutorial Card. Why: While no real picker exists, the tutorial cards ask for attention. How: This tints the card warm. */
 
 
-	background   : oklch(from var(--acc-sec-col) l c h/0.06);
-	border-color : oklch(from var(--acc-sec-col) l c h/0.55);
+	background   : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-010-rec ));
+	border-color : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-002-rec ));
 
 
 }
 .today-card--tutorial[data-card-needed-active]:hover { /* What: Hovered Needed Tutorial Card. Why: The card should respond to the pointer. How: This deepens its warm border. */
 
 
-	border-color : oklch(from var(--acc-sec-col) l c h/0.7);
+	border-color : oklch(from var(--acc-sec-col) l c h / var( --cdn-pow-001-rec ));
 
 
 }
