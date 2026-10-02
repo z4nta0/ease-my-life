@@ -2387,6 +2387,26 @@ are renamed to this as their files come up in the design-system pass.
     rows), and seed data in JS. In this project the theme system writes
     only the original eight roles, so the newer ones keep one value across
     every theme for now.
+  - **Shades of a role are tokens too** (decided 2026-10-02): a lighter
+    or darker version of a role that several elements share gets its own
+    token, defined once in `:root` through relative color syntax so it
+    still follows every theme, e.g. `--bac-sun-col : oklch( from var(
+    --bac-sur-col ) calc( l - 0.006 ) c h )`. In this project: the surface
+    family `--bac-rai-col` (raised, +0.006), `--bac-sun-col` (sunken,
+    -0.006), `--bac-pre-col` (hovered or pressed, -0.01), and
+    `--bac-wel-col` (a well, -0.015); `--bor-fil-col` (a soft fill one
+    notch off the border, +0.02) and `--bor-hov-col` (a hovered border,
+    -0.08); and the Stats heat map's three accent levels, `--hea-lev-sma`,
+    `--hea-lev-med`, and `--hea-lev-lar`. Shifts within a few thousandths
+    of each other fold into one token. The lightness shift stays a plain
+    number, since a base plus a rhythm number isn't truly on the scale. A
+    shade only one element uses stays inline where it's used.
+  - **Transparency sits on the rhythm** (decided 2026-10-02): an alpha
+    read through relative color syntax uses the reciprocal power of the
+    core design number nearest to it (`/ var( --cdn-pow-004-rec )`, about
+    0.325), under the 10% rule for behavior numbers. An alpha with no power
+    within 10% stays literal: in this project 0.16, 0.5, 0.65, 0.85, the
+    near-opaque 0.88 to 0.94, and 0 and 1.
 - **Examples mapped from today's tokens**: `--bg` → `--bac-pag-col`,
   `--surface` → `--bac-sur-col`, `--text` → `--tex-mai-col`, `--muted` →
   `--tex-mut-col`, `--accent-soft` → `--acc-tin-col`, `--warm` →
