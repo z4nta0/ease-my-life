@@ -2384,6 +2384,15 @@ are renamed to this as their files come up in the design-system pass.
   `--bor-wid-xla` (`m05`, about 3.571px), each a rhythm step times 1rem. A
   step is picked so it snaps to the intended width: `m06` (about 2.696px)
   would draw as 2px, so 3px takes `m05`.
+- **Border radii use a five-step scale** (decided 2026-10-01):
+  `--rad-bor-xsm` (`m05`, about 3.57px), `--rad-bor-sma` (`m02`, about
+  8.30px), `--rad-bor-med` (`m01`, 11px), `--rad-bor-lar` (`bas`, about
+  14.57px), and `--rad-bor-xla` (`p01`, about 19.30px), each a rhythm step
+  times 1rem. Every literal radius folds into the nearest token, so a
+  corner size changes in one place. Values that mean a shape rather than a
+  size stay as they are: `999px` (a fully rounded pill), `50%` (a circle),
+  `0`, and `inherit`. JavaScript reads a radius the same way as any other
+  step, through `rhyPxlFun`.
 - **Breakpoints stay literal numbers**, since a custom property can't be
   read inside an `@media` or `@container` condition, but their values still
   come from the scale the design system defines.
