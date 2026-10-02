@@ -807,7 +807,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 						<IcoSvgCom
 							icoNamStr='chvEle'
-							sizValNum={ 14 }
+							sizStpStr='bas'
 						/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -866,7 +866,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 							<IcoSvgCom
 								icoNamStr='pluEle'
-								sizValNum={ 13 }
+								sizStpStr='bas'
 							/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
@@ -904,7 +904,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 							<IcoSvgCom
 								icoNamStr='pluEle'
-								sizValNum={ 13 }
+								sizStpStr='bas'
 							/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
@@ -1035,7 +1035,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizValNum={ 14 }
+													sizStpStr='bas'
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -1108,7 +1108,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizValNum={ 14 }
+													sizStpStr='bas'
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 

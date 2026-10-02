@@ -141,7 +141,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 					<IcoSvgCom
 						icoNamStr='cheEle'
-						sizValNum={ 14 }
+						sizStpStr='bas'
 					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -163,7 +163,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 					<IcoSvgCom
 						icoNamStr='plaEle'
-						sizValNum={ 13 }
+						sizStpStr='bas'
 					/>{ /* What: Icon Svg Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
@@ -195,7 +195,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 					<IcoSvgCom
 						icoNamStr='plaEle'
-						sizValNum={ 13 }
+						sizStpStr='bas'
 					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
@@ -270,7 +270,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 						<IcoSvgCom
 							icoNamStr='croEle'
-							sizValNum={ 15 }
+							sizStpStr='bas'
 						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 

@@ -23,6 +23,7 @@ import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.js'; // What: Onb
 import { PicAniCom    } from './previews.jsx';                      // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
 import { PWA_NAM_OBJ  } from '../../platform/pwa.js';               // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isaStaFun()/canInsFun()/insStaFun()/askInsFun()/askPerFun() methods.
 import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
+import { rhyPxlFun    } from '../../utils/rhythm.js';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { SegConCom    } from '../../ui/segmented-control.jsx';      // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
 import { SET_HEL_ARR  } from '../../help/content.jsx';              // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
 import { STG_NAM_OBJ  } from '../../state/storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own staRepFun()/reaPerFun() methods.
@@ -305,7 +306,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const skiSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jumSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
 
 
-	const stiOffFun = () => { // What: Sticky Offset Function. Why: Both the scroll-spy handler and jumSecFun need the exact same "how far below the viewport top" figure, computed fresh each time layout may have changed. How: This measures the rail's own current orientation and height, returning the extra offset a mobile sticky bar needs on top of a fixed 16px margin. // Where a jumped-to section should land below the top of the scroll viewport (the desktop rail sticks at 16px; on mobile the rail is a sticky bar, so its own height is added too). Measured live so the 2 stay in agreement.
+	const stiOffFun = () => { // What: Sticky Offset Function. Why: Both the scroll-spy handler and jumSecFun need the exact same "how far below the viewport top" figure, computed fresh each time layout may have changed. How: This measures the rail's own current orientation and height, returning the extra offset a mobile sticky bar needs on top of a fixed 16px margin. // Where a jumped-to section should land below the top of the scroll viewport (the desktop rail sticks at a base rhythm step; on mobile the rail is a sticky bar, so its own height is added too). Measured live so the 2 stay in agreement.
 
 
 		const raiCurEle = raiEleRef.current;                                                  // What: Rail Current Element. Why: This gives a stable local handle on the rail for this measurement pass. How: This is read once from raiEleRef.current.
@@ -314,7 +315,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		return ( horDirBoo ? raiCurEle.offsetHeight + 8 : 0 ) + 16; // What: Sticky Offset Return. Why: This is the actual usable offset callers add to their own scroll-position math. How: This adds the rail's own measured height plus 8px only in the horizontal/mobile case, then always adds a flat 16px margin.
+		return ( horDirBoo ? raiCurEle.offsetHeight + rhyPxlFun( 'm02' ) : 0 ) + rhyPxlFun( 'bas' ); // What: Sticky Offset Return. Why: This is the actual usable offset callers add to their own scroll-position math. How: This adds the rail's own measured height plus an m02 step only in the horizontal/mobile case, then always adds a flat base-step margin.
 
 
 	};

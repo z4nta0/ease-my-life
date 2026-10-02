@@ -542,12 +542,12 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns IntModCom below whenever touPhaStr is 'intro'.
 
 
-		const intIcoEle = ( // What: Intro Icon Element. Why: The intro modal's own icon matches this varKeyStr. How: This renders varCopObj's own icon at 54px, passed as IntModCom's own icoTopEle prop below.
+		const intIcoEle = ( // What: Intro Icon Element. Why: The intro modal's own icon matches this varKeyStr. How: This renders varCopObj's own icon at the p05 rhythm step, passed as IntModCom's own icoTopEle prop below.
 
 
 			<IcoSvgCom
 				icoNamStr={ varCopObj.icoStr }
-				sizValNum={ 54 }
+				sizStpStr='p05'
 			/> // What: Icon Svg Component. Why: This is the glyph identifying which kind of reminder this tour creates. How: This renders varCopObj.icoStr's own icon.
 
 

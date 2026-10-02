@@ -36,19 +36,20 @@
  *
  * @param props.icoNamStr - Icon Name String: Which icon to draw, a key of the
  *                          icon table.
- * @param props.sizValNum - Size Value Number: The width and height in pixels,
- *                          defaulting to 18.
+ * @param props.sizStpStr - Size Step String: The vertical rhythm step for
+ *                          the width and height (e.g. 'bas'), defaulting
+ *                          to 'p01'.
  *
  * @returns The icon's SVG element.
  *
  * @example
  * ```tsx
- * IcoSvgCom({ icoNamStr: 'plus', sizValNum: 18 }) // => <IcoSvgCom />
+ * IcoSvgCom({ icoNamStr: 'plus', sizStpStr: 'p01' }) // => <IcoSvgCom />
  * ```
  *
 */
 
-const IcoSvgCom = ( { icoNamStr, sizValNum = 18 } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at sizValNum.
+const IcoSvgCom = ( { icoNamStr, sizStpStr = 'p01' } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizStpStr rhythm step.
 
 
 	const icoPatObj = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
@@ -90,18 +91,25 @@ const IcoSvgCom = ( { icoNamStr, sizValNum = 18 } ) => { // What: Icon Svg Compo
 
 
 
+	const sizCssStr = `calc( var( --ver-rhy-${ sizStpStr } ) * 1rem )`; // What: Size Css String. Why: The icon's width and height both follow the named vertical rhythm step. How: This builds the step's length once for the style below.
+
+
+
 	return (
 
 
 		<svg
+			style={{
+				height : sizCssStr,
+				width  : sizCssStr
+			}}
+
 			fill='none'
-			height={ sizValNum }
 			stroke='currentColor'
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			strokeWidth='1.6'
 			viewBox='0 0 24 24'
-			width={ sizValNum }
 
 			aria-hidden='true'
 		>{ /* What: Icon Svg Element. Why: This is IcoSvgCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape icoPatObj[ icoNamStr ] resolves to. */ }

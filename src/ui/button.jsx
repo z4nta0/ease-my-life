@@ -88,13 +88,13 @@ const ButBasCom = React.forwardRef( function ButBasCom ( { children, className =
 		>{ /* What: Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards the ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }
 
 
-			{ icoNamStr && ( // What: Icon Visibility Check. Why: An icon is optional, only some ButBasCom callers pass one. How: This renders an IcoSvgCom sized down for the 'sm' size, only while icoNamStr holds a name.
+			{ icoNamStr && ( // What: Icon Visibility Check. Why: An icon is optional, only some ButBasCom callers pass one. How: This renders an IcoSvgCom at the base rhythm step, only while icoNamStr holds a name.
 
 
 				<IcoSvgCom
 					icoNamStr={ icoNamStr }
-					sizValNum={ sizValStr === 'sm' ? 14 : 16 } // What: Icon Size Pick. Why: A small button needs a smaller icon to keep its proportions. How: This uses 14px for the 'sm' size and 16px otherwise.
-				/> // What: Leading Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at a size matched to sizValStr.
+					sizStpStr='bas'
+				/> // What: Leading Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size.
 
 
 			) }

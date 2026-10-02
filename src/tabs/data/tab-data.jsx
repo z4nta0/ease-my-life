@@ -1816,7 +1816,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
-								...( isaDraBoo ? { scrollMarginTop : 14 } : {} ),
+								...( isaDraBoo ? { scrollMarginTop : 'var( --spa-ver-bas )' } : {} ),
 								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rem-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rem-hei for the catRemove keyframes only while this card is the one being removed.
 							}}
 
@@ -1886,7 +1886,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<IcoSvgCom
 											icoNamStr='chvEle'
-											sizValNum={ 14 }
+											sizStpStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -1963,7 +1963,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<IcoSvgCom
 											icoNamStr={ allVacBoo ? 'mooEle' : 'spaEle' }
-											sizValNum={ 14 }
+											sizStpStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
 
 										<span
@@ -2022,7 +2022,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizValNum={ 12 }
+													sizStpStr='m01'
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2103,7 +2103,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizValNum={ 12 }
+													sizStpStr='m01'
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2143,7 +2143,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='pluEle'
-														sizValNum={ 13 }
+														sizStpStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
@@ -2166,7 +2166,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='pluEle'
-														sizValNum={ 13 }
+														sizStpStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
@@ -2304,7 +2304,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																	<IcoSvgCom
 																		icoNamStr='chvEle'
-																		sizValNum={ 16 }
+																		sizStpStr='bas'
 																	/>{ /* What: Icon Svg Component. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2353,7 +2353,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																	<IcoSvgCom
 																		icoNamStr='chvEle'
-																		sizValNum={ 16 }
+																		sizStpStr='bas'
 																	/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2494,7 +2494,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 						<IcoSvgCom
 							icoNamStr='pluEle'
-							sizValNum={ 14 }
+							sizStpStr='bas'
 						/>{ /* What: Icon Svg Component. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Create Picker
 
 

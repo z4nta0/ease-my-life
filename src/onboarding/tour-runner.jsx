@@ -11,6 +11,7 @@ import { createPortal } from 'react-dom';            // What: Create Portal. Why
 import { emlTouObj    } from '../state/tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
 import { InfTipCom    } from '../ui/info-tip.jsx';   // What: Info Tip Component. Why: A cirBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
 import { redMotFun    } from '../utils/motion.js';   // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
+import { rhyPxlFun    } from '../utils/rhythm.js';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { splSelFun    } from '../utils/selector.js'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called with the step's or item's own selector list.
 import { useEmlTouFun } from '../state/tour-bus.js'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
 
@@ -231,9 +232,9 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
  * has run at all) and as the eventual-consistency fallback once React catches
  * up.
  *
- * Below the target is preferred whenever the coach's own height plus a 16px
- * gap fits there; otherwise the coach sits 16px above it, never rising past
- * the safe top floor.
+ * Below the target is preferred whenever the coach's own height plus a
+ * base-step gap fits there; otherwise the coach sits a base step above it,
+ * never rising past the safe top floor.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -260,14 +261,14 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
 const coaLayFun = ( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => { // What: Coach Layout Function. Why: This is the one shared answer for where the coach sits relative to a clamped highlight rect. How: This prefers below the target, flipping above it only once there is no room below.
 
 
-	const coaLefNum = Math.max( 12, Math.min( curRecObj.left, vieWidNum - coaWidNum - 12 ) ); // What: Coach Left Number. Why: The coach must never sit flush against either viewport edge. How: This clamps the target's own left edge between a 12px margin and the coach's own width from the right edge.
-	const safTopNum = safTopFun( { forCoaBoo : true } ) + 12;                                 // What: Safe Top Number. Why: The "flip above" branch below must not let the coach rise above the coach's own exclusion floor. How: This calls safTopFun in coach mode (always 0) plus a fixed 12px margin.
-	const spaBelNum = vieHeiNum - ( curRecObj.top + curRecObj.height );                       // What: Space Below Number. Why: The below/above choice needs to know how much room actually exists under the target. How: This subtracts the target's own bottom edge from the viewport's own height.
-	const aboTopNum = Math.max( curRecObj.top - 16 - coaHeiNum, safTopNum );                  // What: Above Top Number. Why: The above placement needs its own top edge. How: This places the coach 16px above the target, clamped down to safTopNum so it never rises past the safe floor.
-	const belTopNum = curRecObj.top + curRecObj.height + 16;                                  // What: Below Top Number. Why: The below placement needs its own top edge. How: This places the coach 16px under the target's own bottom edge.
+	const coaLefNum = Math.max( rhyPxlFun( 'm01' ), Math.min( curRecObj.left, vieWidNum - coaWidNum - rhyPxlFun( 'm01' ) ) ); // What: Coach Left Number. Why: The coach must never sit flush against either viewport edge. How: This clamps the target's own left edge between a small-step margin and the coach's own width from the right edge.
+	const safTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' );                                                 // What: Safe Top Number. Why: The "flip above" branch below must not let the coach rise above the coach's own exclusion floor. How: This calls safTopFun in coach mode (always 0) plus a fixed small-step margin.
+	const spaBelNum = vieHeiNum - ( curRecObj.top + curRecObj.height );                                                       // What: Space Below Number. Why: The below/above choice needs to know how much room actually exists under the target. How: This subtracts the target's own bottom edge from the viewport's own height.
+	const aboTopNum = Math.max( curRecObj.top - rhyPxlFun( 'bas' ) - coaHeiNum, safTopNum );                                  // What: Above Top Number. Why: The above placement needs its own top edge. How: This places the coach a base step above the target, clamped down to safTopNum so it never rises past the safe floor.
+	const belTopNum = curRecObj.top + curRecObj.height + rhyPxlFun( 'bas' );                                                  // What: Below Top Number. Why: The below placement needs its own top edge. How: This places the coach a base step under the target's own bottom edge.
 
 
-	if ( spaBelNum >= coaHeiNum + 16 ) return { arrStr : 'ob-coach--up', left : coaLefNum, top : belTopNum }; // What: Below Placement Return. Why: Below is preferred whenever the coach's own height plus its 16px gap actually fits there. How: This returns the below layout with an upward-pointing arrow.
+	if ( spaBelNum >= coaHeiNum + rhyPxlFun( 'bas' ) ) return { arrStr : 'ob-coach--up', left : coaLefNum, top : belTopNum }; // What: Below Placement Return. Why: Below is preferred whenever the coach's own height plus its base-step gap actually fits there. How: This returns the below layout with an upward-pointing arrow.
 
 
 
@@ -1695,7 +1696,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			if ( curSteObj.catBoo ) { // What: Coach-At-Top Guard. Why: See catBoo's own doc comment in GuiTouCom's own JSDoc above, scrolls so the target starts right where the coach (pinned to safTopNum) leaves off, instead of trying to fit the target's WHOLE height within the normal pad/padBotNum window below, which a too-tall target cannot do.
 
 
-				const desTopNum = safTopFun( { forCoaBoo : true } ) + 12 + coaHeiRef.current + 16; // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its 12px margin, its current measured height, and a 16px gap.
+				const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) + coaHeiRef.current + rhyPxlFun( 'bas' ); // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its small-step margin, its current measured height, and a base-step gap.
 
 				scrAmoFun( curScrEle, tarRecObj.top - desTopNum ); // What: Scroll By Desired Delta. Why: The scroller needs to move by exactly the gap between the target's own current top and its desired top. How: This calls scrAmoFun with that difference.
 
@@ -1708,9 +1709,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			const padTopNum = 90;                                                      // What: Pad Top Number. Why: This is the ordinary top breathing-room margin used by the pad-based branch below. How: This is a fixed pixel constant tuned for the coach card's own typical size.
-			const padBotNum = 130;                                                     // What: Pad Bottom Number. Why: Same reasoning as padTopNum above, for the bottom margin. How: This is a fixed pixel constant tuned for the coach card's own typical size.
-			const minTopNum = Math.max( scrRecObj.top + padTopNum, safTopFun() + 12 ); // What: Min Top Number. Why: The top boundary also cannot sit above safTopFun(), since a fixed pad alone assumes Today's own sticky header (plus, when present, the Edit Mode banner) is shorter than it actually is, which on a short enough viewport (or once the banner adds its own height) lets a target that "fits" by the pad's math alone still land partly behind that chrome, with briTarFun then seeing no need to scroll further. How: This takes whichever floor is higher between the plain pad math and the safe-chrome floor.
+			const padTopNum = rhyPxlFun( 'p06' );                                                      // What: Pad Top Number. Why: This is the ordinary top breathing-room margin used by the pad-based branch below. How: This is a fixed pixel constant tuned for the coach card's own typical size.
+			const padBotNum = rhyPxlFun( 'p08' );                                                      // What: Pad Bottom Number. Why: Same reasoning as padTopNum above, for the bottom margin. How: This is a fixed pixel constant tuned for the coach card's own typical size.
+			const minTopNum = Math.max( scrRecObj.top + padTopNum, safTopFun() + rhyPxlFun( 'm01' ) ); // What: Min Top Number. Why: The top boundary also cannot sit above safTopFun(), since a fixed pad alone assumes Today's own sticky header (plus, when present, the Edit Mode banner) is shorter than it actually is, which on a short enough viewport (or once the banner adds its own height) lets a target that "fits" by the pad's math alone still land partly behind that chrome, with briTarFun then seeing no need to scroll further. How: This takes whichever floor is higher between the plain pad math and the safe-chrome floor.
 
 			let preTopNum = null; // What: Predicted Top Number. Why: A target too tall to fit alongside the coach no matter where it is scrolled to needs reserve space, decided HERE using a PREDICTED landing position (wherever the branch just below is about to place it) rather than an OBSERVED post-scroll one, so it can be applied before this step's very first scroll instead of discovered only after that scroll already settled. How: preTopNum mirrors whichever of the two branches below will actually fire; null (no scroll needed at all) is deliberately left unhandled, since a target that already fits without scrolling was never going to need reserve either.
 
@@ -1724,17 +1725,17 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			if ( !curSteObj.catBoo && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank.
 
 
-				const vieHeiNum = window.innerHeight;                                                  // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
-				const coaHeiNum = coaHeiRef.current;                                                   // What: Coach Height Number. Why: The fit checks below need the coach's own latest measured height. How: This is read fresh from coaHeiRef.current.
-				const fitBelBoo = vieHeiNum - ( preTopNum + tarRecObj.height ) >= coaHeiNum + 16;      // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its 16px gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum + 16.
-				const fitAboBoo = preTopNum - 16 - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + 12; // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its 16px gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor.
+				const vieHeiNum = window.innerHeight;                                                                                   // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
+				const coaHeiNum = coaHeiRef.current;                                                                                    // What: Coach Height Number. Why: The fit checks below need the coach's own latest measured height. How: This is read fresh from coaHeiRef.current.
+				const fitBelBoo = vieHeiNum - ( preTopNum + tarRecObj.height ) >= coaHeiNum + rhyPxlFun( 'bas' );                       // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its base-step gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum plus a base step.
+				const fitAboBoo = preTopNum - rhyPxlFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ); // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its base-step gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor.
 
 
 				if ( !fitBelBoo && !fitAboBoo ) { // What: No Fit Guard. Why: Reserve space is only ever needed once neither the below nor the above placement actually fits. How: This only enters the reserve branch when both fit checks failed.
 
 
-					resDecBoo = true;           // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
-					resAmoNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed 40px.
+					resDecBoo = true;                           // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
+					resAmoNum = coaHeiNum + rhyPxlFun( 'p04' ); // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step.
 
 					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the effect below forwards onto the bus.
 
@@ -1772,7 +1773,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		// #region Chrome Clamping And Imperative Placement
 
-		const spoPadNum = curSteObj.cirBoo ? 0 : 8; // What: Spotlight Pad Number. Why: cirBoo steps get a pulsing ring drawn tight against the target (see the .ob-spot.is-pulsing CSS); any padding here would leave a visible gap between the target's real edge and the pulse, which reads as the highlight being for some larger, vaguer area instead of the exact element to click. How: This is 0 for a cirBoo step, otherwise the normal 8px.
+		const spoPadNum = curSteObj.cirBoo ? 0 : rhyPxlFun( 'm02' ); // What: Spotlight Pad Number. Why: cirBoo steps get a pulsing ring drawn tight against the target (see the .ob-spot.is-pulsing CSS); any padding here would leave a visible gap between the target's real edge and the pulse, which reads as the highlight being for some larger, vaguer area instead of the exact element to click. How: This is 0 for a cirBoo step, otherwise the normal m02 step.
 
 
 
@@ -1885,7 +1886,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 				const vieWidNum = window.innerWidth;                                                          // What: Viewport Width Number. Why: The layout math below needs the current viewport width. How: This is read fresh from window on every call.
 				const vieHeiNum = window.innerHeight;                                                         // What: Viewport Height Number. Why: The layout math below needs the current viewport height. How: This is read fresh from window on every call.
-				const coaWidNum = Math.min( 300, vieWidNum - 24 );                                            // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a 24px margin.
+				const coaWidNum = Math.min( 300, vieWidNum - rhyPxlFun( 'm01' ) * 2 );                        // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a small-step margin on each side.
 				const coaLayObj = coaLayFun( tarRecObj, coaHeiRef.current, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
 				const coaStyObj = reaCoaRef.current.style;                                                    // What: Coach Style Object. Why: The layout above must actually be written onto the real DOM element. How: This reads reaCoaRef.current's own live CSSStyleDeclaration.
 
@@ -1982,16 +1983,16 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			const coaHeiNum = coaHeiRef.current;  // What: Coach Height Number. Why: This must read coaHeiRef.current, not a closed-over value, since a narrower coach (small/mobile screens) wraps the same body text over more lines and renders taller, so the fixed COA_HEI_NUM guess under-reserved there specifically, this step fitting "above" by the estimate but not in reality, with the coach ending up overlapping the highlight's top edge anyway. How: This reads the ref's own current value fresh.
 
 
-			if ( vieHeiNum - ( tarRecObj.top + tarRecObj.height ) >= coaHeiNum + 16 ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
+			if ( vieHeiNum - ( tarRecObj.top + tarRecObj.height ) >= coaHeiNum + rhyPxlFun( 'bas' ) ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its base-step gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
 
 
 
-			if ( tarRecObj.top - 16 - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + 12 ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
+			if ( tarRecObj.top - rhyPxlFun( 'bas' ) - coaHeiNum >= safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its base-step gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
 
 
 
-			resAmoNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed 40px.
-			setResTopNum( resAmoNum );  // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state.
+			resAmoNum = coaHeiNum + rhyPxlFun( 'p04' ); // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step.
+			setResTopNum( resAmoNum );                  // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state.
 
 
 
@@ -2011,9 +2012,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-					const freScrEle = getScrFun( freEleArr[ 0 ] );                            // What: Fresh Scroll Element. Why: The scroller itself may have changed too, now that the reserve padding has actually rendered, so this must be re-resolved fresh rather than reusing resScrEle from before the frame. How: This resolves the first fresh element's own scroller via getScrFun.
-					const freTopNum = uniRecFun( freEleArr ).top;                             // What: Fresh Top Number. Why: This is the target's own real, post-padding top edge. How: This unions freEleArr and reads its own top.
-					const desTopNum = safTopFun( { forCoaBoo : true } ) + 12 + coaHeiNum + 16; // What: Desired Top Number. Why: This scrolls so the target lands exactly coaHeiNum + 16 below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to actually seat it flush above the target instead of overlapping it. How: This adds the safe floor, its 12px margin, the coach's own height, and a 16px gap.
+					const freScrEle = getScrFun( freEleArr[ 0 ] );                                                             // What: Fresh Scroll Element. Why: The scroller itself may have changed too, now that the reserve padding has actually rendered, so this must be re-resolved fresh rather than reusing resScrEle from before the frame. How: This resolves the first fresh element's own scroller via getScrFun.
+					const freTopNum = uniRecFun( freEleArr ).top;                                                              // What: Fresh Top Number. Why: This is the target's own real, post-padding top edge. How: This unions freEleArr and reads its own top.
+					const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) + coaHeiNum + rhyPxlFun( 'bas' ); // What: Desired Top Number. Why: This scrolls so the target lands exactly coaHeiNum plus a base step below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to actually seat it flush above the target instead of overlapping it. How: This adds the safe floor, its small-step margin, the coach's own height, and a base-step gap.
 
 
 					scrAmoFun( freScrEle, freTopNum - desTopNum ); // What: Scroll By Desired Delta. Why: This is deliberately NOT a scroll that compensates for the padding just added (e.g. scrolling by +resAmoNum), since that would fully cancel the reserve's own effect, undoing the room it just opened up and leaving the coach exactly as short on space as before any reserve existed. How: This calls scrAmoFun with the gap between the target's own fresh top and its desired top.
@@ -2268,7 +2269,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	const totSteNum = steObjArr.length;                                                                                // What: Total Step Number. Why: The progress line below needs the total step count. How: This reads steObjArr.length once per render.
 	const vieWidNum = window.innerWidth;                                                                               // What: Viewport Width Number. Why: The coach's own sizing below needs the current viewport width. How: This is read fresh from window on every render.
 	const vieHeiNum = window.innerHeight;                                                                              // What: Viewport Height Number. Why: The coach's own sizing below needs the current viewport height. How: This is read fresh from window on every render.
-	const coaWidNum = Math.min( 300, vieWidNum - 24 );                                                                 // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a 24px margin.
+	const coaWidNum = Math.min( 300, vieWidNum - rhyPxlFun( 'm01' ) * 2 );                                             // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a small-step margin on each side.
 	const priLabStr = curSteObj.priStr + ( ( curSteObj.priStr !== 'Done' && !curSteObj.solBoo ) ? ' ›' : '' );         // What: Primary Label String. Why: The measurer and both real Next buttons render the same label. How: This appends a trailing arrow glyph to curSteObj.priStr unless the step is 'Done' or solo.
 	const shoPulBoo = curSteObj.cirBoo && ( !curSteObj.pulSelStr || !!document.querySelector( curSteObj.pulSelStr ) ); // What: Should Pulse Boolean. Why: See pulSelStr's own doc comment in GuiTouCom's own JSDoc above, this defaults to matching cirBoo exactly when unset, so every other cirBoo step pulses for its whole duration same as before. How: This is true whenever the step requires a click and either names no pulSelStr at all, or its own pulSelStr currently matches something.
 
@@ -2372,7 +2373,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	const spoPadNum = curSteObj.cirBoo ? 0 : 8;                                           // What: Spotlight Pad Number. Why: See plaTarFun's own spoPadNum comment above, this is the render-time twin of that same value. How: This is 0 for a cirBoo step, otherwise the normal 8px.
+	const spoPadNum = curSteObj.cirBoo ? 0 : rhyPxlFun( 'm02' );                          // What: Spotlight Pad Number. Why: See plaTarFun's own spoPadNum comment above, this is the render-time twin of that same value. How: This is 0 for a cirBoo step, otherwise the normal m02 step.
 	const coaLayObj = coaLayFun( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the same shared math plaTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current curRecObj, coaHeiNum, and the current viewport/coach sizes; catBoo needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since catBoo's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 	const arrHorNum = arrHorFun( curRecObj, coaLayObj.left, coaWidNum );                  // What: Arrow Horizontal Number. Why: The real, visible coach's own render-time arrow position needs the same math plaTarFun uses imperatively. How: This calls arrHorFun with the current curRecObj and coaLayObj's own left.
 

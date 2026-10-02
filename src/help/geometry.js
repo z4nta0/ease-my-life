@@ -3,6 +3,7 @@
 
 // #region Imports
 
+import { rhyPxlFun } from '../utils/rhythm.js';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { splSelFun } from '../utils/selector.js'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called with the step's or item's own selector list.
 
 // #endregion Imports
@@ -31,19 +32,11 @@ import { splSelFun } from '../utils/selector.js'; // What: Split Selector Functi
 
 // #region Constants
 
-const BAD_SIZ_NUM = 20; // What: Badge Size Number. Why: Every highlighted target's own corner badge is drawn at this fixed diameter. How: This sizes the rendered badge button and is read throughout badRecFun's own placement math below.
-
-
-
 const CHR_PRI_OBJ = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-element-name-hook~="ediBanDiv"]' : 2, '[data-element-name-hook~="groRaiAsi"]' : 1, '[data-element-name-hook~="setRaiAsi"]' : 1, '[data-element-name-hook~="todPagHea"]' : 1 }; // What: Chrome Priority Object. Why: A target that is part of one chrome item (e.g. the nav bar's own [data-tab] buttons, "part of" .tabbar) must still be clippable against a DIFFERENT chrome item it visually sits behind, but never against one it sits IN FRONT OF. How: This maps a chrome selector to a plain priority number; a higher number visually wins, and cliChrFun below skips clipping a target against any chrome item its own home chrome already outranks (or IS). '.editmode-banner' outranks '.group-rail' specifically because on narrow viewports both become independently position:sticky near the same top offset, and the banner visually covers the rail wherever they overlap.
 
 
 
 const DEF_RAD_NUM = 12; // What: Default Radius Number. Why: A multi-element union (a clustered group of buttons) has no one shape of its own to read, so it falls back to this plain rounded-rect radius instead of averaging several unrelated corner radii together; this also matches the app's own --r-md CSS token. How: This is returned by shaRadFun whenever no more specific radius can be computed.
-
-
-
-const PAD_MAR_NUM = 8; // What: Pad Margin Number. Why: This is the extra margin drawn around every highlighted target's own rect by default. How: This is read as the fallback whenever a help item does not supply its own padXcoNum/padYcoNum override, and is also used directly by shaRadFun's own pill-radius math below.
 
 // #endregion Constants
 
@@ -586,7 +579,7 @@ function detEdgFun ( chrRecObj ) {
  *
  * @summary
  * Badge geometry, shared between where it is actually drawn and where
- * an open tip anchored to it should point: a 20px circle overlapping
+ * an open tip anchored to it should point: a p01-step circle overlapping
  * the highlighted box's own top-right corner (matching the "small
  * corner marker" design, distinct from InfTipCom's own inline-trigger
  * placement). This falls back to the top-LEFT corner instead when the
@@ -622,26 +615,26 @@ function detEdgFun ( chrRecObj ) {
 function badRecFun ( tarRecObj, cenBadBoo ) {
 
 
-	const padTopNum = tarRecObj.padTopNum ?? PAD_MAR_NUM;                              // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tarRecObj's own padTopNum, falling back to the flat pad margin.
-	const rawTopNum = tarRecObj.top - padTopNum - BAD_SIZ_NUM / 2;                     // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge.
-	const topBadNum = rawTopNum < -BAD_SIZ_NUM ? rawTopNum : Math.max( 4, rawTopNum ); // What: Top Badge Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the 4px floor once rawTopNum is no further than one badge-height above 0.
+	const padTopNum = tarRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                               // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tarRecObj's own padTopNum, falling back to the flat pad margin.
+	const rawTopNum = tarRecObj.top - padTopNum - rhyPxlFun( 'p01' ) / 2;                                      // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge.
+	const topBadNum = rawTopNum < -rhyPxlFun( 'p01' ) ? rawTopNum : Math.max( rhyPxlFun( 'm05' ), rawTopNum ); // What: Top Badge Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the 4px floor once rawTopNum is no further than one badge-height above 0.
 
 
 	if ( cenBadBoo ) { // What: Center Mode Branch. Why: A column group member's own badge centers over its column's top edge instead of using the usual corner placement. How: This returns early with a horizontally-centered badge rect.
 
 
-		const lefBadNum = tarRecObj.left + tarRecObj.width / 2 - BAD_SIZ_NUM / 2; // What: Left Badge Number. Why: The badge must sit centered on the column's own horizontal midpoint. How: This computes the target's own midpoint and subtracts half the badge's own size.
+		const lefBadNum = tarRecObj.left + tarRecObj.width / 2 - rhyPxlFun( 'p01' ) / 2; // What: Left Badge Number. Why: The badge must sit centered on the column's own horizontal midpoint. How: This computes the target's own midpoint and subtracts half the badge's own size.
 
 
 
 		return { // What: Centered Badge Return. Why: A column group member's own badge is complete once centered. How: This builds the badge rect around the centered left position.
 
 
-			bottom : topBadNum + BAD_SIZ_NUM, // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum.
-			height : BAD_SIZ_NUM,             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size.
-			left   : lefBadNum,               // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
-			top    : topBadNum,               // What: Badge Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
-			width  : BAD_SIZ_NUM              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size.
+			bottom : topBadNum + rhyPxlFun( 'p01' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum.
+			height : rhyPxlFun( 'p01' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size.
+			left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
+			top    : topBadNum,                      // What: Badge Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
+			width  : rhyPxlFun( 'p01' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size.
 
 
 		};
@@ -651,22 +644,22 @@ function badRecFun ( tarRecObj, cenBadBoo ) {
 
 
 
-	const padRigNum = tarRecObj.padRigNum ?? PAD_MAR_NUM;                                    // What: Pad Right Number. Why: The right-corner placement below needs whichever pad actually survived clipping on its own right side. How: This reads tarRecObj's own padRigNum, falling back to the flat pad margin.
-	const padLefNum = tarRecObj.padLefNum ?? PAD_MAR_NUM;                                    // What: Pad Left Number. Why: The left-corner fallback below needs whichever pad actually survived clipping on its own left side. How: This reads tarRecObj's own padLefNum, falling back to the flat pad margin.
-	const rigLefNum = tarRecObj.right + padRigNum - BAD_SIZ_NUM / 2;                         // What: Right Corner Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point.
-	const oveRigBoo = rigLefNum + BAD_SIZ_NUM > window.innerWidth;                           // What: Overflows Right Boolean. Why: A target rect already clipped flush to the viewport can still overflow once the badge's own pad gap and half-width are added on top. How: This checks whether the right-corner candidate's own far edge would cross the viewport's own width.
-	const lefBadNum = oveRigBoo ? tarRecObj.left - padLefNum - BAD_SIZ_NUM / 2 : rigLefNum; // What: Left Badge Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when oveRigBoo is true, otherwise the right-corner candidate.
+	const padRigNum = tarRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Right Number. Why: The right-corner placement below needs whichever pad actually survived clipping on its own right side. How: This reads tarRecObj's own padRigNum, falling back to the flat pad margin.
+	const padLefNum = tarRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                   // What: Pad Left Number. Why: The left-corner fallback below needs whichever pad actually survived clipping on its own left side. How: This reads tarRecObj's own padLefNum, falling back to the flat pad margin.
+	const rigLefNum = tarRecObj.right + padRigNum - rhyPxlFun( 'p01' ) / 2;                        // What: Right Corner Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point.
+	const oveRigBoo = rigLefNum + rhyPxlFun( 'p01' ) > window.innerWidth;                          // What: Overflows Right Boolean. Why: A target rect already clipped flush to the viewport can still overflow once the badge's own pad gap and half-width are added on top. How: This checks whether the right-corner candidate's own far edge would cross the viewport's own width.
+	const lefBadNum = oveRigBoo ? tarRecObj.left - padLefNum - rhyPxlFun( 'p01' ) / 2 : rigLefNum; // What: Left Badge Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when oveRigBoo is true, otherwise the right-corner candidate.
 
 
 
 	return { // What: Badge Rect Return. Why: The caller needs the final fixed-position badge rect back. How: This builds the shape both the rendered badge button and plaTipFun's own anchoring read.
 
 
-		bottom : topBadNum + BAD_SIZ_NUM, // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum.
-		height : BAD_SIZ_NUM,             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size.
-		left   : lefBadNum,               // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
-		top    : topBadNum,               // What: Badge Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
-		width  : BAD_SIZ_NUM              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size.
+		bottom : topBadNum + rhyPxlFun( 'p01' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum.
+		height : rhyPxlFun( 'p01' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size.
+		left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
+		top    : topBadNum,                      // What: Badge Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
+		width  : rhyPxlFun( 'p01' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size.
 
 
 	};
@@ -787,8 +780,8 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 	return { // What: Grown Radius Return. Why: A real, moderate rounded-corner value should keep reading as rounded once the box has grown by the pad amount. How: This adds the flat pad margin back onto the parsed pixel radius.
 
 
-		radXcoNum : pixValNum + PAD_MAR_NUM, // What: Radius X-Coordinate Number. Why: A pixel radius must grow by the same flat pad margin the box itself grew by, to roughly preserve how rounded it reads. How: This adds PAD_MAR_NUM onto the parsed pixel radius.
-		radYcoNum : pixValNum + PAD_MAR_NUM  // What: Radius Y-Coordinate Number. Why: Same reasoning as radXcoNum, since a border-radius grows uniformly on both axes for a plain pixel value. How: This adds PAD_MAR_NUM onto the parsed pixel radius.
+		radXcoNum : pixValNum + rhyPxlFun( 'm02' ), // What: Radius X-Coordinate Number. Why: A pixel radius must grow by the same flat pad margin the box itself grew by, to roughly preserve how rounded it reads. How: This adds rhyPxlFun( 'm02' ) onto the parsed pixel radius.
+		radYcoNum : pixValNum + rhyPxlFun( 'm02' )  // What: Radius Y-Coordinate Number. Why: Same reasoning as radXcoNum, since a border-radius grows uniformly on both axes for a plain pixel value. How: This adds rhyPxlFun( 'm02' ) onto the parsed pixel radius.
 
 
 	};
@@ -806,7 +799,7 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 
 // #region Exports
 
-export { badRecFun, claPadFun, cliChrFun, cliHorFun, DEF_RAD_NUM, detEdgFun, finTarFun, PAD_MAR_NUM, shaRadFun, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these. How: This exports every helper and the 2 constants the overlay reads by name; BAD_SIZ_NUM and CHR_PRI_OBJ stay private to this file.
+export { badRecFun, claPadFun, cliChrFun, cliHorFun, DEF_RAD_NUM, detEdgFun, finTarFun, shaRadFun, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these. How: This exports every helper and the 2 constants the overlay reads by name; rhyPxlFun( 'p01' ) and CHR_PRI_OBJ stay private to this file.
 
 // #endregion Exports
 

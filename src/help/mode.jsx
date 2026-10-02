@@ -7,19 +7,19 @@ import cssModObj from './mode.module.css'; // What: CSS Module Object. Why: The 
 import React     from 'react';             // What: React. Why: HelOveCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useState) instead of importing individual named hooks.
 
 
-import { badRecFun    } from './geometry.js';  // What: Badge Rect Function. Why: Each highlighted target's badge is positioned against its own rect. How: This is called once per highlighted target.
-import { claPadFun    } from './geometry.js';  // What: Clamp Pad Function. Why: A highlight's padding must not spill past nearby app chrome. How: This is called once per highlighted target.
-import { cliChrFun    } from './geometry.js';  // What: Clip Chrome Function. Why: A highlight must not paint over fixed app chrome above it. How: This is called once per highlighted target.
-import { cliHorFun    } from './geometry.js';  // What: Clip Horizontal Function. Why: A highlight inside a horizontal scroller must stop at the scroller's own visible edges. How: This is called once per measured target.
-import { createPortal } from 'react-dom';      // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelOveCom's own JSX and document.body inside its return.
-import { DEF_RAD_NUM  } from './geometry.js';  // What: Default Radius Number. Why: A multi-element union has no single border radius of its own. How: This is the corner radius used for those highlights.
-import { detEdgFun    } from './geometry.js';  // What: Detect Edge Function. Why: A clipped highlight needs to know which of its edges touch chrome. How: This is called once per clipped target.
-import { finTarFun    } from './geometry.js';  // What: Find Target Function. Why: Each help item names its target by selector, which may match several elements. How: This is called once per help item.
-import { HelTipCom    } from './tooltip.jsx';  // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
-import { IcoSvgCom    } from '../ui/icon.jsx'; // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
-import { PAD_MAR_NUM  } from './geometry.js';  // What: Pad Margin Number. Why: Every highlight is drawn with a little margin around its target. How: This is read wherever a highlight's padding is computed.
-import { shaRadFun    } from './geometry.js';  // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
-import { uniRecFun    } from './geometry.js';  // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
+import { badRecFun    } from './geometry.js';      // What: Badge Rect Function. Why: Each highlighted target's badge is positioned against its own rect. How: This is called once per highlighted target.
+import { claPadFun    } from './geometry.js';      // What: Clamp Pad Function. Why: A highlight's padding must not spill past nearby app chrome. How: This is called once per highlighted target.
+import { cliChrFun    } from './geometry.js';      // What: Clip Chrome Function. Why: A highlight must not paint over fixed app chrome above it. How: This is called once per highlighted target.
+import { cliHorFun    } from './geometry.js';      // What: Clip Horizontal Function. Why: A highlight inside a horizontal scroller must stop at the scroller's own visible edges. How: This is called once per measured target.
+import { createPortal } from 'react-dom';          // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelOveCom's own JSX and document.body inside its return.
+import { DEF_RAD_NUM  } from './geometry.js';      // What: Default Radius Number. Why: A multi-element union has no single border radius of its own. How: This is the corner radius used for those highlights.
+import { detEdgFun    } from './geometry.js';      // What: Detect Edge Function. Why: A clipped highlight needs to know which of its edges touch chrome. How: This is called once per clipped target.
+import { finTarFun    } from './geometry.js';      // What: Find Target Function. Why: Each help item names its target by selector, which may match several elements. How: This is called once per help item.
+import { HelTipCom    } from './tooltip.jsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
+import { IcoSvgCom    } from '../ui/icon.jsx';     // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
+import { rhyPxlFun    } from '../utils/rhythm.js'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
+import { shaRadFun    } from './geometry.js';      // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
+import { uniRecFun    } from './geometry.js';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
 
 // #endregion Imports
 
@@ -130,7 +130,7 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
 				>{ /* What: Help Nav Item Div Element. Why: Each tab gets its own icon/label/description block inside the shared nav tip. How: This renders curTabObj's own icon and label on one line, its description below. */ }
 
 
-					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr={ curTabObj.icoStr } sizValNum={ 14 } /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
+					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr={ curTabObj.icoStr } sizStpStr='bas' /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
 
 					<p>{ curTabObj.desStr }</p>{ /* What: Help Nav Description Paragraph Element. Why: This is the actual explanatory text for this tab. How: This renders curTabObj.desStr as plain text. */ }
 
@@ -350,13 +350,13 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 
-					const shaRadObj = shaRadFun( curTarEle, eleWidNum + PAD_MAR_NUM * 2, eleHeiNum + PAD_MAR_NUM * 2, curIteObj.shaStr ); // What: Shape Radius Object. Why: Each mulBoo instance reads its own border-radius independently. How: This calls shaRadFun with curTarEle's own padded box size.
+					const shaRadObj = shaRadFun( curTarEle, eleWidNum + rhyPxlFun( 'm02' ) * 2, eleHeiNum + rhyPxlFun( 'm02' ) * 2, curIteObj.shaStr ); // What: Shape Radius Object. Why: Each mulBoo instance reads its own border-radius independently. How: This calls shaRadFun with curTarEle's own padded box size.
 
 					const curLabStr = curIteObj.labStr // What: Current Label String. Why: A mulBoo conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curTarEle only, when curIteObj.labStr is set.
 						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector( curIteObj.labStr )?.value ) // What: Live Label Read. Why: A row's own name is its text, or an input's value while it is being edited. How: This queries labStr inside curTarEle and reads either.
 						: undefined;                                                                                                         // What: No Label Fallback. Why: An item without labStr has no per-row name. How: This leaves the label undefined.
 
-					const padSurObj = claPadFun( tarRecObj, curIteObj.padXcoNum ?? PAD_MAR_NUM, curIteObj.padYcoNum ?? PAD_MAR_NUM, chrIteArr, [ curTarEle ] ); // What: Pad Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXcoNum/padYcoNum override, or the flat default.
+					const padSurObj = claPadFun( tarRecObj, curIteObj.padXcoNum ?? rhyPxlFun( 'm02' ), curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ), chrIteArr, [ curTarEle ] ); // What: Pad Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXcoNum/padYcoNum override, or the flat default.
 
 
 					nexMapObj[ `${ curIteObj.ideStr }::${ curIndNum }` ] = { // What: Sub Identifier Map Write. Why: Each mulBoo instance is stored under its own synthesized sub-id, all sharing the parent item's own titStr/bodEle when opened. How: This writes the merged rect/shape/pad/label into nexMapObj.
@@ -416,14 +416,14 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 			};
 
 
-			const padHorNum = curIteObj.padXcoNum ?? PAD_MAR_NUM; // What: Pad Horizontal Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXcoNum override, or the flat default.
-			const padVerNum = curIteObj.padYcoNum ?? PAD_MAR_NUM; // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYcoNum override, or the flat default.
+			const padHorNum = curIteObj.padXcoNum ?? rhyPxlFun( 'm02' ); // What: Pad Horizontal Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXcoNum override, or the flat default.
+			const padVerNum = curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ); // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYcoNum override, or the flat default.
 
-			const shaRadObj = typeof curIteObj.shaStr === 'function' // What: Shape Radius Object. Why: A multi-element union like the nav bar has no single source element's own border-radius to read, so its own shape function (passed the box's own padded dimensions) computes a radius directly instead. How: This calls curIteObj.shaStr when it is a function; otherwise a single-element union still reads a real border-radius via shaRadFun, and anything wider falls back to no shape at all.
-				? curIteObj.shaStr( tarRecObj.width + padHorNum * 2, tarRecObj.height + padVerNum * 2 ) // What: Shape Function Call. Why: A multi-element union computes its own radius from the padded box size. How: This calls curIteObj.shaStr with the padded width and height.
-				: tarEleArr.length === 1                                                                  // What: Single Element Check. Why: Only a single element has one real border-radius to read. How: This checks tarEleArr's own length.
-					? shaRadFun( tarEleArr[ 0 ], tarRecObj.width + PAD_MAR_NUM * 2, tarRecObj.height + PAD_MAR_NUM * 2, curIteObj.shaStr ) // What: Element Radius Read. Why: A single element's own rounding should carry over to its highlight. How: This calls shaRadFun with the padded box size.
-					: null;                                                                                                                    // What: No Shape Fallback. Why: A wider union has no one radius to reuse. How: This leaves the shape null so the default radius applies.
+			const shaRadObj = typeof curIteObj.shaStr === 'function'                                                                               // What: Shape Radius Object. Why: A multi-element union like the nav bar has no single source element's own border-radius to read, so its own shape function (passed the box's own padded dimensions) computes a radius directly instead. How: This calls curIteObj.shaStr when it is a function; otherwise a single-element union still reads a real border-radius via shaRadFun, and anything wider falls back to no shape at all.
+				? curIteObj.shaStr( tarRecObj.width + padHorNum * 2, tarRecObj.height + padVerNum * 2 )                                               // What: Shape Function Call. Why: A multi-element union computes its own radius from the padded box size. How: This calls curIteObj.shaStr with the padded width and height.
+				: tarEleArr.length === 1 // What: Single Element Check. Why: Only a single element has one real border-radius to read. How: This checks tarEleArr's own length.
+					? shaRadFun( tarEleArr[ 0 ], tarRecObj.width + rhyPxlFun( 'm02' ) * 2, tarRecObj.height + rhyPxlFun( 'm02' ) * 2, curIteObj.shaStr ) // What: Element Radius Read. Why: A single element's own rounding should carry over to its highlight. How: This calls shaRadFun with the padded box size.
+					: null; // What: No Shape Fallback. Why: A wider union has no one radius to reuse. How: This leaves the shape null so the default radius applies.
 
 			const matWidEle = curIteObj.mwsStr ? document.querySelector( curIteObj.mwsStr ) : null; // What: Match Width Element. Why: mwsStr sizes the open tip to a DIFFERENT element's own width than whatever is highlighted, e.g. the nav tip's own .tabbar container. How: This looks mwsStr up directly, independent of tarEleArr.
 
@@ -500,14 +500,14 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				curRecObj.padRigNum = 0; // What: Right Pad Reset. Why: This member's own right already carries its final, edge-to-edge-adjusted value; padding it again would reopen the exact gap/overlap this snap exists to close. How: This zeroes the right pad.
 
 
-				if ( curIndNum === 0 ) curRecObj.left -= PAD_MAR_NUM; // What: First Column Guard. Why: Only the group's own leftmost outer edge should get normal breathing room, since it has no left neighbor to snap flush against. How: This subtracts the flat pad margin from curRecObj's own left only on the first iteration.
+				if ( curIndNum === 0 ) curRecObj.left -= rhyPxlFun( 'm02' ); // What: First Column Guard. Why: Only the group's own leftmost outer edge should get normal breathing room, since it has no left neighbor to snap flush against. How: This subtracts the flat pad margin from curRecObj's own left only on the first iteration.
 
 
 
 				if ( curIndNum === groIdeArr.length - 1 ) { // What: Last Column Guard. Why: The group's own rightmost outer edge also needs normal breathing room, since it has no right neighbor either. How: This adds the flat pad margin to curRecObj's own right only on the last iteration.
 
 
-					curRecObj.right += PAD_MAR_NUM; // What: Last Column Pad Add. Why: The group's own rightmost outer edge needs the same normal breathing room a non-grouped item would get. How: This adds the flat pad margin back onto curRecObj's own right edge.
+					curRecObj.right += rhyPxlFun( 'm02' ); // What: Last Column Pad Add. Why: The group's own rightmost outer edge needs the same normal breathing room a non-grouped item would get. How: This adds the flat pad margin back onto curRecObj's own right edge.
 
 
 				}
@@ -762,10 +762,10 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 						const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Shape Destructure. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape, or the default, directly.
-						const padTopNum  = curRecObj.padTopNum ?? PAD_MAR_NUM;                      // What: Pad Top Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default.
-						const padBotNum  = curRecObj.padBotNum ?? PAD_MAR_NUM;                      // What: Pad Bottom Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default.
-						const padLefNum  = curRecObj.padLefNum ?? PAD_MAR_NUM;                      // What: Pad Left Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padLefNum, falling back to the flat default.
-						const padRigNum  = curRecObj.padRigNum ?? PAD_MAR_NUM;                      // What: Pad Right Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padRigNum, falling back to the flat default.
+						const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Top Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default.
+						const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Bottom Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default.
+						const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Left Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padLefNum, falling back to the flat default.
+						const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Right Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padRigNum, falling back to the flat default.
 
 
 
@@ -793,12 +793,12 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 						<rect
 							fill='#000'
-							height={ togRecObj.height + PAD_MAR_NUM * 2 }
-							rx={ ( togRecObj.height + PAD_MAR_NUM * 2 ) / 2 }
-							ry={ ( togRecObj.height + PAD_MAR_NUM * 2 ) / 2 }
-							width={ togRecObj.width + PAD_MAR_NUM * 2 }
-							x={ togRecObj.left - PAD_MAR_NUM }
-							y={ togRecObj.top - PAD_MAR_NUM }
+							height={ togRecObj.height + rhyPxlFun( 'm02' ) * 2 }
+							rx={ ( togRecObj.height + rhyPxlFun( 'm02' ) * 2 ) / 2 }
+							ry={ ( togRecObj.height + rhyPxlFun( 'm02' ) * 2 ) / 2 }
+							width={ togRecObj.width + rhyPxlFun( 'm02' ) * 2 }
+							x={ togRecObj.left - rhyPxlFun( 'm02' ) }
+							y={ togRecObj.top - rhyPxlFun( 'm02' ) }
 						/> // What: Toggle Cutout Rect Element. Why: The toggle button's own cutout needs the same treatment as every other target, just always circular and flatly padded. How: This is punched as a circle (rx/ry set to half the padded height) at togRecObj's own padded position/size.
 
 					) }
@@ -823,10 +823,10 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 				const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Shape Destructure. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own shape, or the default, directly.
-				const padTopNum  = curRecObj.padTopNum ?? PAD_MAR_NUM;                      // What: Pad Top Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padTopNum, falling back to the flat default.
-				const padBotNum  = curRecObj.padBotNum ?? PAD_MAR_NUM;                      // What: Pad Bottom Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padBotNum, falling back to the flat default.
-				const padLefNum  = curRecObj.padLefNum ?? PAD_MAR_NUM;                      // What: Pad Left Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padLefNum, falling back to the flat default.
-				const padRigNum  = curRecObj.padRigNum ?? PAD_MAR_NUM;                      // What: Pad Right Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padRigNum, falling back to the flat default.
+				const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Top Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padTopNum, falling back to the flat default.
+				const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Bottom Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padBotNum, falling back to the flat default.
+				const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Left Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padLefNum, falling back to the flat default.
+				const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Right Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padRigNum, falling back to the flat default.
 
 				const spoStyObj = { // What: Spot Style Object. Why: The rendered highlight spot needs its own absolute position/size plus a border-radius matching radXcoNum/radYcoNum exactly. How: This is applied directly as this div's own inline style below.
 

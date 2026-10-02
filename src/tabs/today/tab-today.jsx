@@ -45,6 +45,7 @@ import { redMotFun    } from '../../utils/motion.js';               // What: Red
 import { RemSecCom    } from './reminders-section.jsx';             // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genOrdArr.
 import { RemTouCom    } from '../../onboarding/reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while minTouObj holds a 'reminder' kind entry.
 import { REO_NAM_OBJ  } from './reorder.js';                        // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside groDraFun/iteDraFun.
+import { rhyPxlFun    } from '../../utils/rhythm.js';               // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for ancDatFun/visTodFun/isaDonFun/optForFun/isaComFun.
 import { TOD_HEL_ARR  } from '../../help/content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
@@ -1466,10 +1467,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                       // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
-			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || 140 ) : 140; // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sticky-top-h custom property, falling back to a fixed 140.
-			const biaLinNum = stiHeiNum + 20;                                                                                              // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
-			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' );                                       // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
+			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                                                     // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
+			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ) ) : rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step.
+			const biaLinNum = stiHeiNum + 20; // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
+			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' );                                                                     // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
 
 
 			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should always spy the LAST section, even if its own header can never reach the spy line. How: This checks either the scroller's own metrics or, without one, the window's.
@@ -1568,11 +1569,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		setActGroStr( groIdeStr ); // What: Active Group Set. Why: The clicked rail button should highlight immediately, without waiting for the scroll-spy effect to catch up. How: This publishes groIdeStr into actGroStr directly.
 		skiSpyRef.current = true;  // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
 
-		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                          // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
-		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                          // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
-		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || 140; // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sticky-top-h custom property, falling back to a fixed 140.
-		const extPadNum = 16;                                                                                    // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a fixed 16px added to the scroll target below.
-		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                       // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
+		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                         // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
+		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                                         // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
+		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step.
+		const extPadNum = rhyPxlFun( 'bas' );                                                                                   // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below.
+		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                      // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 
 		if ( maiScrEle ) { // What: Scroller Branch. Why: A real scroll container needs its own scrollTo call, distinct from the window fallback. How: This computes the target, checks whether it can even be reached, pins if not, then scrolls maiScrEle.
@@ -3100,9 +3101,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				if ( genCurEle && maiScrEle && tabCurEle ) { // What: All Found Branch. Why: The scroll can only happen once every one of these 3 exists. How: This computes and applies the scroll only when all 3 are present.
 
 
-					const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || 140; // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail. How: This reads the --sticky-top-h custom property, falling back to a fixed 140.
-					const tarOffNum = genCurEle.offsetTop - stiHeiNum - 16;                                                  // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small 16px pad. How: This subtracts stiHeiNum and 16 from genCurEle's own offsetTop.
-					const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                       // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
+					const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step.
+					const tarOffNum = genCurEle.offsetTop - stiHeiNum - rhyPxlFun( 'bas' );                                                 // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small base-step pad. How: This subtracts stiHeiNum and a base rhythm step from genCurEle's own offsetTop.
+					const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                      // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 
 					maiScrEle.scrollTo( { behavior : scrBehStr, top : tarOffNum } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls maiScrEle to tarOffNum, smoothly unless reduced motion is preferred.
@@ -3333,7 +3334,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='flaEle'
-										sizValNum={ 12 }
+										sizStpStr='m01'
 									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 									<span>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }
@@ -3612,7 +3613,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 							<IcoSvgCom
 								icoNamStr='griEle'
-								sizValNum={ 15 }
+								sizStpStr='bas'
 							/>{ /* What: Icon Svg Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'griEle' icon at a fixed size. */ }
 
 							Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
@@ -3883,7 +3884,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								<IcoSvgCom
 									icoNamStr='griEle'
-									sizValNum={ 15 }
+									sizStpStr='bas'
 								/>{ /* What: Icon Svg Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'griEle' icon at a fixed size. */ }
 
 								{ ediModBoo ? 'Done' : 'Edit Mode' }{ /* What: Edit Mode Label Expression. Why: The same rail button enters and leaves Edit Mode. How: This reads "Done" while Edit Mode is on, otherwise "Edit Mode". */ }
@@ -4386,8 +4387,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='cheEle'
-										sizValNum={ 22 }
-									/>{ /* What: Icon Svg Component. Why: The Generate card leads with a check mark, matching the other onboarding create cards. How: This renders the check glyph at 22px. */ }
+										sizStpStr='p01'
+									/>{ /* What: Icon Svg Component. Why: The Generate card leads with a check mark, matching the other onboarding create cards. How: This renders the check glyph at the p01 rhythm step. */ }
 
 
 								</div>
@@ -4441,8 +4442,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizValNum={ 22 }
-									/>{ /* What: Icon Svg Component. Why: The no-pickers card leads with a plus, pointing at creating one. How: This renders the plus glyph at 22px. */ }
+										sizStpStr='p01'
+									/>{ /* What: Icon Svg Component. Why: The no-pickers card leads with a plus, pointing at creating one. How: This renders the plus glyph at the p01 rhythm step. */ }
 
 
 								</div>
@@ -4479,8 +4480,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='calEle'
-										sizValNum={ 22 }
-									/>{ /* What: Icon Svg Component. Why: The idle card leads with a calendar, since nothing is scheduled today. How: This renders the calendar glyph at 22px. */ }
+										sizStpStr='p01'
+									/>{ /* What: Icon Svg Component. Why: The idle card leads with a calendar, since nothing is scheduled today. How: This renders the calendar glyph at the p01 rhythm step. */ }
 
 
 								</div>
@@ -4630,8 +4631,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 												<IcoSvgCom
 													icoNamStr='refEle'
-													sizValNum={ 16 }
-												/>{ /* What: Icon Svg Component. Why: The disabled Regenerate control keeps the same refresh icon as the real button. How: This renders the refresh glyph at 16px, followed by the label text. */ }Regenerate
+													sizStpStr='bas'
+												/>{ /* What: Icon Svg Component. Why: The disabled Regenerate control keeps the same refresh icon as the real button. How: This renders the refresh glyph at the bas rhythm step, followed by the label text. */ }Regenerate
 
 
 											</InfTipCom>

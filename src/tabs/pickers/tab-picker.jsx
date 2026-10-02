@@ -810,7 +810,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 										<IcoSvgCom
 											icoNamStr='pluEle'
-											sizValNum={ 16 }
+											sizStpStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 
@@ -849,7 +849,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 										<IcoSvgCom
 											icoNamStr='pluEle'
-											sizValNum={ 16 }
+											sizStpStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The add tab needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 

@@ -185,7 +185,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 						<IcoSvgCom
 							icoNamStr='cheEle'
-							sizValNum={ 14 }
+							sizStpStr='bas'
 						/>{ /* What: Icon Svg Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'cheEle' icon. */ }
 
 
@@ -218,7 +218,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 						<IcoSvgCom
 							icoNamStr='plaEle'
-							sizValNum={ 13 }
+							sizStpStr='bas'
 						/>{ /* What: Icon Svg Component. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'plaEle' icon. */ }
 
 
@@ -291,7 +291,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 							<IcoSvgCom
 								icoNamStr='croEle'
-								sizValNum={ 15 }
+								sizStpStr='bas'
 							/>{ /* What: Icon Svg Component. Why: This is the Cancel action's own glyph. How: This renders the 'croEle' icon. */ }
 
 
@@ -385,7 +385,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr='cheEle'
-						sizValNum={ 14 }
+						sizStpStr='bas'
 					/> // What: Icon Svg Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'cheEle' icon only while isaDonBoo.
 
 
@@ -403,7 +403,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr={ tasRcdObj.repeat === 'once' ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin for 'once' and the calendar otherwise.
-						sizValNum={ 12 }
+						sizStpStr='m01'
 					/>{ /* What: Icon Svg Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
 					<span className={ cssModObj.metaPicker }>{ TAS_NAM_OBJ.sumTasFun( tasRcdObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRcdObj. */ }
@@ -483,7 +483,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr='skiEle'
-						sizValNum={ 15 }
+						sizStpStr='bas'
 					/>{ /* What: Icon Svg Component. Why: This is the Skip action's own glyph. How: This renders the 'skiEle' icon. */ }
 
 
@@ -510,7 +510,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr='ediEle'
-						sizValNum={ 15 }
+						sizStpStr='bas'
 					/>{ /* What: Icon Svg Component. Why: This is the Edit action's own glyph. How: This renders the 'ediEle' icon. */ }
 
 
@@ -1081,7 +1081,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 							<IcoSvgCom
 								icoNamStr='griEle'
-								sizValNum={ 16 }
+								sizStpStr='bas'
 							/>{ /* What: Icon Svg Component. Why: This is the grip's own visible glyph. How: This renders the 'griEle' icon. */ }
 
 
@@ -1163,7 +1163,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizValNum={ 16 }
+									sizStpStr='bas'
 								/>{ /* What: Icon Svg Component. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'pluEle' icon. */ }
 
 
@@ -1187,7 +1187,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizValNum={ 16 }
+									sizStpStr='bas'
 								/>{ /* What: Icon Svg Component. Why: This is the add button's own visible glyph. How: This renders the 'pluEle' icon. */ }
 
 

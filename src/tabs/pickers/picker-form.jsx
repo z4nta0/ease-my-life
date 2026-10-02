@@ -20,6 +20,7 @@ import { InfTipCom    } from '../../ui/info-tip.jsx';             // What: Info 
 import { norConFun    } from '../../core/pickers.js';             // What: Normalize Conditional Function. Why: A new inline conditional's name must be compared against existing ones the same way the store itself normalizes them. How: This is called on the conditional draft's own name before checking it for a collision.
 import { norGroFun    } from '../../core/pickers.js';             // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
 import { redMotFun    } from '../../utils/motion.js';             // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { rhyPxlFun    } from '../../utils/rhythm.js';             // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { SED_NAM_OBJ  } from '../../state/seed.js';               // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { togFadFun    } from '../../ui/edge-fade.js';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';           // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
@@ -176,7 +177,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-			const oveBelNum = daiBloEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the block actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the block's own bottom edge.
+			const oveBelNum = daiBloEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the block actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the block's own bottom edge.
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing block needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -676,7 +677,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -747,7 +748,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -1094,7 +1095,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 								<IcoSvgCom
 									icoNamStr='cheEle'
-									sizValNum={ 12 }
+									sizStpStr='m01'
 								/> // What: Icon Svg Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'cheEle' icon at a fixed size.
 
 
@@ -1275,7 +1276,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizValNum={ 13 }
+										sizStpStr='bas'
 									/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 
@@ -1522,7 +1523,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											<IcoSvgCom
 												icoNamStr='pluEle'
-												sizValNum={ 16 }
+												sizStpStr='bas'
 											/>{ /* What: Icon Svg Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 											<span className={ cssModObj.cndPillName }>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
@@ -2230,7 +2231,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 														<IcoSvgCom
 															icoNamStr='ediEle'
-															sizValNum={ 15 }
+															sizStpStr='bas'
 														/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -2251,7 +2252,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 															<IcoSvgCom
 																icoNamStr='traEle'
-																sizValNum={ 15 }
+																sizStpStr='bas'
 															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -2274,7 +2275,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 															<IcoSvgCom
 																icoNamStr='traEle'
-																sizValNum={ 15 }
+																sizStpStr='bas'
 															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -2454,7 +2455,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										<IcoSvgCom
 											icoNamStr='pluEle'
-											sizValNum={ 14 }
+											sizStpStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 

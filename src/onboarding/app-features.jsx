@@ -1060,12 +1060,12 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns IntModCom below whenever touPhaStr is 'intro'.
 
 
-		const pagIcoEle = ( // What: Page Icon Element. Why: Most features' intro modal shows the icon of the page the feature lives on. How: This renders feaRcdObj.pagStr's own icon at 54px.
+		const pagIcoEle = ( // What: Page Icon Element. Why: Most features' intro modal shows the icon of the page the feature lives on. How: This renders feaRcdObj.pagStr's own icon at the p05 rhythm step.
 
 
 			<IcoSvgCom
 				icoNamStr={ feaRcdObj.pagStr }
-				sizValNum={ 54 }
+				sizStpStr='p05'
 			/> // What: Icon Svg Component. Why: This is the glyph identifying the page this feature lives on. How: This renders that page's own nav icon.
 
 

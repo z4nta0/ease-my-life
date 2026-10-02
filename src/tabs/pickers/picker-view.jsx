@@ -17,6 +17,7 @@ import { PicStrCom    } from '../../ui/picker-strip.jsx'; // What: Picker Strip 
 import { PilTagCom    } from '../../ui/pill-tag.jsx';     // What: Pill Tag Component. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
 import { ProBarCom    } from './progress-bar.jsx';        // What: Progress Bar Component. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfTipCom alongside the raw value.
 import { redMotFun    } from '../../utils/motion.js';     // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { rhyPxlFun    } from '../../utils/rhythm.js';     // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { SED_NAM_OBJ  } from '../../state/seed.js';       // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { useEmlTouFun } from '../../state/tour-bus.js';   // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 
@@ -462,7 +463,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -561,7 +562,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -1151,7 +1152,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='cheEle'
-									sizValNum={ 26 }
+									sizStpStr='p02'
 								/>{ /* What: Icon Svg Component. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
 
 
@@ -1352,7 +1353,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr={ shoDriBoo ? 'eyoEle' : 'eyeEle' }
-									sizValNum={ 13 }
+									sizStpStr='bas'
 								/>{ /* What: Icon Svg Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
 
 								{ shoDriBoo ? 'Hide drift' : 'Show drift' }{ /* What: Drift Label Expression. Why: The toggle's text names what clicking it will do. How: This reads 'Hide drift' while shoDriBoo is on, otherwise 'Show drift'. */ }
@@ -1557,7 +1558,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='cheEle'
-														sizValNum={ 15 }
+														sizStpStr='bas'
 													/>{ /* What: Icon Svg Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -1578,7 +1579,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='calEle'
-														sizValNum={ 15 }
+														sizStpStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
@@ -1603,7 +1604,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='calEle'
-														sizValNum={ 15 }
+														sizStpStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
@@ -1629,7 +1630,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='ediEle'
-													sizValNum={ 15 }
+													sizStpStr='bas'
 												/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -1650,7 +1651,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='traEle'
-														sizValNum={ 15 }
+														sizStpStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -1674,7 +1675,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='traEle'
-														sizValNum={ 15 }
+														sizStpStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -1854,7 +1855,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizValNum={ 14 }
+									sizStpStr='bas'
 								/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 

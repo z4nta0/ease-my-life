@@ -702,8 +702,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 						<IcoSvgCom
 							icoNamStr='chvEle'
-							sizValNum={ 14 }
-						/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at a small 14px size. */ }
+							sizStpStr='bas'
+						/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
 					</span>
@@ -771,8 +771,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='chvEle'
-									sizValNum={ 12 }
-								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at a small 12px size. */ }
+									sizStpStr='m01'
+								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
 
 
 							</span>
@@ -829,8 +829,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='chvEle'
-									sizValNum={ 12 }
-								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at a small 12px size. */ }
+									sizStpStr='m01'
+								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
 
 
 							</span>
@@ -869,7 +869,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizValNum={ 13 }
+										sizStpStr='bas'
 									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
@@ -890,7 +890,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizValNum={ 13 }
+										sizStpStr='bas'
 									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
@@ -973,7 +973,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
-																sizValNum={ 15 }
+																sizStpStr='bas'
 															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
@@ -1042,8 +1042,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr='chvEle'
-																sizValNum={ 16 }
-															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chvEle' icon at a 16px size. */ }
+																sizStpStr='bas'
+															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
 														</button>
@@ -1078,7 +1078,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
-																sizValNum={ 15 }
+																sizStpStr='bas'
 															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
@@ -1107,8 +1107,8 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr='chvEle'
-																sizValNum={ 16 }
-															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chvEle' icon at a 16px size. */ }
+																sizStpStr='bas'
+															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
 														</span>

@@ -3168,7 +3168,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											<IcoSvgCom
 												icoNamStr={ conSorStr === 'desc' ? 'ardEle' : 'aruEle' }
-												sizValNum={ 13 }
+												sizStpStr='bas'
 											/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on conSorStr. */ }
 
 
@@ -3485,7 +3485,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<IcoSvgCom
 											icoNamStr='flaEle'
-											sizValNum={ 16 }
+											sizStpStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The streak card needs a small flame glyph reinforcing its own meaning. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 
@@ -3957,7 +3957,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										}
 										<IcoSvgCom
 											icoNamStr={ remSorStr === 'desc' ? 'ardEle' : 'aruEle' }
-											sizValNum={ 13 }
+											sizStpStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on remSorStr. */ }
 
 
@@ -4337,7 +4337,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									<IcoSvgCom
 										icoNamStr={ sorDirStr === 'desc' ? 'ardEle' : 'aruEle' }
-										sizValNum={ 13 }
+										sizStpStr='bas'
 									/>{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on sorDirStr. */ }
 
 
