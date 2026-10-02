@@ -28,7 +28,7 @@
 
 /* #region Tokens */
 
-:root { /* What: Design Tokens. Why: Every module reads its colors, fonts, radii, and celebration timing from one place. How: This defines each token's default value, grouped into sections. */
+:root { /* What: Design Tokens. Why: Every module reads its colors, type, spacing, sizes, motion, and shadows from one place. How: This defines each token's default value, grouped into sections. */
 
 
 	/* #region Core Design Numbers */
@@ -148,10 +148,10 @@
 	 *
 	*/
 
-	--exh-car-dur : var( --dur-ani-p07 );                /* What: Exhale Card Duration. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
-	--exh-car-sca : 1.012;                               /* What: Exhale Card Scale. Why: Each card swells only slightly, small enough that swelling cards never crowd each other, so it stays literal. How: cardExhale reads it as its peak scale. */
-	--exh-glo-opa : var( --cdn-pow-006-rec );            /* What: Exhale Glow Opacity, about 0.185. Why: The exhale's accent ring stays faint. How: cardExhale reads it as the ring's alpha. */
-	--exh-glo-spr : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Exhale Glow Spread. Why: The exhale's accent ring reaches this far out. How: cardExhale reads it as its box-shadow spread. */
+	--exh-car-dur : var( --dur-ani-p07 );                /* What: Exhale Card Duration ~= 1130.0ms. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
+	--exh-car-sca : 1.012;                               /* What: Exhale Card Scale = 1.012. Why: Each card swells only slightly, small enough that swelling cards never crowd each other, so it stays literal. How: cardExhale reads it as its peak scale. */
+	--exh-glo-opa : var( --cdn-pow-006-rec );            /* What: Exhale Glow Opacity ~= 0.185. Why: The exhale's accent ring stays faint. How: cardExhale reads it as the ring's alpha. */
+	--exh-glo-spr : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Exhale Glow Spread ~= 6.268px. Why: The exhale's accent ring reaches this far out. How: cardExhale reads it as its box-shadow spread. */
 
 	/* #endregion Celebration Tokens */
 
@@ -179,8 +179,8 @@
 	--hea-lev-sma : oklch( from var( --acc-mai-col ) calc( l + 0.30 ) calc( c - 0.10 ) h ); /* What: Heat Level Small. Why: A day with a little done reads as a pale accent. How: The Stats heat map's first level uses it, and it follows each theme's accent. */
 	--hea-lev-med : oklch( from var( --acc-mai-col ) calc( l + 0.18 ) calc( c - 0.06 ) h ); /* What: Heat Level Medium. Why: A day with some done reads a step stronger. How: The Stats heat map's second level uses it, and it follows each theme's accent. */
 	--hea-lev-lar : oklch( from var( --acc-mai-col ) calc( l + 0.08 ) calc( c - 0.03 ) h ); /* What: Heat Level Large. Why: A day with most done reads nearly full strength. How: The Stats heat map's third level uses it, and it follows each theme's accent. */
-	--sha-mai-col : oklch( 0 0 0 );                                                         /* What: Shadow Main Color. Why: Every elevation shadow casts one color, so a theme could tint them all from one place. How: The --ele-* shadows read it with each layer's own alpha through relative color syntax. */
 	--scr-mai-col : oklch( 0.15 0.02 250 );                                                 /* What: Scrim Main Color. Why: Modals, the tour spotlight, and the help overlay dim the page behind them with one shade. How: Modules read it with their own alpha through relative color syntax. */
+	--sha-mai-col : oklch( 0 0 0 );                                                         /* What: Shadow Main Color. Why: Every elevation shadow casts one color, so a theme could tint them all from one place. How: The --ele-* shadows read it with each layer's own alpha through relative color syntax. */
 	--suc-dar-col : oklch( 0.42 0.1 155 );                                                  /* What: Success Dark Color. Why: Success text needs a green dark enough to read on a light surface. How: Modules use it for confirmation messages. */
 	--suc-mai-col : oklch( 0.5 0.11 155 );                                                  /* What: Success Main Color. Why: Success badges and outlines share one green. How: Modules use it for badge text and borders, and read it with an alpha for faint fills. */
 	--suc-tin-col : oklch( 0.95 0.035 155 );                                                /* What: Success Tint Color. Why: A success badge needs a pale green behind it. How: Modules use it as a background. */
@@ -269,7 +269,7 @@
 
 	/* #region Font Size Tokens */
 
-	--fon-siz-bas : 1rem;                                                /* What: Font Size Base ~= 11px. Why: This is the smallest font size accessibility tools accept, and every other step multiplies it; html sets 1rem to 11px by default. How: Each step above reads it as its starting point. */
+	--fon-siz-bas : 1rem;                                                /* What: Font Size Base = 11px. Why: This is the smallest font size accessibility tools accept, and every other step multiplies it; html sets 1rem to 11px by default. How: Each step above reads it as its starting point. */
 	--fon-siz-p01 : calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) ); /* What: Font Size Base Plus 1 ~= 14.572px. Why: This is one step up the scale from the base. How: This multiplies the base by the first power of the core design number. */
 	--fon-siz-p02 : calc( var( --fon-siz-bas ) * var( --cdn-pow-002 ) ); /* What: Font Size Base Plus 2 ~= 19.304px. Why: This is two steps up the scale from the base. How: This multiplies the base by the second power of the core design number. */
 	--fon-siz-p03 : calc( var( --fon-siz-bas ) * var( --cdn-pow-003 ) ); /* What: Font Size Base Plus 3 ~= 25.572px. Why: This is three steps up the scale from the base. How: This multiplies the base by the third power of the core design number. */
@@ -466,18 +466,18 @@ body { /* What: Page Root. Why: The page fills the viewport with no default spac
 
 
 
-body { /* What: Page Body Text. Why: All text starts from the app's own typeface, size, and colors. How: This sets the sans font at the large font size with its stylistic sets, the text and background tokens, and smoothed rendering. */
+body { /* What: Page Body Text. Why: All text starts from the app's own typeface, size, and colors. How: This sets the main font one step above the base size with its stylistic sets, the main text and page background colors, and smoothed rendering. */
 
 
 	-moz-osx-font-smoothing : grayscale;
 	-webkit-font-smoothing  : antialiased;
-	background              : var(--bac-pag-col);
-	color                   : var(--tex-mai-col);
-	font-family             : var(--fon-fam-mai);
+	background              : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	color                   : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family             : var( --fon-fam-mai ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
 	font-feature-settings   : 'ss01', 'cv11';
-	font-size               : var( --fon-siz-p01 );
+	font-size               : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	letter-spacing          : -0.005em;
-	line-height             : var( --ver-rhy-bas );
+	line-height             : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 
 
 }
@@ -485,14 +485,14 @@ body { /* What: Page Body Text. Why: All text starts from the app's own typeface
 a { /* What: Link. Why: Links read in the accent color. How: This colors them with the accent token. */
 
 
-	color : var(--acc-mai-col);
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
 a:hover { /* What: Hovered Link. Why: A link should respond to the pointer. How: This darkens the accent a step. */
 
 
-	color : oklch(from var(--acc-mai-col) calc(l - 0.1) c h);
+	color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
@@ -541,10 +541,10 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
  *
  * @summary
  * A one-shot theme cross-fade: while .theme-animating is on <html> (added by
- * appearance.js's applyPaletteObj on a user theme swap, for about 480ms),
- * the themable properties ease so the palette change glides instead of
- * snapping. It's scoped to the swap window so it never interferes with
- * normal interaction transitions.
+ * appearance.js's appPalFun on a user theme swap, for one p04 duration step,
+ * about 486ms), the themable properties ease so the palette change glides
+ * instead of snapping. It's scoped to the swap window so it never interferes
+ * with normal interaction transitions.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -556,7 +556,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 .theme-animating *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases every themable color on the page for the length of the swap. */
 
 
-	transition : background-color var( --dur-tra-p04 ) var( --mot-sta-eas ), color var( --dur-tra-p04 ) var( --mot-sta-eas ), border-color var( --dur-tra-p04 ) var( --mot-sta-eas ), fill var( --dur-tra-p04 ) var( --mot-sta-eas ), stroke var( --dur-tra-p04 ) var( --mot-sta-eas ) !important;
+	transition : background-color var( --dur-tra-p04 ) var( --mot-sta-eas ), color var( --dur-tra-p04 ) var( --mot-sta-eas ), border-color var( --dur-tra-p04 ) var( --mot-sta-eas ), fill var( --dur-tra-p04 ) var( --mot-sta-eas ), stroke var( --dur-tra-p04 ) var( --mot-sta-eas ) !important; /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */
 
 
 }
@@ -590,7 +590,7 @@ body.is-reordering * { /* What: Drag In Progress. Why: While a card is being dra
 body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every tab needs room to scroll a bottom-anchored target clear of the tab bar. How: This sets the padding each tab's root reads, per CLAUDE.md's body-level state rule. */
 
 
-	--tab-tour-padding : calc( var( --ver-rhy-p10 ) * 1rem ); /* What: Tab Tour Padding. Why: This is how much room a tab adds below its content during a tour. How: Each tab's module reads it as padding-bottom, falling back to none. */
+	--tab-tour-padding : calc( var( --ver-rhy-p10 ) * 1rem ); /* Vertical Rhythm Base Plus 10 ~= 242.522px */ /* What: Tab Tour Padding. Why: This is how much room a tab adds below its content during a tour. How: Each tab's module reads it as padding-bottom, falling back to none. */
 
 
 }
@@ -599,9 +599,9 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 	border      : 0;
-	clip-path   : inset(50%);
+	clip-path   : inset( 50% );
 	height      : 1px;
-	margin      : calc( var( --spa-ver-m09 ) * -1 ) -1px;
+	margin      : -1px;
 	overflow    : hidden;
 	padding     : 0;
 	position    : absolute;
@@ -623,7 +623,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	0% {
 
 
-		box-shadow : 0 0 0 0 oklch(from var(--acc-mai-col) l c h / 0);
+		box-shadow : 0 0 0 0 oklch( from var( --acc-mai-col ) l c h / 0 ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 		transform  : none;
 
 
@@ -632,8 +632,8 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	35% {
 
 
-		box-shadow : 0 0 0 var(--exh-glo-spr) oklch(from var(--acc-mai-col) l c h / var(--exh-glo-opa));
-		transform  : scale(var(--exh-car-sca));
+		box-shadow : 0 0 0 var( --exh-glo-spr ) oklch( from var( --acc-mai-col ) l c h / var( --exh-glo-opa ) ); /* Exhale Glow Spread ~= 6.268px, Accent Main Color = oklch( 0.5 0.14 250 ), Exhale Glow Opacity ~= 0.185 */
+		transform  : scale( var( --exh-car-sca ) );                                                              /* Exhale Card Scale = 1.012 */
 
 
 	}
@@ -641,7 +641,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	100% {
 
 
-		box-shadow : 0 0 0 0 oklch(from var(--acc-mai-col) l c h / 0);
+		box-shadow : 0 0 0 0 oklch( from var( --acc-mai-col ) l c h / 0 ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 		transform  : none;
 
 
@@ -656,14 +656,14 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	0% {
 
 
-		border-bottom-width : var( --bor-wid-sma );
-		border-top-width    : var( --bor-wid-sma );
-		margin-bottom       : var( --spa-ver-m01 );
-		max-height          : calc( var( --ver-rhy-p09 ) * 1rem );
+		border-bottom-width : var( --bor-wid-sma );                /* Border Width Small ~= 0.499px */
+		border-top-width    : var( --bor-wid-sma );                /* Border Width Small ~= 0.499px */
+		margin-bottom       : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */
+		max-height          : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
 		opacity             : 1;
-		padding-bottom      : var( --spa-ver-bas );
-		padding-top         : var( --spa-ver-bas );
-		transform           : translateX(0);
+		padding-bottom      : var( --spa-ver-bas );                /* Spacing Vertical Base ~= 14.572px */
+		padding-top         : var( --spa-ver-bas );                /* Spacing Vertical Base ~= 14.572px */
+		transform           : translateX( 0 );
 
 
 	}
@@ -671,12 +671,12 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	50% {
 
 
-		margin-bottom  : var( --spa-ver-m01 );
-		max-height     : calc( var( --ver-rhy-p09 ) * 1rem );
+		margin-bottom  : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */
+		max-height     : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
 		opacity        : 0;
-		padding-bottom : var( --spa-ver-bas );
-		padding-top    : var( --spa-ver-bas );
-		transform      : translateX(-18px);
+		padding-bottom : var( --spa-ver-bas );                /* Spacing Vertical Base ~= 14.572px */
+		padding-top    : var( --spa-ver-bas );                /* Spacing Vertical Base ~= 14.572px */
+		transform      : translateX( -18px );
 
 
 	}
@@ -691,7 +691,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 		opacity             : 0;
 		padding-bottom      : 0;
 		padding-top         : 0;
-		transform           : translateX(-18px);
+		transform           : translateX( -18px );
 
 
 	}
@@ -706,7 +706,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(8px);
+		transform : translateY( 8px );
 
 
 	}
@@ -729,9 +729,9 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	0% {
 
 
-		border-width : var( --bor-wid-bas );
+		border-width : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */
 		opacity      : 0.85;
-		transform    : scale(1);
+		transform    : scale( 1 );
 
 
 	}
@@ -739,9 +739,9 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	100% {
 
 
-		border-width : var( --bor-wid-sma );
+		border-width : var( --bor-wid-sma ); /* Border Width Small ~= 0.499px */
 		opacity      : 0;
-		transform    : scale(2.6);
+		transform    : scale( 2.6 );
 
 
 	}
@@ -756,7 +756,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : scale(0.4);
+		transform : scale( 0.4 );
 
 
 	}
@@ -765,7 +765,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 1;
-		transform : scale(1.18);
+		transform : scale( 1.18 );
 
 
 	}
@@ -773,7 +773,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	100% {
 
 
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
@@ -787,8 +787,8 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	0% {
 
 
-		opacity   : var(--piece-opacity, 0.9);
-		transform : translate(-50%, -50%) rotate(0deg);
+		opacity   : var( --piece-opacity, 0.9 ); /* Piece Opacity = set per confetti piece by JS, falling back to 0.9 */
+		transform : translate( -50%, -50% ) rotate( 0deg );
 
 
 	}
@@ -797,7 +797,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translate(calc(-50% + cos(var(--angle)) * var(--dist)), calc(-50% + sin(var(--angle)) * var(--dist) + 14px)) rotate(var(--rot));
+		transform : translate( calc( -50% + cos( var( --angle ) ) * var( --dist ) ), calc( -50% + sin( var( --angle ) ) * var( --dist ) + 14px ) ) rotate( var( --rot ) ); /* Angle = set per confetti piece by JS, Distance = set per confetti piece by JS, Rotation = set per confetti piece by JS */
 
 
 	}
@@ -811,7 +811,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	0% {
 
 
-		transform : scaleX(0);
+		transform : scaleX( 0 );
 
 
 	}
@@ -819,7 +819,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	100% {
 
 
-		transform : scaleX(1);
+		transform : scaleX( 1 );
 
 
 	}
@@ -834,7 +834,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(3px);
+		transform : translateY( 3px );
 
 
 	}
@@ -867,7 +867,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(3px);
+		transform : translateY( 3px );
 
 
 	}
@@ -882,7 +882,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(-3px);
+		transform : translateY( -3px );
 
 
 	}
@@ -928,7 +928,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	100% {
 
 
-		outline-color : oklch(from var(--acc-mai-col) l c h/1);
+		outline-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 	}
@@ -936,7 +936,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	50% {
 
 
-		outline-color : oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-006-rec ));
+		outline-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-006-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 6 Reciprocal ~= 0.185 */
 
 
 	}
@@ -951,7 +951,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateX(-10px);
+		transform : translateX( -10px );
 
 
 	}
@@ -975,7 +975,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(-8px) scale(.98);
+		transform : translateY( -8px ) scale( .98 );
 
 
 	}
@@ -1008,7 +1008,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(-6px) scale(.98);
+		transform : translateY( -6px ) scale( .98 );
 
 
 	}
@@ -1023,7 +1023,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(-8px);
+		transform : translateY( -8px );
 
 
 	}
@@ -1070,7 +1070,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translate(-50%, -50%) scale(0.4);
+		transform : translate( -50%, -50% ) scale( 0.4 );
 
 
 	}
@@ -1079,7 +1079,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0.9;
-		transform : translate(-50%, -50%) scale(1.15);
+		transform : translate( -50%, -50% ) scale( 1.15 );
 
 
 	}
@@ -1094,7 +1094,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY(9px);
+		transform : translateY( 9px );
 
 
 	}
