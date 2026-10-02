@@ -2240,6 +2240,15 @@ still passes.
       then column gap, so each direction reads from its own family. A gap
       whose layout is set by another rule (a base rule or a variant)
       follows that layout. A `0` gap stays `0`.
+    - **Position offsets follow their axis too** (decided 2026-10-01):
+      `top` and `bottom` (and `scroll-margin-top`) use `--spa-ver-*`,
+      `left` and `right` use `--spa-hor-*`, and an `inset` covering every
+      side is written as two values, vertical then horizontal. An offset
+      that mirrors another size references that size's token instead of
+      the nearest step: a padding it lines up with, a border width it
+      covers, or half an element's own size (e.g. a tooltip arrow at
+      `calc( var( --ver-rhy-bas ) * 1rem / -2 )`). An off-screen technique
+      (e.g. `left: -9999px`) isn't spacing and stays literal.
     - **Text measure is font based** (decided 2026-10-01, also not
       specific to this project): a paragraph's `max-width` comes from the
       project's main body font, not from either rhythm. Paragraph text
