@@ -1303,28 +1303,12 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 
-.pool-name { /* What: Pool Item Name. Why: The name takes the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines it up in a row that can shrink. */
+.pool-name { /* What: Pool Item Name. Why: The name takes the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This sets the name's size and lets it shrink and wrap cleanly. */
 
 
-	align-items : center;
-	display     : flex;
-	font-size   : var( --fon-siz-p01 );
-	gap         : var( --spa-ver-m02 ) var( --spa-hor-m02 );
-	min-width   : 0;
-	text-wrap   : pretty;
-
-
-}
-@media (max-width: 480px) { /* What: Narrow Pool Item Name. Why: On a narrow row the name's contents wrap instead of competing for width. How: This applies only when the viewport matches (max-width: 480px). */
-
-
-	.pool-name { /* What: Wrapped Pool Item Name. Why: The name needs to wrap. How: This lets the row wrap. */
-
-
-		flex-wrap : wrap;
-
-
-	}
+	font-size : var( --fon-siz-p01 );
+	min-width : 0;
+	text-wrap : pretty;
 
 
 }
