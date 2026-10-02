@@ -139,7 +139,7 @@
 
 	border-color : oklch(from var(--acc-mai-col) l c h / 0.55);
 	border-style : solid;
-	box-shadow   : 0 18px 40px -12px oklch(0 0 0 / 0.34), 0 6px 14px -4px oklch(0 0 0 / 0.18);
+	box-shadow   : var( --ele-lar-sha );
 	cursor       : grabbing;
 	transform    : scale(1.015);
 

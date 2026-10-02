@@ -143,7 +143,7 @@
 	background      : oklch(from var(--bac-sur-col) l c h / 0.94);
 	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : 999px;
-	box-shadow      : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
+	box-shadow      : var( --ele-med-sha );
 	gap             : var( --spa-hor-m07 );
 	justify-content : center;
 	left            : 50%;
@@ -223,7 +223,7 @@
 	.tabbar--side[data-rail-open-active] { /* What: Open Drawer Side Tab Bar. Why: An open drawer slides into view over the content. How: This slides it back on screen with a soft shadow. */
 
 
-		box-shadow : 12px 0 44px -14px rgba(0,0,0,0.3);
+		box-shadow : var( --ele-sid-sha );
 		transform  : translateX(0);
 
 
@@ -817,7 +817,7 @@
 	border                  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-left             : 0;
 	border-radius           : 0 var( --rad-bor-med ) var( --rad-bor-med ) 0;
-	box-shadow              : 6px 0 16px -8px rgba(0,0,0,0.28);
+	box-shadow              : var( --ele-sid-sha );
 	color                   : var(--tex-mut-col);
 	cursor                  : pointer;
 	display                 : none;

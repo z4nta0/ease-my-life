@@ -999,7 +999,7 @@
 
 	background    : var(--bac-pag-col);
 	border-radius : 50%;
-	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
+	box-shadow    : var( --ele-sma-sha );
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;

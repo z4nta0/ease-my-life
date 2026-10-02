@@ -26,7 +26,7 @@
 	background     : var(--bac-sur-col);
 	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );
-	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
+	box-shadow     : var( --ele-lar-sha );
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	pointer-events : auto;
 	position       : fixed;

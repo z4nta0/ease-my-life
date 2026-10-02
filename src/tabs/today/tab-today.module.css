@@ -1786,7 +1786,7 @@
 	background    : var(--bac-sur-col);
 	border-radius : var( --rad-bor-lar );
 	border-top    : 0!important;
-	box-shadow    : 0 20px 46px -14px oklch(0 0 0 / 0.32);
+	box-shadow    : var( --ele-lar-sha );
 	padding-top   : 0!important;
 
 

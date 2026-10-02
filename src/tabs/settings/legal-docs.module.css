@@ -107,7 +107,7 @@
 	background     : var(--bac-sur-col, var(--bac-pag-col));
 	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-lar );
-	box-shadow     : 0 24px 60px oklch(0 0 0 / 0.28);
+	box-shadow     : var( --ele-xla-sha );
 	color          : var(--tex-mai-col);
 	display        : flex;
 	flex-direction : column;

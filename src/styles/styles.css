@@ -233,6 +233,18 @@
 
 
 
+	/* #region Elevation Tokens */
+
+	--ele-sma-sha : 0 calc( var( --ver-rhy-m09 ) * 1rem ) calc( var( --ver-rhy-m07 ) * 1rem ) oklch( 0 0 0 / 0.15 );                                                                                                                                                                            /* What: Elevation Small Shadow, about 0 1.2px 2px. Why: Knobs and small raised controls sit just above their surface. How: This is one tight contact shadow. */
+	--ele-med-sha : 0 calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-p02 ) * 1rem ) oklch( 0 0 0 / 0.18 ), 0 calc( var( --ver-rhy-m05 ) * 1rem ) calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-m07 ) * -1rem ) oklch( 0 0 0 / 0.1 );                                       /* What: Elevation Medium Shadow, about 0 8px 26px plus 0 3.6px 8px -2px. Why: Small floating surfaces such as info tips and the bottom tab bar hover just off the page. How: This pairs a soft key shadow with a crisp contact layer. */
+	--ele-lar-sha : 0 calc( var( --ver-rhy-p01 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-bas ) * -1rem ) oklch( 0 0 0 / 0.36 ), 0 calc( var( --ver-rhy-m03 ) * 1rem ) calc( var( --ver-rhy-bas ) * 1rem ) calc( var( --ver-rhy-m05 ) * -1rem ) oklch( 0 0 0 / 0.16 ); /* What: Elevation Large Shadow, about 0 19px 45px -15px plus 0 6px 15px -4px. Why: Popovers and anything being dragged lift well clear of the page. How: This pairs a deep key shadow with a crisp contact layer. */
+	--ele-xla-sha : 0 calc( var( --ver-rhy-p02 ) * 1rem ) calc( var( --ver-rhy-p05 ) * 1rem ) calc( var( --ver-rhy-p01 ) * -1rem ) oklch( 0 0 0 / 0.4 ), 0 calc( var( --ver-rhy-m02 ) * 1rem ) calc( var( --ver-rhy-p01 ) * 1rem ) calc( var( --ver-rhy-m04 ) * -1rem ) oklch( 0 0 0 / 0.16 );  /* What: Elevation Extra Large Shadow, about 0 26px 59px -19px plus 0 8px 19px -5px. Why: Modals float highest, above a scrim. How: This pairs the deepest key shadow with a crisp contact layer. */
+	--ele-sid-sha : calc( var( --ver-rhy-p01 ) * 1rem ) 0 calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-bas ) * -1rem ) oklch( 0 0 0 / 0.36 ), calc( var( --ver-rhy-m03 ) * 1rem ) 0 calc( var( --ver-rhy-bas ) * 1rem ) calc( var( --ver-rhy-m05 ) * -1rem ) oklch( 0 0 0 / 0.16 ); /* What: Elevation Side Shadow, the large shadow turned to fall right. Why: The side rail's drawer and pull handle slide in from the left edge, so their shadow falls sideways. How: This is the large shadow with its x and y offsets swapped. */
+
+	/* #endregion Elevation Tokens */
+
+
+
 	/* #region Font Family Tokens */
 
 	--fon-fam-br1 : 'Shantell Sans', var( --fon-fam-mai );                        /* What: Font Family Brand 1. Why: The main brand face sets the wordmark's lead word. How: This names Shantell Sans, falling back to the main font. */
