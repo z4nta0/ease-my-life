@@ -159,15 +159,27 @@
 
 	/* #region Color Tokens */
 
-	--acc-mai-col : oklch(0.5 0.14 250);   /* What: Accent Main Color. Why: Actions, selection, and progress share one main accent. How: Modules read it for accent text, fills, and outlines, and each theme overwrites it. */
-	--acc-sec-col : oklch(0.62 0.13 50);   /* What: Accent Secondary Color. Why: Streaks, warnings, and a few highlights need a second accent alongside the main one. How: Modules use it where the main accent would blur together, and each theme overwrites it. */
-	--acc-tin-col : oklch(0.95 0.025 250); /* What: Accent Tint Color. Why: Selected and highlighted surfaces need a pale tint of the main accent. How: Modules use it as a background behind accent text, and each theme overwrites it. */
-	--bac-pag-col : oklch(0.985 0.003 240);
-	--bac-sur-col : oklch(0.975 0.004 240);
-	--bor-mai-col : oklch(0.91 0.005 240);
-	--tex-mai-col : oklch(0.17 0.012 250);
-	--tex-mut-col : oklch(0.5 0.012 250);  /* What: Text Muted Color. Why: Hints, labels, and metadata read quieter than body text. How: Modules use it for supporting text, and each theme overwrites it. */
-	--tex-sec-col : ;                      /* What: Text Secondary Color. Why: The design system names a secondary text role in every project, so the token set stays the same everywhere. How: This project uses muted text instead, so it is deliberately left empty and unused. */
+	--acc-mai-col : oklch( 0.5 0.14 250 );   /* What: Accent Main Color. Why: Actions, selection, and progress share one main accent. How: Modules read it for accent text, fills, and outlines, and each theme overwrites it. */
+	--acc-sec-col : oklch( 0.62 0.13 50 );   /* What: Accent Secondary Color. Why: Streaks, warnings, and a few highlights need a second accent alongside the main one. How: Modules use it where the main accent would blur together, and each theme overwrites it. */
+	--acc-tin-col : oklch( 0.95 0.025 250 ); /* What: Accent Tint Color. Why: Selected and highlighted surfaces need a pale tint of the main accent. How: Modules use it as a background behind accent text, and each theme overwrites it. */
+	--bac-hov-col : oklch( 0 0 0 / 0.05 );   /* What: Background Hover Color. Why: A hovered row or link needs a faint shade over whatever surface it sits on. How: Modules lay it over the surface as a background on hover. */
+	--bac-pag-col : oklch( 0.985 0.003 240 );
+	--bac-sur-col : oklch( 0.975 0.004 240 );
+	--bor-mai-col : oklch( 0.91 0.005 240 );
+	--err-dar-col : oklch( 0.5 0.18 25 );    /* What: Error Dark Color. Why: Error and delete text needs a red dark enough to read on a light surface. How: Modules use it for error messages and destructive button text. */
+	--err-mai-col : oklch( 0.55 0.17 25 );   /* What: Error Main Color. Why: Error badges, invalid fields, and delete outlines share one red. How: Modules use it for borders and badge text, and read it with an alpha for faint fills. */
+	--err-tin-col : oklch( 0.955 0.02 25 );  /* What: Error Tint Color. Why: An error badge or hovered delete button needs a pale red behind it. How: Modules use it as a background. */
+	--scr-mai-col : oklch( 0.15 0.02 250 );  /* What: Scrim Main Color. Why: Modals, the tour spotlight, and the help overlay dim the page behind them with one shade. How: Modules read it with their own alpha through relative color syntax. */
+	--suc-dar-col : oklch( 0.42 0.1 155 );   /* What: Success Dark Color. Why: Success text needs a green dark enough to read on a light surface. How: Modules use it for confirmation messages. */
+	--suc-mai-col : oklch( 0.5 0.11 155 );   /* What: Success Main Color. Why: Success badges and outlines share one green. How: Modules use it for badge text and borders, and read it with an alpha for faint fills. */
+	--suc-tin-col : oklch( 0.95 0.035 155 ); /* What: Success Tint Color. Why: A success badge needs a pale green behind it. How: Modules use it as a background. */
+	--tex-acc-col : oklch( 1 0 0 );          /* What: Text Accent Color. Why: Text and icons sitting on an accent fill need a color that reads against it. How: Modules use it on accent-filled buttons and badges. */
+	--tex-mai-col : oklch( 0.17 0.012 250 );
+	--tex-mut-col : oklch( 0.5 0.012 250 );  /* What: Text Muted Color. Why: Hints, labels, and metadata read quieter than body text. How: Modules use it for supporting text, and each theme overwrites it. */
+	--tex-sec-col : ;                        /* What: Text Secondary Color. Why: The design system names a secondary text role in every project, so the token set stays the same everywhere. How: This project uses muted text instead, so it is deliberately left empty and unused. */
+	--war-dar-col : oklch( 0.45 0.13 50 );   /* What: Warning Dark Color. Why: Warning text needs an amber dark enough to read on a light surface. How: Modules use it for warning and caution messages. */
+	--war-mai-col : oklch( 0.55 0.13 50 );   /* What: Warning Main Color. Why: Warning badges share one amber. How: Modules use it for badge text. */
+	--war-tin-col : oklch( 0.95 0.045 50 );  /* What: Warning Tint Color. Why: A warning badge needs a pale amber behind it. How: Modules use it as a background. */
 
 	/* #endregion Color Tokens */
 

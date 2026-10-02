@@ -290,7 +290,7 @@
 
 
 	animation    : global(importMsgPop) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color        : oklch(0.5 0.18 25);
+	color        : var( --err-dar-col );
 	font-size    : var( --fon-siz-bas );
 	margin-right : auto;
 
@@ -317,7 +317,7 @@
 
 
 	animation    : global(importMsgPop) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color        : oklch(0.45 0.13 50);
+	color        : var( --war-dar-col );
 	font-size    : var( --fon-siz-bas );
 	line-height  : var( --ver-rhy-bas );
 	margin-right : auto;

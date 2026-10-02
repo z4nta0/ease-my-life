@@ -54,7 +54,7 @@
 
 	background   : var(--acc-mai-col);
 	border-color : var(--acc-mai-col);
-	color        : #fff;
+	color        : var( --tex-acc-col );
 
 
 }

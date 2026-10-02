@@ -153,7 +153,7 @@
 
 	background   : var(--acc-mai-col);
 	border-color : var(--acc-mai-col);
-	color        : var(--accent-ink, #fff);
+	color        : var( --tex-acc-col );
 
 
 }
@@ -1416,9 +1416,9 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-del:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
 
 
-	background   : color-mix(in srgb, var(--danger, #d24545) 8%, transparent);
-	border-color : var(--danger, #d24545);
-	color        : var(--danger, #d24545);
+	background   : oklch( from var( --err-mai-col ) l c h / 0.08 );
+	border-color : var( --err-mai-col );
+	color        : var( --err-mai-col );
 
 
 }

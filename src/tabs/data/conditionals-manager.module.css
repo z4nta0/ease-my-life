@@ -365,7 +365,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name-input[aria-invalid="true"]:focus { /* What: Invalid Row Name Input. Why: A blank or colliding name has to stand out, focused or not. How: This turns the underline red, keying off the aria-invalid the field already sets. */
 
 
-	border-bottom-color : oklch(0.55 0.18 25);
+	border-bottom-color : var( --err-mai-col );
 
 
 }
@@ -478,7 +478,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 .rd-cnd-name-err { /* What: Name Error. Why: A blank or colliding name needs a red warning above the fields. How: This sets a small red message inset to line up with the fields. */
 
 
-	color        : oklch(0.5 0.18 25);
+	color        : var( --err-dar-col );
 	font-size    : var( --fon-siz-bas );
 	line-height  : var( --ver-rhy-bas );
 	margin       : 0 0 var( --spa-ver-m01 );

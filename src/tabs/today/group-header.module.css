@@ -479,7 +479,7 @@
 .group-name-conflict .confirm-msg { /* What: Group Name Conflict Message. Why: The warning's text should match its warm bar. How: This sets it in a darkened warm color. */
 
 
-	color : oklch(0.45 0.13 50);
+	color : var( --war-dar-col );
 
 
 }

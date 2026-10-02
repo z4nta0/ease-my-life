@@ -558,8 +558,8 @@
 .rd-group-new-cancel:hover { /* What: Hovered Cancel Button. Why: Cancel should read as backing out. How: This tints it in the danger color. */
 
 
-	border-color : var(--danger, #c0392b);
-	color        : var(--danger, #c0392b);
+	border-color : var( --err-mai-col );
+	color        : var( --err-mai-col );
 
 
 }

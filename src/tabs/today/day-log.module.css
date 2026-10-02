@@ -290,8 +290,8 @@
 .dl-c-push { /* What: Pushed Icon. Why: A pushed item reads orange. How: This tints the tile orange. */
 
 
-	background : oklch(0.95 0.045 50);
-	color      : oklch(0.55 0.13 50);
+	background : var( --war-tin-col );
+	color      : var( --war-mai-col );
 
 
 }
@@ -307,16 +307,16 @@
 .dl-c-skip { /* What: Skipped Icon. Why: A skipped item reads red. How: This tints the tile red. */
 
 
-	background : oklch(0.955 0.02 25);
-	color      : oklch(0.53 0.16 25);
+	background : var( --err-tin-col );
+	color      : var( --err-mai-col );
 
 
 }
 .dl-c-done { /* What: Completed Icon. Why: A completed item reads green. How: This tints the tile green. */
 
 
-	background : oklch(0.95 0.035 155);
-	color      : oklch(0.5 0.11 155);
+	background : var( --suc-tin-col );
+	color      : var( --suc-mai-col );
 
 
 }
@@ -608,7 +608,7 @@
 
 
 	align-items : center;
-	color       : oklch(0.5 0.11 155);
+	color       : var( --suc-mai-col );
 	display     : inline-flex;
 	gap         : var( --spa-hor-m05 );
 
@@ -845,7 +845,7 @@
 .dl-trow[data-row-done-active] { /* What: Done Log Row. Why: A completed item's row reads green. How: This tints it green, keying off data-row-done-active. */
 
 
-	background : oklch(0.95 0.035 155);
+	background : var( --suc-tin-col );
 
 
 }
@@ -1078,7 +1078,7 @@
 .dl-delta.up { /* What: Rising Change. Why: A rise reads green. How: This colors it green. */
 
 
-	color : oklch(0.5 0.11 155);
+	color : var( --suc-mai-col );
 
 
 }
@@ -1100,7 +1100,7 @@
 .dl-boost { /* What: Row Boost. Why: A dynamic item's boost reads green. How: This colors it green. */
 
 
-	color : oklch(0.5 0.11 155);
+	color : var( --suc-mai-col );
 
 
 }
@@ -1175,8 +1175,8 @@
 .dl-st-done { /* What: Done Pill. Why: A done reminder reads green. How: This tints the pill green. */
 
 
-	background : oklch(0.95 0.035 155);
-	color      : oklch(0.5 0.11 155);
+	background : var( --suc-tin-col );
+	color      : var( --suc-mai-col );
 
 
 }
@@ -1191,8 +1191,8 @@
 .dl-st-skip { /* What: Skipped Pill. Why: A skipped reminder reads red. How: This tints the pill red. */
 
 
-	background : oklch(0.955 0.02 25);
-	color      : oklch(0.53 0.16 25);
+	background : var( --err-tin-col );
+	color      : var( --err-mai-col );
 
 
 }
@@ -1356,7 +1356,7 @@
 .dl-rt-row[data-row-done-active] { /* What: Done Reminder Row. Why: A done reminder's row reads green. How: This tints it green, keying off data-row-done-active. */
 
 
-	background : oklch(0.95 0.035 155);
+	background : var( --suc-tin-col );
 
 
 }

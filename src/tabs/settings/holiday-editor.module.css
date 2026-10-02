@@ -389,7 +389,7 @@
 
 
 	background : var(--bac-pag-col);
-	color      : oklch(0.5 0.18 25);
+	color      : var( --err-dar-col );
 
 
 }

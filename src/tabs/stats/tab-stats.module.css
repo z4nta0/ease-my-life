@@ -2049,9 +2049,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-tag--deleted { /* What: Deleted Tag. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
 
 
-	background   : oklch(0.55 0.16 25 / 0.08);
-	border-color : oklch(0.55 0.16 25 / 0.4);
-	color        : oklch(0.55 0.16 25);
+	background   : oklch( from var( --err-mai-col ) l c h / 0.08 );
+	border-color : oklch( from var( --err-mai-col ) l c h / 0.4 );
+	color        : var( --err-mai-col );
 
 
 }

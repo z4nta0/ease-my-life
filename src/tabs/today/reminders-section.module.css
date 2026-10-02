@@ -364,7 +364,7 @@
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-color  : oklch(from var(--acc-sec-col) l c h/0.35);
 	border-radius : var( --rad-bor-sma );
-	color         : oklch(0.45 0.13 50);
+	color         : var( --war-dar-col );
 	font-size     : var( --fon-siz-bas );
 	line-height   : var( --ver-rhy-bas );
 	margin        : 0 0 var( --spa-ver-m02 );
@@ -375,9 +375,9 @@
 .rem-added-msg[data-message-ok-active] { /* What: Ok Add Result Message. Why: A reminder that lands in today's list reads as a success. How: This tints the note green. */
 
 
-	background   : oklch(0.5 0.11 155/0.06);
-	border-color : oklch(0.5 0.11 155/0.3);
-	color        : oklch(0.42 0.1 155);
+	background   : oklch( from var( --suc-mai-col ) l c h / 0.06 );
+	border-color : oklch( from var( --suc-mai-col ) l c h / 0.3 );
+	color        : var( --suc-dar-col );
 
 
 }

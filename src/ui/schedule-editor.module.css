@@ -214,7 +214,7 @@
 .rem-vis-note { /* What: Visibility Note. Why: A schedule that won't show today should say so under the control that caused it, calmly, since nothing is broken. How: This sets the note in small warm text. */
 
 
-	color       : oklch(0.45 0.13 50); /* What: Darkened Warm Text. Why: The raw warm color doesn't reach AA contrast at this size. How: This darkens it until it does. */
+	color       : var( --war-dar-col ); /* What: Darkened Warm Text. Why: The raw warm color doesn't reach AA contrast at this size. How: This darkens it until it does. */
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : var( --spa-ver-m02 ) 0 0;
@@ -225,7 +225,7 @@
 .rem-vis-note.is-never { /* What: Never Visibility Note. Why: A schedule that can never show is a dead configuration, not a deferral. How: This turns the note red, darkened for AA contrast. */
 
 
-	color : oklch(0.45 0.17 25);
+	color : var( --err-dar-col );
 
 
 }

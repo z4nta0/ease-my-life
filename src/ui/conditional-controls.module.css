@@ -137,8 +137,8 @@
 .np-input[aria-invalid="true"] { /* What: Invalid Field Input. Why: A blank or colliding name has to stand out. How: This borders and insets the field in red, keying off the aria-invalid it already sets. */
 
 
-	border-color : oklch(0.55 0.18 25);
-	box-shadow   : 0 0 0 1px oklch(0.55 0.18 25) inset;
+	border-color : var( --err-mai-col );
+	box-shadow   : 0 0 0 1px var( --err-mai-col ) inset;
 
 
 }
@@ -183,7 +183,7 @@
 .np-error { /* What: Field Error. Why: A blank or colliding name explains itself under the field. How: This sets a small red message. */
 
 
-	color       : oklch(0.5 0.18 25);
+	color       : var( --err-dar-col );
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : var( --spa-ver-m03 ) 0 0;

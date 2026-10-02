@@ -623,7 +623,7 @@
 .set-rm-note { /* What: Reduced Motion Note. Why: The note that animations won't play reads as an advisory. How: This colors it in a warm tone darkened to stay readable. */
 
 
-	color : oklch(0.45 0.13 50);
+	color : var( --war-dar-col );
 
 
 }
@@ -768,7 +768,7 @@
 .set-data-row--danger .set-data-name { /* What: Danger Row Name. Why: A destructive row names itself in red. How: This colors it. */
 
 
-	color : oklch(0.5 0.18 25);
+	color : var( --err-dar-col );
 
 
 }
@@ -877,9 +877,9 @@
 .set-store-chip[data-chip-ok-active] { /* What: Good Storage Chip. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
 
 
-	background   : oklch(0.5 0.11 155/0.08);
-	border-color : oklch(0.5 0.11 155/0.35);
-	color        : oklch(0.42 0.1 155);
+	background   : oklch( from var( --suc-mai-col ) l c h / 0.08 );
+	border-color : oklch( from var( --suc-mai-col ) l c h / 0.35 );
+	color        : var( --suc-dar-col );
 
 
 }
@@ -888,7 +888,7 @@
 
 	background   : oklch(from var(--acc-sec-col) l c h/0.08);
 	border-color : oklch(from var(--acc-sec-col) l c h/0.4);
-	color        : oklch(0.45 0.13 50);
+	color        : var( --war-dar-col );
 
 
 }
@@ -916,14 +916,14 @@
 .set-import-msg[data-message-error-active] { /* What: Failed Result Message. Why: A failure reads red. How: This colors it, keying off data-message-error-active. */
 
 
-	color : oklch(0.5 0.18 25);
+	color : var( --err-dar-col );
 
 
 }
 .set-import-msg[data-message-warn-active] { /* What: Pending Result Message. Why: A pending destructive import reads warm, like the reminder advisories, rather than as an error. How: This colors it warm with a capped line length, keying off data-message-warn-active. */
 
 
-	color       : oklch(0.45 0.13 50);
+	color       : var( --war-dar-col );
 	line-height : var( --ver-rhy-bas );
 	max-width   : var( --tex-wid-sma );
 

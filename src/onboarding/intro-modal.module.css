@@ -23,7 +23,7 @@
 
 
 	animation      : global(obFade) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background     : oklch(0.15 0.02 250/0.5);
+	background     : oklch( from var( --scr-mai-col ) l c h / 0.5 );
 	display        : flex;
 	flex-direction : column;
 	inset          : 0;
@@ -236,14 +236,14 @@
 
 	background   : var(--acc-mai-col);
 	border-color : var(--acc-mai-col);
-	color        : #fff;
+	color        : var( --tex-acc-col );
 
 
 }
 .ob-btn--ghost:hover { /* What: Hovered Skip Button. Why: The quiet skip button still needs a hover response. How: This gives it the shared hover tint. */
 
 
-	background : var(--hover,oklch(0 0 0/0.05));
+	background : var( --bac-hov-col );
 
 
 }

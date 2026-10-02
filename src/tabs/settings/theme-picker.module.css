@@ -175,7 +175,7 @@
 	animation       : themeCheckIn var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
 	background      : rgba(255,255,255,.92);
 	border-radius   : 50%;
-	color           : oklch(0.5 0.14 250);
+	color           : var( --acc-mai-col );
 	display         : flex;
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 700;
@@ -192,7 +192,7 @@
 .theme-row[data-theme-dark-active] .theme-row-check span { /* What: Dark Theme Row Check. Why: The dark row's label rule also matches the check and the text span the editor injects around its glyph, which would turn them white on the white disc. How: This keeps both accent blue. */
 
 
-	color : oklch(0.5 0.14 250);
+	color : var( --acc-mai-col );
 
 
 }
