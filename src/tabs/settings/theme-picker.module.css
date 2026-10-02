@@ -141,12 +141,12 @@
 .theme-row span { /* What: Theme Row Label. Why: The theme's name sits in the strip's bottom-left corner, readable over its colors. How: This pins it there in small, spaced, translucent dark mono capitals. */
 
 
-	bottom         : 6px;
+	bottom         : var( --spa-ver-m03 );
 	color          : rgba(0,0,0,.45);
 	cursor         : pointer;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	left           : 10px;
+	left           : var( --spa-hor-m01 );
 	letter-spacing : 0.05em;
 	position       : absolute;
 	text-transform : uppercase;
@@ -182,8 +182,8 @@
 	height          : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content : center;
 	position        : absolute;
-	right           : 8px;
-	top             : 6px;
+	right           : var( --spa-hor-m02 );
+	top             : var( --spa-ver-m03 );
 	width           : calc( var( --ver-rhy-p01 ) * 1rem );
 
 
@@ -306,11 +306,11 @@
 	background     : rgba(255,255,255,.55);
 	border         : 0;
 	border-radius  : 4px;
-	bottom         : 6px;
+	bottom         : var( --spa-ver-m03 );
 	color          : rgba(0,0,0,.5);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	left           : 10px;
+	left           : var( --spa-hor-m01 );
 	letter-spacing : 0.05em;
 	max-width      : calc(100% - 20px);
 	outline        : none;

@@ -35,7 +35,7 @@
 	display           : flex;
 	flex-direction    : column;
 	gap               : var( --spa-ver-m01 );
-	scroll-margin-top : calc(var(--sticky-top-h, 140px) + 16px);
+	scroll-margin-top : calc( var( --sticky-top-h, 140px ) + var( --spa-ver-bas ) );
 
 
 }
@@ -881,7 +881,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	border         : var( --bor-wid-bas ) solid var(--accent);
 	border-radius  : 9px;
-	inset          : -1px;
+	inset          : calc( var( --bor-wid-bas ) * -1 );
 	opacity        : 0;
 	pointer-events : none;
 	position       : absolute;

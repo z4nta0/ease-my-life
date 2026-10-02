@@ -745,7 +745,7 @@
 	background    : var(--accent);
 	border-radius : 50%;
 	content       : '';
-	inset         : 3px;
+	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
 	position      : absolute;
 
 

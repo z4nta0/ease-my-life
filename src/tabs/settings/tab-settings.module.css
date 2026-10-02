@@ -316,7 +316,7 @@
 	overflow-y      : auto;
 	position        : sticky;
 	scrollbar-width : none;
-	top             : 16px;
+	top             : var( --spa-ver-bas );
 
 
 }
@@ -360,20 +360,20 @@
 
 	}
 
-	.settings-rail::before { /* What: Left Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it 20px and fades from the background to transparent. */
+	.settings-rail::before { /* What: Left Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
 
 
 		background : linear-gradient(to right, var(--bg), transparent);
-		left       : 20px;
+		left       : var( --spa-hor-p01 );
 
 
 	}
 
-	.settings-rail::after { /* What: Right Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it 20px and fades from the background to transparent. */
+	.settings-rail::after { /* What: Right Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
 
 
 		background : linear-gradient(to left, var(--bg), transparent);
-		right      : 20px;
+		right      : var( --spa-hor-p01 );
 
 
 	}
@@ -594,7 +594,7 @@
 	display           : flex;
 	flex-direction    : column;
 	gap               : var( --spa-ver-m01 );
-	scroll-margin-top : 32px;
+	scroll-margin-top : var( --spa-ver-p03 );
 
 
 }

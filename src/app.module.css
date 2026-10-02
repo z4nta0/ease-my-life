@@ -159,10 +159,10 @@
 @container app (min-width: 720px) { /* What: Wide Bottom Tab Bar. Why: On a wide screen the pill floats well clear of the bottom edge. How: This applies only when the app is at least 720px wide. */
 
 
-	.tabbar--bottom { /* What: Floating Bottom Tab Bar. Why: A wide screen has room to lift the pill off the edge. How: This sets it 20px above the bottom edge. */
+	.tabbar--bottom { /* What: Floating Bottom Tab Bar. Why: A wide screen has room to lift the pill off the edge. How: This sets it the p01 vertical spacing step above the bottom edge. */
 
 
-		bottom : 20px;
+		bottom : var( --spa-ver-p01 );
 
 
 	}
@@ -175,7 +175,7 @@
 	.tabbar--bottom { /* What: Floating Narrow Bottom Tab Bar. Why: The pill must fit a phone and clear its home indicator. How: This sets it just above the safe area and caps its width to the screen. */
 
 
-		bottom    : calc(12px + env(safe-area-inset-bottom));
+		bottom    : calc( var( --spa-ver-m01 ) + env( safe-area-inset-bottom ) );
 		max-width : calc(100% - 24px);
 
 

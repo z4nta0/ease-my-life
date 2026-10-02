@@ -418,7 +418,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	background    : var(--accent);
 	border-radius : 50%;
 	content       : '';
-	inset         : 3px;
+	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
 	position      : absolute;
 
 

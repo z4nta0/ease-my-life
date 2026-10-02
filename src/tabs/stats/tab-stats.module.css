@@ -840,8 +840,8 @@
 
 	color    : var(--warm);
 	position : absolute;
-	right    : 14px;
-	top      : 14px;
+	right    : var( --spa-hor-bas );
+	top      : var( --spa-ver-bas );
 
 
 }

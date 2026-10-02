@@ -48,7 +48,7 @@
 	border     : var( --bor-wid-sma ) solid var(--border);
 	content    : "";
 	height     : calc( var( --ver-rhy-bas ) * 1rem );
-	left       : var(--ob-ax,28px); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: HelTipCom writes --ob-ax as the target's center offset from the tip's left edge, falling back to 28px. */
+	left       : var( --ob-ax, var( --spa-hor-p02 ) ); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: HelTipCom writes --ob-ax as the target's center offset from the tip's left edge, falling back to the p02 horizontal spacing step. */
 	position   : absolute;
 	transform  : translateX(-50%) rotate(45deg); /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would land half its width right of the target's midpoint. How: This shifts it back by half its width before rotating it into a diamond. */
 	width      : calc( var( --ver-rhy-bas ) * 1rem );
@@ -60,7 +60,7 @@
 
 	border-bottom : 0;
 	border-right  : 0;
-	top           : -8px;
+	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 );
 
 
 }
@@ -69,7 +69,7 @@
 
 	border-left : 0;
 	border-top  : 0;
-	bottom      : -8px;
+	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 );
 
 
 }

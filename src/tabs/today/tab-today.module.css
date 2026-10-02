@@ -941,7 +941,7 @@
 
 	background     : radial-gradient(circle, var(--accent), transparent 65%);
 	border-radius  : 50%;
-	inset          : -4px;
+	inset          : calc( var( --spa-ver-m05 ) * -1 ) calc( var( --spa-hor-m05 ) * -1 );
 	opacity        : 0;
 	pointer-events : none;
 	position       : absolute;
@@ -1156,7 +1156,7 @@
 	margin          : 0 0 var( --spa-ver-p01 );
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position        : sticky;
-	top             : calc(var(--today-h-h, 140px) + 8px);
+	top             : calc( var( --today-h-h, 140px ) + var( --spa-ver-m02 ) );
 	z-index         : 60;
 
 
@@ -1327,7 +1327,7 @@
 	overflow-y      : auto;
 	position        : sticky;
 	scrollbar-width : none;
-	top             : calc(var(--today-h-h, 140px) + 16px);
+	top             : calc( var( --today-h-h, 140px ) + var( --spa-ver-bas ) );
 
 
 }
@@ -1361,7 +1361,7 @@
 		overflow-y              : hidden;
 		padding                 : var( --spa-ver-bas ) var( --spa-hor-p01 );
 		position                : sticky;
-		top                     : var(--today-h-h, 132px);
+		top                     : var( --today-h-h, 132px );
 		z-index                 : 18;
 
 
@@ -1755,7 +1755,7 @@
 	display           : flex;
 	flex-direction    : column;
 	gap               : var( --spa-ver-m01 );
-	scroll-margin-top : calc(var(--sticky-top-h, 140px) + 16px);
+	scroll-margin-top : calc( var( --sticky-top-h, 140px ) + var( --spa-ver-bas ) );
 
 
 }
