@@ -106,7 +106,7 @@ const SOU_MET_ARR = [ // What: Source Meta Array. Why: This defines how each Tod
 
 	{ colStr : 'var(--acc-mai-col)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Most picks come from the Daily generator. How: This colors them with the plain accent.
 	{ colStr : 'oklch(from var(--acc-mai-col) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent.
-	{ colStr : 'var(--acc-sec-col)',                                               keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone.
+	{ colStr : 'var(--acc-sec-col)',                                             keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone.
 
 
 ];
@@ -190,7 +190,7 @@ const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time v
 
 
 	{ colStr : 'var(--acc-mai-col)', keyStr : 'recurring', labStr : 'Recurring' }, // What: Recurring Type Object. Why: Recurring reminders make up the bulk of most logs. How: This colors them with the plain accent.
-	{ colStr : 'var(--acc-sec-col)',   keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: One-time reminders are the smaller, distinct share. How: This colors them with the warm tone.
+	{ colStr : 'var(--acc-sec-col)', keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: One-time reminders are the smaller, distinct share. How: This colors them with the warm tone.
 
 
 ];
