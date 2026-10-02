@@ -1066,7 +1066,6 @@
 	font-variant-numeric : tabular-nums;
 	height               : calc( var( --ver-rhy-p04 ) * 1rem );
 	margin-top           : var( --spa-ver-m07 );
-	max-width            : 360px;
 	outline              : none;
 	padding              : 0 var( --spa-hor-m01 );
 	transition           : border-color .12s;
