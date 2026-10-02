@@ -403,7 +403,7 @@
 
 
 }
-@media (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the viewport is 640px wide or less. */
+@container app (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the row sits tighter. How: This applies only when the app is 640px wide or less. */
 
 
 	.today-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */

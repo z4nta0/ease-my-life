@@ -93,7 +93,7 @@
 
 
 }
-@media (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the viewport is 640px wide or less. */
+@container app (max-width: 640px) { /* What: Narrow Header Lead. Why: On a narrow screen the mark and title sit closer. How: This applies only when the app is 640px wide or less. */
 
 
 	.stat-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
@@ -139,7 +139,7 @@
 
 
 }
-@media (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the viewport is 640px wide or less. */
+@container app (max-width: 640px) { /* What: Narrow Brand Mark. Why: On a narrow screen the mark shouldn't crowd the title. How: This applies only when the app is 640px wide or less. */
 
 
 	.brand-mark { /* What: Smaller Brand Mark. Why: The title needs the room. How: This shrinks the mark one rhythm step, to p05. */
