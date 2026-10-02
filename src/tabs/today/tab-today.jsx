@@ -821,14 +821,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			carEleLis.forEach( ( curCarEle, curIndNum ) => { // What: Card Exhale Stagger Loop. Why: Each card's own exhale needs a slightly later delay than the one before it, so the cascade reads as a wave. How: This sets a CSS variable and adds the is-exhaling class to each card in turn.
 
 
-				curCarEle.style.setProperty( '--exhale-delay', `${ curIndNum * 70 }ms` ); // What: Exhale Delay Set. Why: Each card starts its exhale a beat after the one before it. How: This sets --exhale-delay to 70ms per card index.
+				curCarEle.style.setProperty( '--exh-car-del', `${ curIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card starts its exhale a beat after the one before it. How: This sets --exh-car-del to one m03 duration step per card index.
 
 				curCarEle.setAttribute( 'data-card-exhale-active', '' ); // What: Exhale Attribute Set. Why: This is what actually starts the card's own exhale animation, in whichever module the card belongs to. How: This adds the presence-only data-card-exhale-active attribute.
 
 
 			} );
 
-			const celTotNum = carEleLis.length * 70 + durMilFun( 'p07' ); // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total stagger to the card exhale's own p07 duration step.
+			const celTotNum = carEleLis.length * durMilFun( 'm03' ) + durMilFun( 'p07' ); // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total stagger to the card exhale's own p07 duration step.
 
 
 			const celEndTim = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotNum, clearing every piece of state/CSS this branch set.
@@ -842,7 +842,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 					curCarEle.removeAttribute( 'data-card-exhale-active' ); // What: Exhale Attribute Remove. Why: The card's own ripple animation is finished. How: This removes data-card-exhale-active.
-					curCarEle.style.removeProperty( '--exhale-delay' );     // What: Exhale Delay Remove. Why: The per-card stagger delay must not linger into the next celebration. How: This removes the --exhale-delay custom property.
+					curCarEle.style.removeProperty( '--exh-car-del' );      // What: Exhale Delay Remove. Why: The per-card stagger delay must not linger into the next celebration. How: This removes the --exh-car-del custom property.
 
 
 				} );

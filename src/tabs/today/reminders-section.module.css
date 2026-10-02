@@ -593,10 +593,10 @@
 
 
 }
-.today-card[data-card-exhale-active] { /* What: Exhaling Reminder Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exhale-delay tab-today.jsx sets on each card. */
+.today-card[data-card-exhale-active] { /* What: Exhaling Reminder Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.jsx sets on each card. */
 
 
-	animation : global(cardExhale) var(--exhale-dur) var( --mot-dec-eas ) var(--exhale-delay, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardExhale) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

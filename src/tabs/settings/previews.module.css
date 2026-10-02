@@ -91,10 +91,10 @@
 
 
 }
-.today-card.is-exhaling { /* What: Exhaling Preview Card. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exhale-delay, playing the shared exhale animation. */
+.today-card.is-exhaling { /* What: Exhaling Preview Card. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
 
 
-	animation : global(cardExhale) var(--exhale-dur) var( --mot-dec-eas ) var(--exhale-delay, 0ms) both; /* What: Global Exhale Keyframes. Why: The cardExhale keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardExhale) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global Exhale Keyframes. Why: The cardExhale keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

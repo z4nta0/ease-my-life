@@ -204,7 +204,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 				void carCurEle.offsetWidth; // What: Reflow Force. Why: Re-adding the same class immediately after removing it would otherwise be batched by the browser and never restart the animation. How: Reading offsetWidth forces a synchronous layout flush between the remove above and the add below.
 
-				carCurEle.style.setProperty( '--exhale-delay', `${ iteIndNum * 70 }ms` ); // What: Exhale Delay Set. Why: Each card's own cascade position needs its own staggered start time. How: This writes the '--exhale-delay' custom property, read by the CSS animation, proportional to this card's own index.
+				carCurEle.style.setProperty( '--exh-car-del', `${ iteIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card's own cascade position needs its own staggered start time. How: This writes the '--exh-car-del' custom property, read by the CSS animation, proportional to this card's own index.
 
 				carCurEle.classList.add( cssModObj.isExhaling ); // What: Exhale Class Restart. Why: This is the actual trigger that (re)starts the CSS exhale animation on this card. How: This re-adds the module's isExhaling class, now that the reflow above guarantees the browser treats it as a fresh start.
 
@@ -220,7 +220,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 					carCurEle.classList.remove( cssModObj.isExhaling ); // What: Exhale Class Clear. Why: This class must not linger past the end of the cascade animation. How: This removes the module's isExhaling class from the current card element.
 
-					carCurEle.style.removeProperty( '--exhale-delay' ); // What: Exhale Delay Clear. Why: This inline custom property must not linger past the end of the cascade animation either. How: This removes the '--exhale-delay' custom property from the current card element.
+					carCurEle.style.removeProperty( '--exh-car-del' ); // What: Exhale Delay Clear. Why: This inline custom property must not linger past the end of the cascade animation either. How: This removes the '--exh-car-del' custom property from the current card element.
 
 
 				} );
@@ -229,7 +229,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 			};
 
 
-			ripCleTim = setTimeout( ripCleFun, carEleArr.length * 70 + durMilFun( 'p07' ) ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed.
+			ripCleTim = setTimeout( ripCleFun, carEleArr.length * durMilFun( 'm03' ) + durMilFun( 'p07' ) ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed.
 
 
 		}

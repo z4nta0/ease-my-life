@@ -148,10 +148,10 @@
 	 *
 	*/
 
-	--exhale-dur     : var( --dur-ani-p07 ); /* What: Exhale Duration. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
-	--exhale-glow    : 6px; /* What: Exhale Glow. Why: The exhale's accent ring reaches this far out. How: cardExhale reads it as its box-shadow spread. */
-	--exhale-glow-op : 0.18; /* What: Exhale Glow Opacity. Why: The exhale's accent ring stays faint. How: cardExhale reads it as the ring's alpha. */
-	--exhale-scale   : 1.012; /* What: Exhale Scale. Why: Each card swells only slightly. How: cardExhale reads it as its peak scale. */
+	--exh-car-dur : var( --dur-ani-p07 );                /* What: Exhale Card Duration. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
+	--exh-car-sca : 1.012;                               /* What: Exhale Card Scale. Why: Each card swells only slightly, small enough that swelling cards never crowd each other, so it stays literal. How: cardExhale reads it as its peak scale. */
+	--exh-glo-opa : var( --cdn-pow-006-rec );            /* What: Exhale Glow Opacity, about 0.185. Why: The exhale's accent ring stays faint. How: cardExhale reads it as the ring's alpha. */
+	--exh-glo-spr : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Exhale Glow Spread. Why: The exhale's accent ring reaches this far out. How: cardExhale reads it as its box-shadow spread. */
 
 	/* #endregion Celebration Tokens */
 
@@ -622,8 +622,8 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	35% {
 
 
-		box-shadow : 0 0 0 var(--exhale-glow) oklch(from var(--acc-mai-col) l c h / var(--exhale-glow-op));
-		transform  : scale(var(--exhale-scale));
+		box-shadow : 0 0 0 var(--exh-glo-spr) oklch(from var(--acc-mai-col) l c h / var(--exh-glo-opa));
+		transform  : scale(var(--exh-car-sca));
 
 
 	}
