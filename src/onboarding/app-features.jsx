@@ -1065,7 +1065,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 			<IcoSvgCom
 				icoNamStr={ feaRcdObj.pagStr }
-				sizStpStr='p05'
+				sizSteStr='p05'
 			/> // What: Icon Svg Component. Why: This is the glyph identifying the page this feature lives on. How: This renders that page's own nav icon.
 
 

@@ -894,7 +894,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 									<IcoSvgCom
 										icoNamStr='cheEle'
-										sizStpStr='bas'
+										sizSteStr='bas'
 									/>{ /* What: Icon Svg Component. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -913,7 +913,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 									<IcoSvgCom
 										icoNamStr='croEle'
-										sizStpStr='bas'
+										sizSteStr='bas'
 									/>{ /* What: Icon Svg Component. Why: The cancel button needs a recognizable close glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
@@ -939,7 +939,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizStpStr='bas'
+									sizSteStr='bas'
 								/>{ /* What: Icon Svg Component. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 

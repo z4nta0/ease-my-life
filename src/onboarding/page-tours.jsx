@@ -286,7 +286,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 			<IcoSvgCom
 				icoNamStr={ touRcdObj.pagStr }
-				sizStpStr='p05'
+				sizSteStr='p05'
 			/> // What: Icon Svg Component. Why: This is the glyph identifying which page this tour explores. How: This renders the page's own nav icon.
 
 

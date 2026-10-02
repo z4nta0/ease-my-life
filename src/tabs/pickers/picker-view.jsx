@@ -1152,7 +1152,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='cheEle'
-									sizStpStr='p02'
+									sizSteStr='p02'
 								/>{ /* What: Icon Svg Component. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
 
 
@@ -1353,7 +1353,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr={ shoDriBoo ? 'eyoEle' : 'eyeEle' }
-									sizStpStr='bas'
+									sizSteStr='bas'
 								/>{ /* What: Icon Svg Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
 
 								{ shoDriBoo ? 'Hide drift' : 'Show drift' }{ /* What: Drift Label Expression. Why: The toggle's text names what clicking it will do. How: This reads 'Hide drift' while shoDriBoo is on, otherwise 'Show drift'. */ }
@@ -1558,7 +1558,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='cheEle'
-														sizStpStr='bas'
+														sizSteStr='bas'
 													/>{ /* What: Icon Svg Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -1579,7 +1579,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='calEle'
-														sizStpStr='bas'
+														sizSteStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
@@ -1604,7 +1604,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='calEle'
-														sizStpStr='bas'
+														sizSteStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
@@ -1630,7 +1630,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='ediEle'
-													sizStpStr='bas'
+													sizSteStr='bas'
 												/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -1651,7 +1651,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='traEle'
-														sizStpStr='bas'
+														sizSteStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -1675,7 +1675,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='traEle'
-														sizStpStr='bas'
+														sizSteStr='bas'
 													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -1855,7 +1855,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizStpStr='bas'
+									sizSteStr='bas'
 								/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 

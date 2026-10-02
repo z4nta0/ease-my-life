@@ -337,7 +337,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 							<IcoSvgCom
 								icoNamStr='cheEle'
-								sizStpStr='bas'
+								sizSteStr='bas'
 							/>{ /* What: Icon Svg Component. Why: This is the actual check glyph shown on a completed card. How: This renders the 'cheEle' icon at a fixed size matching the real Today card. */ }
 
 

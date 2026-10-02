@@ -135,7 +135,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 					<IcoSvgCom
 						icoNamStr='cheEle'
-						sizStpStr='bas'
+						sizSteStr='bas'
 					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -167,7 +167,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 					<IcoSvgCom
 						icoNamStr='plaEle'
-						sizStpStr='bas'
+						sizSteStr='bas'
 					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start the tour. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
@@ -241,7 +241,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 						<IcoSvgCom
 							icoNamStr='croEle'
-							sizStpStr='bas'
+							sizSteStr='bas'
 						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 

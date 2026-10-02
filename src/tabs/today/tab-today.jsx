@@ -3335,7 +3335,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='flaEle'
-										sizStpStr='m01'
+										sizSteStr='m01'
 									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 									<span>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }
@@ -3614,7 +3614,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 							<IcoSvgCom
 								icoNamStr='griEle'
-								sizStpStr='bas'
+								sizSteStr='bas'
 							/>{ /* What: Icon Svg Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'griEle' icon at a fixed size. */ }
 
 							Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
@@ -3885,7 +3885,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								<IcoSvgCom
 									icoNamStr='griEle'
-									sizStpStr='bas'
+									sizSteStr='bas'
 								/>{ /* What: Icon Svg Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'griEle' icon at a fixed size. */ }
 
 								{ ediModBoo ? 'Done' : 'Edit Mode' }{ /* What: Edit Mode Label Expression. Why: The same rail button enters and leaves Edit Mode. How: This reads "Done" while Edit Mode is on, otherwise "Edit Mode". */ }
@@ -4388,7 +4388,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='cheEle'
-										sizStpStr='p01'
+										sizSteStr='p01'
 									/>{ /* What: Icon Svg Component. Why: The Generate card leads with a check mark, matching the other onboarding create cards. How: This renders the check glyph at the p01 rhythm step. */ }
 
 
@@ -4443,7 +4443,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizStpStr='p01'
+										sizSteStr='p01'
 									/>{ /* What: Icon Svg Component. Why: The no-pickers card leads with a plus, pointing at creating one. How: This renders the plus glyph at the p01 rhythm step. */ }
 
 
@@ -4481,7 +4481,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='calEle'
-										sizStpStr='p01'
+										sizSteStr='p01'
 									/>{ /* What: Icon Svg Component. Why: The idle card leads with a calendar, since nothing is scheduled today. How: This renders the calendar glyph at the p01 rhythm step. */ }
 
 
@@ -4632,7 +4632,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 												<IcoSvgCom
 													icoNamStr='refEle'
-													sizStpStr='bas'
+													sizSteStr='bas'
 												/>{ /* What: Icon Svg Component. Why: The disabled Regenerate control keeps the same refresh icon as the real button. How: This renders the refresh glyph at the bas rhythm step, followed by the label text. */ }Regenerate
 
 

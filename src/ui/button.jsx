@@ -93,7 +93,7 @@ const ButBasCom = React.forwardRef( function ButBasCom ( { children, className =
 
 				<IcoSvgCom
 					icoNamStr={ icoNamStr }
-					sizStpStr='bas'
+					sizSteStr='bas'
 				/> // What: Leading Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size.
 
 

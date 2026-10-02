@@ -298,7 +298,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 							<IcoSvgCom
 								icoNamStr='griEle'
-								sizStpStr='bas'
+								sizSteStr='bas'
 							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
@@ -374,7 +374,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 							{ groNamStr }
 							<IcoSvgCom
 								icoNamStr='ediEle'
-								sizStpStr='bas'
+								sizSteStr='bas'
 							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 

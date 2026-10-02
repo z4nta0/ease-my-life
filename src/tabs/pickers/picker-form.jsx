@@ -1096,7 +1096,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 								<IcoSvgCom
 									icoNamStr='cheEle'
-									sizStpStr='m01'
+									sizSteStr='m01'
 								/> // What: Icon Svg Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'cheEle' icon at a fixed size.
 
 
@@ -1277,7 +1277,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizStpStr='bas'
+										sizSteStr='bas'
 									/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 
@@ -1524,7 +1524,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											<IcoSvgCom
 												icoNamStr='pluEle'
-												sizStpStr='bas'
+												sizSteStr='bas'
 											/>{ /* What: Icon Svg Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 											<span className={ cssModObj.cndPillName }>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
@@ -2232,7 +2232,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 														<IcoSvgCom
 															icoNamStr='ediEle'
-															sizStpStr='bas'
+															sizSteStr='bas'
 														/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -2253,7 +2253,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 															<IcoSvgCom
 																icoNamStr='traEle'
-																sizStpStr='bas'
+																sizSteStr='bas'
 															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -2276,7 +2276,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 															<IcoSvgCom
 																icoNamStr='traEle'
-																sizStpStr='bas'
+																sizSteStr='bas'
 															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -2456,7 +2456,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										<IcoSvgCom
 											icoNamStr='pluEle'
-											sizStpStr='bas'
+											sizSteStr='bas'
 										/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 

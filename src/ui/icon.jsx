@@ -36,7 +36,7 @@
  *
  * @param props.icoNamStr - Icon Name String: Which icon to draw, a key of the
  *                          icon table.
- * @param props.sizStpStr - Size Step String: The vertical rhythm step for
+ * @param props.sizSteStr - Size Step String: The vertical rhythm step for
  *                          the width and height (e.g. 'bas'), defaulting
  *                          to 'p01'.
  *
@@ -44,12 +44,12 @@
  *
  * @example
  * ```tsx
- * IcoSvgCom({ icoNamStr: 'plus', sizStpStr: 'p01' }) // => <IcoSvgCom />
+ * IcoSvgCom({ icoNamStr: 'plus', sizSteStr: 'p01' }) // => <IcoSvgCom />
  * ```
  *
 */
 
-const IcoSvgCom = ( { icoNamStr, sizStpStr = 'p01' } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizStpStr rhythm step.
+const IcoSvgCom = ( { icoNamStr, sizSteStr = 'p01' } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
 
 
 	const icoPatObj = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
@@ -91,7 +91,7 @@ const IcoSvgCom = ( { icoNamStr, sizStpStr = 'p01' } ) => { // What: Icon Svg Co
 
 
 
-	const sizCssStr = `calc( var( --ver-rhy-${ sizStpStr } ) * 1rem )`; // What: Size Css String. Why: The icon's width and height both follow the named vertical rhythm step. How: This builds the step's length once for the style below.
+	const sizCssStr = `calc( var( --ver-rhy-${ sizSteStr } ) * 1rem )`; // What: Size Css String. Why: The icon's width and height both follow the named vertical rhythm step. How: This builds the step's length once for the style below.
 
 
 
