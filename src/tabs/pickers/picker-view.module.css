@@ -805,7 +805,7 @@
 
 
 }
-@media (max-width: 480px) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the viewport matches (max-width: 480px). */
+@container app (max-width: 600px) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 600px wide or less. */
 
 
 	.pool-name { /* What: Wrapped Pool Item Name. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
@@ -831,7 +831,7 @@
 
 
 }
-@media (max-width: 480px) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the viewport matches (max-width: 480px). */
+@container app (max-width: 600px) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 600px wide or less. */
 
 
 	.pool-item-name { /* What: Full-Width Pool Item Name Text. Why: The pill belongs on its own line. How: This makes the name take the full row. */
@@ -876,7 +876,7 @@
 
 
 }
-@media (max-width: 640px) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the viewport matches (max-width: 640px). */
+@container app (max-width: 640px) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
 
 
 	.pool-prog { /* What: Narrower Pool Item Progress. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */
