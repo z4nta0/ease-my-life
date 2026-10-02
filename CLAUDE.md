@@ -2173,8 +2173,11 @@ still passes.
     counterpart of the themed-region object variant under "### Sectioning
     / fold regions"): the sections are ordered alphabetically by name, the
     tokens alphabetically within each, 1 blank line between a marker and
-    its tokens, and 3 blank lines between sections. A token gets its own
-    comment only when its name doesn't say what it is (e.g. `--r-sm`).
+    its tokens, and 3 blank lines between sections. Every token gets its
+    own one-line What/Why/How comment after its `;` (decided 2026-10-02,
+    replacing an earlier rule that only commented tokens whose names didn't
+    say what they were), and a run of tokens column-aligns its comments
+    like any other run of lines, under the same 100-character exception.
     - **Exception, a scale** (decided 2026-09-29): tokens that form a
       scale of steps (font sizes, and every scale like them) are ordered
       smallest to biggest instead of alphabetically, so the steps read in
