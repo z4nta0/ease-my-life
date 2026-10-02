@@ -2405,6 +2405,28 @@ are renamed to this as their files come up in the design-system pass.
   size stay as they are: `999px` (a fully rounded pill), `50%` (a circle),
   `0`, and `inherit`. JavaScript reads a radius the same way as any other
   step, through `rhyPxlFun`.
+- **Durations use a scale on the core design number** (decided
+  2026-10-01, and like the core numbers not specific to this project): a
+  150ms base (exactly 9 frames at 60fps) times a power of the core design
+  number, named by base offset like the rhythm, from `m03` (about 64ms,
+  the shortest step that still reads as motion) up. Transitions use
+  `--dur-tra-*` and animations `--dur-ani-*`, the same steps in both. A
+  literal moves to a step by what the motion is for: **expressive** motion
+  (celebrations, confetti, check-mark pops, pulses, spins, sparkles)
+  rounds up to the next step, since extra length reads as more satisfying;
+  **interface** motion (hovers, toggles, collapses, modals, confirm rows,
+  cards and tabs entering and leaving) rounds to the nearest step, unless
+  that would make it more than 10% shorter, in which case it rounds up.
+  Durations aren't snapped to whole frames: the browser paints by elapsed
+  time, so any duration animates smoothly. Reduced-motion `.01ms` values,
+  `0ms`, and other near-zero durations that exist only so an end event
+  fires stay literal.
+- **Easing curves use five tokens** (decided 2026-10-01): `--mot-sta-eas`
+  (standard, `ease`), `--mot-dec-eas` (decelerate, for things arriving),
+  `--mot-acc-eas` (accelerate, for things leaving), `--mot-ove-eas` (a
+  gentle overshoot), and `--mot-bou-eas` (a strong, springy bounce). Every
+  hand-tuned curve folds into its family; the plain `linear` keyword stays
+  as is.
 - **Breakpoints stay literal numbers**, since a custom property can't be
   read inside an `@media` or `@container` condition, but their values still
   come from the scale the design system defines.
