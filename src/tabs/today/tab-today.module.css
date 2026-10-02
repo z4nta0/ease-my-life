@@ -1156,7 +1156,7 @@
 	margin          : 0 0 var( --spa-ver-p01 );
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position        : sticky;
-	top             : calc( var( --today-h-h, 140px ) + var( --spa-ver-m02 ) );
+	top             : calc( var( --today-h-h, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-m02 ) );
 	z-index         : 60;
 
 
@@ -1323,11 +1323,11 @@
 	display         : flex;
 	flex-direction  : column;
 	gap             : var( --spa-ver-m03 );
-	max-height      : calc(100dvh - var(--today-h-h, 140px) - 120px);
+	max-height      : calc( 100dvh - var( --today-h-h, calc( var( --ver-rhy-p09 ) * 1rem ) ) - var( --spa-ver-bas ) - var( --spa-ver-p07 ) ); /* What: Rail Maximum Height. Why: The sticky rail should end where the page content's own bottom clearance does, so it never runs behind the floating tab bar. How: This subtracts the header, the rail's gap below it, and the p07 bottom clearance from the viewport height. */
 	overflow-y      : auto;
 	position        : sticky;
 	scrollbar-width : none;
-	top             : calc( var( --today-h-h, 140px ) + var( --spa-ver-bas ) );
+	top             : calc( var( --today-h-h, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-bas ) );
 
 
 }
@@ -1361,7 +1361,7 @@
 		overflow-y              : hidden;
 		padding                 : var( --spa-ver-bas ) var( --spa-hor-p01 );
 		position                : sticky;
-		top                     : var( --today-h-h, 132px );
+		top                     : var( --today-h-h, calc( var( --ver-rhy-p09 ) * 1rem ) );
 		z-index                 : 18;
 
 
@@ -1755,7 +1755,7 @@
 	display           : flex;
 	flex-direction    : column;
 	gap               : var( --spa-ver-m01 );
-	scroll-margin-top : calc( var( --sticky-top-h, 140px ) + var( --spa-ver-bas ) );
+	scroll-margin-top : calc( var( --sticky-top-h, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-bas ) );
 
 
 }

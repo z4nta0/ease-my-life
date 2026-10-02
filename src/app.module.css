@@ -942,7 +942,7 @@
 	.app[data-placement="bottom"] .main { /* What: Clear Narrow Pill Main Area. Why: The last content should scroll clear of the pill and the safe area. How: This pads the bottom by the pill plus the safe area. */
 
 
-		padding-bottom : calc(84px + env(safe-area-inset-bottom));
+		padding-bottom : calc( var( --spa-ver-p07 ) + env( safe-area-inset-bottom ) );
 
 
 	}

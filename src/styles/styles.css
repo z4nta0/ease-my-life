@@ -505,7 +505,7 @@ body.is-reordering * { /* What: Drag In Progress. Why: While a card is being dra
 body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every tab needs room to scroll a bottom-anchored target clear of the tab bar. How: This sets the padding each tab's root reads, per CLAUDE.md's body-level state rule. */
 
 
-	--tab-tour-padding : 200px; /* What: Tab Tour Padding. Why: This is how much room a tab adds below its content during a tour. How: Each tab's module reads it as padding-bottom, falling back to none. */
+	--tab-tour-padding : var( --spa-ver-p10 ); /* What: Tab Tour Padding. Why: This is how much room a tab adds below its content during a tour. How: Each tab's module reads it as padding-bottom, falling back to none. */
 
 
 }
