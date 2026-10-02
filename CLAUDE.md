@@ -2369,6 +2369,22 @@ are renamed to this as their files come up in the design-system pass.
   defined but empty, with a comment saying so, so the set is the same in
   every project: this project uses muted text instead of secondary text,
   so `--tex-sec-col` is empty here.
+  - **More roles** (decided 2026-10-01): `--tex-acc-col` (text on the
+    accent), `--bac-hov-col` (a hover overlay), `--scr-mai-col` (the scrim
+    behind modals and spotlights), and three status families, `--err-*`
+    (errors and deletes), `--suc-*` (success), and `--war-*` (warnings),
+    each with `mai` (badges, borders, outlines), `dar` (a darker shade for
+    status text), and `tin` (a pale tint behind a badge). A use that needs
+    transparency reads its role through relative color syntax, e.g.
+    `oklch(from var( --scr-mai-col ) l c h / 0.55)`, rather than defining
+    a token per alpha. A literal that matches a theme role's default
+    value uses that role instead, so it follows the theme. Exempt from
+    color tokens: the black in a `mask-image` (a mask reads only
+    transparency), `transparent` and `currentColor`, a preview that has
+    to show a fixed palette whatever the active theme (the theme picker's
+    rows), and seed data in JS. In this project the theme system writes
+    only the original eight roles, so the newer ones keep one value across
+    every theme for now.
 - **Examples mapped from today's tokens**: `--bg` → `--bac-pag-col`,
   `--surface` → `--bac-sur-col`, `--text` → `--tex-mai-col`, `--muted` →
   `--tex-mut-col`, `--accent-soft` → `--acc-tin-col`, `--warm` →
