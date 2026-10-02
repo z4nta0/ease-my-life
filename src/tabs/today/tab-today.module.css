@@ -1900,7 +1900,7 @@
 
 
 }
-@keyframes obGeneratePing { /* What: Generate Card Ping Keyframes. Why: The ring spreads and fades. How: This grows an accent box shadow to 20px while fading it out. */
+@keyframes obGeneratePing { /* What: Generate Card Ping Keyframes. Why: The ring spreads and fades. How: This grows an accent box shadow to the p01 rhythm step while fading it out. */
 
 
 	0% {
@@ -1914,7 +1914,7 @@
 	40% {
 
 
-		box-shadow : 0 0 0 10px oklch(from var(--acc-mai-col) l c h/0.35);
+		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem / 2 ) oklch(from var(--acc-mai-col) l c h/0.35);
 
 
 	}
@@ -1922,7 +1922,7 @@
 	100% {
 
 
-		box-shadow : 0 0 0 20px oklch(from var(--acc-mai-col) l c h/0);
+		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem ) oklch(from var(--acc-mai-col) l c h/0);
 
 
 	}
