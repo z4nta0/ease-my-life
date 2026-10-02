@@ -324,7 +324,9 @@ itself gets its own mandatory self-check.
   blank-line spacing and alignment, attribute tiers and alphabetical order,
   object/destructuring alphabetization, quotes and parentheses spacing,
   imports and exports, the File/Directory structure placement of any new
-  file, no em dashes in any new prose, and that nothing changes what the
+  file, no em dashes in any new prose, token value comments on any
+  changed token read (and every comment quoting a token whose value or
+  use changed), and that nothing changes what the
   app renders or does beyond the change itself (see "### Rendered output
   always wins").
 - **Report it**: when reporting the commit, say the check was run and what
@@ -1237,6 +1239,19 @@ src/
       computed value with a non-obvious formula, or a shorthand/longhand
       ordering that has to stay put). See `app.jsx`'s own uncommented
       `style={{` blocks for the reference examples.
+    - **Token value comments in JavaScript** (decided 2026-10-02): any
+      JS that reads a design token gets the same comment CSS does under
+      "Token value comments" in "### CSS modules and JS hooks" (the
+      token's expanded name and its value), on the line that reads it: a
+      `var( --token )` string (in a `style` object, a `setProperty` call,
+      or a config row), a `rhyPxlFun( '<step>' )` or `durMilFun( '<step>'
+      )` call (a Vertical Rhythm or Duration step), and an icon's
+      `sizSteStr='<step>'`. On a line that already has its What/Why/How
+      comment, the token comment follows it as its own `// ...` (or `{ /*
+      ... */ }` in JSX children), per the merging rule above; a `style`
+      property or attribute with no comment of its own gets just the token
+      comment. A step built from a variable at runtime (`--fon-siz-${
+      sizStr }`) has no fixed value to quote and is exempt.
   - A multi-line JS expression embedded in JSX that ISN'T itself an
     element — a `{condition && (` wrapper, a `{arr.map((x) => (` call —
     still gets a comment (it's still a line of code), but follows the
@@ -2082,6 +2097,34 @@ still passes.
   or non-obvious value, or a custom property whose name doesn't make
   clear what it is or why it's used; that one gets its own comment after
   its `;`. Expect this exception to be refined as files get reviewed.
+- **Token value comments** (decided 2026-10-02): a declaration whose
+  value reads a token gets a comment that expands the token's name and
+  gives its value, instead of the What/Why/How format: `font-size : var(
+  --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */`.
+  - `=` for an exact value (`ease`, `1rem`), `~=` for a rounded one.
+  - A token wrapped in a calc gives the value it resolves to on screen:
+    `calc( var( --ver-rhy-m03 ) * 1rem )` is `/* Vertical Rhythm Base
+    Minus 3 ~= 6.268px */`.
+  - Several tokens make a comma-separated list in the order they appear,
+    each token once: `/* Duration Transition Base Plus 2 ~= 277.0ms,
+    Motion Standard Easing = ease */`.
+  - A theme color gives the default theme's value: `/* Text Muted Color =
+    oklch( 0.5 0.012 250 ) */`; a role read through relative color syntax
+    lists the role and any alpha token.
+  - A declaration that also needs a real explanation (the tricky-value
+    exception above) keeps both: the token comment first, then the
+    What/Why/How in its own `/* */` right after it on the same line.
+  - Token definitions in `:root` are exempt, since each already carries
+    its own What/Why/How stating its value. A not-yet-renamed component
+    property is expanded as it's named and given its value, or "set by its
+    parent" when a parent sets it.
+  - The comments in one rule align their columns like any run of lines,
+    under the 100-character exception.
+  - **They're kept current**: whenever a token's value changes, or a
+    declaration switches to a different token, every comment quoting that
+    token is found (grep the token's name across `src/`, CSS and JS
+    alike) and updated in the same commit. The pre-commit check covers
+    this.
 - **Spacing inside a region**: exactly 1 blank line between a parent's
   own rule and its first child's rule. A variant (see below) sits
   directly under its base rule, 0 blank lines.
