@@ -2251,7 +2251,7 @@ still passes.
       (e.g. `left: -9999px`) isn't spacing and stays literal.
     - **JavaScript follows the same scale** (decided 2026-10-01). An icon
       takes its size as a rhythm step name rather than a pixel number
-      (`<IcoSvgCom icoNamStr='plus' sizStr='bas' />`), which the component
+      (`<IcoSvgCom icoNamStr='plus' sizStpStr='bas' />`), which the component
       turns into `calc( var( --ver-rhy-<step> ) * 1rem )`. Layout math that
       works in pixels (placing a tooltip or tour card, a scroll offset, a
       sticky fallback) reads a step through `utils/rhythm.js`'s own
