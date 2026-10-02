@@ -2461,6 +2461,10 @@ are renamed to this as their files come up in the design-system pass.
   offset draws the intended width: Today's checkbox gap and the offset
   that clears it both use `m05` (about 3.57px), whose offset snaps to 3px
   and whose ring covers the gap's extra fraction, drawing a 3px gap.
+  A pulse keyframe's ring sizes come from the rhythm too, and an
+  intermediate step that only shapes the motion (a ring halfway grown at
+  40%) is written as a fraction of the final step, e.g. `calc( var(
+  --ver-rhy-p01 ) * 1rem / 2 )`, so the motion keeps its shape.
 - **Easing curves use five tokens** (decided 2026-10-01): `--mot-sta-eas`
   (standard, `ease`), `--mot-dec-eas` (decelerate, for things arriving),
   `--mot-acc-eas` (accelerate, for things leaving), `--mot-ove-eas` (a
