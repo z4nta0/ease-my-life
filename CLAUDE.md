@@ -2231,6 +2231,15 @@ still passes.
       negative margin takes the same step as the padding it cancels,
       written `calc( var( --spa-hor-bas ) * -1 )`. The `-1px` margin of
       the visually-hidden technique isn't spacing and stays literal.
+    - **Gaps follow the direction they run** (decided 2026-10-01): a gap
+      that only runs horizontally (a flex row that doesn't wrap, or
+      `column-gap`) uses `--spa-hor-*`, one that only runs vertically (a
+      flex column, or `row-gap`) uses `--spa-ver-*`, and one that runs
+      both ways (a grid, or a wrapping flex row) is written as the
+      two-value `gap : var( --spa-ver-x ) var( --spa-hor-x )`, row gap
+      then column gap, so each direction reads from its own family. A gap
+      whose layout is set by another rule (a base rule or a variant)
+      follows that layout. A `0` gap stays `0`.
     - **Text measure is font based** (decided 2026-10-01, also not
       specific to this project): a paragraph's `max-width` comes from the
       project's main body font, not from either rhythm. Paragraph text
