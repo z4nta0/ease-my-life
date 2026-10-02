@@ -182,7 +182,7 @@
 
 
 }
-@container app (max-width: 400px) { /* What: Narrow Cadence Inline Row. Why: On an iPhone SE-width screen the yearly nth-weekday row's three selects clip at the normal gap. How: This applies only when the app container is 400px wide or less. */
+@container app (max-width: 440px) { /* What: Narrow Cadence Inline Row. Why: On an iPhone SE-width screen the yearly nth-weekday row's three selects clip at the normal gap. How: This applies only when the app container is 440px wide or less. */
 
 
 	.rem-inline { /* What: Tight Cadence Inline Row. Why: The three selects need just enough room to fit. How: This shaves the gap down. */

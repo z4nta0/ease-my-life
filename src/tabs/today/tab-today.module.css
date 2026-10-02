@@ -134,7 +134,7 @@
 
 
 }
-@container app (max-width: 399px) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 399px wide or less. */
+@container app (max-width: 440px) { /* What: Very Narrow Kicker. Why: On a very narrow app the time drops under the date. How: This applies only when the app is 440px wide or less. */
 
 
 	.kicker-time { /* What: Stacked Kicker Time. Why: The time needs its own line. How: This makes it a centered block without its divider. */
@@ -492,7 +492,7 @@
 
 
 }
-@container app (max-width: 520px) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 520px wide or less. */
+@container app (max-width: 560px) { /* What: Narrow Today Title. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
 
 
 	.today-title { /* What: Smaller Today Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */

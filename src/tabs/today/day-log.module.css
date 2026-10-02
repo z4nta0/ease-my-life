@@ -419,7 +419,7 @@
 
 
 }
-@container app (max-width:500px) { /* What: Narrow Block Header. Why: A narrow app gives the summary column less room. How: This applies only when the app is 500px wide or less. */
+@container app (max-width: 500px) { /* What: Narrow Block Header. Why: A narrow app gives the summary column less room. How: This applies only when the app is 500px wide or less. */
 
 
 	.dl-block-h { /* What: Tighter Block Header. Why: The summary column needs to shrink. How: This caps it at a smaller rhythm step. */
@@ -590,7 +590,7 @@
 
 
 }
-@container app (max-width:384px) { /* What: Very Narrow Block Summary. Why: On a very narrow app the wrapped summary reads better centered. How: This applies only when the app is 384px wide or less. */
+@container app (max-width: 440px) { /* What: Very Narrow Block Summary. Why: On a very narrow app the wrapped summary reads better centered. How: This applies only when the app is 440px wide or less. */
 
 
 	.dl-sum { /* What: Centered Block Summary. Why: The wrapped lines center under each other. How: This centers its text. */
@@ -712,7 +712,7 @@
 
 
 }
-@container app (max-width:560px) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
+@container app (max-width: 560px) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
 
 
 	.dl-thead,
@@ -727,7 +727,7 @@
 
 
 }
-@container app (max-width:450px) { /* What: Very Narrow Log Table. Why: At 450px and below the status column shrinks too. How: This applies only when the app is 450px wide or less. */
+@container app (max-width: 500px) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
 	.dl-thead,
@@ -754,7 +754,7 @@
 
 
 }
-@container app (max-width:450px) { /* What: Very Narrow Log Table. Why: At 450px and below the status column shrinks too. How: This applies only when the app is 450px wide or less. */
+@container app (max-width: 500px) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
 	.dl-cond-sec .dl-thead { /* What: Conditionals Table Header. Why: The Conditionals header keeps room for its Triggered pills. How: This narrows the three value columns so the wider status column still fits. */
@@ -858,7 +858,7 @@
 
 
 }
-@container app (max-width:450px) { /* What: Very Narrow Log Table. Why: At 450px and below the status column shrinks too. How: This applies only when the app is 450px wide or less. */
+@container app (max-width: 500px) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
 	.dl-cond-row { /* What: Tightest Conditional Row. Why: The row keeps room for its Triggered pill. How: This narrows the three value columns so the wider status column still fits. */
@@ -924,7 +924,7 @@
 
 
 }
-@container app (min-width:761px) and (max-width:843px) { /* What: Mid-Width Log. Why: Between 761px and 843px the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
+@container app (min-width: 761px) and (max-width: 880px) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
 
 
 	.dl-cond-row .dl-nrow { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
@@ -947,7 +947,7 @@
 
 
 }
-@container app (max-width:600px) { /* What: Narrow Log. Why: At 600px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 600px wide or less. */
+@container app (max-width: 640px) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
 
 
 	.dl-cond-row .dl-nrow { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
@@ -994,7 +994,7 @@
 
 
 }
-@container app (min-width:761px) and (max-width:843px) { /* What: Mid-Width Log. Why: Between 761px and 843px the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
+@container app (min-width: 761px) and (max-width: 880px) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
 
 
 	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
@@ -1011,7 +1011,7 @@
 
 
 }
-@container app (max-width:600px) { /* What: Narrow Log. Why: At 600px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 600px wide or less. */
+@container app (max-width: 640px) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
 
 
 	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
@@ -1289,7 +1289,7 @@
 
 
 }
-@container app (max-width:560px) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
+@container app (max-width: 560px) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
 
 
 	.dl-rt-head,

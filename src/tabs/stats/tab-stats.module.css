@@ -209,7 +209,7 @@
 
 
 }
-@container app (max-width: 520px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 520px wide or less. */
+@container app (max-width: 560px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
 	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
@@ -642,7 +642,7 @@
 
 
 }
-@container app (max-width: 600px) { /* What: Narrow Range Pills. Why: On a narrow app the pills match the scrolling rows above them. How: This applies only when the app matches (max-width: 600px). */
+@container app (max-width: 640px) { /* What: Narrow Range Pills. Why: On a narrow app the pills match the scrolling rows above them. How: This applies only when the app matches (max-width: 640px). */
 
 
 	.stat-filter-pills { /* What: Scrolling Range Pills. Why: The pills should stay on one side-scrolling line. How: This stops them wrapping. */
@@ -802,7 +802,7 @@
 
 
 }
-@container app (max-width: 600px) { /* What: Narrow Stat Card Row. Why: A narrow app has room for fewer columns. How: This applies only when the app matches (max-width: 600px). */
+@container app (max-width: 640px) { /* What: Narrow Stat Card Row. Why: A narrow app has room for fewer columns. How: This applies only when the app matches (max-width: 640px). */
 
 
 	.stat-row { /* What: Two Column Stat Card Row. Why: Four cards would be too cramped. How: This drops the grid to two columns. */

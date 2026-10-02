@@ -206,7 +206,7 @@
 
 
 }
-@container app (max-width: 520px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 520px wide or less. */
+@container app (max-width: 560px) { /* What: Narrow Section Title. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
 	.section-title { /* What: Smaller Section Title. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
@@ -728,7 +728,7 @@
 
 
 }
-@container app (max-width: 480px) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 480px wide or less. */
+@container app (max-width: 500px) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
 
 
 	.set-data-row--stack { /* What: Stacked Settings Row. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
@@ -826,7 +826,7 @@
 
 
 }
-@container app (max-width: 480px) { /* What: Narrow Stacked Layout Description. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 480px wide or less. */
+@container app (max-width: 500px) { /* What: Narrow Stacked Layout Description. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 500px wide or less. */
 
 
 	.set-data-row--stack .set-layout-sub { /* What: Full Width Layout Description. Why: The stacked description can use the row's full width. How: This lifts the 190px cap. */

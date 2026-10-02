@@ -179,7 +179,7 @@
 
 
 }
-@container app (max-width: 520px) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches (max-width: 520px). */
+@container app (max-width: 560px) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches (max-width: 560px). */
 
 
 	.stage-idle-num { /* What: Smaller Stage Count. Why: The figure has less room. How: This drops it one step, to the extra large 4 font size. */
@@ -609,7 +609,7 @@
 
 
 }
-@container app (max-width: 399px) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches (max-width: 399px). */
+@container app (max-width: 440px) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches (max-width: 440px). */
 
 
 	.pool-row { /* What: Tight Pool Row. Why: The columns need the room. How: This tightens the gap. */
@@ -805,7 +805,7 @@
 
 
 }
-@container app (max-width: 600px) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 600px wide or less. */
+@container app (max-width: 640px) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 640px wide or less. */
 
 
 	.pool-name { /* What: Wrapped Pool Item Name. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
@@ -831,7 +831,7 @@
 
 
 }
-@container app (max-width: 600px) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 600px wide or less. */
+@container app (max-width: 640px) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 640px wide or less. */
 
 
 	.pool-item-name { /* What: Full-Width Pool Item Name Text. Why: The pill belongs on its own line. How: This makes the name take the full row. */

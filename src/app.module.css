@@ -198,7 +198,7 @@
 
 
 }
-@container app (max-width: 700px) { /* What: Narrow Side Tab Bar. Why: On a small screen the side rail becomes an off-canvas drawer overlaying the content instead of taking its width. How: This applies only when the app is 700px wide or less. */
+@container app (max-width: 720px) { /* What: Narrow Side Tab Bar. Why: On a small screen the side rail becomes an off-canvas drawer overlaying the content instead of taking its width. How: This applies only when the app is 720px wide or less. */
 
 
 	.tabbar--side { /* What: Drawer Side Tab Bar. Why: The rail should sit off the left edge until its handle opens it. How: This fixes the rail to the left edge, translated fully off screen, sliding when it opens. */
@@ -507,7 +507,7 @@
 
 
 }
-@container app (max-width: 460px) { /* What: Narrowest Top Wordmark. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 460px wide or less. */
+@container app (max-width: 500px) { /* What: Narrowest Top Wordmark. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 500px wide or less. */
 
 
 	.tabbar--top .brand-wordmark { /* What: Mark-Only Top Wordmark. Why: With the text gone, the gap is empty space. How: This drops the gap. */
@@ -562,7 +562,7 @@
 
 
 }
-@container app (max-width: 460px) { /* What: Narrowest Top Wordmark Lines. Why: On the narrowest screens the top bar keeps only the mark. How: This applies only when the app is 460px wide or less. */
+@container app (max-width: 500px) { /* What: Narrowest Top Wordmark Lines. Why: On the narrowest screens the top bar keeps only the mark. How: This applies only when the app is 500px wide or less. */
 
 
 	.tabbar--top .brand-wordmark .bw-lines { /* What: Hidden Top Wordmark Lines. Why: Five tabs and the brand must fit on one line. How: This hides the text. */
@@ -681,7 +681,7 @@
 
 
 }
-@container app (max-width: 430px) { /* What: Narrowest Bottom Tab Button. Why: Around 430px and below, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 430px wide or less. */
+@container app (max-width: 440px) { /* What: Narrowest Bottom Tab Button. Why: Below about 430px, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 440px wide or less. */
 
 
 	.tabbar--bottom .tabbtn { /* What: Tight Bottom Tab Button. Why: Every button should stay inside the pill down to the narrowest phones. How: This trims the side padding to the p01 step. */
@@ -839,7 +839,7 @@
 
 
 }
-@container app (max-width: 700px) { /* What: Narrow Rail Pull Handle. Why: The handle only exists while the rail is a drawer. How: This applies only when the app is 700px wide or less. */
+@container app (max-width: 720px) { /* What: Narrow Rail Pull Handle. Why: The handle only exists while the rail is a drawer. How: This applies only when the app is 720px wide or less. */
 
 
 	.tabbar--side .rail-handle { /* What: Shown Rail Pull Handle. Why: The drawer needs its handle. How: This shows it. */
@@ -868,7 +868,7 @@
 
 
 }
-@container app (max-width: 700px) { /* What: Narrow Rail Scrim. Why: The scrim only belongs to the drawer rail. How: This applies only when the app is 700px wide or less. */
+@container app (max-width: 720px) { /* What: Narrow Rail Scrim. Why: The scrim only belongs to the drawer rail. How: This applies only when the app is 720px wide or less. */
 
 
 	.app[data-placement="side"] .rail-scrim { /* What: Shown Rail Scrim. Why: With the side placement as a drawer, an open rail dims the content. How: This shows the scrim. */
@@ -963,7 +963,7 @@
 
 
 }
-@container app (max-width: 700px) { /* What: Narrow Side Placement Main Area. Why: With the rail as an overlay drawer, the content takes the full width again. How: This applies only when the app is 700px wide or less. */
+@container app (max-width: 720px) { /* What: Narrow Side Placement Main Area. Why: With the rail as an overlay drawer, the content takes the full width again. How: This applies only when the app is 720px wide or less. */
 
 
 	.app[data-placement="side"] .main { /* What: Full-Width Main Area. Why: The content no longer shares the row with the rail. How: This returns to the standard side padding. */

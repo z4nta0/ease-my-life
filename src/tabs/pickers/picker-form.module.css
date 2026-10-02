@@ -1138,7 +1138,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 }
-@container app (max-width: 399px) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches (max-width: 399px). */
+@container app (max-width: 440px) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches (max-width: 440px). */
 
 
 	.pool-row { /* What: Tight Pool Row. Why: The columns need the room. How: This tightens the gap. */

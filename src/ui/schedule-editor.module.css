@@ -373,7 +373,7 @@
 
 
 }
-@container app (max-width: 400px) { /* What: Narrow Schedule Inline Row. Why: On an iPhone SE-width screen a row of three selects clips at the normal gap. How: This applies only when the app container is 400px wide or less. */
+@container app (max-width: 440px) { /* What: Narrow Schedule Inline Row. Why: On an iPhone SE-width screen a row of three selects clips at the normal gap. How: This applies only when the app container is 440px wide or less. */
 
 
 	.rem-inline { /* What: Tight Schedule Inline Row. Why: The selects need just enough room to fit. How: This shaves the gap down. */
