@@ -2455,9 +2455,12 @@ are renamed to this as their files come up in the design-system pass.
   --bor-wid-lar )` for an offset that equals the ring's own width, `var(
   --bor-wid-bas )` for a line that doubles a border), negated with `* -1`
   when they point inward, and otherwise the nearest vertical rhythm step
-  times `1rem` (e.g. Today's checkbox gap and the offset that clears it,
-  both `m06`). Unlike a border, a shadow or offset doesn't snap to whole
-  pixels, so these land on their exact fractional value.
+  times `1rem`. An `outline-offset` snaps toward zero to whole pixels the
+  way a border width does, while a `box-shadow` doesn't snap at all, so a
+  gap drawn by one and cleared by the other takes the step whose snapped
+  offset draws the intended width: Today's checkbox gap and the offset
+  that clears it both use `m05` (about 3.57px), whose offset snaps to 3px
+  and whose ring covers the gap's extra fraction, drawing a 3px gap.
 - **Easing curves use five tokens** (decided 2026-10-01): `--mot-sta-eas`
   (standard, `ease`), `--mot-dec-eas` (decelerate, for things arriving),
   `--mot-acc-eas` (accelerate, for things leaving), `--mot-ove-eas` (a
