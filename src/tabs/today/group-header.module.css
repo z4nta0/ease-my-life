@@ -360,7 +360,7 @@
 .group-progress i.is-fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global(dashSweep) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global(dashSweep) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var(--acc-mai-col);
 	border-radius    : inherit;
 	content          : '';

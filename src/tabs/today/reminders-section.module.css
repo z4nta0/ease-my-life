@@ -249,7 +249,7 @@
 .group-progress i.is-fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global(dashSweep) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global(dashSweep) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var(--acc-mai-col);
 	border-radius    : inherit;
 	content          : '';
@@ -662,7 +662,7 @@
 .rem-card--purging { /* What: Purged Reminder Card. Why: A completed one-time reminder cleared by Generate slides up and fades before it goes. How: This plays the purge, ignoring clicks while it runs. */
 
 
-	animation      : remCardPurgeOut var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
+	animation      : remCardPurgeOut var( --dur-ani-p02 ) var( --mot-sta-eas ) forwards;
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -913,7 +913,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when a reminder is checked. How: This plays the shared spring on the mark. */
 
 
-	animation : global(checkSpring) var( --dur-ani-p04 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkSpring) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

@@ -26,7 +26,7 @@
 .cat { /* What: Category Card. Why: The Conditionals section reads as one card among the Data tab's sections. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance each time it mounts. */
 
 
-	animation     : global(catEnter) var( --dur-ani-p03 ) var( --mot-sta-eas ) both; /* What: Global Entrance Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(catEnter) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global Entrance Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--bac-sur-col);
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );

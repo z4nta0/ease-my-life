@@ -704,7 +704,7 @@
 
 	border-top  : 0;
 	padding-top : var( --spa-ver-bas );
-	transition  : opacity var( --dur-tra-p03 ) var( --mot-sta-eas );
+	transition  : opacity var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }

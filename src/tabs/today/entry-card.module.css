@@ -394,7 +394,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when an entry is checked. How: This plays the shared spring on the mark. */
 
 
-	animation : global(checkSpring) var( --dur-ani-p04 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkSpring) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

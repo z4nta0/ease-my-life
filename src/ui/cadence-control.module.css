@@ -277,7 +277,7 @@
 .cad-anchor-fade { /* What: Cadence Anchor Block. Why: Switching cadence swaps the anchor field below, which should ease in rather than snap. How: This fades the block in each time it remounts. */
 
 
-	animation : global(setSubFade) var( --dur-ani-p03 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

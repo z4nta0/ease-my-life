@@ -61,14 +61,14 @@
 .holiday-row--enter { /* What: Entering Holiday Row. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as the row mounts, which existing rows skip since they're keyed by id. */
 
 
-	animation : holidayRowEnterFadeIn var( --dur-ani-p04 ) var( --mot-sta-eas );
+	animation : holidayRowEnterFadeIn var( --dur-ani-p03 ) var( --mot-sta-eas );
 
 
 }
 .holiday-row.is-exiting { /* What: Exiting Holiday Row. Why: A removed custom day should fade up and collapse so the rows below slide up smoothly. How: This plays the exit animation, which also collapses the row's height, and stops it taking clicks. */
 
 
-	animation      : holidayRowExit var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
+	animation      : holidayRowExit var( --dur-ani-p02 ) var( --mot-sta-eas ) forwards;
 	overflow       : hidden;
 	pointer-events : none;
 

@@ -1188,7 +1188,7 @@
 	--entry-editor-foot-justify    : flex-end;
 	--entry-editor-rows-border-top : 0;
 	--entry-editor-rows-margin-top : 0;
-	animation                      : global(pvNewItemIn) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation                      : global(pvNewItemIn) var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                     : var(--bac-sur-col);
 	border                         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                  : var( --rad-bor-med );

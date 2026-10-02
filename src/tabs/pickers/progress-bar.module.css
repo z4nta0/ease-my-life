@@ -37,7 +37,7 @@
 	border-radius : 999px;
 	display       : block;
 	height        : 100%;
-	transition    : width var( --dur-tra-p03 ) var( --mot-ove-eas );
+	transition    : width var( --dur-tra-p02 ) var( --mot-ove-eas );
 
 
 }

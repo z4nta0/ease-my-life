@@ -667,7 +667,7 @@
 .cat { /* What: Category Card. Why: Each picker reads as one card in the list, and the list's cards slide in each time the filters remount it. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance. */
 
 
-	animation     : global(catEnter) var( --dur-ani-p03 ) var( --mot-sta-eas ) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(catEnter) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--bac-sur-col);
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
@@ -698,7 +698,7 @@
 .cat--removing { /* What: Removing Category Card. Why: A deleted picker's card collapses away instead of vanishing. How: This plays the remove animation once, ending on the zero height its animationend handler waits for. */
 
 
-	animation : catRemove var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
+	animation : catRemove var( --dur-ani-p02 ) var( --mot-sta-eas ) forwards;
 	overflow  : hidden;
 
 

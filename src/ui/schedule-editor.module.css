@@ -466,7 +466,7 @@
 .cad-anchor-fade { /* What: Schedule Anchor Hint Block. Why: The "counted from" hint appears when an interval goes above 1, and should ease in rather than snap. How: This fades the block in each time it mounts. */
 
 
-	animation : global(setSubFade) var( --dur-ani-p03 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -491,7 +491,7 @@
 .rem-extra-fade { /* What: Schedule Extra Fields Block. Why: Switching the repeat kind swaps the fields below it, which should cross-fade rather than snap. How: This fades the block in each time it remounts. */
 
 
-	animation : global(setSubFade) var( --dur-ani-p03 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

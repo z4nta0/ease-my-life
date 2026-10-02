@@ -909,7 +909,7 @@
 
 
 	height     : 100%;
-	transition : width var( --dur-tra-p03 ) var( --mot-dec-eas );
+	transition : width var( --dur-tra-p02 ) var( --mot-dec-eas );
 
 
 }
@@ -1855,7 +1855,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .bd-list-fade { /* What: Refreshing List. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
 
 
-	animation : global(setSubFade) var( --dur-ani-p03 ) var( --mot-sta-eas ), bdListRise var( --dur-ani-p03 ) var( --mot-dec-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every live explanation line, so they stay in the global sheet, while bdListRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p02 ) var( --mot-sta-eas ), bdListRise var( --dur-ani-p02 ) var( --mot-dec-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every live explanation line, so they stay in the global sheet, while bdListRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
 
 
 }

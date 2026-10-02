@@ -196,7 +196,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 .today-card[data-card-done-active] .check svg { /* What: Done App Feature Checkmark. Why: The checkmark should spring in when the tutorial is resolved. How: This plays the shared spring animation on the glyph. */
 
 
-	animation : global(checkSpring) var( --dur-ani-p04 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkSpring) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

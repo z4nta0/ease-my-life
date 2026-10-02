@@ -252,7 +252,7 @@
 .dissolve-glow { /* What: Picker Dissolve Glow. Why: A soft halo marks the moment the pick lands. How: This draws a faint accent radial glow behind the name that grows in. */
 
 
-	animation      : glow var( --dur-ani-p05 ) var( --mot-dec-eas );
+	animation      : glow var( --dur-ani-p04 ) var( --mot-dec-eas );
 	background     : radial-gradient(circle, var(--acc-tin-col), transparent 70%);
 	border-radius  : 50%;
 	height         : 60%;
