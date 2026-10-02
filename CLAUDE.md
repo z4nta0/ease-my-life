@@ -2447,8 +2447,17 @@ are renamed to this as their files come up in the design-system pass.
   Every length in them is a vertical rhythm step, and each level above the
   smallest pairs its soft key shadow with a crisp contact layer. A
   `box-shadow` that isn't elevation (a `0 0 0 Npx` ring or outline, an inset
-  border, a pulse keyframe, a spotlight's huge spread) isn't covered and
-  keeps its own value.
+  border, a pulse keyframe, a spotlight's huge spread) isn't covered by
+  the scale.
+- **Rings and outlines use the same lengths** (decided 2026-10-02): a
+  focus ring's `outline-offset`, and a `box-shadow` that draws a ring, gap,
+  or extra line, read the token of the size they mirror (`var(
+  --bor-wid-lar )` for an offset that equals the ring's own width, `var(
+  --bor-wid-bas )` for a line that doubles a border), negated with `* -1`
+  when they point inward, and otherwise the nearest vertical rhythm step
+  times `1rem` (e.g. Today's checkbox gap and the offset that clears it,
+  both `m06`). Unlike a border, a shadow or offset doesn't snap to whole
+  pixels, so these land on their exact fractional value.
 - **Easing curves use five tokens** (decided 2026-10-01): `--mot-sta-eas`
   (standard, `ease`), `--mot-dec-eas` (decelerate, for things arriving),
   `--mot-acc-eas` (accelerate, for things leaving), `--mot-ove-eas` (a
