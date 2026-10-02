@@ -2483,8 +2483,18 @@ are renamed to this as their files come up in the design-system pass.
   `motEasFun( '<family>' )`, which reads the matching `--mot-*-eas`
   token. A timer that only paces behavior stays literal: loading and
   safety timeouts, how long a confirmation stays up, waits on a browser
-  action (a smooth scroll, a focus move), clock ticks, per-item stagger
-  delays, extra safety margins, and reduced-motion short-cuts.
+  action (a smooth scroll, a focus move), clock ticks, extra safety
+  margins, and reduced-motion short-cuts.
+- **A behavior number moves onto the rhythm** (decided 2026-10-02: a
+  stagger, a pacing step, an opacity, ...) when all three hold: every timer
+  or value that depends on it reads the same rhythm step, so they stay in
+  exact sync (e.g. a 70ms card stagger and the cleanup that waits `count ×
+  stagger` both read `durMilFun( 'm03' )`); its nearest step is within 10%
+  of the current value; and its value isn't constrained by layout, meaning
+  no element's size, position, or closeness to its neighbors limits what
+  it can be. A value that fails any of these stays literal, e.g. the
+  exhale's `1.012` swell, which has to stay small enough that swelling
+  cards never crowd each other.
 - **Breakpoints are a short list of round numbers** (decided 2026-10-01).
   A custom property can't be read inside an `@media` or `@container`
   condition, so breakpoints are literal. They don't come from the rhythm:
