@@ -2431,6 +2431,18 @@ are renamed to this as their files come up in the design-system pass.
   gentle overshoot), and `--mot-bou-eas` (a strong, springy bounce). Every
   hand-tuned curve folds into its family; the plain `linear` keyword stays
   as is.
+- **JavaScript timing follows the same steps** (decided 2026-10-01). A
+  timer that waits for a CSS animation or transition to finish reads that
+  animation's own step through `utils/rhythm.js`'s own `durMilFun(
+  '<step>' )` (plus the step of any delay it also waits through), so the
+  two can never drift apart. Motion JavaScript plays itself (an
+  `Element.animate` call, a `requestAnimationFrame` tween) takes its
+  duration from `durMilFun` too and its curve from `utils/motion.js`'s own
+  `motEasFun( '<family>' )`, which reads the matching `--mot-*-eas`
+  token. A timer that only paces behavior stays literal: loading and
+  safety timeouts, how long a confirmation stays up, waits on a browser
+  action (a smooth scroll, a focus move), clock ticks, per-item stagger
+  delays, extra safety margins, and reduced-motion short-cuts.
 - **Breakpoints stay literal numbers**, since a custom property can't be
   read inside an `@media` or `@container` condition, but their values still
   come from the scale the design system defines.
