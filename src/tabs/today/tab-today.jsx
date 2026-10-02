@@ -3375,7 +3375,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								aria-label='Ease My Life link to go to the Today page'
 
 								onClick={ onNavHomFun }
-							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which .brand-mark sets to var(--accent); the grid lines use var(--accent-soft), the same color as the Today group-rail/tabbar selected backgrounds. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which .brand-mark sets to var(--acc-mai-col); the grid lines use var(--acc-tin-col), the same color as the Today group-rail/tabbar selected backgrounds. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<svg
@@ -3413,7 +3413,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<g
 										style={{
-											stroke      : 'var(--accent-soft)',
+											stroke      : 'var(--acc-tin-col)',
 											strokeWidth : 16
 										}}
 									>{ /* What: Grid Group Element. Why: Groups the 8 decorative background lines so they can share one stroke style instead of repeating it 8 times. How: This sets the shared stroke/strokeWidth once, applied to every child path below. */ }
@@ -3484,7 +3484,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								>{ /* What: Default Title State Span Element. Why: This is the everyday hero line, visible whenever the day isn't yet complete. How: This renders the fixed "Your day, eased just for you." copy. */ }
 
 
-									Your day,<br />{ ' ' }<span style={{ color : 'var(--accent)' }}>eased</span> just for you.
+									Your day,<br />{ ' ' }<span style={{ color : 'var(--acc-mai-col)' }}>eased</span> just for you.
 
 
 								</span>

@@ -67,7 +67,7 @@
 .kicker { /* What: Kicker. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -119,7 +119,7 @@
 	background         : none;
 	border             : 0;
 	border-radius      : var( --rad-bor-med );
-	color              : var(--accent);
+	color              : var(--acc-mai-col);
 	cursor             : pointer;
 	display            : block;
 	flex               : 0 0 auto;
@@ -226,7 +226,7 @@
 .stat-title-accent { /* What: Title Accent. Why: The heading's key word reads in the accent color. How: This colors the span. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -244,7 +244,7 @@
 .section-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline, set a little below the title row. How: This sets it muted with a capped line length and a large vertical spacing top margin. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	margin    : var( --spa-ver-p01 ) 0 0;
 	max-width : var( --tex-wid-bas );
 
@@ -256,7 +256,7 @@
 
 	background            : none;
 	border                : 0;
-	color                 : var(--accent);
+	color                 : var(--acc-mai-col);
 	cursor                : pointer;
 	font                  : inherit;
 	padding               : 0;
@@ -322,7 +322,7 @@
 .stat-filter-lbl { /* What: Filter Label. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	flex-shrink    : 0;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -381,9 +381,9 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	display        : inline-flex;
 	flex-shrink    : 0;
@@ -400,17 +400,17 @@
 .picker-group-pill:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
 .picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -432,9 +432,9 @@
 
 
 	align-items          : center;
-	background           : oklch(from var(--border) calc(l + 0.02) c h);
+	background           : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
 	border-radius        : 999px;
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	display              : inline-flex;
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
@@ -450,8 +450,8 @@
 .picker-group-pill[aria-selected="true"] .picker-group-count { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
 
 
-	background : oklch(from var(--accent) l c h / 0.16);
-	color      : var(--accent);
+	background : oklch(from var(--acc-mai-col) l c h / 0.16);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -523,8 +523,8 @@
 
 
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background        : var(--surface);
-	border            : var( --bor-wid-sma ) solid var(--border);
+	background        : var(--bac-sur-col);
+	border            : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius     : var( --rad-bor-med );
 	display           : flex;
 	flex-direction    : column;
@@ -541,15 +541,15 @@
 .picker-tab:hover { /* What: Hovered Show Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
 .picker-tab[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -580,7 +580,7 @@
 .picker-tab[data-tab-select-active] .picker-tab-name { /* What: Selected Show Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -588,7 +588,7 @@
 .picker-tab-mode { /* What: Show Tab Mode. Why: Each tab names its scope's kind as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -660,9 +660,9 @@
 
 
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	flex-shrink    : 0;
 	font-size      : var( --fon-siz-p01 );
@@ -678,17 +678,17 @@
 .stat-pill:hover { /* What: Hovered Range Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
 .stat-pill[data-pill-select-active] { /* What: Selected Range Pill. Why: The active range should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -771,7 +771,7 @@
 .picker-hint { /* What: Picker Hint. Why: The picker's mode explains itself under its name. How: This sets muted body text with a capped line length, spaced below what precedes it. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	margin    : var( --spa-ver-m02 ) 0 0;
 	max-width : var( --tex-wid-bas );
@@ -838,7 +838,7 @@
 .stat-card svg { /* What: Stat Card Icon. Why: Each headline card carries a small icon in its corner. How: This pins it to the top right in the warm color. */
 
 
-	color    : var(--warm);
+	color    : var(--acc-sec-col);
 	position : absolute;
 	right    : var( --spa-hor-bas );
 	top      : var( --spa-ver-bas );
@@ -862,7 +862,7 @@
 .stat-lbl { /* What: Stat Label. Why: The number names what it counts below it. How: This sets small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
@@ -896,7 +896,7 @@
 .bd-bar { /* What: Breakdown Bar. Why: The segments read as one rounded proportion bar. How: This lays them out in a clipped pill at the small rhythm step on a faint track. */
 
 
-	background    : oklch(from var(--border) calc(l + 0.02) c h);
+	background    : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
 	border-radius : 999px;
 	display       : flex;
 	height        : calc( var( --ver-rhy-m01 ) * 1rem );
@@ -916,7 +916,7 @@
 .bd-seg + .bd-seg { /* What: Following Breakdown Segment. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
 
 
-	box-shadow : -1px 0 0 var(--surface);
+	box-shadow : -1px 0 0 var(--bac-sur-col);
 
 
 }
@@ -954,7 +954,7 @@
 
 
 	align-items   : center;
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display       : flex;
 	font-size     : var( --fon-siz-p01 );
 	gap           : var( --spa-hor-m01 );
@@ -984,7 +984,7 @@
 .bd-label { /* What: Legend Label. Why: The segment's name reads in body color. How: This colors it. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -992,7 +992,7 @@
 .bd-val { /* What: Legend Count. Why: The count sits at the row's right. How: This pushes it right in tabular mono. */
 
 
-	color                : var(--text);
+	color                : var(--tex-mai-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
@@ -1004,7 +1004,7 @@
 .bd-pct { /* What: Legend Share. Why: The share follows the count in a fixed column. How: This sets it at a fixed rhythm-step width, right-aligned in small muted mono. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -1039,7 +1039,7 @@
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -1099,9 +1099,9 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--text);
+	color           : var(--tex-mai-col);
 	cursor          : pointer;
 	display         : flex;
 	font-size       : var( --fon-siz-p02 );
@@ -1116,8 +1116,8 @@
 .heat-year-arrow:hover:not(:disabled) { /* What: Hovered Year Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
 
 
-	background   : oklch(from var(--accent) l c h / 0.08);
-	border-color : oklch(from var(--accent) l c h / 0.5);
+	background   : oklch(from var(--acc-mai-col) l c h / 0.08);
+	border-color : oklch(from var(--acc-mai-col) l c h / 0.5);
 
 
 }
@@ -1237,7 +1237,7 @@
 
 
 	aspect-ratio  : 1;
-	background    : oklch(from var(--border) calc(l + 0.02) c h);
+	background    : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
 	border-radius : var( --rad-bor-xsm );
 	display       : block;
 
@@ -1269,7 +1269,7 @@ button.heat-cell:hover { /* What: Hovered Heat Cell. Why: The cell should respon
 button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: The tapped day should stand out. How: This outlines it in body color, keying off data-cell-select-active. */
 
 
-	outline-color : var(--text);
+	outline-color : var(--tex-mai-col);
 
 
 }
@@ -1289,35 +1289,35 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-0 { /* What: Empty Heat Level. Why: A day with nothing done stays on the faint track color. How: This sets that color. */
 
 
-	background : oklch(from var(--border) calc(l + 0.02) c h);
+	background : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
 
 
 }
 .heat-1 { /* What: First Heat Level. Why: A little done reads as a pale accent. How: This lightens and desaturates the accent. */
 
 
-	background : oklch(from var(--accent) calc(l + 0.30) calc(c - 0.10) h);
+	background : oklch(from var(--acc-mai-col) calc(l + 0.30) calc(c - 0.10) h);
 
 
 }
 .heat-2 { /* What: Second Heat Level. Why: Some done reads a step stronger. How: This lightens the accent less. */
 
 
-	background : oklch(from var(--accent) calc(l + 0.18) calc(c - 0.06) h);
+	background : oklch(from var(--acc-mai-col) calc(l + 0.18) calc(c - 0.06) h);
 
 
 }
 .heat-3 { /* What: Third Heat Level. Why: Most done reads nearly full strength. How: This lightens the accent slightly. */
 
 
-	background : oklch(from var(--accent) calc(l + 0.08) calc(c - 0.03) h);
+	background : oklch(from var(--acc-mai-col) calc(l + 0.08) calc(c - 0.03) h);
 
 
 }
 .heat-4 { /* What: Full Heat Level. Why: A full day reads in the accent itself. How: This sets the accent. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -1327,7 +1327,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-tap-hint { /* What: Tap Hint. Why: Under the grid, a quiet hint says a day can be tapped. How: This sets small faded uppercase mono. */
 
 
-	color          : oklch(from var(--muted) l c h / 0.7);
+	color          : oklch(from var(--tex-mut-col) l c h / 0.7);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -1344,7 +1344,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail { /* What: Day Detail. Why: A tapped day lists what was picked under the grid. How: This sets it off with a hairline above. */
 
 
-	border-top  : var( --bor-wid-sma ) solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	margin-top  : var( --spa-ver-bas );
 	padding-top : var( --spa-ver-bas );
 
@@ -1377,7 +1377,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail-count { /* What: Day Detail Count. Why: The count reads as quiet metadata. How: This sets small muted tabular mono. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -1404,7 +1404,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : baseline;
-	border-bottom   : var( --bor-wid-sma ) solid oklch(from var(--border) l c h / 0.55);
+	border-bottom   : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h / 0.55);
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
 	gap             : var( --spa-hor-m01 );
@@ -1424,14 +1424,14 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail-name { /* What: Day Detail Name. Why: An item not done reads muted. How: This mutes it. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
 .heat-detail-list li[data-row-done-active] .heat-detail-name { /* What: Done Day Detail Name. Why: A done item reads in body color. How: This darkens it, keying off data-row-done-active. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -1439,7 +1439,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail-mark { /* What: Day Detail Mark. Why: Each item ends in a check or a dash. How: This sets it in faded mono. */
 
 
-	color       : oklch(from var(--muted) l c h / 0.6);
+	color       : oklch(from var(--tex-mut-col) l c h / 0.6);
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-p01 );
 
@@ -1448,7 +1448,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail-list li[data-row-done-active] .heat-detail-mark { /* What: Done Day Detail Mark. Why: A done item's check reads in the accent. How: This colors it, keying off data-row-done-active. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -1458,7 +1458,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .heat-detail-empty { /* What: Day Detail Empty. Why: A day with nothing says so quietly. How: This sets small muted text. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	margin    : 0;
 
@@ -1505,7 +1505,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rem-stat { /* What: Summary Stat. Why: Each stat is a number with a label. How: This sets the label small and muted. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 
 
@@ -1513,7 +1513,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rem-stat strong { /* What: Summary Stat Number. Why: The number leads its label. How: This sets it large, bold, and tabular in body color. */
 
 
-	color                : var(--text);
+	color                : var(--tex-mai-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p02 );
 	font-variant-numeric : tabular-nums;
@@ -1546,7 +1546,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border-top      : var( --bor-wid-bas ) solid var(--border);
+	border-top      : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
@@ -1599,7 +1599,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .cnd-sum-frac { /* What: Conditional Summary Fraction. Why: A wider fraction would shift this row's pill out of line with its siblings. How: This fixes it at a rhythm step, right-aligned in small muted tabular mono. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -1612,7 +1612,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .cnd-sum-rate { /* What: Conditional Summary Rate. Why: The fire rate is the row's main number. How: This sets it bold in the accent, right-aligned at a minimum width. */
 
 
-	color                : var(--accent);
+	color                : var(--acc-mai-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
@@ -1655,9 +1655,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items    : center;
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	display        : inline-flex;
 	flex           : 0 0 auto;
@@ -1676,8 +1676,8 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-sort:hover { /* What: Hovered Sort Toggle. Why: The toggle should respond to the pointer. How: This darkens its border and text. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
@@ -1746,9 +1746,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	flex           : 0 0 auto;
 	font-size      : var( --fon-siz-bas );
@@ -1762,17 +1762,17 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .bd-metric:hover { /* What: Hovered Metric Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
 .bd-metric[data-pill-select-active] { /* What: Selected Metric Pill. Why: The showing metric should stand out. How: This fills it in the soft accent, keying off data-pill-select-active. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -1797,7 +1797,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-note { /* What: List Note. Why: A note explains what the showing metric counts. How: This sets small muted text under the pills. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : var( --spa-ver-m01 ) 0 0;
@@ -1811,7 +1811,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	background            : none;
 	border                : 0;
-	color                 : var(--muted);
+	color                 : var(--tex-mut-col);
 	cursor                : pointer;
 	font                  : inherit;
 	padding               : 0;
@@ -1825,14 +1825,14 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .note-link:hover { /* What: Hovered Unit Toggle. Why: The link should respond to the pointer. How: This darkens it. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
 .note-link[data-link-select-active] { /* What: Selected Unit Toggle. Why: The showing unit should stand out. How: This sets it bold in the accent with a solid underline, keying off data-link-select-active. */
 
 
-	color                 : var(--accent);
+	color                 : var(--acc-mai-col);
 	font-weight           : 600;
 	text-decoration-style : solid;
 
@@ -1925,7 +1925,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : baseline;
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
 	gap             : var( --spa-hor-m01 );
@@ -1953,7 +1953,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-n { /* What: Rank Count. Why: Each item's count reads as quiet metadata. How: This sets small muted tabular mono. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -1963,7 +1963,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank--cold .rank-n { /* What: Cold Rank Count. Why: The coldest items' counts read fainter still. How: This fades the muted color. */
 
 
-	color : oklch(from var(--muted) l c h / 0.7);
+	color : oklch(from var(--tex-mut-col) l c h / 0.7);
 
 
 }
@@ -1983,7 +1983,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank--freq li[data-row-vacation-active] .rank-name { /* What: Inactive Item Name. Why: An inactive item reads muted. How: This mutes its name, keying off data-row-vacation-active. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
@@ -2001,9 +2001,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank--freq li[data-row-deleted-active] .rank-name-text { /* What: Deleted Item Name. Why: A deleted item's history remains but should read as historical. How: This mutes and strikes its name, keying off data-row-deleted-active. */
 
 
-	color                 : var(--muted);
+	color                 : var(--tex-mut-col);
 	text-decoration       : line-through;
-	text-decoration-color : oklch(from var(--muted) l c h / 0.5);
+	text-decoration-color : oklch(from var(--tex-mut-col) l c h / 0.5);
 
 
 }
@@ -2011,7 +2011,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-meta { /* What: Item Meta. Why: A target or suffix reads as quiet mono under the name. How: This sets small faded mono. */
 
 
-	color          : oklch(from var(--muted) l c h / 0.85);
+	color          : oklch(from var(--tex-mut-col) l c h / 0.85);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.02em;
@@ -2023,9 +2023,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items    : center;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : inline-flex;
 	flex           : 0 0 auto;
 	font-family    : var(--fon-fam-sec);
@@ -2040,9 +2040,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-tag--was { /* What: Was Inactive Tag. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : oklch(from var(--accent) l c h / 0.4);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : oklch(from var(--acc-mai-col) l c h / 0.4);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -2095,7 +2095,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-pct { /* What: Item Share. Why: The share reads as the row's main number. How: This sets tabular mono right-aligned at a minimum width. */
 
 
-	color                : var(--text);
+	color                : var(--tex-mai-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : tabular-nums;
@@ -2108,7 +2108,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-frac { /* What: Item Fraction. Why: The raw count reads as quieter detail beside the share. How: This sets small muted tabular mono right-aligned at a minimum width. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -2121,7 +2121,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-metric-n { /* What: Metric Number. Why: A count metric shows one number per row. How: This sets tabular mono right-aligned, never shrinking. */
 
 
-	color                : var(--text);
+	color                : var(--tex-mai-col);
 	flex                 : 0 0 auto;
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p01 );
@@ -2135,7 +2135,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-freq-val { /* What: Unit Value. Why: A frequency or last-picked value reads as mono at the row's end. How: This sets tabular mono that never shrinks or wraps. */
 
 
-	color                : var(--text);
+	color                : var(--tex-mai-col);
 	flex                 : 0 0 auto;
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p01 );
@@ -2147,7 +2147,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rank-freq-val[data-value-dim-active] { /* What: Placeholder Unit Value. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
 
 
-	color : oklch(from var(--muted) l c h / 0.7);
+	color : oklch(from var(--tex-mut-col) l c h / 0.7);
 
 
 }
@@ -2243,7 +2243,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
@@ -2294,7 +2294,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rem-log-when { /* What: Reminder Log Date. Why: A one-digit day is narrower than a two-digit one, which would shift the pill before it. How: This fixes it at a rhythm step, right-aligned in small muted mono on one line. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.02em;
@@ -2312,9 +2312,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rem-log-type { /* What: Type Pill. Why: A reminder's kind or a conditional's mode reads as a small outlined chip. How: This draws a small uppercase mono pill. */
 
 
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -2326,9 +2326,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rem-log-type--recurring { /* What: Recurring Type Pill. Why: A recurring reminder reads in the accent. How: This tints the chip in the accent. */
 
 
-	background   : oklch(from var(--accent-soft) l c h / 0.5);
-	border-color : oklch(from var(--accent) l c h / 0.4);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h / 0.5);
+	border-color : oklch(from var(--acc-mai-col) l c h / 0.4);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -2343,7 +2343,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border-top      : var( --bor-wid-sma ) solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-bas );
 	justify-content : flex-end;
@@ -2356,7 +2356,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .pager-range { /* What: Pager Range. Why: The showing rows read as quiet metadata. How: This sets small muted tabular mono. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -2389,9 +2389,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--text);
+	color           : var(--tex-mai-col);
 	cursor          : pointer;
 	display         : flex;
 	font-size       : var( --fon-siz-p02 );
@@ -2406,8 +2406,8 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .pager-arrow:hover:not(:disabled) { /* What: Hovered Pager Arrow. Why: A live arrow should respond to the pointer. How: This tints it with the accent. */
 
 
-	background   : oklch(from var(--accent) l c h / 0.08);
-	border-color : oklch(from var(--accent) l c h / 0.5);
+	background   : oklch(from var(--acc-mai-col) l c h / 0.08);
+	border-color : oklch(from var(--acc-mai-col) l c h / 0.5);
 
 
 }
@@ -2440,7 +2440,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .stat-empty { /* What: Empty Stat. Why: A card with nothing to show says so quietly. How: This sets small muted text with a little padding. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	padding   : var( --spa-ver-bas ) var( --spa-hor-m07 );
 
@@ -2450,7 +2450,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .rem-log-empty { /* What: Empty Log. Why: A log with nothing in range says so quietly. How: This sets small muted text with a little padding. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	padding   : var( --spa-ver-m03 ) 0;
 
@@ -2461,9 +2461,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--tex-mut-col);
 	border-radius   : 50%;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : help;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -2480,9 +2480,9 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .pie-help:hover { /* What: Hovered Help Bubble. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }

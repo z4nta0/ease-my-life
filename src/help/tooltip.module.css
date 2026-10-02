@@ -23,8 +23,8 @@
 
 
 	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background     : var(--surface);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
@@ -44,8 +44,8 @@
 .ob-coach::before { /* What: Help Tip Arrow. Why: The tip should point at the element it explains. How: This draws a small rotated square that pokes out of the card at the target's horizontal position. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	content    : "";
 	height     : calc( var( --ver-rhy-bas ) * 1rem );
 	left       : var( --ob-ax, var( --spa-hor-p02 ) ); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: HelTipCom writes --ob-ax as the target's center offset from the tip's left edge, falling back to the p02 horizontal spacing step. */
@@ -104,7 +104,7 @@
 .ob-coach .ob-body { /* What: Help Tip Body. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in the muted color at a comfortable line height. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;

@@ -21,8 +21,8 @@
 
 
 	align-items   : center;
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : 999px;
 	display       : inline-flex;
 	gap           : var( --spa-hor-m05 );
@@ -38,7 +38,7 @@
 	background      : none;
 	border          : none;
 	border-radius   : 999px;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -55,8 +55,8 @@
 .np-weight-btn:hover:not(:disabled) { /* What: Stepper Button Hover. Why: An enabled button should respond to the pointer. How: This tints it with the accent color. */
 
 
-	background : var(--accent-soft);
-	color      : var(--accent);
+	background : var(--acc-tin-col);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -89,7 +89,7 @@
 	appearance      : textfield;
 	background      : transparent;
 	border          : 0;
-	color           : var(--text);
+	color           : var(--tex-mai-col);
 	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-p01 );
 	font-weight     : 600;
@@ -112,7 +112,7 @@
 .np-stepper-input:focus { /* What: Focused Stepper Input. Why: Typing needs a visible field to type into. How: This gives the input a surface background and rounded corners while focused. */
 
 
-	background    : var(--surface);
+	background    : var(--bac-sur-col);
 	border-radius : var( --rad-bor-xsm );
 
 

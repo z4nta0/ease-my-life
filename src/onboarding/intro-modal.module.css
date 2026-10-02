@@ -54,8 +54,8 @@
 .ob-welcome { /* What: Intro Modal Card. Why: The modal's content sits on one raised card centered in the backdrop. How: This styles the card and centers it with auto margins, which collapse to top-aligned once the card outgrows the screen. */
 
 
-	background    : var(--surface);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-lar );
 	box-shadow    : 0 24px 60px -20px oklch(0 0 0/0.5);
 	margin        : auto; /* What: Card Auto Margin. Why: Center alignment on the backdrop would clip a card taller than the screen at both ends with no way to scroll to it. How: Auto margins only take up free space, so the card sits centered when it fits and falls back to top-aligned, scrollable flow when it doesn't. */
@@ -116,7 +116,7 @@
 .ob-wmark { /* What: Intro Modal Icon Mark. Why: Every intro modal shows a recognizable glyph above its title. How: This sizes and centers the glyph's box in the accent color. */
 
 
-	color  : var(--accent);
+	color  : var(--acc-mai-col);
 	height : calc( var( --ver-rhy-p05 ) * 1rem );
 	margin : 0 auto var( --spa-ver-bas );
 	width  : calc( var( --ver-rhy-p05 ) * 1rem );
@@ -151,7 +151,7 @@
 .ob-welcome>p { /* What: Intro Modal Paragraph. Why: The body copy should read as quieter supporting text. How: This sets it in the muted color at a comfortable line height. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0 var( --spa-hor-m03 );
@@ -185,10 +185,10 @@
 
 
 	align-items   : center;
-	background    : var(--accent-soft);
+	background    : var(--acc-tin-col);
 	border        : none;
 	border-radius : 999px;
-	color         : var(--accent);
+	color         : var(--acc-mai-col);
 	display       : inline-flex;
 	font-family   : var(--fon-fam-sec);
 	font-size     : var( --fon-siz-bas );
@@ -219,9 +219,9 @@
 
 
 	background    : transparent;
-	border        : var( --bor-wid-sma ) solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	cursor        : pointer;
 	font-family   : inherit;
 	font-size     : var( --fon-siz-p01 );
@@ -234,8 +234,8 @@
 .ob-btn--primary { /* What: Primary Intro Modal Button. Why: Starting the tour is the main call to action. How: This fills the button with the accent color. */
 
 
-	background   : var(--accent);
-	border-color : var(--accent);
+	background   : var(--acc-mai-col);
+	border-color : var(--acc-mai-col);
 	color        : #fff;
 
 

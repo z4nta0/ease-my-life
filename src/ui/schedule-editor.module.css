@@ -43,7 +43,7 @@
 .rem-editor--stacked { /* What: Stacked Schedule Editor. Why: On Today, dividers separate the fields instead of a gap, and a closing line meets the footer's own divider. How: This drops the gap and draws a bottom border. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	gap           : 0;
 
 
@@ -84,14 +84,14 @@
 .rem-editor--stacked .rem-field + .rem-field { /* What: Following Stacked Schedule Field. Why: Consecutive fields read as separate rows. How: This draws a divider above every field after the first. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
 .rem-editor--stacked .rem-extra-fade > .rem-field { /* What: Wrapped Stacked Schedule Field. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses both the divider and the padding the rules above give. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
 
 
-	border-top  : var( --bor-wid-sma ) solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	padding-top : var( --spa-ver-m01 );
 
 
@@ -102,7 +102,7 @@
 	--seg-max-width         : 100%; /* What: Segmented Control Max Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
 	--seg-repeat-flex-basis : 100%; /* What: Repeat Control Flex Basis. Why: The Repeat control always takes its own full-width line under the label, so every browser lays it out the same way. How: The Repeat segmented control reads this as its flex basis. */
 	align-items             : center;
-	border-bottom           : var( --bor-wid-sma ) solid var(--border);
+	border-bottom           : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	box-sizing              : border-box;
 	column-gap              : var( --spa-hor-m01 );
 	flex-direction          : row;
@@ -118,7 +118,7 @@
 .rem-editor--rows .rem-field:first-child { /* What: First Rows Schedule Field. Why: The top row needs a divider above it too, matching the line under the picker item editor's name field. How: This draws a top border. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -146,7 +146,7 @@
 .rem-flabel { /* What: Schedule Field Label. Why: Field labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -165,7 +165,7 @@
 .rem-flabel-sub { /* What: Schedule Field Summary. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 
@@ -238,7 +238,7 @@
 .rem-hint { /* What: Schedule Hint. Why: Notes like where a clamped date lands, or when an interval is counted from, read as quiet asides. How: This sets them small and muted with no margin. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
@@ -258,7 +258,7 @@
 
 	background                : none;
 	border                    : none;
-	color                     : var(--accent);
+	color                     : var(--acc-mai-col);
 	cursor                    : pointer;
 	font                      : inherit;
 	font-weight               : 600;
@@ -280,7 +280,7 @@
 
 
 	border-radius  : var( --rad-bor-xsm );
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : 2px;
 
 
@@ -289,10 +289,10 @@
 .rem-date-inline { /* What: Counted From Date Input. Why: Clicking the link swaps it for a small date input that should sit in the sentence like the link did. How: This styles a compact mono field aligned to the text's baseline. */
 
 
-	background     : var(--bg);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-pag-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-sma );
-	color          : var(--text);
+	color          : var(--tex-mai-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );
@@ -303,7 +303,7 @@
 .rem-date-inline:focus { /* What: Focused Counted From Date Input. Why: The focused input needs a visible cue without the browser's own outline. How: This switches its border to the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 	outline      : none;
 
 
@@ -366,7 +366,7 @@
 
 
 	align-items : center;
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	display     : flex;
 	font-size   : var( --fon-siz-p01 );
 	gap         : var( --spa-hor-m02 );
@@ -390,10 +390,10 @@
 .np-input { /* What: Schedule Field Control. Why: The number inputs and selects should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p04 ) * 1rem );
@@ -409,7 +409,7 @@
 .np-input::placeholder { /* What: Schedule Field Control Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -417,7 +417,7 @@
 .np-input:focus { /* What: Focused Schedule Field Control. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }

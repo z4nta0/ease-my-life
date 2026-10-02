@@ -79,30 +79,30 @@
 .btn--primary { /* What: Primary Button. Why: The main action in a view should stand out. How: This fills the button with the text color and uses the background color for its label. */
 
 
-	background : var(--text);
-	color      : var(--bg);
+	background : var(--tex-mai-col);
+	color      : var(--bac-pag-col);
 
 
 }
 .btn--primary:hover { /* What: Hovered Primary Button. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
 
 
-	background : oklch(from var(--text) calc(l + 0.06) c h);
+	background : oklch(from var(--tex-mai-col) calc(l + 0.06) c h);
 
 
 }
 .btn--ghost { /* What: Ghost Button. Why: Secondary actions shouldn't compete with the content. How: This leaves the button unfilled with a muted label. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
 .btn--ghost:hover { /* What: Hovered Ghost Button. Why: A quiet button still needs to respond to the pointer. How: This gives it a surface fill and the full text color. */
 
 
-	background : var(--surface);
-	color      : var(--text);
+	background : var(--bac-sur-col);
+	color      : var(--tex-mai-col);
 
 
 }
@@ -126,16 +126,16 @@
 .btn--secondary { /* What: Secondary Button. Why: Some actions need a clear but outlined button. How: This gives it a surface fill, a hairline border, and the full text color. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
-	color      : var(--text);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color      : var(--tex-mai-col);
 
 
 }
 .btn--secondary:hover { /* What: Hovered Secondary Button. Why: An outlined button should respond to the pointer. How: This darkens its border to the muted color. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }

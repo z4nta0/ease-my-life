@@ -1096,7 +1096,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<g
 								style={{
-									stroke      : 'var(--accent-soft)',
+									stroke      : 'var(--acc-tin-col)',
 									strokeWidth : 16
 								}}
 							>{ /* What: Grid Group Element. Why: Groups the 8 decorative background lines so they can share one stroke style instead of repeating it 8 times. How: This sets the shared stroke/strokeWidth once, applied to every child path below. */ }

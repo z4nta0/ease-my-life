@@ -58,7 +58,7 @@
 .rem-del-msg { /* What: Delete Message. Why: The confirm question should read as plain body text that wraps cleanly on narrow screens. How: This sets it in the text color with balanced wrapping. */
 
 
-	color     : var(--text);
+	color     : var(--tex-mai-col);
 	font-size : var( --fon-siz-p01 );
 	text-wrap : pretty;
 

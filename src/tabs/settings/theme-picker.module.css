@@ -39,7 +39,7 @@
 .set-subsection-h { /* What: Theme Subsection Heading. Why: Each subsection names itself like every other Appearance subsection. How: This sets the heading in small, spaced, muted mono capitals. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -51,7 +51,7 @@
 .settings-sub { /* What: Theme Subsection Copy. Why: The explanatory paragraphs read as quieter supporting text. How: This sets them in muted body text with no margin. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	margin    : 0;
 
@@ -80,14 +80,14 @@
 .theme-row--custom { /* What: Custom Theme Row. Why: The editable custom theme reads as a different kind of row than the presets. How: This frames it with a dashed border. */
 
 
-	border : var( --bor-wid-bas ) dashed var(--border);
+	border : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 
 
 }
 .theme-row:focus-visible { /* What: Focused Theme Row. Why: A keyboard user needs to see which row has focus. How: This colors the frame with the accent. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -95,14 +95,14 @@
 .theme-row[data-option-select-active] { /* What: Selected Theme Row. Why: The active theme should stand out. How: This frames the row in the text color, keyed off a preset row's own aria-checked or the custom row's selected attribute, and must stay after the focus rule so it wins. */
 
 
-	border-color : var(--text);
+	border-color : var(--tex-mai-col);
 
 
 }
 .theme-row--custom[data-option-select-active] { /* What: Selected Custom Theme Row. Why: A selected custom row should drop its dashed frame for the same solid one the presets get. How: This makes its frame solid in the text color. */
 
 
-	border-color : var(--text);
+	border-color : var(--tex-mai-col);
 	border-style : solid;
 
 

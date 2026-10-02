@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://easemylife.app/" />
 
   <link rel="manifest" href="manifest.webmanifest" />
-  <!-- Matches --bg in each mode so the OS chrome blends with the app shell. -->
+  <!-- Matches --bac-pag-col in each mode so the OS chrome blends with the app shell. -->
   <meta name="theme-color" content="#fafbfc" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#16181c" media="(prefers-color-scheme: dark)" />
   <meta name="description" content="Pick what to do today, without deciding. Your pickers choose for you, on your schedule and entirely on your device." />
@@ -77,15 +77,15 @@
        paints immediately. Babel is gone in the Vite build, so this now only
        covers the module fetch + storage init — keep it short or drop it. -->
   <style>
-    #boot-splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .42s ease}
+    #boot-splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bac-pag-col);transition:opacity .42s ease}
     #boot-splash.bl-hide{opacity:0;pointer-events:none}
-    #boot-splash .bl{display:flex;align-items:center;gap:9px;font-family:var(--font-mono);font-size:clamp(24px,6vw,34px);font-weight:500;color:var(--text);font-variant-numeric:tabular-nums;padding:0 20px}
+    #boot-splash .bl{display:flex;align-items:center;gap:9px;font-family:var(--fon-fam-sec);font-size:clamp(24px,6vw,34px);font-weight:500;color:var(--tex-mai-col);font-variant-numeric:tabular-nums;padding:0 20px}
     #boot-splash .tk{white-space:nowrap}
-    #boot-splash .op,#boot-splash .eq{color:var(--muted)}
-    #boot-splash sup{font-size:.62em;color:var(--text)}
+    #boot-splash .op,#boot-splash .eq{color:var(--tex-mut-col)}
+    #boot-splash sup{font-size:.62em;color:var(--tex-mai-col)}
     #boot-splash .chk{width:1.15em;height:1.15em;display:inline-flex}
     #boot-splash .chk svg{width:100%;height:100%}
-    #boot-splash .chk path{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    #boot-splash .chk path{fill:none;stroke:var(--acc-mai-col);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
     /* Pure-CSS looping stagger, compositor-driven so it stays smooth while the
        module graph loads. Each token is offset by --i, and the offset persists
        across loops (animation-delay only shifts the first iteration). */

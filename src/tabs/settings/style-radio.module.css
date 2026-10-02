@@ -59,7 +59,7 @@
 .rd-mode-radio { /* What: Style Radio List. Why: The options stack edge to edge inside their unpadded card, with a closing line that pairs with the preview stage below. How: This stacks the rows in a column with a bottom border. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display        : flex;
 	flex-direction : column;
 
@@ -72,7 +72,7 @@
 
 
 	align-items   : flex-start;
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	cursor        : pointer;
 	display       : flex;
 	gap           : var( --spa-hor-m01 );
@@ -92,14 +92,14 @@
 .rd-mode-opt:hover { /* What: Hovered Style Radio Row. Why: A row should respond to the pointer. How: This darkens its background slightly. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.02) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.02) c h);
 
 
 }
 .rd-mode-opt:has(input:focus-visible) { /* What: Focused Style Radio Row. Why: The native radio is hidden, so a keyboard user needs to see focus on the whole row. How: This draws the accent outline inside the row while its radio has keyboard focus. */
 
 
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : -2px;
 
 
@@ -107,21 +107,21 @@
 .rd-mode-opt[data-option-select-active] { /* What: Selected Style Radio Row. Why: The chosen option should stand out. How: This tints the row with the accent color. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
 .rd-mode-opt[data-option-select-active]:hover { /* What: Hovered Selected Style Radio Row. Why: Hover shouldn't dim the selected row's tint. How: This keeps the accent tint. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
 .rd-mode-opt[data-option-select-active]::before { /* What: Selected Style Radio Bar. Why: A bar on the left edge marks the selected row at a glance. How: This draws a thin accent bar down the row's left edge. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 	bottom     : 0;
 	content    : '';
 	left       : 0;
@@ -160,7 +160,7 @@
 .rd-mode-dot { /* What: Style Radio Dot. Why: The selected state shows as a filled dot, not the native radio. How: This draws a small bordered circle with a border fade. */
 
 
-	border        : var( --bor-wid-bas ) solid var(--border);
+	border        : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius : 50%;
 	flex          : 0 0 auto;
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -174,14 +174,14 @@
 .rd-mode-opt[data-option-select-active] .rd-mode-dot { /* What: Selected Style Radio Dot. Why: The selected row's dot should read as on. How: This colors its border with the accent. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
 .rd-mode-opt[data-option-select-active] .rd-mode-dot::after { /* What: Selected Style Radio Dot Fill. Why: A filled center marks the dot as chosen. How: This draws an accent disc inside the ring. */
 
 
-	background    : var(--accent);
+	background    : var(--acc-mai-col);
 	border-radius : 50%;
 	content       : '';
 	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
@@ -300,7 +300,7 @@
 .rd-mode-hint { /* What: Style Radio Hint. Why: The hint reads as quiet supporting text under the name. How: This sets it small and muted with balanced wrapping. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	display     : block;
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
@@ -322,9 +322,9 @@
 
 	align-self     : center;
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--accent);
+	border         : var( --bor-wid-sma ) solid var(--acc-mai-col);
 	border-radius  : var( --rad-bor-sma );
-	color          : var(--accent);
+	color          : var(--acc-mai-col);
 	cursor         : pointer;
 	flex           : 0 0 auto;
 	font-family    : var(--fon-fam-sec);
@@ -340,7 +340,7 @@
 .style-preview-btn:hover { /* What: Hovered Style Preview Button. Why: The button should respond to the pointer. How: This fills it with the accent tint. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }

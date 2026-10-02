@@ -28,8 +28,8 @@
 .rd-ctl-body { /* What: Controls Body. Why: The controls read as a recessed panel under the card's Controls toggle. How: This shades it, pads it, and stacks its groups flush in a column. */
 
 
-	background     : oklch(from var(--surface) calc(l - 0.012) c h);
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
+	background     : oklch(from var(--bac-sur-col) calc(l - 0.012) c h);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display        : flex;
 	flex-direction : column;
 	gap            : 0;
@@ -52,7 +52,7 @@
 .rd-ctl-group--basics { /* What: Picker Details Group. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	gap           : 0;
 	margin        : 0 calc( var( --spa-hor-bas ) * -1 );
 	padding       : 0;
@@ -74,8 +74,8 @@
 .rd-ctl-group--items { /* What: Schedule And Item Groups. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
-	border-top    : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top    : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	gap           : 0;
 	margin        : 0 calc( var( --spa-hor-bas ) * -1 );
 	padding       : 0;
@@ -85,7 +85,7 @@
 .rd-ctl-group--foot { /* What: Footer Group. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
 
 
-	border-top     : var( --bor-wid-sma ) solid var(--border);
+	border-top     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	margin         : 0 calc( var( --spa-hor-bas ) * -1 );
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	padding-bottom : 0;
@@ -98,7 +98,7 @@
 .rd-ctl-subhead { /* What: Group Subhead. Why: Each group is named in quiet mono type. How: This sets it small, uppercase, and muted. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -131,7 +131,7 @@
 .rd-ctl-subhead + .sched-line { /* What: First Setting Row. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -146,7 +146,7 @@
 
 
 	align-items : center;
-	border-top  : var( --bor-wid-sma ) solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display     : flex;
 	gap         : var( --spa-hor-bas );
 	padding     : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -164,7 +164,7 @@
 .rd-basics-lbl { /* What: Details Label. Why: Each row is named in a fixed-width muted column. How: This sets a fixed rhythm-step column nudged down to line up with the pills. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	flex        : 0 0 calc( var( --ver-rhy-p04 ) * 1rem );
 	font-size   : var( --fon-siz-p01 );
 	padding-top : var( --spa-ver-m03 );
@@ -182,10 +182,10 @@
 .rd-basics-name { /* What: Picker Name Input. Why: The picker is renamed in place in a field that takes the row's width. How: This draws a rounded outlined field that borders in the accent on focus. */
 
 
-	background    : var(--surface);
-	border        : var( --bor-wid-bas ) solid var(--border);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	flex          : 1;
 	font-family   : inherit;
 	font-size     : var( --fon-siz-p01 );
@@ -200,14 +200,14 @@
 .rd-basics-name:focus { /* What: Focused Picker Name Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
 .rd-basics-name::placeholder { /* What: Picker Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -293,9 +293,9 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	display        : inline-flex;
 	flex-shrink    : 0;
@@ -312,17 +312,17 @@
 .picker-group-pill:hover { /* What: Hovered Group Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
 .picker-group-pill[aria-checked="true"] { /* What: Chosen Group Pill. Why: The picker's current group should stand out. How: This fills it in the soft accent, keying off the aria-checked the pill already sets. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -343,7 +343,7 @@
 
 
 	border-style : dashed;
-	color        : var(--muted);
+	color        : var(--tex-mut-col);
 	gap          : var( --spa-hor-m04 );
 
 
@@ -351,8 +351,8 @@
 .picker-group-pill--new:hover { /* What: Hovered New Group Pill. Why: The pill should respond to the pointer. How: This turns it the accent color. */
 
 
-	border-color : var(--accent);
-	color        : var(--accent);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -468,10 +468,10 @@
 
 
 	animation     : rdGroupInputGrow .2s cubic-bezier(0.4, 0, 0.2, 1) both;
-	background    : var(--surface);
-	border        : var( --bor-wid-bas ) solid var(--accent);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius : 999px;
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	font-family   : inherit;
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -525,10 +525,10 @@
 	align-items     : center;
 	animation       : rdGroupBtnIn .16s ease-out both;
 	animation-delay : .11s;
-	background      : var(--surface);
-	border          : var( --bor-wid-bas ) solid var(--border);
+	background      : var(--bac-sur-col);
+	border          : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius   : 50%;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -541,9 +541,9 @@
 .rd-group-new-ok:not(:disabled):hover { /* What: Hovered Confirm Button. Why: A live confirm should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -615,8 +615,8 @@
 .rd-mode-radio { /* What: Mode Radio. Why: The pick modes stack edge to edge between hairlines. How: This stacks them in a column. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
-	border-top     : var( --bor-wid-sma ) solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display        : flex;
 	flex-direction : column;
 	margin         : 0;
@@ -633,7 +633,7 @@
 	--collapse-inner-transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
 	--collapse-row-duration     : .8s;
 	align-items                 : flex-start;
-	border-bottom               : var( --bor-wid-sma ) solid var(--border);
+	border-bottom               : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	cursor                      : pointer;
 	display                     : flex;
 	gap                         : var( --spa-hor-m01 );
@@ -653,14 +653,14 @@
 .rd-mode-opt:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.02) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.02) c h);
 
 
 }
 .rd-mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
 
 
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : -2px;
 
 
@@ -668,21 +668,21 @@
 .rd-mode-opt[data-option-select-active] { /* What: Selected Mode Option. Why: The picker's mode should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
 .rd-mode-opt[data-option-select-active]:hover { /* What: Hovered Selected Mode Option. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
 .rd-mode-opt[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen mode. How: This draws a thin accent strip down the option's left side. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 	bottom     : 0;
 	content    : '';
 	left       : 0;
@@ -721,7 +721,7 @@
 .rd-mode-dot { /* What: Mode Option Dot. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
 
 
-	border        : var( --bor-wid-bas ) solid var(--border);
+	border        : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius : 50%;
 	flex          : 0 0 auto;
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -735,14 +735,14 @@
 .rd-mode-opt[data-option-select-active] .rd-mode-dot { /* What: Selected Mode Option Dot. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
 .rd-mode-opt[data-option-select-active] .rd-mode-dot::after { /* What: Selected Mode Option Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
 
 
-	background    : var(--accent);
+	background    : var(--acc-mai-col);
 	border-radius : 50%;
 	content       : '';
 	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
@@ -790,7 +790,7 @@
 .rd-mode-hint { /* What: Mode Option Hint. Why: Each mode explains itself under its name. How: This sets small muted text on its own line. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	display     : block;
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
@@ -820,7 +820,7 @@
 
 
 	align-items     : center;
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	box-sizing      : border-box;
 	display         : flex;
 	flex-wrap       : wrap;
@@ -859,7 +859,7 @@
 .sched-line-lbl { /* What: Setting Name. Why: Each setting leads with its name. How: This sets it in muted body text. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 
 
@@ -879,9 +879,9 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--tex-mut-col);
 	border-radius   : 50%;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : help;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -898,9 +898,9 @@
 .pie-help:hover { /* What: Hovered Help Tip. Why: The tip should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -925,7 +925,7 @@
 .sched-line-sub { /* What: Setting Explanation. Why: The line under a setting explains its current value. How: This sets it small and muted. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 
@@ -962,7 +962,7 @@
 .switch { /* What: Setting Switch. Why: Each schedule and item setting turns on or off with a switch. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : 999px;
 	cursor        : pointer;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
@@ -976,7 +976,7 @@
 .switch[aria-pressed="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked or aria-pressed the switch already sets. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -997,7 +997,7 @@
 .switch i { /* What: Setting Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
 
 
-	background    : var(--bg);
+	background    : var(--bac-pag-col);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -1040,7 +1040,7 @@
 .rd-cnd-rail-row { /* What: Conditional Rail Row. Why: The conditional pills sit in their own padded row under the Attach switch. How: This pads the row and divides it from the next. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	padding       : var( --spa-ver-m02 ) var( --spa-hor-bas ) var( --spa-ver-m01 );
 
 
@@ -1091,8 +1091,8 @@
 .cnd-pill { /* What: Conditional Pill. Why: Each conditional is a card-like pill that attaches it to this picker. How: This draws a bordered card with the name over the mode, fading between states. */
 
 
-	background      : var(--surface);
-	border          : var( --bor-wid-sma ) solid var(--border);
+	background      : var(--bac-sur-col);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
 	cursor          : pointer;
 	display         : flex;
@@ -1111,16 +1111,16 @@
 .cnd-pill:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
 .cnd-pill[data-pill-select-active] { /* What: Attached Conditional Pill. Why: The attached conditional should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	box-shadow   : 0 0 0 1px var(--accent) inset;
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	box-shadow   : 0 0 0 1px var(--acc-mai-col) inset;
 
 
 }
@@ -1141,7 +1141,7 @@
 .cnd-pill-name { /* What: Conditional Pill Name. Why: The conditional's name leads its pill. How: This sets it in medium weight body color. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 500;
 
@@ -1151,7 +1151,7 @@
 .cnd-pill-mode { /* What: Conditional Pill Mode. Why: Each pill names its conditional's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -1169,7 +1169,7 @@
 .rd-cnd-empty { /* What: No Conditionals Message. Why: With no conditionals yet, the row says where to make one. How: This sets a small muted note. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : var( --spa-ver-m07 ) 0;
@@ -1199,10 +1199,10 @@
 .rd-cad-sel { /* What: Cadence Select. Why: The cadence selects look like the app's other fields, sized to their content. How: This draws a compact bordered field with a border fade on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	cursor        : pointer;
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
@@ -1218,7 +1218,7 @@
 .rd-cad-sel::placeholder { /* What: Cadence Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -1226,7 +1226,7 @@
 .rd-cad-sel:focus { /* What: Focused Cadence Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -1254,9 +1254,9 @@
 
 
 	align-content : center;
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	box-sizing    : border-box;
-	color         : var(--muted);
+	color         : var(--tex-mut-col);
 	font-size     : var( --fon-siz-bas );
 	font-style    : italic;
 	min-height    : calc( var( --ver-rhy-p05 ) * 1rem );
@@ -1295,7 +1295,7 @@
 
 
 	align-items     : center;
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
@@ -1335,7 +1335,7 @@
 .pie-sub { /* What: Ease Setting Summary. Why: The line under the name summarizes the charge. How: This sets it small and muted. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-bas );
 
 
@@ -1381,7 +1381,7 @@
 .confirm-msg { /* What: Delete Confirm Message. Why: The message says what deleting takes with it and takes the row's spare width. How: This sets body text that can shrink. */
 
 
-	color     : var(--text);
+	color     : var(--tex-mai-col);
 	flex      : 1 1 auto;
 	font-size : var( --fon-siz-p01 );
 	min-width : 0;

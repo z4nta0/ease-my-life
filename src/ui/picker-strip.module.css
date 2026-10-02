@@ -67,7 +67,7 @@
 
 
 	align-items     : center;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : flex;
 	font-size       : var( --fon-siz-p02 );
 	font-weight     : 500;
@@ -84,14 +84,14 @@
 .reel-row[data-row-highlight-active] { /* What: Current Picker Reel Row. Why: The row on the center line should read as the current name. How: This sets it in the full text color. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
 .reel--settled .reel-row[data-row-highlight-active] { /* What: Landed Picker Reel Row. Why: The final pick should stand out once the reel settles. How: This sets it in the accent color, slightly larger. */
 
 
-	color     : var(--accent);
+	color     : var(--acc-mai-col);
 	font-size : var( --fon-siz-p02 );
 	transform : scale(1.02);
 
@@ -117,7 +117,7 @@
 .reel-mask { /* What: Picker Reel Mask. Why: The reel's top and bottom edges should fade out instead of cutting off hard. How: This lays a gradient from the surface color to transparent over both ends. */
 
 
-	background     : linear-gradient(180deg, var(--surface), transparent 28%, transparent 72%, var(--surface));
+	background     : linear-gradient(180deg, var(--bac-sur-col), transparent 28%, transparent 72%, var(--bac-sur-col));
 	inset          : 0;
 	pointer-events : none;
 	position       : absolute;
@@ -128,8 +128,8 @@
 .reel-line { /* What: Picker Reel Line. Why: The center landing row needs a marker so the eye has somewhere to settle. How: This draws hairlines above and below the center row's position. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
-	border-top     : var( --bor-wid-sma ) solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	height         : calc( var( --ver-rhy-p05 ) * 1rem );
 	left           : 8%;
 	pointer-events : none;
@@ -175,7 +175,7 @@
 
 
 	animation : settleIn 380ms cubic-bezier(.3,1.2,.4,1);
-	color     : var(--accent);
+	color     : var(--acc-mai-col);
 
 
 }
@@ -253,7 +253,7 @@
 
 
 	animation      : glow 480ms ease-out;
-	background     : radial-gradient(circle, var(--accent-soft), transparent 70%);
+	background     : radial-gradient(circle, var(--acc-tin-col), transparent 70%);
 	border-radius  : 50%;
 	height         : 60%;
 	pointer-events : none;
@@ -338,7 +338,7 @@
 
 
 	border-radius : var( --rad-bor-sma );
-	color         : var(--muted);
+	color         : var(--tex-mut-col);
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	padding       : 0 var( --spa-hor-bas );
@@ -351,16 +351,16 @@
 .spot-row[data-row-highlight-active] { /* What: Highlighted Picker Spotlight Row. Why: The row the highlight is on should stand out. How: This darkens its background and sets it in the text color. */
 
 
-	background : oklch(from var(--bg) calc(l - 0.01) c h);
-	color      : var(--text);
+	background : oklch(from var(--bac-pag-col) calc(l - 0.01) c h);
+	color      : var(--tex-mai-col);
 
 
 }
 .spot--settled .spot-row[data-row-highlight-active] { /* What: Landed Picker Spotlight Row. Why: The final pick should stand out once the highlight settles. How: This fills it with the accent tint, colors its text accent, and scales it up slightly. */
 
 
-	background  : var(--accent-soft);
-	color       : var(--accent);
+	background  : var(--acc-tin-col);
+	color       : var(--acc-mai-col);
 	font-weight : 500;
 	transform   : scale(1.01);
 

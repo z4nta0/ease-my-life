@@ -56,7 +56,7 @@
 .cnd-controls--inline > .np-field { /* What: Inline Editor Field. Why: In the Data tab each field is a full-bleed row divided from the one above. How: This pads the field as a row under a hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	gap        : var( --spa-ver-m03 );
 	margin     : 0;
 	padding    : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -105,7 +105,7 @@
 .np-help { /* What: Field Help. Why: The help line explains what the card text is for. How: This sets muted body text with a capped line length. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
@@ -118,10 +118,10 @@
 .np-input { /* What: Field Input. Why: Names and card text are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p04 ) * 1rem );
@@ -145,7 +145,7 @@
 .np-input::placeholder { /* What: Field Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -153,7 +153,7 @@
 .np-input:focus { /* What: Focused Field Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -227,7 +227,7 @@ fieldset.np-field { /* What: Type Fieldset. Why: The type radio is a real fields
 .cnd-controls--inline .cnd-type-group > .np-field { /* What: Inline Type Fieldset. Why: In the Data tab the type's heading sits in a row under a hairline, its options full-bleed below. How: This pads only the top and draws the hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	gap        : var( --spa-ver-m02 );
 	margin     : 0;
 	padding    : var( --spa-ver-m01 ) 0 0;
@@ -259,7 +259,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .cnd-mode-card { /* What: Mode Card. Why: In the picker form the type options sit in a bordered card. How: This draws a rounded border that clips the options. */
 
 
-	border        : var( --bor-wid-sma ) solid var(--border);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
 	overflow      : hidden;
 
@@ -271,8 +271,8 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .rd-mode-radio { /* What: Mode Radio. Why: The type options stack edge to edge, pulled past the editor's padding between hairlines. How: This stacks them in a column bleeding base horizontal spacing each side. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
-	border-top     : var( --bor-wid-sma ) solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display        : flex;
 	flex-direction : column;
 	margin         : 0 calc( var( --spa-hor-bas ) * -1 );
@@ -291,7 +291,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .cnd-controls--inline .rd-mode-radio { /* What: Inline Mode Radio. Why: In the Data tab the options sit flush between the rows' hairlines. How: This drops the bleed and keeps the top hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	margin     : 0;
 
 
@@ -306,7 +306,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	--collapse-inner-transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
 	--collapse-row-duration     : .8s;
 	align-items                 : flex-start;
-	border-bottom               : var( --bor-wid-sma ) solid var(--border);
+	border-bottom               : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	cursor                      : pointer;
 	display                     : flex;
 	gap                         : var( --spa-hor-m01 );
@@ -326,14 +326,14 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .rd-mode-opt:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.02) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.02) c h);
 
 
 }
 .rd-mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
 
 
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : -2px;
 
 
@@ -341,21 +341,21 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .rd-mode-opt[data-option-select-active] { /* What: Selected Mode Option. Why: The chosen type should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
 .rd-mode-opt[data-option-select-active]:hover { /* What: Hovered Selected Mode Option. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
 .rd-mode-opt[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen type. How: This draws a thin accent strip down the option's left side. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 	bottom     : 0;
 	content    : '';
 	left       : 0;
@@ -394,7 +394,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .rd-mode-dot { /* What: Mode Option Dot. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
 
 
-	border        : var( --bor-wid-bas ) solid var(--border);
+	border        : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius : 50%;
 	flex          : 0 0 auto;
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -408,14 +408,14 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .rd-mode-opt[data-option-select-active] .rd-mode-dot { /* What: Selected Mode Option Dot. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
 .rd-mode-opt[data-option-select-active] .rd-mode-dot::after { /* What: Selected Mode Option Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
 
 
-	background    : var(--accent);
+	background    : var(--acc-mai-col);
 	border-radius : 50%;
 	content       : '';
 	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
@@ -463,7 +463,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .rd-mode-hint { /* What: Mode Option Hint. Why: Each type explains itself under its name. How: This sets small muted text on its own line. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	display     : block;
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
@@ -526,7 +526,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .cnd-controls--inline .cnd-typectl .pie-row { /* What: Inline Setting Row. Why: In the Data tab each setting is a full-bleed row divided from the one above. How: This pads the row taller under a hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	min-height : calc( var( --ver-rhy-p05 ) * 1rem );
 	padding    : var( --spa-ver-m03 ) var( --spa-hor-bas );
 
@@ -535,7 +535,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .cnd-controls--inline > .cnd-type-group > .cnd-typectl:last-child .pie-row { /* What: Inline Active Row. Why: The standalone Active row doubles its bottom hairline against the footer's top one, like the other Data editors. How: This adds a bottom hairline. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -574,7 +574,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .cnd-typectl .pie-sub { /* What: Setting Explanation. Why: The line under a setting explains its current value. How: This sets it small and muted. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-bas );
 
 
@@ -622,7 +622,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 	align-self : center;
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 	font-size  : var( --fon-siz-p01 );
 
 
@@ -645,8 +645,8 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 	align-items   : center;
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : 999px;
 	display       : inline-flex;
 
@@ -657,7 +657,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 	align-items     : center;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	font-size       : var( --fon-siz-p01 );
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
@@ -669,7 +669,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .weight-stepper button:hover:not(:disabled) { /* What: Hovered Odds Step Button. Why: A live step button should respond to the pointer. How: This darkens its glyph. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -685,7 +685,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .weight-val { /* What: Odds Value. Why: The current odds read between the step buttons. How: This sets them in small muted tabular mono type. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -701,7 +701,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .cnd-typectl .pie-noweight { /* What: No Weight Note. Why: A random conditional has no odds to set, and says so where the control would be. How: This sets the note small and muted at its natural size. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	flex      : 0 0 auto;
 	font-size : var( --fon-siz-p01 );
 
@@ -715,7 +715,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .switch { /* What: Active Switch. Why: A conditional turns active or inactive with a switch. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : 999px;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
@@ -727,7 +727,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .switch[aria-checked="true"] { /* What: On Active Switch. Why: An active conditional reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -756,7 +756,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 .switch i { /* What: Active Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
 
 
-	background    : var(--bg);
+	background    : var(--bac-pag-col);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );

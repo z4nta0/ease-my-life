@@ -28,8 +28,8 @@
 
 
 	animation     : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background    : var(--entry-editor-background, oklch(from var(--surface) calc(l - 0.006) c h)); /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
-	border        : var(--entry-editor-border, var( --bor-wid-sma ) solid var(--border)); /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
+	background    : var(--entry-editor-background, oklch(from var(--bac-sur-col) calc(l - 0.006) c h)); /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
+	border        : var(--entry-editor-border, var( --bor-wid-sma ) solid var(--bor-mai-col)); /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
 	border-radius : var(--entry-editor-border-radius, var( --rad-bor-med )); /* What: Card Radius. Why: A Data or Pickers row strips the card's rounding. How: Its parent sets this to 0. */
 	margin        : var(--entry-editor-margin, 0 0 var( --spa-ver-m05 )); /* What: Card Margin. Why: A Data or Pickers row sits the editor flush, and the top stays 0 everywhere, since a negative one would be clipped by the overflow of the collapse the editor opens in. How: Its parent sets this to 0, falling back to a small gap below. */
 	padding       : var( --entry-editor-padding, var( --spa-ver-bas ) var( --spa-hor-bas ) ); /* What: Card Padding. Why: Today's card drops the top padding, and a Data or Pickers row drops it all. How: Their parents set this, falling back to base vertical spacing above and below and base horizontal spacing at the sides. */
@@ -57,7 +57,7 @@
 .pie-rows { /* What: Setting Rows. Why: The rows run edge to edge under a hairline, apart from where the editor's context already draws one. How: This stacks them in a column pulled base horizontal spacing past each side, since every context insets the editor's content by that much, reading its top border and top margin from the parent. */
 
 
-	border-top     : var(--entry-editor-rows-border-top, var( --bor-wid-sma ) solid var(--border)); /* What: Rows Top Border. Why: Today's card and a new-item row already draw a divider above the rows. How: Their parents set this to 0, falling back to a hairline. */
+	border-top     : var(--entry-editor-rows-border-top, var( --bor-wid-sma ) solid var(--bor-mai-col)); /* What: Rows Top Border. Why: Today's card and a new-item row already draw a divider above the rows. How: Their parents set this to 0, falling back to a hairline. */
 	display        : flex;
 	flex-direction : column;
 	margin         : var(--entry-editor-rows-margin-top, var( --spa-ver-m07 )) calc( var( --spa-hor-bas ) * -1 ) 0; /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to extra small 6 vertical spacing. */
@@ -71,7 +71,7 @@
 
 
 	align-items     : center;
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
@@ -109,9 +109,9 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--tex-mut-col);
 	border-radius   : 50%;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : help;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -128,9 +128,9 @@
 .pie-help:hover { /* What: Hovered Setting Help Icon. Why: The icon should respond to the pointer. How: This tints it in the accent color. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -162,7 +162,7 @@
 .pie-sub { /* What: Setting Explanation. Why: The line under a setting explains its current value. How: This sets it small and muted. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-bas );
 
 
@@ -210,7 +210,7 @@
 
 
 	align-self : center;
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 	font-size  : var( --fon-siz-bas );
 
 
@@ -226,8 +226,8 @@
 
 
 	align-items   : center;
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : 999px;
 	display       : inline-flex;
 
@@ -238,7 +238,7 @@
 
 
 	align-items     : center;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	font-size       : var( --fon-siz-p01 );
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
@@ -250,7 +250,7 @@
 .weight-stepper button:hover:not(:disabled) { /* What: Hovered Weight Step Button. Why: A live step button should respond to the pointer. How: This darkens its glyph. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -266,7 +266,7 @@
 .weight-val { /* What: Weight Value. Why: The current weight reads between the step buttons. How: This sets it in small muted tabular mono type. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
@@ -282,7 +282,7 @@
 .pie-note { /* What: Setting Note. Why: A setting that doesn't apply says so in place of a control. How: This sets the note small and muted. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 
 
@@ -295,7 +295,7 @@
 .switch { /* What: Active Switch. Why: An item turns active or inactive with a switch. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : 999px;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
@@ -307,7 +307,7 @@
 .switch[aria-pressed="true"] { /* What: On Active Switch. Why: An active item reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -328,7 +328,7 @@
 .switch i { /* What: Active Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
 
 
-	background    : var(--bg);
+	background    : var(--bac-pag-col);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -376,7 +376,7 @@
 
 	align-items     : center;
 	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	border-top      : var( --bor-wid-sma ) solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-m02 );
 	justify-content : space-between;
@@ -402,7 +402,7 @@
 .rem-del-msg { /* What: Delete Question. Why: The question reads as plain body text that wraps cleanly on narrow screens. How: This sets it in the text color with balanced wrapping. */
 
 
-	color     : var(--text);
+	color     : var(--tex-mai-col);
 	font-size : var( --fon-siz-p01 );
 	text-wrap : pretty;
 
@@ -430,7 +430,7 @@
 
 	--btn-danger-display : var(--entry-editor-delete-display); /* What: Delete Visibility. Why: A brand-new item is discarded with Cancel, so its Delete is redundant. How: A new-item row sets --entry-editor-delete-display to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
 	animation            : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	border-top           : var( --bor-wid-sma ) solid var(--border);
+	border-top           : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display              : flex;
 	gap                  : var( --spa-hor-m02 );
 	justify-content      : var(--entry-editor-foot-justify, space-between); /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A new-item row sets this to flex-end, falling back to space-between. */

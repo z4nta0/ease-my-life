@@ -53,27 +53,27 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  * "Repeated-shape object literals" comment exception in CLAUDE.md). Each
  * color token is written onto its own CSS custom property by appPalFun:
  *
- * - `accStr` (String): Accent String, the primary accent color (--accent).
+ * - `accStr` (String): Accent String, the primary accent color (--acc-mai-col).
  *
  * - `aceStr` (String): Accent Soft String, a softened accent background
- *   (--accent-soft).
+ *   (--acc-tin-col).
  *
  * - `bacStr` (String): Background String, the page's own base background
- *   (--bg).
+ *   (--bac-pag-col).
  *
- * - `borStr` (String): Border String, the border color (--border).
+ * - `borStr` (String): Border String, the border color (--bor-mai-col).
  *
- * - `mutStr` (String): Muted String, de-emphasized text (--muted).
+ * - `mutStr` (String): Muted String, de-emphasized text (--tex-mut-col).
  *
  * - `namStr` (String): Name String, the human-readable label shown in the
  *   Settings tab's theme picker, never written onto a custom property.
  *
  * - `surStr` (String): Surface String, card and surface backgrounds
- *   (--surface).
+ *   (--bac-sur-col).
  *
- * - `texStr` (String): Text String, body text (--text).
+ * - `texStr` (String): Text String, body text (--tex-mai-col).
  *
- * - `warStr` (String): Warm String, the warm celebration accent (--warm).
+ * - `warStr` (String): Warm String, the warm celebration accent (--acc-sec-col).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -634,14 +634,14 @@ function appPalFun( palResObj, theKeyStr ) {
 
 	const rooStyObj = document.documentElement.style; // What: Root Style Object. Why: Every custom property write below targets the same style object. How: This is read once and reused for all 8 setProperty calls that follow.
 
-	rooStyObj.setProperty( '--bg', palResObj.bacStr );          // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bacStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--surface', palResObj.surStr );     // What: Surface Property Write. Why: This is the actual CSS custom property the app's stylesheets read for card/surface backgrounds. How: This writes the palette's surStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--border', palResObj.borStr );      // What: Border Property Write. Why: This is the actual CSS custom property the app's stylesheets read for border colors. How: This writes the palette's borStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--text', palResObj.texStr );        // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's texStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--muted', palResObj.mutStr );       // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's mutStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--accent', palResObj.accStr );      // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--accent-soft', palResObj.aceStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's aceStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--warm', palResObj.warStr );        // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--bac-pag-col', palResObj.bacStr );          // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bacStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--bac-sur-col', palResObj.surStr );     // What: Surface Property Write. Why: This is the actual CSS custom property the app's stylesheets read for card/surface backgrounds. How: This writes the palette's surStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--bor-mai-col', palResObj.borStr );      // What: Border Property Write. Why: This is the actual CSS custom property the app's stylesheets read for border colors. How: This writes the palette's borStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--tex-mai-col', palResObj.texStr );        // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's texStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--tex-mut-col', palResObj.mutStr );       // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's mutStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--acc-mai-col', palResObj.accStr );      // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--acc-tin-col', palResObj.aceStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's aceStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--acc-sec-col', palResObj.warStr );        // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warStr token onto the root element's inline style.
 
 
 	document.body.dataset.palette = theKeyStr || 'custom'; // What: Palette Dataset Write. Why: Some CSS keys off which specific palette is active, not just its raw token values. How: This writes the resolved theme key, or 'custom' if none was given, onto body's own dataset.

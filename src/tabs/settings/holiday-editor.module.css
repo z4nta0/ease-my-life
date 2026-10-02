@@ -43,7 +43,7 @@
 
 
 	align-items     : center;
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
@@ -176,7 +176,7 @@
 .holiday-row[data-holiday-off-active] .holiday-name { /* What: Off Holiday Name. Why: A turned-off day should read as inactive. How: This mutes its name. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
@@ -201,7 +201,7 @@
 .holiday-date { /* What: Holiday Date. Why: The landing date and any observed note stack under the name in quieter type. How: This sets them in small muted mono, stacked in a tight column. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	flex-direction : column;
 	font-family    : var(--fon-fam-sec);
@@ -271,7 +271,7 @@
 .holiday-obs { /* What: Holiday Observed Note. Why: A holiday observed on a different weekday says so in an accent aside. How: This sets it in small italic accent text in the body font. */
 
 
-	color          : var(--accent);
+	color          : var(--acc-mai-col);
 	font-family    : var(--fon-fam-mai, inherit);
 	font-size      : var( --fon-siz-bas );
 	font-style     : italic;
@@ -299,7 +299,7 @@
 .switch { /* What: Holiday Switch. Why: Each built-in day off can be turned off without deleting it. How: This draws a small rounded track that keeps its size in the row, fading to the accent when on. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
@@ -313,7 +313,7 @@
 .switch[aria-pressed="true"] { /* What: On Holiday Switch. Why: An enabled day's switch should read as on. How: This fills the track with the accent, keyed off the switch's own pressed state. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -334,7 +334,7 @@
 .switch i { /* What: Holiday Switch Knob. Why: The knob's position shows the switch's state at a glance. How: This draws a small round knob with a soft shadow that slides across the track. */
 
 
-	background    : var(--bg);
+	background    : var(--bac-pag-col);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -376,7 +376,7 @@
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
@@ -388,7 +388,7 @@
 .item-del:hover { /* What: Hovered Custom Holiday Delete Button. Why: A destructive action should warn as the pointer reaches it. How: This gives it a background fill and turns its glyph red. */
 
 
-	background : var(--bg);
+	background : var(--bac-pag-col);
 	color      : oklch(0.5 0.18 25);
 
 
@@ -419,7 +419,7 @@
 
 
 	align-items : center;
-	border-top  : var( --bor-wid-sma ) solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display     : flex;
 	flex-wrap   : wrap;
 	gap         : var( --spa-ver-m02 ) var( --spa-hor-m02 );
@@ -432,10 +432,10 @@
 .np-input { /* What: Holiday Add Field. Why: The name and date fields should look like the app's other form fields while sharing the row. How: This gives them the shared field border, radius, padding, and type, lets them grow from a rhythm step, caps them at a rhythm step, and fades the border on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	flex          : 1 1 calc( var( --ver-rhy-p09 ) * 1rem );
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
@@ -452,7 +452,7 @@
 .np-input::placeholder { /* What: Holiday Add Field Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -460,7 +460,7 @@
 .np-input:focus { /* What: Focused Holiday Add Field. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }

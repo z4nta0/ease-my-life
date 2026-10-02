@@ -31,10 +31,10 @@
 
 	align-items    : center;
 	align-self     : center;
-	background     : var(--surface);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
@@ -51,17 +51,17 @@
 .dl-chip:hover { /* What: Hovered Log Chip. Why: The chip should respond to the pointer. How: This darkens its text and border. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
 .dl-chip[aria-pressed="true"] { /* What: Open Log Chip. Why: While its log is open the chip reads as on. How: This fills it in the soft accent, keying off the aria-pressed it already sets. */
 
 
-	background   : var(--accent-soft);
+	background   : var(--acc-tin-col);
 	border-color : transparent;
-	color        : var(--accent);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -97,8 +97,8 @@
 .dl-panel { /* What: Log Panel. Why: The log opens as its own inset card under the group header. How: This draws a bordered, rounded, slightly lifted card that clips its content. */
 
 
-	background    : oklch(from var(--surface) calc(l + 0.006) c h);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : oklch(from var(--bac-sur-col) calc(l + 0.006) c h);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
 	margin        : var( --spa-ver-m07 ) 0 var( --spa-ver-bas );
 	overflow      : hidden;
@@ -112,8 +112,8 @@
 
 
 	align-items     : center;
-	background      : var(--bg);
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	background      : var(--bac-pag-col);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	justify-content : space-between;
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -127,7 +127,7 @@
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -141,7 +141,7 @@
 .dl-kicker svg { /* What: Log Kicker Icon. Why: The kicker's icon reads in the accent. How: This sizes it small in the accent color. */
 
 
-	color  : var(--accent);
+	color  : var(--acc-mai-col);
 	height : calc( var( --ver-rhy-bas ) * 1rem );
 	width  : calc( var( --ver-rhy-bas ) * 1rem );
 
@@ -158,10 +158,10 @@
 
 
 	align-items     : center;
-	background      : var(--surface);
-	border          : var( --bor-wid-sma ) solid var(--border);
+	background      : var(--bac-sur-col);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : flex;
 	flex            : none;
@@ -175,8 +175,8 @@
 .dl-close:hover { /* What: Hovered Log Close Button. Why: The button should respond to the pointer. How: This darkens its icon and border. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
@@ -215,8 +215,8 @@
 
 
 	align-items   : baseline;
-	background    : oklch(from var(--surface) calc(l + 0.006) c h);
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	background    : oklch(from var(--bac-sur-col) calc(l + 0.006) c h);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display       : flex;
 	flex-wrap     : nowrap;
 	gap           : var( --spa-hor-bas );
@@ -247,7 +247,7 @@
 
 
 	align-items : center;
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	display     : inline-flex;
 	font-size   : var( --fon-siz-bas );
 	gap         : var( --spa-hor-m03 );
@@ -258,7 +258,7 @@
 .dl-ki b { /* What: Key Item Name. Why: The status name reads darker than its description. How: This sets it in body color and medium weight. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	font-weight : 500;
 
 
@@ -282,8 +282,8 @@
 .dl-c-auto { /* What: Auto-Picked Icon. Why: An auto pick reads in the accent. How: This tints the tile in the soft accent. */
 
 
-	background : var(--accent-soft);
-	color      : var(--accent);
+	background : var(--acc-tin-col);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -298,9 +298,9 @@
 .dl-c-roll { /* What: Rolled Off Icon. Why: A rolled-off item reads neutral. How: This outlines the tile on the surface. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
-	color      : var(--muted);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color      : var(--tex-mut-col);
 
 
 }
@@ -360,7 +360,7 @@
 .dl-empty { /* What: Empty Log. Why: A picker with no items, or no reminders yet, says so. How: This sets a small muted padded message. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	padding   : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 
@@ -372,7 +372,7 @@
 .dl-block { /* What: Log Block. Why: Each picker block, and the Conditionals block, is divided from the one above. How: This draws a hairline above every block. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -392,7 +392,7 @@
 	align-items           : center;
 	background            : none;
 	border                : 0;
-	color                 : var(--text);
+	color                 : var(--tex-mai-col);
 	cursor                : pointer;
 	display               : grid;
 	font                  : inherit;
@@ -438,7 +438,7 @@
 .dl-chev { /* What: Block Chevron. Why: The chevron shows whether the block is open. How: This sets a muted icon in the first column that turns when closed. */
 
 
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 	display    : inline-flex;
 	transition : transform .2s;
 
@@ -527,7 +527,7 @@
 .dl-cond-title { /* What: Conditionals Title. Why: The Conditionals block's title reads in the accent. How: This colors it. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -535,9 +535,9 @@
 .dl-mode { /* What: Mode Pill. Why: A picker's mode, or the Conditionals count, reads as a small accent pill. How: This sets small uppercase mono text on a soft accent pill. */
 
 
-	background     : var(--accent-soft);
+	background     : var(--acc-tin-col);
 	border-radius  : 999px;
-	color          : var(--accent);
+	color          : var(--acc-mai-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -551,9 +551,9 @@
 .dl-mode[data-mode-neutral-active] { /* What: Neutral Mode Pill. Why: Weighted and random pickers don't drift, so their mode reads neutral. How: This outlines the pill on the surface in muted text, keying off data-mode-neutral-active. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
-	color      : var(--muted);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color      : var(--tex-mut-col);
 
 
 }
@@ -578,7 +578,7 @@
 
 
 	align-items     : center;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	flex-wrap       : wrap;
 	font-family     : var(--fon-fam-sec);
@@ -634,7 +634,7 @@
 
 
 	align-items    : flex-end;
-	color          : var(--accent);
+	color          : var(--acc-mai-col);
 	display        : flex;
 	flex-direction : column;
 	font-family    : var(--fon-fam-sec);
@@ -744,8 +744,8 @@
 .dl-thead { /* What: Log Table Header. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
-	color          : var(--muted);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
@@ -829,7 +829,7 @@
 .dl-trow { /* What: Log Row. Why: Each item is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
+	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h/0.55);
 	border-radius : var( --rad-bor-sma );
 	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
@@ -852,7 +852,7 @@
 .dl-cond-row { /* What: Conditional Row. Why: A conditional's row tints in the accent and joins the rested line under it. How: This forces an accent tint and drops its divider over any row state. */
 
 
-	background    : oklch(from var(--accent) 0.93 0.05 h)!important;
+	background    : oklch(from var(--acc-mai-col) 0.93 0.05 h)!important;
 	border-bottom : 0!important;
 	margin-bottom : var( --spa-ver-m07 );
 
@@ -920,7 +920,7 @@
 .dl-trow[data-row-vacation-active] .dl-name { /* What: Vacationing Row Name. Why: An item on vacation reads quieter. How: This mutes its name, keying off the row's data-row-vacation-active. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
@@ -974,9 +974,9 @@
 .dl-mode--cond { /* What: Conditional Mode Pill. Why: A conditional's mode reads as an outlined accent pill at a fixed width. How: This outlines it on the page background at a rhythm-step width, ending in an ellipsis. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid oklch(from var(--accent) l c h/0.4);
-	color         : var(--accent);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid oklch(from var(--acc-mai-col) l c h/0.4);
+	color         : var(--acc-mai-col);
 	min-width     : 0;
 	overflow      : hidden;
 	text-overflow : ellipsis;
@@ -988,9 +988,9 @@
 .dl-mode--cond[data-mode-neutral-active] { /* What: Neutral Conditional Mode Pill. Why: Weighted and random conditionals read neutral. How: This outlines the pill in the border color with muted text, keying off data-mode-neutral-active. */
 
 
-	background   : var(--bg);
-	border-color : var(--border);
-	color        : var(--muted);
+	background   : var(--bac-pag-col);
+	border-color : var(--bor-mai-col);
+	color        : var(--tex-mut-col);
 
 
 }
@@ -1036,7 +1036,7 @@
 .dl-sub { /* What: Row Subline. Why: The line under a name explains the item's value or the conditional's state. How: This sets it in small muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.02em;
@@ -1085,14 +1085,14 @@
 .dl-delta.down { /* What: Falling Change. Why: A fall reads in the accent. How: This colors it in the accent. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
 .dl-delta.flat { /* What: Flat Change. Why: No change reads faint. How: This colors it a faded muted. */
 
 
-	color : oklch(from var(--muted) l c h/0.5);
+	color : oklch(from var(--tex-mut-col) l c h/0.5);
 
 
 }
@@ -1107,7 +1107,7 @@
 .dl-boost[data-boost-zero-active] { /* What: Zero Boost. Why: No boost reads faint. How: This colors it a faded muted, keying off data-boost-zero-active. */
 
 
-	color : oklch(from var(--muted) l c h/0.5);
+	color : oklch(from var(--tex-mut-col) l c h/0.5);
 
 
 }
@@ -1115,7 +1115,7 @@
 .dl-na { /* What: Not Applicable Value. Why: A value that doesn't apply reads faint. How: This sets it in small faded mono type. */
 
 
-	color       : oklch(from var(--muted) l c h/0.55);
+	color       : oklch(from var(--tex-mut-col) l c h/0.55);
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-bas );
 
@@ -1156,8 +1156,8 @@
 .dl-st-trig { /* What: Triggered Pill. Why: A conditional that triggered reads as a solid accent pill. How: This fills it in the accent with page-colored text. */
 
 
-	background : var(--accent);
-	color      : var(--bg);
+	background : var(--acc-mai-col);
+	color      : var(--bac-pag-col);
 	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 );
 
 
@@ -1165,9 +1165,9 @@
 .dl-st-nottrig { /* What: Not Triggered Pill. Why: A conditional that didn't trigger reads neutral. How: This outlines the pill on the surface in muted text. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
-	color      : var(--muted);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color      : var(--tex-mut-col);
 	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 );
 
 
@@ -1183,8 +1183,8 @@
 .dl-st-due { /* What: Due Pill. Why: A reminder due today reads in the accent. How: This tints the pill in the soft accent. */
 
 
-	background : var(--accent-soft);
-	color      : var(--accent);
+	background : var(--acc-tin-col);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -1204,7 +1204,7 @@
 .dl-none { /* What: No Status. Why: A row with no status shows a faint dash. How: This sets it faint and right-aligned in mono. */
 
 
-	color       : oklch(from var(--muted) l c h/0.4);
+	color       : oklch(from var(--tex-mut-col) l c h/0.4);
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-p01 );
 	text-align  : right;
@@ -1215,7 +1215,7 @@
 .dl-vac { /* What: Inactive Note. Why: An item on vacation says so where its status would be. How: This sets small uppercase faded mono text. */
 
 
-	color          : oklch(from var(--muted) l c h/0.7);
+	color          : oklch(from var(--tex-mut-col) l c h/0.7);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -1234,9 +1234,9 @@
 
 
 	align-items    : center;
-	background     : oklch(from var(--accent) 0.95 0.035 h);
+	background     : oklch(from var(--acc-mai-col) 0.95 0.035 h);
 	border-radius  : 0 0 var( --rad-bor-sma ) var( --rad-bor-sma );
-	color          : oklch(from var(--accent) calc(l - 0.02) c h);
+	color          : oklch(from var(--acc-mai-col) calc(l - 0.02) c h);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -1262,7 +1262,7 @@
 .dl-cond-aff b { /* What: Conditional Effect Name. Why: The affected picker names read in the accent. How: This sets them in semibold accent. */
 
 
-	color       : var(--accent);
+	color       : var(--acc-mai-col);
 	font-weight : 600;
 
 
@@ -1307,8 +1307,8 @@
 .dl-rt-head { /* What: Reminders Table Header. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
-	color          : var(--muted);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
@@ -1340,7 +1340,7 @@
 .dl-rt-row { /* What: Reminder Row. Why: Each reminder is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
+	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h/0.55);
 	border-radius : var( --rad-bor-sma );
 	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
@@ -1363,7 +1363,7 @@
 .dl-rt-row[data-row-due-active] { /* What: Due Reminder Row. Why: A reminder due today reads in the accent. How: This tints it in the soft accent, keying off data-row-due-active. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
@@ -1383,7 +1383,7 @@
 .dl-rt-row[data-row-upcoming-active] .dl-r-name { /* What: Upcoming Reminder Name. Why: A reminder not due yet reads quieter. How: This mutes its name, keying off the row's data-row-upcoming-active. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
@@ -1391,7 +1391,7 @@
 .dl-r-when { /* What: Reminder When. Why: When the reminder is due reads as centered mono metadata. How: This sets it small, muted, and centered. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-bas );
 	text-align  : center;
@@ -1415,7 +1415,7 @@
 .dl-st-not { /* What: Not Due Label. Why: A reminder not due yet shows when it will be, quieter than a pill. How: This sets right-aligned small uppercase faded mono text. */
 
 
-	color          : oklch(from var(--muted) l c h/0.75);
+	color          : oklch(from var(--tex-mut-col) l c h/0.75);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;

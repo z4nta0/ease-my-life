@@ -18,7 +18,7 @@
 .pie-boost-val { /* What: Boost Value. Why: The accrued boost is a number the user compares at a glance. How: This sets it in bold mono type in the main text color. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
@@ -29,10 +29,10 @@
 .pie-reset { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text. */
 
 
-	background    : var(--surface);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--muted);
+	color         : var(--tex-mut-col);
 	font-size     : var( --fon-siz-bas );
 	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );
 	transition    : color .12s, border-color .12s;
@@ -42,8 +42,8 @@
 .pie-reset:hover:not(:disabled) { /* What: Hovered Boost Reset Button. Why: An enabled reset should respond to the pointer. How: This tints its text and border with the accent color. */
 
 
-	border-color : var(--accent);
-	color        : var(--accent);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }

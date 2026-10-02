@@ -20,7 +20,7 @@
 .prog { /* What: Progress Track. Why: The fill needs a fixed, rounded background track to grow inside. How: This sizes the track and clips the fill to its rounded shape. */
 
 
-	background    : oklch(from var(--border) calc(l + 0.03) c h);
+	background    : oklch(from var(--bor-mai-col) calc(l + 0.03) c h);
 	border-radius : 999px;
 	flex          : 1;
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
@@ -33,7 +33,7 @@
 .prog i { /* What: Progress Fill. Why: This is the filled portion showing how far along the value is. How: This fills the track's height and animates the width the component sets inline. */
 
 
-	background    : var(--accent);
+	background    : var(--acc-mai-col);
 	border-radius : 999px;
 	display       : block;
 	height        : 100%;
@@ -44,7 +44,7 @@
 .prog--warm i { /* What: Warm Progress Fill. Why: An ease-down picker's bar reads in the warm color. How: This recolors the fill under the warm modifier. */
 
 
-	background : var(--warm);
+	background : var(--acc-sec-col);
 
 
 }

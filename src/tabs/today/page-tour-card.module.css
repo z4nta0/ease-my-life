@@ -24,8 +24,8 @@
 
 
 	align-items           : center;
-	background            : var(--surface);
-	border                : var( --bor-wid-sma ) solid var(--border);
+	background            : var(--bac-sur-col);
+	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius         : var( --rad-bor-lar );
 	cursor                : pointer;
 	display               : grid;
@@ -49,21 +49,21 @@
 .today-card:hover { /* What: Hovered Page Tour Card. Why: The card should respond to the pointer. How: This darkens its border slightly. */
 
 
-	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
 
 
 }
 .today-card:active { /* What: Pressed Page Tour Card. Why: A press should register on the card. How: This darkens its surface slightly. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.01) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.01) c h);
 
 
 }
 .today-card[data-card-done-active] { /* What: Done Page Tour Card. Why: A finished tour should read as done, like a checked-off card. How: This dims the card's surface slightly, and must stay after the pressed rule so it wins. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.005) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
 
 
 }
@@ -116,7 +116,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : var( --bor-wid-bas ) solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius      : var( --rad-bor-sma );
 	color              : inherit;
 	display            : inline-flex;
@@ -142,8 +142,8 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 .check:focus-visible { /* What: Focused Page Tour Check Button. Why: A keyboard user needs a visible ring that still reads on the filled done state. How: This draws an accent ring separated from the box by a background-colored gap. */
 
 
-	box-shadow     : 0 0 0 3px var(--bg);
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	box-shadow     : 0 0 0 3px var(--bac-pag-col);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : 3px;
 
 
@@ -151,23 +151,23 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 .today-card[data-card-done-active] .check:focus-visible { /* What: Focused Done Page Tour Check Button. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This adds a thin background-colored inset line inside the gap. */
 
 
-	box-shadow : 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
+	box-shadow : 0 0 0 3px var(--bac-pag-col), inset 0 0 0 1.5px var(--bac-pag-col);
 
 
 }
 .check:hover { /* What: Hovered Page Tour Check Button. Why: The button should respond to the pointer. How: This darkens its border to the text color. */
 
 
-	border-color : var(--text);
+	border-color : var(--tex-mai-col);
 
 
 }
 .today-card[data-card-done-active] .check { /* What: Done Page Tour Check Button. Why: A finished tour's check should read as checked. How: This fills the box with the accent color and sets its glyph in the background color. */
 
 
-	background   : var(--accent);
-	border-color : var(--accent);
-	color        : var(--bg);
+	background   : var(--acc-mai-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--bac-pag-col);
 
 
 }
@@ -211,7 +211,7 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 .check-ripple { /* What: Page Tour Check Ripple. Why: The done check keeps the same ripple layer every done row carries. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
 
 
-	border         : var( --bor-wid-bas ) solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius  : var( --rad-bor-sma );
 	inset          : calc( var( --bor-wid-bas ) * -1 );
 	opacity        : 0;
@@ -244,7 +244,7 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -279,7 +279,7 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 .today-card[data-card-done-active] .today-card-name { /* What: Done Page Tour Card Name. Why: A finished tour's text should read as checked off. How: This mutes it and strikes it through with a hairline. */
 
 
-	color                     : var(--muted);
+	color                     : var(--tex-mut-col);
 	text-decoration           : line-through;
 	text-decoration-thickness : 0.5px;
 
@@ -306,7 +306,7 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
@@ -318,8 +318,8 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 .icon-btn:hover { /* What: Hovered Page Tour Cancel Button. Why: The button should respond to the pointer. How: This gives it a background fill and the full text color. */
 
 
-	background : var(--bg);
-	color      : var(--text);
+	background : var(--bac-pag-col);
+	color      : var(--tex-mai-col);
 
 
 }

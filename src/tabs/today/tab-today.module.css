@@ -43,8 +43,8 @@
 .today-h { /* What: Today Header. Why: The header stays pinned at the top while the list scrolls under it. How: This makes it a sticky padded bar on the page background above a hairline. */
 
 
-	background    : var(--bg);
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	padding       : var( --spa-ver-p02 ) var( --spa-hor-p01 ) var( --spa-ver-p02 );
 	position      : sticky;
 	top           : 0;
@@ -114,7 +114,7 @@
 .kicker { /* What: Kicker. Why: A small eyebrow label names the day above the title and heads the rail. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -128,7 +128,7 @@
 .kicker-time { /* What: Kicker Time. Why: The time reads apart from the date. How: This divides it from the date with a hairline. */
 
 
-	border-left  : var( --bor-wid-sma ) solid var(--border);
+	border-left  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	margin-left  : var( --spa-hor-m03 );
 	padding-left : var( --spa-hor-m02 );
 
@@ -171,10 +171,10 @@
 
 
 	align-items    : center;
-	background     : var(--surface);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -192,8 +192,8 @@
 
 
 	animation    : streakBump 800ms cubic-bezier(.22,1.4,.36,1);
-	background   : oklch(from var(--warm) calc(l + 0.32) calc(c - 0.05) h);
-	border-color : oklch(from var(--warm) calc(l + 0.2) calc(c - 0.03) h);
+	background   : oklch(from var(--acc-sec-col) calc(l + 0.32) calc(c - 0.05) h);
+	border-color : oklch(from var(--acc-sec-col) calc(l + 0.2) calc(c - 0.03) h);
 
 
 }
@@ -253,7 +253,7 @@
 .streak svg { /* What: Streak Flame. Why: The flame icon reads warm beside the count. How: This colors it warm at its natural size, easing its transform and glow. */
 
 
-	color      : var(--warm);
+	color      : var(--acc-sec-col);
 	flex       : 0 0 auto;
 	transition : filter .2s, transform .2s;
 
@@ -304,7 +304,7 @@
 	35% {
 
 
-		filter    : drop-shadow(0 0 5px var(--warm));
+		filter    : drop-shadow(0 0 5px var(--acc-sec-col));
 		transform : scale(1.4) rotate(-6deg);
 
 
@@ -358,7 +358,7 @@
 	0% {
 
 
-		color : var(--muted);
+		color : var(--tex-mut-col);
 
 
 	}
@@ -366,7 +366,7 @@
 	35% {
 
 
-		color       : var(--warm);
+		color       : var(--acc-sec-col);
 		font-weight : 600;
 
 
@@ -375,7 +375,7 @@
 	100% {
 
 
-		color : var(--muted);
+		color : var(--tex-mut-col);
 
 
 	}
@@ -428,7 +428,7 @@
 	background         : none;
 	border             : 0;
 	border-radius      : var( --rad-bor-med );
-	color              : var(--accent);
+	color              : var(--acc-mai-col);
 	cursor             : pointer;
 	display            : block;
 	flex               : 0 0 auto;
@@ -576,7 +576,7 @@
 
 
 	animation        : titleWordSpring 720ms cubic-bezier(.22,1.5,.36,1) 380ms forwards;
-	color            : var(--accent);
+	color            : var(--acc-mai-col);
 	transform-origin : 0% 70%;
 
 
@@ -756,7 +756,7 @@
 
 
 	fill         : none;
-	stroke       : var(--border);
+	stroke       : var(--bor-mai-col);
 	stroke-width : 2.8;
 
 
@@ -766,7 +766,7 @@
 
 
 	fill           : none;
-	stroke         : var(--accent);
+	stroke         : var(--acc-mai-col);
 	stroke-linecap : round;
 	stroke-width   : 2.8;
 	transition     : stroke-dasharray .55s cubic-bezier(.3,1.3,.5,1);
@@ -854,7 +854,7 @@
 	0% {
 
 
-		color     : var(--text);
+		color     : var(--tex-mai-col);
 		transform : scale(1);
 
 
@@ -863,7 +863,7 @@
 	35% {
 
 
-		color     : var(--accent);
+		color     : var(--acc-mai-col);
 		transform : scale(1.18);
 
 
@@ -872,7 +872,7 @@
 	100% {
 
 
-		color     : var(--text);
+		color     : var(--tex-mai-col);
 		transform : scale(1);
 
 
@@ -886,7 +886,7 @@
 	0% {
 
 
-		color     : var(--text);
+		color     : var(--tex-mai-col);
 		transform : scale(1);
 
 
@@ -895,7 +895,7 @@
 	30% {
 
 
-		color     : var(--accent);
+		color     : var(--acc-mai-col);
 		transform : scale(1.35);
 
 
@@ -904,7 +904,7 @@
 	60% {
 
 
-		color     : var(--accent);
+		color     : var(--acc-mai-col);
 		transform : scale(0.96);
 
 
@@ -913,7 +913,7 @@
 	100% {
 
 
-		color     : var(--text);
+		color     : var(--tex-mai-col);
 		transform : scale(1);
 
 
@@ -925,7 +925,7 @@
 .ring-den { /* What: Ring Total. Why: The total reads quieter than the count. How: This sets it small and muted. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-m01 );
 
@@ -939,7 +939,7 @@
 .ring-glow { /* What: Ring Glow. Why: A soft glow blooms behind the ring when it pulses or completes. How: This draws an invisible accent radial disc behind the ring. */
 
 
-	background     : radial-gradient(circle, var(--accent), transparent 65%);
+	background     : radial-gradient(circle, var(--acc-mai-col), transparent 65%);
 	border-radius  : 50%;
 	inset          : calc( var( --spa-ver-m05 ) * -1 ) calc( var( --spa-hor-m05 ) * -1 );
 	opacity        : 0;
@@ -1046,7 +1046,7 @@
 .ring-ripple { /* What: Ring Ripple. Why: Completing the day sends a ripple off the ring itself. How: This draws an invisible accent circle over the ring that expands when celebrating. */
 
 
-	border         : var( --bor-wid-bas ) solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius  : 50%;
 	inset          : 0;
 	opacity        : 0;
@@ -1147,8 +1147,8 @@
 
 	align-items     : center;
 	animation       : emBannerIn 0.26s cubic-bezier(0.4, 0, 0.2, 1) both;
-	background      : var(--accent-soft);
-	border          : var( --bor-wid-bas ) solid oklch(from var(--accent) l c h / 0.35);
+	background      : var(--acc-tin-col);
+	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / 0.35);
 	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	gap             : var( --spa-hor-bas );
@@ -1251,7 +1251,7 @@
 
 
 	align-items : center;
-	color       : var(--accent);
+	color       : var(--acc-mai-col);
 	display     : inline-flex;
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
@@ -1350,8 +1350,8 @@
 		-webkit-backdrop-filter : blur(18px) saturate(140%);
 		-webkit-mask-image      : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 		backdrop-filter         : blur(18px) saturate(140%);
-		background              : oklch(from var(--bg) l c h / 0.92);
-		border-bottom           : var( --bor-wid-sma ) solid var(--border);
+		background              : oklch(from var(--bac-pag-col) l c h / 0.92);
+		border-bottom           : var( --bor-wid-sma ) solid var(--bor-mai-col);
 		flex-direction          : row;
 		gap                     : var( --spa-hor-m03 );
 		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );
@@ -1443,7 +1443,7 @@
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
@@ -1461,15 +1461,15 @@
 .rail-btn:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
 .rail-btn[data-rail-select-active] { /* What: Selected Rail Button. Why: The group in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
 
 
-	background : var(--accent-soft);
-	color      : var(--accent);
+	background : var(--acc-tin-col);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -1479,8 +1479,8 @@
 	.rail-btn { /* What: Rail Pill. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
 
 
-		background    : var(--surface);
-		border        : var( --bor-wid-sma ) solid var(--border);
+		background    : var(--bac-sur-col);
+		border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 		border-radius : 999px;
 		flex-shrink   : 0;
 		padding       : var( --spa-ver-m03 ) var( --spa-hor-m01 );
@@ -1492,8 +1492,8 @@
 	.rail-btn[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
 
 
-		background   : var(--accent-soft);
-		border-color : var(--accent);
+		background   : var(--acc-tin-col);
+		border-color : var(--acc-mai-col);
 
 
 	}
@@ -1524,7 +1524,7 @@
 .rail-btn--rem[data-rail-select-active] .rail-name { /* What: Selected Reminders Rail Name. Why: The Reminders entry's name follows its selected color. How: This colors it in the accent. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -1567,7 +1567,7 @@
 .rail-editmode { /* What: Rail Edit Mode Block. Why: Edit Mode is a list action under the groups, divided from them. How: This spaces it below a dashed divider. */
 
 
-	border-top  : var( --bor-wid-bas ) dashed var(--border);
+	border-top  : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 	margin-top  : var( --spa-ver-m01 );
 	padding-top : var( --spa-ver-bas );
 
@@ -1591,10 +1591,10 @@
 
 
 	align-items     : center;
-	background      : oklch(from var(--surface) calc(l - 0.015) c h);
-	border          : var( --bor-wid-bas ) dashed var(--border);
+	background      : oklch(from var(--bac-sur-col) calc(l - 0.015) c h);
+	border          : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : flex;
 	font-size       : var( --fon-siz-bas );
@@ -1612,18 +1612,18 @@
 .em-rail-btn:hover { /* What: Hovered Edit Mode Rail Button. Why: The toggle should respond to the pointer. How: This tints it in the accent. */
 
 
-	border-color : var(--accent);
-	color        : var(--accent);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
 .em-rail-btn[data-edit-mode-active] { /* What: Active Edit Mode Rail Button. Why: While Edit Mode is on, its toggle reads as on. How: This solidifies its accent border over the soft accent fill, keying off data-edit-mode-active. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
 	border-style : solid;
-	color        : var(--accent);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -1677,7 +1677,7 @@
 
 
 	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global confettiBurst Keyframes. Why: The confettiBurst keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background    : var(--accent);
+	background    : var(--acc-mai-col);
 	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	left          : 50%;
@@ -1707,7 +1707,7 @@
 
 
 	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global sparkleTwinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color       : var(--accent);
+	color       : var(--acc-mai-col);
 	font-size   : var( --fon-siz-p02 );
 	line-height : var( --ver-rhy-m01 );
 	opacity     : 0;
@@ -1762,7 +1762,7 @@
 .groups-dnd > .group-section:not(:first-child) { /* What: Following Group Section. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
 
 
-	border-top  : var( --bor-wid-sma ) solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	padding-top : var( --spa-ver-p02 );
 
 
@@ -1783,7 +1783,7 @@
 .group-section[data-item-drag-active] { /* What: Dragged Group Section. Why: A section being dragged lifts off the page as a card, without its divider. How: This raises it on a shadowed surface card and drops its divider and top padding, which reorder.js marks with data-item-drag-active. */
 
 
-	background    : var(--surface);
+	background    : var(--bac-sur-col);
 	border-radius : var( --rad-bor-lar );
 	border-top    : 0!important;
 	box-shadow    : 0 20px 46px -14px oklch(0 0 0 / 0.32);
@@ -1826,8 +1826,8 @@
 
 
 	align-items    : center;
-	background     : var(--accent-soft);
-	border         : var( --bor-wid-bas ) dashed oklch(from var(--accent) l c h/0.5);
+	background     : var(--acc-tin-col);
+	border         : var( --bor-wid-bas ) dashed oklch(from var(--acc-mai-col) l c h/0.5);
 	border-radius  : var( --rad-bor-med );
 	display        : flex;
 	flex-direction : column;
@@ -1841,8 +1841,8 @@
 .ob-create--generate[data-card-needed-active] { /* What: Blocked Generate Card. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
 
 
-	background   : oklch(from var(--warm) l c h/0.07);
-	border-color : oklch(from var(--warm) l c h/0.55);
+	background   : oklch(from var(--acc-sec-col) l c h/0.07);
+	border-color : oklch(from var(--acc-sec-col) l c h/0.55);
 
 
 }
@@ -1906,7 +1906,7 @@
 	0% {
 
 
-		box-shadow : 0 0 0 0 oklch(from var(--accent) l c h/0.55);
+		box-shadow : 0 0 0 0 oklch(from var(--acc-mai-col) l c h/0.55);
 
 
 	}
@@ -1914,7 +1914,7 @@
 	40% {
 
 
-		box-shadow : 0 0 0 10px oklch(from var(--accent) l c h/0.35);
+		box-shadow : 0 0 0 10px oklch(from var(--acc-mai-col) l c h/0.35);
 
 
 	}
@@ -1922,7 +1922,7 @@
 	100% {
 
 
-		box-shadow : 0 0 0 20px oklch(from var(--accent) l c h/0);
+		box-shadow : 0 0 0 20px oklch(from var(--acc-mai-col) l c h/0);
 
 
 	}
@@ -1934,10 +1934,10 @@
 
 
 	align-items     : center;
-	background      : var(--surface);
-	border          : var( --bor-wid-sma ) solid var(--border);
+	background      : var(--bac-sur-col);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
-	color           : var(--accent);
+	color           : var(--acc-mai-col);
 	display         : flex;
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : center;
@@ -1958,7 +1958,7 @@
 .ob-create p { /* What: Onboarding Card Text. Why: The explanation reads small and muted, capped so it wraps comfortably. How: This sets muted text capped at the small text width. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0 0 var( --spa-ver-m03 );
@@ -1979,7 +1979,7 @@
 
 	background            : none;
 	border                : 0;
-	color                 : var(--accent);
+	color                 : var(--acc-mai-col);
 	cursor                : pointer;
 	font                  : inherit;
 	padding               : 0;
@@ -2033,31 +2033,31 @@
 .btn--primary { /* What: Primary Tip Button. Why: Generate is the card's main action. How: This fills it with the text color. */
 
 
-	background : var(--text);
-	color      : var(--bg);
+	background : var(--tex-mai-col);
+	color      : var(--bac-pag-col);
 
 
 }
 .btn--primary:hover { /* What: Hovered Primary Tip Button. Why: The main action should respond to the pointer. How: This lightens its fill slightly. */
 
 
-	background : oklch(from var(--text) calc(l + 0.06) c h);
+	background : oklch(from var(--tex-mai-col) calc(l + 0.06) c h);
 
 
 }
 .btn--secondary { /* What: Secondary Tip Button. Why: Regenerate is an outlined action. How: This gives it a surface fill and a hairline border. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
-	color      : var(--text);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color      : var(--tex-mai-col);
 
 
 }
 .btn--secondary:hover { /* What: Hovered Secondary Tip Button. Why: An outlined button should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
@@ -2072,7 +2072,7 @@
 .btn[aria-disabled="true"]:hover { /* What: Hovered Disabled Tip Button. Why: A disabled stand-in shouldn't light up on hover. How: This holds a flat page-background fill and inherited text. */
 
 
-	background : var(--bg);
+	background : var(--bac-pag-col);
 	color      : inherit;
 
 
@@ -2106,7 +2106,7 @@
 
 	--btn-font-variant-numeric : tabular-nums; /* What: Button Figures. Why: A button label with a count shouldn't change width. How: ButBasCom reads this for its font-variant-numeric. */
 	align-items                : center;
-	color                      : var(--muted);
+	color                      : var(--tex-mut-col);
 	display                    : flex;
 	flex-direction             : column;
 	gap                        : var( --spa-ver-m05 );
@@ -2141,7 +2141,7 @@
 .gen-confirm-msg { /* What: Regenerate Confirm Message. Why: The question explains what regenerating replaces. How: This sets it in body text. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;

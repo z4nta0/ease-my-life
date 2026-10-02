@@ -34,7 +34,7 @@
 .data-sort-lbl { /* What: Sort Label. Why: The select needs a visible label that stays quiet beside it. How: This sets it in small uppercase mono type in the muted color. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
@@ -46,10 +46,10 @@
 .data-sort-sel { /* What: Sort Select. Why: The select should look like the app's other form fields. How: This gives it the shared field styling (the form input look it previously got from .np-input) plus a pointer cursor. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	cursor        : pointer;
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
@@ -66,7 +66,7 @@
 .data-sort-sel::placeholder { /* What: Sort Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -74,7 +74,7 @@
 .data-sort-sel:focus { /* What: Focused Sort Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }

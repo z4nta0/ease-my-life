@@ -53,7 +53,7 @@
 .kicker { /* What: Kicker. Why: A small eyebrow label names whether the form creates or edits. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -100,7 +100,7 @@
 	align-items : center;
 	background  : none;
 	border      : none;
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	cursor      : pointer;
 	display     : inline-flex;
 	gap         : var( --spa-hor-m02 );
@@ -118,14 +118,14 @@
 .np-step[data-step-current-active] { /* What: Current Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
 .np-step[data-step-done-active] { /* What: Finished Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -134,9 +134,9 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var(--border);
+	border          : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius   : 999px;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
@@ -151,8 +151,8 @@
 .np-step[data-step-current-active] .np-step-num { /* What: Current Step Number. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
 
 
-	background   : var(--accent);
-	border-color : var(--accent);
+	background   : var(--acc-mai-col);
+	border-color : var(--acc-mai-col);
 	color        : var(--accent-ink, #fff);
 
 
@@ -160,8 +160,8 @@
 .np-step[data-step-done-active] .np-step-num { /* What: Finished Step Number. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
 
 
-	border-color : var(--accent);
-	color        : var(--accent);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -195,7 +195,7 @@
 .np-step-line { /* What: Step Connector. Why: A short line joins the two steps. How: This draws a short line as a top border, so it snaps to a whole pixel. */
 
 
-	border-top : var( --bor-wid-bas ) solid var(--border);
+	border-top : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	flex       : 0 0 calc( var( --ver-rhy-p02 ) * 1rem );
 	height     : 0;
 
@@ -232,7 +232,7 @@
 .picker-hint { /* What: Step Hint. Why: A hint opens each step, explaining what it asks for. How: This sets muted body text with a capped line length. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	margin    : 0;
 	max-width : var( --tex-wid-bas );
@@ -328,7 +328,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-help { /* What: Field Help. Why: The help line explains what each field is for. How: This sets muted body text with a capped line length. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
@@ -362,10 +362,10 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-input { /* What: Text Input. Why: Names are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p04 ) * 1rem );
@@ -381,7 +381,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-input::placeholder { /* What: Text Input Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -389,7 +389,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-input:focus { /* What: Focused Text Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -433,10 +433,10 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items   : center;
-	background    : var(--surface);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : 999px;
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	cursor        : pointer;
 	display       : inline-flex;
 	font-size     : var( --fon-siz-p01 );
@@ -451,16 +451,16 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-chip:hover { /* What: Hovered Group Chip. Why: The chip should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
 .np-chip[data-chip-select-active] { /* What: Chosen Group Chip. Why: The picker's group should stand out. How: This fills it in the soft accent, keying off data-chip-select-active. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -468,7 +468,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	border-style : dashed;
-	color        : var(--muted);
+	color        : var(--tex-mut-col);
 
 
 }
@@ -476,7 +476,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	border-style : solid;
-	color        : var(--accent);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -516,8 +516,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items   : flex-start;
-	background    : oklch(from var(--surface) calc(l - 0.005) c h);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
 	cursor        : pointer;
 	display       : flex;
@@ -530,14 +530,14 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .mode-opt:hover { /* What: Hovered Mode Option. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
 .mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
 
 
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : 2px;
 
 
@@ -545,8 +545,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .mode-opt[data-option-select-active] { /* What: Chosen Mode Option. Why: The picker's mode should stand out. How: This fills the card in the soft accent, keying off data-option-select-active. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -569,7 +569,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	-webkit-appearance : none;
 	appearance         : none;
-	border             : var( --bor-wid-bas ) solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius      : 50%;
 	height             : calc( var( --ver-rhy-bas ) * 1rem );
 	margin-top         : var( --spa-ver-m07 );
@@ -583,14 +583,14 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .mode-opt[data-option-select-active] input { /* What: Chosen Mode Option Radio. Why: The chosen radio rings in the accent. How: This borders it in the accent. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
 .mode-opt[data-option-select-active] input::after { /* What: Chosen Mode Option Radio Dot. Why: The chosen radio is filled. How: This draws an accent disc inside the ring. */
 
 
-	background    : var(--accent);
+	background    : var(--acc-mai-col);
 	border-radius : 50%;
 	content       : '';
 	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
@@ -624,7 +624,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .mode-opt-hint { /* What: Mode Option Hint. Why: Each mode explains itself under its name. How: This sets small muted text. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 
@@ -650,7 +650,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items     : flex-start;
-	border-top      : var( --bor-wid-sma ) solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	flex-direction  : row;
 	gap             : var( --spa-hor-p01 );
@@ -682,7 +682,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .switch { /* What: Setting Switch. Why: Each on or off setting uses a switch that keeps its size beside its text. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
@@ -697,7 +697,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .switch[aria-checked="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -718,7 +718,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .switch i { /* What: Setting Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
 
 
-	background    : var(--bg);
+	background    : var(--bac-pag-col);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -815,8 +815,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .cnd-pill { /* What: Conditional Pill. Why: Each conditional is a card-like pill that attaches it to the picker. How: This draws a bordered card with the name over the mode, fading between states. */
 
 
-	background      : var(--surface);
-	border          : var( --bor-wid-sma ) solid var(--border);
+	background      : var(--bac-sur-col);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
 	cursor          : pointer;
 	display         : flex;
@@ -835,16 +835,16 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .cnd-pill:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
 .cnd-pill[data-pill-select-active] { /* What: Chosen Conditional Pill. Why: The conditional to attach should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	box-shadow   : 0 0 0 1px var(--accent) inset;
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	box-shadow   : 0 0 0 1px var(--acc-mai-col) inset;
 
 
 }
@@ -853,7 +853,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	align-items    : center;
 	border-style   : dashed;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	flex-direction : row;
 	gap            : var( --spa-hor-m02 );
 
@@ -862,7 +862,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .cnd-pill--new[data-pill-select-active] { /* What: Open New Conditional Pill. Why: While the new-conditional editor is open, its pill reads as chosen. How: This colors it in the accent. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -883,7 +883,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .cnd-pill-name { /* What: Conditional Pill Name. Why: The conditional's name leads its pill. How: This sets it in medium weight body color. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 500;
 
@@ -892,7 +892,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .cnd-pill--new .cnd-pill-name { /* What: New Conditional Pill Label. Why: The placeholder's label reads muted with its pill. How: This mutes it. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-weight : 500;
 
 
@@ -900,7 +900,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .cnd-pill--new[data-pill-select-active] .cnd-pill-name { /* What: Open New Conditional Pill Label. Why: The label follows its pill's accent. How: This colors it. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -908,7 +908,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .cnd-pill-mode { /* What: Conditional Pill Mode. Why: Each pill names its conditional's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -981,7 +981,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	background    : none;
 	border        : none;
 	border-radius : var( --rad-bor-sma );
-	color         : var(--accent);
+	color         : var(--acc-mai-col);
 	cursor        : pointer;
 	font-size     : var( --fon-siz-bas );
 	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 );
@@ -991,7 +991,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-preset:hover { /* What: Hovered Day Preset. Why: The preset should respond to the pointer. How: This tints it in the soft accent. */
 
 
-	background : oklch(from var(--accent-soft) l c h);
+	background : oklch(from var(--acc-tin-col) l c h);
 
 
 }
@@ -1029,7 +1029,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items     : center;
-	border-top      : var( --bor-wid-sma ) solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
@@ -1055,7 +1055,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-footer-note { /* What: Footer Note. Why: The note says what the step still needs, in quiet mono type that takes the spare width. How: This sets small muted mono text capped at 40ch. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	flex           : 1 1 auto;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -1097,10 +1097,10 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .np-pool-empty { /* What: Empty Pool. Why: A new picker with no items says what to add. How: This draws a dashed padded note in muted text. */
 
 
-	background    : oklch(from var(--surface) l c h / 0.5);
-	border        : var( --bor-wid-bas ) dashed var(--border);
+	background    : oklch(from var(--bac-sur-col) l c h / 0.5);
+	border        : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--muted);
+	color         : var(--tex-mut-col);
 	font-size     : var( --fon-siz-p01 );
 	line-height   : var( --ver-rhy-bas );
 	padding       : var( --spa-ver-p01 ) var( --spa-hor-bas );
@@ -1114,8 +1114,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-list { /* What: Pool List. Why: The items read as one bordered list. How: This stacks the rows in a rounded surface that clips them. */
 
 
-	background     : var(--surface);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );
 	display        : flex;
 	flex-direction : column;
@@ -1130,7 +1130,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items           : center;
-	border-bottom         : var( --bor-wid-sma ) solid var(--border);
+	border-bottom         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display               : grid;
 	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
 	grid-template-columns : 1fr auto auto auto auto;
@@ -1319,7 +1319,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items     : center;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : flex;
 	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
@@ -1333,7 +1333,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-ease-meta { /* What: Pool Item Range. Why: An ease item shows its soonest-to-latest range. How: This sets it in muted tabular figures. */
 
 
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
 
@@ -1357,9 +1357,9 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -1374,9 +1374,9 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-edit:hover { /* What: Hovered Pool Edit Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -1399,9 +1399,9 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -1434,8 +1434,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	background   : none;
-	border-color : var(--border);
-	color        : var(--muted);
+	border-color : var(--bor-mai-col);
+	color        : var(--tex-mut-col);
 
 
 }
@@ -1481,8 +1481,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	--entry-editor-rows-border-top : 0;
 	--entry-editor-rows-margin-top : 0;
 	animation                      : global(pvNewItemIn) .3s cubic-bezier(.34,1.2,.5,1) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background                     : var(--surface);
-	border                         : var( --bor-wid-sma ) solid var(--border);
+	background                     : var(--bac-sur-col);
+	border                         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                  : var( --rad-bor-med );
 	overflow                       : hidden;
 
@@ -1560,7 +1560,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var(--border);
+	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	font           : inherit;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
@@ -1574,7 +1574,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .rd-name-input:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--accent);
+	border-bottom-color : var(--acc-mai-col);
 	outline             : none;
 
 
@@ -1582,7 +1582,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .rd-name-input::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -1615,7 +1615,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	--entry-editor-border-radius : 0;
 	--entry-editor-margin        : 0;
 	--entry-editor-padding       : 0;
-	border-top                   : var( --bor-wid-sma ) solid var(--border);
+	border-top                   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );
 
 
@@ -1630,9 +1630,9 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-bas ) dashed var(--border);
+	border          : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
@@ -1650,9 +1650,9 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pv-additem-btn:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }

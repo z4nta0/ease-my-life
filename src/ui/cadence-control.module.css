@@ -61,7 +61,7 @@
 .rem-flabel { /* What: Cadence Field Label. Why: Field labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -84,9 +84,9 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--tex-mut-col);
 	border-radius   : 50%;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : help;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -103,9 +103,9 @@
 .pie-help:hover { /* What: Hovered Cadence Help Bubble. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -137,7 +137,7 @@
 .rem-flabel-sub { /* What: Cadence Field Summary. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 
@@ -175,7 +175,7 @@
 
 
 	align-items : center;
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	display     : flex;
 	font-size   : var( --fon-siz-p01 );
 	gap         : var( --spa-hor-m02 );
@@ -199,10 +199,10 @@
 .np-input { /* What: Cadence Select. Why: The anchor selects should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p04 ) * 1rem );
@@ -218,7 +218,7 @@
 .np-input::placeholder { /* What: Cadence Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -226,7 +226,7 @@
 .np-input:focus { /* What: Focused Cadence Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -262,7 +262,7 @@
 .rem-hint { /* What: Cadence Clamp Hint. Why: A date that some months or years don't have needs a quiet note on where it lands instead. How: This sets the note small and muted with no margin. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;

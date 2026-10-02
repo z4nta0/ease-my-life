@@ -30,8 +30,8 @@
 
 
 	align-items           : center;
-	background            : var(--surface);
-	border                : var( --bor-wid-sma ) solid var(--border);
+	background            : var(--bac-sur-col);
+	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius         : var( --rad-bor-lar );
 	cursor                : pointer;
 	display               : grid;
@@ -63,7 +63,7 @@
 .today-card--loader[data-slot-pending-active] { /* What: Pending Loader Card. Why: A slot still waiting its turn should read as not started yet. How: This lightens the card's surface slightly. */
 
 
-	background : oklch(from var(--surface) calc(l + 0.005) c h);
+	background : oklch(from var(--bac-sur-col) calc(l + 0.005) c h);
 
 
 }
@@ -88,7 +88,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : var( --bor-wid-bas ) solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius      : var( --rad-bor-sma );
 	color              : inherit;
 	display            : inline-flex;
@@ -145,7 +145,7 @@
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -187,7 +187,7 @@
 .loader-pending { /* What: Loader Waiting Dots. Why: A slot with nothing to show yet displays quiet waiting dots. How: This sets them muted and widely spaced. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-size      : var( --fon-siz-p01 );
 	letter-spacing : 0.2em;
 
@@ -231,7 +231,7 @@
 
 
 	animation : loaderSettleLand 320ms cubic-bezier(.22,1.4,.36,1) both;
-	color     : var(--accent);
+	color     : var(--acc-mai-col);
 
 
 }
@@ -241,7 +241,7 @@
 	0% {
 
 
-		color     : var(--accent);
+		color     : var(--acc-mai-col);
 		opacity   : 0;
 		transform : translateY(6px) scale(0.96);
 
@@ -251,7 +251,7 @@
 	50% {
 
 
-		color     : var(--accent);
+		color     : var(--acc-mai-col);
 		opacity   : 1;
 		transform : scale(1.04);
 
@@ -261,7 +261,7 @@
 	100% {
 
 
-		color     : var(--text);
+		color     : var(--tex-mai-col);
 		transform : scale(1);
 
 

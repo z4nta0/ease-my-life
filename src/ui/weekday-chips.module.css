@@ -33,10 +33,10 @@
 
 
 	align-items     : center;
-	background      : var(--bg);
-	border          : var( --bor-wid-bas ) solid var(--border);
+	background      : var(--bac-pag-col);
+	border          : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius   : 999px;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -52,7 +52,7 @@
 .dow-chip:hover { /* What: Hovered Weekday Chip. Why: A chip should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
@@ -60,9 +60,9 @@
 .dow-chip.is-on { /* What: Selected Weekday Chip. Why: A selected day should read as switched on. How: This fills the chip with the accent tint and colors its border and letter, keyed off a toggle chip's own pressed state or the locked chip's fixed on class. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -85,7 +85,7 @@
 .dow-chip.is-locked:hover { /* What: Hovered Locked Weekday Chip. Why: The locked chip keeps its selected look on hover, with no toggle affordance. How: This holds its border at the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }

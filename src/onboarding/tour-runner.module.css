@@ -50,7 +50,7 @@
 .ob-spot { /* What: Tour Spotlight. Why: The step's target should stand out against a darkened page. How: This outlines the target's box in the accent color and darkens everything around it with one huge box-shadow. */
 
 
-	border        : var( --bor-wid-lar ) solid oklch(from var(--accent) l c h/0.9);
+	border        : var( --bor-wid-lar ) solid oklch(from var(--acc-mai-col) l c h/0.9);
 	border-radius : var( --rad-bor-med );
 	box-shadow    : 0 0 0 9999px oklch(0.15 0.02 250/0.6); /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
 	position      : fixed;
@@ -127,8 +127,8 @@
 
 
 	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background     : var(--surface);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
@@ -140,8 +140,8 @@
 .ob-coach::before { /* What: Tour Coach Arrow. Why: The card should point at the element its step explains. How: This draws a small rotated square that pokes out of the card's edge. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	content    : "";
 	height     : calc( var( --ver-rhy-bas ) * 1rem );
 	left       : var( --ob-ax, var( --spa-hor-p02 ) ); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: The tour writes --ob-ax as the target's center offset from the card's left edge, falling back to the p02 horizontal spacing step. */
@@ -187,7 +187,7 @@
 .ob-coach .ob-prog { /* What: Tour Progress Line. Why: Each step shows where it sits in the tour. How: This sets the "Step N of M" line in small accent-colored mono type above the title. */
 
 
-	color          : var(--accent);
+	color          : var(--acc-mai-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -209,7 +209,7 @@
 .ob-coach .ob-body { /* What: Tour Coach Body. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in small muted type with a relaxed line height. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
@@ -252,7 +252,7 @@
 
 	background  : 0;
 	border      : 0;
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	cursor      : pointer;
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );
@@ -266,7 +266,7 @@
 
 	background  : 0;
 	border      : 0;
-	color       : var(--accent);
+	color       : var(--acc-mai-col);
 	cursor      : pointer;
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );
@@ -283,8 +283,8 @@
 .ob-next { /* What: Tour Next Button. Why: Moving on is the step's main action. How: This styles a filled accent pill with white text. */
 
 
-	background    : var(--accent);
-	border        : var( --bor-wid-sma ) solid var(--accent);
+	background    : var(--acc-mai-col);
+	border        : var( --bor-wid-sma ) solid var(--acc-mai-col);
 	border-radius : 999px;
 	color         : #fff;
 	cursor        : pointer;

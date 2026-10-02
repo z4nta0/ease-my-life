@@ -104,11 +104,11 @@
 
 
 	animation      : legalPanelIn .24s cubic-bezier(.2,.8,.3,1) both;
-	background     : var(--surface, var(--bg));
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col, var(--bac-pag-col));
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-lar );
 	box-shadow     : 0 24px 60px oklch(0 0 0 / 0.28);
-	color          : var(--text);
+	color          : var(--tex-mai-col);
 	display        : flex;
 	flex-direction : column;
 	max-height     : 85vh;
@@ -193,7 +193,7 @@
 
 
 	align-items     : center;
-	border-bottom   : var( --bor-wid-sma ) solid var(--border);
+	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	flex            : 0 0 auto;
 	gap             : var( --spa-hor-m01 );
@@ -206,7 +206,7 @@
 .legal-modal-note { /* What: Legal Modal Title. Why: The head names which document is open. How: This sets the name in bold, slightly larger text. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
 
@@ -220,7 +220,7 @@
 	background      : transparent;
 	border          : 0;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -234,7 +234,7 @@
 
 
 	background : var(--hover, oklch(0 0 0 / 0.05));
-	color      : var(--text);
+	color      : var(--tex-mai-col);
 
 
 }
@@ -277,7 +277,7 @@
 .legal-modal-body li { /* What: Legal Document Text. Why: Long legal prose needs a comfortable reading rhythm. How: This sets paragraphs and list items at a relaxed line height in slightly softened text. */
 
 
-	color       : oklch(from var(--text) l c h / 0.88);
+	color       : oklch(from var(--tex-mai-col) l c h / 0.88);
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 

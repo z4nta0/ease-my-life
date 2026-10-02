@@ -29,7 +29,7 @@
 	--btn-flex        : 0 0 auto; /* What: Button Flex. Why: The row's button should keep its full size beside long text. How: The shared button reads this and stops shrinking. */
 	--btn-white-space : nowrap; /* What: Button Wrapping. Why: The button's label shouldn't break onto two lines in the row. How: The shared button reads this and keeps its label on one line. */
 	align-items       : center;
-	border-bottom     : var( --bor-wid-sma ) solid var(--border);
+	border-bottom     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display           : flex;
 	gap               : var( --spa-hor-bas );
 	justify-content   : space-between;
@@ -79,7 +79,7 @@
 .set-data-sub { /* What: Contact Trigger Description. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced wrapping. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	text-wrap   : pretty;
@@ -91,7 +91,7 @@
 
 
 	animation  : global(importMsgPop) .34s cubic-bezier(.34,1.56,.5,1) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color      : var(--accent);
+	color      : var(--acc-mai-col);
 	font-size  : var( --fon-siz-bas );
 	margin-top : var( --spa-ver-m07 );
 
@@ -144,7 +144,7 @@
 .support-flabel { /* What: Support Field Label. Why: Field and diagnostic labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -156,10 +156,10 @@
 .np-input { /* What: Support Text Field. Why: The subject and message fields should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p04 ) * 1rem );
@@ -175,7 +175,7 @@
 .np-input::placeholder { /* What: Support Text Field Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -183,7 +183,7 @@
 .np-input:focus { /* What: Focused Support Text Field. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -244,7 +244,7 @@
 .support-diag-val { /* What: Support Diagnostic Value. Why: A read-only value should look informational rather than like something to type into. How: This sets it as plain body text. */
 
 
-	color     : var(--text);
+	color     : var(--tex-mai-col);
 	font-size : var( --fon-siz-p01 );
 
 
@@ -276,7 +276,7 @@
 
 
 	align-items     : center;
-	border-top      : var( --bor-wid-sma ) solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );
@@ -342,7 +342,7 @@
 .support-fallback-addr { /* What: Support Fallback Address. Why: The support address should stand out as something to copy, and a long one must still fit. How: This sets it in mono text that may break anywhere. */
 
 
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	font-family   : var(--fon-fam-sec);
 	font-size     : var( --fon-siz-bas );
 	overflow-wrap : anywhere;

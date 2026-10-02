@@ -64,7 +64,7 @@
 .kicker { /* What: Kicker. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -116,7 +116,7 @@
 	background         : none;
 	border             : 0;
 	border-radius      : var( --rad-bor-med );
-	color              : var(--accent);
+	color              : var(--acc-mai-col);
 	cursor             : pointer;
 	display            : block;
 	flex               : 0 0 auto;
@@ -223,7 +223,7 @@
 .stat-title-accent { /* What: Title Accent. Why: The heading's key word reads in the accent color. How: This colors the span. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -241,7 +241,7 @@
 .section-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline. How: This sets it muted, capped in line length. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	margin    : 0;
 	max-width : var( --tex-wid-bas );
 
@@ -253,7 +253,7 @@
 
 	background            : none;
 	border                : 0;
-	color                 : var(--accent);
+	color                 : var(--acc-mai-col);
 	cursor                : pointer;
 	font                  : inherit;
 	padding               : 0;
@@ -333,7 +333,7 @@
 	.settings-rail { /* What: Pill Bar Rail. Why: The bar stays pinned over the sections without clipping its own edge fades. How: This sticks it to the top on an opaque background, with overflow visible and min-width 0 so it neither turns into a second scroll container nor stretches past its grid track. */
 
 
-		background : var(--bg);
+		background : var(--bac-pag-col);
 		max-height : none;
 		min-width  : 0;
 		overflow   : visible;
@@ -363,7 +363,7 @@
 	.settings-rail::before { /* What: Left Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
 
 
-		background : linear-gradient(to right, var(--bg), transparent);
+		background : linear-gradient(to right, var(--bac-pag-col), transparent);
 		left       : var( --spa-hor-p01 );
 
 
@@ -372,7 +372,7 @@
 	.settings-rail::after { /* What: Right Edge Fade. Why: The fade belongs where the pills are cut off, inside the rail's padding. How: This insets it by the rail's side padding and fades from the background to transparent. */
 
 
-		background : linear-gradient(to left, var(--bg), transparent);
+		background : linear-gradient(to left, var(--bac-pag-col), transparent);
 		right      : var( --spa-hor-p01 );
 
 
@@ -481,7 +481,7 @@
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
@@ -499,15 +499,15 @@
 .rail-btn:hover { /* What: Hovered Rail Button. Why: The button should respond to the pointer. How: This darkens its text. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
 .rail-btn[data-rail-select-active] { /* What: Selected Rail Button. Why: The section in view should stand out. How: This fills it in the soft accent, keying off data-rail-select-active. */
 
 
-	background : var(--accent-soft);
-	color      : var(--accent);
+	background : var(--acc-tin-col);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -517,8 +517,8 @@
 	.rail-btn { /* What: Rail Pill. Why: In the narrow pill row each section is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
 
 
-		background    : var(--surface);
-		border        : var( --bor-wid-sma ) solid var(--border);
+		background    : var(--bac-sur-col);
+		border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 		border-radius : 999px;
 		flex-shrink   : 0;
 		padding       : var( --spa-ver-m03 ) var( --spa-hor-m01 );
@@ -531,8 +531,8 @@
 	.rail-btn[data-rail-select-active] { /* What: Selected Rail Pill. Why: The pill in view should stand out. How: This borders it in the accent over the soft accent fill. */
 
 
-		background   : var(--accent-soft);
-		border-color : var(--accent);
+		background   : var(--acc-tin-col);
+		border-color : var(--acc-mai-col);
 
 
 	}
@@ -603,7 +603,7 @@
 
 
 	align-items    : center;
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display        : flex;
 	gap            : var( --spa-hor-m01 );
 	padding-bottom : var( --spa-ver-m01 );
@@ -614,7 +614,7 @@
 .settings-sub { /* What: Section Intro. Why: Each section and subsection explains itself in muted copy. How: This sets it muted at the large font size with no margin. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	margin    : 0;
 
@@ -645,7 +645,7 @@
 .set-subsection-h { /* What: Subsection Heading. Why: Each Appearance topic names itself in a small label. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -676,7 +676,7 @@
 	--seg-flex        : 0 0 auto; /* What: Segmented Flex. Why: The placement control should keep its size. How: SegConCom reads this for its own flex. */
 	--seg-flex-wrap   : nowrap; /* What: Segmented Flex Wrap. Why: The placement control's pills should never wrap. How: SegConCom reads this for its own flex-wrap. */
 	align-items       : center;
-	border-bottom     : var( --bor-wid-sma ) solid var(--border);
+	border-bottom     : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display           : flex;
 	gap               : var( --spa-hor-bas );
 	justify-content   : space-between;
@@ -776,7 +776,7 @@
 .set-data-sub { /* What: Row Description. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced line breaks. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 	text-wrap   : pretty;
@@ -859,10 +859,10 @@
 
 
 	align-items    : center;
-	background     : var(--bg);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-pag-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -886,8 +886,8 @@
 .set-store-chip[data-chip-warn-active] { /* What: Warning Storage Chip. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
 
 
-	background   : oklch(from var(--warm) l c h/0.08);
-	border-color : oklch(from var(--warm) l c h/0.4);
+	background   : oklch(from var(--acc-sec-col) l c h/0.08);
+	border-color : oklch(from var(--acc-sec-col) l c h/0.4);
 	color        : oklch(0.45 0.13 50);
 
 
@@ -909,7 +909,7 @@
 .set-import-msg[data-message-ok-active] { /* What: Good Result Message. Why: A success reads in the accent. How: This colors it, keying off data-message-ok-active. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -984,7 +984,7 @@
 .switch { /* What: Setting Switch. Why: Each on or off setting uses a switch that keeps its size at the row's end. How: This draws a pill track that fades its color and never shrinks. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : 999px;
 	flex          : 0 0 auto;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
@@ -997,7 +997,7 @@
 .switch[aria-pressed="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -1018,7 +1018,7 @@
 .switch i { /* What: Switch Knob. Why: The knob slides across to show the setting's state. How: This draws a shadowed disc at the track's left that slides on change. */
 
 
-	background    : var(--bg);
+	background    : var(--bac-pag-col);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -1056,10 +1056,10 @@
 .set-time-input { /* What: Run Time Input. Why: The run time is typed into a fixed-width field at the row's end. How: This draws a rounded field at a fixed rhythm-step width with tabular digits that borders in the accent on focus. */
 
 
-	background           : var(--bg);
-	border               : var( --bor-wid-sma ) solid var(--border);
+	background           : var(--bac-pag-col);
+	border               : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius        : var( --rad-bor-sma );
-	color                : var(--text);
+	color                : var(--tex-mai-col);
 	flex                 : 0 0 calc( var( --ver-rhy-p08 ) * 1rem );
 	font-family          : var(--fon-fam-mai);
 	font-size            : var( --fon-siz-p01 );
@@ -1076,7 +1076,7 @@
 .set-time-input::placeholder { /* What: Run Time Input Placeholder. Why: A hint should read quieter than real input. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -1084,7 +1084,7 @@
 .set-time-input:focus { /* What: Focused Run Time Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -1166,10 +1166,10 @@
 
 
 	align-items    : center;
-	background     : var(--surface);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--text);
+	color          : var(--tex-mai-col);
 	display        : inline-flex;
 	flex           : 0 0 auto;
 	font-size      : var( --fon-siz-p01 );
@@ -1186,7 +1186,7 @@
 .btn:hover { /* What: Hovered Document Button. Why: The button should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
@@ -1254,7 +1254,7 @@
 .set-about-ver { /* What: About Version. Why: The build version reads as small metadata. How: This sets it in small muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
@@ -1265,7 +1265,7 @@
 .set-about-creator { /* What: About Link Line. Why: The creator and source links read as quieter lines. How: This sets them small and muted. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-bas );
 
 
@@ -1273,14 +1273,14 @@
 .set-about-creator a { /* What: About Link. Why: The link should read as a link. How: This colors it in the accent. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
 .set-about-creator a:hover { /* What: Hovered About Link. Why: The link should respond to the pointer. How: This darkens it to body text. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }

@@ -28,8 +28,8 @@
 
 
 	align-items           : center;
-	background            : var(--surface);
-	border                : var( --bor-wid-sma ) solid var(--border);
+	background            : var(--bac-sur-col);
+	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius         : var( --rad-bor-lar );
 	cursor                : pointer;
 	display               : grid;
@@ -60,14 +60,14 @@
 .today-card:hover { /* What: Hovered Entry Card. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
 
 
 }
 .today-card:active { /* What: Pressed Entry Card. Why: A press should register before the toggle lands. How: This shades the card. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.01) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.01) c h);
 
 
 }
@@ -83,21 +83,21 @@
 .today-card[data-card-done-active] { /* What: Done Entry Card. Why: A done entry reads as settled. How: This shades the card slightly darker than the surface. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.005) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
 
 
 }
 .today-card--dayoff { /* What: Day-Off Card. Why: A day off reads as a gentle rest, apart from ordinary entries. How: This washes the card in the soft accent. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
 .today-card--dayoff[data-card-done-active] { /* What: Done Day-Off Card. Why: A done day off keeps its accent wash, a shade darker. How: This darkens the soft accent slightly. */
 
 
-	background : oklch(from var(--accent-soft) calc(l - 0.02) c h);
+	background : oklch(from var(--acc-tin-col) calc(l - 0.02) c h);
 
 
 }
@@ -112,7 +112,7 @@
 
 
 	animation    : emUnlock 0.28s ease both;
-	border-color : oklch(from var(--accent) l c h / 0.4);
+	border-color : oklch(from var(--acc-mai-col) l c h / 0.4);
 	border-style : dashed;
 	cursor       : grab;
 	perspective  : none; /* What: Flat Perspective. Why: In Firefox the card's 3D context interferes with the drag's translate. How: This drops the perspective while the card can be dragged. */
@@ -122,22 +122,22 @@
 .today-card[data-card-reorder-active]:hover { /* What: Hovered Reorderable Entry Card. Why: The card should respond to the pointer without looking clickable. How: This deepens the dashed border and keeps a plain surface. */
 
 
-	background   : var(--surface);
-	border-color : oklch(from var(--accent) l c h / 0.6);
+	background   : var(--bac-sur-col);
+	border-color : oklch(from var(--acc-mai-col) l c h / 0.6);
 
 
 }
 .today-card[data-card-reorder-active]:active { /* What: Pressed Reorderable Entry Card. Why: A press starts a drag, not a toggle. How: This keeps the plain surface. */
 
 
-	background : var(--surface);
+	background : var(--bac-sur-col);
 
 
 }
 .today-card[data-item-drag-active] { /* What: Dragged Entry Card. Why: The card under the pointer lifts above the rest. How: This solidifies its border, shadows it, and scales it up slightly. */
 
 
-	border-color : oklch(from var(--accent) l c h / 0.55);
+	border-color : oklch(from var(--acc-mai-col) l c h / 0.55);
 	border-style : solid;
 	box-shadow   : 0 18px 40px -12px oklch(0 0 0 / 0.34), 0 6px 14px -4px oklch(0 0 0 / 0.18);
 	cursor       : grabbing;
@@ -148,15 +148,15 @@
 .today-card--tutorial[data-card-needed-active] { /* What: Needed Tutorial Card. Why: While no real picker exists, the tutorial cards ask for attention. How: This tints the card warm. */
 
 
-	background   : oklch(from var(--warm) l c h/0.06);
-	border-color : oklch(from var(--warm) l c h/0.55);
+	background   : oklch(from var(--acc-sec-col) l c h/0.06);
+	border-color : oklch(from var(--acc-sec-col) l c h/0.55);
 
 
 }
 .today-card--tutorial[data-card-needed-active]:hover { /* What: Hovered Needed Tutorial Card. Why: The card should respond to the pointer. How: This deepens its warm border. */
 
 
-	border-color : oklch(from var(--warm) l c h/0.7);
+	border-color : oklch(from var(--acc-sec-col) l c h/0.7);
 
 
 }
@@ -235,7 +235,7 @@
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : grab;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
@@ -249,8 +249,8 @@
 .card-grip:hover { /* What: Hovered Card Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its icon. */
 
 
-	background : var(--accent-soft);
-	color      : var(--text);
+	background : var(--acc-tin-col);
+	color      : var(--tex-mai-col);
 
 
 }
@@ -288,7 +288,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : var( --bor-wid-bas ) solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius      : var( --rad-bor-sma );
 	color              : inherit;
 	display            : inline-flex;
@@ -314,8 +314,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .check:focus-visible { /* What: Focused Checkbox. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
 
 
-	box-shadow     : 0 0 0 3px var(--bg);
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	box-shadow     : 0 0 0 3px var(--bac-pag-col);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : 3px;
 
 
@@ -323,23 +323,23 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check:focus-visible { /* What: Focused Done Checkbox. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
 
 
-	box-shadow : 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
+	box-shadow : 0 0 0 3px var(--bac-pag-col), inset 0 0 0 1.5px var(--bac-pag-col);
 
 
 }
 .check:hover { /* What: Hovered Checkbox. Why: The box should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--text);
+	border-color : var(--tex-mai-col);
 
 
 }
 .today-card[data-card-done-active] .check { /* What: Done Checkbox. Why: A done entry's box reads as filled. How: This fills it in the accent color. */
 
 
-	background   : var(--accent);
-	border-color : var(--accent);
-	color        : var(--bg);
+	background   : var(--acc-mai-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--bac-pag-col);
 
 
 }
@@ -360,7 +360,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .check-ripple { /* What: Checkbox Ripple. Why: Checking an entry sends a ring out from its box. How: This draws a hidden accent ring just outside the box that ignores the pointer. */
 
 
-	border         : var( --bor-wid-bas ) solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius  : var( --rad-bor-sma );
 	inset          : calc( var( --bor-wid-bas ) * -1 );
 	opacity        : 0;
@@ -480,7 +480,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -501,7 +501,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card--dayoff .meta-picker { /* What: Day-Off Meta Label. Why: A day off names its conditional in the accent, a little bolder. How: This colors it and raises its weight. */
 
 
-	color       : var(--accent);
+	color       : var(--acc-mai-col);
 	font-weight : 600;
 
 
@@ -544,8 +544,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	background     : none;
 	border         : none;
-	border-bottom  : var( --bor-wid-bas ) solid var(--border);
-	color          : var(--text);
+	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
+	color          : var(--tex-mai-col);
 	font-family    : var(--fon-fam-mai);
 	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
@@ -560,7 +560,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .entry-card-name-input:focus { /* What: Focused Entry Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--accent);
+	border-bottom-color : var(--acc-mai-col);
 	outline             : none;
 
 
@@ -568,7 +568,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .entry-card-name-input::placeholder { /* What: Entry Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -600,7 +600,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .today-card-name { /* What: Done Entry Name. Why: A done entry reads as crossed off. How: This mutes and strikes through its name. */
 
 
-	color                     : var(--muted);
+	color                     : var(--tex-mut-col);
 	text-decoration           : line-through;
 	text-decoration-thickness : 0.5px;
 
@@ -609,7 +609,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card--charging .today-card-name { /* What: Charging Card Status. Why: A charging card's name is a status line, not a task. How: This mutes and italicizes it. */
 
 
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 	font-style : italic;
 
 
@@ -635,7 +635,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
@@ -647,8 +647,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .icon-btn:hover { /* What: Hovered Entry Action Button. Why: The button should respond to the pointer. How: This fills it with the background color and darkens its icon. */
 
 
-	background : var(--bg);
-	color      : var(--text);
+	background : var(--bac-pag-col);
+	color      : var(--tex-mai-col);
 
 
 }
@@ -664,7 +664,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	background : none;
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 
 
 }

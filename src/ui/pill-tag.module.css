@@ -42,17 +42,17 @@
 .pill--default { /* What: Default Pill Tag. Why: Most tags are neutral labels. How: This gives the pill a surface fill, muted text, and a hairline border. */
 
 
-	background : var(--surface);
-	border     : var( --bor-wid-sma ) solid var(--border);
-	color      : var(--muted);
+	background : var(--bac-sur-col);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color      : var(--tex-mut-col);
 
 
 }
 .pill--mode { /* What: Mode Pill Tag. Why: A picker's mode reads as a highlighted label. How: This tints the pill with the accent color. */
 
 
-	background : var(--accent-soft);
-	color      : var(--accent);
+	background : var(--acc-tin-col);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -60,8 +60,8 @@
 
 
 	background : transparent;
-	border     : var( --bor-wid-sma ) solid var(--border);
-	color      : var(--muted);
+	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color      : var(--tex-mut-col);
 	font-size  : var( --fon-siz-bas );
 	padding    : 0 var( --spa-hor-m03 );
 

@@ -56,7 +56,7 @@
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : grab;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
@@ -71,8 +71,8 @@
 .group-grip:hover { /* What: Hovered Group Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its glyph. */
 
 
-	background : var(--accent-soft);
-	color      : var(--text);
+	background : var(--acc-tin-col);
+	color      : var(--tex-mai-col);
 
 
 }
@@ -101,10 +101,10 @@
 
 
 	animation        : groupNameIn .16s cubic-bezier(0.4, 0, 0.2, 1) both;
-	background       : var(--surface);
-	border           : var( --bor-wid-bas ) solid var(--accent);
+	background       : var(--bac-sur-col);
+	border           : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius    : var( --rad-bor-sma );
-	color            : var(--text);
+	color            : var(--tex-mai-col);
 	font-family      : inherit;
 	font-size        : var( --fon-siz-p02 );
 	font-weight      : 500;
@@ -123,7 +123,7 @@
 .group-name-input[data-name-invalid-active] { /* What: Invalid Group Name Input. Why: A name that collides with another group should be flagged as it's typed. How: This switches the frame to the warm color. */
 
 
-	border-color : var(--warm);
+	border-color : var(--acc-sec-col);
 
 
 }
@@ -213,7 +213,7 @@
 	background     : none;
 	border         : 0;
 	border-radius  : var( --rad-bor-sma );
-	color          : var(--text);
+	color          : var(--tex-mai-col);
 	cursor         : text;
 	display        : inline-flex;
 	font-family    : inherit;
@@ -230,7 +230,7 @@
 .group-name--editable:hover { /* What: Hovered Editable Group Name. Why: The name should show it can be clicked. How: This gives it the accent tint. */
 
 
-	background : var(--accent-soft);
+	background : var(--acc-tin-col);
 
 
 }
@@ -251,7 +251,7 @@
 .group-name--editable svg { /* What: Editable Group Name Pencil. Why: The pencil should only appear on hover, so the name reads normally at rest. How: This hides the muted glyph until hover, fading it in. */
 
 
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 	opacity    : 0;
 	transition : opacity .12s;
 
@@ -286,7 +286,7 @@
 
 
 	align-items          : baseline;
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	display              : inline-flex;
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
@@ -300,7 +300,7 @@
 .group-done { /* What: Group Done Count. Why: The done count is the figure that changes, so it leads. How: This sets it in the full text color. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -333,7 +333,7 @@
 .group-progress i { /* What: Group Progress Dash. Why: Each row gets a small dash that fills when it's done. How: This draws a small rounded grey bar that fades its fill and clips the sweep overlay. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
@@ -346,14 +346,14 @@
 .group-progress i[data-dash-done-active] { /* What: Done Group Progress Dash. Why: A done row's dash should read as filled. How: This fills it with the accent. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
 .group-progress i.is-fresh { /* What: Fresh Group Progress Dash. Why: The dash for the row just done should sweep full rather than snap. How: This keeps the base grey while the overlay sweeps across it, and must stay after the done rule so it wins. */
 
 
-	background : var(--border);
+	background : var(--bor-mai-col);
 
 
 }
@@ -361,7 +361,7 @@
 
 
 	animation        : global(dashSweep) 480ms cubic-bezier(.4,.6,.3,1) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background       : var(--accent);
+	background       : var(--acc-mai-col);
 	border-radius    : inherit;
 	content          : '';
 	inset            : 0;
@@ -407,8 +407,8 @@
 
 	align-items     : center;
 	animation       : groupMergeIn .18s ease-out both;
-	background      : var(--accent-soft);
-	border          : var( --bor-wid-bas ) solid oklch(from var(--accent) l c h / 0.3);
+	background      : var(--acc-tin-col);
+	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / 0.3);
 	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	flex-wrap       : wrap;
@@ -422,8 +422,8 @@
 .group-name-conflict { /* What: Group Name Conflict Banner. Why: A rename that collides with an existing name has nothing to confirm, only an error to fix. How: This recolors the same bar in warm tones. */
 
 
-	background   : oklch(from var(--warm) l c h / 0.08);
-	border-color : oklch(from var(--warm) l c h / 0.35);
+	background   : oklch(from var(--acc-sec-col) l c h / 0.08);
+	border-color : oklch(from var(--acc-sec-col) l c h / 0.35);
 
 
 }
@@ -467,7 +467,7 @@
 .confirm-msg { /* What: Group Confirm Message. Why: The message explains what the bar is asking or warning about. How: This sets it in body text that takes the bar's free width and wraps cleanly. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	flex        : 1;
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );

@@ -65,7 +65,7 @@
 .kicker { /* What: Kicker. Why: A small eyebrow label orients the reader above the page's heading. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -117,7 +117,7 @@
 	background         : none;
 	border             : 0;
 	border-radius      : var( --rad-bor-med );
-	color              : var(--accent);
+	color              : var(--acc-mai-col);
 	cursor             : pointer;
 	display            : block;
 	flex               : 0 0 auto;
@@ -224,7 +224,7 @@
 .picker-title-accent { /* What: Title Accent. Why: The heading's first word reads in the accent color. How: This colors the span. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -242,7 +242,7 @@
 .picker-h-sub { /* What: Page Intro. Why: The intro explains the page under its title, linking to other tabs inline. How: This sets it muted, capped in line length. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	margin    : var( --spa-ver-p01 ) 0 0;
 	max-width : var( --tex-wid-bas );
 
@@ -254,7 +254,7 @@
 
 	background            : none;
 	border                : 0;
-	color                 : var(--accent);
+	color                 : var(--acc-mai-col);
 	cursor                : pointer;
 	font                  : inherit;
 	padding               : 0;
@@ -318,7 +318,7 @@
 .stat-filter-lbl { /* What: Filter Label. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	flex-shrink    : 0;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -377,9 +377,9 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	display        : inline-flex;
 	flex-shrink    : 0;
@@ -396,17 +396,17 @@
 .picker-group-pill:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
 .picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -428,9 +428,9 @@
 
 
 	align-items          : center;
-	background           : oklch(from var(--border) calc(l + 0.02) c h);
+	background           : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
 	border-radius        : 999px;
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	display              : inline-flex;
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
@@ -446,8 +446,8 @@
 .picker-group-pill[aria-selected="true"] .picker-group-count { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
 
 
-	background : oklch(from var(--accent) l c h / 0.16);
-	color      : var(--accent);
+	background : oklch(from var(--acc-mai-col) l c h / 0.16);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -517,8 +517,8 @@
 
 
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global Entrance Keyframes. Why: The pickerTabEnter keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background        : var(--surface);
-	border            : var( --bor-wid-sma ) solid var(--border);
+	background        : var(--bac-sur-col);
+	border            : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius     : var( --rad-bor-med );
 	display           : flex;
 	flex-direction    : column;
@@ -535,15 +535,15 @@
 .picker-tab:hover { /* What: Hovered Picker Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
 .picker-tab[data-tab-select-active] { /* What: Selected Picker Tab. Why: The picker showing below should stand out in the strip. How: This fills the tab in the soft accent. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -567,7 +567,7 @@
 	align-items     : center;
 	background      : transparent;
 	border-style    : dashed;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	flex-direction  : row;
 	gap             : var( --spa-hor-m02 );
@@ -578,18 +578,18 @@
 .picker-tab--add:hover { /* What: Hovered Add Picker Tab. Why: The tab should respond to the pointer. How: This turns it the accent color. */
 
 
-	border-color : var(--accent);
-	color        : var(--accent);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
 .picker-tab--add[data-tab-select-active] { /* What: Selected Add Picker Tab. Why: While the create form is open, its tab reads as selected. How: This solidifies the border and fills it in the soft accent. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
 	border-style : solid;
-	color        : var(--accent);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -622,7 +622,7 @@
 .picker-tab[data-tab-select-active] .picker-tab-name { /* What: Selected Picker Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -638,7 +638,7 @@
 .picker-tab-mode { /* What: Picker Tab Mode. Why: Each tab names its picker's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;

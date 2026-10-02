@@ -29,8 +29,8 @@
 .celeb-preview-stage { /* What: Celebration Preview Stage. Why: The preview should echo the Today cards area it stands in for, and keep its particles inside it. How: This pads a clipped, slightly darker block under a top divider. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.015) c h);
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.015) c h);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display    : block;
 	overflow   : hidden;
 	padding    : var( --spa-ver-p01 ) var( --spa-hor-p01 );
@@ -62,8 +62,8 @@
 
 
 	align-items           : center;
-	background            : oklch(from var(--surface) calc(l - 0.005) c h);
-	border                : var( --bor-wid-sma ) solid var(--border);
+	background            : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius         : var( --rad-bor-lar );
 	cursor                : default;
 	display               : grid;
@@ -87,7 +87,7 @@
 .today-card:hover { /* What: Hovered Preview Card. Why: The mock card responds to the pointer like a real one. How: This darkens its border slightly. */
 
 
-	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
 
 
 }
@@ -122,10 +122,10 @@
 	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping native control styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
-	background         : var(--accent);
-	border             : var( --bor-wid-bas ) solid var(--accent);
+	background         : var(--acc-mai-col);
+	border             : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius      : var( --rad-bor-sma );
-	color              : var(--bg);
+	color              : var(--bac-pag-col);
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
@@ -182,7 +182,7 @@
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -196,7 +196,7 @@
 .today-card-name { /* What: Preview Card Name. Why: A done card's item name reads as checked off. How: This sets it in large medium-weight muted text struck through with a hairline. */
 
 
-	color                     : var(--muted);
+	color                     : var(--tex-mut-col);
 	font-size                 : var( --fon-siz-p02 );
 	font-weight               : 500;
 	letter-spacing            : -0.01em;
@@ -231,7 +231,7 @@
 
 
 	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global Burst Keyframes. Why: The confettiBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background    : var(--accent);
+	background    : var(--acc-mai-col);
 	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	left          : 50%;
@@ -247,7 +247,7 @@
 
 
 	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global Twinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color       : var(--accent);
+	color       : var(--acc-mai-col);
 	font-size   : var( --fon-siz-p02 );
 	line-height : var( --ver-rhy-m01 );
 	opacity     : 0;
@@ -281,7 +281,7 @@
 .pickanim-preview-pick { /* What: Pick Animation Preview Name. Why: Before Play is pressed, the stage shows the picked name on its own. How: This sets it in bold accent mono text. */
 
 
-	color       : var(--accent);
+	color       : var(--acc-mai-col);
 	font-family : var(--fon-fam-sec);
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;

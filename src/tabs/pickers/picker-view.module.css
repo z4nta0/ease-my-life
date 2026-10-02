@@ -60,7 +60,7 @@
 .kicker { /* What: Kicker. Why: A small eyebrow label sits above the picker's name and over the pool. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -89,7 +89,7 @@
 .picker-hint { /* What: Picker Hint. Why: A hint under the header explains the picker's mode. How: This sets muted body text with a capped line length. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	margin    : 0;
 	max-width : var( --tex-wid-bas );
@@ -125,8 +125,8 @@
 
 
 	align-items     : center;
-	background      : var(--surface);
-	border          : var( --bor-wid-sma ) solid var(--border);
+	background      : var(--bac-sur-col);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-xla );
 	display         : flex;
 	justify-content : center;
@@ -169,7 +169,7 @@
 .stage-idle-num { /* What: Stage Count. Why: The pool's size is the stage's headline before a run. How: This sets it large in tabular mono type. */
 
 
-	color                : var(--text);
+	color                : var(--tex-mai-col);
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-p06 );
 	font-variant-numeric : tabular-nums;
@@ -196,7 +196,7 @@
 .stage-idle-lbl { /* What: Stage Label. Why: The figure's label reads as quiet metadata under it. How: This sets it in small uppercase muted mono type, capped at the small text width. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.06em;
@@ -269,9 +269,9 @@
 
 	align-items     : center;
 	animation       : sentPop 440ms cubic-bezier(.22,1.5,.36,1);
-	background      : var(--accent);
+	background      : var(--acc-mai-col);
 	border-radius   : 50%;
-	color           : var(--bg);
+	color           : var(--bac-pag-col);
 	display         : flex;
 	height          : calc( var( --ver-rhy-p05 ) * 1rem );
 	justify-content : center;
@@ -327,7 +327,7 @@
 .stage-sent-name { /* What: Stage Sent Name. Why: The sent item's name is the confirmation's headline. How: This sets it large and wrapping cleanly. */
 
 
-	color          : var(--text);
+	color          : var(--tex-mai-col);
 	font-size      : var( --fon-siz-p03 );
 	font-weight    : 500;
 	letter-spacing : -0.015em;
@@ -558,7 +558,7 @@
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -571,7 +571,7 @@
 .ghost-link:hover { /* What: Hovered Pool Reset Link. Why: The link should respond to the pointer. How: This darkens it. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -585,8 +585,8 @@
 .pool-list { /* What: Pool List. Why: The items read as one bordered list. How: This stacks the rows in a rounded surface that clips them. */
 
 
-	background     : var(--surface);
-	border         : var( --bor-wid-sma ) solid var(--border);
+	background     : var(--bac-sur-col);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );
 	display        : flex;
 	flex-direction : column;
@@ -601,7 +601,7 @@
 
 
 	align-items           : center;
-	border-bottom         : var( --bor-wid-sma ) solid var(--border);
+	border-bottom         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display               : grid;
 	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
 	grid-template-columns : 1fr auto auto auto auto;
@@ -855,7 +855,7 @@
 
 
 	align-items     : center;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : flex;
 	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
@@ -919,9 +919,9 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -936,18 +936,18 @@
 .pool-send:hover { /* What: Hovered Pool Send Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
 .pool-send.is-sent { /* What: Sent Pool Send Button. Why: Once sent, the button becomes a settled check. How: This fills it in the soft accent and drops the pointer cursor. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 	cursor       : default;
 
 
@@ -964,8 +964,8 @@
 
 
 	background   : none;
-	border-color : var(--border);
-	color        : var(--muted);
+	border-color : var(--bor-mai-col);
+	color        : var(--tex-mut-col);
 
 
 }
@@ -973,7 +973,7 @@
 
 
 	animation      : global(obTourFade) 1.8s ease-in-out infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : -2px;
 
 
@@ -992,7 +992,7 @@
 
 
 		animation     : none;
-		outline-color : var(--accent);
+		outline-color : var(--acc-mai-col);
 
 
 	}
@@ -1061,9 +1061,9 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -1078,9 +1078,9 @@
 .pool-edit:hover { /* What: Hovered Pool Edit Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -1105,9 +1105,9 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -1140,8 +1140,8 @@
 
 
 	background   : none;
-	border-color : var(--border);
-	color        : var(--muted);
+	border-color : var(--bor-mai-col);
+	color        : var(--tex-mut-col);
 
 
 }
@@ -1189,8 +1189,8 @@
 	--entry-editor-rows-border-top : 0;
 	--entry-editor-rows-margin-top : 0;
 	animation                      : global(pvNewItemIn) .3s cubic-bezier(.34,1.2,.5,1) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background                     : var(--surface);
-	border                         : var( --bor-wid-sma ) solid var(--border);
+	background                     : var(--bac-sur-col);
+	border                         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                  : var( --rad-bor-med );
 	overflow                       : hidden;
 
@@ -1268,7 +1268,7 @@
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var(--border);
+	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	font           : inherit;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
@@ -1282,7 +1282,7 @@
 .rd-name-input:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--accent);
+	border-bottom-color : var(--acc-mai-col);
 	outline             : none;
 
 
@@ -1290,7 +1290,7 @@
 .rd-name-input::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -1323,7 +1323,7 @@
 	--entry-editor-border-radius : 0;
 	--entry-editor-margin        : 0;
 	--entry-editor-padding       : 0;
-	border-top                   : var( --bor-wid-sma ) solid var(--border);
+	border-top                   : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );
 
 
@@ -1338,9 +1338,9 @@
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-bas ) dashed var(--border);
+	border          : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
@@ -1358,9 +1358,9 @@
 .pv-additem-btn:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }

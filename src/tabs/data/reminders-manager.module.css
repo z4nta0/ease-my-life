@@ -30,8 +30,8 @@
 
 
 	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background    : var(--surface);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
 	overflow      : hidden;
 
@@ -103,7 +103,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .chev { /* What: Chevron. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
 
 
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 	display    : inline-flex;
 	transition : transform .15s;
 
@@ -169,7 +169,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items    : baseline;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -194,10 +194,10 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-body { /* What: Category Body. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
 
 
-	--data-sort-row-border-bottom : var( --bor-wid-sma ) solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--data-sort-row-border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
 	--data-sort-row-padding       : var( --spa-ver-bas ) var( --spa-hor-bas ); /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
-	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
-	border-top                    : var( --bor-wid-sma ) solid var(--border);
+	background                    : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	border-top                    : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -210,8 +210,8 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	-webkit-appearance : none;
 	align-items        : center;
 	appearance         : none;
-	background         : oklch(from var(--surface) calc(l - 0.012) c h);
-	border-bottom      : var( --bor-wid-sma ) solid var(--border);
+	background         : oklch(from var(--bac-sur-col) calc(l - 0.012) c h);
+	border-bottom      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-left        : 0;
 	border-radius      : 0;
 	border-right       : 0;
@@ -231,7 +231,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-ctl ~ .rd-ctl { /* What: Following Section Toggle. Why: The second toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -251,7 +251,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .kicker { /* What: Section Toggle Kicker. Why: The toggle's label reads as a small eyebrow. How: This sets it in small uppercase muted mono type on a tight line. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -268,7 +268,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-ctl-sum { /* What: Section Toggle Summary. Why: A closed toggle says how much it hides. How: This sets the count in small muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
@@ -285,8 +285,8 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-matrix { /* What: Settings Matrix. Why: The reminder settings read as a recessed table under the Controls toggle. How: This shades it and closes it with a hairline. */
 
 
-	background    : oklch(from var(--surface) calc(l - 0.012) c h);
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	background    : oklch(from var(--bac-sur-col) calc(l - 0.012) c h);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -307,7 +307,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-mx-col { /* What: Matrix Column Label. Why: Each kind is named above its column. How: This sets it centered in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.05em;
@@ -327,7 +327,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items           : center;
-	border-bottom         : var( --bor-wid-sma ) solid var(--border);
+	border-bottom         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display               : grid;
 	grid-template-columns : 1fr calc( var( --ver-rhy-p06 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem );
 	padding               : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -360,7 +360,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	animation   : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
 
@@ -402,7 +402,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .switch { /* What: Setting Switch. Why: Each reminder setting turns on or off per reminder kind. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : 999px;
 	cursor        : pointer;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
@@ -415,7 +415,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .switch[aria-pressed="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-pressed the switch already sets. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
@@ -436,7 +436,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .switch i { /* What: Setting Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
 
 
-	background    : var(--bg);
+	background    : var(--bac-pag-col);
 	border-radius : 50%;
 	box-shadow    : 0 1px 2px oklch(0 0 0 / 0.15);
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -482,7 +482,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-mx-foot { /* What: Matrix Footer. Why: Cancel and Save end the matrix below a divider. How: This pushes them right in a padded row under a hairline. */
 
 
-	border-top      : var( --bor-wid-sma ) solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	justify-content : flex-end;
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -517,8 +517,8 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items    : center;
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
-	color          : var(--muted);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -534,7 +534,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-add:hover { /* What: Hovered Add Reminder Control. Why: The control should respond to the pointer. How: This tints it in the accent color. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -554,7 +554,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-empty { /* What: Empty List Message. Why: An empty list explains how to start. How: This sets a muted message padded like a row. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	font-size : var( --fon-siz-p01 );
 	padding   : var( --spa-ver-bas ) var( --spa-hor-bas ) var( --spa-ver-p01 );
 
@@ -568,7 +568,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item { /* What: Reminder Item. Why: Each reminder is divided from the next. How: This draws a hairline under every item but the last. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -625,7 +625,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-row:hover { /* What: Hovered Reminder Row. Why: The row should respond to the pointer. How: This shades it slightly darker than the surface. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.008) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.008) c h);
 
 
 }
@@ -650,9 +650,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items     : center;
-	background      : var(--accent-soft);
+	background      : var(--acc-tin-col);
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--accent);
+	color           : var(--acc-mai-col);
 	display         : inline-flex;
 	flex            : 0 0 auto;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -664,8 +664,8 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-ico[data-reminder-once-active] { /* What: One-Time Reminder Icon. Why: A one-time reminder reads warm, apart from the recurring ones. How: This tints the tile in the warm color, keying off data-reminder-once-active. */
 
 
-	background : oklch(from var(--warm) calc(l + 0.28) c h);
-	color      : var(--warm);
+	background : oklch(from var(--acc-sec-col) calc(l + 0.28) c h);
+	color      : var(--acc-sec-col);
 
 
 }
@@ -693,7 +693,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var(--border);
+	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	font           : inherit;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
@@ -707,7 +707,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name-input:focus { /* What: Focused Row Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--accent);
+	border-bottom-color : var(--acc-mai-col);
 	outline             : none;
 
 
@@ -715,7 +715,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name-input::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -747,7 +747,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-sched { /* What: Row Summary. Why: The row's summary reads as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -765,7 +765,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-chev { /* What: Row Chevron Holder. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 	flex  : 0 0 auto;
 
 
@@ -773,7 +773,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item[data-row-edit-active] .rd-chev { /* What: Open Row Chevron Holder. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -806,7 +806,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 .rd-edit { /* What: Reminder Editor. Why: The editor sits under its row, and its footer runs edge to edge. How: This pads the editor and sets the --rem-inline-foot-* properties EdiFooCom reads for its full-bleed divider. */
 
 
-	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0 calc( var( --spa-hor-bas ) * -1 ); /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) var( --spa-hor-bas ) 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
 	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );

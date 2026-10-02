@@ -42,7 +42,7 @@
 .group-section:not(:first-child) { /* What: Following Reminders Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since every sibling in the group column is a group section, standing in for the old sibling selector that can't reach across modules. */
 
 
-	border-top  : var( --bor-wid-sma ) solid var(--border);
+	border-top  : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	padding-top : var( --spa-ver-p02 );
 
 
@@ -50,7 +50,7 @@
 .group-section[data-item-drag-active] { /* What: Dragged Reminders Section. Why: A section being dragged lifts above the rest, without its divider. How: This floats it on a shadowed surface and drops its top divider and padding. */
 
 
-	background    : var(--surface);
+	background    : var(--bac-sur-col);
 	border-radius : var( --rad-bor-lar );
 	border-top    : 0 !important;
 	box-shadow    : 0 20px 46px -14px oklch(0 0 0 / 0.32);
@@ -103,7 +103,7 @@
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : grab;
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
@@ -118,8 +118,8 @@
 .group-grip:hover { /* What: Hovered Group Grip. Why: The handle should respond to the pointer. How: This tints it with the accent and darkens its glyph. */
 
 
-	background : var(--accent-soft);
-	color      : var(--text);
+	background : var(--acc-tin-col);
+	color      : var(--tex-mai-col);
 
 
 }
@@ -163,7 +163,7 @@
 
 
 	align-items          : baseline;
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	display              : inline-flex;
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
@@ -177,7 +177,7 @@
 .group-done { /* What: Group Done Count. Why: The done count is the figure that changes, so it leads. How: This sets it in the full text color. */
 
 
-	color : var(--text);
+	color : var(--tex-mai-col);
 
 
 }
@@ -222,7 +222,7 @@
 .group-progress i { /* What: Group Progress Dash. Why: Each row gets a small dash that fills when it's done. How: This draws a small rounded grey bar that fades its fill and clips the sweep overlay. */
 
 
-	background    : var(--border);
+	background    : var(--bor-mai-col);
 	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
@@ -235,14 +235,14 @@
 .group-progress i[data-dash-done-active] { /* What: Done Group Progress Dash. Why: A done row's dash should read as filled. How: This fills it with the accent. */
 
 
-	background : var(--accent);
+	background : var(--acc-mai-col);
 
 
 }
 .group-progress i.is-fresh { /* What: Fresh Group Progress Dash. Why: The dash for the row just done should sweep full rather than snap. How: This keeps the base grey while the overlay sweeps across it, and must stay after the done rule so it wins. */
 
 
-	background : var(--border);
+	background : var(--bor-mai-col);
 
 
 }
@@ -250,7 +250,7 @@
 
 
 	animation        : global(dashSweep) 480ms cubic-bezier(.4,.6,.3,1) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background       : var(--accent);
+	background       : var(--acc-mai-col);
 	border-radius    : inherit;
 	content          : '';
 	inset            : 0;
@@ -293,10 +293,10 @@
 
 
 	align-items     : center;
-	background      : var(--bg);
-	border          : var( --bor-wid-sma ) solid var(--border);
+	background      : var(--bac-pag-col);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : 999px;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -310,9 +310,9 @@
 .rem-add-btn:hover { /* What: Hovered Add Reminder Button. Why: The button should respond to the pointer. How: This tints it in the accent color. */
 
 
-	background   : oklch(from var(--accent-soft) l c h / 0.5);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h / 0.5);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -360,9 +360,9 @@
 .rem-added-msg { /* What: Add Result Message. Why: After adding, a short note says where the new reminder went, in a warning tone unless it lands today. How: This draws a small bordered note tinted warm. */
 
 
-	background    : oklch(from var(--warm) l c h/0.07);
-	border        : var( --bor-wid-sma ) solid var(--border);
-	border-color  : oklch(from var(--warm) l c h/0.35);
+	background    : oklch(from var(--acc-sec-col) l c h/0.07);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-color  : oklch(from var(--acc-sec-col) l c h/0.35);
 	border-radius : var( --rad-bor-sma );
 	color         : oklch(0.45 0.13 50);
 	font-size     : var( --fon-siz-bas );
@@ -470,10 +470,10 @@
 .np-input { /* What: Quick-Add Name Input. Why: The name field fills the row. How: This draws a bordered field that grows across the row and borders in the accent color on focus. */
 
 
-	background    : var(--bg);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-pag-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-sma );
-	color         : var(--text);
+	color         : var(--tex-mai-col);
 	flex          : 1;
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
@@ -490,7 +490,7 @@
 .np-input::placeholder { /* What: Quick-Add Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -498,7 +498,7 @@
 .np-input:focus { /* What: Focused Quick-Add Name Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
-	border-color : var(--accent);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -525,12 +525,12 @@
 .rem-inline-editor { /* What: Reminder Inline Editor. Why: Editing a reminder or filling in a new one opens a recessed card of fields, whose rows run edge to edge. How: This draws the card with no side padding, sets the --rem-inline-foot-* properties EdiFooCom reads for its divider, and fades it in. */
 
 
-	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0; /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) var( --spa-hor-bas ) 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
 	animation                    : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background                   : oklch(from var(--surface) calc(l - 0.006) c h);
-	border                       : var( --bor-wid-sma ) solid var(--border);
+	background                   : oklch(from var(--bac-sur-col) calc(l - 0.006) c h);
+	border                       : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                : var( --rad-bor-med );
 	margin                       : 0 0 var( --spa-ver-m05 );
 	padding                      : var( --spa-ver-bas ) 0;
@@ -556,7 +556,7 @@
 .rem-inline-foot { /* What: Quick-Add Footer. Why: Cancel and Add end the form below a divider. How: This pushes them right in a padded row under a hairline. */
 
 
-	border-top      : var( --bor-wid-sma ) solid var(--border);
+	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-m02 );
 	justify-content : flex-end;
@@ -578,8 +578,8 @@
 
 
 	align-items           : center;
-	background            : var(--surface);
-	border                : var( --bor-wid-sma ) solid var(--border);
+	background            : var(--bac-sur-col);
+	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius         : var( --rad-bor-lar );
 	cursor                : pointer;
 	display               : grid;
@@ -610,14 +610,14 @@
 .today-card:hover { /* What: Hovered Reminder Card. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : oklch(from var(--border) calc(l - 0.08) c h);
+	border-color : oklch(from var(--bor-mai-col) calc(l - 0.08) c h);
 
 
 }
 .today-card:active { /* What: Pressed Reminder Card. Why: A press should register before the toggle lands. How: This shades the card. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.01) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.01) c h);
 
 
 }
@@ -633,7 +633,7 @@
 .today-card[data-card-done-active] { /* What: Done Reminder Card. Why: A done reminder reads as settled. How: This shades the card slightly darker than the surface. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.005) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
 
 
 }
@@ -807,7 +807,7 @@
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : var( --bor-wid-bas ) solid var(--border);
+	border             : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius      : var( --rad-bor-sma );
 	color              : inherit;
 	display            : inline-flex;
@@ -833,8 +833,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .check:focus-visible { /* What: Focused Checkbox. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
 
 
-	box-shadow     : 0 0 0 3px var(--bg);
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	box-shadow     : 0 0 0 3px var(--bac-pag-col);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : 3px;
 
 
@@ -842,23 +842,23 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check:focus-visible { /* What: Focused Done Checkbox. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
 
 
-	box-shadow : 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
+	box-shadow : 0 0 0 3px var(--bac-pag-col), inset 0 0 0 1.5px var(--bac-pag-col);
 
 
 }
 .check:hover { /* What: Hovered Checkbox. Why: The box should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--text);
+	border-color : var(--tex-mai-col);
 
 
 }
 .today-card[data-card-done-active] .check { /* What: Done Checkbox. Why: A done reminder's box reads as filled. How: This fills it in the accent color. */
 
 
-	background   : var(--accent);
-	border-color : var(--accent);
-	color        : var(--bg);
+	background   : var(--acc-mai-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--bac-pag-col);
 
 
 }
@@ -879,7 +879,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .check-ripple { /* What: Checkbox Ripple. Why: Checking a reminder sends a ring out from its box. How: This draws a hidden accent ring just outside the box that ignores the pointer. */
 
 
-	border         : var( --bor-wid-bas ) solid var(--accent);
+	border         : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius  : var( --rad-bor-sma );
 	inset          : calc( var( --bor-wid-bas ) * -1 );
 	opacity        : 0;
@@ -956,7 +956,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	align-items    : center;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -970,7 +970,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card-meta svg { /* What: Reminder Meta Icon. Why: The icon marks the card as a reminder. How: This tints it in the accent color. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -978,7 +978,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .meta-picker { /* What: Reminder Meta Label. Why: The schedule label stays muted. How: This sets it in the muted color. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
@@ -1000,8 +1000,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	background     : none;
 	border         : none;
-	border-bottom  : var( --bor-wid-bas ) solid var(--border);
-	color          : var(--text);
+	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
+	color          : var(--tex-mai-col);
 	font-family    : var(--fon-fam-mai);
 	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
@@ -1016,7 +1016,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .rem-card-name-input:focus { /* What: Focused Reminder Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--accent);
+	border-bottom-color : var(--acc-mai-col);
 	outline             : none;
 
 
@@ -1024,7 +1024,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .rem-card-name-input::placeholder { /* What: Reminder Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -1056,7 +1056,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .today-card-name { /* What: Done Reminder Name. Why: A done reminder reads as crossed off. How: This mutes and strikes through its name. */
 
 
-	color                     : var(--muted);
+	color                     : var(--tex-mut-col);
 	text-decoration           : line-through;
 	text-decoration-thickness : 0.5px;
 
@@ -1083,7 +1083,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	align-items     : center;
 	border-radius   : var( --rad-bor-sma );
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
@@ -1095,8 +1095,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .icon-btn:hover { /* What: Hovered Reminder Action Button. Why: The button should respond to the pointer. How: This fills it with the background color and darkens its icon. */
 
 
-	background : var(--bg);
-	color      : var(--text);
+	background : var(--bac-pag-col);
+	color      : var(--tex-mai-col);
 
 
 }
@@ -1127,8 +1127,8 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	align-items     : center;
 	animation       : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background      : oklch(from var(--surface) calc(l - 0.006) c h);
-	border          : var( --bor-wid-sma ) solid var(--border);
+	background      : oklch(from var(--bac-sur-col) calc(l - 0.006) c h);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	flex-wrap       : wrap;
@@ -1158,7 +1158,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .rem-skip-msg { /* What: Skip Question. Why: The question reads as body text, with the date in bold. How: This sets it in the text color. */
 
 
-	color     : var(--text);
+	color     : var(--tex-mai-col);
 	font-size : var( --fon-siz-p01 );
 
 

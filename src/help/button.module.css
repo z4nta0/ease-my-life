@@ -22,9 +22,9 @@
 
 	align-items     : center;
 	background      : none;
-	border          : var( --bor-wid-bas ) solid var(--muted);
+	border          : var( --bor-wid-bas ) solid var(--tex-mut-col);
 	border-radius   : 50%;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : inline-flex;
 	flex            : 0 0 auto;
@@ -43,17 +43,17 @@
 .help-btn:hover { /* What: Hovered Help Button. Why: The toggle should respond to the pointer. How: This tints it with the accent color. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
 .help-btn[aria-pressed="true"] { /* What: Active Help Button. Why: While help mode is on, the toggle should read as switched on. How: This fills it with the accent color, keyed off the button's own pressed state. */
 
 
-	background   : var(--accent);
-	border-color : var(--accent);
+	background   : var(--acc-mai-col);
+	border-color : var(--acc-mai-col);
 	color        : #fff;
 
 

@@ -70,7 +70,7 @@
 .kicker { /* What: Kicker. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	font-weight    : 500;
@@ -122,7 +122,7 @@
 	background         : none;
 	border             : 0;
 	border-radius      : var( --rad-bor-med );
-	color              : var(--accent);
+	color              : var(--acc-mai-col);
 	cursor             : pointer;
 	display            : block;
 	flex               : 0 0 auto;
@@ -229,7 +229,7 @@
 .stat-title-accent { /* What: Title Accent. Why: The heading's key word reads in the accent color. How: This colors the span. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -247,7 +247,7 @@
 .section-sub { /* What: Page Intro. Why: The intro and warning explain the page under its title. How: This sets them muted, capped in line length. */
 
 
-	color     : var(--muted);
+	color     : var(--tex-mut-col);
 	margin    : 0;
 	max-width : var( --tex-wid-bas );
 
@@ -259,7 +259,7 @@
 
 	background            : none;
 	border                : 0;
-	color                 : var(--accent);
+	color                 : var(--acc-mai-col);
 	cursor                : pointer;
 	font                  : inherit;
 	padding               : 0;
@@ -310,7 +310,7 @@
 .stat-filter-lbl { /* What: Filter Label. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	flex-shrink    : 0;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -369,9 +369,9 @@
 
 	align-items    : center;
 	background     : transparent;
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	cursor         : pointer;
 	display        : inline-flex;
 	flex-shrink    : 0;
@@ -388,17 +388,17 @@
 .picker-group-pill:hover { /* What: Hovered Filter Pill. Why: The pill should respond to the pointer. How: This darkens its border and text. */
 
 
-	border-color : var(--muted);
-	color        : var(--text);
+	border-color : var(--tex-mut-col);
+	color        : var(--tex-mai-col);
 
 
 }
 .picker-group-pill[aria-selected="true"] { /* What: Selected Filter Pill. Why: The active filter should stand out. How: This fills it in the soft accent, keying off the aria-selected the pill already sets. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }
@@ -420,9 +420,9 @@
 
 
 	align-items          : center;
-	background           : oklch(from var(--border) calc(l + 0.02) c h);
+	background           : oklch(from var(--bor-mai-col) calc(l + 0.02) c h);
 	border-radius        : 999px;
-	color                : var(--muted);
+	color                : var(--tex-mut-col);
 	display              : inline-flex;
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
@@ -438,8 +438,8 @@
 .picker-group-pill[aria-selected="true"] .picker-group-count { /* What: Selected Pill Count. Why: The count follows its pill's accent. How: This tints the capsule in the accent color. */
 
 
-	background : oklch(from var(--accent) l c h / 0.16);
-	color      : var(--accent);
+	background : oklch(from var(--acc-mai-col) l c h / 0.16);
+	color      : var(--acc-mai-col);
 
 
 }
@@ -511,8 +511,8 @@
 
 
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background        : var(--surface);
-	border            : var( --bor-wid-sma ) solid var(--border);
+	background        : var(--bac-sur-col);
+	border            : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius     : var( --rad-bor-med );
 	display           : flex;
 	flex-direction    : column;
@@ -529,15 +529,15 @@
 .picker-tab:hover { /* What: Hovered Show Tab. Why: The tab should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--muted);
+	border-color : var(--tex-mut-col);
 
 
 }
 .picker-tab[data-tab-select-active] { /* What: Selected Show Tab. Why: The scope showing below should stand out in the strip. How: This fills the tab in the soft accent, keying off data-tab-select-active. */
 
 
-	background   : oklch(from var(--accent-soft) l c h);
-	border-color : var(--accent);
+	background   : oklch(from var(--acc-tin-col) l c h);
+	border-color : var(--acc-mai-col);
 
 
 }
@@ -568,7 +568,7 @@
 .picker-tab[data-tab-select-active] .picker-tab-name { /* What: Selected Show Tab Name. Why: The selected tab's name reads in the accent color. How: This colors it. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -576,7 +576,7 @@
 .picker-tab-mode { /* What: Show Tab Mode. Why: Each tab names its scope's kind as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -624,10 +624,10 @@
 .data-empty { /* What: Empty Filter Message. Why: When the filters match nothing, the list says so in a dashed placeholder. How: This draws a padded dashed box with centered muted text. */
 
 
-	background    : oklch(from var(--surface) l c h / 0.5);
-	border        : var( --bor-wid-bas ) dashed var(--border);
+	background    : oklch(from var(--bac-sur-col) l c h / 0.5);
+	border        : var( --bor-wid-bas ) dashed var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
-	color         : var(--muted);
+	color         : var(--tex-mut-col);
 	font-size     : var( --fon-siz-p01 );
 	padding       : var( --spa-ver-p01 ) var( --spa-hor-bas );
 	text-align    : center;
@@ -638,7 +638,7 @@
 .data-empty-title { /* What: Empty Filter Title. Why: The message leads with what happened. How: This sets it in body color and medium weight. */
 
 
-	color       : var(--text);
+	color       : var(--tex-mai-col);
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 500;
 	margin      : 0 0 var( --spa-ver-m03 );
@@ -649,7 +649,7 @@
 .data-empty-sub { /* What: Empty Filter Hint. Why: The hint says how to widen the filters. How: This sets it small and muted. */
 
 
-	color       : var(--muted);
+	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-p01 );
 	line-height : var( --ver-rhy-bas );
 	margin      : 0;
@@ -668,8 +668,8 @@
 
 
 	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background    : var(--surface);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
 	overflow      : hidden;
 
@@ -747,7 +747,7 @@
 
 
 	animation      : global(obTourFade) 1.8s ease-in-out infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Pickers tab's tour target, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	outline        : var( --bor-wid-lar ) solid var(--accent);
+	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : -2px;
 
 
@@ -759,7 +759,7 @@
 
 
 		animation     : none;
-		outline-color : var(--accent);
+		outline-color : var(--acc-mai-col);
 
 
 	}
@@ -819,7 +819,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .chev { /* What: Chevron. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
 
 
-	color      : var(--muted);
+	color      : var(--tex-mut-col);
 	display    : inline-flex;
 	transition : transform .15s;
 
@@ -885,7 +885,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items    : baseline;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -961,9 +961,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-mode-label { /* What: Category Tag. Why: The picker's mode and group read as matching fixed-width tags. How: This sets each in a small outlined mono capsule at a fixed rhythm-step width, ending in an ellipsis when its text runs out of room. */
 
 
-	border         : var( --bor-wid-sma ) solid var(--border);
+	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : 999px;
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	flex           : 0 0 auto;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -991,9 +991,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items     : center;
-	border          : var( --bor-wid-sma ) solid var(--border);
+	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : 999px;
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	display         : inline-flex;
 	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
@@ -1010,15 +1010,15 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .vac-toggle:hover { /* What: Hovered Vacation Toggle. Why: The toggle should respond to the pointer. How: This darkens its text over the page background. */
 
 
-	background : var(--bg);
-	color      : var(--text);
+	background : var(--bac-pag-col);
+	color      : var(--tex-mai-col);
 
 
 }
 .vac-toggle[aria-pressed="true"] { /* What: On Vacation Toggle. Why: A picker on vacation shows it in its toggle. How: This turns the toggle warm, keying off the aria-pressed it already sets. */
 
 
-	color : var(--warm);
+	color : var(--acc-sec-col);
 
 
 }
@@ -1070,10 +1070,10 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-body { /* What: Category Body. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
 
 
-	--data-sort-row-border-bottom : var( --bor-wid-sma ) solid var(--border); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--data-sort-row-border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
 	--data-sort-row-padding       : var( --spa-ver-bas ) var( --spa-hor-bas ); /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
-	background                    : oklch(from var(--surface) calc(l - 0.005) c h);
-	border-top                    : var( --bor-wid-sma ) solid var(--border);
+	background                    : oklch(from var(--bac-sur-col) calc(l - 0.005) c h);
+	border-top                    : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -1086,8 +1086,8 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	-webkit-appearance : none;
 	align-items        : center;
 	appearance         : none;
-	background         : oklch(from var(--surface) calc(l - 0.012) c h);
-	border-bottom      : var( --bor-wid-sma ) solid var(--border);
+	background         : oklch(from var(--bac-sur-col) calc(l - 0.012) c h);
+	border-bottom      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-left        : 0;
 	border-radius      : 0;
 	border-right       : 0;
@@ -1107,7 +1107,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-ctl ~ .rd-ctl { /* What: Following Section Toggle. Why: The Items toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--border);
+	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -1138,7 +1138,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-ctl-sum { /* What: Section Toggle Summary. Why: A closed toggle says how much it hides. How: This sets the count in small muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.03em;
@@ -1156,8 +1156,8 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	align-items    : center;
-	border-bottom  : var( --bor-wid-sma ) solid var(--border);
-	color          : var(--muted);
+	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	color          : var(--tex-mut-col);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
@@ -1173,7 +1173,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-add:hover { /* What: Hovered Add Item Control. Why: The control should respond to the pointer. How: This tints it in the accent color. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -1195,7 +1195,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item { /* What: Item Item. Why: Each item is divided from the next. How: This draws a hairline under every item but the last. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--border);
+	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
@@ -1230,9 +1230,9 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	animation     : obTourFadeBorder 1.8s ease-in-out infinite;
-	border-bottom : var( --bor-wid-lar ) solid var(--accent);
-	border-left   : var( --bor-wid-lar ) solid var(--accent);
-	border-right  : var( --bor-wid-lar ) solid var(--accent);
+	border-bottom : var( --bor-wid-lar ) solid var(--acc-mai-col);
+	border-left   : var( --bor-wid-lar ) solid var(--acc-mai-col);
+	border-right  : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline       : none;
 
 
@@ -1240,7 +1240,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item.ob-tour-pulse:first-of-type { /* What: First Tour Target Item. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next; :first-of-type skips the Add button, which is always the first child. How: This adds the top border and rounds the top corners. */
 
 
-	border-top              : var( --bor-wid-lar ) solid var(--accent);
+	border-top              : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	border-top-left-radius  : var( --rad-bor-med );
 	border-top-right-radius : var( --rad-bor-med );
 
@@ -1261,7 +1261,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 		animation    : none;
-		border-color : var(--accent);
+		border-color : var(--acc-mai-col);
 
 
 	}
@@ -1274,7 +1274,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	0%, 100% {
 
 
-		border-color : oklch(from var(--accent) l c h / 1);
+		border-color : oklch(from var(--acc-mai-col) l c h / 1);
 
 
 	}
@@ -1282,7 +1282,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	50% {
 
 
-		border-color : oklch(from var(--accent) l c h / 0.2);
+		border-color : oklch(from var(--acc-mai-col) l c h / 0.2);
 
 
 	}
@@ -1315,7 +1315,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-row:hover { /* What: Hovered Item Row. Why: The row should respond to the pointer. How: This shades it slightly darker than the surface. */
 
 
-	background : oklch(from var(--surface) calc(l - 0.008) c h);
+	background : oklch(from var(--bac-sur-col) calc(l - 0.008) c h);
 
 
 }
@@ -1353,7 +1353,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var(--border);
+	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	font           : inherit;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
@@ -1367,7 +1367,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name-input:focus { /* What: Focused Row Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--accent);
+	border-bottom-color : var(--acc-mai-col);
 	outline             : none;
 
 
@@ -1375,7 +1375,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-name-input::placeholder { /* What: Row Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--muted);
+	color   : var(--tex-mut-col);
 	opacity : 0.7;
 
 
@@ -1406,7 +1406,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item[data-row-vacation-active] .rd-name { /* What: Vacationing Item Name. Why: An item on vacation reads quieter than the rest. How: This mutes its name, keying off the row's data-row-vacation-active. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 
 
 }
@@ -1414,7 +1414,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-sched { /* What: Row Summary. Why: The row's summary reads as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--muted);
+	color          : var(--tex-mut-col);
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
 	letter-spacing : 0.04em;
@@ -1432,7 +1432,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-chev { /* What: Row Chevron Holder. Why: The chevron keeps a fixed slot at the row's end. How: This stops it from growing or shrinking and mutes its color. */
 
 
-	color : var(--muted);
+	color : var(--tex-mut-col);
 	flex  : 0 0 auto;
 
 
@@ -1440,7 +1440,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item[data-row-edit-active] .rd-chev { /* What: Open Row Chevron Holder. Why: An open row's chevron marks it as the one being edited. How: This turns it the accent color. */
 
 
-	color : var(--accent);
+	color : var(--acc-mai-col);
 
 
 }
@@ -1476,7 +1476,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	--entry-editor-border-radius : 0; /* What: Editor Radius. Why: A borderless editor needs no rounding. How: EntEdiCom reads this for its own border radius. */
 	--entry-editor-margin        : 0; /* What: Editor Margin. Why: The wrapper already spaces the editor. How: EntEdiCom reads this for its own margin. */
 	--entry-editor-padding       : 0; /* What: Editor Padding. Why: The wrapper already pads the editor. How: EntEdiCom reads this for its own padding. */
-	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--border); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0 calc( var( --spa-hor-bas ) * -1 ); /* What: Footer Margin. Why: The footer runs edge to edge. How: EdiFooCom reads this to pull itself past the editor's padding. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) var( --spa-hor-bas ) 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the edges. How: EdiFooCom reads this for its own padding. */
 	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );
@@ -1497,10 +1497,10 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 
 	align-items     : center;
 	background      : none;
-	border          : var( --bor-wid-sma ) dashed var(--border);
+	border          : var( --bor-wid-sma ) dashed var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );
 	box-sizing      : content-box; /* What: Content Box Sizing. Why: The button must total exactly the height of a collapsed row card, whose border sits outside its header. How: This puts the border outside the rhythm height, so both add the same snapped border to the same height. */
-	color           : var(--muted);
+	color           : var(--tex-mut-col);
 	cursor          : pointer;
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
@@ -1516,9 +1516,9 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 .cat-create-btn:hover { /* What: Hovered Create Picker Button. Why: The button should respond to the pointer. How: This tints it in the accent color. */
 
 
-	background   : var(--accent-soft);
-	border-color : var(--accent);
-	color        : var(--accent);
+	background   : var(--acc-tin-col);
+	border-color : var(--acc-mai-col);
+	color        : var(--acc-mai-col);
 
 
 }

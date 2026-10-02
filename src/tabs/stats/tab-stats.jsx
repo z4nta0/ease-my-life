@@ -104,9 +104,9 @@ const SOU_FIE_OBJ = { auto : 'autNum', manual : 'manNum', reroll : 'rerNum' }; /
 const SOU_MET_ARR = [ // What: Source Meta Array. Why: This defines how each Today pick came to be. How: This is joined with each source's own live count for the "How picks were chosen" BreBarCom card.
 
 
-	{ colStr : 'var(--accent)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Most picks come from the Daily generator. How: This colors them with the plain accent.
-	{ colStr : 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent.
-	{ colStr : 'var(--warm)',                                               keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone.
+	{ colStr : 'var(--acc-mai-col)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Most picks come from the Daily generator. How: This colors them with the plain accent.
+	{ colStr : 'oklch(from var(--acc-mai-col) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent.
+	{ colStr : 'var(--acc-sec-col)',                                               keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone.
 
 
 ];
@@ -189,8 +189,8 @@ const STA_RAN_ARR = [ // What: Stat Range Array. Why: This defines the fixed set
 const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time versus recurring split shown for reminders, sharing the same visual language as SOU_MET_ARR. How: This is joined with each type's own live count for the "By reminder type" BreBarCom card.
 
 
-	{ colStr : 'var(--accent)', keyStr : 'recurring', labStr : 'Recurring' }, // What: Recurring Type Object. Why: Recurring reminders make up the bulk of most logs. How: This colors them with the plain accent.
-	{ colStr : 'var(--warm)',   keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: One-time reminders are the smaller, distinct share. How: This colors them with the warm tone.
+	{ colStr : 'var(--acc-mai-col)', keyStr : 'recurring', labStr : 'Recurring' }, // What: Recurring Type Object. Why: Recurring reminders make up the bulk of most logs. How: This colors them with the plain accent.
+	{ colStr : 'var(--acc-sec-col)',   keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: One-time reminders are the smaller, distinct share. How: This colors them with the warm tone.
 
 
 ];
@@ -2488,7 +2488,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<g
 								style={{
-									stroke      : 'var(--accent-soft)',
+									stroke      : 'var(--acc-tin-col)',
 									strokeWidth : 16
 								}}
 							>{ /* What: Grid Group Element. Why: Groups the 8 decorative background lines so they can share one stroke style instead of repeating it 8 times. How: This sets the shared stroke/strokeWidth once, applied to every child path below. */ }

@@ -17,8 +17,8 @@
 .card { /* What: Card Surface. Why: Every tab's panels share one surface look. How: This gives the panel the surface color, a hairline border, and the large corner radius. */
 
 
-	background    : var(--surface);
-	border        : var( --bor-wid-sma ) solid var(--border);
+	background    : var(--bac-sur-col);
+	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-lar );
 
 
