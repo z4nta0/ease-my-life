@@ -2249,6 +2249,20 @@ still passes.
       covers, or half an element's own size (e.g. a tooltip arrow at
       `calc( var( --ver-rhy-bas ) * 1rem / -2 )`). An off-screen technique
       (e.g. `left: -9999px`) isn't spacing and stays literal.
+    - **JavaScript follows the same scale** (decided 2026-10-01). An icon
+      takes its size as a rhythm step name rather than a pixel number
+      (`<IcoSvgCom icoNamStr='plus' sizStr='bas' />`), which the component
+      turns into `calc( var( --ver-rhy-<step> ) * 1rem )`. Layout math that
+      works in pixels (placing a tooltip or tour card, a scroll offset, a
+      sticky fallback) reads a step through `utils/rhythm.js`'s own
+      `rhyPxlFun( '<step>' )`, which computes the step's pixel size from
+      the root font size and the core design number with the same formula
+      `styles.css` uses, so the two can never drift apart. A number that
+      only tunes behavior rather than spacing (a "moved more than N px"
+      threshold, animation pacing, a clamp that keeps an arrow off a
+      rounded corner) stays literal. Numbers inside an SVG's own drawing
+      space (path coordinates, `viewBox`, `strokeWidth`) are not CSS
+      lengths, scale with the SVG, and are exempt.
     - **Text measure is font based** (decided 2026-10-01, also not
       specific to this project): a paragraph's `max-width` comes from the
       project's main body font, not from either rhythm. Paragraph text
