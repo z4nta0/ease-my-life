@@ -2373,7 +2373,8 @@ are renamed to this as their files come up in the design-system pass.
     accent), `--bac-hov-col` (a hover overlay), `--scr-mai-col` (the scrim
     behind modals and spotlights), `--att-rin-col` (an attention ring, the
     pulse that calls the eye to something, kept apart from the accent so
-    it can change on its own), and three status families, `--err-*`
+    it can change on its own), `--sha-mai-col` (the color every elevation
+    shadow casts, read with each layer's own alpha), and three status families, `--err-*`
     (errors and deletes), `--suc-*` (success), and `--war-*` (warnings),
     each with `mai` (badges, borders, outlines), `dar` (a darker shade for
     status text), and `tin` (a pale tint behind a badge). A use that needs
