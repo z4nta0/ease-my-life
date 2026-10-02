@@ -2438,6 +2438,17 @@ are renamed to this as their files come up in the design-system pass.
   time, so any duration animates smoothly. Reduced-motion `.01ms` values,
   `0ms`, and other near-zero durations that exist only so an end event
   fires stay literal.
+- **Shadows use an elevation scale** (decided 2026-10-01): a drop shadow
+  that lifts something off the page reads one of `--ele-sma-sha` (knobs and
+  small raised controls), `--ele-med-sha` (small floating surfaces such as
+  tooltips and a floating tab bar), `--ele-lar-sha` (popovers and anything
+  being dragged), `--ele-xla-sha` (modals), or `--ele-sid-sha` (the large
+  shadow turned to fall sideways, for a drawer sliding in from an edge).
+  Every length in them is a vertical rhythm step, and each level above the
+  smallest pairs its soft key shadow with a crisp contact layer. A
+  `box-shadow` that isn't elevation (a `0 0 0 Npx` ring or outline, an inset
+  border, a pulse keyframe, a spotlight's huge spread) isn't covered and
+  keeps its own value.
 - **Easing curves use five tokens** (decided 2026-10-01): `--mot-sta-eas`
   (standard, `ease`), `--mot-dec-eas` (decelerate, for things arriving),
   `--mot-acc-eas` (accelerate, for things leaving), `--mot-ove-eas` (a
