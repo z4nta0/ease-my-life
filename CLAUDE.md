@@ -1846,11 +1846,8 @@ comes up and recorded here, per "### Undefined cases: stop and ask".
 - **Text measure uses `em` or `ch`** (decided 2026-10-01): a paragraph's
   `max-width` follows its own font rather than the root, per "Text measure
   is font based" under "### CSS modules and JS hooks".
-- **Breakpoints are expected to stay fixed `px` values** (noted
-  2026-09-29, to be confirmed when breakpoints are systematized): inside an
-  `@media` or `@container` condition, `rem` resolves against the browser's
-  own 16px default rather than this project's 11px root, so a `rem`
-  breakpoint wouldn't line up with the rem values used everywhere else.
+- **Breakpoints are `px` values** (decided 2026-10-01): see "Breakpoints
+  are a short list of round numbers" under "### Custom property naming".
 
 ### Reduced motion
 Decided 2026-09-28. Everything that can have a reduced-motion variant gets
@@ -2443,9 +2440,22 @@ are renamed to this as their files come up in the design-system pass.
   safety timeouts, how long a confirmation stays up, waits on a browser
   action (a smooth scroll, a focus move), clock ticks, per-item stagger
   delays, extra safety margins, and reduced-motion short-cuts.
-- **Breakpoints stay literal numbers**, since a custom property can't be
-  read inside an `@media` or `@container` condition, but their values still
-  come from the scale the design system defines.
+- **Breakpoints are a short list of round numbers** (decided 2026-10-01).
+  A custom property can't be read inside an `@media` or `@container`
+  condition, so breakpoints are literal. They don't come from the rhythm:
+  its steps sit about 32% apart, too coarse for the widths a layout really
+  needs to switch at, so each project keeps a small set of round `px`
+  values instead of one tuned number per fix. They stay `px` rather than
+  `rem`, so a layout switches at a predictable screen width. A new
+  breakpoint snaps to one of the set; since nearly every query is a
+  `max-width` fix for something that crowds below that width, it rounds up
+  to the next value, because rounding down would bring back the problem in
+  the gap. A pair of queries that must not overlap keeps its offset (`max-
+  width: 719.98px` beside `min-width: 720px`, `min-width: 761px` after
+  `max-width: 760px`). Layout queries measure the app container (`@container
+  app`); only what a container can't measure, such as the viewport's
+  height, stays `@media`. In this project the set is 440, 500, 560, 640,
+  720, 760, and 880px, plus a 750px height query.
 - **The core design numbers are exempt** from this naming pattern (see
   the exception under "The global stylesheet" above): they're named and
   ordered as the user writes them, and, like everything else about them,
