@@ -89,13 +89,13 @@
 
 
 }
-@keyframes obSpotPing { /* What: Spotlight Ring Ping. Why: A ring that grows and fades reads as a call to click. How: This spreads a white shadow outward from the border while fading it out, white because the accent color barely shows against the dark scrim. */
+@keyframes obSpotPing { /* What: Spotlight Ring Ping. Why: A ring that grows and fades reads as a call to click. How: This spreads an attention ring shadow outward from the border while fading it out, white by default because the accent color barely shows against the dark scrim. */
 
 
 	0% {
 
 
-		box-shadow : 0 0 0 0 oklch(1 0 0/0.65);
+		box-shadow : 0 0 0 0 oklch( from var( --att-rin-col ) l c h / 0.65 );
 
 
 	}
@@ -103,7 +103,7 @@
 	70% {
 
 
-		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch(1 0 0/0);
+		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch( from var( --att-rin-col ) l c h / 0 );
 
 
 	}
@@ -111,7 +111,7 @@
 	100% {
 
 
-		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch(1 0 0/0);
+		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch( from var( --att-rin-col ) l c h / 0 );
 
 
 	}
