@@ -2406,10 +2406,14 @@ are renamed to this as their files come up in the design-system pass.
   `0`, and `inherit`. JavaScript reads a radius the same way as any other
   step, through `rhyPxlFun`.
 - **Durations use a scale on the core design number** (decided
-  2026-10-01, and like the core numbers not specific to this project): a
-  150ms base (exactly 9 frames at 60fps) times a power of the core design
-  number, named by base offset like the rhythm, from `m03` (about 64ms,
-  the shortest step that still reads as motion) up. Transitions use
+  2026-10-01, and like the core numbers not specific to this project):
+  every step is a power of the core design number in milliseconds, the
+  same way every length is a power of it in rem. The base step is the 18th
+  power (`calc( var( --cdn-pow-018 ) * 1ms )`, about 157.8ms), chosen over
+  a free-standing 150ms because it keeps durations on the rhythm and fits
+  common interface timings closely (120ms lands on about 119ms). Steps
+  are named by base offset like the rhythm, from `m03` (about 68ms, the
+  shortest step that still reads as motion) up. Transitions use
   `--dur-tra-*` and animations `--dur-ani-*`, the same steps in both. A
   literal moves to a step by what the motion is for: **expressive** motion
   (celebrations, confetti, check-mark pops, pulses, spins, sparkles)
