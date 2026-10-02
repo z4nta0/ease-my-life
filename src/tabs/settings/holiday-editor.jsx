@@ -293,7 +293,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 
 							<IcoSvgCom
 								icoNamStr='traEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed small size. */ }
 
 

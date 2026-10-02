@@ -732,7 +732,7 @@ const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of th
 const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click racing an open rename input's own delayed commit must still end with the group's own real name intact. How: This calls actStoObj.renTouFun with pgtNamStr, one p01 duration step after this fires.
 
 
-	setTimeout( () => actStoObj.renTouFun( pgtNamStr ), durMilFun( 'p01' ) ); // What: Deferred Rename Call. Why: This must fire safely after GroHeaCom's own base-step closing-animation commit, not before it. How: This waits the next step up, p01, then renames the group back to pgtNamStr.
+	setTimeout( () => actStoObj.renTouFun( pgtNamStr ), durMilFun( 'p01' ) ); // What: Deferred Rename Call. Why: This must fire safely after GroHeaCom's own base-step closing-animation commit, not before it. How: This waits the next step up, p01, then renames the group back to pgtNamStr. // Duration Base Plus 1 ~= 209.1ms
 
 
 };

@@ -547,7 +547,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 			<IcoSvgCom
 				icoNamStr={ varCopObj.icoStr }
-				sizSteStr='p05'
+				sizSteStr='p05' // Vertical Rhythm Base Plus 5 ~= 59.447px
 			/> // What: Icon Svg Component. Why: This is the glyph identifying which kind of reminder this tour creates. How: This renders varCopObj.icoStr's own icon.
 
 

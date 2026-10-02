@@ -821,14 +821,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			carEleLis.forEach( ( curCarEle, curIndNum ) => { // What: Card Exhale Stagger Loop. Why: Each card's own exhale needs a slightly later delay than the one before it, so the cascade reads as a wave. How: This sets a CSS variable and adds the is-exhaling class to each card in turn.
 
 
-				curCarEle.style.setProperty( '--exh-car-del', `${ curIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card starts its exhale a beat after the one before it. How: This sets --exh-car-del to one m03 duration step per card index.
+				curCarEle.style.setProperty( '--exh-car-del', `${ curIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card starts its exhale a beat after the one before it. How: This sets --exh-car-del to one m03 duration step per card index. // Duration Base Minus 3 ~= 67.9ms
 
 				curCarEle.setAttribute( 'data-card-exhale-active', '' ); // What: Exhale Attribute Set. Why: This is what actually starts the card's own exhale animation, in whichever module the card belongs to. How: This adds the presence-only data-card-exhale-active attribute.
 
 
 			} );
 
-			const celTotNum = carEleLis.length * durMilFun( 'm03' ) + durMilFun( 'p07' ); // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total stagger to the card exhale's own p07 duration step.
+			const celTotNum = carEleLis.length * durMilFun( 'm03' ) + durMilFun( 'p07' ); // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total stagger to the card exhale's own p07 duration step. // Duration Base Minus 3 ~= 67.9ms, Duration Base Plus 7 ~= 1130.0ms
 
 
 			const celEndTim = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotNum, clearing every piece of state/CSS this branch set.
@@ -851,7 +851,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				setCelRecObj( null ); // What: Overlay Rect Clear. Why: The portal overlay should unmount once the particles are gone. How: This resets celRecObj to null.
 
 
-			}, Math.max( durMilFun( 'p09' ), celTotNum + 100 ) ); // What: Celebration End Delay. Why: Cleanup waits for the longest celebration effect to finish. How: This waits the total cascade time plus a margin, at least the p09 duration step that outlasts every particle and the ring's own ripple.
+			}, Math.max( durMilFun( 'p09' ), celTotNum + 100 ) ); // What: Celebration End Delay. Why: Cleanup waits for the longest celebration effect to finish. How: This waits the total cascade time plus a margin, at least the p09 duration step that outlasts every particle and the ring's own ripple. // Duration Base Plus 9 ~= 1983.0ms
 
 			// #endregion Celebration Fire Sequence
 
@@ -878,7 +878,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			void rinCurEle.offsetWidth;                        // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
 			rinCurEle.classList.add( cssModObj.isPulsing );    // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the is-pulsing class to rinCurEle.
 
-			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.isPulsing ), durMilFun( 'p06' ) ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing after the glow pulse's own p06 duration step, the longest of the pulse's animations.
+			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.isPulsing ), durMilFun( 'p06' ) ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing after the glow pulse's own p06 duration step, the longest of the pulse's animations. // Duration Base Plus 6 ~= 853.0ms
 
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
@@ -917,7 +917,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			void stkCurEle.offsetWidth;                       // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
 			stkCurEle.classList.add( cssModObj.isBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the is-bumped class to stkCurEle.
 
-			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.isBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped after the bump's own p06 duration step.
+			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.isBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped after the bump's own p06 duration step. // Duration Base Plus 6 ~= 853.0ms
 
 
 			preClaRef.current = claNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClaRef with claNowBoo.
@@ -1059,7 +1059,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			setJusCheStr( entRecObj.eid ); // What: Just-Checked Stage. Why: EntCarCom's own fresh-cue check needs this exact eid to compare against. How: This publishes entRecObj's own eid into jusCheStr.
 
-			setTimeout( () => setJusCheStr( ( curValStr ) => curValStr === entRecObj.eid ? null : curValStr ), durMilFun( 'p05' ) ); // What: Just-Checked Clear Timeout. Why: The fresh cue must clear itself once its check ripple ends, but only if a newer check hasn't already claimed jusCheStr in the meantime. How: This clears jusCheStr back to null after the ripple's own p05 duration step, guarded so a stale timeout can't stomp a fresher one.
+			setTimeout( () => setJusCheStr( ( curValStr ) => curValStr === entRecObj.eid ? null : curValStr ), durMilFun( 'p05' ) ); // What: Just-Checked Clear Timeout. Why: The fresh cue must clear itself once its check ripple ends, but only if a newer check hasn't already claimed jusCheStr in the meantime. How: This clears jusCheStr back to null after the ripple's own p05 duration step, guarded so a stale timeout can't stomp a fresher one. // Duration Base Plus 5 ~= 643.9ms
 
 
 		}
@@ -1086,7 +1086,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const skiAniNum = durMilFun( 'p03' ); // What: Skip Animation Number. Why: See the doc comment just above. How: This is the collapse animation's own p03 duration step in milliseconds, used to delay the real skip/delete.
+	const skiAniNum = durMilFun( 'p03' ); // What: Skip Animation Number. Why: See the doc comment just above. How: This is the collapse animation's own p03 duration step in milliseconds, used to delay the real skip/delete. // Duration Base Plus 3 ~= 366.9ms
 
 	const [ rmvIdeSet, setRmvIdeSet ] = React.useState( () => new Set() ); // What: Removing Identifier Set And Setter. Why: A skipped or deleted row needs to know it is mid-removal so it can play its own collapse animation. How: This is added to right before the animation starts and cleared once the underlying data actually changes.
 
@@ -1225,7 +1225,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const rolAniNum = redMotFun() ? 200 : durMilFun( 'p06' ); // What: Roll Animation Number. Why: See the doc comment just above. How: This picks the short reduced-motion beat or the flip's own full p06 duration step.
+	const rolAniNum = redMotFun() ? 200 : durMilFun( 'p06' ); // What: Roll Animation Number. Why: See the doc comment just above. How: This picks the short reduced-motion beat or the flip's own full p06 duration step. // Duration Base Plus 6 ~= 853.0ms
 
 	const [ rolIdeSet, setRolIdeSet ] = React.useState( () => new Set() ); // What: Rolling Identifier Set And Setter. Why: A re-rolling row needs to know it is mid-flip so it can play its own animation class. How: This is added to right before the flip starts and cleared once it finishes.
 
@@ -1469,7 +1469,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                                                     // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
-			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ) ) : rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step.
+			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ) ) : rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 			const biaLinNum = stiHeiNum + 20; // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
 			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' );                                                                     // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
 
@@ -1572,8 +1572,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                         // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
 		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                                         // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
-		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step.
-		const extPadNum = rhyPxlFun( 'bas' );                                                                                   // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below.
+		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
+		const extPadNum = rhyPxlFun( 'bas' );                                                                                   // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
 		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                      // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 
@@ -1778,7 +1778,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		if ( redMotFun() ) setBanCloBoo( false ); // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the banner gone immediately rather than watch a collapse it won't perceive as smooth anyway. How: This clears banCloBoo back to false immediately.
 
-		else setTimeout( () => setBanCloBoo( false ), durMilFun( 'p02' ) ); // What: Collapse Settle Timeout. Why: Everyone else needs the banner to stay mounted through its own real collapse animation. How: This clears banCloBoo after that animation's own p02 duration step.
+		else setTimeout( () => setBanCloBoo( false ), durMilFun( 'p02' ) ); // What: Collapse Settle Timeout. Why: Everyone else needs the banner to stay mounted through its own real collapse animation. How: This clears banCloBoo after that animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 	};
@@ -2513,7 +2513,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			await new Promise( ( resProFun ) => setTimeout( resProFun, durMilFun( 'p02' ) ) ); // What: Departure Settle Wait. Why: The exit animations above need real time to actually play before the commit below. How: This awaits the p02 duration step.
+			await new Promise( ( resProFun ) => setTimeout( resProFun, durMilFun( 'p02' ) ) ); // What: Departure Settle Wait. Why: The exit animations above need real time to actually play before the commit below. How: This awaits the p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 		}
@@ -2543,7 +2543,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			setAriTasSet( new Set( ariTasArr ) ); // What: Arriving Task Set. Why: Newly-visible reminders play a brief arrival animation. How: This stores their ids in ariTasSet.
 
-			setTimeout( () => setAriTasSet( new Set() ), durMilFun( 'p03' ) ); // What: Arrival Clear Timeout. Why: The arrival animation only lasts its own p03 duration step. How: This empties ariTasSet once it finishes.
+			setTimeout( () => setAriTasSet( new Set() ), durMilFun( 'p03' ) ); // What: Arrival Clear Timeout. Why: The arrival animation only lasts its own p03 duration step. How: This empties ariTasSet once it finishes. // Duration Base Plus 3 ~= 366.9ms
 
 
 		}
@@ -3102,8 +3102,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				if ( genCurEle && maiScrEle && tabCurEle ) { // What: All Found Branch. Why: The scroll can only happen once every one of these 3 exists. How: This computes and applies the scroll only when all 3 are present.
 
 
-					const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step.
-					const tarOffNum = genCurEle.offsetTop - stiHeiNum - rhyPxlFun( 'bas' );                                                 // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small base-step pad. How: This subtracts stiHeiNum and a base rhythm step from genCurEle's own offsetTop.
+					const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail. How: This reads the --sticky-top-h custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
+					const tarOffNum = genCurEle.offsetTop - stiHeiNum - rhyPxlFun( 'bas' );                                                 // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small base-step pad. How: This subtracts stiHeiNum and a base rhythm step from genCurEle's own offsetTop. // Vertical Rhythm Base ~= 14.572px
 					const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                      // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 
@@ -3172,8 +3172,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			const redMotBoo = redMotFun();                          // What: Reduced Motion Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks redMotFun once, reused for both timeouts below.
-			const celDelNum = redMotBoo ? 200 : durMilFun( 'p09' ); // What: Celebration Delay Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the p09 duration step that outlasts the whole celebration.
-			const exiDelNum = redMotBoo ? 0 : durMilFun( 'p03' );   // What: Exit Delay Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the exit animation's own p03 duration step.
+			const celDelNum = redMotBoo ? 200 : durMilFun( 'p09' ); // What: Celebration Delay Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the p09 duration step that outlasts the whole celebration. // Duration Base Plus 9 ~= 1983.0ms
+			const exiDelNum = redMotBoo ? 0 : durMilFun( 'p03' );   // What: Exit Delay Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the exit animation's own p03 duration step. // Duration Base Plus 3 ~= 366.9ms
 
 			const celTimNum = setTimeout( () => setCheExiBoo( true ), celDelNum ); // What: Celebrate Timeout Number. Why: The exit animation should only start once the celebration has had its own moment first. How: This flips cheExiBoo true after celDelNum.
 
@@ -3335,7 +3335,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='flaEle'
-										sizSteStr='m01'
+										sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
 									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 									<span>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }
@@ -3414,7 +3414,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<g
 										style={{
-											stroke      : 'var(--acc-tin-col)',
+											stroke      : 'var(--acc-tin-col)', // Accent Tint Color = oklch( 0.95 0.025 250 )
 											strokeWidth : 16
 										}}
 									>{ /* What: Grid Group Element. Why: Groups the 8 decorative background lines so they can share one stroke style instead of repeating it 8 times. How: This sets the shared stroke/strokeWidth once, applied to every child path below. */ }
@@ -3485,7 +3485,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								>{ /* What: Default Title State Span Element. Why: This is the everyday hero line, visible whenever the day isn't yet complete. How: This renders the fixed "Your day, eased just for you." copy. */ }
 
 
-									Your day,<br />{ ' ' }<span style={{ color : 'var(--acc-mai-col)' }}>eased</span> just for you.
+									Your day,<br />{ ' ' }<span style={{ color : 'var(--acc-mai-col)' }}>eased</span> just for you.{ /* Accent Main Color = oklch( 0.5 0.14 250 ) */ }
 
 
 								</span>
@@ -3614,7 +3614,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 							<IcoSvgCom
 								icoNamStr='griEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'griEle' icon at a fixed size. */ }
 
 							Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
@@ -3885,7 +3885,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 								<IcoSvgCom
 									icoNamStr='griEle'
-									sizSteStr='bas'
+									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 								/>{ /* What: Icon Svg Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'griEle' icon at a fixed size. */ }
 
 								{ ediModBoo ? 'Done' : 'Edit Mode' }{ /* What: Edit Mode Label Expression. Why: The same rail button enters and leaves Edit Mode. How: This reads "Done" while Edit Mode is on, otherwise "Edit Mode". */ }
@@ -4388,7 +4388,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='cheEle'
-										sizSteStr='p01'
+										sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
 									/>{ /* What: Icon Svg Component. Why: The Generate card leads with a check mark, matching the other onboarding create cards. How: This renders the check glyph at the p01 rhythm step. */ }
 
 
@@ -4443,7 +4443,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizSteStr='p01'
+										sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
 									/>{ /* What: Icon Svg Component. Why: The no-pickers card leads with a plus, pointing at creating one. How: This renders the plus glyph at the p01 rhythm step. */ }
 
 
@@ -4481,7 +4481,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='calEle'
-										sizSteStr='p01'
+										sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
 									/>{ /* What: Icon Svg Component. Why: The idle card leads with a calendar, since nothing is scheduled today. How: This renders the calendar glyph at the p01 rhythm step. */ }
 
 
@@ -4632,7 +4632,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 												<IcoSvgCom
 													icoNamStr='refEle'
-													sizSteStr='bas'
+													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 												/>{ /* What: Icon Svg Component. Why: The disabled Regenerate control keeps the same refresh icon as the real button. How: This renders the refresh glyph at the bas rhythm step, followed by the label text. */ }Regenerate
 
 

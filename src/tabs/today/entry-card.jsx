@@ -175,7 +175,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 						<IcoSvgCom
 							icoNamStr='cheEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -207,7 +207,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 						<IcoSvgCom
 							icoNamStr='plaEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'plaEle' icon at a fixed size. */ }
 
 
@@ -281,7 +281,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='croEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
@@ -369,7 +369,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 						<IcoSvgCom
 							icoNamStr='griEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
@@ -411,7 +411,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='cheEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/> // What: Icon Svg Component. Why: A completed day-off card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
 
 
@@ -472,7 +472,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='refEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
@@ -499,7 +499,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='skiEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
@@ -517,7 +517,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='ediEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -604,7 +604,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 						<IcoSvgCom
 							icoNamStr='griEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
@@ -646,7 +646,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='cheEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/> // What: Icon Svg Component. Why: A completed charging card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
 
 
@@ -696,7 +696,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='refEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
@@ -714,7 +714,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='skiEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
@@ -732,7 +732,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='ediEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -889,7 +889,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 					<IcoSvgCom
 						icoNamStr='griEle'
-						sizSteStr='bas'
+						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 					/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
@@ -931,7 +931,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 						<IcoSvgCom
 							icoNamStr='cheEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/> // What: Icon Svg Component. Why: A completed pick card needs a checkmark glyph. How: This renders the 'cheEle' icon only while entRecObj.done is true.
 
 
@@ -1022,7 +1022,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='refEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The Re-Roll action needs a recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
@@ -1042,7 +1042,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='refEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refEle' icon at a fixed size. */ }
 
 
@@ -1066,7 +1066,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='skiEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
@@ -1095,7 +1095,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 							<IcoSvgCom
 								icoNamStr='skiEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skiEle' icon at a fixed size. */ }
 
 
@@ -1126,7 +1126,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 						<IcoSvgCom
 							icoNamStr='ediEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: The Edit action needs a recognizable glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 

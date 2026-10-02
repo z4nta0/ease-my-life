@@ -624,7 +624,7 @@ function appPalFun( palResObj, theKeyStr ) {
 
 		clearTimeout( __tatIdeNum ); // What: Theme-Animation-Timeout Identifier Number Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
 
-		__tatIdeNum = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), durMilFun( 'p04' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal after the CSS transition's own p04 duration step.
+		__tatIdeNum = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), durMilFun( 'p04' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal after the CSS transition's own p04 duration step. // Duration Base Plus 4 ~= 486.1ms
 
 
 	}

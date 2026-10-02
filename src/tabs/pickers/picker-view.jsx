@@ -463,7 +463,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -562,7 +562,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -1152,7 +1152,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='cheEle'
-									sizSteStr='p02'
+									sizSteStr='p02' // Vertical Rhythm Base Plus 2 ~= 25.572px
 								/>{ /* What: Icon Svg Component. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
 
 
@@ -1353,7 +1353,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr={ shoDriBoo ? 'eyoEle' : 'eyeEle' }
-									sizSteStr='bas'
+									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 								/>{ /* What: Icon Svg Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
 
 								{ shoDriBoo ? 'Hide drift' : 'Show drift' }{ /* What: Drift Label Expression. Why: The toggle's text names what clicking it will do. How: This reads 'Hide drift' while shoDriBoo is on, otherwise 'Show drift'. */ }
@@ -1558,7 +1558,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='cheEle'
-														sizSteStr='bas'
+														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -1579,7 +1579,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='calEle'
-														sizSteStr='bas'
+														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
@@ -1604,7 +1604,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='calEle'
-														sizSteStr='bas'
+														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: The send action needs a recognizable "to Today" glyph. How: This renders the 'calEle' icon at a fixed size. */ }
 
 
@@ -1630,7 +1630,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='ediEle'
-													sizSteStr='bas'
+													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 												/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -1651,7 +1651,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='traEle'
-														sizSteStr='bas'
+														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -1675,7 +1675,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='traEle'
-														sizSteStr='bas'
+														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -1855,7 +1855,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizSteStr='bas'
+									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 								/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 

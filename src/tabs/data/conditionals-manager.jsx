@@ -614,7 +614,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut. How: This clears opeIdeStr.
 
-		setTimeout( delFinFun, durMilFun( 'p02' ) ); // What: Deferred Removal Call. Why: The actual store removal must wait until the collapse animation finishes. How: This calls delFinFun after the collapse animation's own p02 duration step.
+		setTimeout( delFinFun, durMilFun( 'p02' ) ); // What: Deferred Removal Call. Why: The actual store removal must wait until the collapse animation finishes. How: This calls delFinFun after the collapse animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 	};
@@ -685,7 +685,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut before the commit below lands. How: This clears opeIdeStr.
 
-		setTimeout( wriConFun, durMilFun( 'p02' ) ); // What: Deferred Commit Call. Why: The actual store write must wait until the collapse animation finishes. How: This calls wriConFun after the collapse animation's own p02 duration step.
+		setTimeout( wriConFun, durMilFun( 'p02' ) ); // What: Deferred Commit Call. Why: The actual store write must wait until the collapse animation finishes. How: This calls wriConFun after the collapse animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 	};
@@ -752,7 +752,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll after that animation's own p02 duration step.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll after that animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 
@@ -808,7 +808,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 						<IcoSvgCom
 							icoNamStr='chvEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -867,7 +867,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 							<IcoSvgCom
 								icoNamStr='pluEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
@@ -905,7 +905,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 							<IcoSvgCom
 								icoNamStr='pluEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add a conditional
 
 
@@ -1036,7 +1036,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizSteStr='bas'
+													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -1109,7 +1109,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizSteStr='bas'
+													sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 

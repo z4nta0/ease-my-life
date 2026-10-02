@@ -186,7 +186,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 						<IcoSvgCom
 							icoNamStr='cheEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'cheEle' icon. */ }
 
 
@@ -219,7 +219,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 						<IcoSvgCom
 							icoNamStr='plaEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'plaEle' icon. */ }
 
 
@@ -292,7 +292,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 							<IcoSvgCom
 								icoNamStr='croEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: This is the Cancel action's own glyph. How: This renders the 'croEle' icon. */ }
 
 
@@ -386,7 +386,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr='cheEle'
-						sizSteStr='bas'
+						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 					/> // What: Icon Svg Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'cheEle' icon only while isaDonBoo.
 
 
@@ -404,7 +404,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr={ tasRcdObj.repeat === 'once' ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin for 'once' and the calendar otherwise.
-						sizSteStr='m01'
+						sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
 					/>{ /* What: Icon Svg Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
 					<span className={ cssModObj.metaPicker }>{ TAS_NAM_OBJ.sumTasFun( tasRcdObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRcdObj. */ }
@@ -484,7 +484,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr='skiEle'
-						sizSteStr='bas'
+						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 					/>{ /* What: Icon Svg Component. Why: This is the Skip action's own glyph. How: This renders the 'skiEle' icon. */ }
 
 
@@ -511,7 +511,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					<IcoSvgCom
 						icoNamStr='ediEle'
-						sizSteStr='bas'
+						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 					/>{ /* What: Icon Svg Component. Why: This is the Edit action's own glyph. How: This renders the 'ediEle' icon. */ }
 
 
@@ -752,7 +752,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 			setJusCheStr( curTasObj.id ); // What: Just-Checked Stage Call. Why: The card needs to know it was JUST checked so it can play its own fresh flourish. How: This sets jusCheStr to curTasObj's own id.
 
-			setTimeout( () => setJusCheStr( ( preIdeStr ) => preIdeStr === curTasObj.id ? null : preIdeStr ), durMilFun( 'p05' ) ); // What: Fresh Flourish Clear Call. Why: The flourish must not replay on every future re-render, only the one right after this toggle. How: This clears jusCheStr back to null after the check ripple's own p05 duration step, but only if it still matches curTasObj's own id.
+			setTimeout( () => setJusCheStr( ( preIdeStr ) => preIdeStr === curTasObj.id ? null : preIdeStr ), durMilFun( 'p05' ) ); // What: Fresh Flourish Clear Call. Why: The flourish must not replay on every future re-render, only the one right after this toggle. How: This clears jusCheStr back to null after the check ripple's own p05 duration step, but only if it still matches curTasObj's own id. // Duration Base Plus 5 ~= 643.9ms
 
 
 		}
@@ -1020,7 +1020,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 			setRemFreNum( newFreNum ); // What: Fresh Index Stage Call. Why: This is what actually tells the dash bar which index to briefly animate. How: This sets remFreNum to newFreNum.
 
-			const freTimNum = setTimeout( () => setRemFreNum( ( curFreNum ) => ( curFreNum === newFreNum ? -1 : curFreNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The flourish must clear itself after its own animation duration, but only if nothing newer has already taken over. How: This resets remFreNum back to -1 after the dash sweep's own p04 duration step, guarded against a staler run clobbering a newer one.
+			const freTimNum = setTimeout( () => setRemFreNum( ( curFreNum ) => ( curFreNum === newFreNum ? -1 : curFreNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The flourish must clear itself after its own animation duration, but only if nothing newer has already taken over. How: This resets remFreNum back to -1 after the dash sweep's own p04 duration step, guarded against a staler run clobbering a newer one. // Duration Base Plus 4 ~= 486.1ms
 
 
 			remPreRef.current = remDonNum; // What: Previous Snapshot Update. Why: The next run of this effect needs to compare against whatever remDonNum is right now. How: This overwrites remPreRef with remDonNum's own current value.
@@ -1082,7 +1082,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 							<IcoSvgCom
 								icoNamStr='griEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: This is the grip's own visible glyph. How: This renders the 'griEle' icon. */ }
 
 
@@ -1164,7 +1164,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizSteStr='bas'
+									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 								/>{ /* What: Icon Svg Component. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'pluEle' icon. */ }
 
 
@@ -1188,7 +1188,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizSteStr='bas'
+									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 								/>{ /* What: Icon Svg Component. Why: This is the add button's own visible glyph. How: This renders the 'pluEle' icon. */ }
 
 

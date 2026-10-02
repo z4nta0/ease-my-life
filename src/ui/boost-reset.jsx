@@ -103,7 +103,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
 
 		const staValNum = booValNum;                                                                      // What: Start Value Number. Why: The tick loop below needs the original boost booValNum to ease down from, even after onResBooFun below changes the real booValNum to 0. How: This captures booValNum before it changes.
 		const staTimNum = performance.now();                                                              // What: Start Time Number. Why: Each animation frame needs to know how much time has elapsed since the tick loop began. How: This captures the current high-resolution timestamp.
-		const durValNum = Math.max( durMilFun( 'p02' ), Math.min( durMilFun( 'p06' ), staValNum * 55 ) ); // What: Duration Value Number. Why: A small boost shouldn't blink past and a large one shouldn't crawl. How: This scales the animation's own duration with staValNum, clamped to a sensible min/max.
+		const durValNum = Math.max( durMilFun( 'p02' ), Math.min( durMilFun( 'p06' ), staValNum * 55 ) ); // What: Duration Value Number. Why: A small boost shouldn't blink past and a large one shouldn't crawl. How: This scales the animation's own duration with staValNum, clamped to a sensible min/max. // Duration Base Plus 2 ~= 277.0ms, Duration Base Plus 6 ~= 853.0ms
 
 
 		onResBooFun(); // What: On Reset Call. Why: The real committed booValNum must become 0 immediately, independent of however long the shown-number animation takes. How: This calls the caller's own reset handler right away.

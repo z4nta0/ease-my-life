@@ -210,7 +210,7 @@ const PIC_ICO_ELE = ( // What: Picker Icon Element. Why: The intro modal's own i
 
 	<IcoSvgCom
 		icoNamStr='picker'
-		sizSteStr='p05'
+		sizSteStr='p05' // Vertical Rhythm Base Plus 5 ~= 59.447px
 	/> // What: Icon Svg Component. Why: Every picker tutorial's intro modal shows the same picker glyph. How: This renders the shared 'picker' icon at the p05 rhythm step.
 
 

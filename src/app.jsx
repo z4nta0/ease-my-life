@@ -319,7 +319,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 					<IcoSvgCom
 						icoNamStr={ tabConObj.icoStr }
-						sizSteStr='p01'
+						sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
 					/>{ /* What: Icon Svg Component. Why: Every tab needs a recognizable glyph alongside its label. How: This renders the icon named by the tab's own icoStr at a fixed size. */ }
 
 					<span>{ tabConObj.labStr }</span>{ /* What: Label Span Element. Why: Every tab needs its own visible text label. How: This renders the tab's own labStr. */ }
@@ -629,8 +629,8 @@ function AppRooCom () {
 
 
 
-		const exiEndTim = setTimeout( () => setExiPlaStr( null ), durMilFun( 'p03' ) );                       // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, after the exit animation's own p03 duration step.
-		const entEndTim = setTimeout( () => setNavEntBoo( false ), durMilFun( 'p04' ) + durMilFun( 'm01' ) ); // What: Enter End Timeout. Why: The entering module class only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo after the enter animation's own p04 duration plus its m01 delay.
+		const exiEndTim = setTimeout( () => setExiPlaStr( null ), durMilFun( 'p03' ) );                       // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, after the exit animation's own p03 duration step. // Duration Base Plus 3 ~= 366.9ms
+		const entEndTim = setTimeout( () => setNavEntBoo( false ), durMilFun( 'p04' ) + durMilFun( 'm01' ) ); // What: Enter End Timeout. Why: The entering module class only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo after the enter animation's own p04 duration plus its m01 delay. // Duration Base Plus 4 ~= 486.1ms, Duration Base Minus 1 ~= 119.2ms
 
 
 

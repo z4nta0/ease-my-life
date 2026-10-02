@@ -296,7 +296,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 			if ( preXcoNum == null ) { // What: Newly Pinned Guard. Why: A pill with no recorded previous position was just pinned to the front for the first time. How: This plays a fade-and-rise-in animation instead of a horizontal FLIP tween.
 
 
-				pilCurEle.animate( [ { opacity : 0, transform : 'translateY(4px)' }, { opacity : 1, transform : 'none' } ], { duration : durMilFun( 'p02' ), easing : motEasFun( 'dec' ) } ); // What: Pin Animation Call. Why: A brand-new front position deserves its own entrance rather than a slide from nowhere. How: This fades and rises the pill into place over 260ms.
+				pilCurEle.animate( [ { opacity : 0, transform : 'translateY(4px)' }, { opacity : 1, transform : 'none' } ], { duration : durMilFun( 'p02' ), easing : motEasFun( 'dec' ) } ); // What: Pin Animation Call. Why: A brand-new front position deserves its own entrance rather than a slide from nowhere. How: This fades and rises the pill into place over 260ms. // Duration Base Plus 2 ~= 277.0ms
 
 
 			}
@@ -307,7 +307,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 				const difXcoNum = preXcoNum - newXcoNum; // What: Difference X-Coordinate Number. Why: The FLIP tween's own starting transform is the distance this pill needs to travel back from its new position. How: This subtracts the new x from the previous x.
 
 
-				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero.
+				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero. // Duration Base Plus 3 ~= 366.9ms
 
 
 			}
@@ -387,7 +387,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 				const difXcoNum = oldXcoNum - pilCurEle.offsetLeft; // What: Difference X-Coordinate Number. Why: The tween's own starting transform is the distance this pill needs to travel back from its new position. How: This subtracts the pill's own current offsetLeft from oldXcoNum.
 
 
-				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero.
+				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero. // Duration Base Plus 3 ~= 366.9ms
 
 
 			} );
@@ -532,7 +532,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 		setNewGroStr( '' );    // What: New Group Text Clear. Why: A future reopen should start from an empty input, not leftover text. How: This resets newGroStr to an empty string.
 		setPilRetBoo( true );  // What: Pill Returning Start. Why: The "+ New Group" pill needs to visibly animate back in, symmetric with how it vanished on open. How: This flags pilRetBoo true, applying the returning class.
 
-		setTimeout( () => setPilRetBoo( false ), durMilFun( 'p01' ) ); // What: Pill Returning End. Why: The returning class only needs to apply for the duration of its own animation. How: This clears pilRetBoo after that animation's own p01 duration step.
+		setTimeout( () => setPilRetBoo( false ), durMilFun( 'p01' ) ); // What: Pill Returning End. Why: The returning class only needs to apply for the duration of its own animation. How: This clears pilRetBoo after that animation's own p01 duration step. // Duration Base Plus 1 ~= 209.1ms
 
 
 	};
@@ -894,7 +894,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 									<IcoSvgCom
 										icoNamStr='cheEle'
-										sizSteStr='bas'
+										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 									/>{ /* What: Icon Svg Component. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
@@ -913,7 +913,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 									<IcoSvgCom
 										icoNamStr='croEle'
-										sizSteStr='bas'
+										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 									/>{ /* What: Icon Svg Component. Why: The cancel button needs a recognizable close glyph. How: This renders the 'croEle' icon at a fixed size. */ }
 
 
@@ -939,7 +939,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 								<IcoSvgCom
 									icoNamStr='pluEle'
-									sizSteStr='bas'
+									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 								/>{ /* What: Icon Svg Component. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 

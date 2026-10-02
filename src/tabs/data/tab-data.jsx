@@ -381,7 +381,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation needs to finish growing the editor before the scroll starts. How: This schedules the smooth scroll after that animation's own p02 duration step.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation needs to finish growing the editor before the scroll starts. How: This schedules the smooth scroll after that animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 
@@ -1097,7 +1097,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<g
 								style={{
-									stroke      : 'var(--acc-tin-col)',
+									stroke      : 'var(--acc-tin-col)', // Accent Tint Color = oklch( 0.95 0.025 250 )
 									strokeWidth : 16
 								}}
 							>{ /* What: Grid Group Element. Why: Groups the 8 decorative background lines so they can share one stroke style instead of repeating it 8 times. How: This sets the shared stroke/strokeWidth once, applied to every child path below. */ }
@@ -1817,7 +1817,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
-								...( isaDraBoo ? { scrollMarginTop : 'var( --spa-ver-bas )' } : {} ),
+								...( isaDraBoo ? { scrollMarginTop : 'var( --spa-ver-bas )' } : {} ), // Spacing Vertical Base ~= 14.572px
 								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rem-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rem-hei for the catRemove keyframes only while this card is the one being removed.
 							}}
 
@@ -1887,7 +1887,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<IcoSvgCom
 											icoNamStr='chvEle'
-											sizSteStr='bas'
+											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 										/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -1964,7 +1964,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										<IcoSvgCom
 											icoNamStr={ allVacBoo ? 'mooEle' : 'spaEle' }
-											sizSteStr='bas'
+											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 										/>{ /* What: Icon Svg Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
 
 										<span
@@ -2023,7 +2023,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizSteStr='m01'
+													sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2104,7 +2104,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizSteStr='m01'
+													sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2144,7 +2144,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='pluEle'
-														sizSteStr='bas'
+														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
@@ -2167,7 +2167,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 													<IcoSvgCom
 														icoNamStr='pluEle'
-														sizSteStr='bas'
+														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 
 
@@ -2305,7 +2305,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																	<IcoSvgCom
 																		icoNamStr='chvEle'
-																		sizSteStr='bas'
+																		sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 																	/>{ /* What: Icon Svg Component. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2354,7 +2354,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																	<IcoSvgCom
 																		icoNamStr='chvEle'
-																		sizSteStr='bas'
+																		sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 																	/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2398,7 +2398,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																			setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
 
-																			setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step.
+																			setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 																		}
@@ -2434,7 +2434,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-																		setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step.
+																		setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
 
 
 																	} }
@@ -2495,7 +2495,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 						<IcoSvgCom
 							icoNamStr='pluEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Create Picker
 
 

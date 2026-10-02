@@ -178,7 +178,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-			const oveBelNum = daiBloEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the block actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the block's own bottom edge.
+			const oveBelNum = daiBloEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the block actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the block's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing block needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -191,7 +191,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			});
 
 
-		}, redMotFun() ? 0 : durMilFun( 'p02' ) ); // What: Reveal Delay. Why: The scroll should wait for the Daily section's own expand animation, except under reduced motion. How: This waits that animation's own p02 duration step, or 0 under reduced motion.
+		}, redMotFun() ? 0 : durMilFun( 'p02' ) ); // What: Reveal Delay. Why: The scroll should wait for the Daily section's own expand animation, except under reduced motion. How: This waits that animation's own p02 duration step, or 0 under reduced motion. // Duration Base Plus 2 ~= 277.0ms
 
 
 
@@ -678,7 +678,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -749,7 +749,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPxlFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
 
 
 			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
@@ -1096,7 +1096,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 								<IcoSvgCom
 									icoNamStr='cheEle'
-									sizSteStr='m01'
+									sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
 								/> // What: Icon Svg Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'cheEle' icon at a fixed size.
 
 
@@ -1277,7 +1277,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizSteStr='bas'
+										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 									/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } New Group
 
 
@@ -1524,7 +1524,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											<IcoSvgCom
 												icoNamStr='pluEle'
-												sizSteStr='bas'
+												sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 											/>{ /* What: Icon Svg Component. Why: The new-conditional pill needs a recognizable "add" glyph. How: This renders the 'pluEle' icon at a fixed size. */ }
 
 											<span className={ cssModObj.cndPillName }>Add New Conditional</span>{ /* What: Pill Name Span Element. Why: The new-conditional pill needs its own visible label. How: This renders the literal text "Add New Conditional". */ }
@@ -2232,7 +2232,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 														<IcoSvgCom
 															icoNamStr='ediEle'
-															sizSteStr='bas'
+															sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 														/>{ /* What: Icon Svg Component. Why: The edit action needs a recognizable pencil glyph. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 
@@ -2253,7 +2253,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 															<IcoSvgCom
 																icoNamStr='traEle'
-																sizSteStr='bas'
+																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -2276,7 +2276,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 															<IcoSvgCom
 																icoNamStr='traEle'
-																sizSteStr='bas'
+																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 															/>{ /* What: Icon Svg Component. Why: The delete action needs a recognizable trash glyph. How: This renders the 'traEle' icon at a fixed size. */ }
 
 
@@ -2456,7 +2456,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										<IcoSvgCom
 											icoNamStr='pluEle'
-											sizSteStr='bas'
+											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 										/>{ /* What: Icon Svg Component. Why: The button needs a recognizable "add" glyph beside its own label. How: This renders the 'pluEle' icon at a fixed size. */ } Add Item
 
 

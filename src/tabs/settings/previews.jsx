@@ -204,7 +204,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 				void carCurEle.offsetWidth; // What: Reflow Force. Why: Re-adding the same class immediately after removing it would otherwise be batched by the browser and never restart the animation. How: Reading offsetWidth forces a synchronous layout flush between the remove above and the add below.
 
-				carCurEle.style.setProperty( '--exh-car-del', `${ iteIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card's own cascade position needs its own staggered start time. How: This writes the '--exh-car-del' custom property, read by the CSS animation, proportional to this card's own index.
+				carCurEle.style.setProperty( '--exh-car-del', `${ iteIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card's own cascade position needs its own staggered start time. How: This writes the '--exh-car-del' custom property, read by the CSS animation, proportional to this card's own index. // Duration Base Minus 3 ~= 67.9ms
 
 				carCurEle.classList.add( cssModObj.isExhaling ); // What: Exhale Class Restart. Why: This is the actual trigger that (re)starts the CSS exhale animation on this card. How: This re-adds the module's isExhaling class, now that the reflow above guarantees the browser treats it as a fresh start.
 
@@ -229,7 +229,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 			};
 
 
-			ripCleTim = setTimeout( ripCleFun, carEleArr.length * durMilFun( 'm03' ) + durMilFun( 'p07' ) ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed.
+			ripCleTim = setTimeout( ripCleFun, carEleArr.length * durMilFun( 'm03' ) + durMilFun( 'p07' ) ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed. // Duration Base Minus 3 ~= 67.9ms, Duration Base Plus 7 ~= 1130.0ms
 
 
 		}
@@ -284,7 +284,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 
 
-		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Clear Schedule. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay.
+		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Clear Schedule. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay. // Duration Base Plus 9 ~= 1983.0ms
 
 
 
@@ -337,7 +337,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 							<IcoSvgCom
 								icoNamStr='cheEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: This is the actual check glyph shown on a completed card. How: This renders the 'cheEle' icon at a fixed size matching the real Today card. */ }
 
 

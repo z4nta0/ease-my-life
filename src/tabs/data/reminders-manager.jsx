@@ -531,7 +531,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (see .collapse in ui/collapse.module.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits that animation's own p02 duration step, then scrolls smoothly.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (see .collapse in ui/collapse.module.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits that animation's own p02 duration step, then scrolls smoothly. // Duration Base Plus 2 ~= 277.0ms
 
 
 
@@ -703,7 +703,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 						<IcoSvgCom
 							icoNamStr='chvEle'
-							sizSteStr='bas'
+							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
@@ -772,7 +772,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='chvEle'
-									sizSteStr='m01'
+									sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
 								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
 
 
@@ -830,7 +830,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 								<IcoSvgCom
 									icoNamStr='chvEle'
-									sizSteStr='m01'
+									sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
 								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chvEle' icon at the m01 rhythm step. */ }
 
 
@@ -870,7 +870,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizSteStr='bas'
+										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
@@ -891,7 +891,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 									<IcoSvgCom
 										icoNamStr='pluEle'
-										sizSteStr='bas'
+										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'pluEle' icon. */ } New reminder
 
 
@@ -974,7 +974,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
-																sizSteStr='bas'
+																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
@@ -1043,7 +1043,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr='chvEle'
-																sizSteStr='bas'
+																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
@@ -1079,7 +1079,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr={ isaOncBoo ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin while isaOncBoo and the calendar otherwise.
-																sizSteStr='bas'
+																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
@@ -1108,7 +1108,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 															<IcoSvgCom
 																icoNamStr='chvEle'
-																sizSteStr='bas'
+																sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chvEle' icon at the bas rhythm step. */ }
 
 
@@ -1165,7 +1165,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
 
-																		setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits that animation's own p02 duration step, then removes tasIdeStr's own snapshot.
+																		setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits that animation's own p02 duration step, then removes tasIdeStr's own snapshot. // Duration Base Plus 2 ~= 277.0ms
 
 
 																	}
@@ -1199,7 +1199,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-																	setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits the editor's own collapse-close p02 duration step before actually removing the task.
+																	setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits the editor's own collapse-close p02 duration step before actually removing the task. // Duration Base Plus 2 ~= 277.0ms
 
 
 																} }

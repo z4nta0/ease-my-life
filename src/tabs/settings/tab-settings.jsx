@@ -315,7 +315,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		return ( horDirBoo ? raiCurEle.offsetHeight + rhyPxlFun( 'm02' ) : 0 ) + rhyPxlFun( 'bas' ); // What: Sticky Offset Return. Why: This is the actual usable offset callers add to their own scroll-position math. How: This adds the rail's own measured height plus an m02 step only in the horizontal/mobile case, then always adds a flat base-step margin.
+		return ( horDirBoo ? raiCurEle.offsetHeight + rhyPxlFun( 'm02' ) : 0 ) + rhyPxlFun( 'bas' ); // What: Sticky Offset Return. Why: This is the actual usable offset callers add to their own scroll-position math. How: This adds the rail's own measured height plus an m02 step only in the horizontal/mobile case, then always adds a flat base-step margin. // Vertical Rhythm Base Minus 2 ~= 8.304px, Vertical Rhythm Base ~= 14.572px
 
 
 	};
@@ -1177,7 +1177,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							<g
 								style={{
-									stroke      : 'var(--acc-tin-col)',
+									stroke      : 'var(--acc-tin-col)', // Accent Tint Color = oklch( 0.95 0.025 250 )
 									strokeWidth : 16
 								}}
 							>{ /* What: Grid Group Element. Why: Groups the 8 decorative background lines so they can share one stroke style instead of repeating it 8 times. How: This sets the shared stroke/strokeWidth once, applied to every child path below. */ }

@@ -107,7 +107,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 			setFreIndNum( curIndNum ); // What: Fresh Index Set. Why: The dash-row map below needs to know which single dash to flag as freshly lit. How: This publishes curIndNum into freIndNum.
 
-			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself once its dash sweep ends, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after the sweep's own p04 duration step, guarded so a stale timeout can't stomp a fresher one.
+			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself once its dash sweep ends, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after the sweep's own p04 duration step, guarded so a stale timeout can't stomp a fresher one. // Duration Base Plus 4 ~= 486.1ms
 
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
@@ -199,7 +199,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 			else setDraNamStr( groNamStr ); // What: Revert Branch. Why: A cancel, or a no-op commit, should leave the draft matching the real name again for next time. How: This resets draNamStr back to groNamStr.
 
 
-		}, durMilFun( 'bas' ) ); // What: Close Settle Delay. Why: The field stays mounted through its out-animation first. How: This waits that animation's own base duration step.
+		}, durMilFun( 'bas' ) ); // What: Close Settle Delay. Why: The field stays mounted through its out-animation first. How: This waits that animation's own base duration step. // Duration Base ~= 157.8ms
 
 
 	};
@@ -298,7 +298,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 							<IcoSvgCom
 								icoNamStr='griEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'griEle' icon at a fixed size. */ }
 
 
@@ -374,7 +374,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 							{ groNamStr }
 							<IcoSvgCom
 								icoNamStr='ediEle'
-								sizSteStr='bas'
+								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
 
 

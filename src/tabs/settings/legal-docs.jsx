@@ -1107,7 +1107,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 						<IcoSvgCom
 							icoNamStr='croEle'
-							sizSteStr='p01'
+							sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
 						/>{ /* What: Icon Svg Component. Why: The close button needs a recognizable "x" glyph rather than just its own aria-label text. How: This renders the shared IcoSvgCom component at the p01 rhythm step. */ }
 
 

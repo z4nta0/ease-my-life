@@ -182,20 +182,20 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		const trgRecObj = trgCurEle.getBoundingClientRect(); // What: Trigger Rect Object. Why: The tooltip's own position is computed relative to the trigger's real on-screen position. How: This reads trgCurEle's own bounding rect.
 		const tipWidNum = tipCurEle.offsetWidth;             // What: Tip Width Number. Why: Centering and clamping the tooltip both need its own real rendered width. How: This reads tipCurEle's own offsetWidth.
 		const tipHeiNum = tipCurEle.offsetHeight;            // What: Tip Height Number. Why: Placing the tooltip above/below the trigger needs its own real rendered height. How: This reads tipCurEle's own offsetHeight.
-		const edgMarNum = rhyPxlFun( 'm02' );                // What: Edge Margin Number. Why: The tooltip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear.
+		const edgMarNum = rhyPxlFun( 'm02' );                // What: Edge Margin Number. Why: The tooltip should never sit flush against the very edge of the viewport. How: This is the fixed pixel margin every clamp below keeps clear. // Vertical Rhythm Base Minus 2 ~= 8.304px
 		const vieWidNum = window.innerWidth;                 // What: Viewport Width Number. Why: The horizontal clamp below needs the real current viewport width. How: This reads window.innerWidth.
 		const vieHeiNum = window.innerHeight;                // What: Viewport Height Number. Why: The vertical clamp below needs the real current viewport height. How: This reads window.innerHeight.
 
 
 		let tipPlaStr = 'top';                                          // What: Tip Placement String. Why: Above the trigger is the preferred placement, flipped below only if it would clip. How: This starts at 'top' and may be overwritten to 'bottom' just below.
-		let tipTopNum = trgRecObj.top - tipHeiNum - rhyPxlFun( 'm02' ); // What: Tip Top Number. Why: This is the candidate vertical position for the preferred above-trigger placement. How: This sits tipHeiNum plus an m02-step gap above trgRecObj's own top edge.
+		let tipTopNum = trgRecObj.top - tipHeiNum - rhyPxlFun( 'm02' ); // What: Tip Top Number. Why: This is the candidate vertical position for the preferred above-trigger placement. How: This sits tipHeiNum plus an m02-step gap above trgRecObj's own top edge. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 		if ( tipTopNum < edgMarNum ) { // What: Top Clip Guard. Why: A tooltip that would clip the top of the viewport must flip to sit below the trigger instead. How: This overwrites both tipPlaStr and tipTopNum together when the above-placement candidate falls too high.
 
 
 			tipPlaStr = 'bottom';                              // What: Bottom Placement Set. Why: The tooltip now sits below the trigger. How: This overwrites tipPlaStr.
-			tipTopNum = trgRecObj.bottom + rhyPxlFun( 'm02' ); // What: Bottom Top Set. Why: The flipped tooltip needs its own below-trigger vertical position. How: This places it an m02 step below trgRecObj's own bottom edge.
+			tipTopNum = trgRecObj.bottom + rhyPxlFun( 'm02' ); // What: Bottom Top Set. Why: The flipped tooltip needs its own below-trigger vertical position. How: This places it an m02 step below trgRecObj's own bottom edge. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 		}
