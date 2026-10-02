@@ -2034,7 +2034,7 @@ still passes.
   spacing as JS calls under "### Parentheses spacing": a space after `(`
   and before `)` when there's anything inside, e.g. `var( --fon-siz-p01 )`
   and `calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) )`. Values still
-  written tight (`var(--muted)`) are converted as their files come up in
+  written tight (`var(--tex-mut-col)`) are converted as their files come up in
   the design-system pass.
 - **`@media` blocks**: a `@media` override is a variant of the element it
   styles, so it sits directly under that element's base rule with its
@@ -2543,7 +2543,7 @@ are renamed to this as their files come up in the design-system pass.
   sequence, a nav bar's own left-to-right order) and stays exactly as
   authored.
   - **One-line object literals are alphabetized too**, not just
-    multi-line ones: a config row like `{ colStr : 'var(--warm)', keyStr
+    multi-line ones: a config row like `{ colStr : 'var(--acc-sec-col)', keyStr
     : 'once', labStr : 'One-Time' }`, an options object like `{ day :
     'numeric', month : 'short' }`, or a lookup table all follow the same
     case-insensitive order, unless their order genuinely matters (per the
@@ -3570,7 +3570,7 @@ reference example:
   stacked object literals elsewhere in this doc:
   ```
   style={{
-  	stroke      : 'var(--accent-soft)',
+  	stroke      : 'var(--acc-tin-col)',
   	strokeWidth : 16
   }}
   ```
@@ -3582,7 +3582,7 @@ reference example:
   ```
   <g
   	style={{
-  		stroke      : 'var(--accent-soft)',
+  		stroke      : 'var(--acc-tin-col)',
   		strokeWidth : 16
   	}}
   >
