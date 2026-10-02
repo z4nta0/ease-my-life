@@ -9,6 +9,7 @@ import React     from 'react';                          // What: React. Why: Eve
 
 import { ButBasCom    } from '../../ui/button.jsx';                 // What: Button Base Component. Why: The quick-add form and each reminder card's own actions need consistently-styled buttons. How: This is rendered throughout RemCarCom and RemSecCom.
 import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: The Reminders log, the quick-add form, and each inline editor need to animate open and closed instead of snapping. How: This wraps each of those in RemSecCom and InlEdiCom, driven by its own open state.
+import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EdiFooCom    } from '../../ui/editor-footer.jsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
 import { emlTouObj    } from '../../state/tour-bus.js';             // What: Ease My Life Tour Object. Why: A reminder mini-tour publishes prefill data and reads the live draft's own repeat kind through this shared bus. How: This is read via .get() in staAddFun and written to via .set() below.
 import { IcoSvgCom    } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: Every reminder card and button needs a recognizable glyph. How: This is rendered throughout RemCarCom and RemSecCom.
@@ -751,7 +752,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 			setJusCheStr( curTasObj.id ); // What: Just-Checked Stage Call. Why: The card needs to know it was JUST checked so it can play its own fresh flourish. How: This sets jusCheStr to curTasObj's own id.
 
-			setTimeout( () => setJusCheStr( ( preIdeStr ) => preIdeStr === curTasObj.id ? null : preIdeStr ), 700 ); // What: Fresh Flourish Clear Call. Why: The flourish must not replay on every future re-render, only the one right after this toggle. How: This clears jusCheStr back to null after 700ms, but only if it still matches curTasObj's own id.
+			setTimeout( () => setJusCheStr( ( preIdeStr ) => preIdeStr === curTasObj.id ? null : preIdeStr ), durMilFun( 'p05' ) ); // What: Fresh Flourish Clear Call. Why: The flourish must not replay on every future re-render, only the one right after this toggle. How: This clears jusCheStr back to null after the check ripple's own p05 duration step, but only if it still matches curTasObj's own id.
 
 
 		}
@@ -1019,7 +1020,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 			setRemFreNum( newFreNum ); // What: Fresh Index Stage Call. Why: This is what actually tells the dash bar which index to briefly animate. How: This sets remFreNum to newFreNum.
 
-			const freTimNum = setTimeout( () => setRemFreNum( ( curFreNum ) => ( curFreNum === newFreNum ? -1 : curFreNum ) ), 520 ); // What: Fresh Timeout Number. Why: The flourish must clear itself after its own animation duration, but only if nothing newer has already taken over. How: This resets remFreNum back to -1 520ms later, guarded against a staler run clobbering a newer one.
+			const freTimNum = setTimeout( () => setRemFreNum( ( curFreNum ) => ( curFreNum === newFreNum ? -1 : curFreNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The flourish must clear itself after its own animation duration, but only if nothing newer has already taken over. How: This resets remFreNum back to -1 after the dash sweep's own p04 duration step, guarded against a staler run clobbering a newer one.
 
 
 			remPreRef.current = remDonNum; // What: Previous Snapshot Update. Why: The next run of this effect needs to compare against whatever remDonNum is right now. How: This overwrites remPreRef with remDonNum's own current value.

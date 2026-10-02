@@ -15,6 +15,7 @@ import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cad
 import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntEdiCom, gated on whichever key/eid currently owns the open state.
 import { CON_NAM_OBJ  } from '../../core/conditionals.js';          // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
 import { createPortal } from 'react-dom';                           // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
+import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { emlTouObj    } from '../../state/tour-bus.js';             // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
 import { EntCarCom    } from './entry-card.jsx';                    // What: Entry Card Component. Why: Every Today entry renders as one card row. How: This is rendered once per entry inside its group.
 import { EntEdiCom    } from '../../ui/entry-editor.jsx';           // What: Entry Editor Component. Why: A Today card's own item editor is the same shared editor the Pickers and Data tabs use. How: This is rendered inline under the card being edited.
@@ -827,7 +828,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			} );
 
-			const celTotNum = carEleLis.length * 70 + 900; // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total duration to a fixed base.
+			const celTotNum = carEleLis.length * 70 + durMilFun( 'p07' ); // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total stagger to the card exhale's own p07 duration step.
 
 
 			const celEndTim = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotNum, clearing every piece of state/CSS this branch set.
@@ -850,7 +851,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				setCelRecObj( null ); // What: Overlay Rect Clear. Why: The portal overlay should unmount once the particles are gone. How: This resets celRecObj to null.
 
 
-			}, Math.max( 1600, celTotNum + 100 ) ); // What: Celebration End Delay. Why: Cleanup waits for the longest celebration effect to finish. How: This waits the total particle time plus a margin, at least 1600ms.
+			}, Math.max( durMilFun( 'p09' ), celTotNum + 100 ) ); // What: Celebration End Delay. Why: Cleanup waits for the longest celebration effect to finish. How: This waits the total cascade time plus a margin, at least the p09 duration step that outlasts every particle and the ring's own ripple.
 
 			// #endregion Celebration Fire Sequence
 
@@ -877,7 +878,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			void rinCurEle.offsetWidth;                        // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
 			rinCurEle.classList.add( cssModObj.isPulsing );    // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the is-pulsing class to rinCurEle.
 
-			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.isPulsing ), 700 ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing 700ms later.
+			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.isPulsing ), durMilFun( 'p06' ) ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing after the glow pulse's own p06 duration step, the longest of the pulse's animations.
 
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
@@ -916,7 +917,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			void stkCurEle.offsetWidth;                       // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
 			stkCurEle.classList.add( cssModObj.isBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the is-bumped class to stkCurEle.
 
-			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.isBumped ), 900 ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped 900ms later.
+			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.isBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped after the bump's own p06 duration step.
 
 
 			preClaRef.current = claNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClaRef with claNowBoo.
@@ -1058,7 +1059,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			setJusCheStr( entRecObj.eid ); // What: Just-Checked Stage. Why: EntCarCom's own fresh-cue check needs this exact eid to compare against. How: This publishes entRecObj's own eid into jusCheStr.
 
-			setTimeout( () => setJusCheStr( ( curValStr ) => curValStr === entRecObj.eid ? null : curValStr ), 700 ); // What: Just-Checked Clear Timeout. Why: The fresh cue must clear itself shortly after, but only if a newer check hasn't already claimed jusCheStr in the meantime. How: This clears jusCheStr back to null after 700ms, guarded so a stale timeout can't stomp a fresher one.
+			setTimeout( () => setJusCheStr( ( curValStr ) => curValStr === entRecObj.eid ? null : curValStr ), durMilFun( 'p05' ) ); // What: Just-Checked Clear Timeout. Why: The fresh cue must clear itself once its check ripple ends, but only if a newer check hasn't already claimed jusCheStr in the meantime. How: This clears jusCheStr back to null after the ripple's own p05 duration step, guarded so a stale timeout can't stomp a fresher one.
 
 
 		}
@@ -1078,14 +1079,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * @summary
 	 * Skip removes the entry: first marks it as removing so the card can
 	 * play a collapse animation, then drops it from state. The slide-out
-	 * CSS uses this exact same duration as the timer below; changing one
-	 * requires changing the other.
+	 * CSS and the timer below read the same p03 duration step, so the two
+	 * always end together.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
 
-	const skiAniNum = 380; // What: Skip Animation Number. Why: See the doc comment just above. How: This is the collapse animation's own length in milliseconds, used to delay the real skip/delete.
+	const skiAniNum = durMilFun( 'p03' ); // What: Skip Animation Number. Why: See the doc comment just above. How: This is the collapse animation's own p03 duration step in milliseconds, used to delay the real skip/delete.
 
 	const [ rmvIdeSet, setRmvIdeSet ] = React.useState( () => new Set() ); // What: Removing Identifier Set And Setter. Why: A skipped or deleted row needs to know it is mid-removal so it can play its own collapse animation. How: This is added to right before the animation starts and cleared once the underlying data actually changes.
 
@@ -1216,15 +1217,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * swap can read as "nothing happened", especially when the two item
 	 * names are similar in length. 200ms is still clearly a response and
 	 * stays under the ~300ms mark where a delay starts to feel like lag.
-	 * The full 760ms is the flip's own duration (the swap lands at its
-	 * 380ms apex), so inheriting it here would just be the ghost of an
-	 * animation that no longer plays.
+	 * The full p06 duration step is the flip's own duration (the swap lands
+	 * at its halfway apex), so inheriting it here would just be the ghost of
+	 * an animation that no longer plays.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
 
-	const rolAniNum = redMotFun() ? 200 : 760; // What: Roll Animation Ms Number. Why: See the doc comment just above. How: This picks the short reduced-motion beat or the full flip duration.
+	const rolAniNum = redMotFun() ? 200 : durMilFun( 'p06' ); // What: Roll Animation Number. Why: See the doc comment just above. How: This picks the short reduced-motion beat or the flip's own full p06 duration step.
 
 	const [ rolIdeSet, setRolIdeSet ] = React.useState( () => new Set() ); // What: Rolling Identifier Set And Setter. Why: A re-rolling row needs to know it is mid-flip so it can play its own animation class. How: This is added to right before the flip starts and cleared once it finishes.
 
@@ -1777,7 +1778,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		if ( redMotFun() ) setBanCloBoo( false ); // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the banner gone immediately rather than watch a collapse it won't perceive as smooth anyway. How: This clears banCloBoo back to false immediately.
 
-		else setTimeout( () => setBanCloBoo( false ), 240 ); // What: Collapse Settle Timeout. Why: Everyone else needs the banner to stay mounted through its own real collapse animation. How: This clears banCloBoo 240ms later, matching that animation's own duration.
+		else setTimeout( () => setBanCloBoo( false ), durMilFun( 'p02' ) ); // What: Collapse Settle Timeout. Why: Everyone else needs the banner to stay mounted through its own real collapse animation. How: This clears banCloBoo after that animation's own p02 duration step.
 
 
 	};
@@ -2512,7 +2513,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			await new Promise( ( resProFun ) => setTimeout( resProFun, 260 ) ); // What: Departure Settle Wait. Why: The exit animations above need real time to actually play before the commit below. How: This awaits a fixed 260ms.
+			await new Promise( ( resProFun ) => setTimeout( resProFun, durMilFun( 'p02' ) ) ); // What: Departure Settle Wait. Why: The exit animations above need real time to actually play before the commit below. How: This awaits the p02 duration step.
 
 
 		}
@@ -2542,7 +2543,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			setAriTasSet( new Set( ariTasArr ) ); // What: Arriving Task Set. Why: Newly-visible reminders play a brief arrival animation. How: This stores their ids in ariTasSet.
 
-			setTimeout( () => setAriTasSet( new Set() ), 400 ); // What: Arrival Clear Timeout. Why: The arrival animation only lasts 400ms. How: This empties ariTasSet once it finishes.
+			setTimeout( () => setAriTasSet( new Set() ), durMilFun( 'p03' ) ); // What: Arrival Clear Timeout. Why: The arrival animation only lasts its own p03 duration step. How: This empties ariTasSet once it finishes.
 
 
 		}
@@ -3170,9 +3171,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		if ( genResBoo && !preResRef.current ) { // What: Fresh Resolve Branch. Why: The whole conclusion sequence only ever plays on a genuine false-to-true transition. How: This checks genResBoo against preResRef's own prior value.
 
 
-			const redMotBoo = redMotFun();            // What: Reduced Motion Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks redMotFun once, reused for both timeouts below.
-			const celDelNum = redMotBoo ? 200 : 1700; // What: Celebration Delay Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the full celebration duration.
-			const exiDelNum = redMotBoo ? 0 : 380;    // What: Exit Delay Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the real exit animation's own duration.
+			const redMotBoo = redMotFun();                          // What: Reduced Motion Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks redMotFun once, reused for both timeouts below.
+			const celDelNum = redMotBoo ? 200 : durMilFun( 'p09' ); // What: Celebration Delay Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the p09 duration step that outlasts the whole celebration.
+			const exiDelNum = redMotBoo ? 0 : durMilFun( 'p03' );   // What: Exit Delay Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the exit animation's own p03 duration step.
 
 			const celTimNum = setTimeout( () => setCheExiBoo( true ), celDelNum ); // What: Celebrate Timeout Number. Why: The exit animation should only start once the celebration has had its own moment first. How: This flips cheExiBoo true after celDelNum.
 

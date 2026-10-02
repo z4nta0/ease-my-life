@@ -9,6 +9,7 @@ import React     from 'react';                          // What: React. Why: Eve
 
 import { ButBasCom   } from '../../ui/button.jsx';                 // What: Button Base Component. Why: The add form and each open reminder's own actions need consistently-styled buttons. How: This is rendered throughout RemManCom.
 import { ColDisCom   } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Each reminder row and the add form need to animate open and closed instead of snapping. How: This wraps each of those bodies in RemManCom, driven by its own open state.
+import { durMilFun   } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EdiFooCom   } from '../../ui/editor-footer.jsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
 import { freEdiFun   } from './list-sorting.js';                   // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
 import { IcoSvgCom   } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: Every reminder row and button needs a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
@@ -530,7 +531,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s, see .collapse in ui/collapse.module.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits 300ms, then scrolls smoothly.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (see .collapse in ui/collapse.module.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits that animation's own p02 duration step, then scrolls smoothly.
 
 
 
@@ -1164,7 +1165,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
 
-																		setTimeout( () => actStoObj.delTasFun( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits 280ms, then removes tasIdeStr's own snapshot.
+																		setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits that animation's own p02 duration step, then removes tasIdeStr's own snapshot.
 
 
 																	}
@@ -1198,7 +1199,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-																	setTimeout( () => actStoObj.delTasFun( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits 280ms (matching the editor's own collapse-close animation) before actually removing the task.
+																	setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits the editor's own collapse-close p02 duration step before actually removing the task.
 
 
 																} }

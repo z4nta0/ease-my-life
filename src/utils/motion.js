@@ -8,7 +8,8 @@
  * The reduced-motion check every animation in the app consults before playing:
  * whether the user's operating system asks for reduced motion. It reads the
  * live media query each time, so a change to the setting takes effect without
- * a reload.
+ * a reload. It also reads the stylesheet's easing curves, for motion that
+ * JavaScript plays itself.
  *
  * Sections:
  *  - Helpers
@@ -21,6 +22,39 @@
 
 
 // #region Helpers
+
+// #region motEasFun
+
+/**
+ * motEasFun = Motion Easing Function
+ *
+ * @summary
+ * The easing curve of one --mot-*-eas family, read from the stylesheet, for
+ * motion JavaScript plays itself (an Element.animate call), which can't read a
+ * custom property through var(). The family is the token's middle segment:
+ * 'sta' (standard), 'dec' (decelerate), 'acc' (accelerate), 'ove' (gentle
+ * overshoot), or 'bou' (bounce). It falls back to the browser's own ease
+ * curve when the token can't be read.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param easFamStr - Easing Family String: The family's 3-letter name, e.g.
+ *                    'dec'.
+ *
+ * @returns The family's curve as a CSS easing string.
+ *
+ * @example
+ * ```ts
+ * motEasFun( 'dec' ) // => 'cubic-bezier( .2, .7, .3, 1 )'
+ * ```
+ *
+*/
+
+const motEasFun = ( easFamStr ) => getComputedStyle( document.documentElement ).getPropertyValue( `--mot-${ easFamStr }-eas` ).trim() || 'ease'; // What: Motion Easing Function. Why: Element.animate can't read a custom property, yet its curves should match the stylesheet's. How: This reads the family's token from the root element's computed style, falling back to ease.
+
+// #endregion motEasFun
+
+
 
 // #region redMotFun
 
@@ -56,7 +90,7 @@ const redMotFun = () => !!( window.matchMedia && window.matchMedia( '(prefers-re
 
 // #region Exports
 
-export { redMotFun }; // What: Named Export. Why: Every animated component checks the same reduced-motion preference. How: This exports redMotFun by name.
+export { motEasFun, redMotFun }; // What: Named Exports. Why: Every animated component checks the same reduced-motion preference, and JS-played motion reads the same curves as the stylesheet. How: This exports motEasFun and redMotFun by name.
 
 // #endregion Exports
 

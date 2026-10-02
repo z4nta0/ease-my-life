@@ -7,6 +7,7 @@ import cssModObj from './previews.module.css'; // What: CSS Module Object. Why: 
 import React     from 'react';                   // What: React. Why: This is the UI library both of this file's components are built on. How: This is used directly (React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
+import { durMilFun } from '../../utils/rhythm.js';     // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { IcoSvgCom } from '../../ui/icon.jsx';         // What: Icon Svg Component. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'cheEle' icon name.
 import { PicStrCom } from '../../ui/picker-strip.jsx'; // What: Picker Strip Component. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
 
@@ -228,7 +229,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 			};
 
 
-			ripCleTim = setTimeout( ripCleFun, carEleArr.length * 70 + 900 ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed.
+			ripCleTim = setTimeout( ripCleFun, carEleArr.length * 70 + durMilFun( 'p07' ) ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed.
 
 
 		}
@@ -283,7 +284,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 
 
-		const parCleTim = setTimeout( () => setParIteArr( [] ), 1800 ); // What: Particle Clear Schedule. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty 1800ms after this run.
+		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Clear Schedule. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay.
 
 
 

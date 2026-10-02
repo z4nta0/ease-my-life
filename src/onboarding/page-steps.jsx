@@ -3,6 +3,7 @@
 
 // #region Imports
 
+import { durMilFun   } from '../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { NAV_TAR_OBJ } from './targets.jsx';                    // What: Nav Target Object. Why: Every page tour's own Step 1 points at the real nav button this shared catalog describes. How: This is looked up by a page key inside buiTs1Fun.
 import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: Its own id is the Stats tour's own preselected picker. How: This is read directly for PRE_PIC_STR.
 
@@ -728,10 +729,10 @@ const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of th
  *
 */
 
-const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click racing an open rename input's own delayed commit must still end with the group's own real name intact. How: This calls actStoObj.renTouFun with pgtNamStr, 200ms after this fires.
+const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click racing an open rename input's own delayed commit must still end with the group's own real name intact. How: This calls actStoObj.renTouFun with pgtNamStr, one p01 duration step after this fires.
 
 
-	setTimeout( () => actStoObj.renTouFun( pgtNamStr ), 200 ); // What: Deferred Rename Call. Why: This must fire safely after GroHeaCom's own 150ms closing-animation commit, not before it. How: This waits 200ms, then renames the group back to pgtNamStr.
+	setTimeout( () => actStoObj.renTouFun( pgtNamStr ), durMilFun( 'p01' ) ); // What: Deferred Rename Call. Why: This must fire safely after GroHeaCom's own base-step closing-animation commit, not before it. How: This waits the next step up, p01, then renames the group back to pgtNamStr.
 
 
 };

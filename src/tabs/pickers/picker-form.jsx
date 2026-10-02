@@ -13,6 +13,7 @@ import { CadConCom    } from '../../ui/cadence-control.jsx';      // What: Caden
 import { CodConCom    } from '../../ui/conditional-controls.jsx'; // What: Conditional Control Component. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
 import { ColDisCom    } from '../../ui/collapse.jsx';             // What: Collapse Disclosure Component. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
 import { conDraFun    } from '../../ui/conditional-controls.jsx'; // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
+import { durMilFun    } from '../../utils/rhythm.js';             // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { emlTouObj    } from '../../state/tour-bus.js';           // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
 import { EntEdiCom    } from '../../ui/entry-editor.jsx';         // What: Entry Editor Component. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { IcoSvgCom    } from '../../ui/icon.jsx';                 // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
@@ -166,7 +167,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		const scrTimNum = setTimeout( () => { // What: Scroll Timeout Number. Why: The block must be measured only after ColDisCom's own unfurl animation has actually finished expanding it to full height. How: This waits redMotFun() ? 0 : 320ms before measuring and scrolling.
+		const scrTimNum = setTimeout( () => { // What: Scroll Timeout Number. Why: The block must be measured only after ColDisCom's own unfurl animation has actually finished expanding it to full height. How: This waits redMotFun() ? 0 : the unfurl's own p02 duration step before measuring and scrolling.
 
 
 			const daiBloEle = daiBloRef.current;                                                         // What: Daily Block Element. Why: The scroll calculation needs the actual DOM node. How: This reads daiBloRef.current once and reuses it below.
@@ -190,7 +191,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			});
 
 
-		}, redMotFun() ? 0 : 320 ); // What: Reveal Delay. Why: The scroll should wait for the Daily section's own expand animation, except under reduced motion. How: This waits 320ms, or 0 under reduced motion.
+		}, redMotFun() ? 0 : durMilFun( 'p02' ) ); // What: Reveal Delay. Why: The scroll should wait for the Daily section's own expand animation, except under reduced motion. How: This waits that animation's own p02 duration step, or 0 under reduced motion.
 
 
 

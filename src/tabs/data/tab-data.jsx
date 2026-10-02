@@ -13,6 +13,7 @@ import { cleTasFun    } from '../../help/sample-data.js';           // What: Cle
 import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Picker cards, their Controls and Items disclosures, and item rows share the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
 import { ConManCom    } from './conditionals-manager.jsx';          // What: Conditional Manager Component. Why: The Data tab lists every conditional in its own section above the picker cards. How: This is rendered once in TabDatCom whenever the Conditionals scope is shown.
 import { DAT_HEL_ARR  } from '../../help/content.jsx';              // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
+import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EntEdiCom    } from '../../ui/entry-editor.jsx';           // What: Entry Editor Component. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
 import { freEdiFun    } from './list-sorting.js';                   // What: Freeze Edited Function. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
 import { HelButCom    } from '../../help/button.jsx';               // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
@@ -380,7 +381,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s) needs to finish growing the editor before the scroll starts. How: This schedules the smooth scroll 300ms out.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation needs to finish growing the editor before the scroll starts. How: This schedules the smooth scroll after that animation's own p02 duration step.
 
 
 
@@ -2397,7 +2398,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																			setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
 
-																			setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), 280 ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun 280ms later.
+																			setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step.
 
 
 																		}
@@ -2433,7 +2434,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-																		setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), 280 ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun 280ms later.
+																		setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step.
 
 
 																	} }

@@ -7,9 +7,10 @@ import cssModObj from './group-header.module.css'; // What: CSS Module Object. W
 import React     from 'react';                       // What: React. Why: GroHeaCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
-import { ButBasCom } from '../../ui/button.jsx'; // What: Button Base Component. Why: The merge confirmation's buttons are shared styled buttons. How: This renders its Merge and Cancel actions.
-import { IcoSvgCom } from '../../ui/icon.jsx';   // What: Icon Svg Component. Why: The header's Edit Mode grip and rename controls show small glyphs. How: This is rendered inside those controls.
-import { LogChiCom } from './day-log.jsx';       // What: Log Chip Component. Why: Each group header toggles its own Day Log panel. How: This is rendered next to the done/total count.
+import { ButBasCom } from '../../ui/button.jsx';   // What: Button Base Component. Why: The merge confirmation's buttons are shared styled buttons. How: This renders its Merge and Cancel actions.
+import { durMilFun } from '../../utils/rhythm.js'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { IcoSvgCom } from '../../ui/icon.jsx';     // What: Icon Svg Component. Why: The header's Edit Mode grip and rename controls show small glyphs. How: This is rendered inside those controls.
+import { LogChiCom } from './day-log.jsx';         // What: Log Chip Component. Why: Each group header toggles its own Day Log panel. How: This is rendered next to the done/total count.
 
 // #endregion Imports
 
@@ -106,7 +107,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 			setFreIndNum( curIndNum ); // What: Fresh Index Set. Why: The dash-row map below needs to know which single dash to flag as freshly lit. How: This publishes curIndNum into freIndNum.
 
-			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), 520 ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself shortly after lighting, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after 520ms, guarded so a stale timeout can't stomp a fresher one.
+			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself once its dash sweep ends, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after the sweep's own p04 duration step, guarded so a stale timeout can't stomp a fresher one.
 
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
@@ -173,21 +174,21 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 	 * finCloFun = Finish Close Function
 	 *
 	 * @summary
-	 * Plays the out animation (is-closing) for ~150ms, then unmounts the
-	 * field and, for a real change, commits the rename. Guarded so the
-	 * blur that Enter triggers can't double-fire alongside an explicit
-	 * commit/cancel already in flight.
+	 * Plays the out animation (is-closing) for its base duration step, then
+	 * unmounts the field and, for a real change, commits the rename. Guarded
+	 * so the blur that Enter triggers can't double-fire alongside an
+	 * explicit commit/cancel already in flight.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
 
-	const finCloFun = ( chaValBoo, newValStr ) => { // What: Finish Close Function. Why: See the doc comment just above. How: This stages cloOutBoo, then after 150ms closes ediOpeBoo and either commits newValStr or reverts draNamStr.
+	const finCloFun = ( chaValBoo, newValStr ) => { // What: Finish Close Function. Why: See the doc comment just above. How: This stages cloOutBoo, then after the out animation's base duration step closes ediOpeBoo and either commits newValStr or reverts draNamStr.
 
 
 		setCloOutBoo( true ); // What: Closing Flag Set. Why: The field's own out-animation needs to start immediately. How: This flips cloOutBoo to true.
 
-		setTimeout( () => { // What: Close Settle Timeout. Why: The field must stay mounted through its own out-animation before this actually closes it. How: This runs 150ms later, matching that animation's own duration.
+		setTimeout( () => { // What: Close Settle Timeout. Why: The field must stay mounted through its own out-animation before this actually closes it. How: This runs once that animation's own base duration step has passed.
 
 
 			setEdiOpeBoo( false ); // What: Editing Close. Why: The field itself is done animating out and can now unmount. How: This flips ediOpeBoo back to false.
@@ -198,7 +199,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 			else setDraNamStr( groNamStr ); // What: Revert Branch. Why: A cancel, or a no-op commit, should leave the draft matching the real name again for next time. How: This resets draNamStr back to groNamStr.
 
 
-		}, 150 ); // What: Close Settle Delay. Why: The field stays mounted through its out-animation first. How: This 150ms matches that animation's duration.
+		}, durMilFun( 'bas' ) ); // What: Close Settle Delay. Why: The field stays mounted through its out-animation first. How: This waits that animation's own base duration step.
 
 
 	};

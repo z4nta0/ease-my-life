@@ -7,6 +7,7 @@ import cssModObj from './boost-reset.module.css'; // What: CSS Module Object. Wh
 import React     from 'react';                    // What: React. Why: BooResCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
+import { durMilFun } from '../utils/rhythm.js'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function. Why: Under reduced motion the boost value drops to 0 at once instead of ticking down. How: This is checked when Reset is pressed.
 
 // #endregion Imports
@@ -100,9 +101,9 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
 
 
 
-		const staValNum = booValNum;                                        // What: Start Value Number. Why: The tick loop below needs the original boost booValNum to ease down from, even after onResBooFun below changes the real booValNum to 0. How: This captures booValNum before it changes.
-		const staTimNum = performance.now();                                // What: Start Time Number. Why: Each animation frame needs to know how much time has elapsed since the tick loop began. How: This captures the current high-resolution timestamp.
-		const durValNum = Math.max( 280, Math.min( 900, staValNum * 55 ) ); // What: Duration Value Number. Why: A small boost shouldn't blink past and a large one shouldn't crawl. How: This scales the animation's own duration with staValNum, clamped to a sensible min/max.
+		const staValNum = booValNum;                                                                      // What: Start Value Number. Why: The tick loop below needs the original boost booValNum to ease down from, even after onResBooFun below changes the real booValNum to 0. How: This captures booValNum before it changes.
+		const staTimNum = performance.now();                                                              // What: Start Time Number. Why: Each animation frame needs to know how much time has elapsed since the tick loop began. How: This captures the current high-resolution timestamp.
+		const durValNum = Math.max( durMilFun( 'p02' ), Math.min( durMilFun( 'p06' ), staValNum * 55 ) ); // What: Duration Value Number. Why: A small boost shouldn't blink past and a large one shouldn't crawl. How: This scales the animation's own duration with staValNum, clamped to a sensible min/max.
 
 
 		onResBooFun(); // What: On Reset Call. Why: The real committed booValNum must become 0 immediately, independent of however long the shown-number animation takes. How: This calls the caller's own reset handler right away.

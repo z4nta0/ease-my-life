@@ -12,9 +12,11 @@ import { CAD_NAM_OBJ } from '../../core/cadence.js';        // What: Cadence. Wh
 import { CAD_OPT_ARR } from '../../ui/cadence-control.jsx'; // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
 import { ColDisCom   } from '../../ui/collapse.jsx';        // What: Collapse Disclosure Component. Why: PicConCom's own sub-sections open and close with the same collapse-height animation as every other disclosure. How: This wraps each of those bodies, driven by the matching open boolean.
 import { dimCouFun   } from '../../utils/date.js';          // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
+import { durMilFun   } from '../../utils/rhythm.js';        // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FilButCom   } from '../../ui/fill-button.jsx';     // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
 import { IcoSvgCom   } from '../../ui/icon.jsx';            // What: Icon Svg Component. Why: PicConCom's own buttons and rows need recognizable glyphs. How: This is rendered throughout PicConCom.
 import { InfTipCom   } from '../../ui/info-tip.jsx';        // What: Info Tip Component. Why: A disabled control or a truncated label still needs to explain itself on demand. How: This wraps those controls throughout PicConCom.
+import { motEasFun   } from '../../utils/motion.js';        // What: Motion Easing Function. Why: Element.animate curves should match the stylesheet. How: This reads a --mot-*-eas token as a CSS easing string.
 import { norGroFun   } from '../../core/pickers.js';        // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { ordSufFun   } from '../../utils/date.js';          // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
 import { redMotFun   } from '../../utils/motion.js';        // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see PicConCom's own scroll or collapse animations. How: This is checked before each of those animations.
@@ -294,7 +296,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 			if ( preXcoNum == null ) { // What: Newly Pinned Guard. Why: A pill with no recorded previous position was just pinned to the front for the first time. How: This plays a fade-and-rise-in animation instead of a horizontal FLIP tween.
 
 
-				pilCurEle.animate( [ { opacity : 0, transform : 'translateY(4px)' }, { opacity : 1, transform : 'none' } ], { duration : 260, easing : 'cubic-bezier(.2,.7,.3,1)' } ); // What: Pin Animation Call. Why: A brand-new front position deserves its own entrance rather than a slide from nowhere. How: This fades and rises the pill into place over 260ms.
+				pilCurEle.animate( [ { opacity : 0, transform : 'translateY(4px)' }, { opacity : 1, transform : 'none' } ], { duration : durMilFun( 'p02' ), easing : motEasFun( 'dec' ) } ); // What: Pin Animation Call. Why: A brand-new front position deserves its own entrance rather than a slide from nowhere. How: This fades and rises the pill into place over 260ms.
 
 
 			}
@@ -305,7 +307,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 				const difXcoNum = preXcoNum - newXcoNum; // What: Difference X-Coordinate Number. Why: The FLIP tween's own starting transform is the distance this pill needs to travel back from its new position. How: This subtracts the new x from the previous x.
 
 
-				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : 320, easing : 'cubic-bezier(.2,.7,.3,1)' } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero.
+				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero.
 
 
 			}
@@ -385,7 +387,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 				const difXcoNum = oldXcoNum - pilCurEle.offsetLeft; // What: Difference X-Coordinate Number. Why: The tween's own starting transform is the distance this pill needs to travel back from its new position. How: This subtracts the pill's own current offsetLeft from oldXcoNum.
 
 
-				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : 320, easing : 'cubic-bezier(.2,.7,.3,1)' } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero.
+				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero.
 
 
 			} );
@@ -530,7 +532,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 		setNewGroStr( '' );    // What: New Group Text Clear. Why: A future reopen should start from an empty input, not leftover text. How: This resets newGroStr to an empty string.
 		setPilRetBoo( true );  // What: Pill Returning Start. Why: The "+ New Group" pill needs to visibly animate back in, symmetric with how it vanished on open. How: This flags pilRetBoo true, applying the returning class.
 
-		setTimeout( () => setPilRetBoo( false ), 200 ); // What: Pill Returning End. Why: The returning class only needs to apply for the duration of its own animation. How: This clears pilRetBoo 200ms later.
+		setTimeout( () => setPilRetBoo( false ), durMilFun( 'p01' ) ); // What: Pill Returning End. Why: The returning class only needs to apply for the duration of its own animation. How: This clears pilRetBoo after that animation's own p01 duration step.
 
 
 	};

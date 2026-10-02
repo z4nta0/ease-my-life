@@ -11,6 +11,7 @@ import { ButBasCom    } from '../../ui/button.jsx';                 // What: But
 import { CodConCom    } from '../../ui/conditional-controls.jsx';   // What: Conditional Control Component. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered directly inside ConEdiCom below.
 import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Each conditional row opens and closes with the same collapse-height animation as every other disclosure in the app. How: This wraps each row's editor body, driven by that row's open state.
 import { conDraFun    } from '../../ui/conditional-controls.jsx';   // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
+import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { IcoSvgCom    } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: The rows and buttons in this file need recognizable glyphs. How: This is rendered throughout both components below.
 import { InfTipCom    } from '../../ui/info-tip.jsx';               // What: Info Tip Component. Why: A disabled add button or a truncated type label still needs to explain itself on demand. How: This wraps those controls in ConManCom.
 import { norConFun    } from '../../core/pickers.js';               // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
@@ -613,7 +614,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut. How: This clears opeIdeStr.
 
-		setTimeout( delFinFun, 300 ); // What: Deferred Removal Call. Why: The actual store removal must wait until the collapse animation finishes. How: This calls delFinFun 300ms later, matching the collapse animation's own duration.
+		setTimeout( delFinFun, durMilFun( 'p02' ) ); // What: Deferred Removal Call. Why: The actual store removal must wait until the collapse animation finishes. How: This calls delFinFun after the collapse animation's own p02 duration step.
 
 
 	};
@@ -684,7 +685,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 		setOpeIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut before the commit below lands. How: This clears opeIdeStr.
 
-		setTimeout( wriConFun, 300 ); // What: Deferred Commit Call. Why: The actual store write must wait until the collapse animation finishes. How: This calls wriConFun 300ms later, matching the collapse animation's own duration.
+		setTimeout( wriConFun, durMilFun( 'p02' ) ); // What: Deferred Commit Call. Why: The actual store write must wait until the collapse animation finishes. How: This calls wriConFun after the collapse animation's own p02 duration step.
 
 
 	};
@@ -751,7 +752,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s) needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll 300ms out.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll after that animation's own p02 duration step.
 
 
 

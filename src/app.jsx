@@ -9,6 +9,7 @@ import React     from 'react';           // What: React. Why: This is the UI lib
 
 import { APP_NAM_OBJ  } from './platform/appearance.js';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through this file's theme functions. How: This is read as APP_NAM_OBJ.resTheFun, resCusFun, PAL_SET_OBJ and appPalFun in the palette effect.
 import { BacFloCom    } from './ui/bg-flourish.jsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared main-inner ref and the current tab id.
+import { durMilFun    } from './utils/rhythm.js';                // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FeaTouCom    } from './onboarding/app-features.jsx';    // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
 import { IcoSvgCom    } from './ui/icon.jsx';                    // What: Icon Svg Component. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
 import { PagTouCom    } from './onboarding/page-tours.jsx';      // What: Page Tour Component. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
@@ -628,8 +629,8 @@ function AppRooCom () {
 
 
 
-		const exiEndTim = setTimeout( () => setExiPlaStr( null ), 380 );  // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, 380ms later, matching the exit animation's own duration.
-		const entEndTim = setTimeout( () => setNavEntBoo( false ), 560 ); // What: Enter End Timeout. Why: The entering module class only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo 560ms later, matching the enter animation's own duration.
+		const exiEndTim = setTimeout( () => setExiPlaStr( null ), durMilFun( 'p03' ) );                       // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, after the exit animation's own p03 duration step.
+		const entEndTim = setTimeout( () => setNavEntBoo( false ), durMilFun( 'p04' ) + durMilFun( 'm01' ) ); // What: Enter End Timeout. Why: The entering module class only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo after the enter animation's own p04 duration plus its m01 delay.
 
 
 

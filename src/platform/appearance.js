@@ -6,6 +6,7 @@
 
 // #region Imports
 
+import { durMilFun } from '../utils/rhythm.js'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme-animating class toggle.
 
 // #endregion Imports
@@ -623,7 +624,7 @@ function appPalFun( palResObj, theKeyStr ) {
 
 		clearTimeout( __tatIdeNum ); // What: Theme-Animation-Timeout Identifier Number Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
 
-		__tatIdeNum = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), 480 ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal 480ms later, matching the CSS transition's own duration.
+		__tatIdeNum = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), durMilFun( 'p04' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal after the CSS transition's own p04 duration step.
 
 
 	}
