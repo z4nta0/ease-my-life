@@ -45,7 +45,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 12px;
+	gap            : var( --spa-ver-m01 );
 
 
 }
@@ -148,7 +148,7 @@
 	align-items : center;
 	border-top  : var( --bor-wid-sma ) solid var(--border);
 	display     : flex;
-	gap         : 14px;
+	gap         : var( --spa-hor-bas );
 	padding     : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 
@@ -235,7 +235,7 @@
 	display        : flex;
 	flex           : 1;
 	flex-wrap      : wrap;
-	gap            : 8px;
+	gap            : var( --spa-ver-m02 ) var( --spa-hor-m02 );
 	min-width      : 0;
 	padding-bottom : var( --spa-ver-m05 );
 
@@ -301,7 +301,7 @@
 	flex-shrink    : 0;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );
@@ -344,7 +344,7 @@
 
 	border-style : dashed;
 	color        : var(--muted);
-	gap          : 5px;
+	gap          : var( --spa-hor-m04 );
 
 
 }
@@ -412,7 +412,7 @@
 	align-items : center;
 	animation   : rdGroupNewIn .16s ease-out both;
 	display     : inline-flex;
-	gap         : 6px;
+	gap         : var( --spa-hor-m03 );
 
 
 }
@@ -636,7 +636,7 @@
 	border-bottom               : var( --bor-wid-sma ) solid var(--border);
 	cursor                      : pointer;
 	display                     : flex;
-	gap                         : 11px;
+	gap                         : var( --spa-hor-m01 );
 	padding                     : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position                    : relative;
 	transition                  : background .24s ease;
@@ -771,7 +771,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 3px;
+	gap            : var( --spa-ver-m06 );
 	min-width      : 0;
 
 
@@ -824,7 +824,7 @@
 	box-sizing      : border-box;
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : 12px;
+	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );
@@ -848,7 +848,7 @@
 	display        : flex;
 	flex           : 1 1 0;
 	flex-direction : column;
-	gap            : 1px;
+	gap            : var( --spa-ver-m09 );
 	min-width      : calc( var( --ver-rhy-p08 ) * 1rem );
 
 
@@ -870,7 +870,7 @@
 
 	align-items : center;
 	display     : inline-flex;
-	gap         : 6px;
+	gap         : var( --spa-hor-m03 );
 
 
 }
@@ -1056,7 +1056,7 @@
 	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	display            : flex;
-	gap                : 8px;
+	gap                : var( --spa-hor-m02 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	overflow-x         : auto;
 	padding-bottom     : var( --spa-ver-m07 );
@@ -1098,7 +1098,7 @@
 	display         : flex;
 	flex-direction  : column;
 	flex-shrink     : 0;
-	gap             : 3px;
+	gap             : var( --spa-ver-m06 );
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );
@@ -1190,7 +1190,7 @@
 	align-items     : center;
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : 6px;
+	gap             : var( --spa-ver-m03 ) var( --spa-hor-m03 );
 	justify-content : flex-start;
 
 
@@ -1297,7 +1297,7 @@
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );
@@ -1319,7 +1319,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 1px;
+	gap            : var( --spa-ver-m09 );
 
 
 }
@@ -1358,7 +1358,7 @@
 	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-direction  : row;
-	gap             : 16px;
+	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
 	width           : 100%;
 
@@ -1395,7 +1395,7 @@
 
 	display         : flex;
 	flex            : 0 0 auto;
-	gap             : 8px;
+	gap             : var( --spa-hor-m02 );
 	justify-content : flex-end;
 
 
@@ -1444,7 +1444,7 @@
 
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	margin-left : auto;
 
 

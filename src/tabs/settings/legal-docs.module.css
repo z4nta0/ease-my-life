@@ -196,7 +196,7 @@
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	flex            : 0 0 auto;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) var( --spa-ver-bas ) var( --spa-hor-p01 );
 

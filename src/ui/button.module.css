@@ -28,7 +28,7 @@
 	font-size            : var( --fon-siz-p01 );
 	font-variant-numeric : var(--btn-font-variant-numeric, inherit); /* What: Button Figures. Why: A button whose label counts up should keep its width steady as digits change. How: A parent sets --btn-font-variant-numeric to tabular figures, otherwise the button inherits as usual. */
 	font-weight          : 500;
-	gap                  : 7px;
+	gap                  : var( --spa-hor-m03 );
 	height               : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing       : -0.005em;
 	padding              : 0 var( --spa-hor-bas );
@@ -70,7 +70,7 @@
 
 	border-radius : 999px;
 	font-size     : var( --fon-siz-p01 );
-	gap           : 5px;
+	gap           : var( --spa-hor-m04 );
 	height        : calc( var( --ver-rhy-p02 ) * 1rem );
 	padding       : 0 var( --spa-hor-m01 );
 

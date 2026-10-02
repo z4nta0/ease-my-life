@@ -30,7 +30,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 16px;
+	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
 
 
@@ -45,7 +45,7 @@
 
 	align-items : baseline;
 	display     : flex;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 	min-width   : 0;
 
 
@@ -219,7 +219,7 @@
 	font-family    : inherit;
 	font-size      : var( --fon-siz-p02 );
 	font-weight    : 500;
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	letter-spacing : -0.015em;
 	margin         : calc( var( --spa-ver-m07 ) * -1 ) calc( var( --spa-hor-m03 ) * -1 );
 	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );
@@ -291,7 +291,7 @@
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
-	gap                  : 4px;
+	gap                  : var( --spa-hor-m05 );
 	letter-spacing       : 0.02em;
 
 
@@ -325,7 +325,7 @@
 
 
 	display : flex;
-	gap     : 4px;
+	gap     : var( --spa-hor-m05 );
 
 
 }
@@ -412,7 +412,7 @@
 	border-radius   : var(--r-md, 12px);
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : 14px;
+	gap             : var( --spa-ver-bas ) var( --spa-hor-bas );
 	justify-content : space-between;
 	margin-top      : var( --spa-ver-m05 );
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -489,7 +489,7 @@
 
 	display : flex;
 	flex    : 0 0 auto;
-	gap     : 8px;
+	gap     : var( --spa-hor-m02 );
 
 
 }

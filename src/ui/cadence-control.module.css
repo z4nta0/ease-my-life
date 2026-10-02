@@ -39,7 +39,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 8px;
+	gap            : var( --spa-ver-m02 );
 
 
 }
@@ -51,7 +51,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 
 
 }
@@ -75,7 +75,7 @@
 
 	align-items : center;
 	display     : inline-flex;
-	gap         : 6px;
+	gap         : var( --spa-hor-m03 );
 
 
 }
@@ -178,7 +178,7 @@
 	color       : var(--muted);
 	display     : flex;
 	font-size   : var( --fon-siz-p01 );
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 
 
 }
@@ -188,7 +188,7 @@
 	.rem-inline { /* What: Tight Cadence Inline Row. Why: The three selects need just enough room to fit. How: This shaves the gap down. */
 
 
-		gap : 4px;
+		gap : var( --spa-hor-m05 );
 
 
 	}

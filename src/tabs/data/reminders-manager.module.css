@@ -59,7 +59,7 @@
 	align-items     : center;
 	cursor          : pointer;
 	display         : flex;
-	gap             : 10px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -75,7 +75,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 
 
 }
@@ -142,7 +142,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display        : flex;
 	flex           : 1 1 auto;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	min-width      : 0;
 
 
@@ -173,7 +173,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 3px;
+	gap            : var( --spa-hor-m06 );
 	letter-spacing : 0.03em;
 
 
@@ -243,7 +243,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	align-items : center;
 	display     : flex;
-	gap         : 9px;
+	gap         : var( --spa-hor-m02 );
 
 
 }
@@ -350,7 +350,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display        : flex;
 	flex-direction : column;
 	font-size      : var( --fon-siz-p01 );
-	gap            : 1px;
+	gap            : var( --spa-ver-m09 );
 	padding-right  : var( --spa-hor-m01 );
 
 
@@ -497,7 +497,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	margin-left : auto;
 
 
@@ -522,7 +522,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	letter-spacing : 0.04em;
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	text-align     : left;
@@ -614,7 +614,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	cursor             : pointer;
 	display            : flex;
 	font               : inherit;
-	gap                : 12px;
+	gap                : var( --spa-hor-m01 );
 	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	text-align         : left;
 	user-select        : none;
@@ -682,7 +682,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	display        : flex;
 	flex           : 1 1 auto;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	min-width      : 0;
 
 

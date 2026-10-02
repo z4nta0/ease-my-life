@@ -36,7 +36,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 16px;
+	gap            : var( --spa-ver-bas );
 
 
 }
@@ -63,7 +63,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 8px;
+	gap            : var( --spa-ver-m02 );
 
 
 }
@@ -104,14 +104,14 @@
 	align-items             : center;
 	border-bottom           : var( --bor-wid-sma ) solid var(--border);
 	box-sizing              : border-box;
-	column-gap              : 12px;
+	column-gap              : var( --spa-hor-m01 );
 	flex-direction          : row;
 	flex-wrap               : wrap;
 	justify-content         : space-between;
 	margin                  : 0 calc( var( --spa-hor-bas ) * -1 );
 	min-height              : calc( var( --ver-rhy-p05 ) * 1rem );
 	padding                 : var( --spa-ver-m03 ) var( --spa-hor-bas );
-	row-gap                 : 8px;
+	row-gap                 : var( --spa-ver-m02 );
 
 
 }
@@ -130,7 +130,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 
 
 }
@@ -369,7 +369,7 @@
 	color       : var(--muted);
 	display     : flex;
 	font-size   : var( --fon-siz-p01 );
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 
 
 }
@@ -379,7 +379,7 @@
 	.rem-inline { /* What: Tight Schedule Inline Row. Why: The selects need just enough room to fit. How: This shaves the gap down. */
 
 
-		gap : 4px;
+		gap : var( --spa-hor-m05 );
 
 
 	}

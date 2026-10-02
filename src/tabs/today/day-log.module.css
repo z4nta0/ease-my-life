@@ -39,7 +39,7 @@
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 5px;
+	gap            : var( --spa-hor-m04 );
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.05em;
 	padding        : 0 var( --spa-hor-m02 );
@@ -131,7 +131,7 @@
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	letter-spacing : 0.06em;
 	text-transform : uppercase;
 
@@ -219,7 +219,7 @@
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	display       : flex;
 	flex-wrap     : nowrap;
-	gap           : 16px;
+	gap           : var( --spa-hor-bas );
 	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
 
@@ -233,7 +233,7 @@
 	align-items           : center;
 	display               : grid;
 	flex                  : 1;
-	gap                   : 9px 16px;
+	gap                   : var( --spa-ver-m02 ) var( --spa-hor-bas );
 	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) );
 	justify-content       : start;
 	min-width             : 0;
@@ -250,7 +250,7 @@
 	color       : var(--muted);
 	display     : inline-flex;
 	font-size   : var( --fon-siz-bas );
-	gap         : 7px;
+	gap         : var( --spa-hor-m03 );
 
 
 }
@@ -396,7 +396,7 @@
 	cursor                : pointer;
 	display               : grid;
 	font                  : inherit;
-	gap                   : 9px;
+	gap                   : var( --spa-ver-m02 ) var( --spa-hor-m02 );
 	grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p09 ) * 1rem ) );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-m07 );
 	text-align            : left;
@@ -415,7 +415,7 @@
 
 
 	display : flex;
-	gap     : 9px;
+	gap     : var( --spa-hor-m02 );
 
 
 }
@@ -493,7 +493,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 9px;
+	gap         : var( --spa-hor-m02 );
 	min-width   : 0;
 
 
@@ -583,7 +583,7 @@
 	flex-wrap       : wrap;
 	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
-	gap             : 8px;
+	gap             : var( --spa-ver-m02 ) var( --spa-hor-m02 );
 	justify-content : flex-end;
 	margin-left     : auto;
 	min-width       : 0;
@@ -610,7 +610,7 @@
 	align-items : center;
 	color       : oklch(0.5 0.11 155);
 	display     : inline-flex;
-	gap         : 4px;
+	gap         : var( --spa-hor-m05 );
 
 
 }
@@ -639,7 +639,7 @@
 	flex-direction : column;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	letter-spacing : 0.03em;
 	margin-left    : auto;
 	text-transform : uppercase;
@@ -660,7 +660,7 @@
 
 	align-items : center;
 	display     : inline-flex;
-	gap         : 6px;
+	gap         : var( --spa-hor-m03 );
 	white-space : nowrap;
 
 
@@ -707,7 +707,7 @@
 
 	align-items           : center;
 	display               : grid;
-	gap                   : 6px;
+	gap                   : var( --spa-ver-m03 ) var( --spa-hor-m03 );
 	grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
 
 
@@ -719,7 +719,7 @@
 	.dl-trow { /* What: Tighter Log Table Grid. Why: The value columns need to shrink. How: This narrows them and the gap. */
 
 
-		gap                   : 4px;
+		gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 );
 		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
 
 
@@ -879,7 +879,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 1px;
+	gap            : var( --spa-ver-m09 );
 	min-width      : 0;
 
 
@@ -892,7 +892,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 7px;
+	gap         : var( --spa-ver-m03 ) var( --spa-hor-m03 );
 	min-width   : 0;
 
 
@@ -931,7 +931,7 @@
 
 
 		flex-wrap : wrap;
-		gap       : 4px;
+		gap       : var( --spa-ver-m05 ) var( --spa-hor-m05 );
 
 
 	}
@@ -954,7 +954,7 @@
 
 
 		flex-wrap : wrap;
-		gap       : 4px;
+		gap       : var( --spa-ver-m05 ) var( --spa-hor-m05 );
 
 
 	}
@@ -1130,7 +1130,7 @@
 	align-items     : center;
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : 4px;
+	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );
 	justify-content : flex-end;
 	justify-self    : end;
 
@@ -1240,7 +1240,7 @@
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	letter-spacing : 0.02em;
 	margin         : 0 0 var( --spa-ver-m02 );
 	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-m03 ) var( --spa-hor-m01 );
@@ -1284,7 +1284,7 @@
 
 	align-items           : center;
 	display               : grid;
-	gap                   : 8px;
+	gap                   : var( --spa-ver-m02 ) var( --spa-hor-m02 );
 	grid-template-columns : 1fr calc( var( --ver-rhy-p08 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
 
 
@@ -1296,7 +1296,7 @@
 	.dl-rt-row { /* What: Tighter Reminders Table Grid. Why: The when and status columns need to shrink. How: This narrows them and the gap. */
 
 
-		gap                   : 6px;
+		gap                   : var( --spa-ver-m03 ) var( --spa-hor-m03 );
 		grid-template-columns : 1fr calc( var( --ver-rhy-p07 ) * 1rem ) calc( var( --ver-rhy-p07 ) * 1rem );
 
 
@@ -1404,7 +1404,7 @@
 
 	align-items     : center;
 	display         : inline-flex;
-	gap             : 6px;
+	gap             : var( --spa-hor-m03 );
 	justify-content : flex-end;
 	justify-self    : end;
 	text-align      : right;

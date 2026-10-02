@@ -25,7 +25,7 @@
 	align-items   : center;
 	border-bottom : var(--data-sort-row-border-bottom, none); /* What: Sort Row Divider. Why: Inside a section the first item right below the sort row needs a hairline above it, like the rows around it. How: A section sets --data-sort-row-border-bottom to draw that line along the row's bottom edge, falling back to none. */
 	display       : flex;
-	gap           : 8px;
+	gap           : var( --spa-hor-m02 );
 	padding       : var(--data-sort-row-padding, 0); /* What: Sort Row Padding. Why: Inside a section the row lines up with the "+ Add" row and the item rows around it. How: A section sets --data-sort-row-padding to match their padding, falling back to none. */
 
 

@@ -75,7 +75,7 @@
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	cursor        : pointer;
 	display       : flex;
-	gap           : 11px;
+	gap           : var( --spa-hor-m01 );
 	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position      : relative;
 	transition    : background .24s ease;
@@ -212,7 +212,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 3px;
+	gap            : var( --spa-ver-m06 );
 	min-width      : 0;
 
 

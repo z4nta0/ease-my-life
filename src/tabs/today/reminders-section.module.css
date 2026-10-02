@@ -34,7 +34,7 @@
 
 	display           : flex;
 	flex-direction    : column;
-	gap               : 12px;
+	gap               : var( --spa-ver-m01 );
 	scroll-margin-top : calc(var(--sticky-top-h, 140px) + 16px);
 
 
@@ -79,7 +79,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 16px;
+	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
 
 
@@ -92,7 +92,7 @@
 
 	align-items : baseline;
 	display     : flex;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 	min-width   : 0;
 
 
@@ -168,7 +168,7 @@
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
-	gap                  : 4px;
+	gap                  : var( --spa-hor-m05 );
 	letter-spacing       : 0.02em;
 
 
@@ -203,7 +203,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 
 
 }
@@ -214,7 +214,7 @@
 
 
 	display : flex;
-	gap     : 4px;
+	gap     : var( --spa-hor-m05 );
 
 
 }
@@ -446,7 +446,7 @@
 	align-items : center;
 	animation   : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display     : flex;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ) var( --spa-ver-m02 );
 
 
@@ -558,7 +558,7 @@
 
 	border-top      : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
-	gap             : 8px;
+	gap             : var( --spa-hor-m02 );
 	justify-content : flex-end;
 	margin-top      : 0;
 	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;
@@ -583,7 +583,7 @@
 	border-radius         : var(--r-lg);
 	cursor                : pointer;
 	display               : grid;
-	gap                   : 16px;
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
 	grid-template-columns : auto 1fr auto;
 	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
@@ -944,7 +944,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	min-width      : 0;
 
 
@@ -960,7 +960,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 6px;
+	gap            : var( --spa-hor-m03 );
 	letter-spacing : 0.02em;
 	text-transform : none;
 
@@ -1073,7 +1073,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	display : flex;
-	gap     : 4px;
+	gap     : var( --spa-hor-m05 );
 
 
 }
@@ -1132,7 +1132,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	border-radius   : var(--r-md);
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : 16px;
+	gap             : var( --spa-ver-bas ) var( --spa-hor-bas );
 	justify-content : space-between;
 	margin          : calc( var( --spa-ver-m05 ) * -1 ) 0 var( --spa-ver-m05 );
 	padding         : var( --spa-ver-bas ) var( --spa-hor-bas );
@@ -1176,7 +1176,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 	display : flex;
 	flex    : 0 0 auto;
-	gap     : 8px;
+	gap     : var( --spa-hor-m02 );
 
 
 }

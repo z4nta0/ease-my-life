@@ -42,7 +42,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 18px;
+	gap            : var( --spa-ver-p01 );
 
 
 }
@@ -54,7 +54,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-width       : 0;
 
@@ -86,7 +86,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 16px;
+	gap         : var( --spa-hor-bas );
 
 
 }
@@ -96,7 +96,7 @@
 	.stat-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
 
 
-		gap : 12px;
+		gap : var( --spa-hor-m01 );
 
 
 	}
@@ -186,7 +186,7 @@
 	display         : flex;
 	flex            : 1 1 auto;
 	flex-direction  : column;
-	gap             : 18px;
+	gap             : var( --spa-ver-p01 );
 	justify-content : center;
 	min-width       : 0;
 
@@ -283,7 +283,7 @@
 
 	align-items           : start;
 	display               : grid;
-	gap                   : 32px;
+	gap                   : var( --spa-ver-p03 ) var( --spa-hor-p03 );
 	grid-template-columns : calc( var( --ver-rhy-p09 ) * 1rem ) 1fr;
 	margin-top            : var( --spa-ver-p02 );
 
@@ -295,7 +295,7 @@
 	.settings-layout { /* What: Stacked Settings Layout. Why: The rail becomes a bar above the sections. How: This drops to one column with a smaller gap. */
 
 
-		gap                   : 16px;
+		gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
 		grid-template-columns : 1fr;
 
 
@@ -448,12 +448,12 @@
 
 /* #region settings-rail-ul */
 
-.settings-rail ul { /* What: Rail List. Why: The section buttons stack in a tight column. How: This stacks them with a 2px gap. */
+.settings-rail ul { /* What: Rail List. Why: The section buttons stack in a tight column. How: This stacks them with a hairline-sized gap. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 
 
 }
@@ -465,7 +465,7 @@
 
 		flex-direction : row;
 		flex-wrap      : nowrap;
-		gap            : 6px;
+		gap            : var( --spa-hor-m03 );
 		width          : max-content;
 
 
@@ -485,7 +485,7 @@
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
-	gap             : 10px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	letter-spacing  : -0.005em;
 	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -578,7 +578,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 32px;
+	gap            : var( --spa-ver-p03 );
 	min-width      : 0;
 
 
@@ -593,7 +593,7 @@
 
 	display           : flex;
 	flex-direction    : column;
-	gap               : 12px;
+	gap               : var( --spa-ver-m01 );
 	scroll-margin-top : 32px;
 
 
@@ -605,7 +605,7 @@
 	align-items    : center;
 	border-bottom  : var( --bor-wid-sma ) solid var(--border);
 	display        : flex;
-	gap            : 12px;
+	gap            : var( --spa-hor-m01 );
 	padding-bottom : var( --spa-ver-m01 );
 
 
@@ -637,7 +637,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 8px;
+	gap            : var( --spa-ver-m02 );
 
 
 }
@@ -678,7 +678,7 @@
 	align-items       : center;
 	border-bottom     : var( --bor-wid-sma ) solid var(--border);
 	display           : flex;
-	gap               : 16px;
+	gap               : var( --spa-hor-bas );
 	justify-content   : space-between;
 	padding           : var( --spa-ver-bas ) 0;
 
@@ -751,7 +751,7 @@
 	display        : flex;
 	flex           : 1 1 auto;
 	flex-direction : column;
-	gap            : 3px;
+	gap            : var( --spa-ver-m06 );
 	min-width      : 0;
 
 
@@ -849,7 +849,7 @@
 
 	display    : flex;
 	flex-wrap  : wrap;
-	gap        : 6px;
+	gap        : var( --spa-ver-m03 ) var( --spa-hor-m03 );
 	margin-top : var( --spa-ver-m02 );
 
 
@@ -866,7 +866,7 @@
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 4px;
+	gap            : var( --spa-hor-m05 );
 	height         : calc( var( --ver-rhy-p01 ) * 1rem );
 	letter-spacing : 0.01em;
 	padding        : 0 var( --spa-hor-m02 );
@@ -1116,7 +1116,7 @@
 	animation : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display   : flex;
 	flex      : 0 0 auto;
-	gap       : 8px;
+	gap       : var( --spa-hor-m02 );
 
 
 }
@@ -1158,7 +1158,7 @@
 	display        : flex;
 	flex-direction : column;
 	flex-shrink    : 0;
-	gap            : 8px;
+	gap            : var( --spa-ver-m02 );
 
 
 }
@@ -1175,7 +1175,7 @@
 	flex           : 0 0 auto;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
-	gap            : 5px;
+	gap            : var( --spa-hor-m04 );
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : -0.005em;
 	padding        : 0 var( --spa-hor-m01 );
@@ -1223,7 +1223,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 10px;
+	gap            : var( --spa-ver-m01 );
 
 
 }
@@ -1235,7 +1235,7 @@
 
 	align-items : baseline;
 	display     : flex;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 
 
 }

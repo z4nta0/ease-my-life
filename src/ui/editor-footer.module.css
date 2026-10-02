@@ -27,7 +27,7 @@
 	animation       : global(footSwapIn) .16s ease both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top      : var(--rem-inline-foot-border-top, none); /* What: Footer Divider. Why: An editor laid out in full-bleed rows needs a hairline between its last row and the footer. How: A parent sets --rem-inline-foot-border-top, falling back to no divider. */
 	display         : flex;
-	gap             : 8px;
+	gap             : var( --spa-hor-m02 );
 	justify-content : space-between;
 	margin          : var(--rem-inline-foot-margin, var( --spa-ver-p01 ) 0 0); /* What: Footer Margin. Why: A full-bleed editor pulls the footer out to its edges and drops the gap above it. How: A parent sets --rem-inline-foot-margin, falling back to a large vertical spacing gap above. */
 	padding         : var(--rem-inline-foot-padding, 0); /* What: Footer Padding. Why: A full-bleed footer needs its buttons pulled back in from the edges and clear of the divider. How: A parent sets --rem-inline-foot-padding, falling back to none. */
@@ -70,7 +70,7 @@
 
 	display : flex;
 	flex    : 0 0 auto;
-	gap     : 8px;
+	gap     : var( --spa-hor-m02 );
 
 
 }
@@ -80,7 +80,7 @@
 
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	margin-left : auto;
 
 

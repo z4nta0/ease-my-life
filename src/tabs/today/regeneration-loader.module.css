@@ -35,7 +35,7 @@
 	border-radius         : var(--r-lg);
 	cursor                : pointer;
 	display               : grid;
-	gap                   : 16px;
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
 	grid-template-columns : auto 1fr auto;
 	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
@@ -135,7 +135,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	min-width      : 0;
 
 
@@ -149,7 +149,7 @@
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 6px;
+	gap            : var( --spa-hor-m03 );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -296,7 +296,7 @@
 
 
 	display : flex;
-	gap     : 4px;
+	gap     : var( --spa-hor-m05 );
 
 
 }

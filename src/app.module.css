@@ -63,7 +63,7 @@
 	background              : oklch(from var(--bg) l c h / 0.85);
 	border                  : 0 solid var(--border);
 	display                 : flex;
-	gap                     : 4px;
+	gap                     : var( --spa-hor-m05 );
 
 
 }
@@ -144,7 +144,7 @@
 	border          : var( --bor-wid-sma ) solid var(--border);
 	border-radius   : 999px;
 	box-shadow      : 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
-	gap             : 2px;
+	gap             : var( --spa-hor-m07 );
 	justify-content : center;
 	left            : 50%;
 	padding         : var( --spa-ver-m03 ) var( --spa-hor-m02 );
@@ -189,7 +189,7 @@
 	align-items        : stretch;
 	border-right-width : var( --bor-wid-sma );
 	flex-direction     : column;
-	gap                : 2px;
+	gap                : var( --spa-ver-m07 );
 	height             : 100dvh;
 	padding            : var( --spa-ver-p02 ) var( --spa-hor-bas );
 	position           : sticky;
@@ -452,7 +452,7 @@
 	align-items : center;
 	display     : flex;
 	font-weight : 600;
-	gap         : 9px;
+	gap         : var( --spa-hor-m02 );
 	padding     : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-p01 );
 
 
@@ -500,7 +500,7 @@
 	align-items    : center;
 	display        : flex;
 	flex-direction : row;
-	gap            : 11px;
+	gap            : var( --spa-hor-m01 );
 	line-height    : var( --ver-rhy-m01 );
 	padding        : var( --spa-ver-m07 ) var( --spa-hor-m07 ) 0;
 	text-transform : uppercase;
@@ -657,7 +657,7 @@
 
 
 		font-size : var( --fon-siz-p01 );
-		gap       : 7px;
+		gap       : var( --spa-hor-m03 );
 		height    : calc( var( --ver-rhy-p03 ) * 1rem );
 		padding   : 0 var( --spa-hor-bas );
 
@@ -703,7 +703,7 @@
 	flex-direction  : row;
 	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : flex-start;
 	padding         : 0 var( --spa-hor-m01 );
@@ -726,7 +726,7 @@
 	flex-direction : row;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
-	gap            : 8px;
+	gap            : var( --spa-hor-m02 );
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	padding        : 0 var( --spa-hor-bas );
 
@@ -996,7 +996,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 24px;
+	gap            : var( --spa-ver-p02 );
 	margin         : 0 auto;
 	max-width      : calc( var( --ver-rhy-p14 ) * 1rem );
 	padding-top    : var( --spa-ver-p02 );

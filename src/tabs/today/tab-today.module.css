@@ -73,7 +73,7 @@
 
 	align-items     : stretch;
 	display         : flex;
-	gap             : 20px;
+	gap             : var( --spa-hor-p01 );
 	justify-content : space-between;
 	margin          : 0 auto;
 	max-width       : calc( var( --ver-rhy-p15 ) * 1rem );
@@ -89,7 +89,7 @@
 	display         : flex;
 	flex            : 1 1 auto;
 	flex-direction  : column;
-	gap             : 16px;
+	gap             : var( --spa-ver-bas );
 	justify-content : space-between;
 	min-width       : 0;
 	width           : 100%;
@@ -104,7 +104,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-width       : 0;
 
@@ -160,7 +160,7 @@
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 20px;
+	gap         : var( --spa-hor-p01 );
 
 
 }
@@ -178,7 +178,7 @@
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 6px;
+	gap            : var( --spa-hor-m03 );
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.08em;
 	padding        : 0 var( --spa-hor-m01 );
@@ -398,7 +398,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 16px;
+	gap         : var( --spa-hor-bas );
 	min-width   : 0;
 
 
@@ -409,7 +409,7 @@
 	.today-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
 
 
-		gap : 12px;
+		gap : var( --spa-hor-m01 );
 
 
 	}
@@ -800,7 +800,7 @@
 	display              : flex;
 	font-family          : var(--fon-fam-sec);
 	font-variant-numeric : tabular-nums;
-	gap                  : 2px;
+	gap                  : var( --spa-hor-m07 );
 	inset                : 0;
 	justify-content      : center;
 	line-height          : var( --ver-rhy-m01 );
@@ -1151,7 +1151,7 @@
 	border          : var( --bor-wid-bas ) solid oklch(from var(--accent) l c h / 0.35);
 	border-radius   : var(--r-md, 12px);
 	display         : flex;
-	gap             : 16px;
+	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
 	margin          : 0 0 var( --spa-ver-p01 );
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
@@ -1255,7 +1255,7 @@
 	display     : inline-flex;
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 600;
-	gap         : 9px;
+	gap         : var( --spa-hor-m02 );
 
 
 }
@@ -1278,7 +1278,7 @@
 	align-items : center;
 	display     : flex;
 	flex        : none;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 
 
 }
@@ -1294,7 +1294,7 @@
 
 	align-items           : start;
 	display               : grid;
-	gap                   : 32px;
+	gap                   : var( --spa-ver-p03 ) var( --spa-hor-p03 );
 	grid-template-columns : calc( var( --ver-rhy-p09 ) * 1rem ) 1fr;
 
 
@@ -1305,7 +1305,7 @@
 	.today-layout { /* What: Stacked Today Layout. Why: The rail becomes a row above the list. How: This collapses the grid to one column. */
 
 
-		gap                   : 16px;
+		gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
 		grid-template-columns : 1fr;
 
 
@@ -1322,7 +1322,7 @@
 	align-self      : start;
 	display         : flex;
 	flex-direction  : column;
-	gap             : 6px;
+	gap             : var( --spa-ver-m03 );
 	max-height      : calc(100dvh - var(--today-h-h, 140px) - 120px);
 	overflow-y      : auto;
 	position        : sticky;
@@ -1353,7 +1353,7 @@
 		background              : oklch(from var(--bg) l c h / 0.92);
 		border-bottom           : var( --bor-wid-sma ) solid var(--border);
 		flex-direction          : row;
-		gap                     : 6px;
+		gap                     : var( --spa-hor-m03 );
 		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );
 		mask-image              : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 		max-height              : none;
@@ -1415,7 +1415,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 
 
 }
@@ -1427,7 +1427,7 @@
 
 		flex           : 0 0 auto;
 		flex-direction : row;
-		gap            : 6px;
+		gap            : var( --spa-hor-m03 );
 		width          : max-content;
 
 
@@ -1447,7 +1447,7 @@
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
-	gap             : 10px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	letter-spacing  : -0.005em;
 	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -1540,7 +1540,7 @@
 	font-family          : var(--fon-fam-sec);
 	font-size            : var( --fon-siz-bas );
 	font-variant-numeric : tabular-nums;
-	gap                  : 1px;
+	gap                  : var( --spa-hor-m09 );
 	opacity              : 0.7;
 
 
@@ -1599,7 +1599,7 @@
 	display         : flex;
 	font-size       : var( --fon-siz-bas );
 	font-weight     : 600;
-	gap             : 8px;
+	gap             : var( --spa-hor-m02 );
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	letter-spacing  : -0.005em;
@@ -1654,7 +1654,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 28px;
+	gap            : var( --spa-ver-p02 );
 	min-width      : 0;
 
 
@@ -1742,7 +1742,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 28px;
+	gap            : var( --spa-ver-p02 );
 
 
 }
@@ -1754,7 +1754,7 @@
 
 	display           : flex;
 	flex-direction    : column;
-	gap               : 12px;
+	gap               : var( --spa-ver-m01 );
 	scroll-margin-top : calc(var(--sticky-top-h, 140px) + 16px);
 
 
@@ -1831,7 +1831,7 @@
 	border-radius  : var(--r-md);
 	display        : flex;
 	flex-direction : column;
-	gap            : 6px;
+	gap            : var( --spa-ver-m03 );
 	margin-bottom  : var( --spa-ver-bas );
 	padding        : var( --spa-ver-p01 ) var( --spa-hor-bas );
 	text-align     : center;
@@ -2004,7 +2004,7 @@
 	display        : inline-flex;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.005em;
 	padding        : 0 var( --spa-hor-bas );
@@ -2024,7 +2024,7 @@
 
 	border-radius : 999px;
 	font-size     : var( --fon-siz-p01 );
-	gap           : 5px;
+	gap           : var( --spa-hor-m04 );
 	height        : calc( var( --ver-rhy-p02 ) * 1rem );
 	padding       : 0 var( --spa-hor-m01 );
 
@@ -2109,7 +2109,7 @@
 	color                      : var(--muted);
 	display                    : flex;
 	flex-direction             : column;
-	gap                        : 4px;
+	gap                        : var( --spa-ver-m05 );
 	padding                    : var( --spa-ver-m01 ) 0;
 
 
@@ -2131,7 +2131,7 @@
 	align-items    : center;
 	display        : flex;
 	flex-direction : column;
-	gap            : 10px;
+	gap            : var( --spa-ver-m01 );
 	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );
 	text-align     : center;
 
@@ -2154,7 +2154,7 @@
 
 
 	display : flex;
-	gap     : 8px;
+	gap     : var( --spa-hor-m02 );
 
 
 }
@@ -2170,7 +2170,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 10px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : center;
 
 

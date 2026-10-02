@@ -34,7 +34,7 @@
 	display         : inline-flex;
 	flex            : var(--seg-flex, 0 1 auto); /* What: Segmented Control Flex. Why: A control in a tight row, like a Settings row, must keep its size. How: A parent sets --seg-flex, falling back to the normal flex sizing. */
 	flex-wrap       : var(--seg-flex-wrap, wrap); /* What: Segmented Control Wrapping. Why: A control in a Settings row must stay on one line. How: A parent sets --seg-flex-wrap, falling back to wrapping. */
-	gap             : 4px;
+	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );
 	justify-content : space-between;
 	margin-bottom   : var(--seg-margin-bottom, 0); /* What: Segmented Control Bottom Margin. Why: The cadence editor wants room below its controls. How: A parent sets --seg-margin-bottom, falling back to none. */
 	max-width       : var(--seg-max-width, none); /* What: Segmented Control Max Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-width, falling back to no limit. */

@@ -73,7 +73,7 @@
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
 	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );
@@ -88,7 +88,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 1px;
+	gap            : var( --spa-ver-m09 );
 
 
 }
@@ -100,7 +100,7 @@
 
 	align-items : center;
 	display     : inline-flex;
-	gap         : 6px;
+	gap         : var( --spa-hor-m03 );
 
 
 }
@@ -201,7 +201,7 @@
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 
 
 }
@@ -378,7 +378,7 @@
 	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top      : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
-	gap             : 8px;
+	gap             : var( --spa-hor-m02 );
 	justify-content : space-between;
 	margin          : 0 calc( var( --spa-hor-bas ) * -1 );
 	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;
@@ -414,7 +414,7 @@
 
 	display : flex;
 	flex    : 0 0 auto;
-	gap     : 8px;
+	gap     : var( --spa-hor-m02 );
 
 
 }
@@ -432,7 +432,7 @@
 	animation            : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top           : var( --bor-wid-sma ) solid var(--border);
 	display              : flex;
-	gap                  : 8px;
+	gap                  : var( --spa-hor-m02 );
 	justify-content      : var(--entry-editor-foot-justify, space-between); /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A new-item row sets this to flex-end, falling back to space-between. */
 	margin               : 0 calc( var( --spa-hor-bas ) * -1 );
 	padding              : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;
@@ -466,7 +466,7 @@
 
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	margin-left : auto;
 
 

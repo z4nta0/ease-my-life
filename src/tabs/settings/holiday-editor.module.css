@@ -45,7 +45,7 @@
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
-	gap             : 16px;
+	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
 	padding         : var( --spa-ver-m01 ) 0;
 
@@ -158,7 +158,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	min-width      : 0;
 
 
@@ -206,7 +206,7 @@
 	flex-direction : column;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	letter-spacing : 0.02em;
 	position       : relative;
 
@@ -218,7 +218,7 @@
 	align-items    : baseline;
 	flex-direction : row;
 	flex-wrap      : wrap;
-	gap            : 5px;
+	gap            : var( --spa-ver-m04 ) var( --spa-hor-m04 );
 
 
 }
@@ -422,7 +422,7 @@
 	border-top  : var( --bor-wid-sma ) solid var(--border);
 	display     : flex;
 	flex-wrap   : wrap;
-	gap         : 8px;
+	gap         : var( --spa-ver-m02 ) var( --spa-hor-m02 );
 	margin-top  : var( --spa-ver-bas );
 	padding-top : var( --spa-ver-bas );
 

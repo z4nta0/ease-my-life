@@ -28,7 +28,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 20px;
+	gap            : var( --spa-ver-p01 );
 	padding-top    : var( --spa-ver-m05 );
 
 
@@ -49,7 +49,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 8px;
+	gap            : var( --spa-ver-m02 );
 
 
 }
@@ -57,7 +57,7 @@
 
 
 	border-top : var( --bor-wid-sma ) solid var(--border);
-	gap        : 6px;
+	gap        : var( --spa-ver-m03 );
 	margin     : 0;
 	padding    : var( --spa-ver-m01 ) var( --spa-hor-bas );
 
@@ -75,7 +75,7 @@
 
 	align-items     : center;
 	flex-direction  : row;
-	gap             : 16px;
+	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
 
 
@@ -96,7 +96,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 4px;
+	gap            : var( --spa-ver-m05 );
 	max-width      : calc( var( --ver-rhy-p11 ) * 1rem );
 
 
@@ -202,7 +202,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 6px;
+	gap            : var( --spa-ver-m03 );
 
 
 }
@@ -228,7 +228,7 @@ fieldset.np-field { /* What: Type Fieldset. Why: The type radio is a real fields
 
 
 	border-top : var( --bor-wid-sma ) solid var(--border);
-	gap        : 8px;
+	gap        : var( --spa-ver-m02 );
 	margin     : 0;
 	padding    : var( --spa-ver-m01 ) 0 0;
 
@@ -309,7 +309,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	border-bottom               : var( --bor-wid-sma ) solid var(--border);
 	cursor                      : pointer;
 	display                     : flex;
-	gap                         : 11px;
+	gap                         : var( --spa-hor-m01 );
 	padding                     : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position                    : relative;
 	transition                  : background .24s ease;
@@ -444,7 +444,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 3px;
+	gap            : var( --spa-ver-m06 );
 	min-width      : 0;
 
 
@@ -516,7 +516,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 	align-items     : center;
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
 	padding         : var( --spa-ver-m05 ) 0;
@@ -547,7 +547,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 1px;
+	gap            : var( --spa-ver-m09 );
 
 
 }
@@ -557,7 +557,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 	align-items : center;
 	display     : inline-flex;
-	gap         : 6px;
+	gap         : var( --spa-hor-m03 );
 
 
 }
@@ -613,7 +613,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 
 
 }

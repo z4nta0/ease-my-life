@@ -25,7 +25,7 @@
 	border        : var( --bor-wid-sma ) solid var(--border);
 	border-radius : 999px;
 	display       : inline-flex;
-	gap           : 4px;
+	gap           : var( --spa-hor-m05 );
 	padding       : var( --spa-ver-m06 ) var( --spa-hor-m06 );
 
 

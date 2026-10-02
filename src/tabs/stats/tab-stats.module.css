@@ -30,7 +30,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 28px;
+	gap            : var( --spa-ver-p02 );
 	padding-bottom : var(--tab-tour-padding, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tour-padding while a tour runs, falling back to none. */
 
 
@@ -45,7 +45,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 18px;
+	gap            : var( --spa-ver-p01 );
 
 
 }
@@ -57,7 +57,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-width       : 0;
 
@@ -89,7 +89,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 16px;
+	gap         : var( --spa-hor-bas );
 
 
 }
@@ -99,7 +99,7 @@
 	.stat-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
 
 
-		gap : 12px;
+		gap : var( --spa-hor-m01 );
 
 
 	}
@@ -189,7 +189,7 @@
 	display         : flex;
 	flex            : 1 1 auto;
 	flex-direction  : column;
-	gap             : 18px;
+	gap             : var( --spa-ver-p01 );
 	justify-content : center;
 	min-width       : 0;
 
@@ -286,7 +286,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 28px;
+	gap            : var( --spa-ver-p02 );
 	min-width      : 0;
 
 
@@ -301,7 +301,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 14px;
+	gap            : var( --spa-ver-bas );
 
 
 }
@@ -314,7 +314,7 @@
 	align-items    : stretch;
 	display        : flex;
 	flex-direction : column;
-	gap            : 7px;
+	gap            : var( --spa-ver-m03 );
 
 
 }
@@ -343,7 +343,7 @@
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	display            : flex;
 	flex               : 1 1 auto;
-	gap                : 8px;
+	gap                : var( --spa-hor-m02 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
 	overflow-x         : auto;
@@ -389,7 +389,7 @@
 	flex-shrink    : 0;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );
@@ -473,7 +473,7 @@
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	display            : flex;
 	flex               : 1 1 auto;
-	gap                : 8px;
+	gap                : var( --spa-hor-m02 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
 	overflow-x         : auto;
@@ -529,7 +529,7 @@
 	display           : flex;
 	flex-direction    : column;
 	flex-shrink       : 0;
-	gap               : 1px;
+	gap               : var( --spa-ver-m09 );
 	min-width         : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	scroll-snap-align : start;
@@ -612,7 +612,7 @@
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	display            : flex;
 	flex-wrap          : wrap;
-	gap                : 7px;
+	gap                : var( --spa-ver-m03 ) var( --spa-hor-m03 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
 	overflow-x         : auto;
@@ -721,7 +721,7 @@
 
 	animation             : global(tabFadeIn) .2s ease both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the Pickers tab and the picker form, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display               : grid;
-	gap                   : 28px;
+	gap                   : var( --spa-ver-p02 ) var( --spa-hor-p02 );
 	grid-auto-rows        : auto;
 	grid-template-columns : minmax(0, 1fr);
 
@@ -752,7 +752,7 @@
 	--pill-margin-top : var( --spa-ver-m05 ); /* What: Pill Margin Top. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
 	display           : flex;
 	flex-direction    : column;
-	gap               : 2px;
+	gap               : var( --spa-ver-m07 );
 
 
 }
@@ -790,7 +790,7 @@
 
 
 	display               : grid;
-	gap                   : 10px;
+	gap                   : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 	grid-template-columns : repeat(4, 1fr);
 
 
@@ -885,7 +885,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 14px;
+	gap            : var( --spa-ver-bas );
 	margin-top     : var( --spa-ver-m01 );
 
 
@@ -957,7 +957,7 @@
 	border-bottom : var( --bor-wid-sma ) solid var(--border);
 	display       : flex;
 	font-size     : var( --fon-siz-p01 );
-	gap           : 10px;
+	gap           : var( --spa-hor-m01 );
 	padding       : var( --spa-ver-m02 ) 0;
 
 
@@ -1043,7 +1043,7 @@
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 5px;
+	gap            : var( --spa-hor-m04 );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -1074,7 +1074,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 18px;
+	gap             : var( --spa-hor-p01 );
 	justify-content : center;
 	margin-bottom   : var( --spa-ver-bas );
 
@@ -1153,7 +1153,7 @@
 
 
 	display               : grid;
-	gap                   : 4px;
+	gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 );
 	grid-template-columns : repeat( auto-fill, minmax( calc( var( --ver-rhy-p03 ) * 1rem ), 1fr ) );
 
 
@@ -1358,7 +1358,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items     : baseline;
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	margin-bottom   : var( --spa-ver-m02 );
 
@@ -1407,7 +1407,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	border-bottom   : var( --bor-wid-sma ) solid oklch(from var(--border) l c h / 0.55);
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	padding         : var( --spa-ver-m03 ) 0;
 
@@ -1477,7 +1477,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items     : baseline;
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : 16px;
+	gap             : var( --spa-ver-bas ) var( --spa-hor-bas );
 	justify-content : space-between;
 	margin-bottom   : var( --spa-ver-m01 );
 
@@ -1490,7 +1490,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 
 	display : flex;
-	gap     : 18px;
+	gap     : var( --spa-hor-p01 );
 
 
 }
@@ -1548,7 +1548,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items     : center;
 	border-top      : var( --bor-wid-bas ) solid var(--border);
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	padding         : var( --spa-ver-m02 ) 0;
 
@@ -1568,7 +1568,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items : center;
 	display     : flex;
 	font-size   : var( --fon-siz-p01 );
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	min-width   : 0;
 
 
@@ -1582,7 +1582,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items : baseline;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 12px;
+	gap         : var( --spa-hor-m01 );
 
 
 }
@@ -1636,7 +1636,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items     : center;
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 
 
@@ -1663,7 +1663,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	flex           : 0 0 auto;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 5px;
+	gap            : var( --spa-hor-m04 );
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );
 	letter-spacing : 0.04em;
 	padding        : 0 var( --spa-hor-m01 );
@@ -1710,7 +1710,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	display            : flex;
 	flex-wrap          : nowrap;
-	gap                : 6px;
+	gap                : var( --spa-hor-m03 );
 	margin             : var( --spa-ver-m01 ) 0 var( --spa-ver-m05 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	min-width          : 0;
@@ -1928,7 +1928,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	padding         : var( --spa-ver-bas ) 0;
 
@@ -1974,7 +1974,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 3px;
+	gap            : var( --spa-ver-m06 );
 	min-width      : 0;
 
 
@@ -1992,7 +1992,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items : baseline;
 	display     : flex;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	min-width   : 0;
 
 
@@ -2062,7 +2062,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items : baseline;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 
 
 }
@@ -2073,7 +2073,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 
 
 }
@@ -2193,7 +2193,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 
 
 }
@@ -2245,7 +2245,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	padding         : var( --spa-ver-bas ) 0;
 
@@ -2277,7 +2277,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items : center;
 	display     : inline-flex;
 	flex        : 0 0 auto;
-	gap         : 10px;
+	gap         : var( --spa-hor-m01 );
 
 
 }
@@ -2345,7 +2345,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items     : center;
 	border-top      : var( --bor-wid-sma ) solid var(--border);
 	display         : flex;
-	gap             : 14px;
+	gap             : var( --spa-hor-bas );
 	justify-content : flex-end;
 	margin-top      : var( --spa-ver-bas );
 	padding-top     : var( --spa-ver-bas );
@@ -2379,7 +2379,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 
 	align-items : center;
 	display     : flex;
-	gap         : 6px;
+	gap         : var( --spa-hor-m03 );
 
 
 }

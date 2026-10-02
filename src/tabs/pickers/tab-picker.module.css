@@ -30,7 +30,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 28px;
+	gap            : var( --spa-ver-p02 );
 	padding-bottom : var(--tab-tour-padding, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tour-padding while a tour runs, falling back to none. */
 
 
@@ -43,7 +43,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 18px;
+	gap            : var( --spa-ver-p01 );
 
 
 }
@@ -55,7 +55,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : space-between;
 	min-width       : 0;
 
@@ -87,7 +87,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 16px;
+	gap         : var( --spa-hor-bas );
 
 
 }
@@ -97,7 +97,7 @@
 	.picker-h-lead { /* What: Tighter Header Lead. Why: The row has less room. How: This tightens its gap. */
 
 
-		gap : 12px;
+		gap : var( --spa-hor-m01 );
 
 
 	}
@@ -187,7 +187,7 @@
 	display         : flex;
 	flex            : 1 1 auto;
 	flex-direction  : column;
-	gap             : 18px;
+	gap             : var( --spa-ver-p01 );
 	justify-content : center;
 	min-width       : 0;
 
@@ -284,7 +284,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 28px;
+	gap            : var( --spa-ver-p02 );
 	min-width      : 0;
 
 
@@ -297,7 +297,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 14px;
+	gap            : var( --spa-ver-bas );
 
 
 }
@@ -310,7 +310,7 @@
 	align-items    : stretch;
 	display        : flex;
 	flex-direction : column;
-	gap            : 7px;
+	gap            : var( --spa-ver-m03 );
 
 
 }
@@ -340,7 +340,7 @@
 	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	display            : flex;
-	gap                : 8px;
+	gap                : var( --spa-hor-m02 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	overflow-x         : auto;
 	padding-bottom     : var( --spa-ver-m07 );
@@ -385,7 +385,7 @@
 	flex-shrink    : 0;
 	font-size      : var( --fon-siz-p01 );
 	font-weight    : 500;
-	gap            : 7px;
+	gap            : var( --spa-hor-m03 );
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );
@@ -468,7 +468,7 @@
 	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
 	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	display            : flex;
-	gap                : 8px;
+	gap                : var( --spa-hor-m02 );
 	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 	overflow-x         : auto;
 	scroll-snap-type   : x mandatory;
@@ -523,7 +523,7 @@
 	display           : flex;
 	flex-direction    : column;
 	flex-shrink       : 0;
-	gap               : 1px;
+	gap               : var( --spa-ver-m09 );
 	min-width         : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	scroll-snap-align : start;
@@ -570,7 +570,7 @@
 	color           : var(--muted);
 	cursor          : pointer;
 	flex-direction  : row;
-	gap             : 8px;
+	gap             : var( --spa-hor-m02 );
 	justify-content : center;
 
 

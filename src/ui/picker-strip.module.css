@@ -312,7 +312,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten spotlight rows. */
 	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );
 	overflow       : hidden;

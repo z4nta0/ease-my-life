@@ -226,7 +226,7 @@
 
 	align-items     : center;
 	display         : flex;
-	gap             : 8px;
+	gap             : var( --spa-hor-m02 );
 	justify-content : space-between;
 	margin-top      : var( --spa-ver-bas );
 
@@ -242,7 +242,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 12px;
+	gap         : var( --spa-hor-m01 );
 
 
 }

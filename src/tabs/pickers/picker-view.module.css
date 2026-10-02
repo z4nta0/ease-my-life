@@ -32,7 +32,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 18px;
+	gap            : var( --spa-ver-p01 );
 
 
 }
@@ -44,7 +44,7 @@
 
 	align-items     : flex-start;
 	display         : flex;
-	gap             : 16px;
+	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
 
 
@@ -114,7 +114,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 18px;
+	gap            : var( --spa-ver-p01 );
 
 
 }
@@ -160,7 +160,7 @@
 	align-items    : center;
 	display        : flex;
 	flex-direction : column;
-	gap            : 4px;
+	gap            : var( --spa-ver-m05 );
 	text-align     : center;
 
 
@@ -220,7 +220,7 @@
 	animation      : sentRise 320ms cubic-bezier(.22,1.2,.36,1);
 	display        : flex;
 	flex-direction : column;
-	gap            : 12px;
+	gap            : var( --spa-ver-m01 );
 	text-align     : center;
 
 
@@ -350,7 +350,7 @@
 	align-items : center;
 	display     : flex;
 	flex-wrap   : wrap;
-	gap         : 10px;
+	gap         : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 
 
 }
@@ -525,7 +525,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 10px;
+	gap            : var( --spa-ver-m01 );
 
 
 }
@@ -537,7 +537,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 10px;
+	gap            : var( --spa-ver-m01 );
 
 
 }
@@ -562,7 +562,7 @@
 	display        : inline-flex;
 	font-family    : var(--fon-fam-sec);
 	font-size      : var( --fon-siz-bas );
-	gap            : 5px;
+	gap            : var( --spa-hor-m04 );
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -603,7 +603,7 @@
 	align-items           : center;
 	border-bottom         : var( --bor-wid-sma ) solid var(--border);
 	display               : grid;
-	gap                   : 16px;
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
 	grid-template-columns : 1fr auto auto auto auto;
 	padding               : var( --spa-ver-p01 ) var( --spa-hor-bas );
 
@@ -615,7 +615,7 @@
 	.pool-row { /* What: Tight Pool Row. Why: The columns need the room. How: This tightens the gap. */
 
 
-		gap : 10px;
+		gap : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 
 
 	}
@@ -738,7 +738,7 @@
 	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : 12px;
+	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );
 	justify-content : space-between;
 
 
@@ -779,7 +779,7 @@
 
 	display : flex;
 	flex    : 0 0 auto;
-	gap     : 8px;
+	gap     : var( --spa-hor-m02 );
 
 
 }
@@ -799,7 +799,7 @@
 	align-items            : center;
 	display                : flex;
 	font-size              : var( --fon-siz-p01 );
-	gap                    : 8px;
+	gap                    : var( --spa-ver-m02 ) var( --spa-hor-m02 );
 	min-width              : 0;
 	text-wrap              : pretty;
 
@@ -859,7 +859,7 @@
 	display         : flex;
 	font-family     : var(--fon-fam-sec);
 	font-size       : var( --fon-siz-bas );
-	gap             : 12px;
+	gap             : var( --spa-hor-m01 );
 	justify-content : flex-end;
 	justify-self    : end;
 
@@ -871,7 +871,7 @@
 
 	align-items : center;
 	display     : flex;
-	gap         : 8px;
+	gap         : var( --spa-hor-m02 );
 	min-width   : calc( var( --ver-rhy-p07 ) * 1rem );
 
 
@@ -1174,7 +1174,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : 10px;
+	gap            : var( --spa-ver-m01 );
 
 
 }
@@ -1240,7 +1240,7 @@
 	cursor             : default;
 	display            : flex;
 	font               : inherit;
-	gap                : 12px;
+	gap                : var( --spa-hor-m01 );
 	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	text-align         : left;
 	user-select        : none;
@@ -1257,7 +1257,7 @@
 	display        : flex;
 	flex           : 1 1 auto;
 	flex-direction : column;
-	gap            : 2px;
+	gap            : var( --spa-ver-m07 );
 	min-width      : 0;
 
 
@@ -1346,7 +1346,7 @@
 	font            : inherit;
 	font-size       : var( --fon-siz-p01 );
 	font-weight     : 500;
-	gap             : 6px;
+	gap             : var( --spa-hor-m03 );
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : center;
 	padding         : 0 var( --spa-hor-bas );
