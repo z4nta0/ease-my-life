@@ -99,7 +99,7 @@
 
 	background    : oklch(from var(--surface) calc(l + 0.006) c h);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-md);
+	border-radius : var( --rad-bor-med );
 	margin        : var( --spa-ver-m07 ) 0 var( --spa-ver-bas );
 	overflow      : hidden;
 
@@ -160,7 +160,7 @@
 	align-items     : center;
 	background      : var(--surface);
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : flex;
@@ -270,7 +270,7 @@
 
 
 	align-items     : center;
-	border-radius   : 7px;
+	border-radius   : var( --rad-bor-sma );
 	display         : inline-flex;
 	flex            : none;
 	height          : calc( var( --ver-rhy-p01 ) * 1rem );
@@ -830,7 +830,7 @@
 
 
 	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
-	border-radius : 8px;
+	border-radius : var( --rad-bor-sma );
 	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
 
@@ -1235,7 +1235,7 @@
 
 	align-items    : center;
 	background     : oklch(from var(--accent) 0.95 0.035 h);
-	border-radius  : 0 0 8px 8px;
+	border-radius  : 0 0 var( --rad-bor-sma ) var( --rad-bor-sma );
 	color          : oklch(from var(--accent) calc(l - 0.02) c h);
 	display        : flex;
 	font-family    : var(--fon-fam-sec);
@@ -1341,7 +1341,7 @@
 
 
 	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--border) l c h/0.55);
-	border-radius : 8px;
+	border-radius : var( --rad-bor-sma );
 	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
 
 

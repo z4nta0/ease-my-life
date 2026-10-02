@@ -51,7 +51,7 @@
 
 
 	background    : var(--surface);
-	border-radius : var(--r-lg, 16px);
+	border-radius : var( --rad-bor-lar );
 	border-top    : 0 !important;
 	box-shadow    : 0 20px 46px -14px oklch(0 0 0 / 0.32);
 	padding-top   : 0 !important;
@@ -102,7 +102,7 @@
 
 
 	align-items     : center;
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : grab;
 	display         : inline-flex;
@@ -223,7 +223,7 @@
 
 
 	background    : var(--border);
-	border-radius : 2px;
+	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
 	position      : relative;
@@ -363,7 +363,7 @@
 	background    : oklch(from var(--warm) l c h/0.07);
 	border        : var( --bor-wid-sma ) solid var(--border);
 	border-color  : oklch(from var(--warm) l c h/0.35);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : oklch(0.45 0.13 50);
 	font-size     : var( --fon-siz-bas );
 	line-height   : var( --ver-rhy-bas );
@@ -472,7 +472,7 @@
 
 	background    : var(--bg);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--text);
 	flex          : 1;
 	font-family   : var(--fon-fam-mai);
@@ -531,7 +531,7 @@
 	animation                    : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                   : oklch(from var(--surface) calc(l - 0.006) c h);
 	border                       : var( --bor-wid-sma ) solid var(--border);
-	border-radius                : var(--r-md);
+	border-radius                : var( --rad-bor-med );
 	margin                       : 0 0 var( --spa-ver-m05 );
 	padding                      : var( --spa-ver-bas ) 0;
 
@@ -580,7 +580,7 @@
 	align-items           : center;
 	background            : var(--surface);
 	border                : var( --bor-wid-sma ) solid var(--border);
-	border-radius         : var(--r-lg);
+	border-radius         : var( --rad-bor-lar );
 	cursor                : pointer;
 	display               : grid;
 	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
@@ -808,7 +808,7 @@
 	appearance         : none;
 	background         : none;
 	border             : var( --bor-wid-bas ) solid var(--border);
-	border-radius      : 8px;
+	border-radius      : var( --rad-bor-sma );
 	color              : inherit;
 	display            : inline-flex;
 	flex               : none;
@@ -880,7 +880,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	border         : var( --bor-wid-bas ) solid var(--accent);
-	border-radius  : 9px;
+	border-radius  : var( --rad-bor-sma );
 	inset          : calc( var( --bor-wid-bas ) * -1 );
 	opacity        : 0;
 	pointer-events : none;
@@ -1082,7 +1082,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	align-items     : center;
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
@@ -1129,7 +1129,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	animation       : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background      : oklch(from var(--surface) calc(l - 0.006) c h);
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : var(--r-md);
+	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-bas ) var( --spa-hor-bas );

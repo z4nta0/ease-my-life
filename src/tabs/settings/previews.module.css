@@ -64,7 +64,7 @@
 	align-items           : center;
 	background            : oklch(from var(--surface) calc(l - 0.005) c h);
 	border                : var( --bor-wid-sma ) solid var(--border);
-	border-radius         : var(--r-lg);
+	border-radius         : var( --rad-bor-lar );
 	cursor                : default;
 	display               : grid;
 	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
@@ -124,7 +124,7 @@
 	appearance         : none;
 	background         : var(--accent);
 	border             : var( --bor-wid-bas ) solid var(--accent);
-	border-radius      : 8px;
+	border-radius      : var( --rad-bor-sma );
 	color              : var(--bg);
 	display            : inline-flex;
 	flex               : none;
@@ -232,7 +232,7 @@
 
 	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global Burst Keyframes. Why: The confettiBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--accent);
-	border-radius : 2px;
+	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	left          : 50%;
 	opacity       : 0;

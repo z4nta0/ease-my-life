@@ -427,7 +427,7 @@
 	aspect-ratio       : 1 / 1;
 	background         : none;
 	border             : 0;
-	border-radius      : 11px;
+	border-radius      : var( --rad-bor-med );
 	color              : var(--accent);
 	cursor             : pointer;
 	display            : block;
@@ -1149,7 +1149,7 @@
 	animation       : emBannerIn 0.26s cubic-bezier(0.4, 0, 0.2, 1) both;
 	background      : var(--accent-soft);
 	border          : var( --bor-wid-bas ) solid oklch(from var(--accent) l c h / 0.35);
-	border-radius   : var(--r-md, 12px);
+	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	gap             : var( --spa-hor-bas );
 	justify-content : space-between;
@@ -1442,7 +1442,7 @@
 
 
 	align-items     : center;
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	display         : flex;
 	font-size       : var( --fon-siz-p01 );
@@ -1593,7 +1593,7 @@
 	align-items     : center;
 	background      : oklch(from var(--surface) calc(l - 0.015) c h);
 	border          : var( --bor-wid-bas ) dashed var(--border);
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : flex;
@@ -1678,7 +1678,7 @@
 
 	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global confettiBurst Keyframes. Why: The confettiBurst keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--accent);
-	border-radius : 2px;
+	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	left          : 50%;
 	opacity       : 0;
@@ -1784,7 +1784,7 @@
 
 
 	background    : var(--surface);
-	border-radius : var(--r-lg, 16px);
+	border-radius : var( --rad-bor-lar );
 	border-top    : 0!important;
 	box-shadow    : 0 20px 46px -14px oklch(0 0 0 / 0.32);
 	padding-top   : 0!important;
@@ -1828,7 +1828,7 @@
 	align-items    : center;
 	background     : var(--accent-soft);
 	border         : var( --bor-wid-bas ) dashed oklch(from var(--accent) l c h/0.5);
-	border-radius  : var(--r-md);
+	border-radius  : var( --rad-bor-med );
 	display        : flex;
 	flex-direction : column;
 	gap            : var( --spa-ver-m03 );
@@ -1936,7 +1936,7 @@
 	align-items     : center;
 	background      : var(--surface);
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : 11px;
+	border-radius   : var( --rad-bor-med );
 	color           : var(--accent);
 	display         : flex;
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );

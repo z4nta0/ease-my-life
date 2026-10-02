@@ -184,7 +184,7 @@
 
 	background    : var(--surface);
 	border        : var( --bor-wid-bas ) solid var(--border);
-	border-radius : 9px;
+	border-radius : var( --rad-bor-sma );
 	color         : var(--text);
 	flex          : 1;
 	font-family   : inherit;
@@ -1093,7 +1093,7 @@
 
 	background      : var(--surface);
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : 12px;
+	border-radius   : var( --rad-bor-med );
 	cursor          : pointer;
 	display         : flex;
 	flex-direction  : column;
@@ -1201,7 +1201,7 @@
 
 	background    : var(--bg);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--text);
 	cursor        : pointer;
 	font-family   : var(--fon-fam-mai);

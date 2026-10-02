@@ -12,7 +12,6 @@ import { claPadFun    } from './geometry.js';      // What: Clamp Pad Function. 
 import { cliChrFun    } from './geometry.js';      // What: Clip Chrome Function. Why: A highlight must not paint over fixed app chrome above it. How: This is called once per highlighted target.
 import { cliHorFun    } from './geometry.js';      // What: Clip Horizontal Function. Why: A highlight inside a horizontal scroller must stop at the scroller's own visible edges. How: This is called once per measured target.
 import { createPortal } from 'react-dom';          // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelOveCom's own JSX and document.body inside its return.
-import { DEF_RAD_NUM  } from './geometry.js';      // What: Default Radius Number. Why: A multi-element union has no single border radius of its own. How: This is the corner radius used for those highlights.
 import { detEdgFun    } from './geometry.js';      // What: Detect Edge Function. Why: A clipped highlight needs to know which of its edges touch chrome. How: This is called once per clipped target.
 import { finTarFun    } from './geometry.js';      // What: Find Target Function. Why: Each help item names its target by selector, which may match several elements. How: This is called once per help item.
 import { HelTipCom    } from './tooltip.jsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
@@ -149,9 +148,9 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
 	shaStr : ( padWidNum, padHeiNum ) => { // What: Shape String. Why: A multi-element union like the nav bar has no single source element's own border-radius to read. How: This computes a true-pill radius only once the box is meaningfully elongated, matching 'bottom'/'top' placement but not 'side'.
 
 
-		const shoPilNum = Math.min( padWidNum, padHeiNum );                         // What: Short Pill Number. Why: The elongation check and the pill radius itself both need to know which dimension is smaller. How: This takes the smaller of padWidNum/padHeiNum.
-		const lonPilNum = Math.max( padWidNum, padHeiNum );                         // What: Long Pill Number. Why: The elongation check needs the larger dimension to compare against shoPilNum. How: This takes the larger of padWidNum/padHeiNum.
-		const radPilNum = lonPilNum / shoPilNum >= 2 ? shoPilNum / 2 : DEF_RAD_NUM; // What: Radius Pill Number. Why: Only a box at least twice as long as it is short reads correctly as a true pill; a nearly-square union (the 'side' stack) would otherwise round into a circle/oval. How: This picks half of shoPilNum once elongated enough, otherwise the app's own default radius.
+		const shoPilNum = Math.min( padWidNum, padHeiNum );                                // What: Short Pill Number. Why: The elongation check and the pill radius itself both need to know which dimension is smaller. How: This takes the smaller of padWidNum/padHeiNum.
+		const lonPilNum = Math.max( padWidNum, padHeiNum );                                // What: Long Pill Number. Why: The elongation check needs the larger dimension to compare against shoPilNum. How: This takes the larger of padWidNum/padHeiNum.
+		const radPilNum = lonPilNum / shoPilNum >= 2 ? shoPilNum / 2 : rhyPxlFun( 'm01' ); // What: Radius Pill Number. Why: Only a box at least twice as long as it is short reads correctly as a true pill; a nearly-square union (the 'side' stack) would otherwise round into a circle/oval. How: This picks half of shoPilNum once elongated enough, otherwise the app's own default radius.
 
 
 
@@ -761,11 +760,11 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 					{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Mask Cutout Map. Why: Every currently-highlighted target needs its own black cutout rect, shaped and padded to match how it is actually rendered on top. How: This maps recEntArr, reading each rect's own shape/pad fields.
 
 
-						const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Shape Destructure. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape, or the default, directly.
-						const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Top Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default.
-						const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Bottom Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default.
-						const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Left Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padLefNum, falling back to the flat default.
-						const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Right Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padRigNum, falling back to the flat default.
+						const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Shape Destructure. Why: A multi-element union with no single shape falls back to the app's own default radius. How: This reads curRecObj's own shape, or the default, directly.
+						const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Top Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default.
+						const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Bottom Number. Why: A column group member's own padLefNum/padRigNum are forced to 0 elsewhere, but its padTopNum/padBotNum still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default.
+						const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Left Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padLefNum, falling back to the flat default.
+						const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Right Number. Why: Same reasoning as padTopNum/padBotNum above, for the horizontal sides. How: This reads curRecObj's own padRigNum, falling back to the flat default.
 
 
 
@@ -822,11 +821,11 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 			{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Highlight Spot Map. Why: Alongside the mask's own dim-layer cutout, each target also gets a rendered help spot div, e.g. for its own visible border/glow styling. How: This maps recEntArr the same way the mask cutouts above do.
 
 
-				const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Shape Destructure. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own shape, or the default, directly.
-				const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Top Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padTopNum, falling back to the flat default.
-				const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Bottom Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padBotNum, falling back to the flat default.
-				const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Left Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padLefNum, falling back to the flat default.
-				const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                              // What: Pad Right Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padRigNum, falling back to the flat default.
+				const { radXcoNum, radYcoNum } = curRecObj.shaObj || { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Shape Destructure. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own shape, or the default, directly.
+				const padTopNum  = curRecObj.padTopNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Top Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padTopNum, falling back to the flat default.
+				const padBotNum  = curRecObj.padBotNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Bottom Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padBotNum, falling back to the flat default.
+				const padLefNum  = curRecObj.padLefNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Left Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padLefNum, falling back to the flat default.
+				const padRigNum  = curRecObj.padRigNum ?? rhyPxlFun( 'm02' );                                                            // What: Pad Right Number. Why: Same reasoning as the mask cutout above. How: This reads curRecObj's own padRigNum, falling back to the flat default.
 
 				const spoStyObj = { // What: Spot Style Object. Why: The rendered highlight spot needs its own absolute position/size plus a border-radius matching radXcoNum/radYcoNum exactly. How: This is applied directly as this div's own inline style below.
 

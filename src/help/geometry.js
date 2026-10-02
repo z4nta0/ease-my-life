@@ -34,10 +34,6 @@ import { splSelFun } from '../utils/selector.js'; // What: Split Selector Functi
 
 const CHR_PRI_OBJ = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-element-name-hook~="ediBanDiv"]' : 2, '[data-element-name-hook~="groRaiAsi"]' : 1, '[data-element-name-hook~="setRaiAsi"]' : 1, '[data-element-name-hook~="todPagHea"]' : 1 }; // What: Chrome Priority Object. Why: A target that is part of one chrome item (e.g. the nav bar's own [data-tab] buttons, "part of" .tabbar) must still be clippable against a DIFFERENT chrome item it visually sits behind, but never against one it sits IN FRONT OF. How: This maps a chrome selector to a plain priority number; a higher number visually wins, and cliChrFun below skips clipping a target against any chrome item its own home chrome already outranks (or IS). '.editmode-banner' outranks '.group-rail' specifically because on narrow viewports both become independently position:sticky near the same top offset, and the banner visually covers the rail wherever they overlap.
 
-
-
-const DEF_RAD_NUM = 12; // What: Default Radius Number. Why: A multi-element union (a clustered group of buttons) has no one shape of its own to read, so it falls back to this plain rounded-rect radius instead of averaging several unrelated corner radii together; this also matches the app's own --r-md CSS token. How: This is returned by shaRadFun whenever no more specific radius can be computed.
-
 // #endregion Constants
 
 
@@ -738,7 +734,7 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 	const radTokStr = ( getComputedStyle( tarDomEle ).borderRadius || '' ).split( ' ' )[ 0 ]; // What: Radius Token String. Why: A multi-corner border-radius value can list up to 4 tokens; only the first is meaningful for this file's own single-radius rounded-rect approximation. How: This reads tarDomEle's own computed border-radius and takes its first space-separated token.
 
 
-	if ( !radTokStr ) return { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: No Radius Guard. Why: An element with no computed border-radius at all falls back to the app's own default radius. How: This returns early once radTokStr is empty.
+	if ( !radTokStr ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: No Radius Guard. Why: An element with no computed border-radius at all falls back to the app's own default radius. How: This returns early once radTokStr is empty.
 
 
 
@@ -748,7 +744,7 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 		const perRatNum = parseFloat( radTokStr ) / 100; // What: Percent Ratio Number. Why: The parsed percentage needs converting to a plain 0-1 ratio before it can scale anything. How: This parses radTokStr as a float and divides by 100.
 
 
-		if ( Number.isNaN( perRatNum ) ) return { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perRatNum failed to parse.
+		if ( Number.isNaN( perRatNum ) ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perRatNum failed to parse.
 
 
 
@@ -769,11 +765,11 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 	const pixValNum = parseFloat( radTokStr ); // What: Pixel Value Number. Why: Every other radius form is a plain pixel value that needs parsing before it can be compared or added to. How: This parses radTokStr as a float.
 
 
-	if ( Number.isNaN( pixValNum ) || pixValNum === 0 ) return { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Zero/Unparseable Guard. Why: A square-cornered element (0) or a malformed value both fall back to the default radius. How: This checks pixValNum against both failure cases at once.
+	if ( Number.isNaN( pixValNum ) || pixValNum === 0 ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Zero/Unparseable Guard. Why: A square-cornered element (0) or a malformed value both fall back to the default radius. How: This checks pixValNum against both failure cases at once.
 
 
 
-	if ( pixValNum >= 24 ) return { radXcoNum : DEF_RAD_NUM, radYcoNum : DEF_RAD_NUM }; // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead.
+	if ( pixValNum >= 24 ) return { radXcoNum : rhyPxlFun( 'm01' ), radYcoNum : rhyPxlFun( 'm01' ) }; // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead.
 
 
 
@@ -799,7 +795,7 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 
 // #region Exports
 
-export { badRecFun, claPadFun, cliChrFun, cliHorFun, DEF_RAD_NUM, detEdgFun, finTarFun, shaRadFun, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these. How: This exports every helper and the 2 constants the overlay reads by name; rhyPxlFun( 'p01' ) and CHR_PRI_OBJ stay private to this file.
+export { badRecFun, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, shaRadFun, uniRecFun }; // What: Named Exports. Why: HelOveCom measures, clips, and shapes every highlight with these. How: This exports every helper the overlay reads by name; CHR_PRI_OBJ stays private to this file.
 
 // #endregion Exports
 

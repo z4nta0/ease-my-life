@@ -233,10 +233,11 @@
 
 	/* #region Radius Tokens */
 
-	--r-lg : 16px; /* What: Large Radius. Why: Cards and panels share one corner size. How: Modules read it as border-radius. */
-	--r-md : 12px; /* What: Medium Radius. Why: Rows, tabs, and inner blocks share one corner size. How: Modules read it as border-radius. */
-	--r-sm : 8px; /* What: Small Radius. Why: Inputs and small controls share one corner size. How: Modules read it as border-radius. */
-	--r-xl : 22px; /* What: Extra Large Radius. Why: The largest surfaces get the softest corners. How: Modules read it as border-radius. */
+	--rad-bor-xsm : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Radius Border Extra Small ~= 3.571px. Why: Tiny pieces, swatches, and focus rings get the subtlest rounding. How: This multiplies the m05 rhythm step by 1rem. */
+	--rad-bor-sma : calc( var( --ver-rhy-m02 ) * 1rem ); /* What: Radius Border Small ~= 8.304px. Why: Inputs, small buttons, and grips share one small corner. How: This multiplies the m02 rhythm step by 1rem. */
+	--rad-bor-med : calc( var( --ver-rhy-m01 ) * 1rem ); /* What: Radius Border Medium = 11px. Why: Rows, tabs, list cards, and inner blocks share one corner. How: This multiplies the m01 rhythm step by 1rem. */
+	--rad-bor-lar : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Radius Border Large ~= 14.572px. Why: Cards, panels, and modals share one larger corner. How: This multiplies the bas rhythm step by 1rem. */
+	--rad-bor-xla : calc( var( --ver-rhy-p01 ) * 1rem ); /* What: Radius Border Extra Large ~= 19.304px. Why: The largest surfaces and tracks get the softest corners. How: This multiplies the p01 rhythm step by 1rem. */
 
 	/* #endregion Radius Tokens */
 

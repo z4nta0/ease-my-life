@@ -127,7 +127,7 @@
 	align-items     : center;
 	background      : var(--surface);
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : var(--r-xl);
+	border-radius   : var( --rad-bor-xla );
 	display         : flex;
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p05 ) * 1rem * 5 + 2 * var( --spa-ver-p03 ) ); /* What: Stage Minimum. Why: The stage stays the reel's height so the buttons under it never jump. How: This fits five reel rows plus the stage's own padding. */
@@ -587,7 +587,7 @@
 
 	background     : var(--surface);
 	border         : var( --bor-wid-sma ) solid var(--border);
-	border-radius  : var(--r-md);
+	border-radius  : var( --rad-bor-med );
 	display        : flex;
 	flex-direction : column;
 	overflow       : hidden;
@@ -920,7 +920,7 @@
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : var(--r-sm);
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
@@ -1062,7 +1062,7 @@
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : var(--r-sm);
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
@@ -1106,7 +1106,7 @@
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : var(--r-sm);
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
@@ -1191,7 +1191,7 @@
 	animation                      : global(pvNewItemIn) .3s cubic-bezier(.34,1.2,.5,1) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                     : var(--surface);
 	border                         : var( --bor-wid-sma ) solid var(--border);
-	border-radius                  : var(--r-md);
+	border-radius                  : var( --rad-bor-med );
 	overflow                       : hidden;
 
 
@@ -1339,7 +1339,7 @@
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-bas ) dashed var(--border);
-	border-radius   : var(--r-md);
+	border-radius   : var( --rad-bor-med );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;

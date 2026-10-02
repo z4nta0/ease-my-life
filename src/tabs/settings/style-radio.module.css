@@ -323,7 +323,7 @@
 	align-self     : center;
 	background     : transparent;
 	border         : var( --bor-wid-sma ) solid var(--accent);
-	border-radius  : 7px;
+	border-radius  : var( --rad-bor-sma );
 	color          : var(--accent);
 	cursor         : pointer;
 	flex           : 0 0 auto;

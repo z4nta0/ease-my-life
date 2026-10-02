@@ -364,7 +364,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	background    : var(--bg);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--text);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
@@ -518,7 +518,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	align-items   : flex-start;
 	background    : oklch(from var(--surface) calc(l - 0.005) c h);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-md);
+	border-radius : var( --rad-bor-med );
 	cursor        : pointer;
 	display       : flex;
 	gap           : var( --spa-hor-m01 );
@@ -817,7 +817,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	background      : var(--surface);
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : 12px;
+	border-radius   : var( --rad-bor-med );
 	cursor          : pointer;
 	display         : flex;
 	flex-direction  : column;
@@ -980,7 +980,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	background    : none;
 	border        : none;
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--accent);
 	cursor        : pointer;
 	font-size     : var( --fon-siz-bas );
@@ -1099,7 +1099,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	background    : oklch(from var(--surface) l c h / 0.5);
 	border        : var( --bor-wid-bas ) dashed var(--border);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--muted);
 	font-size     : var( --fon-siz-p01 );
 	line-height   : var( --ver-rhy-bas );
@@ -1116,7 +1116,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	background     : var(--surface);
 	border         : var( --bor-wid-sma ) solid var(--border);
-	border-radius  : var(--r-md);
+	border-radius  : var( --rad-bor-med );
 	display        : flex;
 	flex-direction : column;
 	overflow       : hidden;
@@ -1358,7 +1358,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : var(--r-sm);
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
@@ -1400,7 +1400,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : var(--r-sm);
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;
@@ -1483,7 +1483,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	animation                      : global(pvNewItemIn) .3s cubic-bezier(.34,1.2,.5,1) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                     : var(--surface);
 	border                         : var( --bor-wid-sma ) solid var(--border);
-	border-radius                  : var(--r-md);
+	border-radius                  : var( --rad-bor-med );
 	overflow                       : hidden;
 
 
@@ -1631,7 +1631,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-bas ) dashed var(--border);
-	border-radius   : var(--r-md);
+	border-radius   : var( --rad-bor-med );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;

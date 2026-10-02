@@ -51,7 +51,7 @@
 
 
 	border        : var( --bor-wid-lar ) solid oklch(from var(--accent) l c h/0.9);
-	border-radius : var(--r-md);
+	border-radius : var( --rad-bor-med );
 	box-shadow    : 0 0 0 9999px oklch(0.15 0.02 250/0.6); /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
 	position      : fixed;
 
@@ -129,7 +129,7 @@
 	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : var(--surface);
 	border         : var( --bor-wid-sma ) solid var(--border);
-	border-radius  : var(--r-md);
+	border-radius  : var( --rad-bor-med );
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	pointer-events : auto;

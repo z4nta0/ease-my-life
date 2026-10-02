@@ -106,7 +106,7 @@
 	animation      : legalPanelIn .24s cubic-bezier(.2,.8,.3,1) both;
 	background     : var(--surface, var(--bg));
 	border         : var( --bor-wid-sma ) solid var(--border);
-	border-radius  : 16px;
+	border-radius  : var( --rad-bor-lar );
 	box-shadow     : 0 24px 60px oklch(0 0 0 / 0.28);
 	color          : var(--text);
 	display        : flex;
@@ -219,7 +219,7 @@
 	align-items     : center;
 	background      : transparent;
 	border          : 0;
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : pointer;
 	display         : inline-flex;

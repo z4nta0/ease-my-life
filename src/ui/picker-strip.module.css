@@ -337,7 +337,7 @@
 .spot-row { /* What: Picker Spotlight Row. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, taking its alignment from --spot-row-text-align, and fades as the highlight moves. */
 
 
-	border-radius : 8px;
+	border-radius : var( --rad-bor-sma );
 	color         : var(--muted);
 	font-size     : var( --fon-siz-p01 );
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );

@@ -29,7 +29,7 @@
 	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global Entrance Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--surface);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-md);
+	border-radius : var( --rad-bor-med );
 	overflow      : hidden;
 
 

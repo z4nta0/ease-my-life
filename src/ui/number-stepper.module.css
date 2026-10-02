@@ -113,7 +113,7 @@
 
 
 	background    : var(--surface);
-	border-radius : 5px;
+	border-radius : var( --rad-bor-xsm );
 
 
 }

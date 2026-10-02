@@ -19,7 +19,7 @@
 
 	background    : var(--surface);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-lg);
+	border-radius : var( --rad-bor-lar );
 
 
 }

@@ -98,7 +98,7 @@
 
 
 	border         : var( --bor-wid-lar ) solid oklch(from var(--accent) l c h/0.9);
-	border-radius  : var(--r-md);
+	border-radius  : var( --rad-bor-med );
 	pointer-events : none;
 	position       : fixed;
 

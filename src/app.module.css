@@ -390,7 +390,7 @@
 
 
 	background     : var(--accent-soft);
-	border-radius  : 10px;
+	border-radius  : var( --rad-bor-med );
 	left           : 0;
 	pointer-events : none;
 	position       : absolute;
@@ -403,7 +403,7 @@
 .tabbar--bottom .tabbar-indicator { /* What: Bottom Tab Indicator. Why: The floating bottom pill needs a rounder indicator than the squarer side and top bars. How: This rounds it further. */
 
 
-	border-radius : 22px;
+	border-radius : var( --rad-bor-xla );
 
 
 }
@@ -698,7 +698,7 @@
 .tabbar--side .tabbtn { /* What: Side Tab Button. Why: In the rail each tab is a full-width row. How: This lays icon and label in a left-aligned padded row in muted text. */
 
 
-	border-radius   : 10px;
+	border-radius   : var( --rad-bor-med );
 	color           : var(--muted);
 	flex-direction  : row;
 	font-size       : var( --fon-siz-p01 );
@@ -816,7 +816,7 @@
 	background              : oklch(from var(--bg) l c h / 0.92);
 	border                  : var( --bor-wid-sma ) solid var(--border);
 	border-left             : 0;
-	border-radius           : 0 12px 12px 0;
+	border-radius           : 0 var( --rad-bor-med ) var( --rad-bor-med ) 0;
 	box-shadow              : 6px 0 16px -8px rgba(0,0,0,0.28);
 	color                   : var(--muted);
 	cursor                  : pointer;

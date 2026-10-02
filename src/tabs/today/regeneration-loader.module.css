@@ -32,7 +32,7 @@
 	align-items           : center;
 	background            : var(--surface);
 	border                : var( --bor-wid-sma ) solid var(--border);
-	border-radius         : var(--r-lg);
+	border-radius         : var( --rad-bor-lar );
 	cursor                : pointer;
 	display               : grid;
 	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
@@ -89,7 +89,7 @@
 	appearance         : none;
 	background         : none;
 	border             : var( --bor-wid-bas ) solid var(--border);
-	border-radius      : 8px;
+	border-radius      : var( --rad-bor-sma );
 	color              : inherit;
 	display            : inline-flex;
 	flex               : none;

@@ -118,7 +118,7 @@
 	aspect-ratio       : auto;
 	background         : none;
 	border             : 0;
-	border-radius      : 11px;
+	border-radius      : var( --rad-bor-med );
 	color              : var(--accent);
 	cursor             : pointer;
 	display            : block;
@@ -525,7 +525,7 @@
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--surface);
 	border            : var( --bor-wid-sma ) solid var(--border);
-	border-radius     : var(--r-md);
+	border-radius     : var( --rad-bor-med );
 	display           : flex;
 	flex-direction    : column;
 	flex-shrink       : 0;
@@ -973,7 +973,7 @@
 .bd-dot { /* What: Legend Swatch. Why: Each row shows its segment's color. How: This draws a small rounded square that never shrinks. */
 
 
-	border-radius : 3px;
+	border-radius : var( --rad-bor-xsm );
 	flex-shrink   : 0;
 	height        : calc( var( --ver-rhy-m01 ) * 1rem );
 	width         : calc( var( --ver-rhy-m01 ) * 1rem );
@@ -1100,7 +1100,7 @@
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--text);
 	cursor          : pointer;
 	display         : flex;
@@ -1238,7 +1238,7 @@
 
 	aspect-ratio  : 1;
 	background    : oklch(from var(--border) calc(l + 0.02) c h);
-	border-radius : 4px;
+	border-radius : var( --rad-bor-xsm );
 	display       : block;
 
 
@@ -2390,7 +2390,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	align-items     : center;
 	background      : transparent;
 	border          : var( --bor-wid-sma ) solid var(--border);
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--text);
 	cursor          : pointer;
 	display         : flex;

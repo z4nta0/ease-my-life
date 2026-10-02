@@ -55,7 +55,7 @@
 
 
 	align-items     : center;
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	cursor          : grab;
 	display         : inline-flex;
@@ -103,7 +103,7 @@
 	animation        : groupNameIn .16s cubic-bezier(0.4, 0, 0.2, 1) both;
 	background       : var(--surface);
 	border           : var( --bor-wid-bas ) solid var(--accent);
-	border-radius    : 8px;
+	border-radius    : var( --rad-bor-sma );
 	color            : var(--text);
 	font-family      : inherit;
 	font-size        : var( --fon-siz-p02 );
@@ -212,7 +212,7 @@
 	align-items    : center;
 	background     : none;
 	border         : 0;
-	border-radius  : 7px;
+	border-radius  : var( --rad-bor-sma );
 	color          : var(--text);
 	cursor         : text;
 	display        : inline-flex;
@@ -334,7 +334,7 @@
 
 
 	background    : var(--border);
-	border-radius : 2px;
+	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
 	position      : relative;
@@ -409,7 +409,7 @@
 	animation       : groupMergeIn .18s ease-out both;
 	background      : var(--accent-soft);
 	border          : var( --bor-wid-bas ) solid oklch(from var(--accent) l c h / 0.3);
-	border-radius   : var(--r-md, 12px);
+	border-radius   : var( --rad-bor-med );
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-bas ) var( --spa-hor-bas );

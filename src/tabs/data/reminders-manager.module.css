@@ -32,7 +32,7 @@
 	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--surface);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-md);
+	border-radius : var( --rad-bor-med );
 	overflow      : hidden;
 
 
@@ -651,7 +651,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	align-items     : center;
 	background      : var(--accent-soft);
-	border-radius   : 9px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--accent);
 	display         : inline-flex;
 	flex            : 0 0 auto;

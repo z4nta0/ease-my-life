@@ -31,7 +31,7 @@
 
 	background    : var(--surface);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : 7px;
+	border-radius : var( --rad-bor-sma );
 	color         : var(--muted);
 	font-size     : var( --fon-siz-bas );
 	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );

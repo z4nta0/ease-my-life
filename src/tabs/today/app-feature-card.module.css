@@ -28,7 +28,7 @@
 	align-items           : center;
 	background            : var(--surface);
 	border                : var( --bor-wid-sma ) solid var(--border);
-	border-radius         : var(--r-lg);
+	border-radius         : var( --rad-bor-lar );
 	cursor                : pointer;
 	display               : grid;
 	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
@@ -110,7 +110,7 @@
 	appearance         : none;
 	background         : none;
 	border             : var( --bor-wid-bas ) solid var(--border);
-	border-radius      : 8px;
+	border-radius      : var( --rad-bor-sma );
 	color              : inherit;
 	display            : inline-flex;
 	flex               : none;
@@ -220,7 +220,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 
 
 	border         : var( --bor-wid-bas ) solid var(--accent);
-	border-radius  : 9px;
+	border-radius  : var( --rad-bor-sma );
 	inset          : calc( var( --bor-wid-bas ) * -1 );
 	opacity        : 0;
 	pointer-events : none;
@@ -313,7 +313,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 
 
 	align-items     : center;
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );

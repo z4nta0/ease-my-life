@@ -375,7 +375,7 @@
 
 
 	align-items     : center;
-	border-radius   : 8px;
+	border-radius   : var( --rad-bor-sma );
 	color           : var(--muted);
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
@@ -434,7 +434,7 @@
 
 	background    : var(--bg);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--text);
 	flex          : 1 1 calc( var( --ver-rhy-p09 ) * 1rem );
 	font-family   : var(--fon-fam-mai);

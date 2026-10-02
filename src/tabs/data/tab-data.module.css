@@ -121,7 +121,7 @@
 	aspect-ratio       : auto;
 	background         : none;
 	border             : 0;
-	border-radius      : 11px;
+	border-radius      : var( --rad-bor-med );
 	color              : var(--accent);
 	cursor             : pointer;
 	display            : block;
@@ -513,7 +513,7 @@
 	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--surface);
 	border            : var( --bor-wid-sma ) solid var(--border);
-	border-radius     : var(--r-md);
+	border-radius     : var( --rad-bor-med );
 	display           : flex;
 	flex-direction    : column;
 	flex-shrink       : 0;
@@ -626,7 +626,7 @@
 
 	background    : oklch(from var(--surface) l c h / 0.5);
 	border        : var( --bor-wid-bas ) dashed var(--border);
-	border-radius : var(--r-md);
+	border-radius : var( --rad-bor-med );
 	color         : var(--muted);
 	font-size     : var( --fon-siz-p01 );
 	padding       : var( --spa-ver-p01 ) var( --spa-hor-bas );
@@ -670,7 +670,7 @@
 	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--surface);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-md);
+	border-radius : var( --rad-bor-med );
 	overflow      : hidden;
 
 
@@ -1241,16 +1241,16 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 
 	border-top              : var( --bor-wid-lar ) solid var(--accent);
-	border-top-left-radius  : var(--r-md);
-	border-top-right-radius : var(--r-md);
+	border-top-left-radius  : var( --rad-bor-med );
+	border-top-right-radius : var( --rad-bor-med );
 
 
 }
 .rd-item.ob-tour-pulse:last-of-type { /* What: Last Tour Target Item. Why: The last target row closes the box. How: This rounds its bottom corners. */
 
 
-	border-bottom-left-radius  : var(--r-md);
-	border-bottom-right-radius : var(--r-md);
+	border-bottom-left-radius  : var( --rad-bor-med );
+	border-bottom-right-radius : var( --rad-bor-med );
 
 
 }
@@ -1498,7 +1498,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 	align-items     : center;
 	background      : none;
 	border          : var( --bor-wid-sma ) dashed var(--border);
-	border-radius   : var(--r-md);
+	border-radius   : var( --rad-bor-med );
 	box-sizing      : content-box; /* What: Content Box Sizing. Why: The button must total exactly the height of a collapsed row card, whose border sits outside its header. How: This puts the border outside the rhythm height, so both add the same snapped border to the same height. */
 	color           : var(--muted);
 	cursor          : pointer;

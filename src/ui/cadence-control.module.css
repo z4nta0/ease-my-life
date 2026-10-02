@@ -201,7 +201,7 @@
 
 	background    : var(--bg);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--text);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );

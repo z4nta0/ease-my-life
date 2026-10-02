@@ -25,7 +25,7 @@
 	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : var(--surface);
 	border         : var( --bor-wid-sma ) solid var(--border);
-	border-radius  : var(--r-md);
+	border-radius  : var( --rad-bor-med );
 	box-shadow     : 0 16px 40px -14px oklch(0 0 0/0.45);
 	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
 	pointer-events : auto;

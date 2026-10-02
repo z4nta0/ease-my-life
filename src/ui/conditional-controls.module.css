@@ -120,7 +120,7 @@
 
 	background    : var(--bg);
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : var(--r-sm);
+	border-radius : var( --rad-bor-sma );
 	color         : var(--text);
 	font-family   : var(--fon-fam-mai);
 	font-size     : var( --fon-siz-p01 );
@@ -260,7 +260,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 	border        : var( --bor-wid-sma ) solid var(--border);
-	border-radius : 12px;
+	border-radius : var( --rad-bor-med );
 	overflow      : hidden;
 
 
