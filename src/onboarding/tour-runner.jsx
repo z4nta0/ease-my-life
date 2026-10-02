@@ -281,6 +281,38 @@ const coaLayFun = ( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => {
 
 
 
+// #region coaWidFun
+
+/**
+ * coaWidFun = Coach Width Function
+ *
+ * @summary
+ * The coach card's width, sized the same way as help mode's tip: the small
+ * text width at the card's base body font size, plus its side padding and
+ * side border, each counted twice. On a viewport too narrow for that, it
+ * shrinks to the viewport less a small-step margin on each side. Shared by
+ * the render function's first paint and plaTarFun's per-frame placement, so
+ * the two always agree.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param vieWidNum - Viewport Width Number: The current viewport width, in px.
+ *
+ * @returns The coach card's width, in px.
+ *
+ * @example
+ * ```ts
+ * coaWidFun( 1440 ) // => about 272.6 at an 11px root font size
+ * ```
+ *
+*/
+
+const coaWidFun = ( vieWidNum ) => Math.min( rhyPxlFun( 'p10' ) + ( rhyPxlFun( 'bas' ) + rhyPxlFun( 'm12' ) ) * 2, vieWidNum - rhyPxlFun( 'm01' ) * 2 ); // What: Coach Width Function. Why: The coach card should fit its body text like help mode's tip, without outgrowing a narrow viewport. How: This takes the smaller of the text width plus padding and borders, and the viewport less its edge margins.
+
+// #endregion coaWidFun
+
+
+
 // #region todTopFun
 
 /**
@@ -1886,7 +1918,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 				const vieWidNum = window.innerWidth;                                                          // What: Viewport Width Number. Why: The layout math below needs the current viewport width. How: This is read fresh from window on every call.
 				const vieHeiNum = window.innerHeight;                                                         // What: Viewport Height Number. Why: The layout math below needs the current viewport height. How: This is read fresh from window on every call.
-				const coaWidNum = Math.min( 300, vieWidNum - rhyPxlFun( 'm01' ) * 2 );                        // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a small-step margin on each side.
+				const coaWidNum = coaWidFun( vieWidNum );                                                     // What: Coach Width Number. Why: The coach card should fit its body text like help mode's tip, within a narrow viewport. How: This asks coaWidFun for the text-based width, capped to the viewport.
 				const coaLayObj = coaLayFun( tarRecObj, coaHeiRef.current, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
 				const coaStyObj = reaCoaRef.current.style;                                                    // What: Coach Style Object. Why: The layout above must actually be written onto the real DOM element. How: This reads reaCoaRef.current's own live CSSStyleDeclaration.
 
@@ -2269,7 +2301,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	const totSteNum = steObjArr.length;                                                                                // What: Total Step Number. Why: The progress line below needs the total step count. How: This reads steObjArr.length once per render.
 	const vieWidNum = window.innerWidth;                                                                               // What: Viewport Width Number. Why: The coach's own sizing below needs the current viewport width. How: This is read fresh from window on every render.
 	const vieHeiNum = window.innerHeight;                                                                              // What: Viewport Height Number. Why: The coach's own sizing below needs the current viewport height. How: This is read fresh from window on every render.
-	const coaWidNum = Math.min( 300, vieWidNum - rhyPxlFun( 'm01' ) * 2 );                                             // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a small-step margin on each side.
+	const coaWidNum = coaWidFun( vieWidNum );                                                                          // What: Coach Width Number. Why: The coach card should fit its body text like help mode's tip, within a narrow viewport. How: This asks coaWidFun for the text-based width, capped to the viewport.
 	const priLabStr = curSteObj.priStr + ( ( curSteObj.priStr !== 'Done' && !curSteObj.solBoo ) ? ' ›' : '' );         // What: Primary Label String. Why: The measurer and both real Next buttons render the same label. How: This appends a trailing arrow glyph to curSteObj.priStr unless the step is 'Done' or solo.
 	const shoPulBoo = curSteObj.cirBoo && ( !curSteObj.pulSelStr || !!document.querySelector( curSteObj.pulSelStr ) ); // What: Should Pulse Boolean. Why: See pulSelStr's own doc comment in GuiTouCom's own JSDoc above, this defaults to matching cirBoo exactly when unset, so every other cirBoo step pulses for its whole duration same as before. How: This is true whenever the step requires a click and either names no pulSelStr at all, or its own pulSelStr currently matches something.
 
