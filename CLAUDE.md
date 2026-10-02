@@ -2361,10 +2361,22 @@ are renamed to this as their files come up in the design-system pass.
   `--rad-bor-lar` (radius, border, large).
 - **Durations split by what plays them**: `--dur-tra-med` for transitions,
   `--dur-ani-med` for animations.
+- **Colors are named by role, not by hue** (decided 2026-10-01), so the
+  same names fit any project: `--bac-pag-col` (page background),
+  `--bac-sur-col` (card and panel surface), `--tex-mai-col` (main text),
+  `--tex-sec-col` (secondary text), `--tex-mut-col` (muted text: hints,
+  labels, metadata), `--bor-mai-col` (borders and dividers),
+  `--acc-mai-col` (the main accent, for actions and selection),
+  `--acc-sec-col` (a second accent), and `--acc-tin-col` (a pale tint of
+  the main accent, behind accent text). A role a project doesn't use stays
+  defined but empty, with a comment saying so, so the set is the same in
+  every project: this project uses muted text instead of secondary text,
+  so `--tex-sec-col` is empty here.
 - **Examples mapped from today's tokens**: `--bg` → `--bac-pag-col`,
-  `--surface` → `--bac-sur-col`, `--text` → `--tex-bas-col`, `--muted` →
-  `--tex-mut-col`, `--accent-soft` → `--acc-sof-col`, `--font-sans` →
-  `--fon-fam-mai`, `--r-lg` → `--rad-bor-lar`, `--exhale-dur` →
+  `--surface` → `--bac-sur-col`, `--text` → `--tex-mai-col`, `--muted` →
+  `--tex-mut-col`, `--accent-soft` → `--acc-tin-col`, `--warm` →
+  `--acc-sec-col`, `--font-sans` → `--fon-fam-mai`, `--r-lg` →
+  `--rad-bor-lar`, `--exhale-dur` →
   `--exh-car-dur`, `--exhale-glow` → `--exh-glo-spr`, `--exhale-glow-op`
   → `--exh-glo-opa`, `--exhale-scale` → `--exh-car-sca`.
 - **A component-level property** still names the child it's for (see
