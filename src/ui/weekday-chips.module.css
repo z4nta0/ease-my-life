@@ -44,7 +44,7 @@
 	font-weight     : 600;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	transition      : border-color .24s ease, background .24s ease, color .24s ease;
+	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 

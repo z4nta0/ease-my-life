@@ -143,7 +143,7 @@
 	font-weight     : 600;
 	height          : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content : center;
-	transition      : border-color .12s, background .12s, color .12s;
+	transition      : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p01 ) * 1rem );
 
 
@@ -211,7 +211,7 @@
 .tab-fade { /* What: Step Fade. Why: Each step fades in as the form switches to it. How: This plays the shared tab fade. */
 
 
-	animation : global(tabFadeIn) .2s ease both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the app shell and the Pickers tab, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(tabFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the app shell and the Pickers tab, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -341,7 +341,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .set-sub-fade { /* What: Fading Help. Why: Help that changes with its switch fades in each time it does. How: This plays the shared fade whenever its keyed paragraph remounts. */
 
 
-	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -373,7 +373,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : 100%;
 
 
@@ -444,7 +444,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	gap           : var( --spa-hor-m04 );
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );
 	padding       : 0 var( --spa-hor-bas );
-	transition    : border-color .12s, background .12s, color .12s;
+	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 
 
 }
@@ -523,7 +523,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	display       : flex;
 	gap           : var( --spa-hor-m01 );
 	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );
-	transition    : border-color .12s, background .12s;
+	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 
 
 }
@@ -575,7 +575,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	margin-top         : var( --spa-ver-m07 );
 	min-width          : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Radio Minimum Width. Why: In its flex row the radio could otherwise shrink below its own width when space runs short. How: This holds it at the same rhythm step as its width. */
 	position           : relative;
-	transition         : border-color .12s;
+	transition         : border-color var( --dur-tra-m01 );
 	width              : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -689,7 +689,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	margin-top    : var( --spa-ver-m07 );
 	position      : relative;
-	transition    : background .15s;
+	transition    : background var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -725,7 +725,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform .15s;
+	transition    : transform var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -828,7 +828,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );
 	text-align      : left;
-	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
+	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), box-shadow var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -1168,14 +1168,14 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-row--insert { /* What: Inserted Pool Row. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
 
 
-	animation : poolRowInsertFadeIn .6s cubic-bezier(.34,1.2,.5,1) both;
+	animation : poolRowInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both;
 
 
 }
 .pool-row--removing { /* What: Removing Pool Row. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
 
 
-	animation : poolRowRemove .34s ease forwards;
+	animation : poolRowRemove var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
 	overflow  : hidden;
 
 
@@ -1250,7 +1250,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	align-items     : center;
-	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );
@@ -1261,7 +1261,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pool-confirm.is-leaving { /* What: Leaving Pool Delete Confirm. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
-	animation : global(footSwapOut) .14s ease both; /* What: Global footSwapOut Keyframes. Why: The footSwapOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(footSwapOut) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapOut Keyframes. Why: The footSwapOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1366,7 +1366,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -1408,7 +1408,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -1480,7 +1480,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	--entry-editor-foot-justify    : flex-end;
 	--entry-editor-rows-border-top : 0;
 	--entry-editor-rows-margin-top : 0;
-	animation                      : global(pvNewItemIn) .3s cubic-bezier(.34,1.2,.5,1) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation                      : global(pvNewItemIn) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                     : var(--bac-sur-col);
 	border                         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                  : var( --rad-bor-med );
@@ -1491,7 +1491,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 .pv-newitem.is-closing { /* What: Closing Add Item Row. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
 
 
-	animation : global(pvNewItemOut) .26s ease both; /* What: Global pvNewItemOut Keyframes. Why: The pvNewItemOut keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(pvNewItemOut) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global pvNewItemOut Keyframes. Why: The pvNewItemOut keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow  : hidden;
 
 
@@ -1566,7 +1566,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color .12s;
+	transition     : border-color var( --dur-tra-m01 );
 	width          : 100%;
 
 
@@ -1642,7 +1642,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : center;
 	padding         : 0 var( --spa-hor-bas );
-	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : 100%;
 
 

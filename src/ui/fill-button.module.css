@@ -20,7 +20,7 @@
 .is-spinning svg { /* What: Spinning Fill Icon. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: This turns the button's icon once while FilButCom's spin class is on. */
 
 
-	animation : fillSpin .5s cubic-bezier(.4,0,.2,1);
+	animation : fillSpin var( --dur-ani-p05 ) var( --mot-sta-eas );
 
 
 }

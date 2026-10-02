@@ -44,7 +44,7 @@
 	letter-spacing : 0.05em;
 	padding        : 0 var( --spa-hor-m02 );
 	text-transform : uppercase;
-	transition     : background .14s,color .14s,border-color .14s;
+	transition     : background var( --dur-tra-bas ),color var( --dur-tra-bas ),border-color var( --dur-tra-bas );
 
 
 }
@@ -167,7 +167,7 @@
 	flex            : none;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
-	transition      : color .14s,border-color .14s;
+	transition      : color var( --dur-tra-bas ),border-color var( --dur-tra-bas );
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -440,7 +440,7 @@
 
 	color      : var(--tex-mut-col);
 	display    : inline-flex;
-	transition : transform .2s;
+	transition : transform var( --dur-tra-p01 );
 
 
 }

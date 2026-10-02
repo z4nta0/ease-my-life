@@ -110,7 +110,7 @@
 	justify-content : center;
 	margin-left     : calc( var( --spa-hor-m05 ) * -1 );
 	touch-action    : none; /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
-	transition      : color .12s, background .12s;
+	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -227,7 +227,7 @@
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
 	position      : relative;
-	transition    : background .25s ease;
+	transition    : background var( --dur-tra-p02 ) var( --mot-sta-eas );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -249,7 +249,7 @@
 .group-progress i.is-fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global(dashSweep) 480ms cubic-bezier(.4,.6,.3,1) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global(dashSweep) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var(--acc-mai-col);
 	border-radius    : inherit;
 	content          : '';
@@ -302,7 +302,7 @@
 	flex            : 0 0 auto;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	transition      : border-color .12s, color .12s, background .12s;
+	transition      : border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -389,14 +389,14 @@
 .rem-quickadd-wrap { /* What: Quick-Add Form. Why: The add form drops into the top of the list and eases away when closed. How: This fades it in on mount, and plays its close while it carries the closing class. */
 
 
-	animation : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
 .rem-quickadd-wrap.is-closing { /* What: Closing Quick-Add Form. Why: The form should ease away rather than vanish. How: This fades it upward, clipping it while it goes. */
 
 
-	animation : remQuickOut .18s ease both;
+	animation : remQuickOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
 	overflow  : hidden;
 
 
@@ -444,7 +444,7 @@
 
 
 	align-items : center;
-	animation   : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display     : flex;
 	gap         : var( --spa-hor-m02 );
 	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ) var( --spa-ver-m02 );
@@ -482,7 +482,7 @@
 	max-width     : none;
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : 100%;
 
 
@@ -528,7 +528,7 @@
 	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0; /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) var( --spa-hor-bas ) 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
-	animation                    : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation                    : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                   : oklch(from var(--bac-sur-col) calc(l - 0.006) c h);
 	border                       : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                : var( --rad-bor-med );
@@ -588,7 +588,7 @@
 	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
 	perspective           : 800px;
-	transition            : background .15s, opacity .2s, border-color .12s;
+	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 );
 	user-select           : none;
 
 
@@ -596,7 +596,7 @@
 .today-card[data-card-exhale-active] { /* What: Exhaling Reminder Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exhale-delay tab-today.jsx sets on each card. */
 
 
-	animation : global(cardExhale) var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardExhale) var(--exhale-dur) var( --mot-dec-eas ) var(--exhale-delay, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -624,7 +624,7 @@
 .today-card.is-removing { /* What: Removing Tutorial Card. Why: The tutorial card leaves with the rest of the checklist. How: This plays the shared skip-out collapse and stops it taking clicks. */
 
 
-	animation      : global(cardSkipOut) 380ms cubic-bezier(.4,.05,.7,.4) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(cardSkipOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -647,14 +647,14 @@
 .rem-card--insert { /* What: Inserted Reminder Card. Why: A newly added or newly due reminder drops into the list. How: This plays the card entrance, cleared by the card's own animationend handler. */
 
 
-	animation : remCardIn .32s cubic-bezier(.34,1.2,.5,1) both;
+	animation : remCardIn var( --dur-ani-p03 ) var( --mot-ove-eas ) both;
 
 
 }
 .rem-card--removing { /* What: Deleted Reminder Card. Why: A deleted reminder collapses out of the list. How: This plays the collapse, whose end drives the actual delete. */
 
 
-	animation : remCardOut .34s ease forwards;
+	animation : remCardOut var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
 	overflow  : hidden;
 
 
@@ -662,7 +662,7 @@
 .rem-card--purging { /* What: Purged Reminder Card. Why: A completed one-time reminder cleared by Generate slides up and fades before it goes. How: This plays the purge, ignoring clicks while it runs. */
 
 
-	animation      : remCardPurgeOut .3s cubic-bezier(.4,0,.2,1) forwards;
+	animation      : remCardPurgeOut var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -818,7 +818,7 @@
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
-	transition         : background .12s, border-color .12s, color .12s;
+	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width              : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -891,7 +891,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card.is-fresh .check-ripple { /* What: Fresh Checkbox Ripple. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
 
 
-	animation : global(checkRipple) 600ms cubic-bezier(.2,.6,.3,1) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkRipple) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -913,7 +913,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when a reminder is checked. How: This plays the shared spring on the mark. */
 
 
-	animation : global(checkSpring) 360ms cubic-bezier(.22,1.4,.36,1) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkSpring) var( --dur-ani-p04 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1008,7 +1008,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	letter-spacing : -0.01em;
 	margin         : 0;
 	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color .12s;
+	transition     : border-color var( --dur-tra-m01 );
 	width          : 100%;
 
 
@@ -1087,7 +1087,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	transition      : background .12s, color .12s;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -1126,7 +1126,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	align-items     : center;
-	animation       : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background      : oklch(from var(--bac-sur-col) calc(l - 0.006) c h);
 	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );

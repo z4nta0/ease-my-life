@@ -98,42 +98,42 @@
 .tabbar--exiting.tabbar--bottom { /* What: Exiting Bottom Tab Bar Motion. Why: The old bottom bar should slide away toward its own edge. How: This plays the bottom exit. */
 
 
-	animation : navExitBottom .34s cubic-bezier(.4, 0, 1, 1) forwards;
+	animation : navExitBottom var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards;
 
 
 }
 .tabbar--exiting.tabbar--top { /* What: Exiting Top Tab Bar Motion. Why: The old top bar should slide away toward its own edge. How: This plays the top exit. */
 
 
-	animation : navExitTop .34s cubic-bezier(.4, 0, 1, 1) forwards;
+	animation : navExitTop var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards;
 
 
 }
 .tabbar--exiting.tabbar--side { /* What: Exiting Side Tab Bar Motion. Why: The old side rail should slide away toward its own edge. How: This plays the side exit. */
 
 
-	animation : navExitSide .34s cubic-bezier(.4, 0, 1, 1) forwards;
+	animation : navExitSide var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards;
 
 
 }
 .tabbar--entering.tabbar--bottom { /* What: Entering Bottom Tab Bar. Why: The new bottom bar should arrive from its edge just after the old one leaves. How: This plays the bottom entrance after a short stagger. */
 
 
-	animation : navEnterBottom .42s cubic-bezier(.2, .7, .3, 1) .12s both;
+	animation : navEnterBottom var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both;
 
 
 }
 .tabbar--entering.tabbar--top { /* What: Entering Top Tab Bar. Why: The new top bar should arrive from its edge just after the old one leaves. How: This plays the top entrance after a short stagger. */
 
 
-	animation : navEnterTop .42s cubic-bezier(.2, .7, .3, 1) .12s both;
+	animation : navEnterTop var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both;
 
 
 }
 .tabbar--entering.tabbar--side { /* What: Entering Side Tab Bar. Why: The new side rail should arrive from its edge just after the old one leaves. How: This plays the side entrance after a short stagger. */
 
 
-	animation : navEnterSide .42s cubic-bezier(.2, .7, .3, 1) .12s both;
+	animation : navEnterSide var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both;
 
 
 }
@@ -213,7 +213,7 @@
 		position       : fixed;
 		top            : 0;
 		transform      : translateX(-100%);
-		transition     : transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+		transition     : transform var( --dur-tra-p02 ) var( --mot-sta-eas );
 		width          : calc( var( --ver-rhy-p10 ) * 1rem );
 		z-index        : 200;
 
@@ -395,7 +395,7 @@
 	pointer-events : none;
 	position       : absolute;
 	top            : 0;
-	transition     : transform .34s cubic-bezier(.2, .7, .3, 1), width .34s cubic-bezier(.2, .7, .3, 1), height .34s cubic-bezier(.2, .7, .3, 1);
+	transition     : transform var( --dur-tra-p03 ) var( --mot-dec-eas ), width var( --dur-tra-p03 ) var( --mot-dec-eas ), height var( --dur-tra-p03 ) var( --mot-dec-eas );
 	z-index        : 0;
 
 
@@ -618,7 +618,7 @@
 	align-items : center;
 	display     : flex;
 	position    : relative;
-	transition  : color .12s, background .12s;
+	transition  : color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 	z-index     : 1;
 
 
@@ -897,7 +897,7 @@
 	padding-bottom : var( --spa-ver-p07 );
 	padding-left   : var( --main-pad-x, var( --spa-hor-p01 ) );
 	padding-right  : var( --main-pad-x, var( --spa-hor-p01 ) );
-	transition     : padding 0.42s cubic-bezier(.4, 0, .2, 1);
+	transition     : padding var( --dur-tra-p04 ) var( --mot-sta-eas );
 
 
 }
@@ -1008,7 +1008,7 @@
 .tab-fade { /* What: Tab Fade. Why: Switching tabs should fade and lift the new tab in rather than snap. How: This plays the shared fade each time the keyed wrapper remounts. */
 
 
-	animation : global(tabFadeIn) .2s ease both; /* What: Global Fade Keyframes. Why: The tabFadeIn keyframes are shared with the tabs' own fading sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(tabFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The tabFadeIn keyframes are shared with the tabs' own fading sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

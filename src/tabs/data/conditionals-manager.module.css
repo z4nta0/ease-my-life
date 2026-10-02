@@ -26,7 +26,7 @@
 .cat { /* What: Category Card. Why: The Conditionals section reads as one card among the Data tab's sections. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance each time it mounts. */
 
 
-	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global Entrance Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(catEnter) var( --dur-ani-p03 ) var( --mot-sta-eas ) both; /* What: Global Entrance Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--bac-sur-col);
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
@@ -102,7 +102,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	color      : var(--tex-mut-col);
 	display    : inline-flex;
-	transition : transform .15s;
+	transition : transform var( --dur-tra-bas );
 
 
 }
@@ -340,7 +340,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color .12s;
+	transition     : border-color var( --dur-tra-m01 );
 	width          : 100%;
 
 
@@ -510,7 +510,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 
 
 	align-items     : center;
-	animation       : global(footSwapIn) .16s ease both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-direction  : row;
 	gap             : var( --spa-hor-bas );
@@ -569,7 +569,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 
 
 	align-items     : center;
-	animation       : global(footSwapIn) .16s ease both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	justify-content : space-between;
 	width           : 100%;

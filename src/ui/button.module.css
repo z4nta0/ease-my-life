@@ -32,7 +32,7 @@
 	height               : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing       : -0.005em;
 	padding              : 0 var( --spa-hor-bas );
-	transition           : background .12s, color .12s, transform .08s;
+	transition           : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m02 );
 	white-space          : var(--btn-white-space, inherit); /* What: Button Wrapping. Why: A button in a tight row shouldn't wrap its label. How: A parent sets --btn-white-space to nowrap, otherwise the button inherits as usual. */
 
 

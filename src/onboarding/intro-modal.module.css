@@ -22,7 +22,7 @@
 .ob-scrim { /* What: Intro Modal Scrim. Why: The modal needs a dimmed backdrop over the whole app that can scroll when the card is taller than the screen. How: This covers the viewport in a fading dim layer and stacks the card in a scrollable column. */
 
 
-	animation      : global(obFade) .22s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(obFade) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : oklch(0.15 0.02 250/0.5);
 	display        : flex;
 	flex-direction : column;
@@ -69,7 +69,7 @@
 .ob-welcome.ob-in { /* What: Rising Intro Modal Card. Why: The card should rise gently into place when the modal opens. How: This plays the obRise entrance, added only when reduced motion isn't requested. */
 
 
-	animation : obRise .26s cubic-bezier(.2,.8,.3,1) both;
+	animation : obRise var( --dur-ani-p02 ) var( --mot-dec-eas ) both;
 
 
 }

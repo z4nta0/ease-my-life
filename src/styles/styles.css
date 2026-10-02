@@ -148,7 +148,7 @@
 	 *
 	*/
 
-	--exhale-dur     : 900ms; /* What: Exhale Duration. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
+	--exhale-dur     : var( --dur-ani-p07 ); /* What: Exhale Duration. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
 	--exhale-glow    : 6px; /* What: Exhale Glow. Why: The exhale's accent ring reaches this far out. How: cardExhale reads it as its box-shadow spread. */
 	--exhale-glow-op : 0.18; /* What: Exhale Glow Opacity. Why: The exhale's accent ring stays faint. How: cardExhale reads it as the ring's alpha. */
 	--exhale-scale   : 1.012; /* What: Exhale Scale. Why: Each card swells only slightly. How: cardExhale reads it as its peak scale. */
@@ -170,6 +170,54 @@
 	--tex-sec-col : ;                      /* What: Text Secondary Color. Why: The design system names a secondary text role in every project, so the token set stays the same everywhere. How: This project uses muted text instead, so it is deliberately left empty and unused. */
 
 	/* #endregion Color Tokens */
+
+
+
+	/* #region Duration Tokens */
+
+	--dur-ani-m03 : calc( var( --dur-ani-bas ) * var( --cdn-pow-003-rec ) ); /* What: Duration Animation Base Minus 3 ~= 65ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the reciprocal of the core design number to the power of 3. */
+	--dur-ani-m02 : calc( var( --dur-ani-bas ) * var( --cdn-pow-002-rec ) ); /* What: Duration Animation Base Minus 2 ~= 85ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the reciprocal of the core design number to the power of 2. */
+	--dur-ani-m01 : calc( var( --dur-ani-bas ) * var( --cdn-pow-001-rec ) ); /* What: Duration Animation Base Minus 1 ~= 113ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the reciprocal of the core design number to the power of 1. */
+	--dur-ani-bas : 150ms;                                                   /* What: Duration Animation Base ~= 150ms. Why: Animations share one duration scale drawn from the core design number. How: This is the base step every other step multiplies. */
+	--dur-ani-p01 : calc( var( --dur-ani-bas ) * var( --cdn-pow-001 ) );     /* What: Duration Animation Base Plus 1 ~= 199ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 1. */
+	--dur-ani-p02 : calc( var( --dur-ani-bas ) * var( --cdn-pow-002 ) );     /* What: Duration Animation Base Plus 2 ~= 263ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 2. */
+	--dur-ani-p03 : calc( var( --dur-ani-bas ) * var( --cdn-pow-003 ) );     /* What: Duration Animation Base Plus 3 ~= 349ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 3. */
+	--dur-ani-p04 : calc( var( --dur-ani-bas ) * var( --cdn-pow-004 ) );     /* What: Duration Animation Base Plus 4 ~= 462ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 4. */
+	--dur-ani-p05 : calc( var( --dur-ani-bas ) * var( --cdn-pow-005 ) );     /* What: Duration Animation Base Plus 5 ~= 612ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 5. */
+	--dur-ani-p06 : calc( var( --dur-ani-bas ) * var( --cdn-pow-006 ) );     /* What: Duration Animation Base Plus 6 ~= 811ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 6. */
+	--dur-ani-p07 : calc( var( --dur-ani-bas ) * var( --cdn-pow-007 ) );     /* What: Duration Animation Base Plus 7 ~= 1074ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 7. */
+	--dur-ani-p08 : calc( var( --dur-ani-bas ) * var( --cdn-pow-008 ) );     /* What: Duration Animation Base Plus 8 ~= 1423ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 8. */
+	--dur-ani-p09 : calc( var( --dur-ani-bas ) * var( --cdn-pow-009 ) );     /* What: Duration Animation Base Plus 9 ~= 1885ms. Why: Animations share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 9. */
+
+
+
+	--dur-tra-m03 : calc( var( --dur-tra-bas ) * var( --cdn-pow-003-rec ) ); /* What: Duration Transition Base Minus 3 ~= 65ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the reciprocal of the core design number to the power of 3. */
+	--dur-tra-m02 : calc( var( --dur-tra-bas ) * var( --cdn-pow-002-rec ) ); /* What: Duration Transition Base Minus 2 ~= 85ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the reciprocal of the core design number to the power of 2. */
+	--dur-tra-m01 : calc( var( --dur-tra-bas ) * var( --cdn-pow-001-rec ) ); /* What: Duration Transition Base Minus 1 ~= 113ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the reciprocal of the core design number to the power of 1. */
+	--dur-tra-bas : 150ms;                                                   /* What: Duration Transition Base ~= 150ms. Why: Transitions share one duration scale drawn from the core design number. How: This is the base step every other step multiplies. */
+	--dur-tra-p01 : calc( var( --dur-tra-bas ) * var( --cdn-pow-001 ) );     /* What: Duration Transition Base Plus 1 ~= 199ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 1. */
+	--dur-tra-p02 : calc( var( --dur-tra-bas ) * var( --cdn-pow-002 ) );     /* What: Duration Transition Base Plus 2 ~= 263ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 2. */
+	--dur-tra-p03 : calc( var( --dur-tra-bas ) * var( --cdn-pow-003 ) );     /* What: Duration Transition Base Plus 3 ~= 349ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 3. */
+	--dur-tra-p04 : calc( var( --dur-tra-bas ) * var( --cdn-pow-004 ) );     /* What: Duration Transition Base Plus 4 ~= 462ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 4. */
+	--dur-tra-p05 : calc( var( --dur-tra-bas ) * var( --cdn-pow-005 ) );     /* What: Duration Transition Base Plus 5 ~= 612ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 5. */
+	--dur-tra-p06 : calc( var( --dur-tra-bas ) * var( --cdn-pow-006 ) );     /* What: Duration Transition Base Plus 6 ~= 811ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 6. */
+	--dur-tra-p07 : calc( var( --dur-tra-bas ) * var( --cdn-pow-007 ) );     /* What: Duration Transition Base Plus 7 ~= 1074ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 7. */
+	--dur-tra-p08 : calc( var( --dur-tra-bas ) * var( --cdn-pow-008 ) );     /* What: Duration Transition Base Plus 8 ~= 1423ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 8. */
+	--dur-tra-p09 : calc( var( --dur-tra-bas ) * var( --cdn-pow-009 ) );     /* What: Duration Transition Base Plus 9 ~= 1885ms. Why: Transitions share one duration scale drawn from the core design number. How: This multiplies the base step by the core design number to the power of 9. */
+
+	/* #endregion Duration Tokens */
+
+
+
+	/* #region Easing Tokens */
+
+	--mot-acc-eas : cubic-bezier( .4, 0, 1, 1 );      /* What: Motion Accelerate Easing. Why: Things leaving the screen should speed up as they go. How: Transitions and animations read it as their timing function. */
+	--mot-bou-eas : cubic-bezier( .34, 1.56, .5, 1 ); /* What: Motion Bounce Easing. Why: Celebratory pops and check marks should spring past their target before settling. How: Transitions and animations read it as their timing function. */
+	--mot-dec-eas : cubic-bezier( .2, .7, .3, 1 );    /* What: Motion Decelerate Easing. Why: Things arriving should start fast and land softly. How: Transitions and animations read it as their timing function. */
+	--mot-ove-eas : cubic-bezier( .34, 1.2, .5, 1 );  /* What: Motion Overshoot Easing. Why: Inserted rows and fills should ease slightly past their target before settling. How: Transitions and animations read it as their timing function. */
+	--mot-sta-eas : ease;                             /* What: Motion Standard Easing. Why: Most hovers, toggles, and fades need one ordinary, smooth curve. How: Transitions and animations read it as their timing function. */
+
+	/* #endregion Easing Tokens */
 
 
 
@@ -473,7 +521,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 .theme-animating *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases every themable color on the page for the length of the swap. */
 
 
-	transition : background-color .42s ease, color .42s ease, border-color .42s ease, fill .42s ease, stroke .42s ease !important;
+	transition : background-color var( --dur-tra-p04 ) var( --mot-sta-eas ), color var( --dur-tra-p04 ) var( --mot-sta-eas ), border-color var( --dur-tra-p04 ) var( --mot-sta-eas ), fill var( --dur-tra-p04 ) var( --mot-sta-eas ), stroke var( --dur-tra-p04 ) var( --mot-sta-eas ) !important;
 
 
 }

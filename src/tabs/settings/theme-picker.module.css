@@ -73,7 +73,7 @@
 	outline       : none;
 	overflow      : hidden;
 	position      : relative;
-	transition    : border-color 0.25s ease;
+	transition    : border-color var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -172,7 +172,7 @@
 
 
 	align-items     : center;
-	animation       : themeCheckIn 0.34s cubic-bezier(.34, 1.56, .64, 1) both;
+	animation       : themeCheckIn var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
 	background      : rgba(255,255,255,.92);
 	border-radius   : 50%;
 	color           : oklch(0.5 0.14 250);
@@ -266,7 +266,7 @@
 
 
 	border     : none;
-	transition : background-color .35s ease;
+	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas );
 
 
 }
@@ -274,7 +274,7 @@
 
 
 	border     : none;
-	transition : background-color .35s ease;
+	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas );
 
 
 }

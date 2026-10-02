@@ -22,7 +22,7 @@
 .ob-coach { /* What: Help Tip Card. Why: A help tip should look like the tour's own coach card. How: This floats a raised surface card over the page and fades it in. */
 
 
-	animation      : global(obFade) .18s ease both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(obFade) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : var(--bac-sur-col);
 	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );

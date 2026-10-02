@@ -61,14 +61,14 @@
 .holiday-row--enter { /* What: Entering Holiday Row. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as the row mounts, which existing rows skip since they're keyed by id. */
 
 
-	animation : holidayRowEnterFadeIn .4s cubic-bezier(.4,0,.2,1);
+	animation : holidayRowEnterFadeIn var( --dur-ani-p04 ) var( --mot-sta-eas );
 
 
 }
 .holiday-row.is-exiting { /* What: Exiting Holiday Row. Why: A removed custom day should fade up and collapse so the rows below slide up smoothly. How: This plays the exit animation, which also collapses the row's height, and stops it taking clicks. */
 
 
-	animation      : holidayRowExit .3s cubic-bezier(.4,0,.2,1) forwards;
+	animation      : holidayRowExit var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -169,7 +169,7 @@
 
 	font-size   : var( --fon-siz-p01 );
 	font-weight : 500;
-	transition  : color .28s ease;
+	transition  : color var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -242,7 +242,7 @@
 	top              : 50%;
 	transform        : scaleX(0);
 	transform-origin : left center;
-	transition       : transform .28s ease;
+	transition       : transform var( --dur-tra-p02 ) var( --mot-sta-eas );
 	width            : 100%;
 
 
@@ -305,7 +305,7 @@
 	flex-shrink   : 0;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
-	transition    : background .15s;
+	transition    : background var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -341,7 +341,7 @@
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform .15s;
+	transition    : transform var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -380,7 +380,7 @@
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
-	transition      : background .12s, color .12s;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -444,7 +444,7 @@
 	max-width     : calc( var( --ver-rhy-p10 ) * 1rem );
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : 100%;
 
 

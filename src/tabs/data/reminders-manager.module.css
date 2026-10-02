@@ -29,7 +29,7 @@
 .cat { /* What: Category Card. Why: The Reminders section reads as one card among the Data tab's sections. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance each time it mounts. */
 
 
-	animation     : global(catEnter) .3s cubic-bezier(.4,0,.2,1) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(catEnter) var( --dur-ani-p03 ) var( --mot-sta-eas ) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--bac-sur-col);
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
@@ -105,7 +105,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 
 	color      : var(--tex-mut-col);
 	display    : inline-flex;
-	transition : transform .15s;
+	transition : transform var( --dur-tra-bas );
 
 
 }
@@ -359,7 +359,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-mx-sub { /* What: Matrix Setting Explanation. Why: The line under each setting explains what the current switches do, fading in each time it changes. How: This sets it small and muted and plays the shared fade whenever its keyed span remounts. */
 
 
-	animation   : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var(--tex-mut-col);
 	font-size   : var( --fon-siz-bas );
 	line-height : var( --ver-rhy-bas );
@@ -407,7 +407,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	cursor        : pointer;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
-	transition    : background .15s;
+	transition    : background var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -443,7 +443,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform .15s;
+	transition    : transform var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -582,7 +582,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item--insert { /* What: Inserted Reminder Item. Why: A just-added reminder springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
 
 
-	animation : global(rowInsert) .32s cubic-bezier(.34,1.32,.5,1) both; /* What: Global rowInsert Keyframes. Why: The rowInsert keyframes are shared with the Data tab's item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(rowInsert) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* What: Global rowInsert Keyframes. Why: The rowInsert keyframes are shared with the Data tab's item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -699,7 +699,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color .12s;
+	transition     : border-color var( --dur-tra-m01 );
 	width          : 100%;
 
 
@@ -817,7 +817,7 @@ button.rd-chev { /* What: Row Chevron Button. Why: While a row is open its chevr
 .rem-inline-editor { /* What: Reminder Editor Body. Why: The editor body blends into its row rather than drawing its own card, and fades in as it opens. How: This clears the card chrome and plays the shared row entrance. */
 
 
-	animation     : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : none;
 	border        : 0;
 	border-radius : 0;

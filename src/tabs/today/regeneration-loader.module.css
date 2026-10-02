@@ -40,7 +40,7 @@
 	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
 	perspective           : 800px;
-	transition            : background .15s, opacity .2s, border-color .12s;
+	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 );
 	user-select           : none;
 
 
@@ -99,7 +99,7 @@
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
-	transition         : background .12s, border-color .12s, color .12s;
+	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width              : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -197,7 +197,7 @@
 .loader-reel-name { /* What: Loader Reel Name. Why: Each candidate name the reel flashes should drop in rather than blink. How: This plays a quick fade-and-drop each time a new name mounts. */
 
 
-	animation   : loaderReelStep 90ms ease-out;
+	animation   : loaderReelStep var( --dur-ani-m02 ) var( --mot-dec-eas );
 	display     : inline-block;
 	will-change : transform, opacity;
 
@@ -230,7 +230,7 @@
 .loader-settled { /* What: Loader Settled Name. Why: The final pick should land with a small bounce and a flash of accent before reading as normal text. How: This plays the landing animation, which starts in the accent color and eases to the text color. */
 
 
-	animation : loaderSettleLand 320ms cubic-bezier(.22,1.4,.36,1) both;
+	animation : loaderSettleLand var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
 	color     : var(--acc-mai-col);
 
 

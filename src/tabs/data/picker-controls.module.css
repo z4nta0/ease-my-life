@@ -193,7 +193,7 @@
 	min-width     : 0;
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 
 
 }
@@ -305,7 +305,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );
-	transition     : border-color .24s ease, background .24s ease, color .24s ease;
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -359,7 +359,7 @@
 .picker-group-pill--new.is-returning { /* What: Returning New Group Pill. Why: After the inline input closes, the pill pops back in, mirroring how it left. How: This plays a springy scale-in while the returning class is set. */
 
 
-	animation : rdNewPillIn .18s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+	animation : rdNewPillIn var( --dur-ani-p01 ) var( --mot-bou-eas ) both;
 
 
 }
@@ -410,7 +410,7 @@
 
 
 	align-items : center;
-	animation   : rdGroupNewIn .16s ease-out both;
+	animation   : rdGroupNewIn var( --dur-ani-bas ) var( --mot-dec-eas ) both;
 	display     : inline-flex;
 	gap         : var( --spa-hor-m03 );
 
@@ -467,7 +467,7 @@
 .rd-group-new-input { /* What: New Group Input. Why: The new group's name is typed into a pill-shaped field that grows open. How: This draws an accent-outlined pill that widens from the plus pill's size. */
 
 
-	animation     : rdGroupInputGrow .2s cubic-bezier(0.4, 0, 0.2, 1) both;
+	animation     : rdGroupInputGrow var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
 	background    : var(--bac-sur-col);
 	border        : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius : 999px;
@@ -523,8 +523,8 @@
 
 
 	align-items     : center;
-	animation       : rdGroupBtnIn .16s ease-out both;
-	animation-delay : .11s;
+	animation       : rdGroupBtnIn var( --dur-ani-bas ) var( --mot-dec-eas ) both;
+	animation-delay : var( --dur-ani-m01 );
 	background      : var(--bac-sur-col);
 	border          : var( --bor-wid-bas ) solid var(--bor-mai-col);
 	border-radius   : 50%;
@@ -533,7 +533,7 @@
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	transition      : color .15s, border-color .15s, background .15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -630,8 +630,8 @@
 
 
 	--collapse-inner-offset     : translateY(-8px);
-	--collapse-inner-transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
-	--collapse-row-duration     : .8s;
+	--collapse-inner-transition : opacity var( --dur-tra-p06 ) var( --mot-sta-eas ) var( --dur-tra-m03 ), transform var( --dur-tra-p06 ) var( --mot-dec-eas ) var( --dur-tra-m03 );
+	--collapse-row-duration     : var( --dur-tra-p06 );
 	align-items                 : flex-start;
 	border-bottom               : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	cursor                      : pointer;
@@ -639,7 +639,7 @@
 	gap                         : var( --spa-hor-m01 );
 	padding                     : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position                    : relative;
-	transition                  : background .24s ease;
+	transition                  : background var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -727,7 +727,7 @@
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	margin-top    : var( --spa-ver-m09 );
 	position      : relative;
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -890,7 +890,7 @@
 	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );
-	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -935,7 +935,7 @@
 .set-sub-fade { /* What: Fading Setting Explanation. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -967,7 +967,7 @@
 	cursor        : pointer;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
-	transition    : background .15s;
+	transition    : background var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -1004,7 +1004,7 @@
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform .15s;
+	transition    : transform var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -1104,7 +1104,7 @@
 	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );
 	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );
 	text-align      : left;
-	transition      : border-color .24s ease, background .24s ease, box-shadow .24s ease;
+	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), box-shadow var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -1210,7 +1210,7 @@
 	max-width     : none;
 	outline       : none;
 	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : auto;
 
 
@@ -1355,7 +1355,7 @@
 
 
 	align-items     : center;
-	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-direction  : row;
 	gap             : var( --spa-hor-bas );
@@ -1411,7 +1411,7 @@
 
 
 	align-items     : center;
-	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	justify-content : space-between;
 	width           : 100%;

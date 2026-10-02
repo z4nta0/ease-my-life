@@ -25,7 +25,7 @@
 
 	display            : grid;
 	grid-template-rows : 0fr;
-	transition         : grid-template-rows var(--collapse-row-duration, .26s) cubic-bezier(.4,0,.2,1); /* What: Collapse Row Duration. Why: The mode-option rows swap one short line, where the standard glide reads as janky. How: A parent sets --collapse-row-duration to slow the glide, falling back to the standard .26s. */
+	transition         : grid-template-rows var(--collapse-row-duration, var( --dur-tra-p02 )) var( --mot-sta-eas ); /* What: Collapse Row Duration. Why: The mode-option rows swap one short line, where the standard glide reads as janky. How: A parent sets --collapse-row-duration to slow the glide, falling back to the standard p02 step. */
 
 
 }
@@ -57,7 +57,7 @@
 	opacity    : 0;
 	overflow   : hidden;
 	transform  : var(--collapse-inner-offset, translateY(-4px)); /* What: Collapse Inner Offset. Why: The mode-option rows slide their hint in from further up. How: A parent sets --collapse-inner-offset to change where closed content starts, falling back to 4px up. */
-	transition : var(--collapse-inner-transition, opacity .22s ease, transform .22s ease); /* What: Collapse Inner Transition. Why: The mode-option rows carry their hint swap with a slower, stronger fade. How: A parent sets --collapse-inner-transition to replace the whole fade and slide timing, falling back to the standard .22s. */
+	transition : var(--collapse-inner-transition, opacity var( --dur-tra-p01 ) var( --mot-sta-eas ), transform var( --dur-tra-p01 ) var( --mot-sta-eas )); /* What: Collapse Inner Transition. Why: The mode-option rows carry their hint swap with a slower, stronger fade. How: A parent sets --collapse-inner-transition to replace the whole fade and slide timing, falling back to the standard p01 step. */
 
 
 }

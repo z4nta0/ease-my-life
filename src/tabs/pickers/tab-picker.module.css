@@ -125,7 +125,7 @@
 	height             : calc( var( --ver-rhy-p06 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
-	transition         : transform 180ms ease;
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas );
 	width              : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
@@ -389,7 +389,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );
-	transition     : border-color .24s ease, background .24s ease, color .24s ease;
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -516,7 +516,7 @@
 .picker-tab { /* What: Picker Tab. Why: Each picker is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
 
 
-	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global Entrance Keyframes. Why: The pickerTabEnter keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation         : global(pickerTabEnter) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global Entrance Keyframes. Why: The pickerTabEnter keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--bac-sur-col);
 	border            : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius     : var( --rad-bor-med );
@@ -528,7 +528,7 @@
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	scroll-snap-align : start;
 	text-align        : left;
-	transition        : border-color .12s, background .12s;
+	transition        : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 
 
 }
@@ -660,7 +660,7 @@
 .tab-fade { /* What: Tab Fade. Why: The picker or form below the filters fades in each time it changes. How: This plays the shared fade each time the keyed wrapper remounts. */
 
 
-	animation : global(tabFadeIn) .2s ease both; /* What: Global Fade Keyframes. Why: The tabFadeIn keyframes are shared with the other tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(tabFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The tabFadeIn keyframes are shared with the other tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

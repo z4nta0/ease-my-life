@@ -77,7 +77,7 @@
 	padding         : 0 var( --spa-hor-m01 );
 	text-align      : center;
 	text-wrap       : pretty;
-	transition      : color .25s;
+	transition      : color var( --dur-tra-p02 );
 
 
 }
@@ -162,7 +162,7 @@
 .dissolve-name { /* What: Picker Dissolve Name. Why: Each candidate should fade in rather than blink. How: This sets the name large and centered and fades it up each time it remounts. */
 
 
-	animation      : dissolveIn 180ms ease;
+	animation      : dissolveIn var( --dur-ani-p01 ) var( --mot-sta-eas );
 	font-size      : var( --fon-siz-p04 );
 	font-weight    : 500;
 	letter-spacing : -0.025em;
@@ -174,7 +174,7 @@
 .dissolve--settled .dissolve-name { /* What: Landed Picker Dissolve Name. Why: The final pick should land with a small bounce in the accent color. How: This colors it and plays the settle animation. */
 
 
-	animation : settleIn 380ms cubic-bezier(.3,1.2,.4,1);
+	animation : settleIn var( --dur-ani-p04 ) var( --mot-ove-eas );
 	color     : var(--acc-mai-col);
 
 
@@ -252,7 +252,7 @@
 .dissolve-glow { /* What: Picker Dissolve Glow. Why: A soft halo marks the moment the pick lands. How: This draws a faint accent radial glow behind the name that grows in. */
 
 
-	animation      : glow 480ms ease-out;
+	animation      : glow var( --dur-ani-p05 ) var( --mot-dec-eas );
 	background     : radial-gradient(circle, var(--acc-tin-col), transparent 70%);
 	border-radius  : 50%;
 	height         : 60%;
@@ -344,7 +344,7 @@
 	padding       : 0 var( --spa-hor-bas );
 	text-align    : var(--spot-row-text-align, inherit); /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spot-row-text-align, falling back to the inherited alignment. */
 	text-wrap     : pretty;
-	transition    : background .12s, color .12s, transform .12s;
+	transition    : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m01 );
 
 
 }

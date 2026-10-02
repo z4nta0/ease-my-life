@@ -35,7 +35,7 @@
 	color         : var(--tex-mut-col);
 	font-size     : var( --fon-siz-bas );
 	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );
-	transition    : color .12s, border-color .12s;
+	transition    : color var( --dur-tra-m01 ), border-color var( --dur-tra-m01 );
 
 
 }

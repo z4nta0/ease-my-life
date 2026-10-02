@@ -78,7 +78,7 @@
 	gap           : var( --spa-hor-m01 );
 	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	position      : relative;
-	transition    : background .24s ease;
+	transition    : background var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -166,7 +166,7 @@
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
 	margin-top    : var( --spa-ver-m09 );
 	position      : relative;
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -237,7 +237,7 @@
 
 	display            : grid;
 	grid-template-rows : 0fr;
-	transition         : grid-template-rows .8s cubic-bezier(.4,0,.2,1);
+	transition         : grid-template-rows var( --dur-tra-p06 ) var( --mot-sta-eas );
 
 
 }
@@ -271,7 +271,7 @@
 	opacity    : 0;
 	overflow   : hidden;
 	transform  : translateY(-8px);
-	transition : opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s;
+	transition : opacity var( --dur-tra-p06 ) var( --mot-sta-eas ) var( --dur-tra-m03 ), transform var( --dur-tra-p06 ) var( --mot-dec-eas ) var( --dur-tra-m03 );
 
 
 }
@@ -333,7 +333,7 @@
 	letter-spacing : 0.03em;
 	margin-left    : auto;
 	padding        : 0 var( --spa-hor-m01 );
-	transition     : background .18s ease, opacity .18s ease;
+	transition     : background var( --dur-tra-p01 ) var( --mot-sta-eas ), opacity var( --dur-tra-p01 ) var( --mot-sta-eas );
 
 
 }

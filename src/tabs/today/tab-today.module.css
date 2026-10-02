@@ -183,7 +183,7 @@
 	letter-spacing : 0.08em;
 	padding        : 0 var( --spa-hor-m01 );
 	text-transform : uppercase;
-	transition     : background .2s, border-color .2s;
+	transition     : background var( --dur-tra-p01 ), border-color var( --dur-tra-p01 );
 	white-space    : nowrap;
 
 
@@ -191,7 +191,7 @@
 .streak.is-bumped { /* What: Bumped Streak Chip. Why: A streak that just grew should pop and warm up for a moment. How: This plays a springy scale and tints the chip warm while the bumped class is set. */
 
 
-	animation    : streakBump 800ms cubic-bezier(.22,1.4,.36,1);
+	animation    : streakBump var( --dur-ani-p06 ) var( --mot-bou-eas );
 	background   : oklch(from var(--acc-sec-col) calc(l + 0.32) calc(c - 0.05) h);
 	border-color : oklch(from var(--acc-sec-col) calc(l + 0.2) calc(c - 0.03) h);
 
@@ -255,14 +255,14 @@
 
 	color      : var(--acc-sec-col);
 	flex       : 0 0 auto;
-	transition : filter .2s, transform .2s;
+	transition : filter var( --dur-tra-p01 ), transform var( --dur-tra-p01 );
 
 
 }
 .streak.is-bumped svg { /* What: Bumped Streak Flame. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
 
 
-	animation : streakFlame 800ms cubic-bezier(.22,1.4,.36,1);
+	animation : streakFlame var( --dur-ani-p06 ) var( --mot-bou-eas );
 
 
 }
@@ -333,7 +333,7 @@
 .streak.is-bumped span { /* What: Bumped Streak Count. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
 
 
-	animation : streakNum 800ms cubic-bezier(.22,1.4,.36,1);
+	animation : streakNum var( --dur-ani-p06 ) var( --mot-bou-eas );
 
 
 }
@@ -436,7 +436,7 @@
 	height             : calc( var( --ver-rhy-p06 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
-	transition         : transform 180ms ease;
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas );
 
 
 }
@@ -512,7 +512,7 @@
 
 
 	grid-area   : 1 / 1;
-	transition  : opacity 280ms ease, transform 280ms ease;
+	transition  : opacity var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-p02 ) var( --mot-sta-eas );
 	will-change : opacity, transform;
 
 
@@ -551,31 +551,31 @@
 .today-title .title-state--done .title-word { /* What: Celebration Title Word. Why: The celebratory title's words enter one by one. How: This starts each word hidden and low and plays a fade-rise. */
 
 
-	animation : titleWordRise 420ms cubic-bezier(.22,.9,.3,1) forwards;
+	animation : titleWordRise var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards;
 	display   : inline-block;
 	opacity   : 0;
 	transform : translateY(8px);
 
 
 }
-.today-title .title-state--done[aria-hidden="false"] .title-word--1 { /* What: First Celebration Word. Why: The words stagger in. How: This delays the first by 60ms. */
+.today-title .title-state--done[aria-hidden="false"] .title-word--1 { /* What: First Celebration Word. Why: The words stagger in. How: This delays the first by the m03 step. */
 
 
-	animation-delay : 60ms;
+	animation-delay : var( --dur-ani-m03 );
 
 
 }
-.today-title .title-state--done[aria-hidden="false"] .title-word--2 { /* What: Second Celebration Word. Why: The words stagger in. How: This delays the second by 200ms. */
+.today-title .title-state--done[aria-hidden="false"] .title-word--2 { /* What: Second Celebration Word. Why: The words stagger in. How: This delays the second by the p02 step. */
 
 
-	animation-delay : 200ms;
+	animation-delay : var( --dur-ani-p02 );
 
 
 }
 .today-title .title-state--done[aria-hidden="false"] .title-word--3 { /* What: Third Celebration Word. Why: "eased!" lands last with a spring to match its meaning. How: This plays a delayed spring scale in the accent color. */
 
 
-	animation        : titleWordSpring 720ms cubic-bezier(.22,1.5,.36,1) 380ms forwards;
+	animation        : titleWordSpring var( --dur-ani-p06 ) var( --mot-bou-eas ) var( --dur-ani-p04 ) forwards;
 	color            : var(--acc-mai-col);
 	transform-origin : 0% 70%;
 
@@ -704,7 +704,7 @@
 .ring.is-pulsing svg { /* What: Pulsing Ring Graphic. Why: Each completed item gives the ring a small pop. How: This plays a springy scale while the pulsing class is set. */
 
 
-	animation : ringPulse 620ms cubic-bezier(.22,1.4,.36,1);
+	animation : ringPulse var( --dur-ani-p06 ) var( --mot-bou-eas );
 
 
 }
@@ -769,7 +769,7 @@
 	stroke         : var(--acc-mai-col);
 	stroke-linecap : round;
 	stroke-width   : 2.8;
-	transition     : stroke-dasharray .55s cubic-bezier(.3,1.3,.5,1);
+	transition     : stroke-dasharray var( --dur-tra-p05 ) var( --mot-ove-eas );
 
 
 }
@@ -822,14 +822,14 @@
 .ring.is-pulsing .ring-num { /* What: Pulsing Ring Count. Why: The count flashes as it grows. How: This plays a springy scale and accent flash. */
 
 
-	animation : ringNumPulse 620ms cubic-bezier(.22,1.4,.36,1);
+	animation : ringNumPulse var( --dur-ani-p06 ) var( --mot-bou-eas );
 
 
 }
 .ring.is-celebrating .ring-num { /* What: Celebrating Ring Count. Why: Completing the day gives the count a bigger flash. How: This plays a larger springy scale and accent flash. */
 
 
-	animation : ringCompleteNum 1200ms cubic-bezier(.22,1.4,.36,1);
+	animation : ringCompleteNum var( --dur-ani-p08 ) var( --mot-bou-eas );
 
 
 }
@@ -952,14 +952,14 @@
 .ring.is-pulsing .ring-glow { /* What: Pulsing Ring Glow. Why: Each completed item blooms a small glow. How: This plays a short glow bloom. */
 
 
-	animation : ringGlowPulse 700ms ease-out;
+	animation : ringGlowPulse var( --dur-ani-p06 ) var( --mot-dec-eas );
 
 
 }
 .ring.is-celebrating .ring-glow { /* What: Celebrating Ring Glow. Why: Completing the day blooms a bigger glow. How: This plays a longer, wider glow bloom. */
 
 
-	animation : ringCompleteGlow 1200ms ease-out;
+	animation : ringCompleteGlow var( --dur-ani-p08 ) var( --mot-dec-eas );
 
 
 }
@@ -1055,10 +1055,10 @@
 
 
 }
-.ring.is-celebrating .ring-ripple { /* What: Celebrating Ring Ripple. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over 1200ms, matching the ring's other completion animations. */
+.ring.is-celebrating .ring-ripple { /* What: Celebrating Ring Ripple. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over the p08 step, matching the ring's other completion animations. */
 
 
-	animation : ringCompleteRipple 1200ms ease-out;
+	animation : ringCompleteRipple var( --dur-ani-p08 ) var( --mot-dec-eas );
 
 
 }
@@ -1146,7 +1146,7 @@
 
 
 	align-items     : center;
-	animation       : emBannerIn 0.26s cubic-bezier(0.4, 0, 0.2, 1) both;
+	animation       : emBannerIn var( --dur-ani-p02 ) var( --mot-sta-eas ) both;
 	background      : var(--acc-tin-col);
 	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / 0.35);
 	border-radius   : var( --rad-bor-med );
@@ -1164,7 +1164,7 @@
 .editmode-banner.is-closing { /* What: Closing Edit Mode Banner. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, ended by its animationend handler. */
 
 
-	animation : emBannerOut 0.24s cubic-bezier(0.4, 0, 0.2, 1) both;
+	animation : emBannerOut var( --dur-ani-p02 ) var( --mot-sta-eas ) both;
 	overflow  : hidden;
 
 
@@ -1453,7 +1453,7 @@
 	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
 	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 );
 	text-align      : left;
-	transition      : background .12s, color .12s;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width           : 100%;
 
 
@@ -1604,7 +1604,7 @@
 	justify-content : center;
 	letter-spacing  : -0.005em;
 	padding         : 0 var( --spa-hor-m01 );
-	transition      : color .12s, border-color .12s, background .12s;
+	transition      : color var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 	width           : 100%;
 
 
@@ -1676,7 +1676,7 @@
 .confetti-piece { /* What: Confetti Piece. Why: Each piece bursts out from the center along its own angle and distance. How: This draws a small accent chip at the center that plays the shared burst, reading its inline angle, distance, rotation, and opacity. */
 
 
-	animation     : global(confettiBurst) 850ms cubic-bezier(.2,.7,.3,1) both; /* What: Global confettiBurst Keyframes. Why: The confettiBurst keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(confettiBurst) var( --dur-ani-p07 ) var( --mot-dec-eas ) both; /* What: Global confettiBurst Keyframes. Why: The confettiBurst keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--acc-mai-col);
 	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -1706,7 +1706,7 @@
 .sparkle-piece { /* What: Sparkle Piece. Why: Each sparkle twinkles at its own spot. How: This draws a small accent glyph centered on its inline position that plays the shared twinkle. */
 
 
-	animation   : global(sparkleTwinkle) 780ms ease-in-out both; /* What: Global sparkleTwinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global(sparkleTwinkle) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* What: Global sparkleTwinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the Settings celebration preview, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var(--acc-mai-col);
 	font-size   : var( --fon-siz-p02 );
 	line-height : var( --ver-rhy-m01 );
@@ -1849,7 +1849,7 @@
 .ob-create.is-removing { /* What: Removing Onboarding Card. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
 
 
-	animation : global(cardSkipOut) 380ms cubic-bezier(.4,.05,.7,.4) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardSkipOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1877,7 +1877,7 @@
 .ob-generate-pulse::after { /* What: Generate Card Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
 
 
-	animation      : obGeneratePing 1.8s ease-out infinite;
+	animation      : obGeneratePing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite;
 	border-radius  : inherit;
 	content        : "";
 	inset          : 0;
@@ -2008,7 +2008,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.005em;
 	padding        : 0 var( --spa-hor-bas );
-	transition     : background .12s, color .12s, transform .08s;
+	transition     : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m02 );
 
 
 }

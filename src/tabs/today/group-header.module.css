@@ -63,7 +63,7 @@
 	justify-content : center;
 	margin-left     : calc( var( --spa-hor-m05 ) * -1 );
 	touch-action    : none; /* What: Pointer-Owned Gesture. Why: The drag controller needs every pointer move, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
-	transition      : color .12s, background .12s;
+	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -100,7 +100,7 @@
 .group-name-input { /* What: Group Name Input. Why: Renaming happens in place, in a field that matches the name it replaces. How: This styles an accent-framed field in the name's own type and slides it in from the left. */
 
 
-	animation        : groupNameIn .16s cubic-bezier(0.4, 0, 0.2, 1) both;
+	animation        : groupNameIn var( --dur-ani-bas ) var( --mot-sta-eas ) both;
 	background       : var(--bac-sur-col);
 	border           : var( --bor-wid-bas ) solid var(--acc-mai-col);
 	border-radius    : var( --rad-bor-sma );
@@ -130,7 +130,7 @@
 .group-name-input.is-closing { /* What: Closing Group Name Input. Why: Closing the field should ease away rather than vanish. How: This slides it back out to the left. */
 
 
-	animation : groupNameOut .15s cubic-bezier(0.4, 0, 0.2, 1) both;
+	animation : groupNameOut var( --dur-ani-bas ) var( --mot-sta-eas ) both;
 
 
 }
@@ -223,7 +223,7 @@
 	letter-spacing : -0.015em;
 	margin         : calc( var( --spa-ver-m07 ) * -1 ) calc( var( --spa-hor-m03 ) * -1 );
 	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );
-	transition     : background .12s, color .12s;
+	transition     : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 
 
 }
@@ -253,7 +253,7 @@
 
 	color      : var(--tex-mut-col);
 	opacity    : 0;
-	transition : opacity .12s;
+	transition : opacity var( --dur-tra-m01 );
 
 
 }
@@ -338,7 +338,7 @@
 	height        : calc( var( --ver-rhy-m05 ) * 1rem );
 	overflow      : hidden;
 	position      : relative;
-	transition    : background .25s ease;
+	transition    : background var( --dur-tra-p02 ) var( --mot-sta-eas );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -360,7 +360,7 @@
 .group-progress i.is-fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global(dashSweep) 480ms cubic-bezier(.4,.6,.3,1) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global(dashSweep) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var(--acc-mai-col);
 	border-radius    : inherit;
 	content          : '';
@@ -406,7 +406,7 @@
 
 
 	align-items     : center;
-	animation       : groupMergeIn .18s ease-out both;
+	animation       : groupMergeIn var( --dur-ani-p01 ) var( --mot-dec-eas ) both;
 	background      : var(--acc-tin-col);
 	border          : var( --bor-wid-bas ) solid oklch(from var(--acc-mai-col) l c h / 0.3);
 	border-radius   : var( --rad-bor-med );

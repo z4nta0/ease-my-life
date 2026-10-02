@@ -95,7 +95,7 @@
 	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );
-	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -147,7 +147,7 @@
 .set-sub-fade { /* What: Fading Cadence Field Summary. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
 
 
-	animation : global(setSubFade) .6s ease; /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -210,7 +210,7 @@
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : 100%;
 
 
@@ -277,7 +277,7 @@
 .cad-anchor-fade { /* What: Cadence Anchor Block. Why: Switching cadence swaps the anchor field below, which should ease in rather than snap. How: This fades the block in each time it remounts. */
 
 
-	animation : global(setSubFade) .3s ease; /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p03 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The setSubFade keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

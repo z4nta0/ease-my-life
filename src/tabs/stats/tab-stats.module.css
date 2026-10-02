@@ -127,7 +127,7 @@
 	height             : calc( var( --ver-rhy-p06 ) * 1rem );
 	padding            : 0;
 	text-decoration    : none;
-	transition         : transform 180ms ease;
+	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas );
 	width              : calc( var( --ver-rhy-p06 ) * 1rem );
 
 
@@ -393,7 +393,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );
-	transition     : border-color .24s ease, background .24s ease, color .24s ease;
+	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), color var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
@@ -522,7 +522,7 @@
 .picker-tab { /* What: Show Tab. Why: Everything and each picker in scope is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
 
 
-	animation         : global(pickerTabEnter) .28s cubic-bezier(.4,0,.2,1) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation         : global(pickerTabEnter) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--bac-sur-col);
 	border            : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius     : var( --rad-bor-med );
@@ -534,7 +534,7 @@
 	padding           : var( --spa-ver-m01 ) var( --spa-hor-bas );
 	scroll-snap-align : start;
 	text-align        : left;
-	transition        : border-color .12s, background .12s;
+	transition        : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 
 
 }
@@ -670,7 +670,7 @@
 	height         : calc( var( --ver-rhy-p03 ) * 1rem );
 	letter-spacing : -0.01em;
 	padding        : 0 var( --spa-hor-bas );
-	transition     : border-color .12s, background .12s, color .12s;
+	transition     : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	white-space    : nowrap;
 
 
@@ -719,7 +719,7 @@
 .stat-body { /* What: Stats Body. Why: The cards fade in under the filters, spaced as one column. How: This lays them out in a full-width grid with a row gap and plays the shared tab fade each time it remounts. */
 
 
-	animation             : global(tabFadeIn) .2s ease both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the Pickers tab and the picker form, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation             : global(tabFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the Pickers tab and the picker form, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display               : grid;
 	gap                   : var( --spa-ver-p02 ) var( --spa-hor-p02 );
 	grid-auto-rows        : auto;
@@ -909,7 +909,7 @@
 
 
 	height     : 100%;
-	transition : width .3s cubic-bezier(.3,1,.5,1);
+	transition : width var( --dur-tra-p03 ) var( --mot-dec-eas );
 
 
 }
@@ -1108,7 +1108,7 @@
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );
-	transition      : background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m01 ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -1161,14 +1161,14 @@
 .heat-slide-next { /* What: Next Year Heatmap. Why: Paging forward should read as moving right. How: This slides the grid in from the right. */
 
 
-	animation : heatSlideNextFadeIn .26s cubic-bezier(.2,.7,.3,1) both;
+	animation : heatSlideNextFadeIn var( --dur-ani-p02 ) var( --mot-dec-eas ) both;
 
 
 }
 .heat-slide-prev { /* What: Previous Year Heatmap. Why: Paging back should read as moving left. How: This slides the grid in from the left. */
 
 
-	animation : heatSlidePrevFadeIn .26s cubic-bezier(.2,.7,.3,1) both;
+	animation : heatSlidePrevFadeIn var( --dur-ani-p02 ) var( --mot-dec-eas ) both;
 
 
 }
@@ -1254,7 +1254,7 @@ button.heat-cell { /* What: Heat Cell Button. Why: Each day in the grid is tappa
 	outline            : var( --bor-wid-lar ) solid transparent;
 	outline-offset     : 2px;
 	padding            : 0;
-	transition         : outline-color 0.12s ease, transform 0.08s ease;
+	transition         : outline-color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-sta-eas );
 	width              : 100%;
 
 
@@ -1668,7 +1668,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	letter-spacing : 0.04em;
 	padding        : 0 var( --spa-hor-m01 );
 	text-transform : uppercase;
-	transition     : border-color .12s, color .12s;
+	transition     : border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	white-space    : nowrap;
 
 
@@ -1755,7 +1755,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	padding        : var( --spa-ver-m04 ) var( --spa-hor-m01 );
-	transition     : border-color .12s, background .12s, color .12s;
+	transition     : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 
 
 }
@@ -1818,7 +1818,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	text-decoration       : underline;
 	text-decoration-style : dotted;
 	text-underline-offset : 2px;
-	transition            : color .12s;
+	transition            : color var( --dur-tra-m01 );
 
 
 }
@@ -1855,7 +1855,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .bd-list-fade { /* What: Refreshing List. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
 
 
-	animation : global(setSubFade) .3s ease, bdListRise .3s cubic-bezier(.2,.7,.3,1); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every live explanation line, so they stay in the global sheet, while bdListRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p03 ) var( --mot-sta-eas ), bdListRise var( --dur-ani-p03 ) var( --mot-dec-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every live explanation line, so they stay in the global sheet, while bdListRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
 
 
 }
@@ -2398,7 +2398,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );
-	transition      : background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+	transition      : background var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m01 ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -2472,7 +2472,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );
-	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
 

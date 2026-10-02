@@ -45,7 +45,7 @@
 .infotip { /* What: Info Tip. Why: The tip is a small floating bubble that must stay readable over everything else on screen. How: This styles the bubble, keeps it out of pointer hit-testing, and plays its entrance animation. */
 
 
-	animation      : infotipIn 130ms cubic-bezier(.22,1.2,.36,1);
+	animation      : infotipIn var( --dur-ani-bas ) var( --mot-ove-eas );
 	background     : var(--bac-sur-col);
 	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );

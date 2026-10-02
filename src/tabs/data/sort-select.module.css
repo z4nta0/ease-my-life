@@ -58,7 +58,7 @@
 	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
 	outline       : none;
 	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color .12s;
+	transition    : border-color var( --dur-tra-m01 );
 	width         : 100%;
 
 

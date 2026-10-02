@@ -38,7 +38,7 @@
 	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
 	perspective           : 800px;
-	transition            : background .15s, opacity .2s, border-color .12s;
+	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 );
 	user-select           : none;
 
 
@@ -46,7 +46,7 @@
 .today-card[data-card-exhale-active] { /* What: Exhaling Entry Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exhale-delay tab-today.jsx sets on each card. */
 
 
-	animation : global(cardExhale) var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardExhale) var(--exhale-dur) var( --mot-dec-eas ) var(--exhale-delay, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -74,7 +74,7 @@
 .today-card.is-removing { /* What: Removing Entry Card. Why: A skipped entry or a finished tutorial card slides out and collapses. How: This plays the shared skip-out collapse and stops it taking clicks. */
 
 
-	animation      : global(cardSkipOut) 380ms cubic-bezier(.4,.05,.7,.4) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the reminder and page tour cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(cardSkipOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the reminder and page tour cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -111,7 +111,7 @@
 .today-card[data-card-reorder-active] { /* What: Reorderable Entry Card. Why: In Edit Mode a card is dragged rather than toggled. How: This dashes its border in the accent color, switches to the grab cursor, and plays a short unlock as Edit Mode opens. */
 
 
-	animation    : emUnlock 0.28s ease both;
+	animation    : emUnlock var( --dur-ani-p02 ) var( --mot-sta-eas ) both;
 	border-color : oklch(from var(--acc-mai-col) l c h / 0.4);
 	border-style : dashed;
 	cursor       : grab;
@@ -241,7 +241,7 @@
 	height          : calc( var( --ver-rhy-p02 ) * 1rem );
 	justify-content : center;
 	touch-action    : none;
-	transition      : color .12s, background .12s;
+	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -299,7 +299,7 @@
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
-	transition         : background .12s, border-color .12s, color .12s;
+	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width              : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -372,7 +372,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card.is-fresh .check-ripple { /* What: Fresh Checkbox Ripple. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
 
 
-	animation : global(checkRipple) 600ms cubic-bezier(.2,.6,.3,1) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkRipple) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -394,7 +394,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when an entry is checked. How: This plays the shared spring on the mark. */
 
 
-	animation : global(checkSpring) 360ms cubic-bezier(.22,1.4,.36,1) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkSpring) var( --dur-ani-p04 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -433,7 +433,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card.is-rolling .today-card-body { /* What: Re-Rolling Card Body. Why: A re-roll tumbles the card's text a full turn, swapping in the new pick at the halfway point, upside down. How: This spins the body once around its X axis in 3D. */
 
 
-	animation       : rerollFlip 760ms cubic-bezier(.5,.1,.5,.9);
+	animation       : rerollFlip var( --dur-ani-p06 ) var( --mot-sta-eas );
 	transform-style : preserve-3d;
 
 
@@ -552,7 +552,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	letter-spacing : -0.01em;
 	margin         : 0;
 	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color .12s;
+	transition     : border-color var( --dur-tra-m01 );
 	width          : 100%;
 
 
@@ -639,7 +639,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	transition      : background .12s, color .12s;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -685,7 +685,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .icon-btn.is-spinning svg { /* What: Spinning Re-Roll Icon. Why: The re-roll icon spins along with the card's tumble. How: This turns the icon a full turn backward while the button carries its spinning class. */
 
 
-	animation : rerollSpin 760ms cubic-bezier(.4,0,.4,1);
+	animation : rerollSpin var( --dur-ani-p06 ) var( --mot-sta-eas );
 
 
 }

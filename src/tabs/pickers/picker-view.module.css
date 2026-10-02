@@ -217,7 +217,7 @@
 
 
 	align-items    : center;
-	animation      : sentRise 320ms cubic-bezier(.22,1.2,.36,1);
+	animation      : sentRise var( --dur-ani-p03 ) var( --mot-ove-eas );
 	display        : flex;
 	flex-direction : column;
 	gap            : var( --spa-ver-m01 );
@@ -268,7 +268,7 @@
 
 
 	align-items     : center;
-	animation       : sentPop 440ms cubic-bezier(.22,1.5,.36,1);
+	animation       : sentPop var( --dur-ani-p04 ) var( --mot-bou-eas );
 	background      : var(--acc-mai-col);
 	border-radius   : 50%;
 	color           : var(--bac-pag-col);
@@ -358,21 +358,21 @@
 .picker-actions .pv-act { /* What: Picker Action. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
 
 
-	animation : pvActIn .22s cubic-bezier(.34,1.2,.5,1) both;
+	animation : pvActIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both;
 
 
 }
 .picker-actions .pv-act.is-leaving { /* What: Leaving Picker Action. Why: Re-Roll and Done fall away before their action runs. How: This plays the action exit while the button carries its leaving class. */
 
 
-	animation : pvActOut .18s ease both;
+	animation : pvActOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
 
 
 }
 .picker-actions .pv-act--send.is-sent { /* What: Sent Send Button. Why: Send to Today swells once as it confirms, winning over the entrance the other actions play. How: This plays the button pop while it carries its sent class. */
 
 
-	animation : sentBtnPop 360ms cubic-bezier(.22,1.5,.36,1);
+	animation : sentBtnPop var( --dur-ani-p03 ) var( --mot-bou-eas );
 
 
 }
@@ -494,7 +494,7 @@
 .set-sub-fade { /* What: Fading Send Label. Why: The label fades in each time its text changes. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live label, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live label, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -653,14 +653,14 @@
 .pool-row--insert { /* What: Inserted Pool Row. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
 
 
-	animation : poolRowInsertFadeIn .6s cubic-bezier(.34,1.2,.5,1) both;
+	animation : poolRowInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both;
 
 
 }
 .pool-row--removing { /* What: Removing Pool Row. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
 
 
-	animation : poolRowRemove .34s ease forwards;
+	animation : poolRowRemove var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
 	overflow  : hidden;
 
 
@@ -735,7 +735,7 @@
 
 
 	align-items     : center;
-	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );
@@ -746,7 +746,7 @@
 .pool-confirm.is-leaving { /* What: Leaving Pool Delete Confirm. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
-	animation : global(footSwapOut) .14s ease both; /* What: Global footSwapOut Keyframes. Why: The footSwapOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(footSwapOut) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapOut Keyframes. Why: The footSwapOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -928,7 +928,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -972,7 +972,7 @@
 .pool-send.ob-tour-pulse { /* What: Tour Target Pool Send Button. Why: App Features' manual-pick tour points at the Send to Today button inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
-	animation      : global(obTourFade) 1.8s ease-in-out infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(obTourFade) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : -2px;
 
@@ -1003,7 +1003,7 @@
 .pool-send.is-sent svg { /* What: Sent Pool Check. Why: The check pops in when the send lands. How: This plays the pop on the icon. */
 
 
-	animation : poolSendPop .32s cubic-bezier(.34,1.5,.5,1) both;
+	animation : poolSendPop var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
 
 
 }
@@ -1070,7 +1070,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -1114,7 +1114,7 @@
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -1188,7 +1188,7 @@
 	--entry-editor-foot-justify    : flex-end;
 	--entry-editor-rows-border-top : 0;
 	--entry-editor-rows-margin-top : 0;
-	animation                      : global(pvNewItemIn) .3s cubic-bezier(.34,1.2,.5,1) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation                      : global(pvNewItemIn) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* What: Global pvNewItemIn Keyframes. Why: The pvNewItemIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                     : var(--bac-sur-col);
 	border                         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                  : var( --rad-bor-med );
@@ -1199,7 +1199,7 @@
 .pv-newitem.is-closing { /* What: Closing Add Item Row. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
 
 
-	animation : global(pvNewItemOut) .26s ease both; /* What: Global pvNewItemOut Keyframes. Why: The pvNewItemOut keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(pvNewItemOut) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global pvNewItemOut Keyframes. Why: The pvNewItemOut keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow  : hidden;
 
 
@@ -1274,7 +1274,7 @@
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color .12s;
+	transition     : border-color var( --dur-tra-m01 );
 	width          : 100%;
 
 
@@ -1350,7 +1350,7 @@
 	height          : calc( var( --ver-rhy-p04 ) * 1rem );
 	justify-content : center;
 	padding         : 0 var( --spa-hor-bas );
-	transition      : color 0.15s, border-color 0.15s, background 0.15s;
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
 	width           : 100%;
 
 

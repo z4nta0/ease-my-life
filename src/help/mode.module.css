@@ -122,7 +122,7 @@
 	line-height     : var( --ver-rhy-m01 );
 	pointer-events  : auto;
 	position        : fixed;
-	transition      : border-color .15s ease, color .15s ease, background .15s ease;
+	transition      : border-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-p01 ) * 1rem );
 
 

@@ -47,7 +47,7 @@
 	height          : calc( var( --ver-rhy-p01 ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );
-	transition      : color .12s, background .12s;
+	transition      : color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p01 ) * 1rem );
 
 

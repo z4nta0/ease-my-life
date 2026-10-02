@@ -23,7 +23,7 @@
 
 
 	align-items     : center;
-	animation       : legalBackdropIn .2s ease both;
+	animation       : legalBackdropIn var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
 	background      : oklch(0 0 0 / 0.42);
 	display         : flex;
 	inset           : 0;
@@ -37,7 +37,7 @@
 .legal-modal-backdrop.is-closing { /* What: Closing Legal Modal Backdrop. Why: The dim should fade away with the panel rather than vanish. How: This plays the fade-out while the modal's closing class is on. */
 
 
-	animation : legalBackdropOut .2s ease both;
+	animation : legalBackdropOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
 
 
 }
@@ -103,7 +103,7 @@
 .legal-modal { /* What: Legal Modal Panel. Why: The document needs a contained, readable panel whose body scrolls on its own. How: This sizes a rounded column panel to the screen and rises it into place. */
 
 
-	animation      : legalPanelIn .24s cubic-bezier(.2,.8,.3,1) both;
+	animation      : legalPanelIn var( --dur-ani-p02 ) var( --mot-dec-eas ) both;
 	background     : var(--bac-sur-col, var(--bac-pag-col));
 	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-lar );
@@ -122,7 +122,7 @@
 .legal-modal.is-closing { /* What: Closing Legal Modal Panel. Why: The panel should drop away rather than vanish. How: This plays the panel's exit while the modal's closing class is on. */
 
 
-	animation : legalPanelOut .18s ease both;
+	animation : legalPanelOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
 
 
 }

@@ -36,7 +36,7 @@
 	margin-bottom         : var( --spa-ver-m01 );
 	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
 	perspective           : 800px;
-	transition            : background .15s, opacity .2s, border-color .12s;
+	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 );
 	user-select           : none;
 
 
@@ -120,7 +120,7 @@
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
-	transition         : background .12s, border-color .12s, color .12s;
+	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width              : calc( var( --ver-rhy-p02 ) * 1rem );
 
 
@@ -196,7 +196,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 .today-card[data-card-done-active] .check svg { /* What: Done App Feature Checkmark. Why: The checkmark should spring in when the tutorial is resolved. How: This plays the shared spring animation on the glyph. */
 
 
-	animation : global(checkSpring) 360ms cubic-bezier(.22,1.4,.36,1) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkSpring) var( --dur-ani-p04 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -318,7 +318,7 @@ button.check { /* What: Clickable App Feature Check Button. Why: The check spot 
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );
 	justify-content : center;
-	transition      : background .12s, color .12s;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
 	width           : calc( var( --ver-rhy-p03 ) * 1rem );
 
 

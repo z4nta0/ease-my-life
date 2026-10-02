@@ -27,7 +27,7 @@
 .entry-editor { /* What: Entry Editor. Why: The editor opens as a recessed card of settings, except where its context strips or trims the card. How: This draws the card from custom properties its parent may set, falling back to the standalone card, and fades it in. */
 
 
-	animation     : global(np-row-in) .16s ease; /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--entry-editor-background, oklch(from var(--bac-sur-col) calc(l - 0.006) c h)); /* What: Card Background. Why: A Data or Pickers row strips the card's tint. How: Its parent sets this to none. */
 	border        : var(--entry-editor-border, var( --bor-wid-sma ) solid var(--bor-mai-col)); /* What: Card Border. Why: A Data or Pickers row strips the card's border. How: Its parent sets this to 0. */
 	border-radius : var(--entry-editor-border-radius, var( --rad-bor-med )); /* What: Card Radius. Why: A Data or Pickers row strips the card's rounding. How: Its parent sets this to 0. */
@@ -120,7 +120,7 @@
 	height          : calc( var( --ver-rhy-bas ) * 1rem );
 	justify-content : center;
 	line-height     : var( --ver-rhy-m01 );
-	transition      : border-color .2s ease, color .2s ease, background .2s ease;
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas );
 	width           : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -171,7 +171,7 @@
 .set-sub-fade { /* What: Fading Setting Text. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global(setSubFade) .6s ease; /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -299,7 +299,7 @@
 	border-radius : 999px;
 	height        : calc( var( --ver-rhy-p01 ) * 1rem );
 	position      : relative;
-	transition    : background .15s;
+	transition    : background var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-p03 ) * 1rem );
 
 
@@ -335,7 +335,7 @@
 	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
 	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform .15s;
+	transition    : transform var( --dur-tra-bas );
 	width         : calc( var( --ver-rhy-bas ) * 1rem );
 
 
@@ -375,7 +375,7 @@
 
 
 	align-items     : center;
-	animation       : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display         : flex;
 	gap             : var( --spa-hor-m02 );
@@ -429,7 +429,7 @@
 
 
 	--btn-danger-display : var(--entry-editor-delete-display); /* What: Delete Visibility. Why: A brand-new item is discarded with Cancel, so its Delete is redundant. How: A new-item row sets --entry-editor-delete-display to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
-	animation            : global(footSwapIn) .16s ease both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation            : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top           : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display              : flex;
 	gap                  : var( --spa-hor-m02 );
