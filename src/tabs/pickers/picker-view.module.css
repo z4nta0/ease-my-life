@@ -974,7 +974,7 @@
 
 	animation      : global(obTourFade) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : -2px;
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );
 
 
 }

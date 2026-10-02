@@ -100,7 +100,7 @@
 
 
 	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : -2px;
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );
 
 
 }

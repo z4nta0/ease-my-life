@@ -538,7 +538,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : 2px;
+	outline-offset : var( --bor-wid-lar );
 
 
 }
@@ -844,7 +844,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	background   : var(--acc-tin-col);
 	border-color : var(--acc-mai-col);
-	box-shadow   : 0 0 0 1px var(--acc-mai-col) inset;
+	box-shadow   : 0 0 0 var( --bor-wid-bas ) var(--acc-mai-col) inset;
 
 
 }

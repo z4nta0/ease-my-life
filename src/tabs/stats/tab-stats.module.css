@@ -916,7 +916,7 @@
 .bd-seg + .bd-seg { /* What: Following Breakdown Segment. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
 
 
-	box-shadow : -1px 0 0 var(--bac-sur-col);
+	box-shadow : calc( var( --bor-wid-bas ) * -1 ) 0 0 var(--bac-sur-col);
 
 
 }
@@ -1252,7 +1252,7 @@ button.heat-cell { /* What: Heat Cell Button. Why: Each day in the grid is tappa
 	cursor             : pointer;
 	margin             : 0;
 	outline            : var( --bor-wid-lar ) solid transparent;
-	outline-offset     : 2px;
+	outline-offset     : var( --bor-wid-lar );
 	padding            : 0;
 	transition         : outline-color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-sta-eas );
 	width              : 100%;

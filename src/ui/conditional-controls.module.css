@@ -138,7 +138,7 @@
 
 
 	border-color : var( --err-mai-col );
-	box-shadow   : 0 0 0 1px var( --err-mai-col ) inset;
+	box-shadow   : 0 0 0 var( --bor-wid-bas ) var( --err-mai-col ) inset;
 
 
 }
@@ -334,7 +334,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : -2px;
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );
 
 
 }

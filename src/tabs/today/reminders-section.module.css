@@ -833,16 +833,16 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .check:focus-visible { /* What: Focused Checkbox. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
 
 
-	box-shadow     : 0 0 0 3px var(--bac-pag-col);
+	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var(--bac-pag-col);
 	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : 3px;
+	outline-offset : calc( var( --ver-rhy-m05 ) * 1rem );
 
 
 }
 .today-card[data-card-done-active] .check:focus-visible { /* What: Focused Done Checkbox. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
 
 
-	box-shadow : 0 0 0 3px var(--bac-pag-col), inset 0 0 0 1.5px var(--bac-pag-col);
+	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var(--bac-pag-col), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var(--bac-pag-col);
 
 
 }
