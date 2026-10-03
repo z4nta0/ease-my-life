@@ -72,7 +72,7 @@ import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use
  *
  * @summary
  * Every entry below shares this exact shape, passed as SorSelCom's own
- * options prop from TabDatCom's own data-sort-bar; none of the 10
+ * options prop from TabDatCom's own sorBarDiv; none of the 10
  * entries repeat these same fields' own boilerplate comments (see the
  * "Repeated-shape object literals" comment exception in CLAUDE.md).
  * Each entry's own trailing comment instead just names which specific
@@ -91,7 +91,7 @@ import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use
  *
 */
 
-const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditionals/Reminders/picker-card list needs one sort entry per supported key. How: This is passed as SorSelCom's own options prop in TabDatCom's own data-sort-bar.
+const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditionals/Reminders/picker-card list needs one sort entry per supported key. How: This is passed as SorSelCom's own options prop in TabDatCom's own sorBarDiv.
 
 
 	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)'               }, // What: Name Ascending Option. Why: This is the section list's own default sort. How: This orders sections by name, A to Z.
@@ -275,7 +275,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const hetPicBoo = ediTouBoo && touBusObj.touSteNum === 1; // What: Highlight-Edit-Tour Picker Boolean. Why: Step 2 targets EVERY picker's own .cat section; a per-element fade (rather than the tour engine's default single-box pulse) is needed to show "any of these" rather than "this one group". How: This is true only during Step 1 (the step BEFORE the click it's preparing for).
 	const hetConBoo = ediTouBoo && touBusObj.touSteNum === 2; // What: Highlight-Edit-Tour Control Boolean. Why: Step 3 targets a single Controls header. How: This is true only during Step 2.
 	const hetIteBoo = ediTouBoo && touBusObj.touSteNum === 4; // What: Highlight-Edit-Tour Items Boolean. Why: Step 5 targets a single Items header. How: This is true only during Step 4.
-	const hetRowBoo = ediTouBoo && touBusObj.touSteNum === 5; // What: Highlight-Edit-Tour Row Boolean. Why: Step 6 targets each item row's own .rd-item wrapper, using per-side borders rather than a shared outline. How: This is true only during Step 5.
+	const hetRowBoo = ediTouBoo && touBusObj.touSteNum === 5; // What: Highlight-Edit-Tour Row Boolean. Why: Step 6 targets each item row's own lisIteDiv wrapper, using per-side borders rather than a shared outline. How: This is true only during Step 5.
 
 	// #endregion Tour Gating
 
@@ -1009,7 +1009,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	return (
 
 
-		<div className={ cssModObj.tabData }>{ /* What: Tab Div Element. Why: This is TabDatCom's own root element. How: This wraps the help overlay, header, filters, sort bar, and list below. */ }
+		<div className={ cssModObj.tabPagDiv }>{ /* What: Tab Page Div Element. Why: This is TabDatCom's own root element. How: This wraps the help overlay, header, filters, sort bar, and list below. */ }
 
 
 			<HelOveCom
@@ -1021,13 +1021,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-			<header className={ cssModObj.statH }>{ /* What: Header Element. Why: This tab's own kicker, brand link, and lead paragraphs all belong in one landmark. How: This wraps the kicker row and the lead/warning paragraphs below. */ }
+			<header className={ cssModObj.pagHeaHea }>{ /* What: Page Header Header Element. Why: This tab's own kicker, brand link, and lead paragraphs all belong in one landmark. How: This wraps the kicker row and the lead/warning paragraphs below. */ }
 
 
-				<div className={ cssModObj.kickerRow }>{ /* What: Kicker Row Div Element. Why: The kicker label and the help toggle belong on the same line. How: This wraps the kicker div and HelButCom below. */ }
+				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The kicker label and the help toggle belong on the same line. How: This wraps the kicker div and HelButCom below. */ }
 
 
-					<div className={ cssModObj.kicker }>Data</div>{ /* What: Kicker Div Element. Why: Every tab needs its own small kicker label above the title. How: This renders the literal text "Data". */ }
+					<div className={ cssModObj.pagKicDiv }>Data</div>{ /* What: Page Kicker Div Element. Why: Every tab needs its own small kicker label above the title. How: This renders the literal text "Data". */ }
 
 
 
@@ -1043,14 +1043,14 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 				<div
-					className={ cssModObj.statHLead }
+					className={ cssModObj.heaLeaDiv }
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Lead Div Element. Why: The brand link and the page title belong together at the top of the header. How: This wraps the brand button and the section-h div below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Lead Div Element. Why: The brand link and the page title belong together at the top of the header. How: This wraps the brand button and the heaTitDiv div below. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<button
-						className={ cssModObj.brandMark }
+						className={ cssModObj.braMarBut }
 
 						data-element-name-hook='braMarBut'
 
@@ -1063,11 +1063,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 						<svg
+							className={ cssModObj.braMarSvg }
+
 							fill='none'
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Logo Svg Element. Why: This draws the small square "Ease My Life" logo mark, matching the Today/Stats headers (currentColor to accent, grid lines to accent-soft) so every tab reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
+						>{ /* What: Brand Mark Svg Element. Why: This draws the small square "Ease My Life" logo mark, matching the Today/Stats headers (currentColor to accent, grid lines to accent-soft) so every tab reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -1158,10 +1160,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					</button>
 
 
-					<div className={ cssModObj.sectionH }>{ /* What: Section Header Div Element. Why: The page's own title needs its own wrapper. How: This wraps the h1 below. */ }
+					<div className={ cssModObj.heaTitDiv }>{ /* What: Header Title Div Element. Why: The page's own title needs its own wrapper. How: This wraps the h1 below. */ }
 
 
-						<h1 className={ cssModObj.sectionTitle }>The knobs and levers, that <span className={ cssModObj.statTitleAccent }>ease</span> your life.</h1>{ /* What: Section Title Element. Why: Every tab needs its own page title. How: This renders the literal title text, with "ease" set off in its own accent span. */ }
+						<h1 className={ cssModObj.pagTitHea }>The knobs and levers, that <span className={ cssModObj.titAccSpa }>ease</span> your life.</h1>{ /* What: Page Title Heading Element. Why: Every tab needs its own page title. How: This renders the literal title text, with "ease" set off in its own accent span. */ }
 
 
 					</div>
@@ -1171,30 +1173,30 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-				<p className={ cssModObj.sectionSub }>All your created items can be edited here, including conditionals, reminders, pickers and all of their items. You can use the <button className={ cssModObj.subTablink } type='button' onClick={ () => onNavTabFun && onNavTabFun( 'stats' ) }>Stats page</button> to view how they are performing and then adjust their numbers here to get them exactly where you want them.</p>{ /* What: Lead Paragraph Element. Why: The header needs a short explanation of what this tab is for, plus a shortcut to Stats. How: This renders the lead text with an inline link that switches to the Stats tab when onNavTabFun is available. */ }
+				<p className={ cssModObj.pagSubPar }>All your created items can be edited here, including conditionals, reminders, pickers and all of their items. You can use the <button className={ cssModObj.subLinBut } type='button' onClick={ () => onNavTabFun && onNavTabFun( 'stats' ) }>Stats page</button> to view how they are performing and then adjust their numbers here to get them exactly where you want them.</p>{ /* What: Lead Paragraph Element. Why: The header needs a short explanation of what this tab is for, plus a shortcut to Stats. How: This renders the lead text with an inline link that switches to the Stats tab when onNavTabFun is available. */ }
 
-				<p className={ cssModObj.sectionSub }><strong>WARNING:</strong> Manually changing any of these values will affect the Stats page's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats page's accuracy.</p>{ /* What: Warning Paragraph Element. Why: Manually editing these values has a real, disclosed side effect on Stats. How: This renders the literal warning text. */ }
+				<p className={ cssModObj.pagSubPar }><strong>WARNING:</strong> Manually changing any of these values will affect the Stats page's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats page's accuracy.</p>{ /* What: Warning Paragraph Element. Why: Manually editing these values has a real, disclosed side effect on Stats. How: This renders the literal warning text. */ }
 
 
 			</header>
 
 
 
-			<div className={ cssModObj.statFilters }>{ /* What: Filters Div Element. Why: The Group/Type/Conditionals/Show filter rows all belong in one wrapper. How: This conditionally renders each row below, per whether it has more than one real choice. */ }
+			<div className={ cssModObj.pagFilDiv }>{ /* What: Page Filters Div Element. Why: The Group/Type/Conditionals/Show filter rows all belong in one wrapper. How: This conditionally renders each row below, per whether it has more than one real choice. */ }
 
 
 				{ exiGroArr.length > 1 && ( // What: Group Row Check. Why: A single-group app has nothing to filter by group. How: This renders the Group row only while exiGroArr has 2 or more entries.
 
 
-					<div className={ cssModObj.statFilterRow }>{ /* What: Group Filter Row Div Element. Why: The Group label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
+					<div className={ cssModObj.filRowDiv }>{ /* What: Group Filter Row Div Element. Why: The Group label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
 
 
-						<span className={ cssModObj.statFilterLbl }>Group</span>{ /* What: Group Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Group". */ }
+						<span className={ cssModObj.filLabSpa }>Group</span>{ /* What: Group Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Group". */ }
 
 						<div
 							ref={ groRowRef }
 
-							className={ cssModObj.pickerGroups }
+							className={ cssModObj.filRaiDiv }
 
 							data-element-name-hook='groFilDiv'
 
@@ -1204,7 +1206,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<button
-								className={ cssModObj.pickerGroupPill }
+								className={ cssModObj.filPilBut }
 
 								data-element-name-hook='filPilBut'
 
@@ -1220,7 +1222,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								All
 
-								<span className={ cssModObj.pickerGroupCount }>{ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own live total. How: This counts every non-hidden picker. */ }
+								<span className={ cssModObj.filCouSpa }>{ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own live total. How: This counts every non-hidden picker. */ }
 
 
 							</button>
@@ -1231,7 +1233,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<button
 									key={ groCurStr }
 
-									className={ cssModObj.pickerGroupPill }
+									className={ cssModObj.filPilBut }
 
 									data-element-name-hook='filPilBut'
 
@@ -1247,7 +1249,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									{ groCurStr }{ /* What: Pill Name Expression. Why: Every group pill needs its own visible label. How: This renders groCurStr. */ }
 
-									<span className={ cssModObj.pickerGroupCount }>{ allPicArr.filter( ( picCurObj ) => picCurObj.group === groCurStr && !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: Every group pill needs its own live count. How: This counts every non-hidden picker whose own group matches groCurStr. */ }
+									<span className={ cssModObj.filCouSpa }>{ allPicArr.filter( ( picCurObj ) => picCurObj.group === groCurStr && !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: Every group pill needs its own live count. How: This counts every non-hidden picker whose own group matches groCurStr. */ }
 
 
 								</button>
@@ -1268,15 +1270,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				{ ( exiModArr.length > 1 || conIteArr.length > 0 ) && ( // What: Type Row Check. Why: A single-mode app with no conditionals has nothing meaningful to filter by type. How: This renders the Type row only while there's more than one mode or at least one conditional.
 
 
-					<div className={ cssModObj.statFilterRow }>{ /* What: Type Filter Row Div Element. Why: The Type label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
+					<div className={ cssModObj.filRowDiv }>{ /* What: Type Filter Row Div Element. Why: The Type label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
 
 
-						<span className={ cssModObj.statFilterLbl }>Type</span>{ /* What: Type Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Type". */ }
+						<span className={ cssModObj.filLabSpa }>Type</span>{ /* What: Type Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Type". */ }
 
 						<div
 							ref={ typRowRef }
 
-							className={ cssModObj.pickerGroups }
+							className={ cssModObj.filRaiDiv }
 
 							data-element-name-hook='typFilDiv'
 
@@ -1286,7 +1288,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<button
-								className={ cssModObj.pickerGroupPill }
+								className={ cssModObj.filPilBut }
 
 								data-element-name-hook='filPilBut'
 
@@ -1302,7 +1304,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								All
 
-								<span className={ cssModObj.pickerGroupCount }>{ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Type Count Span Element. Why: The All pill needs its own live total. How: This counts every non-hidden picker. */ }
+								<span className={ cssModObj.filCouSpa }>{ allPicArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Type Count Span Element. Why: The All pill needs its own live total. How: This counts every non-hidden picker. */ }
 
 
 							</button>
@@ -1371,7 +1373,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									<button
 										key={ filEntObj.keyStr }
 
-										className={ cssModObj.pickerGroupPill }
+										className={ cssModObj.filPilBut }
 
 										data-element-name-hook='filPilBut'
 
@@ -1387,7 +1389,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 										{ filEntObj.namStr }{ /* What: Pill Name Expression. Why: Every pill needs its own visible label. How: This renders filEntObj.namStr. */ }
 
-										<span className={ cssModObj.pickerGroupCount }>{ filEntObj.couNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many entries it holds. How: This renders filEntObj.couNum. */ }
+										<span className={ cssModObj.filCouSpa }>{ filEntObj.couNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many entries it holds. How: This renders filEntObj.couNum. */ }
 
 
 									</button>
@@ -1408,15 +1410,15 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				{ conIteArr.length > 0 && ( // What: Conditional Row Check. Why: A conditional-free app has nothing to filter by conditional. How: This renders the Conditionals row only while conIteArr has at least one entry.
 
 
-					<div className={ cssModObj.statFilterRow }>{ /* What: Conditional Filter Row Div Element. Why: The Conditionals label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
+					<div className={ cssModObj.filRowDiv }>{ /* What: Conditional Filter Row Div Element. Why: The Conditionals label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
 
 
-						<span className={ cssModObj.statFilterLbl }>Conditionals</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Conditionals". */ }
+						<span className={ cssModObj.filLabSpa }>Conditionals</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Conditionals". */ }
 
 						<div
 							ref={ conRowRef }
 
-							className={ cssModObj.pickerGroups }
+							className={ cssModObj.filRaiDiv }
 
 							data-element-name-hook='conFilDiv'
 
@@ -1426,7 +1428,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<button
-								className={ cssModObj.pickerGroupPill }
+								className={ cssModObj.filPilBut }
 
 								data-element-name-hook='filPilBut'
 
@@ -1442,7 +1444,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								All
 
-								<span className={ cssModObj.pickerGroupCount }>{ allPicArr.length }</span>{ /* What: Conditional Count Span Element. Why: The All pill needs its own live total. How: This is allPicArr's own total length. */ }
+								<span className={ cssModObj.filCouSpa }>{ allPicArr.length }</span>{ /* What: Conditional Count Span Element. Why: The All pill needs its own live total. How: This is allPicArr's own total length. */ }
 
 
 							</button>
@@ -1453,7 +1455,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<button
 									key={ conCurObj.id }
 
-									className={ cssModObj.pickerGroupPill }
+									className={ cssModObj.filPilBut }
 
 									data-element-name-hook='filPilBut'
 
@@ -1477,7 +1479,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									{ conCurObj.name }{ /* What: Pill Name Expression. Why: Every conditional pill needs its own visible label. How: This renders conCurObj.name. */ }
 
-									<span className={ cssModObj.pickerGroupCount }>{ conCouFun( conCurObj.id ) }</span>{ /* What: Conditional Count Span Element. Why: Every conditional pill needs its own live usage count. How: This calls conCouFun for conCurObj.id. */ }
+									<span className={ cssModObj.filCouSpa }>{ conCouFun( conCurObj.id ) }</span>{ /* What: Conditional Count Span Element. Why: Every conditional pill needs its own live usage count. How: This calls conCouFun for conCurObj.id. */ }
 
 
 								</button>
@@ -1495,16 +1497,16 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				) }
 
 
-				<div className={ cssModObj.statFilterRow }>{ /* What: Show Filter Row Div Element. Why: The Show label and its own box rail belong together. How: This wraps the lbl span and the box rail below. */ }
+				<div className={ cssModObj.filRowDiv }>{ /* What: Show Filter Row Div Element. Why: The Show label and its own box rail belong together. How: This wraps the lbl span and the box rail below. */ }
 
 
-					<span className={ cssModObj.statFilterLbl }>Show</span>{ /* What: Show Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Show". */ }
+					<span className={ cssModObj.filLabSpa }>Show</span>{ /* What: Show Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Show". */ }
 
 					<div
 						key={ filGroStr + '|' + filTypStr }
 						ref={ scoRowRef }
 
-						className={ cssModObj.pickerTabs }
+						className={ cssModObj.scoTabDiv }
 
 						data-element-name-hook='scoTabDiv'
 					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shoEntArr's own remaining entries to one box each. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
@@ -1514,7 +1516,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<button
-								className={ cssModObj.pickerTab }
+								className={ cssModObj.scoTabBut }
 
 								style={{ animationDelay : '0ms' }}
 
@@ -1528,9 +1530,9 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							>{ /* What: All Box Button Element. Why: Selecting this box shows every visible section at once. How: This calls selScoFun('all') on click, disabled during the matching tour step. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
-								<span className={ cssModObj.pickerTabName }>All</span>{ /* What: Box Name Span Element. Why: Every box needs its own visible name. How: This renders the literal text "All". */ }
+								<span className={ cssModObj.scoNamSpa }>All</span>{ /* What: Box Name Span Element. Why: Every box needs its own visible name. How: This renders the literal text "All". */ }
 
-								<span className={ cssModObj.pickerTabMode }>Everything</span>{ /* What: Box Mode Span Element. Why: Every box also shows its own kind. How: This renders the literal text "Everything". */ }
+								<span className={ cssModObj.scoModSpa }>Everything</span>{ /* What: Box Mode Span Element. Why: Every box also shows its own kind. How: This renders the literal text "Everything". */ }
 
 
 							</button>
@@ -1587,7 +1589,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								<button
 									key={ filEntObj.keyStr }
 
-									className={ cssModObj.pickerTab }
+									className={ cssModObj.scoTabBut }
 
 									style={{ animationDelay : ( filIndNum + 1 ) * 40 + 'ms' }}
 
@@ -1602,9 +1604,9 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								>{ /* What: Picker Tab Button Element. Why: Each tab narrows the list to one picker. How: This marks itself selected when filEntObj.selBoo and runs filEntObj.cliFun. Its data-element-name-hook is read by the Stats page tour, help mode's Stats catalog, and help mode's Data catalog. */ }
 
 
-									<span className={ cssModObj.pickerTabName }>{ filEntObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own visible picker name. How: This renders filEntObj.namStr. */ }
+									<span className={ cssModObj.scoNamSpa }>{ filEntObj.namStr }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own visible picker name. How: This renders filEntObj.namStr. */ }
 
-									<span className={ cssModObj.pickerTabMode }>{ filEntObj.labStr }</span>{ /* What: Tab Mode Span Element. Why: Every tab also names its picker's mode. How: This renders filEntObj.labStr. */ }
+									<span className={ cssModObj.scoModSpa }>{ filEntObj.labStr }</span>{ /* What: Tab Mode Span Element. Why: Every tab also names its picker's mode. How: This renders filEntObj.labStr. */ }
 
 
 								</button>
@@ -1624,7 +1626,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 			<div
-				className={ cssModObj.dataSortBar }
+				className={ cssModObj.sorBarDiv }
 
 				data-element-name-hook='sorBarDiv'
 			>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SorSelCom below. Its data-element-name-hook is read by help mode's Data catalog. */ }
@@ -1647,7 +1649,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			<div
 				key={ filGroStr + '::' + curScoStr + '::' + filConStr }
 
-				className={ cssModObj.dataList }
+				className={ cssModObj.datLisDiv }
 
 				data-element-name-hook='datLisDiv'
 			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
@@ -1656,12 +1658,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				{ shoEmpBoo && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
 
 
-					<div className={ cssModObj.dataEmpty }>{ /* What: Empty Div Element. Why: The empty-state title and its own explanation belong together. How: This wraps both paragraphs below. */ }
+					<div className={ cssModObj.datEmpDiv }>{ /* What: Data Empty Div Element. Why: The empty-state title and its own explanation belong together. How: This wraps both paragraphs below. */ }
 
 
-						<p className={ cssModObj.dataEmptyTitle }>Nothing matches these filters</p>{ /* What: Empty Title Paragraph Element. Why: The empty state needs its own short headline. How: This renders the literal text. */ }
+						<p className={ cssModObj.empTitPar }>Nothing matches these filters</p>{ /* What: Empty Title Paragraph Element. Why: The empty state needs its own short headline. How: This renders the literal text. */ }
 
-						<p className={ cssModObj.dataEmptySub }>No items match the current Group, Conditionals, and Show selections. Try widening a filter to “All”.</p>{ /* What: Empty Sub Paragraph Element. Why: The empty state also needs a suggested next action. How: This renders the literal text. */ }
+						<p className={ cssModObj.empSubPar }>No items match the current Group, Conditionals, and Show selections. Try widening a filter to “All”.</p>{ /* What: Empty Sub Paragraph Element. Why: The empty state also needs a suggested next action. How: This renders the literal text. */ }
 
 
 					</div>
@@ -1813,7 +1815,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							key={ picCurObj.id }
 							ref={ isaDraBoo ? draCarRef : undefined }
 
-							className={` ${ cssModObj.cat }   ${ rmvPicStr === picCurObj.id ? cssModObj.catRemoving : '' }   ${ hetPicBoo ? cssModObj.obTourPulse : '' } `}
+							className={` ${ cssModObj.datCatSec }   ${ rmvPicStr === picCurObj.id ? cssModObj.datCatSecRemoving : '' }   ${ hetPicBoo ? cssModObj.datCatSecTour : '' } `}
 
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
@@ -1843,7 +1845,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 							<header
-								className={ cssModObj.catH }
+								className={ cssModObj.catHeaHea }
 
 								data-element-name-hook='catHeaHea'
 
@@ -1865,7 +1867,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<button
-									className={ cssModObj.catHL }
+									className={ cssModObj.catHeaBut }
 
 									data-element-name-hook='catHeaBut'
 
@@ -1879,7 +1881,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<span
-										className={ cssModObj.chev }
+										className={ cssModObj.chvDisSpa }
 
 										data-chevron-open-active={ secOpeBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while secOpeBoo is true.
 									>{ /* What: Chevron Span Element. Why: The card's own open/closed state needs a visible directional indicator. How: This rotates via data-chevron-open-active and renders the shared chevron icon. */ }
@@ -1893,12 +1895,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 									</span>
 
-									<span className={ cssModObj.catHMain }>{ /* What: Header Main Span Element. Why: The picker's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
+									<span className={ cssModObj.catMaiSpa }>{ /* What: Category Main Span Element. Why: The picker's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
 
 
-										<h2 className={ cssModObj.catName }>{ picCurObj.name }</h2>{ /* What: Category Name Element. Why: Every card needs its own visible name. How: This renders picCurObj's own name. */ }
+										<h2 className={ cssModObj.catNamHea }>{ picCurObj.name }</h2>{ /* What: Category Name Heading Element. Why: Every card needs its own visible name. How: This renders picCurObj's own name. */ }
 
-										<span className={ cssModObj.catCount }>{ /* What: Category Count Span Element. Why: The eligible/total count needs 3 separate elements (see tab-data.module.css) rather than one text run. How: This wraps the eligible count, the "of" separator, and the total count below. */ }
+										<span className={ cssModObj.catCouSpa }>{ /* What: Category Count Span Element. Why: The eligible/total count needs 3 separate elements (see tab-data.module.css) rather than one text run. How: This wraps the eligible count, the "of" separator, and the total count below. */ }
 
 
 											<span>{ eliCouNum }</span>{ /* What: Eligible Count Span Element. Why: The count leads with how many items are currently eligible. How: This renders eliCouNum. */ }
@@ -1916,14 +1918,14 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								</button>
 
-								<span className={ cssModObj.catHRight }>{ /* What: Header Right Span Element. Why: The type/group tags and the active toggle need one grouped slot so a narrow viewport can stack them together in place, freeing width for the name. How: This wraps the tags span and the vac-toggle button below. */ }
+								<span className={ cssModObj.catRigSpa }>{ /* What: Category Right Span Element. Why: The type/group tags and the active toggle need one grouped slot so a narrow viewport can stack them together in place, freeing width for the name. How: This wraps the tags span and the vacTogBut button below. */ }
 
 
-									<span className={ cssModObj.catHTags }>{ /* What: Header Tags Span Element. Why: The type and group pills need their own fixed-width columns so they line up across every card regardless of text length. How: This wraps 2 InfTipCom-wrapped labels below. */ }
+									<span className={ cssModObj.catTagSpa }>{ /* What: Category Tags Span Element. Why: The type and group pills need their own fixed-width columns so they line up across every card regardless of text length. How: This wraps 2 InfTipCom-wrapped labels below. */ }
 
 
 										<InfTipCom
-											className={ cssModObj.catModeLabel }
+											className={ cssModObj.catModSpa }
 
 											data-element-name-hook='catModSpa'
 
@@ -1934,7 +1936,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 										<InfTipCom
-											className={ cssModObj.catGroup }
+											className={ cssModObj.catGroSpa }
 
 											labTexStr={ picCurObj.group }
 											trnOnlBoo
@@ -1944,7 +1946,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									</span>
 
 									<button
-										className={ cssModObj.vacToggle }
+										className={ cssModObj.vacTogBut }
 
 										aria-label={ `${ allVacBoo ? 'Activate' : 'Deactivate' } all items in ${ picCurObj.name }` }
 										aria-pressed={ !!allVacBoo }
@@ -1970,7 +1972,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										<span
 											key={ allVacBoo ? 'inactive' : 'active' }
 
-											className={ cssModObj.setSubFade }
+											className={ cssModObj.vacLabSpa }
 										>{ allVacBoo ? 'Inactive' : 'Active' }</span>{ /* What: Toggle Label Span Element. Why: The toggle also needs its own live text, cross-faded via its own key change. How: This renders "Inactive" while allVacBoo, "Active" otherwise. */ }
 
 
@@ -1991,14 +1993,14 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 								<div
-									className={ cssModObj.catBody }
+									className={ cssModObj.catBodDiv }
 
 									data-element-name-hook='catBodDiv'
 								>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 									<button
-										className={` ${ cssModObj.rdCtl }   ${ hetConBoo ? cssModObj.obTourPulse : '' } `}
+										className={` ${ cssModObj.catTogBut }   ${ hetConBoo ? cssModObj.catTogButTour : '' } `}
 
 										data-element-name-hook='catTogBut'
 
@@ -2011,11 +2013,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-										<span className={ cssModObj.rdCtlL }>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker belong together. How: This wraps both spans below. */ }
+										<span className={ cssModObj.togLabSpa }>{ /* What: Controls Toggle Label Span Element. Why: The chevron and the "Controls" kicker belong together. How: This wraps both spans below. */ }
 
 
 											<span
-												className={ cssModObj.chev }
+												className={ cssModObj.chvDisSpa }
 
 												data-chevron-open-active={ !conColBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while conColBoo is false.
 											>{ /* What: Chevron Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via data-chevron-open-active. */ }
@@ -2029,12 +2031,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											</span>
 
-											<span className={ cssModObj.kicker }>Controls</span>{ /* What: Controls Kicker Span Element. Why: The disclosure needs its own visible label. How: This renders the literal text "Controls". */ }
+											<span className={ cssModObj.togKicSpa }>Controls</span>{ /* What: Controls Kicker Span Element. Why: The disclosure needs its own visible label. How: This renders the literal text "Controls". */ }
 
 
 										</span>
 
-										{ conColBoo && <span className={ cssModObj.rdCtlSum }>{ Object.keys( SED_NAM_OBJ.MOD_DEF_OBJ ).length } options</span> }{ /* What: Controls Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while conColBoo is true. */ }
+										{ conColBoo && <span className={ cssModObj.togSumSpa }>{ Object.keys( SED_NAM_OBJ.MOD_DEF_OBJ ).length } options</span> }{ /* What: Controls Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while conColBoo is true. */ }
 
 
 									</button>
@@ -2079,7 +2081,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 									<button
-										className={` ${ cssModObj.rdCtl }   ${ hetIteBoo ? cssModObj.obTourPulse : '' } `}
+										className={` ${ cssModObj.catTogBut }   ${ hetIteBoo ? cssModObj.catTogButTour : '' } `}
 
 										data-element-name-hook='catTogBut'
 
@@ -2092,11 +2094,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									>{ /* What: Items Toggle Button Element. Why: The item list needs its own nested disclosure toggle, defaulting open except for a fresh draft. How: This toggles draIteBoo for a draft, otherwise the persisted ':items' entry, disabled during the guarded tour step. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-										<span className={ cssModObj.rdCtlL }>{ /* What: Controls Left Span Element. Why: The chevron and the label sit together on the toggle's left side. How: This wraps the chevron span and the kicker. */ }
+										<span className={ cssModObj.togLabSpa }>{ /* What: Controls Toggle Label Span Element. Why: The chevron and the label sit together on the toggle's left side. How: This wraps the chevron span and the kicker. */ }
 
 
 											<span
-												className={ cssModObj.chev }
+												className={ cssModObj.chvDisSpa }
 
 												data-chevron-open-active={ !iteColBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while iteColBoo is false.
 											>{ /* What: Chevron Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via data-chevron-open-active. */ }
@@ -2110,12 +2112,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 											</span>
 
-											<span className={ cssModObj.kicker }>Items</span>{ /* What: Items Kicker Span Element. Why: The disclosure needs its own visible label. How: This renders the literal text "Items". */ }
+											<span className={ cssModObj.togKicSpa }>Items</span>{ /* What: Items Kicker Span Element. Why: The disclosure needs its own visible label. How: This renders the literal text "Items". */ }
 
 
 										</span>
 
-										{ iteColBoo && <span className={ cssModObj.rdCtlSum }>{ picIteArr.length } items</span> }{ /* What: Items Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while iteColBoo is true. */ }
+										{ iteColBoo && <span className={ cssModObj.togSumSpa }>{ picIteArr.length } items</span> }{ /* What: Items Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while iteColBoo is true. */ }
 
 
 									</button>
@@ -2132,7 +2134,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 												<InfTipCom
-													className={ cssModObj.rdAdd }
+													className={ cssModObj.rowAddSpa }
 
 													data-element-name-hook='rowAddSpa'
 													data-tour-disabled-active // What: Tour Disabled Active Attribute. Why: This add control only renders while the tutorials hold it disabled, so it always reads dimmed. How: This sets the presence-only attribute unconditionally, which InfTipCom forwards to its trigger.
@@ -2155,7 +2157,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 												<button
-													className={ cssModObj.rdAdd }
+													className={ cssModObj.rowAddBut }
 
 													data-element-name-hook='rowAddBut'
 
@@ -2222,7 +2224,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 														key={ iteCurObj.id }
 														ref={ iteOpeBoo ? opeRowRef : undefined }
 
-														className={` ${ cssModObj.rdItem }   ${ insIteStr === iteCurObj.id ? cssModObj.rdItemInsert : '' }   ${ hetRowBoo ? cssModObj.obTourPulse : '' } `}
+														className={` ${ cssModObj.lisIteDiv }   ${ insIteStr === iteCurObj.id ? cssModObj.lisIteDivInsert : '' }   ${ hetRowBoo ? cssModObj.lisIteDivTour : '' } `}
 
 														data-element-name-hook='lisIteDiv'
 														data-row-edit-active={ iteOpeBoo || undefined } // What: Row Edit Active Attribute. Why: An open row's header stops reacting like a button and its chevron turns the accent color. How: This sets the presence-only attribute while iteOpeBoo is true.
@@ -2236,13 +2238,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 															<div
-																className={ cssModObj.rdRow }
+																className={ cssModObj.lisRowDiv }
 
 																data-element-name-hook='lisRowDiv'
-															>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+															>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rowMaiSpa span and the chevron button below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-																<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
+																<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
 
 
 																	<input
@@ -2262,7 +2264,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																		} }
 
-																		className={ cssModObj.rdNameInput }
+																		className={ cssModObj.rowNamInp }
 
 																		data-element-name-hook='rowNamInp'
 
@@ -2291,7 +2293,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 																</span>
 
 																<button
-																	className={` ${ cssModObj.rdChev }   ${ cssModObj.chev } `}
+																	className={` ${ cssModObj.rowChvBut }   ${ cssModObj.chvDisSpa } `}
 
 																	data-chevron-open-active // What: Chevron Open Active Attribute. Why: This chevron only renders on an open row, so it always points down. How: This sets the presence-only attribute unconditionally.
 
@@ -2319,7 +2321,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 															<button
-																className={ cssModObj.rdRow }
+																className={ cssModObj.lisRowBut }
 
 																data-element-name-hook='lisRowBut'
 
@@ -2331,22 +2333,22 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles opeIteStr between null and iteCurObj.id. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-																<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name and its own meta line belong together. How: This wraps the name and sched spans below. */ }
+																<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name and its own meta line belong together. How: This wraps the name and sched spans below. */ }
 
 
 																	<span
-																		className={ cssModObj.rdName }
+																		className={ cssModObj.rowNamSpa }
 
 																		data-element-name-hook='rowNamSpa'
 																	>{ iteCurObj.name }</span>{ /* What: Name Span Element. Why: Every item row needs its own visible name. How: This renders iteCurObj.name. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
-																	<span className={ cssModObj.rdSched }>{ rowSumStr }</span>{ /* What: Sched Span Element. Why: The closed row's meta line summarizes the item's state. How: This renders rowSumStr. */ }
+																	<span className={ cssModObj.rowSumSpa }>{ rowSumStr }</span>{ /* What: Row Summary Span Element. Why: The closed row's meta line summarizes the item's state. How: This renders rowSumStr. */ }
 
 
 																</span>
 
 																<span
-																	className={` ${ cssModObj.rdChev }   ${ cssModObj.chev } `}
+																	className={` ${ cssModObj.rowChvSpa }   ${ cssModObj.chvDisSpa } `}
 
 																	aria-hidden='true'
 																>{ /* What: Chevron Span Element. Why: The open row shows a decorative chevron at its end. How: This is hidden from screen readers and wraps the chev icon. */ }
@@ -2371,7 +2373,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 														<ColDisCom open={ iteOpeBoo }>{ /* What: Collapse Disclosure Component. Why: This row's own editor only needs to exist while it's actually open. How: This opens only while iteOpeBoo is true. */ }
 
 
-															<div className={ cssModObj.rdEdit }>{ /* What: Edit Div Element. Why: IteEdiCom needs its own wrapper matching every other editor body in this file. How: This wraps IteEdiCom below. */ }
+															<div className={ cssModObj.iteEdiDiv }>{ /* What: Item Editor Div Element. Why: IteEdiCom needs its own wrapper matching every other editor body in this file. How: This wraps IteEdiCom below. */ }
 
 
 																<IteEdiCom
@@ -2482,7 +2484,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 					<button
-						className={ cssModObj.catCreateBtn }
+						className={ cssModObj.datCreBut }
 
 						data-element-name-hook='datCreBut'
 
