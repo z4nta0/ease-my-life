@@ -674,10 +674,10 @@
 .setRowDiv { /* What: Settings Row Div. Why: Each setting puts its text on the left and its control on the right, divided from the next row. How: This spreads them across a centered row under a hairline, and hands the segmented control and buttons their no-shrink, no-wrap sizing. */
 
 
-	--btn-flex        : 0 0 auto; /* What: Button Flex. Why: A row's button should keep its size. How: ButBasCom reads this for its own flex. */
-	--btn-white-space : nowrap;   /* What: Button White Space. Why: A row's button label should stay on one line. How: ButBasCom reads this for its own white-space. */
-	--seg-flex        : 0 0 auto; /* What: Segmented Flex. Why: The placement control should keep its size. How: SegConCom reads this for its own flex. */
-	--seg-flex-wrap   : nowrap;   /* What: Segmented Flex Wrap. Why: The placement control's pills should never wrap. How: SegConCom reads this for its own flex-wrap. */
+	--but-bas-fle   : 0 0 auto; /* What: Button Base Flex. Why: A row's button should keep its size. How: ButBasCom reads this for its own flex. */
+	--but-bas-whi   : nowrap;   /* What: Button Base White Space. Why: A row's button label should stay on one line. How: ButBasCom reads this for its own white-space. */
+	--seg-flex      : 0 0 auto; /* What: Segmented Flex. Why: The placement control should keep its size. How: SegConCom reads this for its own flex. */
+	--seg-flex-wrap : nowrap;   /* What: Segmented Flex Wrap. Why: The placement control's pills should never wrap. How: SegConCom reads this for its own flex-wrap. */
 
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

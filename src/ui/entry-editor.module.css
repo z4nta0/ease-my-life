@@ -428,7 +428,7 @@
 .rd-edit-foot { /* What: Editor Footer. Why: Delete sits apart on the left while Cancel and Save pair up on the right, below a divider that doubles against the last row's, except in a new-item row, which has nothing to delete. How: This spreads the row out, slides it in each time it mounts, and reads its alignment and Delete visibility from the parent. */
 
 
-	--btn-danger-display : var(--entry-editor-delete-display); /* What: Delete Visibility. Why: A brand-new item is discarded with Cancel, so its Delete is redundant. How: A new-item row sets --entry-editor-delete-display to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
+	--but-dan-dis : var(--entry-editor-delete-display); /* What: Delete Visibility. Why: A brand-new item is discarded with Cancel, so its Delete is redundant. How: A new-item row sets --entry-editor-delete-display to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
 	animation            : global(footerSwapFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top           : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	display              : flex;

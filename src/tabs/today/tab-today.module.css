@@ -18,7 +18,7 @@
  * Mode button off data-edit-mode-active, a blocked Generate card off
  * data-card-needed-active, and a disabled-looking tip button off the
  * aria-disabled its info tip sets. The footer's Edit Mode button hides
- * through --btn-display, which ButBasCom reads.
+ * through --but-bas-dis, which ButBasCom reads.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -2119,10 +2119,10 @@
 
 /* #region todFooDiv */
 
-.todFooDiv { /* What: Today Footer Div. Why: The regenerate controls and the generated time sit centered under the list, with steady button widths as counts change. How: This stacks them centered in muted text and sets --btn-font-variant-numeric, which ButBasCom reads. */
+.todFooDiv { /* What: Today Footer Div. Why: The regenerate controls and the generated time sit centered under the list, with steady button widths as counts change. How: This stacks them centered in muted text and sets --but-bas-fig, which ButBasCom reads. */
 
 
-	--btn-font-variant-numeric : tabular-nums; /* What: Button Figures. Why: A button label with a count shouldn't change width. How: ButBasCom reads this for its font-variant-numeric. */
+	--but-bas-fig : tabular-nums; /* What: Button Base Figures. Why: A button label with a count shouldn't change width. How: ButBasCom reads this for its font-variant-numeric. */
 
 	align-items    : center;
 	color          : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -2187,20 +2187,20 @@
 
 }
 
-.fooEdiBut { /* What: Footer Edit Button. Why: On a wide app Edit Mode lives in the rail, so the footer copy stays hidden. How: This sets --btn-display, which ButBasCom reads, to none. */
+.fooEdiBut { /* What: Footer Edit Button. Why: On a wide app Edit Mode lives in the rail, so the footer copy stays hidden. How: This sets --but-bas-dis, which ButBasCom reads, to none. */
 
 
-	--btn-display : none;
+	--but-bas-dis : none;
 
 
 }
 @container app ( max-width : 760px ) { /* What: Narrow Today Layout. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.fooEdiBut { /* What: Shown Footer Edit Mode Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --btn-display back to inline-flex. */
+	.fooEdiBut { /* What: Shown Footer Edit Mode Button. Why: The narrow pill row has no room for Edit Mode, so the footer takes over. How: This sets --but-bas-dis back to inline-flex. */
 
 
-		--btn-display : inline-flex;
+		--but-bas-dis : inline-flex;
 
 
 	}

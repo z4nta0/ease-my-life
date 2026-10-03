@@ -82,7 +82,7 @@ const ButBasCom = React.forwardRef( function ButBasCom ( { children, className =
 		<button
 			ref={ forRefObj }
 
-			className={` ${ cssModObj.btn }   ${ kinValStr === 'primary' ? cssModObj.btnPrimary : '' }   ${ kinValStr === 'ghost' ? cssModObj.btnGhost : '' }   ${ kinValStr === 'danger' ? cssModObj.btnDanger : '' }   ${ kinValStr === 'secondary' ? cssModObj.btnSecondary : '' }   ${ sizValStr === 'sm' ? cssModObj.btnSm : '' }   ${ className } `}
+			className={` ${ cssModObj.butBasBut }   ${ kinValStr === 'primary' ? cssModObj.butBasButPrimary : '' }   ${ kinValStr === 'ghost' ? cssModObj.butBasButGhost : '' }   ${ kinValStr === 'danger' ? cssModObj.butBasButDanger : '' }   ${ kinValStr === 'secondary' ? cssModObj.butBasButSecondary : '' }   ${ sizValStr === 'sm' ? cssModObj.butBasButSm : '' }   ${ className } `}
 
 			{ ...resProObj }
 		>{ /* What: Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards the ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }

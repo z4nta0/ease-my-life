@@ -26,8 +26,8 @@
 .setRowDiv { /* What: Settings Row Div. Why: "Having problems?" should read like every other Settings row, its text on the left and its button on the right. How: This spreads the two apart in a bordered flex row and keeps the button from shrinking or wrapping. */
 
 
-	--btn-flex        : 0 0 auto; /* What: Button Flex. Why: The row's button should keep its full size beside long text. How: The shared button reads this and stops shrinking. */
-	--btn-white-space : nowrap;   /* What: Button Wrapping. Why: The button's label shouldn't break onto two lines in the row. How: The shared button reads this and keeps its label on one line. */
+	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: The row's button should keep its full size beside long text. How: The shared button reads this and stops shrinking. */
+	--but-bas-whi : nowrap;   /* What: Button Base White Space. Why: The button's label shouldn't break onto two lines in the row. How: The shared button reads this and keeps its label on one line. */
 
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

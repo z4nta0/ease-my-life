@@ -3228,7 +3228,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Cancel / Add Help Item. Why: This is the on-demand help tip for the Cancel / Add element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .btn, not the .rem-inline-foot row itself, that row is right-aligned/space-between and wider than its own buttons, which left a big empty gap included in the highlight.
+	{ // What: Cancel / Add Help Item. Why: This is the on-demand help tip for the Cancel / Add element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // The buttons themselves, not the ediFooDiv row, since that row is right-aligned/space-between and wider than its own buttons, which left a big empty gap included in the highlight.
 
 
 		ideStr : 'addReminderFoot',
