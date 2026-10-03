@@ -16,30 +16,30 @@
 
 
 
-/* #region help-nav-item */
+/* #region navIteDiv */
 
-.help-nav-item + .help-nav-item { /* What: Following Help Nav Item. Why: Each button's block in a tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
+.navIteDiv + .navIteDiv { /* What: Following Nav Item Div. Why: Each button's block in a tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
 
 
-	margin-top : var( --spa-ver-m01 );
+	margin-top : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-/* #region help-nav-label */
+/* #region navLabDiv */
 
-.help-nav-label { /* What: Help Nav Label. Why: A button's icon and bold name read together as the block's heading. How: This lines them up in a centered row above the block's description. */
+.navLabDiv { /* What: Nav Label Div. Why: A button's icon and bold name read together as the block's heading. How: This lines them up in a centered row above the block's description. */
 
 
 	align-items : center;
 	display     : flex;
-	gap         : var( --spa-hor-m03 );
-	margin      : 0 0 var( --spa-ver-m06 );
+	gap         : var( --spa-hor-m03 );     /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	margin      : 0 0 var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
 
 
 }
 
-.help-nav-label svg { /* What: Help Nav Label Icon. Why: The icon should keep its size however long the name beside it gets. How: This stops the icon from shrinking in the row. */
+.navLabDiv svg { /* What: Nav Label Div Icon. Why: The icon should keep its size however long the name beside it gets. How: This stops the icon from shrinking in the row. */
 
 
 	flex : 0 0 auto;
@@ -47,15 +47,15 @@
 
 }
 
-/* #endregion help-nav-label */
+/* #endregion navLabDiv */
 
-/* #endregion help-nav-item */
+/* #endregion navIteDiv */
 
 
 
-/* #region help-inline-icon */
+/* #region inlIcoSpa */
 
-.help-inline-icon { /* What: Help Inline Icon. Why: An icon dropped into a tip's prose should sit neatly among the words around it. How: This wraps the icon in an inline box that centers it within its own height, then centers that box on the surrounding text's line. */
+.inlIcoSpa { /* What: Inline Icon Span. Why: An icon dropped into a tip's prose should sit neatly among the words around it. How: This wraps the icon in an inline box that centers it within its own height, then centers that box on the surrounding text's line. */
 
 
 	align-items    : center;
@@ -65,14 +65,14 @@
 
 }
 
-.help-inline-icon svg { /* What: Help Inline Icon Glyph. Why: Even centered on the line, the glyph reads slightly low against the text beside it. How: This nudges the icon up inside its centered box, where a negative extra small 3 vertical margin lifts it a couple of pixels. */
+.inlIcoSpa svg { /* What: Inline Icon Span Glyph. Why: Even centered on the line, the glyph reads slightly low against the text beside it. How: This nudges the icon up inside its centered box, where a negative m04 vertical spacing step lifts it a few pixels. */
 
 
-	margin-top : calc( var( --spa-ver-m04 ) * -1 );
+	margin-top : calc( var( --spa-ver-m04 ) * -1 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
 
 
 }
 
-/* #endregion help-inline-icon */
+/* #endregion inlIcoSpa */
 
 
