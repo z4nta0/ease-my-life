@@ -1873,7 +1873,7 @@ comes up and recorded here, per "### Undefined cases: stop and ask".
 Decided 2026-09-28. Everything that can have a reduced-motion variant gets
 one, whether the motion comes from CSS or from JS.
 - **CSS**: every `animation` or `transition`, color-only transitions
-  included, is paired with a `@media ( prefers-reduced-motion: reduce )`
+  included, is paired with a `@media ( prefers-reduced-motion : reduce )`
   variant (placed per the `@media` bullet under "### CSS modules and JS
   hooks") that turns it off with `animation : none` or `transition :
   none`. The exception is one that JS waits on (an
@@ -2055,11 +2055,14 @@ still passes.
   the design-system pass.
 - **Parentheses in queries** (decided 2026-10-02) get the same inner
   spaces: every condition in a `@media` or `@container` query is written
-  `( feature: value )`, e.g. `@media ( prefers-reduced-motion: reduce )`
-  and `@container app ( max-width: 640px )`, and each condition in a
-  combined query gets its own, `( min-width: 720px ) and ( max-width:
-  760px )`. The colon inside a condition keeps its single space after it
-  only, as browsers and the spec write it.
+  `( feature : value )`, e.g. `@media ( prefers-reduced-motion : reduce )`
+  and `@container app ( max-width : 640px )`, and each condition in a
+  combined query gets its own, `( min-width : 720px ) and ( max-width :
+  760px )`. The colon takes a space on both sides, the same as a
+  declaration's. A query passed to JS as a string (`window.matchMedia(
+  '(prefers-reduced-motion: reduce)' )`) is a string value, not CSS, and
+  stays as written. CSS modules' `global( name )` wrapper follows the same
+  spacing as any other CSS function.
 - **`@media` blocks**: a `@media` override is a variant of the element it
   styles, so it sits directly under that element's base rule with its
   other variants. The block gets its own What/Why/How comment after its
@@ -2073,7 +2076,7 @@ still passes.
 - **`@keyframes`**: a keyframe only one module uses moves into that
   module (Vite scopes its name and rewrites the `animation` reference);
   one several modules share stays global. A module that plays a global
-  keyframe writes its name as `global(overlayOpenFadeIn)`: CSS modules rename
+  keyframe writes its name as `global( overlayOpenFadeIn )`: CSS modules rename
   every bare keyframe name in a module to a scoped one, so a plain
   `overlayOpenFadeIn` would point at a keyframe that doesn't exist and silently not animate. It sits directly after the
   variants of the element that uses it, with one What/Why/How comment
