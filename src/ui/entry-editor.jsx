@@ -382,13 +382,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 		<div
-			className={ cssModObj.entryEditor }
+			className={ cssModObj.entEdiDiv }
 
 			data-element-name-hook='entEdiDiv'
 		>{ /* What: Entry Editor Div Element. Why: This is EntEdiCom's own root wrapper. How: This renders the mode-specific rows above a confirm-gated footer. Its data-element-name-hook is read by help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-			<div className={ cssModObj.pieRows }>{ /* What: Pie Rows Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
+			<div className={ cssModObj.ediLisDiv }>{ /* What: Pie Rows Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
 
 
 				{ isaEasBoo ? ( // What: Ease Rows Branch. Why: Ease-up/ease-down show a cadence range instead of a weight stepper.
@@ -419,7 +419,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 						<div
-							className={ cssModObj.pieRow }
+							className={ cssModObj.ediRowDiv }
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -427,13 +427,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
+							<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
 
 
-								<span className={ cssModObj.pieLblRow }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
+								<span className={ cssModObj.namRowSpa }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
 
 
-									<span className={ cssModObj.pieLbl }>{ sooLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLabStr directly. */ }
+									<span className={ cssModObj.ediNamSpa }>{ sooLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLabStr directly. */ }
 
 
 
@@ -441,7 +441,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 										<InfTipCom
-											className={ cssModObj.pieHelp }
+											className={ cssModObj.helIcoSpa }
 
 											labTexStr={ EUR_WAR_STR }
 										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
@@ -455,13 +455,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 								<span
 									key={ `${ isaDowBoo }-${ sooDayNum }-${ uniWorFun( sooDayNum ) }` }
 
-									className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
+									className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 								>{ sooSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders sooSubEle, keyed by direction/value/unit-word together. */ }
 
 
 							</div>
 
-							<div className={ cssModObj.pieCtl }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
+							<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
 
 
 								<NumSteCom
@@ -476,7 +476,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 								<span
-									className={ cssModObj.npEaseUnit }
+									className={ cssModObj.easUniSpa }
 
 									data-element-name-hook='easUniSpa'
 								>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
@@ -489,7 +489,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 						<div
-							className={ cssModObj.pieRow }
+							className={ cssModObj.ediRowDiv }
 
 							data-ease-down-active={ isaDowBoo || undefined } // What: Ease Down Active Attribute. Why: Help mode finds this row as an ease-down row without reading its classes. How: This is present only while isaDowBoo is true, since undefined drops the attribute entirely.
 							data-ease-up-active={ !isaDowBoo || undefined } // What: Ease Up Active Attribute. Why: Help mode finds this row as an ease-up row without reading its classes. How: This is present only while isaDowBoo is false, since undefined drops the attribute entirely.
@@ -497,13 +497,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-							<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
+							<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
 
 
-								<span className={ cssModObj.pieLblRow }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
+								<span className={ cssModObj.namRowSpa }>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
 
 
-									<span className={ cssModObj.pieLbl }>{ latLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLabStr directly. */ }
+									<span className={ cssModObj.ediNamSpa }>{ latLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLabStr directly. */ }
 
 
 
@@ -511,7 +511,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 										<InfTipCom
-											className={ cssModObj.pieHelp }
+											className={ cssModObj.helIcoSpa }
 
 											labTexStr={ EUR_WAR_STR }
 										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
@@ -525,13 +525,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 								<span
 									key={ `${ isaDowBoo }-${ latDayNum }-${ uniWorFun( latDayNum ) }` }
 
-									className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
+									className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 								>{ latSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders latSubEle, keyed by direction/value/unit-word together. */ }
 
 
 							</div>
 
-							<div className={ cssModObj.pieCtl }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
+							<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
 
 
 								<NumSteCom
@@ -546,7 +546,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 								<span
-									className={ cssModObj.npEaseUnit }
+									className={ cssModObj.easUniSpa }
 
 									data-element-name-hook='easUniSpa'
 								>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. Its data-element-name-hook is read by the help items' own unit-word lookups. */ }
@@ -562,22 +562,22 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 							<div
-								className={ cssModObj.pieRow }
+								className={ cssModObj.ediRowDiv }
 
 								data-ease-up-active // What: Ease Up Active Attribute. Why: Help mode finds this Fill row as an ease-up row without reading its classes. How: This is always present, since Fill only ever renders for an ease-up picker.
 								data-element-name-hook='ediRowDiv'
 							>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-								<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+								<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-									<span className={ cssModObj.pieLbl }>Fill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Fill". */ }
+									<span className={ cssModObj.ediNamSpa }>Fill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Fill". */ }
 
 									<span
 										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
 
-										className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
+										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong> at { Math.round( iteDatObj.value ?? 0 ) }</> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
 
 
@@ -603,22 +603,22 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 							<div
-								className={ cssModObj.pieRow }
+								className={ cssModObj.ediRowDiv }
 
 								data-ease-down-active // What: Ease Down Active Attribute. Why: Help mode finds this Refill row as an ease-down row without reading its classes. How: This is always present, since Refill only ever renders for an ease-down picker.
 								data-element-name-hook='ediRowDiv'
 							>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FilButCom. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-								<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+								<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-									<span className={ cssModObj.pieLbl }>Refill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Refill". */ }
+									<span className={ cssModObj.ediNamSpa }>Refill</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Refill". */ }
 
 									<span
 										key={ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? 'full' : 'part' }
 
-										className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
+										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 									>{ ( iteDatObj.value ?? 0 ) >= THR_VAL_NUM ? <>item is <strong>fully charged</strong></> : <>item at <strong>{ Math.round( iteDatObj.value ?? 0 ) } charge</strong></> }</span>{ /* What: Subtitle Span Element. Why: The live charge subtitle needs its own fade-replace key so crossing the threshold visibly refreshes it. How: This renders one of two phrasings depending on whether item.value has reached THR_VAL_NUM, keyed by which one is showing. */ }
 
 
@@ -649,34 +649,36 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 					<div
-						className={ cssModObj.pieRow }
+						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
 					>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight-stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+						<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-							<span className={ cssModObj.pieLbl }>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
+							<span className={ cssModObj.ediNamSpa }>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
 
 							<span
 								key={ iteDatObj.weight }
 
-								className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
+								className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 							>{ iteDatObj.weight === 1 ? <><strong>baseline</strong> pick chance</> : <><strong>{ iteDatObj.weight }&times;</strong> more likely than w1</> }</span>{ /* What: Subtitle Span Element. Why: The live weight subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.weight is the baseline 1, keyed by weight. */ }
 
 
 						</div>
 
 						<div
-							className={ cssModObj.weightStepper }
+							className={ cssModObj.weiSteDiv }
 
 							data-element-name-hook='weiSteDiv'
 						>{ /* What: Weight Stepper Div Element. Why: The minus/value/plus trio reads as one compact control. How: This wraps both plus/minus buttons around the current weight display. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<button
+								className={ cssModObj.weiSteBut }
+
 								disabled={ iteDatObj.weight <= 1 }
 
 								aria-label='Less weight'
@@ -684,9 +686,11 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.max( 1, iteDatObj.weight - 1 ) ) }
 							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps item.weight down to a minimum of 1 via actStoObj.setWeiFun. */ }
 
-							<span className={ cssModObj.weightVal }>w{ iteDatObj.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
+							<span className={ cssModObj.weiValSpa }>w{ iteDatObj.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
 
 							<button
+								className={ cssModObj.weiSteBut }
+
 								disabled={ iteDatObj.weight >= 9 }
 
 								aria-label='More weight'
@@ -705,23 +709,23 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 					<div
-						className={ cssModObj.pieRow }
+						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
 					>{ /* What: No Weight Row Div Element. Why: Random mode still needs a Weight row for layout parity, but with no editable control. How: This renders a fixed explanatory subtitle and a plain "No weight" note instead of any stepper. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+						<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and its fixed explanatory subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-							<span className={ cssModObj.pieLbl }>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
+							<span className={ cssModObj.ediNamSpa }>Weight</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Weight". */ }
 
-							<span className={ cssModObj.pieSub }>truly random items have equal chance</span>{ /* What: Subtitle Span Element. Why: The user still deserves an explanation for why no weight control appears. How: This renders a fixed explanatory sentence. */ }
+							<span className={ cssModObj.ediSubSpa }>truly random items have equal chance</span>{ /* What: Subtitle Span Element. Why: The user still deserves an explanation for why no weight control appears. How: This renders a fixed explanatory sentence. */ }
 
 
 						</div>
 
-						<span className={ cssModObj.pieNote }>No weight</span>{ /* What: Note Span Element. Why: This row still needs SOME visible content where a control would otherwise sit. How: This renders the literal phrase "No weight". */ }
+						<span className={ cssModObj.weiNonSpa }>No weight</span>{ /* What: Note Span Element. Why: This row still needs SOME visible content where a control would otherwise sit. How: This renders the literal phrase "No weight". */ }
 
 
 					</div>
@@ -735,27 +739,27 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 					<div
-						className={ cssModObj.pieRow }
+						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
 					>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-						<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+						<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
-							<span className={ cssModObj.pieLbl }>Boost</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Boost". */ }
+							<span className={ cssModObj.ediNamSpa }>Boost</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders the literal word "Boost". */ }
 
 							<span
 								key={ ( iteDatObj.value || 0 ) > 0 ? 'boost' : 'none' }
 
-								className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
+								className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 							>{ ( iteDatObj.value || 0 ) > 0 ? <><strong>+{ iteDatObj.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Subtitle Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
 
 
 						</div>
 
-						<div className={ cssModObj.pieCtl }>{ /* What: Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BooResCom below. */ }
+						<div className={ cssModObj.ediConDiv }>{ /* What: Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BooResCom below. */ }
 
 
 							<BooResCom
@@ -775,32 +779,32 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 				<div
-					className={ cssModObj.pieRow }
+					className={ cssModObj.ediRowDiv }
 
 					data-element-name-hook='ediRowDiv'
 				>{ /* What: Active Row Div Element. Why: Every mode, regardless of the branches above, still needs the same Active/Inactive toggle row. How: This renders the label/subtitle plus a plain switch button. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-					<div className={ cssModObj.pieRowlabel }>{ /* What: Row Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
+					<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live active-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
 
 
 						<span
 							key={ `lbl-${ !!iteDatObj.vacation }` }
 
-							className={` ${ cssModObj.pieLbl }   ${ cssModObj.setSubFade } `}
+							className={` ${ cssModObj.ediNamSpa }   ${ cssModObj.ediNamSpaFade } `}
 						>{ iteDatObj.vacation ? 'Inactive' : 'Active' }</span>{ /* What: Label Span Element. Why: The row's own heading text itself flips with the item's own current state. How: This renders "Inactive" or "Active" depending on item.vacation, keyed so the flip fades. */ }
 
 						<span
 							key={ `sub-${ !!iteDatObj.vacation }` }
 
-							className={` ${ cssModObj.pieSub }   ${ cssModObj.setSubFade } `}
+							className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 						>{ iteDatObj.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</> }</span>{ /* What: Subtitle Span Element. Why: The live eligibility subtitle needs its own fade-replace key so a toggle visibly refreshes it. How: This renders one of two phrasings depending on item.vacation, keyed the same way as the label above. */ }
 
 
 					</div>
 
 					<button
-						className={ cssModObj.switch }
+						className={ cssModObj.togSwiBut }
 
 						data-element-name-hook='togSwiBut'
 
@@ -808,7 +812,13 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						aria-pressed={ !iteDatObj.vacation }
 
 						onClick={ () => actStoObj.togVacFun( iteDatObj.id, 'item' ) }
-					><i /></button>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actStoObj.togVacFun, scoped to 'item'. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actStoObj.togVacFun, scoped to 'item'. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+
+
+						<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed. */ }
+
+
+					</button>
 
 
 				</div>
@@ -824,15 +834,15 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 				<div
 					key='confirm'
 
-					className={ cssModObj.remFootConfirm }
+					className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
 					data-element-name-hook='ediFooDiv'
 				>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-					<span className={ cssModObj.remDelMsg }>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
+					<span className={ cssModObj.delMesSpa }>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
 
-					<div className={ cssModObj.remDelActions }>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
+					<div className={ cssModObj.delActDiv }>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
 
 
 						<ButBasCom
@@ -866,17 +876,17 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 				<div
 					key='foot'
 
-					className={ cssModObj.rdEditFoot }
+					className={ cssModObj.ediFooDiv }
 
 					data-element-name-hook='ediFooDiv'
-				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab's new-item row hides the Delete button entirely by setting --entry-editor-delete-display, which this footer passes to ButBasCom's danger variant, and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab's new-item row hides the Delete button entirely by setting --ent-del-dis, which this footer passes to ButBasCom's danger variant, and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.
 
 
 						<InfTipCom
-							className={ cssModObj.rdDelDisabledTip }
+							className={ cssModObj.delTipSpa }
 
 							labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
 						>{ /* What: Info Tip Component. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text. */ }
@@ -913,7 +923,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 
-					<div className={ cssModObj.remFootRight }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
+					<div className={ cssModObj.fooRigDiv }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
 						<ButBasCom

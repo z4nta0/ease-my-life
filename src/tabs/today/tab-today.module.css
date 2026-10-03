@@ -1821,11 +1821,11 @@
 
 }
 
-.entEdiDiv { /* What: Entry Editor Div. Why: An item editor opened under its card sits inset without a divider above its rows. How: This sets the --entry-editor-* properties EntEdiCom reads. */
+.entEdiDiv { /* What: Entry Editor Div. Why: An item editor opened under its card sits inset without a divider above its rows. How: This sets the --ent-* properties EntEdiCom reads. */
 
 
-	--entry-editor-padding         : 0 var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */ /* What: Editor Padding. Why: The editor lines up with the card above it. How: EntEdiCom reads this for its own padding. */
-	--entry-editor-rows-border-top : 0;                                           /* What: Editor Rows Divider. Why: The card above already divides the editor. How: EntEdiCom reads this for its rows' top border. */
+	--ent-edi-pad : 0 var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */ /* What: Editor Padding. Why: The editor lines up with the card above it. How: EntEdiCom reads this for its own padding. */
+	--ent-lis-bor : 0;                                           /* What: Editor Rows Divider. Why: The card above already divides the editor. How: EntEdiCom reads this for its rows' top border. */
 
 
 }

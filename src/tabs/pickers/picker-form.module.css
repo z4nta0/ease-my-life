@@ -17,7 +17,7 @@
  * data-pill-select-active, a switch off its own aria-checked, and a blocked
  * Delete tip off its own aria-disabled. The pool row, confirm, and add-item
  * animations are this file's own module classes, and the add-item rows set
- * the --entry-editor-* properties the item editor reads.
+ * the --ent-* properties the item editor reads.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1491,13 +1491,13 @@
 
 /* #region lisIteDiv */
 
-.lisIteDiv { /* What: List Item Div. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --entry-editor-* properties the editor reads. */
+.lisIteDiv { /* What: List Item Div. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --ent-* properties the editor reads. */
 
 
-	--entry-editor-delete-display  : none;
-	--entry-editor-foot-justify    : flex-end;
-	--entry-editor-rows-border-top : 0;
-	--entry-editor-rows-margin-top : 0;
+	--ent-del-dis : none;
+	--ent-foo-jus : flex-end;
+	--ent-lis-bor : 0;
+	--ent-lis-mar : 0;
 
 	animation     : global( newItemOpenFadeIn ) var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global newItemOpenFadeIn Keyframes. Why: The newItemOpenFadeIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var( --bac-sur-col );                                                       /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -1628,14 +1628,14 @@
 
 
 
-.iteEdiDiv { /* What: Item Edit Div. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --entry-editor-* properties that strip the editor's chrome. */
+.iteEdiDiv { /* What: Item Edit Div. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --ent-* properties that strip the editor's chrome. */
 
 
-	--entry-editor-background    : none;
-	--entry-editor-border        : 0;
-	--entry-editor-border-radius : 0;
-	--entry-editor-margin        : 0;
-	--entry-editor-padding       : 0;
+	--ent-edi-bac : none;
+	--ent-edi-bor : 0;
+	--ent-edi-mar : 0;
+	--ent-edi-pad : 0;
+	--ent-edi-rad : 0;
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	padding    : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */
