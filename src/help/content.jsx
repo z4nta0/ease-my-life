@@ -2006,7 +2006,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Holidays
 
-	// padYcoNum:4, .holiday-add has a real but modest 14px margin-top from .holiday-list above it, and default 8+8 pad exceeds that by 2px.
+	// padYcoNum:4, holAddDiv has a real but modest margin-top of about 14.6px from holLisUno above it, and default 8+8 pad exceeds that by about 1.4px.
 	{ // What: Edit Observed Holidays Help Item. Why: This is the on-demand help tip for the Edit Observed Holidays element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
