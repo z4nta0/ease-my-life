@@ -1868,6 +1868,10 @@ comes up and recorded here, per "### Undefined cases: stop and ask".
   is font based" under "### CSS modules and JS hooks".
 - **Breakpoints are `px` values** (decided 2026-10-01): see "Breakpoints
   are a short list of round numbers" under "### Custom property naming".
+- **A 3D `perspective` is a length too** (decided 2026-10-03): even though
+  it only shapes 3D foreshortening, it moves to its nearest vertical rhythm
+  step times `1rem` like any other length (the Today card's 800px became
+  `calc( var( --ver-rhy-p14 ) * 1rem )`, about 747px).
 
 ### Reduced motion
 Decided 2026-09-28. Everything that can have a reduced-motion variant gets
