@@ -194,7 +194,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
 		ideStr    : 'conditionalsManager',
-		padYcoNum : 0, // padYcoNum:0, .cat-h has no border/gap of its own below it, but .cat-body (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The 20px flex gap above .cnd-manager itself (from .tab--data) easily absorbs losing the default pad on that side too.
+		padYcoNum : 0, // padYcoNum:0, .catHeaHea has no border/gap of its own below it, but .catBodDiv (wrapping the Add button and every row) sits directly against it with only a hairline border, same zero-gap stacking as the rest of this card. The 20px flex gap above .cnd-manager itself (from .tab--data) easily absorbs losing the default pad on that side too.
 		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook~="catHeaHea"]',
 		titStr    : 'Conditionals'
 
@@ -208,7 +208,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		ideStr    : 'conditionalRow',
 		labStr    : '[data-element-name-hook~="rowNamSpa"], [data-element-name-hook~="rowNamInp"]',
 		mulBoo    : true,                                      // mulBoo is true because every conditional gets its own badge, not one for the whole list, since a user could be looking at any of them.
-		padYcoNum : 0,                                         // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), so the default 8px pad bled a highlight box into both neighboring rows above and below it.
+		padYcoNum : 0,                                         // padYcoNum:0, .lisIteDiv rows stack with zero gap (touching, separated only by a hairline border), so the default 8px pad bled a highlight box into both neighboring rows above and below it.
 		selStr    : '[data-element-name-hook~="conCatSec"] [data-element-name-hook~="lisIteDiv"] > :is([data-element-name-hook~="lisRowBut"], [data-element-name-hook~="lisRowDiv"])',
 		titStr    : ( tarRecObj ) => `${ tarRecObj?.labStr || 'This' } Conditional` // titStr is a function because each row's own heading should read as "{its own name} Conditional" rather than one generic title shared by every conditional, falling back to "This Conditional" while labStr hasn't resolved a live name yet.
 
@@ -220,14 +220,14 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This creates a new conditional, letting you gate a picker behind a rule of your choosing so it only runs on days that rule allows.</>,
 		ideStr    : 'dataCondAdd',
-		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first conditional row below it.
+		padYcoNum : 0, // padYcoNum:0, .rowAddBut has the same zero-gap stacking as .lisIteDiv (a hairline border, no margin), touching both the header above it and the first conditional row below it.
 		selStr    : '[data-element-name-hook~="conCatSec"] :is([data-element-name-hook~="rowAddBut"], [data-element-name-hook~="rowAddSpa"])',
 		titStr    : 'Create New Conditional'
 
 
 	},
 
-	{ // What: Conditional Name Help Item. Why: This is the on-demand help tip for the Conditional Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // hidNamBoo is set on CodConCom here, so the name field lives on the ROW itself (same .rd-name-input shape as a picker item's own row), not inside the shared controls component.
+	{ // What: Conditional Name Help Item. Why: This is the on-demand help tip for the Conditional Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // hidNamBoo is set on CodConCom here, so the name field lives on the ROW itself (same .rowNamInp shape as a picker item's own row), not inside the shared controls component.
 
 
 		bodEle    : <>This is the name field for this conditional, you can rename it here.</>,
@@ -370,7 +370,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .rd-edit--cnd scopes this to ConditionalEditor's own footer, its .rd-ctl-group--foot wrapper class is shared with PickerControls' footer below, which lives in a differently-rooted tree (.rd-edit--cnd is unique to this one). Delete is only rendered when !isNew (see tab-data.jsx's ConditionalEditor), so :has(.btn--danger) splits this from dataCondFootNew below rather than always mentioning Delete.
+	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .conEdiDiv scopes this to ConditionalEditor's own footer, its .conFooDiv wrapper class is shared with PickerControls' footer below, which lives in a differently-rooted tree (.conEdiDiv is unique to this one). Delete is only rendered when !isNew (see tab-data.jsx's ConditionalEditor), so :has(.btn--danger) splits this from dataCondFootNew below rather than always mentioning Delete.
 
 
 		ideStr : 'dataCondFoot',
@@ -436,14 +436,14 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
 		ideStr    : 'remindersManager',
-		padYcoNum : 0, // padYcoNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager.
+		padYcoNum : 0, // padYcoNum:0, same .catHeaHea/.catBodDiv zero-gap stacking as conditionalsManager.
 		selStr    : '[data-element-name-hook~="remCatSec"] [data-element-name-hook~="catHeaHea"]',
 		titStr    : 'Reminders'
 
 
 	},
 
-	// The Controls/Items disclosures share the .rd-ctl class (see the matching pair on each picker below), so :nth-of-type splits them, Controls always renders first in .cat-body, Items second. // padYcoNum:0, .rd-ctl touches its neighbor with only a hairline border, same zero-gap stacking as everywhere else on this page.
+	// The Controls/Items disclosures share the .catTogBut class (see the matching pair on each picker below), so :nth-of-type splits them, Controls always renders first in .catBodDiv, Items second. // padYcoNum:0, .catTogBut touches its neighbor with only a hairline border, same zero-gap stacking as everywhere else on this page.
 	{ // What: Reminder Controls Help Item. Why: This is the on-demand help tip for the Reminder Controls element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -461,7 +461,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
 		ideStr    : 'remControlsMatrix',
-		padYcoNum : 0, // padYcoNum:0, .rd-matrix sits flush against the Controls header above and the Items header below (no .rd-ctl-body padding wrapper here, unlike PickerControls), so the default pad bled 8px into both.
+		padYcoNum : 0, // padYcoNum:0, .remMatDiv sits flush against the Controls header above and the Items header below (no .ediBodDiv padding wrapper here, unlike PickerControls), so the default pad bled 8px into both.
 		selStr    : '[data-element-name-hook~="remMatDiv"]',
 		titStr    : 'Reminders Settings'
 
@@ -511,14 +511,14 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
 		ideStr    : 'remAddButton',
-		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item (a hairline border, no margin), touching both the header above it and the first reminder row below it.
+		padYcoNum : 0, // padYcoNum:0, .rowAddBut has the same zero-gap stacking as .lisIteDiv (a hairline border, no margin), touching both the header above it and the first reminder row below it.
 		selStr    : '[data-element-name-hook~="remCatSec"] :is([data-element-name-hook~="rowAddBut"], [data-element-name-hook~="rowAddSpa"])',
 		titStr    : 'Create New Reminder'
 
 
 	},
 
-	// mulBoo is true because every reminder gets its own badge, not one for the whole list. Split by type (rather than by name, like conditionalRow/pickerRow) via the row's own .rd-ico.is-once marker, set per user request instead of the name-based labStr pattern. // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/pickerRow.
+	// mulBoo is true because every reminder gets its own badge, not one for the whole list. Split by type (rather than by name, like conditionalRow/pickerRow) via the row's own .rowIcoSpa[data-reminder-once-active] marker, set per user request instead of the name-based labStr pattern. // padYcoNum:0, .lisIteDiv rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/pickerRow.
 	{ // What: One-Time Reminder Item Help Item. Why: This is the on-demand help tip for the One-Time Reminder Item element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -561,7 +561,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr    : 'dataReminderRepeat',
-		padYcoNum : 0, // padYcoNum:0, unlike Today's card-based editor, this tab's .rd-edit wrapper overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot in ui/entry-editor.module.css), so .rem-editor touches the footer row with zero gap.
+		padYcoNum : 0, // padYcoNum:0, unlike Today's card-based editor, this tab's .iteEdiDiv wrapper overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot in ui/entry-editor.module.css), so .rem-editor touches the footer row with zero gap.
 		scrBoo    : true, // scrBoo is true here too, same reasoning as Today's addReminderRepeat.
 		selStr    : '[data-element-name-hook~="inlEdiDiv"]:not([data-element-name-hook~="remAddDiv"] *) [data-element-name-hook~="schEdiDiv"]',
 		titStr    : 'Reminder Schedule',
@@ -651,22 +651,22 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Pickers Manager
 
-	// Each picker gets its own highlight, plus each of its own settings controls individually (PickerControls) and each of its items individually (reusing the shared item-editor entries below). Scoped via the direct .data-list > .cat > .cat-h chain since .cat-h is also reused by the Conditionals/Reminders managers' own outer headers (which render outside .data-list entirely).
+	// Each picker gets its own highlight, plus each of its own settings controls individually (PickerControls) and each of its items individually (reusing the shared item-editor entries below). Scoped via the direct .datLisDiv > .datCatSec > .catHeaHea chain since .catHeaHea is also reused by the Conditionals/Reminders managers' own outer headers (which render outside .datLisDiv entirely).
 	{ // What: Picker Row Help Item. Why: This is the on-demand help tip for the Picker Row element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
 		bodEle    : <>This is one of your pickers. Tap it to view and edit its settings and items.</>,
 		ideStr    : 'pickerRow',
-		labStr    : '[data-element-name-hook~="catModSpa"]',                               // labStr reads the visible .cat-mode-label pill (tab-data.jsx) in the header's cat-h-tags cluster.
+		labStr    : '[data-element-name-hook~="catModSpa"]',                               // labStr reads the visible .catModSpa pill (tab-data.jsx) in the header's catTagSpa cluster.
 		mulBoo    : true,                                            // mulBoo is true because every picker gets its own badge.
-		padYcoNum : 0,                                               // padYcoNum:0, same .cat-h/.cat-body zero-gap stacking as conditionalsManager; matters once a picker is expanded and .cat-body renders beneath it.
+		padYcoNum : 0,                                               // padYcoNum:0, same .catHeaHea/.catBodDiv zero-gap stacking as conditionalsManager; matters once a picker is expanded and .catBodDiv renders beneath it.
 		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"] > [data-element-name-hook~="catHeaHea"]',
 		titStr    : ( tarRecObj ) => tarRecObj?.labStr ? `${ tarRecObj.labStr } Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
 
 
 	},
 
-	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .rd-ctl class and :nth-of-type split as the Reminders manager's own pair above. .cat-body is a descendant, not a direct child, of .cat, it's wrapped in its own <ColDisCom> div (unlike .cat-h, which isn't). // padYcoNum:0, .rd-ctl touches its neighbor with only a hairline border.
+	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .catTogBut class and :nth-of-type split as the Reminders manager's own pair above. .catBodDiv is a descendant, not a direct child, of .datCatSec, it's wrapped in its own <ColDisCom> div (unlike .catHeaHea, which isn't). // padYcoNum:0, .catTogBut touches its neighbor with only a hairline border.
 	{ // What: Picker Controls Help Item. Why: This is the on-demand help tip for the Picker Controls element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -693,7 +693,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// padYcoNum:0, .rd-basics-row has no margin, just its own padding + a border-top, so consecutive rows (this one and Group below) touch with zero gap.
+	// padYcoNum:0, .basRowDiv has no margin, just its own padding + a border-top, so consecutive rows (this one and Group below) touch with zero gap.
 	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -718,19 +718,19 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PickerControls' own "How it picks" group, ConditionalEditor has its own separate .rd-mode-radio inside .cnd-controls, which doesn't live under .rd-ctl-group--picks.
+	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PickerControls' own "How it picks" group, ConditionalEditor has its own separate .rd-mode-radio inside .cnd-controls, which doesn't live under .ctlGroFie--picks.
 
 
 		bodEle    : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
 		ideStr    : 'dataPickerType',
-		padYcoNum : 0, // padYcoNum:0, .rd-ctl-group--picks (this group's own wrapper) touches "When it runs" below with zero gap.
+		padYcoNum : 0, // padYcoNum:0, .ctlGroFie--picks (this group's own wrapper) touches "When it runs" below with zero gap.
 		selStr    : '[data-element-name-hook~="picCtlFie"] [data-element-name-hook~="modRadDiv"]',
 		titStr    : 'Picker Type'
 
 
 	},
 
-	// padYcoNum:0, .sched-line rows stack with zero gap (same pattern as .rd-basics-row above), touching Daily Generator Toggle below.
+	// padYcoNum:0, .schLinDiv rows stack with zero gap (same pattern as .basRowDiv above), touching Daily Generator Toggle below.
 	{ // What: Picker Conditional Help Item. Why: This is the on-demand help tip for the Picker Conditional element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -760,7 +760,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
 		ideStr    : 'dataPickerDailyToggle',
-		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Cadence below.
+		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Cadence below.
 		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label*="daily generator"])',
 		titStr    : 'Daily Generator Toggle'
 
@@ -771,7 +771,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr    : 'dataPickerCadence',
-		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection below.
+		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Day Selection below.
 		selStr    : '[data-element-name-hook~="schLinDiv"]:has(select[aria-label="Cadence"])',
 		titStr    : 'Picker Cadence',
 
@@ -803,7 +803,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off.</>,
 		ideStr    : 'dataPickerDays',
-		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Holidays Toggle below.
+		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Holidays Toggle below.
 		selStr    : '[data-element-name-hook~="schLinDiv"]:has([data-element-name-hook~="dowChiDiv"])',
 		titStr    : 'Picker Day Selection'
 
@@ -815,7 +815,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
 		ideStr    : 'dataPickerSkipHolidays',
-		padYcoNum : 0, // padYcoNum:0, same .sched-line zero-gap stacking, touching Picker Day Selection above.
+		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Day Selection above.
 		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label="Skip on holidays"])',
 		titStr    : 'Picker Holidays Toggle'
 
@@ -827,7 +827,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
 		ideStr    : 'dataPickerAvoidDuplicates',
-		padYcoNum : 0, // padYcoNum:0, .rd-ctl-group--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
+		padYcoNum : 0, // padYcoNum:0, .ctlGroDiv--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
 		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label="Avoid duplicate items"])',
 		titStr    : 'Picker Duplicate Items Toggle'
 
@@ -904,19 +904,19 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Item Rows / Sorting
 
-	{ // What: Create New Picker Item Help Item. Why: This is the on-demand help tip for the Create New Picker Item element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to .data-list so this doesn't also match the Conditionals/Reminders managers' own "Add" buttons, which share the plain .rd-add class but render outside .data-list entirely.
+	{ // What: Create New Picker Item Help Item. Why: This is the on-demand help tip for the Create New Picker Item element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to .datLisDiv so this doesn't also match the Conditionals/Reminders managers' own "Add" buttons, which share the plain .rowAddBut class but render outside .datLisDiv entirely.
 
 
 		bodEle    : <>This adds a new item to this picker's pool.</>,
 		ideStr    : 'dataAddItem',
-		padYcoNum : 0, // padYcoNum:0, .rd-add has the same zero-gap stacking as .rd-item, touching the first item row below it.
+		padYcoNum : 0, // padYcoNum:0, .rowAddBut has the same zero-gap stacking as .lisIteDiv, touching the first item row below it.
 		selStr    : '[data-element-name-hook~="datLisDiv"] :is([data-element-name-hook~="rowAddBut"], [data-element-name-hook~="rowAddSpa"])',
 		titStr    : 'Create New Picker Item'
 
 
 	},
 
-	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SorSelCom markup (ui.jsx) inside their own .cat-body, so the selectors below key off each section's own distinguishing class/attribute instead: .cnd-manager (Conditionals), .cat--reminders (Reminders), and a picker section's own data-picker-id (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
+	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SorSelCom markup (ui.jsx) inside their own .catBodDiv, so the selectors below key off each section's own distinguishing class/attribute instead: .cnd-manager (Conditionals), .cat--reminders (Reminders), and a picker section's own data-picker-id (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
 	{ // What: Conditional Items Sort Help Item. Why: This is the on-demand help tip for the Conditional Items Sort element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -959,7 +959,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		bodEle    : <>This is one of this picker's items. Tap it to view and edit its settings.</>,
 		ideStr    : 'dataItemRow',
 		mulBoo    : true, // mulBoo is true because every item in every expanded picker gets its own badge.
-		padYcoNum : 0,    // padYcoNum:0, .rd-item rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRow.
+		padYcoNum : 0,    // padYcoNum:0, .lisIteDiv rows stack with zero gap (touching, separated only by a hairline border), same as conditionalRow/reminderRow.
 		selStr    : '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="lisIteDiv"] > :is([data-element-name-hook~="lisRowBut"], [data-element-name-hook~="lisRowDiv"])',
 		titStr    : 'Picker Item'
 
@@ -972,7 +972,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Editing A Picker Item
 
-	// EntEdiCom, defined in tab-today.jsx but reused here, see .entry-editor's own doc comment there. Which of these actually renders depends on the OWNING PICKER's mode, so most items below only ever show up for some modes: Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic Weighted), Boost (Dynamic Weighted only). Active and the footer always render regardless of mode. // .rd-name-input is also used by the Conditionals section's own name field (same .rd-item wrapper shape), :has(.entry-editor) picks out only a .rd-item that's actually an ITEM editor, since .entry-editor is unique to EntEdiCom and never rendered for a conditional.
+	// EntEdiCom, defined in tab-today.jsx but reused here, see .entry-editor's own doc comment there. Which of these actually renders depends on the OWNING PICKER's mode, so most items below only ever show up for some modes: Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic Weighted), Boost (Dynamic Weighted only). Active and the footer always render regardless of mode. // .rowNamInp is also used by the Conditionals section's own name field (same .lisIteDiv wrapper shape), :has(.entry-editor) picks out only a .lisIteDiv that's actually an ITEM editor, since .entry-editor is unique to EntEdiCom and never rendered for a conditional.
 	{ // What: Item Name Help Item. Why: This is the on-demand help tip for the Item Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -3013,7 +3013,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	// #region Editing A Picker Item
 
-	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 6 items, scoped identically via .entry-editor, that class is shared verbatim by both tabs since it's literally the same EntEdiCom component either way). // Item Name is the one exception: Today's own name field lives right on the card (.entry-card-name-input, EntryCard's own markup), not inside .entry-editor like Data's .rd-name-input does.
+	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 6 items, scoped identically via .entry-editor, that class is shared verbatim by both tabs since it's literally the same EntEdiCom component either way). // Item Name is the one exception: Today's own name field lives right on the card (.entry-card-name-input, EntryCard's own markup), not inside .entry-editor like Data's .rowNamInp does.
 	{ // What: Item Name Help Item. Why: This is the on-demand help tip for the Item Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
