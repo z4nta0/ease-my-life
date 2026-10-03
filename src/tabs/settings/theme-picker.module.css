@@ -14,8 +14,8 @@
  * switches its label and name field to light-on-dark colors.
  *
  * The subsection heading and copy classes are copied from the shared Settings
- * classes until the design-system pass merges them. The label's span rule
- * skips the check span, so the check keeps its own top-right accent styling.
+ * classes until the design-system pass merges them. The label and the check
+ * each have their own class, so the check keeps its top-right accent styling.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -23,100 +23,99 @@
 
 
 
-/* #region set-subsection */
+/* #region setSubDiv */
 
-.set-subsection { /* What: Theme Subsection. Why: The heading, copy, and card read top to bottom as one Appearance subsection. How: This stacks them in a column with a small gap. */
+.setSubDiv { /* What: Settings Subsection Div. Why: The heading, copy, and card read top to bottom as one Appearance subsection. How: This stacks them in a column with a small gap. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
 
-.set-subsection-h { /* What: Theme Subsection Heading. Why: Each subsection names itself like every other Appearance subsection. How: This sets the heading in small, spaced, muted mono capitals. */
+.subHeaDiv { /* What: Subsection Header Div. Why: Each subsection names itself like every other Appearance subsection. How: This sets the heading in small, spaced, muted mono capitals. */
 
 
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
 
 
 }
 
-.settings-sub { /* What: Theme Subsection Copy. Why: The explanatory paragraphs read as quieter supporting text. How: This sets them in muted body text with no margin. */
+.secSubPar { /* What: Section Sub Paragraph. Why: The explanatory paragraphs read as quieter supporting text. How: This sets them in muted body text with no margin. */
 
 
-	color     : var(--tex-mut-col);
-	font-size : var( --fon-siz-p01 );
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	margin    : 0;
 
 
 }
 
 
+/* #region theRowDiv */
 
-/* #region theme-row */
-
-.theme-row { /* What: Theme Row. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected. */
+.theRowDiv { /* What: Theme Row Div. Why: Each theme previews as a full-width strip of its colors that can be picked. How: This lays out a clipped rounded strip with a transparent frame that fades in when the row is focused or selected. */
 
 
-	border        : var( --bor-wid-bas ) solid transparent;
-	border-radius : var( --rad-bor-med );
+	border        : var( --bor-wid-bas ) solid transparent;                 /* Border Width Base ~= 1.160px */
+	border-radius : var( --rad-bor-med );                                   /* Radius Border Medium = 11px */
 	cursor        : pointer;
 	display       : flex;
-	height        : calc( var( --ver-rhy-p05 ) * 1rem );
+	height        : calc( var( --ver-rhy-p05 ) * 1rem );                    /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	outline       : none;
 	overflow      : hidden;
 	position      : relative;
-	transition    : border-color var( --dur-tra-p02 ) var( --mot-sta-eas );
+	transition    : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
 
 
 }
-.theme-row--custom { /* What: Custom Theme Row. Why: The editable custom theme reads as a different kind of row than the presets. How: This frames it with a dashed border. */
+.theRowDiv--custom { /* What: Custom Theme Row Div. Why: The editable custom theme reads as a different kind of row than the presets. How: This frames it with a dashed border. */
 
 
-	border : var( --bor-wid-bas ) dashed var(--bor-mai-col);
-
-
-}
-.theme-row:focus-visible { /* What: Focused Theme Row. Why: A keyboard user needs to see which row has focus. How: This colors the frame with the accent. */
-
-
-	border-color : var(--acc-mai-col);
+	border : var( --bor-wid-bas ) dashed var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 
 
 }
-.theme-row[aria-checked="true"],
-.theme-row[data-option-select-active] { /* What: Selected Theme Row. Why: The active theme should stand out. How: This frames the row in the text color, keyed off a preset row's own aria-checked or the custom row's selected attribute, and must stay after the focus rule so it wins. */
+.theRowDiv:focus-visible { /* What: Focused Theme Row. Why: A keyboard user needs to see which row has focus. How: This colors the frame with the accent. */
 
 
-	border-color : var(--tex-mai-col);
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.theme-row--custom[data-option-select-active] { /* What: Selected Custom Theme Row. Why: A selected custom row should drop its dashed frame for the same solid one the presets get. How: This makes its frame solid in the text color. */
+.theRowDiv[aria-checked='true'],
+.theRowDiv[data-option-select-active] { /* What: Selected Theme Row. Why: The active theme should stand out. How: This frames the row in the text color, keyed off a preset row's own aria-checked or the custom row's selected attribute, and must stay after the focus rule so it wins. */
 
 
-	border-color : var(--tex-mai-col);
+	border-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+.theRowDiv--custom[data-option-select-active] { /* What: Selected Custom Theme Row. Why: A selected custom row should drop its dashed frame for the same solid one the presets get. How: This makes its frame solid in the text color. */
+
+
+	border-color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	border-style : solid;
 
 
 }
-.theme-row + .theme-row { /* What: Following Theme Row. Why: Stacked rows need a little space between them. How: This adds top margin to every row after the first. */
+.theRowDiv + .theRowDiv { /* What: Following Theme Row. Why: Stacked rows need a little space between them. How: This adds top margin to every row after the first. */
 
 
-	margin-top : var( --spa-ver-m02 );
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Theme Row. Why: Someone who asked for less motion shouldn't see the frame fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Theme Row. Why: Someone who asked for less motion shouldn't see the frame fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.theme-row { /* What: Still Theme Row. Why: The frame should simply switch. How: This turns its fade off. */
+	.theRowDiv { /* What: Still Theme Row Div. Why: The frame should simply switch. How: This turns its fade off. */
 
 
 		transition : none;
@@ -127,7 +126,7 @@
 
 }
 
-.theme-row i { /* What: Theme Row Swatch. Why: Each of a preset's colors fills its own segment of the strip. How: This stretches the swatch to the row's full height, sharing the width with its siblings. */
+.theSwaIta { /* What: Theme Swatch Italic. Why: Each of a preset's colors fills its own segment of the strip. How: This stretches the swatch to the row's full height, sharing the width with its siblings. */
 
 
 	display : block;
@@ -137,53 +136,53 @@
 
 }
 
-.theme-row span:not(.theme-row-check) { /* What: Theme Row Label. Why: The theme's name sits in the strip's bottom-left corner, readable over its colors. How: This pins it there in small, spaced, translucent dark mono capitals. */
+.theLabSpa { /* What: Theme Label Span. Why: The theme's name sits in the strip's bottom-left corner, readable over its colors. How: This pins it there in small, spaced, translucent dark mono capitals. */
 
 
-	bottom         : var( --spa-ver-m03 );
-	color          : rgba(0,0,0,.45);
+	bottom         : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	color          : rgba( 0, 0, 0, .45 );
 	cursor         : pointer;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	left           : var( --spa-hor-m01 );
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	left           : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
 	letter-spacing : 0.05em;
 	position       : absolute;
 	text-transform : uppercase;
 
 
 }
-.theme-row[data-theme-dark-active] span:not(.theme-row-check) { /* What: Dark Theme Row Label. Why: Dark text would vanish on a dark theme's colors. How: This switches the label to translucent white. */
+.theRowDiv[data-theme-dark-active] .theLabSpa { /* What: Dark Theme Row Label. Why: Dark text would vanish on a dark theme's colors. How: This switches the label to translucent white. */
 
 
-	color : rgba(255,255,255,.65);
+	color : rgba( 255, 255, 255, .65 );
 
 
 }
 
-.theme-row-check { /* What: Theme Row Check. Why: The selected row shows a check that springs in when it's picked. How: This draws a small white disc with an accent glyph in the row's top-right corner, springing in as it mounts. */
+.theCheSpa { /* What: Theme Check Span. Why: The selected row shows a check that springs in when it's picked. How: This draws a small white disc with an accent glyph in the row's top-right corner, springing in as it mounts. */
 
 
 	align-items     : center;
-	animation       : themeCheckIn var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
-	background      : rgba(255,255,255,.92);
+	animation       : theCheSpaPickPopIn var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	background      : rgba( 255, 255, 255, .92 );
 	border-radius   : 50%;
-	color           : var( --acc-mai-col );
+	color           : var( --acc-mai-col );                                              /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	display         : flex;
-	font-size       : var( --fon-siz-bas );
+	font-size       : var( --fon-siz-bas );                                              /* Font Size Base = 11px */
 	font-weight     : 700;
-	height          : calc( var( --ver-rhy-p01 ) * 1rem );
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );                               /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	justify-content : center;
 	position        : absolute;
-	right           : var( --spa-hor-m02 );
-	top             : var( --spa-ver-m03 );
-	width           : calc( var( --ver-rhy-p01 ) * 1rem );
+	right           : var( --spa-hor-m02 );                                              /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	top             : var( --spa-ver-m03 );                                              /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	width           : calc( var( --ver-rhy-p01 ) * 1rem );                               /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Theme Row Check. Why: Someone who asked for less motion shouldn't see the check spring in. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Theme Row Check. Why: Someone who asked for less motion shouldn't see the check spring in. How: This applies only when the reduced-motion preference is set. */
 
 
-	.theme-row-check { /* What: Still Theme Row Check. Why: The check should simply appear. How: This turns the spring off. */
+	.theCheSpa { /* What: Still Theme Check Span. Why: The check should simply appear. How: This turns the spring off. */
 
 
 		animation : none;
@@ -193,14 +192,14 @@
 
 
 }
-@keyframes themeCheckIn { /* What: Theme Check In. Why: A small overshoot reads as the pick locking in. How: This fades and scales the check up past full size and back. */
+@keyframes theCheSpaPickPopIn { /* What: Theme Check Span Pick Pop In Keyframes. Why: A small overshoot reads as the pick locking in. How: This fades and scales the check up past full size and back. */
 
 
 	0% {
 
 
 		opacity   : 0;
-		transform : scale(0.4);
+		transform : scale( 0.4 );
 
 
 	}
@@ -209,7 +208,7 @@
 
 
 		opacity   : 1;
-		transform : scale(1.15);
+		transform : scale( 1.15 );
 
 
 	}
@@ -218,7 +217,7 @@
 
 
 		opacity   : 1;
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
@@ -226,7 +225,7 @@
 
 }
 
-.theme-custom-swatch { /* What: Custom Theme Swatch. Why: Each custom color is a live color input that should fill its segment like a preset swatch. How: This strips the native color input's chrome so it fills the full height. */
+.cusSwaInp { /* What: Custom Swatch Input. Why: Each custom color is a live color input that should fill its segment like a preset swatch. How: This strips the native color input's chrome so it fills the full height. */
 
 
 	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping the color input's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
@@ -239,33 +238,33 @@
 
 
 }
-.theme-custom-swatch::-webkit-color-swatch-wrapper { /* What: WebKit Custom Theme Swatch Wrapper. Why: WebKit pads the color swatch inside its input. How: This removes that padding so the color reaches the edges. */
+.cusSwaInp::-webkit-color-swatch-wrapper { /* What: WebKit Custom Theme Swatch Wrapper. Why: WebKit pads the color swatch inside its input. How: This removes that padding so the color reaches the edges. */
 
 
 	padding : 0;
 
 
 }
-.theme-custom-swatch::-webkit-color-swatch { /* What: WebKit Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops WebKit's swatch border and fades its color. */
+.cusSwaInp::-webkit-color-swatch { /* What: WebKit Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops WebKit's swatch border and fades its color. */
 
 
 	border     : none;
-	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas );
+	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }
-.theme-custom-swatch::-moz-color-swatch { /* What: Firefox Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops Firefox's swatch border and fades its color. */
+.cusSwaInp::-moz-color-swatch { /* What: Firefox Custom Theme Swatch Color. Why: The color should fill its segment without a border and ease when it changes. How: This drops Firefox's swatch border and fades its color. */
 
 
 	border     : none;
-	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas );
+	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Custom Theme Swatch. Why: Someone who asked for less motion shouldn't see a swatch's color fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Custom Theme Swatch. Why: Someone who asked for less motion shouldn't see a swatch's color fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.theme-custom-swatch::-webkit-color-swatch { /* What: Still WebKit Custom Theme Swatch. Why: The color should simply switch. How: This turns the fade off in WebKit. */
+	.cusSwaInp::-webkit-color-swatch { /* What: Still WebKit Custom Theme Swatch. Why: The color should simply switch. How: This turns the fade off in WebKit. */
 
 
 		transition : none;
@@ -273,7 +272,7 @@
 
 	}
 
-	.theme-custom-swatch::-moz-color-swatch { /* What: Still Firefox Custom Theme Swatch. Why: The color should simply switch. How: This turns the fade off in Firefox. */
+	.cusSwaInp::-moz-color-swatch { /* What: Still Firefox Custom Theme Swatch. Why: The color should simply switch. How: This turns the fade off in Firefox. */
 
 
 		transition : none;
@@ -284,50 +283,50 @@
 
 }
 
-.theme-custom-name { /* What: Custom Theme Name Field. Why: The custom theme's name should sit where a preset's label does, but be editable. How: This pins a small translucent field in the bottom-left corner, styled like the preset labels. */
+.cusNamInp { /* What: Custom Name Input. Why: The custom theme's name should sit where a preset's label does, but be editable. How: This pins a small translucent field in the bottom-left corner, styled like the preset labels. */
 
 
-	background     : rgba(255,255,255,.55);
+	background     : rgba( 255, 255, 255, .55 );
 	border         : 0;
-	border-radius  : var( --rad-bor-xsm );
-	bottom         : var( --spa-ver-m03 );
-	color          : rgba(0,0,0,.5);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	left           : var( --spa-hor-m01 );
+	border-radius  : var( --rad-bor-xsm );                      /* Radius Border Extra Small ~= 3.571px */
+	bottom         : var( --spa-ver-m03 );                      /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	color          : rgba( 0, 0, 0, .5 );
+	font-family    : var( --fon-fam-sec );                      /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                      /* Font Size Base = 11px */
+	left           : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
 	letter-spacing : 0.05em;
-	max-width      : calc(100% - 20px);
+	max-width      : calc( 100% - var( --spa-hor-p01 ) );       /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 	outline        : none;
-	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 );
+	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 ); /* Spacing Vertical Base Minus 9 ~= 1.160px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	position       : absolute;
 	text-transform : uppercase;
-	width          : calc( var( --ver-rhy-p07 ) * 1rem );
+	width          : calc( var( --ver-rhy-p07 ) * 1rem );       /* Vertical Rhythm Base Plus 7 ~= 104.323px */
 
 
 }
-.theme-custom-name::placeholder { /* What: Custom Theme Name Placeholder. Why: The placeholder should read as a hint. How: This sets it in a lighter translucent dark. */
+.cusNamInp::placeholder { /* What: Custom Theme Name Placeholder. Why: The placeholder should read as a hint. How: This sets it in a lighter translucent dark. */
 
 
-	color : rgba(0,0,0,.4);
-
-
-}
-.theme-row--custom[data-theme-dark-active] .theme-custom-name { /* What: Dark Custom Theme Name Field. Why: On a dark custom theme the field should read light on dark. How: This switches it to translucent white text on a translucent dark fill. */
-
-
-	background : rgba(0,0,0,.35);
-	color      : rgba(255,255,255,.7);
+	color : rgba( 0, 0, 0, .4 );
 
 
 }
-.theme-row--custom[data-theme-dark-active] .theme-custom-name::placeholder { /* What: Dark Custom Theme Name Placeholder. Why: The placeholder should stay readable on the dark field. How: This lightens it. */
+.theRowDiv--custom[data-theme-dark-active] .cusNamInp { /* What: Dark Custom Theme Name Field. Why: On a dark custom theme the field should read light on dark. How: This switches it to translucent white text on a translucent dark fill. */
 
 
-	color : rgba(255,255,255,.5);
+	background : rgba( 0, 0, 0, .35 );
+	color      : rgba( 255, 255, 255, .7 );
 
 
 }
-.theme-custom-name:focus { /* What: Focused Custom Theme Name Field. Why: A field being edited should read clearly against the strip. How: This gives it a solid white fill with near-black text. */
+.theRowDiv--custom[data-theme-dark-active] .cusNamInp::placeholder { /* What: Dark Custom Theme Name Placeholder. Why: The placeholder should stay readable on the dark field. How: This lightens it. */
+
+
+	color : rgba( 255, 255, 255, .5 );
+
+
+}
+.cusNamInp:focus { /* What: Focused Custom Theme Name Field. Why: A field being edited should read clearly against the strip. How: This gives it a solid white fill with near-black text. */
 
 
 	background : white;
@@ -335,7 +334,7 @@
 
 
 }
-.theme-row--custom[data-theme-dark-active] .theme-custom-name:focus { /* What: Focused Dark Custom Theme Name Field. Why: On a dark theme the focused field should stay dark. How: This gives it a solid near-black fill with white text. */
+.theRowDiv--custom[data-theme-dark-active] .cusNamInp:focus { /* What: Focused Dark Custom Theme Name Field. Why: On a dark theme the focused field should stay dark. How: This gives it a solid near-black fill with white text. */
 
 
 	background : #111;
@@ -344,8 +343,8 @@
 
 }
 
-/* #endregion theme-row */
+/* #endregion theRowDiv */
 
-/* #endregion set-subsection */
+/* #endregion setSubDiv */
 
 

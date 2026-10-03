@@ -79,7 +79,7 @@ const LIG_THE_ARR = [ 'ink', 'sage', 'sand' ]; // What: Light Theme Array. Why: 
  *                          selecting which of the 2 custom themes this row
  *                          edits.
  *
- * @returns One theme-row div holding 3 live color inputs, a name input,
+ * @returns One theRowDiv div holding 3 live color inputs, a name input,
  * and (while active) a checkmark.
  *
  * @example
@@ -105,7 +105,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
 
 
 		<div
-			className={` ${ cssModObj.themeRow }   ${ cssModObj.themeRowCustom } `}
+			className={` ${ cssModObj.theRowDiv }   ${ cssModObj.theRowDivCustom } `}
 
 			data-option-select-active={ actTheBoo || undefined } // What: Option Select Active Attribute. Why: The selected custom row gets a solid frame and inherited label color from its module, and this row has no aria state of its own to key that off. How: This sets the presence-only attribute while actTheBoo is true and removes it otherwise.
 			data-theme-dark-active={ darModBoo || undefined } // What: Theme Dark Active Attribute. Why: A dark theme's row switches its label, check, and name field to light-on-dark colors from its module. How: This sets the presence-only attribute while darModBoo is true and removes it otherwise.
@@ -113,7 +113,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
 
 
 			<input
-				className={ cssModObj.themeCustomSwatch }
+				className={ cssModObj.cusSwaInp }
 
 				style={{ flex : '1' }}
 
@@ -128,7 +128,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
 			/>{ /* What: Background Swatch Input Element. Why: This is the live control for the custom theme's own background color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
 			<input
-				className={ cssModObj.themeCustomSwatch }
+				className={ cssModObj.cusSwaInp }
 
 				style={{ flex : '0 0 34%' }}
 
@@ -143,7 +143,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
 			/>{ /* What: Accent Swatch Input Element. Why: This is the live control for the custom theme's own accent color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
 			<input
-				className={ cssModObj.themeCustomSwatch }
+				className={ cssModObj.cusSwaInp }
 
 				style={{ flex : '0 0 12%' }}
 
@@ -158,7 +158,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
 			/>{ /* What: Text Swatch Input Element. Why: This is the live control for the custom theme's own text color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
 			<input
-				className={ cssModObj.themeCustomName }
+				className={ cssModObj.cusNamInp }
 
 				maxLength={ 18 }
 				placeholder='Custom'
@@ -176,7 +176,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
 
 
 				<span
-					className={ cssModObj.themeRowCheck }
+					className={ cssModObj.theCheSpa }
 
 					aria-hidden='true'
 				>&#10003;</span> // What: Theme Row Check Span Element. Why: This is the actual checkmark glyph confirming the active theme. How: This renders a fixed checkmark character, hidden from screen readers since the row's own state already conveys this.
@@ -220,7 +220,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } )
  *                            preview, read from
  *                            APP_NAM_OBJ.PAL_SET_OBJ[theKeyStr].
  *
- * @returns One theme-row div, acting as a radio option within its own
+ * @returns One theRowDiv div, acting as a radio option within its own
  * card's implicit radio group.
  *
  * @example
@@ -237,7 +237,7 @@ function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } ) {
 
 
 		<div
-			className={ cssModObj.themeRow }
+			className={ cssModObj.theRowDiv }
 
 			data-theme-dark-active={ darModBoo || undefined } // What: Theme Dark Active Attribute. Why: A dark theme's row switches its label, check, and name field to light-on-dark colors from its module. How: This sets the presence-only attribute while darModBoo is true and removes it otherwise.
 
@@ -264,9 +264,15 @@ function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } ) {
 		>{ /* What: Theme Row Div Element. Why: This is the whole clickable/keyboard-activatable preview strip for one theme. How: This renders 3 stacked color swatches, the theme's own name, and (while active) a checkmark. */ }
 
 
-			<i style={{ background : thePalObj.surStr }} />{ /* What: Surface Swatch Element. Why: This previews the theme's own background color across the bulk of the row. How: This is a bare, flex-grown <i> colored via thePalObj's own surStr. */ }
+			<i
+				className={ cssModObj.theSwaIta }
+
+				style={{ background : thePalObj.surStr }}
+			/>{ /* What: Surface Swatch Element. Why: This previews the theme's own background color across the bulk of the row. How: This is a bare, flex-grown <i> colored via thePalObj's own surStr. */ }
 
 			<i
+				className={ cssModObj.theSwaIta }
+
 				style={{
 					background : thePalObj.accStr,
 					flex       : '0 0 34%'
@@ -274,19 +280,21 @@ function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } ) {
 			/>{ /* What: Accent Swatch Element. Why: This previews the theme's own accent color as a fixed-width sliver. How: This is a bare <i> colored via thePalObj's own accStr, at a fixed 34% width. */ }
 
 			<i
+				className={ cssModObj.theSwaIta }
+
 				style={{
 					background : thePalObj.warStr,
 					flex       : '0 0 12%'
 				}}
 			/>{ /* What: Warn Swatch Element. Why: This previews the theme's own warn color as a fixed-width sliver. How: This is a bare <i> colored via thePalObj's own warStr, at a fixed 12% width. */ }
 
-			<span>{ thePalObj.namStr }</span>{ /* What: Theme Name Span Element. Why: Every row needs its own visible theme name. How: This renders thePalObj's own namStr. */ }
+			<span className={ cssModObj.theLabSpa }>{ thePalObj.namStr }</span>{ /* What: Theme Name Span Element. Why: Every row needs its own visible theme name. How: This renders thePalObj's own namStr. */ }
 
 			{ actTheBoo && ( // What: Active Checkmark Check. Why: A checkmark should only exist on whichever single row is currently active. How: This renders the checkmark span only while actTheBoo is true.
 
 
 				<span
-					className={ cssModObj.themeRowCheck }
+					className={ cssModObj.theCheSpa }
 
 					aria-hidden='true'
 				>&#10003;</span> // What: Theme Row Check Span Element. Why: This is the actual checkmark glyph confirming the active theme. How: This renders a fixed checkmark character, hidden from screen readers since aria-checked already conveys this.
@@ -345,15 +353,15 @@ function TheSecCom ( { actStoObj, staAppObj } ) {
 
 
 			<div
-				className={ cssModObj.setSubsection }
+				className={ cssModObj.setSubDiv }
 
 				data-element-name-hook='theLigDiv'
 			>{ /* What: Theme Light Subsection Div Element. Why: The Light card needs its own labeled subsection, matching every other Appearance subsection. How: This wraps the subsection heading, its explanatory copy, and the Light theme CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
-				<div className={ cssModObj.setSubsectionH }>Theme &middot; Light</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Light". */ }
+				<div className={ cssModObj.subHeaDiv }>Theme &middot; Light</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Light". */ }
 
-				<p className={ cssModObj.settingsSub }>{ /* What: Settings Sub Paragraph Element. Why: The Light theme picker needs explanatory copy above its own card, matching every other subsection. How: This renders fixed copy about picking or creating a light theme. */ }
+				<p className={ cssModObj.secSubPar }>{ /* What: Settings Sub Paragraph Element. Why: The Light theme picker needs explanatory copy above its own card, matching every other subsection. How: This renders fixed copy about picking or creating a light theme. */ }
 
 
 					Pick a light based theme below or create your own. If you enable the system
@@ -363,7 +371,7 @@ function TheSecCom ( { actStoObj, staAppObj } ) {
 
 				</p>
 
-				<p className={ cssModObj.settingsSub }>{ /* What: Settings Sub Paragraph Element. Why: The custom-theme behavior deserves its own explanatory paragraph, separate from the general picker copy above. How: This renders fixed copy about the auto-generated inverse dark theme. */ }
+				<p className={ cssModObj.secSubPar }>{ /* What: Settings Sub Paragraph Element. Why: The custom-theme behavior deserves its own explanatory paragraph, separate from the general picker copy above. How: This renders fixed copy about the auto-generated inverse dark theme. */ }
 
 
 					If you create a custom light theme then the app will automatically create an
@@ -408,15 +416,15 @@ function TheSecCom ( { actStoObj, staAppObj } ) {
 			</div>
 
 			<div
-				className={ cssModObj.setSubsection }
+				className={ cssModObj.setSubDiv }
 
 				data-element-name-hook='theDarDiv'
 			>{ /* What: Theme Dark Subsection Div Element. Why: The Dark card needs its own labeled subsection, matching the Light one above. How: This wraps the subsection heading, its explanatory copy, and the Dark theme CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
-				<div className={ cssModObj.setSubsectionH }>Theme &middot; Dark</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Dark". */ }
+				<div className={ cssModObj.subHeaDiv }>Theme &middot; Dark</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Dark". */ }
 
-				<p className={ cssModObj.settingsSub }>{ /* What: Settings Sub Paragraph Element. Why: The Dark theme picker needs explanatory copy above its own card, matching the Light one above. How: This renders fixed copy about picking or creating a dark theme. */ }
+				<p className={ cssModObj.secSubPar }>{ /* What: Settings Sub Paragraph Element. Why: The Dark theme picker needs explanatory copy above its own card, matching the Light one above. How: This renders fixed copy about picking or creating a dark theme. */ }
 
 
 					Pick a dark based theme below or create your own. If you enable the system
@@ -426,7 +434,7 @@ function TheSecCom ( { actStoObj, staAppObj } ) {
 
 				</p>
 
-				<p className={ cssModObj.settingsSub }>{ /* What: Settings Sub Paragraph Element. Why: The custom-theme behavior deserves its own explanatory paragraph here too, separate from the general picker copy above. How: This renders fixed copy about the auto-generated inverse light theme. */ }
+				<p className={ cssModObj.secSubPar }>{ /* What: Settings Sub Paragraph Element. Why: The custom-theme behavior deserves its own explanatory paragraph here too, separate from the general picker copy above. How: This renders fixed copy about the auto-generated inverse light theme. */ }
 
 
 					If you create a custom dark theme then the app will automatically create an
