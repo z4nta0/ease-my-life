@@ -2099,10 +2099,11 @@ still passes.
   - **Custom properties come first** (decided 2026-10-03): a rule's own
     custom property declarations (`--fad-edg-off`, `--pill-flex`, ...)
     sit above its ordinary declarations, alphabetized among themselves,
-    with exactly 1 blank line between the two groups. The `:` and
-    comment columns still align across both groups as one rule. A rule
-    holding only custom properties, or none, has no blank line. See
-    `tabs/pickers/tab-picker.module.css`'s own `.picTabDiv`.
+    with exactly 1 blank line between the two groups. Each group aligns
+    its own `:` and comment columns separately, like any other run of
+    lines split by a blank line. A rule holding only custom properties,
+    or none, has no blank line. See `tabs/pickers/tab-picker.module.css`'s
+    own `.picTabDiv`.
 - **Parentheses in CSS functions** (decided 2026-09-29) follow the same
   spacing as JS calls under "### Parentheses spacing": a space after `(`
   and before `)` when there's anything inside, e.g. `var( --fon-siz-p01 )`
