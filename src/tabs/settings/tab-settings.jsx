@@ -302,7 +302,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const secMapRef = React.useRef( {} );    // What: Section Map Reference. Why: Every section below registers itself here via its own ref callback, giving the scroll-spy/jump-to logic a live lookup from section id to DOM element. How: This is written to by each section's own ref prop and read throughout this component.
 	const raiEleRef = React.useRef( null );  // What: Rail Element Reference. Why: stiOffFun and the rail-fade effect both need a handle on the rail's own outer element. How: This is attached to the aside's own ref prop below.
 	const raiScrRef = React.useRef( null );  // What: Rail Scroll Reference. Why: The rail-fade effect needs to read scroll position from the actual scrolling element, distinct from the sticky outer rail the fade attributes are toggled on. How: This is attached to the rail's own inner scroll wrapper below. // The mobile pill bar's own horizontal scroller, separate from raiEleRef; see the fade-edge effect's own comment below for why.
-	const rooEleRef = React.useRef( null );  // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.main' scroll ancestor. How: This is attached to the tab's own outer div below.
+	const rooEleRef = React.useRef( null );  // What: Root Element Reference. Why: The scroll-spy effect needs a handle on this component's own root to find its nearest '.appConMai' scroll ancestor. How: This is attached to the tab's own outer div below.
 	const skiSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jumSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
 
 
@@ -331,7 +331,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' );   // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs to be measured/listened to in the normal case. How: This walks up from this component's own root to the nearest '.main' ancestor.
+		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' );   // What: Scroll Container Element. Why: The shared '.appConMai' scroller, not the window, is what actually needs to be measured/listened to in the normal case. How: This walks up from this component's own root to the nearest '.appConMai' ancestor.
 		const spyIdeSet = new Set( [ 'daily', 'holidays', 'data', 'account', 'about', 'legal' ] ); // What: Spy Identifier Set. Why: Every section after the first should be assignable active purely from scroll position. How: This is checked inside the loop below, skipping any section whose id is not a member. // Appearance is left out on purpose: it's the fallback whenever no later section has crossed the base line. Legal can take part like every other section thanks to the Legal spacer effect below, which gives it enough scroll room to reach the base line.
 
 
@@ -370,7 +370,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		onScrEveFun(); // What: Initial Scroll Spy Call. Why: The rail should already reflect the right section on mount, without waiting for the first scroll event. How: This invokes onScrEveFun once, synchronously.
 
-		( scrConEle || window ).addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Scroll Container Listener. Why: Most of the time there is a real '.main' scroller to listen to directly. How: This subscribes onScrEveFun to the container's own scroll event, or the window's if no container was found.
+		( scrConEle || window ).addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Scroll Container Listener. Why: Most of the time there is a real '.appConMai' scroller to listen to directly. How: This subscribes onScrEveFun to the container's own scroll event, or the window's if no container was found.
 
 		window.addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Window Scroll Listener. Why: A secondary window-level listener catches any scroll path the container-level one might miss. How: This subscribes onScrEveFun to the window's own scroll event as well.
 
@@ -434,7 +434,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 		const legCurEle = secMapRef.current[ 'legal' ];                                          // What: Legal Current Element. Why: The Legal section is the one being sized. How: This looks up its own registered element in secMapRef.
-		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.main' scroller's own height and scroll range drive the measurement. How: This walks up from this component's own root to the nearest '.main' ancestor.
+		const scrConEle = rooEleRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.appConMai' scroller's own height and scroll range drive the measurement. How: This walks up from this component's own root to the nearest '.appConMai' ancestor.
 
 
 		if ( !legCurEle || !scrConEle ) return; // What: Missing Element Guard. Why: Nothing can be measured if either element is not actually mounted. How: This bails out early whenever either lookup above failed.
@@ -486,18 +486,18 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		skiSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy handler must not fight this deliberate jump while it is still animating. How: This flags skiSpyRef true, checked as a guard at the top of onScrEveFun above.
 
-		const scrConEle = secCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest '.main' ancestor.
+		const scrConEle = secCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared '.appConMai' scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest '.appConMai' ancestor.
 		const jumTopBoo = secIdeStr === SET_SEC_ARR[ 0 ].ideStr;                        // What: Jump Top Boolean. Why: Jumping to the very first section should reveal the tab's own header too, not just that section. How: This is true only when secIdeStr matches SET_SEC_ARR's own first entry. // The first section is the top of the tab; scroll all the way up so the header comes back into view rather than stopping at the section.
 
 
-		if ( scrConEle ) { // What: Container Scroll Check. Why: The normal case scrolls inside '.main', while the fallback scrolls the window. How: This takes the container branch whenever a '.main' ancestor was found.
+		if ( scrConEle ) { // What: Container Scroll Check. Why: The normal case scrolls inside '.appConMai', while the fallback scrolls the window. How: This takes the container branch whenever a '.appConMai' ancestor was found.
 
 
 			const offDelNum = secCurEle.getBoundingClientRect().top - scrConEle.getBoundingClientRect().top; // What: Offset Delta Number. Why: The scroll target must be computed relative to the container's own current scroll position, not an absolute page position. How: This is the section's own top minus the container's own top.
 			const topPosNum = jumTopBoo ? 0 : scrConEle.scrollTop + offDelNum - stiOffFun();                 // What: Top Position Number. Why: This is the actual scrollTop value to animate to. How: This is 0 for the top-of-tab case, otherwise the container's own current scrollTop plus offDelNum, minus the sticky offset so the section lands below the rail/header.
 
 
-			scrConEle.scrollTo({ // What: Container Scroll Call. Why: This is the actual scroll animation for the normal, in-'.main' case. How: This scrolls scrConEle to topPosNum, animated unless reduced motion is preferred.
+			scrConEle.scrollTo({ // What: Container Scroll Call. Why: This is the actual scroll animation for the normal, in-'.appConMai' case. How: This scrolls scrConEle to topPosNum, animated unless reduced motion is preferred.
 
 
 				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
@@ -509,13 +509,13 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		}
 
-		else { // What: Window Scroll Branch. Why: With no '.main' ancestor, the window itself is what scrolls. How: This runs only when scrConEle is missing.
+		else { // What: Window Scroll Branch. Why: With no '.appConMai' ancestor, the window itself is what scrolls. How: This runs only when scrConEle is missing.
 
 
 			const topPosNum = jumTopBoo ? 0 : secCurEle.getBoundingClientRect().top + window.scrollY - stiOffFun(); // What: Top Position Number. Why: This is the actual scrollTo value for the fallback, window-level scroll case. How: This is 0 for the top-of-tab case, otherwise the section's own viewport top plus the current window scroll, minus the sticky offset.
 
 
-			window.scrollTo({ // What: Window Scroll Call. Why: This is the actual scroll animation for the fallback case, when no '.main' ancestor was found. How: This scrolls the window to topPosNum, animated unless reduced motion is preferred.
+			window.scrollTo({ // What: Window Scroll Call. Why: This is the actual scroll animation for the fallback case, when no '.appConMai' ancestor was found. How: This scrolls the window to topPosNum, animated unless reduced motion is preferred.
 
 
 				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion should not see an animated scroll. How: This picks 'auto' under reduced motion, 'smooth' otherwise.
@@ -1089,7 +1089,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			ref={ rooEleRef }
 
 			className={ cssModObj.tabPagDiv }
-		>{ /* What: Tab Settings Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest '.main' ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
+		>{ /* What: Tab Settings Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest '.appConMai' ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
 
 
 			<HelOveCom

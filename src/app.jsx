@@ -210,7 +210,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 		<nav
 			ref={ navEleRef }
 
-			className={` ${ cssModObj.tabbar }   ${ tabPlaStr === 'bottom' ? cssModObj.tabbarBottom : '' }   ${ tabPlaStr === 'side' ? cssModObj.tabbarSide : '' }   ${ tabPlaStr === 'top' ? cssModObj.tabbarTop : '' }   ${ className } `}
+			className={` ${ cssModObj.appTabNav }   ${ tabPlaStr === 'bottom' ? cssModObj.appTabNavBottom : '' }   ${ tabPlaStr === 'side' ? cssModObj.appTabNavSide : '' }   ${ tabPlaStr === 'top' ? cssModObj.appTabNavTop : '' }   ${ className } `}
 
 			data-element-name-hook='appTabNav'
 			data-rail-open-active={ raiOpeBoo || undefined } // What: Rail Open Active Attribute. Why: The side rail slides into view as a drawer on a small screen while it's open. How: This sets the presence-only attribute while raiOpeBoo is true and removes it otherwise.
@@ -224,7 +224,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 				<span
-					className={ cssModObj.tabbarIndicator }
+					className={ cssModObj.tabIndSpa }
 
 					style={{
 						height    : indRecObj.heiNum + 'px',
@@ -239,7 +239,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 			) }
 
 			<button
-				className={ cssModObj.tabbarBrand }
+				className={ cssModObj.tabBraBut }
 
 				type='button'
 
@@ -250,16 +250,18 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 				<span
-					className={ cssModObj.brandWordmark }
+					className={ cssModObj.braWorSpa }
 
 					aria-hidden='true'
 				>{ /* What: Wordmark Span Element. Why: The side and top bars lead with the full "Ease My Life" wordmark. How: This wraps a small logo mark and the two text lines below, hidden from screen readers since the button's own label already covers it. */ }
 
 
-					<span className={ cssModObj.bwMark }>{ /* What: Mark Span Element. Why: The wordmark shows the small logo mark beside the text. How: This wraps a simplified copy of the logo svg. */ }
+					<span className={ cssModObj.worMarSpa }>{ /* What: Mark Span Element. Why: The wordmark shows the small logo mark beside the text. How: This wraps a simplified copy of the logo svg. */ }
 
 
 						<svg
+							className={ cssModObj.worMarSvg }
+
 							fill='none'
 							viewBox='8 8 528 528'
 						>{ /* What: Logo Svg Element. Why: This draws the small square logo mark that accompanies the wordmark text. How: This is a simplified copy of the tab headers' logo svg, without the grid lines or clipped badge outline. */ }
@@ -284,12 +286,12 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					</span>
 
 
-					<span className={ cssModObj.bwLines }>{ /* What: Lines Span Element. Why: The wordmark's text reads more naturally as two stacked lines than one long run. How: This wraps the "Ease" and "My Life" spans below. */ }
+					<span className={ cssModObj.worLinSpa }>{ /* What: Lines Span Element. Why: The wordmark's text reads more naturally as two stacked lines than one long run. How: This wraps the "Ease" and "My Life" spans below. */ }
 
 
-						<span className={ cssModObj.bwEase }>Ease</span>{ /* What: Ease Span Element. Why: This is the wordmark's first line of text. How: This renders the literal word "Ease" on its own line. */ }
+						<span className={ cssModObj.worEasSpa }>Ease</span>{ /* What: Ease Span Element. Why: This is the wordmark's first line of text. How: This renders the literal word "Ease" on its own line. */ }
 
-						<span className={ cssModObj.bwRest }>My Life</span>{ /* What: Rest Span Element. Why: This is the wordmark's second line of text. How: This renders the literal words "My Life" on their own line. */ }
+						<span className={ cssModObj.worResSpa }>My Life</span>{ /* What: Rest Span Element. Why: This is the wordmark's second line of text. How: This renders the literal words "My Life" on their own line. */ }
 
 
 					</span>
@@ -306,7 +308,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 				<button
 					key={ tabConObj.ideStr }
 
-					className={ cssModObj.tabbtn }
+					className={ cssModObj.navTabBut }
 
 					data-element-name-hook='navTabBut'
 					data-tab={ tabConObj.ideStr }
@@ -318,11 +320,13 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 					<IcoSvgCom
+						className={ cssModObj.tabIcoSvg }
+
 						icoNamStr={ tabConObj.icoStr }
 						sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
 					/>{ /* What: Icon Svg Component. Why: Every tab needs a recognizable glyph alongside its label. How: This renders the icon named by the tab's own icoStr at a fixed size. */ }
 
-					<span>{ tabConObj.labStr }</span>{ /* What: Label Span Element. Why: Every tab needs its own visible text label. How: This renders the tab's own labStr. */ }
+					<span className={ cssModObj.tabLabSpa }>{ tabConObj.labStr }</span>{ /* What: Label Span Element. Why: Every tab needs its own visible text label. How: This renders the tab's own labStr. */ }
 
 
 				</button>
@@ -332,7 +336,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 
 			<button
-				className={ cssModObj.railHandle }
+				className={ cssModObj.raiHanBut }
 
 				data-element-name-hook='raiHanBut'
 
@@ -431,7 +435,7 @@ function AppRooCom () {
 
 
 
-	const maiInnRef = React.useRef( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .main-inner wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared main-inner div's ref prop below and read by BacFloCom to measure it.
+	const maiInnRef = React.useRef( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .maiInnDiv wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared main-inner div's ref prop below and read by BacFloCom to measure it.
 
 
 
@@ -655,14 +659,14 @@ function AppRooCom () {
 
 
 		<div
-			className={ cssModObj.app }
+			className={ cssModObj.appRooDiv }
 
 			data-placement={ tabPlaStr }
 		>{ /* What: App Div Element. Why: This is AppRooCom's own root element, holding the real and ghost nav bars, the rail scrim, the active tab's content, and every onboarding overlay. How: This renders as a plain div, tagged with the current tabPlaStr via a data attribute for CSS layout. */ }
 
 
 			<TabBarCom
-				className={ navEntBoo ? cssModObj.tabbarEntering : '' }
+				className={ navEntBoo ? cssModObj.appTabNavEntering : '' }
 
 				actIdeStr={ actIdeStr }
 				raiOpeBoo={ raiOpeBoo }
@@ -678,7 +682,7 @@ function AppRooCom () {
 
 
 				<TabBarCom
-					className={ cssModObj.tabbarExiting }
+					className={ cssModObj.appTabNavExiting }
 
 					actIdeStr={ actIdeStr }
 					raiOpeBoo={ false }
@@ -698,7 +702,7 @@ function AppRooCom () {
 
 
 				<div
-					className={ cssModObj.railScrim }
+					className={ cssModObj.raiScrDiv }
 
 					aria-hidden='true'
 
@@ -712,7 +716,7 @@ function AppRooCom () {
 			<main
 				ref={ maiEleRef }
 
-				className={ cssModObj.main }
+				className={ cssModObj.appConMai }
 
 				data-element-name-hook='appConMai'
 				data-tab-today-active={ actIdeStr === 'today' || undefined } // What: Tab Today Active Attribute. Why: The Today tab runs edge to edge, so the main area drops its side padding while it shows. How: This sets the presence-only attribute while actIdeStr is 'today' and removes it otherwise.
@@ -725,7 +729,7 @@ function AppRooCom () {
 					<div
 						key='today'
 
-						className={ cssModObj.tabFade }
+						className={ cssModObj.tabFadDiv }
 					>{ /* What: Today Fade Div Element. Why: Switching tabs should play a fade transition, and React needs a stable key to treat each tab as a distinct mounted instance. How: This wraps TabTodCom and remounts (replaying the fade) whenever the active tab changes back to 'today'. */ }
 
 
@@ -753,7 +757,7 @@ function AppRooCom () {
 						key={ actIdeStr }
 						ref={ maiInnRef }
 
-						className={` ${ cssModObj.mainInner }   ${ cssModObj.tabFade } `}
+						className={` ${ cssModObj.maiInnDiv }   ${ cssModObj.tabFadDiv } `}
 					>{ /* What: Main Inner Fade Div Element. Why: Every non-Today tab needs the same fade transition and a stable per-tab key so React remounts it on switch, plus a shared ref for the background flourish to measure. How: This wraps whichever tab matches actIdeStr below, remounting (and replaying the fade) every time the active tab changes. */ }
 
 

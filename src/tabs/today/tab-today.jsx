@@ -129,7 +129,7 @@ import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use
 function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } ) {
 
 
-	const todBodRef = React.useRef( null ); // What: Today Body Reference. Why: Today does not share app.jsx's shared .main-inner wrapper (see .today-body's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .today-body div's own ref prop below and read by BacFloCom to measure it.
+	const todBodRef = React.useRef( null ); // What: Today Body Reference. Why: Today does not share app.jsx's shared .maiInnDiv wrapper (see .today-body's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .today-body div's own ref prop below and read by BacFloCom to measure it.
 
 
 
@@ -3595,7 +3595,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				ref={ todBodRef }
 
 				className={ cssModObj.todBodDiv }
-			>{ /* What: Today Body Div Element. Why: Today manages its own centered-column body distinct from app.jsx's shared .main-inner, since it needs its own flourish measurement point. How: This renders the background flourish, the Edit Mode banner (while relevant), and the whole rail/groups/footer layout below. */ }
+			>{ /* What: Today Body Div Element. Why: Today manages its own centered-column body distinct from app.jsx's shared .maiInnDiv, since it needs its own flourish measurement point. How: This renders the background flourish, the Edit Mode banner (while relevant), and the whole rail/groups/footer layout below. */ }
 
 
 				<BacFloCom
@@ -3930,7 +3930,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							 *
 							 * @summary
 							 * Portaled straight to document.body: the tab-switch fade
-							 * wrapper (.tab-fade) keeps a resolved (identity) transform
+							 * wrapper (.tabFadDiv) keeps a resolved (identity) transform
 							 * for the life of its own enter animation, which makes it a
 							 * containing block for any position:fixed descendant. Left
 							 * in place, this overlay would be fixed to that scrolled
