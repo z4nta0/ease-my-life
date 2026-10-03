@@ -28,12 +28,12 @@
 
 /* #region tab--today */
 
-.tab--today { /* What: Today Tab. Why: The header and body stack flush and full width, with extra room below while a tour runs. How: This clears the tab gap and width cap and reads --tab-tour-padding, which the body sets while a tour is active. */
+.tab--today { /* What: Today Tab. Why: The header and body stack flush and full width, with extra room below while a tour runs. How: This clears the tab gap and width cap and reads --tab-tou-pad, which the body sets while a tour is active. */
 
 
 	gap            : 0;
 	max-width      : none;
-	padding-bottom : var(--tab-tour-padding, 0);
+	padding-bottom : var(--tab-tou-pad, 0);
 
 
 }

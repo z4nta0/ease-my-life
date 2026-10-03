@@ -28,7 +28,7 @@
 .tab--settings { /* What: Settings Tab. Why: The page leaves extra room below while a tour runs. How: This reads the body's tour padding. */
 
 
-	padding-bottom : var(--tab-tour-padding, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tour-padding while a tour runs, falling back to none. */
+	padding-bottom : var(--tab-tou-pad, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tou-pad while a tour runs, falling back to none. */
 
 
 }

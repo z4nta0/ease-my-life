@@ -1934,9 +1934,9 @@ still passes.
     2026-09-28) reads a custom property the body sets, the same
     parent-sets, child-reads pattern as a cross-component variant: the
     global sheet sets the property under the body's own attribute
-    (`body[data-tour-active] { --tab-tour-padding: 200px; }`), and the
+    (`body[data-tour-active] { --tab-tou-pad: 200px; }`), and the
     element's module reads it with its normal value as the fallback
-    (`.tab--picker { padding-bottom: var(--tab-tour-padding, 0); }`). A
+    (`.tab--picker { padding-bottom: var(--tab-tou-pad, 0); }`). A
     module never uses `:global()` to reach a body state. A body state
     still held as a class (like the old `ob-touring`) becomes a
     presence-only `data-*` attribute when a module first needs it.

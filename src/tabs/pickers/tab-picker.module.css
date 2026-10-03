@@ -14,7 +14,7 @@
  * aria-selected, a selected picker tab off data-tab-select-active, and the
  * disabled Add tab off the aria-disabled its info tip sets. The rails' edge
  * fades follow edge-fade.js's data-scroll-start-active and
- * data-scroll-end-active, and the root reads --tab-tour-padding, which the
+ * data-scroll-end-active, and the root reads --tab-tou-pad, which the
  * body sets while a tour runs.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -31,7 +31,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : var( --spa-ver-p02 );
-	padding-bottom : var(--tab-tour-padding, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tour-padding while a tour runs, falling back to none. */
+	padding-bottom : var(--tab-tou-pad, 0); /* What: Tour Padding. Why: A tour needs room to scroll a bottom target clear of the tab bar. How: The body sets --tab-tou-pad while a tour runs, falling back to none. */
 
 
 }

@@ -30,13 +30,13 @@
 
 /* #region tab--data */
 
-.tab--data { /* What: Data Tab. Why: The header, filters, sort bar, and list stack as the tab's page, with extra room below while a tour runs. How: This stacks them in a spaced column and reads --tab-tour-padding, which the body sets while a tour is active. */
+.tab--data { /* What: Data Tab. Why: The header, filters, sort bar, and list stack as the tab's page, with extra room below while a tour runs. How: This stacks them in a spaced column and reads --tab-tou-pad, which the body sets while a tour is active. */
 
 
 	display        : flex;
 	flex-direction : column;
 	gap            : var( --spa-ver-p01 );
-	padding-bottom : var(--tab-tour-padding, 0);
+	padding-bottom : var(--tab-tou-pad, 0);
 
 
 }
