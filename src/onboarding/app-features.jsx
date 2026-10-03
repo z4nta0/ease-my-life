@@ -777,7 +777,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 	if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Branch Check. Why: The highlights tour's own steps only apply to this one feature, and this is the only feature whose steps below fully replace Step 1 rather than follow it. How: This returns its own 2-step array whenever feaIdeStr matches.
 
 
-		return [ // What: Highlights Tour Steps Return. Why: The caller needs this feature's own full 2-step array, replacing Step 1 entirely rather than following it. How: This returns the highlights tour's own steps, each carrying its own selector/copy/navigation fields. // Unlike every other feature, this one does NOT use the shared buiTs1Fun nav-click (see FeaTouCom's own steps prop below, which skips prepending it for this feaIdeStr specifically): the whole point is the help-highlight toggle itself (.help-btn, help/mode.jsx), which already sits in the CURRENT page's own header, there's nothing to navigate to first. Both steps target the exact same element (it never moves), so the highlight/coach position stays pinned across the transition between them, only the body copy changes.
+		return [ // What: Highlights Tour Steps Return. Why: The caller needs this feature's own full 2-step array, replacing Step 1 entirely rather than following it. How: This returns the highlights tour's own steps, each carrying its own selector/copy/navigation fields. // Unlike every other feature, this one does NOT use the shared buiTs1Fun nav-click (see FeaTouCom's own steps prop below, which skips prepending it for this feaIdeStr specifically): the whole point is the help-highlight toggle itself (.helTogBut, help/mode.jsx), which already sits in the CURRENT page's own header, there's nothing to navigate to first. Both steps target the exact same element (it never moves), so the highlight/coach position stays pinned across the transition between them, only the body copy changes.
 
 
             { // What: Highlights Feature Step. Why: This is the highlights tour's own 1st step, the real help-highlight toggle. How: This teaches turning the feature on.
@@ -1212,7 +1212,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 			} }
 			onFinTouFun={ () => cloTouFun( 'finished' ) }
-			onSkiTouFun={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabTodCom, unreachable from here, only reachable via the highlights tour's own 2nd step cirBoo target (.help-btn). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
+			onSkiTouFun={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabTodCom, unreachable from here, only reachable via the highlights tour's own 2nd step cirBoo target (.helTogBut). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
 
 
 				if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Feature Check. Why: Only this feature can leave help mode turned on mid-Step-2 for Skip to undo. How: This branches on feaIdeStr matching 'feat_highlights'.

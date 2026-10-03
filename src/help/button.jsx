@@ -65,7 +65,7 @@ function HelButCom ( { actModBoo, onClick } ) {
 
 
 		<button
-			className={ cssModObj.helpBtn }
+			className={ cssModObj.helTogBut }
 
 			data-element-name-hook='helTogBut'
 

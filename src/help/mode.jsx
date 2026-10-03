@@ -248,7 +248,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 	const allIteArr                   = React.useMemo( () => [ NAV_HEL_OBJ, RAI_HAN_OBJ, ...helIteArr ], [ helIteArr ] ); // What: All Items Array And Memo. Why: The nav item and rail handle item are shared by every page, ahead of whatever page-specific items the caller passed. How: This concatenates the 2 shared items ahead of helIteArr, recomputed only when helIteArr itself changes.
 	const [ recMapObj, setRecMapObj ] = React.useState( {} );                                                             // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by recTarFun below on every animation frame while actModBoo.
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null );                                                           // What: Open Identifier String And Setter. Why: At most one tip can be open at a time, tracked by its own (possibly mulBoo-suffixed) id. How: This starts null (no tip open) and is toggled by a badge's own onClick below.
-	const [ togRecObj, setTogRecObj ] = React.useState( null );                                                           // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .help-btn is found on the page.
+	const [ togRecObj, setTogRecObj ] = React.useState( null );                                                           // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by recTarFun below whenever a .helTogBut is found on the page.
 
 
 
@@ -540,7 +540,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		setRecMapObj( nexMapObj ); // What: Rect Map Commit. Why: The whole freshly-recomputed map must replace the previous one in one single state update. How: This writes nexMapObj into recMapObj via its own setter.
 
 
-		const togBtnEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .help-btn currently on the page.
+		const togBtnEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .helTogBut currently on the page.
 
 
 		if ( togBtnEle ) { // What: Toggle Found Guard. Why: Only write a toggle rect when the button was actually found. How: This measures and stores togBtnEle's own bounding rect.
