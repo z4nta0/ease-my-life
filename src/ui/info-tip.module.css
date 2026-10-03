@@ -15,26 +15,23 @@
 
 
 
-/* #region infotip-trigger */
-
-.infotip-trigger { /* What: Info Tip Trigger. Why: Whatever a tip is attached to should hint that it explains something. How: This shows the help cursor over the trigger. */
+.infTriSpa { /* What: Info Trigger Span. Why: Whatever a tip is attached to should hint that it explains something. How: This shows the help cursor over the trigger. */
 
 
 	cursor : help;
 
 
 }
-.infotip-trigger:focus-visible { /* What: Focused Info Tip Trigger. Why: A keyboard user needs to see which trigger has focus. How: This draws the accent outline around it. */
+.infTriSpa:focus-visible { /* What: Focused Info Trigger Span. Why: A keyboard user needs to see which trigger has focus. How: This draws the accent outline around it. */
 
 
-	border-radius  : var( --rad-bor-xsm );
-	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : var( --bor-wid-lar );
+	border-radius  : var( --rad-bor-xsm );                            /* Radius Border Extra Small ~= 3.571px */
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-lar );                            /* Border Width Large ~= 2.035px */
 
 
 }
-
-.infotip-trigger button:disabled { /* What: Disabled Trigger Button. Why: A disabled native button swallows pointer and touch events instead of letting them reach the trigger around it, so on touch screens its tip would never open. How: This lets those events pass through the button to the trigger. */
+.infTriSpa button:disabled { /* What: Disabled Trigger Button. Why: A disabled native button swallows pointer and touch events instead of letting them reach the trigger around it, so on touch screens its tip would never open. How: This lets those events pass through the button to the trigger, naming it by tag since the button is the caller's own child, which InfTipCom can't give a class. */
 
 
 	pointer-events : none;
@@ -42,45 +39,45 @@
 
 }
 
-.infotip { /* What: Info Tip. Why: The tip is a small floating bubble that must stay readable over everything else on screen. How: This styles the bubble, keeps it out of pointer hit-testing, and plays its entrance animation. */
+.infTipSpa { /* What: Info Tip Span. Why: The tip is a small floating bubble that must stay readable over everything else on screen. How: This styles the bubble, keeps it out of pointer hit-testing, and plays its entrance animation. */
 
 
-	animation      : infotipIn var( --dur-ani-m01 ) var( --mot-ove-eas );
-	background     : var(--bac-sur-col);
-	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius  : var( --rad-bor-med );
-	box-shadow     : var( --ele-med-sha );
-	color          : var(--tex-mai-col);
-	font-family    : var(--fon-fam-mai);
-	font-size      : var( --fon-siz-bas );
-	line-height    : var( --ver-rhy-bas );
-	max-width      : calc( var( --ver-rhy-p10 ) * 1rem );
-	padding        : var( --spa-ver-m02 ) var( --spa-hor-m01 );
+	animation      : infTipSpaOpenFadeIn var( --dur-ani-m01 ) var( --mot-ove-eas ); /* Duration Animation Base Minus 1 ~= 119.2ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+	background     : var( --bac-sur-col );                                          /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-med );                                          /* Radius Border Medium = 11px */
+	box-shadow     : var( --ele-med-sha );                                          /* Elevation Medium Shadow, about 0 8px 26px plus 0 3.6px 8px -2px */
+	color          : var( --tex-mai-col );                                          /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family    : var( --fon-fam-mai );                                          /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size      : var( --fon-siz-bas );                                          /* Font Size Base = 11px */
+	line-height    : var( --ver-rhy-bas );                                          /* Vertical Rhythm Base ~= 1.325 */
+	max-width      : calc( var( --ver-rhy-p10 ) * 1rem );                           /* Vertical Rhythm Base Plus 10 ~= 242.522px */
+	padding        : var( --spa-ver-m02 ) var( --spa-hor-m01 );                     /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 1 = 11px */
 	pointer-events : none;
 	position       : fixed;
 	text-wrap      : pretty;
-	z-index        : 1020; /* What: Tip Stack Level. Why: A tour step's disabled Next button explains itself with a tip, which has to show above the tour's own dim and coach card at 1010. How: This keeps every open tip on top of everything else on screen. */
+	z-index        : 1020;                                                          /* What: Tip Stack Level. Why: A tour step's disabled Next button explains itself with a tip, which has to show above the tour's own dim and coach card at 1010. How: This keeps every open tip on top of everything else on screen. */
 
 
 }
-.infotip--top { /* What: Upward Info Tip. Why: A tip opening above its trigger should slide up into place. How: This starts the entrance slightly below. */
+.infTipSpa--top { /* What: Upward Info Tip Span. Why: A tip opening above its trigger should slide up into place. How: This starts the entrance slightly below. */
 
 
-	--itip-dy : 4px; /* What: Info Tip Y Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infotipIn keyframes read this as their starting vertical shift. */
-
-
-}
-.infotip--bottom { /* What: Downward Info Tip. Why: A tip opening below its trigger should slide down into place. How: This starts the entrance slightly above. */
-
-
-	--itip-dy : -4px; /* What: Info Tip Y Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infotipIn keyframes read this as their starting vertical shift. */
+	--inf-tip-off : 4px; /* What: Info Tip Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infTipSpaOpenFadeIn keyframes read this as their starting vertical shift. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Info Tip. Why: Someone who asked for less motion shouldn't see tips slide in. How: This applies only when the reduced-motion preference is set. */
+.infTipSpa--bottom { /* What: Downward Info Tip Span. Why: A tip opening below its trigger should slide down into place. How: This starts the entrance slightly above. */
 
 
-	.infotip { /* What: Motionless Info Tip. Why: The tip should simply appear. How: This turns the entrance animation off. */
+	--inf-tip-off : -4px; /* What: Info Tip Offset. Why: The entrance animation starts the tip offset toward its trigger. How: The infTipSpaOpenFadeIn keyframes read this as their starting vertical shift. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Info Tip Span. Why: Someone who asked for less motion shouldn't see tips slide in. How: This applies only when the reduced-motion preference is set. */
+
+
+	.infTipSpa { /* What: Motionless Info Tip Span. Why: The tip should simply appear. How: This turns the entrance animation off. */
 
 
 		animation : none;
@@ -90,14 +87,14 @@
 
 
 }
-@keyframes infotipIn { /* What: Info Tip Entrance. Why: A tip that fades and slides in slightly reads as attached to its trigger. How: This fades from transparent and slides from the --itip-dy offset to its resting place. */
+@keyframes infTipSpaOpenFadeIn { /* What: Info Tip Span Open Fade In. Why: A tip that fades and slides in slightly reads as attached to its trigger. How: This fades from transparent and slides from the --inf-tip-off offset to its resting place. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(var(--itip-dy, 4px)) scale(0.98);
+		transform : translateY( var( --inf-tip-off, 4px ) ) scale( 0.98 ); /* Info Tip Offset, set by its modifier, falling back to 4px */
 
 
 	}
@@ -113,7 +110,5 @@
 
 
 }
-
-/* #endregion infotip-trigger */
 
 
