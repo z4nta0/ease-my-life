@@ -153,7 +153,7 @@ const safBotFun = () => { // What: Safe Bottom Function. Why: A bottom-anchored 
  * element's own visibility).
  *
  * The COACH card is a different story: it renders inside .touOveDiv, a z-index
- * 1010 overlay well above any of this chrome (header, rail, and the Edit Mode
+ * 203 overlay well above any of this chrome (header, rail, and the Edit Mode
  * banner alike), so it can sit wherever it likes on screen without ever being
  * physically obscured by any of it. Passing forCoaBoo:true (all of the coach's
  * own placement math does) skips this whole exclusion zone entirely. Confirmed

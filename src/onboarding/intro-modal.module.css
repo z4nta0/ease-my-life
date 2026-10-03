@@ -30,7 +30,7 @@
 	overflow-y     : auto;
 	padding        : var( --spa-ver-p02 ) var( --spa-hor-p02 );                                  /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
 	position       : fixed;
-	z-index        : 1000;
+	z-index        : 201;                                                                        /* What: Intro Scrim Stack Level. Why: The welcome modal covers the whole app shell, whose highest layer is the drawer rail at 200. How: This sits one level above it. */
 
 
 }

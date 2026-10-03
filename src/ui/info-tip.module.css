@@ -56,7 +56,7 @@
 	pointer-events : none;
 	position       : fixed;
 	text-wrap      : pretty;
-	z-index        : 1020;                                                          /* What: Tip Stack Level. Why: A tour step's disabled Next button explains itself with a tip, which has to show above the tour's own dim and coach card at 1010. How: This keeps every open tip on top of everything else on screen. */
+	z-index        : 204;                                                           /* What: Tip Stack Level. Why: A tour step's disabled Next button explains itself with a tip, which has to show above the tour's own dim and coach card at 203. How: This keeps every open tip on top of everything else on screen. */
 
 
 }

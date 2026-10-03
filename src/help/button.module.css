@@ -36,7 +36,7 @@
 	position        : relative;
 	transition      : border-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
-	z-index         : 1001;                                            /* What: Above The Help Dim. Why: Help mode's dim layer sits at 1000, and the toggle must stay undimmed while it's the way out. How: 1001 lifts the button just above it. */
+	z-index         : 202;                                             /* What: Above The Help Dim. Why: Help mode's dim layer sits at 201, and the toggle must stay undimmed while it's the way out. How: 202 lifts the button just above it. */
 
 
 }
