@@ -125,11 +125,11 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
 				<div
 					key={ curTabObj.icoStr }
 
-					className={ cssModObj.helpNavItem }
+					className={ cssModObj.navIteDiv }
 				>{ /* What: Help Nav Item Div Element. Why: Each tab gets its own icon/label/description block inside the shared nav tip. How: This renders curTabObj's own icon and label on one line, its description below. */ }
 
 
-					<div className={ cssModObj.helpNavLabel }><IcoSvgCom icoNamStr={ curTabObj.icoStr } sizSteStr='bas' /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.navLabDiv }><IcoSvgCom icoNamStr={ curTabObj.icoStr } sizSteStr='bas' /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>{ curTabObj.desStr }</p>{ /* What: Help Nav Description Paragraph Element. Why: This is the actual explanatory text for this tab. How: This renders curTabObj.desStr as plain text. */ }
 
@@ -733,14 +733,14 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 		<div
-			className={ cssModObj.helpMode }
+			className={ cssModObj.modOveDiv }
 
 			aria-live='polite'
 		>{ /* What: Container Help Mode Div Element. Why: This is HelOveCom's own root portaled element. How: This wraps the dim-layer SVG, the rendered highlight spots, every badge, and at most one open tip below. */ }
 
 
 			<svg
-				className={ cssModObj.helpDimSvg }
+				className={ cssModObj.dimLaySvg }
 				height={ vieHeiNum }
 				width={ vieWidNum }
 			>{ /* What: Help Dim Svg Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
@@ -806,7 +806,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				</mask>
 
 				<rect
-					className={ cssModObj.helpDimFill }
+					className={ cssModObj.dimFilRec }
 
 					height={ vieHeiNum }
 					mask='url(#help-mask)'
@@ -846,7 +846,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 					<div
 						key={ curIdeStr }
 
-						className={ cssModObj.helpSpot }
+						className={ cssModObj.higSpoDiv }
 
 						style={ spoStyObj }
 					/> // What: Help Spot Div Element. Why: This is the actual visible highlight box drawn around a target, e.g. for its own border/glow styling. How: This is positioned and shaped entirely via spoStyObj, keyed by curIdeStr for React's own list reconciliation.
@@ -880,7 +880,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 						<button
 							key={ curIdeStr }
 
-							className={ cssModObj.helpBadge }
+							className={ cssModObj.helBadBut }
 
 							style={{
 								left : badRecObj.left,
