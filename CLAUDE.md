@@ -2067,7 +2067,8 @@ still passes.
   written tight (`var(--tex-mut-col)`) are converted as their files come up in
   the design-system pass.
 - **Parentheses in queries** (decided 2026-10-02) get the same inner
-  spaces: every condition in a `@media` or `@container` query is written
+  spaces: every condition in a `@media`, `@container`, or `@supports`
+  query (decided 2026-10-02 for `@supports`) is written
   `( feature : value )`, e.g. `@media ( prefers-reduced-motion : reduce )`
   and `@container app ( max-width : 640px )`, and each condition in a
   combined query gets its own, `( min-width : 720px ) and ( max-width :
