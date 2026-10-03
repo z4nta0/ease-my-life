@@ -234,7 +234,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	} );
 
 
-	document.body.classList.add( 'is-reordering' ); // What: Reordering Class Add. Why: The app's own CSS may key off an active drag gesture globally, not just on the dragged element. How: This adds the class to the document body for the gesture's duration.
+	document.body.setAttribute( 'data-page-reorder-active', '' ); // What: Page Reorder Attribute Set. Why: The app's own CSS keys off an active drag gesture globally, not just on the dragged element. How: This sets the presence-only attribute on the document body for the gesture's duration.
 
 
 	const kilDraFun = ( draEveObj ) => draEveObj.preventDefault(); // What: Kill Drag Function. Why: Firefox starts a native drag-and-drop on the grip's SVG/icon that silently kills every further pointermove event, and preventDefault on pointerdown alone doesn't stop it. How: This cancels every dragstart event for the gesture's duration.
@@ -577,7 +577,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 		} );
 
-		document.body.classList.remove( 'is-reordering' ); // What: Reordering Class Remove. Why: The global gesture-active hook added at the very start of staDraFun must not outlive it. How: This removes the class from the document body.
+		document.body.removeAttribute( 'data-page-reorder-active' ); // What: Page Reorder Attribute Remove. Why: The global gesture-active hook added at the very start of staDraFun must not outlive it. How: This removes the attribute from the document body.
 
 		if ( onEndDraFun ) onEndDraFun(); // What: On End Callback Guard. Why: The caller's own lifecycle hook is optional. How: This calls onEndDraFun only when the caller actually provided one.
 

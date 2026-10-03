@@ -541,23 +541,23 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 /* #region Body State */
 
 /**
- * .theme-animating = Theme Animating
+ * [data-theme-fade-active] = Theme Fade Active
  *
  * @summary
- * A one-shot theme cross-fade: while .theme-animating is on <html> (added by
- * appearance.js's appPalFun on a user theme swap, for one p04 duration step,
- * about 486ms), the themable properties ease so the palette change glides
- * instead of snapping. It's scoped to the swap window so it never interferes
- * with normal interaction transitions.
+ * A one-shot theme cross-fade: while data-theme-fade-active is on <html>
+ * (added by appearance.js's appPalFun on a user theme swap, for one p04
+ * duration step, about 486ms), the themable properties ease so the palette
+ * change glides instead of snapping. It's scoped to the swap window so it
+ * never interferes with normal interaction transitions.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-.theme-animating,
-.theme-animating *,
-.theme-animating *::before,
-.theme-animating *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases every themable color on the page for the length of the swap. */
+[data-theme-fade-active],
+[data-theme-fade-active] *,
+[data-theme-fade-active] *::before,
+[data-theme-fade-active] *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases every themable color on the page for the length of the swap. */
 
 
 	transition : background-color var( --dur-tra-p04 ) var( --mot-sta-eas ), color var( --dur-tra-p04 ) var( --mot-sta-eas ), border-color var( --dur-tra-p04 ) var( --mot-sta-eas ), fill var( --dur-tra-p04 ) var( --mot-sta-eas ), stroke var( --dur-tra-p04 ) var( --mot-sta-eas ) !important; /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */
@@ -567,8 +567,8 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 @media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Theme Cross-Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.theme-animating,
-	.theme-animating * { /* What: Still Theme Cross-Fade. Why: The theme should switch at once. How: This turns the transition off. */
+	[data-theme-fade-active],
+	[data-theme-fade-active] * { /* What: Still Theme Cross-Fade. Why: The theme should switch at once. How: This turns the transition off. */
 
 
 		transition : none !important;
@@ -581,8 +581,8 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 
 
 
-body.is-reordering,
-body.is-reordering * { /* What: Drag In Progress. Why: While a card is being dragged, hovering over text shouldn't select it or change the cursor. How: This holds the grabbing cursor and turns off text selection everywhere. */
+body[data-page-reorder-active],
+body[data-page-reorder-active] * { /* What: Drag In Progress. Why: While a card is being dragged, hovering over text shouldn't select it or change the cursor. How: This holds the grabbing cursor and turns off text selection everywhere. */
 
 
 	cursor      : grabbing !important;

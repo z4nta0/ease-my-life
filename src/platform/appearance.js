@@ -7,7 +7,7 @@
 // #region Imports
 
 import { durMilFun } from '../utils/rhythm.js'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme-animating class toggle.
+import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme fade attribute toggle.
 
 // #endregion Imports
 
@@ -619,12 +619,12 @@ function appPalFun( palResObj, theKeyStr ) {
 
 		const docRooEle = document.documentElement; // What: Document Root Element. Why: The cross-fade class toggles on the root element, which is what the app's CSS transition rules key off. How: This is read once and reused for both the add and remove below.
 
-		docRooEle.classList.add( 'theme-animating' ); // What: Theme Animating Class Add. Why: This is the actual class the app's CSS uses to enable a brief cross-fade transition on the themable custom properties. How: This adds the class to the root element immediately, before the new values are written below.
+		docRooEle.setAttribute( 'data-theme-fade-active', '' ); // What: Theme Fade Attribute Set. Why: This is the attribute the app's CSS keys off to enable a brief cross-fade transition on the themable custom properties. How: This sets the presence-only attribute on the root element immediately, before the new values are written below.
 
 
 		clearTimeout( __tatIdeNum ); // What: Theme-Animation-Timeout Identifier Number Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
 
-		__tatIdeNum = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), durMilFun( 'p04' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal after the CSS transition's own p04 duration step. // Duration Base Plus 4 ~= 486.1ms
+		__tatIdeNum = setTimeout( () => docRooEle.removeAttribute( 'data-theme-fade-active' ), durMilFun( 'p04' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade attribute must not stay on indefinitely, only for the duration of the transition. How: This schedules the attribute's removal after the CSS transition's own p04 duration step. // Duration Base Plus 4 ~= 486.1ms
 
 
 	}
