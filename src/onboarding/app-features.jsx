@@ -1072,7 +1072,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 		);
 
 
-		const intIcoEle = feaIdeStr === 'feat_highlights' ? <span className={ cssModObj.obWmarkHelp }>i</span> : pagIcoEle; // What: Intro Icon Element. Why: The highlight feature has no page of its own, so it shows the help mark instead. How: This picks the help glyph for feat_highlights, otherwise pagIcoEle.
+		const intIcoEle = feaIdeStr === 'feat_highlights' ? <span className={ cssModObj.helIcoSpa }>i</span> : pagIcoEle; // What: Intro Icon Element. Why: The highlight feature has no page of its own, so it shows the help mark instead. How: This picks the help glyph for feat_highlights, otherwise pagIcoEle.
 
 
 

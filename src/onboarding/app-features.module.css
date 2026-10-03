@@ -15,18 +15,18 @@
 
 
 
-.ob-wmark-help { /* What: Highlight Feature Icon. Why: The highlight tutorial's intro modal needs an icon that reads as the help button, and the modal's icon box only sizes real svg icons. How: This fills the icon box with a circled "i" in the help button's style. */
+.helIcoSpa { /* What: Help Icon Span. Why: The highlight tutorial's intro modal needs an icon that reads as the help button, and the modal's icon box only sizes real svg icons. How: This fills the icon box with a circled "i" in the help button's style. */
 
 
 	align-items     : center;
-	border          : var( --bor-wid-xla ) solid currentColor;
+	border          : var( --bor-wid-xla ) solid currentColor; /* Border Width Extra Large ~= 3.571px */
 	border-radius   : 50%;
 	display         : flex;
-	font-size       : var( --fon-siz-p03 );
+	font-size       : var( --fon-siz-p03 );                    /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight     : 700;
 	height          : 100%;
 	justify-content : center;
-	line-height     : var( --ver-rhy-m01 );
+	line-height     : var( --ver-rhy-m01 );                    /* Vertical Rhythm Base Minus 1 = 1 */
 	width           : 100%;
 
 
