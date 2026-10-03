@@ -1,9 +1,6 @@
 
 
 
-
-
-
 // #region Imports
 
 import { durMilFun } from '../utils/rhythm.js'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.

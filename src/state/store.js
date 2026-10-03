@@ -1,9 +1,6 @@
 
 
 
-
-
-
 // #region Imports
 
 import React from 'react'; // What: React. Why: This is the UI library the whole store hook is built on. How: This is used directly (React.useState, React.useMemo, React.useEffect, React.useRef, React.useCallback) instead of importing individual named hooks.
