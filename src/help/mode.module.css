@@ -100,7 +100,7 @@
 
 
 	border         : var( --bor-wid-lar ) solid oklch( from var( --acc-mai-col ) l c h / 0.9 ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
-	border-radius  : var( --rad-bor-med );                                                    /* Radius Border Medium = 11px */
+	border-radius  : var( --rad-bor-med );                                                      /* Radius Border Medium = 11px */
 	pointer-events : none;
 	position       : fixed;
 

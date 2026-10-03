@@ -25,12 +25,12 @@
 
 
 	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global Swap Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	border-top      : var( --edi-foo-bor, none ); /* Editor Footer Border, set by its parent, falling back to none */ /* What: Footer Divider. Why: An editor laid out in full-bleed rows needs a hairline between its last row and the footer. How: A parent sets --edi-foo-bor, falling back to no divider. */
+	border-top      : var( --edi-foo-bor, none );                                                /* Editor Footer Border, set by its parent, falling back to none */ /* What: Footer Divider. Why: An editor laid out in full-bleed rows needs a hairline between its last row and the footer. How: A parent sets --edi-foo-bor, falling back to no divider. */
 	display         : flex;
-	gap             : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	gap             : var( --spa-hor-m02 );                                                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	justify-content : space-between;
-	margin          : var( --edi-foo-mar, var( --spa-ver-p01 ) 0 0 ); /* Editor Footer Margin, set by its parent, falling back to Spacing Vertical Base Plus 1 ~= 19.304px */ /* What: Footer Margin. Why: A full-bleed editor pulls the footer out to its edges and drops the gap above it. How: A parent sets --edi-foo-mar, falling back to a large vertical spacing gap above. */
-	padding         : var( --edi-foo-pad, 0 ); /* Editor Footer Padding, set by its parent, falling back to 0 */ /* What: Footer Padding. Why: A full-bleed footer needs its buttons pulled back in from the edges and clear of the divider. How: A parent sets --edi-foo-pad, falling back to none. */
+	margin          : var( --edi-foo-mar, var( --spa-ver-p01 ) 0 0 );                            /* Editor Footer Margin, set by its parent, falling back to Spacing Vertical Base Plus 1 ~= 19.304px */ /* What: Footer Margin. Why: A full-bleed editor pulls the footer out to its edges and drops the gap above it. How: A parent sets --edi-foo-mar, falling back to a large vertical spacing gap above. */
+	padding         : var( --edi-foo-pad, 0 );                                                   /* Editor Footer Padding, set by its parent, falling back to 0 */ /* What: Footer Padding. Why: A full-bleed footer needs its buttons pulled back in from the edges and clear of the divider. How: A parent sets --edi-foo-pad, falling back to none. */
 
 
 }
