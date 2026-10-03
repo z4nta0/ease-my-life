@@ -3335,7 +3335,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<IcoSvgCom
 										icoNamStr='flaEle'
-										sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
+										sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
 									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flaEle' icon at a fixed size. */ }
 
 									<span>{ staAppObj.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders staAppObj.streak interpolated into the fixed phrase. */ }

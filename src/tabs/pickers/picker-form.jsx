@@ -1096,7 +1096,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 								<IcoSvgCom
 									icoNamStr='cheEle'
-									sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
+									sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
 								/> // What: Icon Svg Component. Why: The finished step needs a recognizable checkmark. How: This renders the 'cheEle' icon at a fixed size.
 
 

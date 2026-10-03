@@ -2025,7 +2025,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
+													sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
@@ -2106,7 +2106,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 												<IcoSvgCom
 													icoNamStr='chvEle'
-													sizSteStr='m01' // Vertical Rhythm Base Minus 1 ~= 11.000px
+													sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
 												/>{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chvEle' icon at a fixed size. */ }
 
 
