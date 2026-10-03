@@ -15,50 +15,50 @@
 
 
 
-.pie-boost-val { /* What: Boost Value. Why: The accrued boost is a number the user compares at a glance. How: This sets it in bold mono type in the main text color. */
+.booValSpa { /* What: Boost Value Span. Why: The accrued boost is a number the user compares at a glance. How: This sets it in bold mono type in the main text color. */
 
 
-	color       : var(--tex-mai-col);
-	font-family : var(--fon-fam-sec);
-	font-size   : var( --fon-siz-p01 );
+	color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 600;
 
 
 }
 
-.pie-reset { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text. */
+.booResBut { /* What: Boost Reset Button. Why: Resetting the boost is a small secondary action beside the value. How: This styles it as a compact outlined button in muted text. */
 
 
-	background    : var(--bac-sur-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-sma );
-	color         : var(--tex-mut-col);
-	font-size     : var( --fon-siz-bas );
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );
-	transition    : color var( --dur-tra-m01 ), border-color var( --dur-tra-m01 );
-
-
-}
-.pie-reset:hover:not(:disabled) { /* What: Hovered Boost Reset Button. Why: An enabled reset should respond to the pointer. How: This tints its text and border with the accent color. */
-
-
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background    : var( --bac-sur-col );                                          /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                                          /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mut-col );                                          /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size     : var( --fon-siz-bas );                                          /* Font Size Base = 11px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );                     /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	transition    : color var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
-.pie-reset:disabled { /* What: Disabled Boost Reset Button. Why: With no boost to reset the button should look unavailable. How: This dims it and drops the pointer cursor. */
+.booResBut:hover:not( :disabled ) { /* What: Hovered Boost Reset Button. Why: An enabled reset should respond to the pointer. How: This tints its text and border with the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.booResBut:disabled { /* What: Disabled Boost Reset Button. Why: With no boost to reset the button should look unavailable. How: This dims it and drops the pointer cursor. */
 
 
 	cursor  : default;
-	opacity : 0.4;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Boost Reset Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Boost Reset Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pie-reset { /* What: Still Boost Reset Button. Why: The hover colors should simply switch. How: This turns the color fade off. */
+	.booResBut { /* What: Still Boost Reset Button. Why: The hover colors should simply switch. How: This turns the color fade off. */
 
 
 		transition : none;

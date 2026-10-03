@@ -150,13 +150,13 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } ) {
 
 
 			<span
-				className={ cssModObj.pieBoostVal }
+				className={ cssModObj.booValSpa }
 
 				data-element-name-hook='booValSpa'
 			>+{ disValNum }{ sufTexStr }</span>{ /* What: Boost Value Span Element. Why: This shows the current (possibly mid-animation) boost number. How: This renders a literal "+" followed by disValNum and the caller's own sufTexStr. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 			<button
-				className={ cssModObj.pieReset }
+				className={ cssModObj.booResBut }
 
 				disabled={ !booValNum }
 
