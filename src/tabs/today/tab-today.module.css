@@ -511,9 +511,8 @@
 .today-title .title-state { /* What: Title State. Why: Both titles share one cell and cross-fade. How: This places each in the grid's one cell and eases its opacity and position. */
 
 
-	grid-area   : 1 / 1;
-	transition  : opacity var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-p02 ) var( --mot-sta-eas );
-	will-change : opacity, transform;
+	grid-area  : 1 / 1;
+	transition : opacity var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-p02 ) var( --mot-sta-eas );
 
 
 }
