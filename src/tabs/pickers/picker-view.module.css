@@ -17,7 +17,7 @@
  * aria-disabled. The row and stage animations are this file's own module
  * classes, and the add-item rows set the --ent-* properties the item
  * editor reads. Pill spacing inside the header and pool rows goes through
- * PilTagCom's own --pill-* properties.
+ * PilTagCom's own --pil-* properties.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -54,10 +54,10 @@
 
 /* #region heaTitDiv */
 
-.heaTitDiv { /* What: Header Title Div. Why: The mode pill sits below the name and needs a little room above it. How: This sets the --pill-margin-top PilTagCom reads. */
+.heaTitDiv { /* What: Header Title Div. Why: The mode pill sits below the name and needs a little room above it. How: This sets the --pil-top-mar PilTagCom reads. */
 
 
-	--pill-margin-top : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	--pil-top-mar : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 }
@@ -809,9 +809,9 @@
 .pooNamDiv { /* What: Pool Name Div. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered 80px so every row's pill lines up in one column. */
 
 
-	--pill-flex            : 0 0 calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
-	--pill-justify-content : center;
-	--pill-width           : calc( var( --ver-rhy-p06 ) * 1rem );     /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	--pil-tag-fle : 0 0 calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	--pil-tag-jus : center;
+	--pil-tag-wid : calc( var( --ver-rhy-p06 ) * 1rem );     /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 	align-items : center;
 	display     : flex;
@@ -828,10 +828,10 @@
 	.pooNamDiv { /* What: Wrapped Pool Name Div. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
 
 
-		--pill-flex            : 0 0 auto;
-		--pill-justify-content : flex-start;
-		--pill-margin-left     : calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-		--pill-width           : auto;
+		--pil-lef-mar : calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+		--pil-tag-fle : 0 0 auto;
+		--pil-tag-jus : flex-start;
+		--pil-tag-wid : auto;
 
 		flex-wrap : wrap;
 

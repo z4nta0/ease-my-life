@@ -1232,7 +1232,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
-		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see picker-view.module.css's .heaTitDiv rule, which sets the pill's --pill-margin-top); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
+		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see picker-view.module.css's .heaTitDiv rule, which sets the pill's --pil-top-mar); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
 		selStr    : '[data-element-name-hook~="picVieDiv"] [data-element-name-hook~="picTitHea"]',
 		titStr    : 'Picker Name'
 
@@ -2650,7 +2650,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
-		padYcoNum : 2, // padYcoNum: 2, the mode pill sits only 4px below, a little tighter than the Pickers page's 6px (see .picIdeDiv's own --pill-margin-top in tab-stats.module.css); the default 8px pad on each side would overlap by 12px otherwise.
+		padYcoNum : 2, // padYcoNum: 2, the mode pill sits only 4px below, a little tighter than the Pickers page's 6px (see .picIdeDiv's own --pil-top-mar in tab-stats.module.css); the default 8px pad on each side would overlap by 12px otherwise.
 		selStr    : '[data-element-name-hook~="picIdeDiv"] [data-element-name-hook~="picTitHea"]',
 		titStr    : 'Picker Name'
 

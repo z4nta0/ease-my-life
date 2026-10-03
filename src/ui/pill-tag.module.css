@@ -7,7 +7,7 @@
  * @summary
  * Styles for PilTagCom's small uppercase label pill and its three tones. How
  * the pill fits into its surroundings (its width, flex sizing, alignment, and
- * margins) comes from --pill-* custom properties, so a parent that needs a
+ * margins) comes from --pil-* custom properties, so a parent that needs a
  * different fit, like a pool row's fixed-width column, sets those on itself
  * instead of styling the pill from outside.
  *
@@ -17,53 +17,52 @@
 
 
 
-.pill { /* What: Pill Tag. Why: Stats, Pickers, and Data all tag things with the same small label. How: This styles an uppercase mono pill, reading its fit from --pill-* properties a parent may set, each falling back to the pill's normal inline sizing. */
+.pilTagSpa { /* What: Pill Tag Span. Why: Stats, Pickers, and Data all tag things with the same small label. How: This styles an uppercase mono pill, reading its fit from --pil-* properties a parent may set, each falling back to the pill's normal inline sizing. */
 
 
 	align-items     : center;
-	align-self      : var(--pill-align-self, auto);
+	align-self      : var( --pil-tag-ali, auto );          /* Pill Tag Align, set by its parent, falling back to auto */
 	border-radius   : 999px;
 	display         : inline-flex;
-	flex            : var(--pill-flex, 0 1 auto);
-	font-family     : var(--fon-fam-sec);
-	font-size       : var( --fon-siz-bas );
+	flex            : var( --pil-tag-fle, 0 1 auto );      /* Pill Tag Flex, set by its parent, falling back to 0 1 auto */
+	font-family     : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas );                /* Font Size Base = 11px */
 	font-weight     : 500;
-	height          : calc( var( --ver-rhy-p01 ) * 1rem );
-	justify-content : var(--pill-justify-content, normal);
+	height          : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	justify-content : var( --pil-tag-jus, normal );        /* Pill Tag Justify, set by its parent, falling back to normal */
 	letter-spacing  : 0.02em;
-	margin-left     : var(--pill-margin-left, 0);
-	margin-top      : var(--pill-margin-top, 0);
-	padding         : 0 var( --spa-hor-m02 );
+	margin-left     : var( --pil-lef-mar, 0 );             /* Pill Left Margin, set by its parent, falling back to 0 */
+	margin-top      : var( --pil-top-mar, 0 );             /* Pill Top Margin, set by its parent, falling back to 0 */
+	padding         : 0 var( --spa-hor-m02 );              /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-transform  : uppercase;
-	width           : var(--pill-width, auto);
+	width           : var( --pil-tag-wid, auto );          /* Pill Tag Width, set by its parent, falling back to auto */
 
 
 }
-.pill--default { /* What: Default Pill Tag. Why: Most tags are neutral labels. How: This gives the pill a surface fill, muted text, and a hairline border. */
+.pilTagSpa--default { /* What: Default Pill Tag Span. Why: Most tags are neutral labels. How: This gives the pill a surface fill, muted text, and a hairline border. */
 
 
-	background : var(--bac-sur-col);
-	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	color      : var(--tex-mut-col);
-
-
-}
-.pill--mode { /* What: Mode Pill Tag. Why: A picker's mode reads as a highlighted label. How: This tints the pill with the accent color. */
-
-
-	background : var(--acc-tin-col);
-	color      : var(--acc-mai-col);
+	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color      : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.pill--muted { /* What: Muted Pill Tag. Why: A status like "inactive" should recede. How: This gives the pill a transparent fill, muted text, and slightly tighter padding. */
+.pilTagSpa--mode { /* What: Mode Pill Tag Span. Why: A picker's mode reads as a highlighted label. How: This tints the pill with the accent color. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.pilTagSpa--muted { /* What: Muted Pill Tag Span. Why: A status like "inactive" should recede. How: This gives the pill a transparent fill, muted text, and slightly tighter padding. */
 
 
 	background : transparent;
-	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	color      : var(--tex-mut-col);
-	font-size  : var( --fon-siz-bas );
-	padding    : 0 var( --spa-hor-m03 );
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color      : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	padding    : 0 var( --spa-hor-m03 );                          /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 
 
 }

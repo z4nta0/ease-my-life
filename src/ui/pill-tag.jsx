@@ -60,7 +60,7 @@ const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr 
 
 
 	<span
-		className={` ${ cssModObj.pill }   ${ tonValStr === 'default' ? cssModObj.pillDefault : '' }   ${ tonValStr === 'mode' ? cssModObj.pillMode : '' }   ${ tonValStr === 'muted' ? cssModObj.pillMuted : '' } `}
+		className={` ${ cssModObj.pilTagSpa }   ${ tonValStr === 'default' ? cssModObj.pilTagSpaDefault : '' }   ${ tonValStr === 'mode' ? cssModObj.pilTagSpaMode : '' }   ${ tonValStr === 'muted' ? cssModObj.pilTagSpaMuted : '' } `}
 
 		data-element-name-hook={ hooNamStr }
 	>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.

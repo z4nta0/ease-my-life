@@ -757,8 +757,8 @@
 .picIdeDiv { /* What: Picker Identity Div. Why: A single picker's stats open with its kicker, name, mode pill, and hints, like the Pickers page header. How: This stacks them tightly and hands the mode pill its spacing, keeping it sized to its content. */
 
 
-	--pill-align-self : flex-start;           /* What: Pill Align Self. Why: The column would otherwise stretch the pill to full width. How: PilTagCom reads this for its own align-self. */
-	--pill-margin-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */ /* What: Pill Margin Top. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
+	--pil-tag-ali : flex-start;           /* What: Pill Tag Align. Why: The column would otherwise stretch the pill to full width. How: PilTagCom reads this for its own align-self. */
+	--pil-top-mar : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */ /* What: Pill Top Margin. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
 
 	display        : flex;
 	flex-direction : column;
