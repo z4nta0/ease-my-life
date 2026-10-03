@@ -801,7 +801,7 @@
 .set-sub-fade { /* What: Live Description. Why: A description that changes with its setting should fade in the new wording. How: This plays the shared fade each time the keyed element remounts. */
 
 
-	animation : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(subtitleChangeFadeIn) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1112,7 +1112,7 @@
 .set-reset-confirm { /* What: Confirm Pair. Why: A destructive action's Cancel and confirm buttons swap in for its single button. How: This lines them up in a row that keeps its size and plays the shared footer swap-in. */
 
 
-	animation : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapIn Keyframes. Why: The footSwapIn keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(footerSwapFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display   : flex;
 	flex      : 0 0 auto;
 	gap       : var( --spa-hor-m02 );
@@ -1122,7 +1122,7 @@
 .set-reset-confirm.is-leaving { /* What: Leaving Confirm Pair. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
 
 
-	animation : global(footSwapOut) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footSwapOut Keyframes. Why: The footSwapOut keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(footerSwapFadeOut) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

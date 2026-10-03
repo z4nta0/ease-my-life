@@ -94,7 +94,7 @@
 .today-card.is-exhaling { /* What: Exhaling Preview Card. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
 
 
-	animation : global(cardExhale) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global Exhale Keyframes. Why: The cardExhale keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardCelebrateSwell) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global Exhale Keyframes. Why: The cardCelebrateSwell keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -156,7 +156,7 @@
 .check svg { /* What: Preview Card Checkmark. Why: The checkmark springs in like a freshly checked card, which is part of the previewed celebration. How: This plays the shared spring animation on the glyph. */
 
 
-	animation : global(checkSpring) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the real Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkDoneBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkDoneBounce keyframes are shared with the real Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -230,7 +230,7 @@
 .confetti-piece { /* What: Preview Confetti Piece. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --angle, --dist, and --rot. */
 
 
-	animation     : global(confettiBurst) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* What: Global Burst Keyframes. Why: The confettiBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(confettiCelebrateBurst) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* What: Global Burst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--acc-mai-col);
 	border-radius : var( --rad-bor-xsm );
 	height        : calc( var( --ver-rhy-bas ) * 1rem );
@@ -246,7 +246,7 @@
 .sparkle-piece { /* What: Preview Sparkle Piece. Why: Each sparkle glints at its own spot like the real sparkle celebration. How: This centers an accent glyph on its inline position and twinkles it with the shared animation. */
 
 
-	animation   : global(sparkleTwinkle) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* What: Global Twinkle Keyframes. Why: The sparkleTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global(sparkleCelebrateTwinkle) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* What: Global Twinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var(--acc-mai-col);
 	font-size   : var( --fon-siz-p02 );
 	line-height : var( --ver-rhy-m01 );

@@ -249,7 +249,7 @@
 .group-progress i.is-fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global(dashSweep) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global(dashFreshSweep) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* What: Global Sweep Keyframes. Why: The dashFreshSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var(--acc-mai-col);
 	border-radius    : inherit;
 	content          : '';
@@ -389,7 +389,7 @@
 .rem-quickadd-wrap { /* What: Quick-Add Form. Why: The add form drops into the top of the list and eases away when closed. How: This fades it in on mount, and plays its close while it carries the closing class. */
 
 
-	animation : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(editorOpenFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -444,7 +444,7 @@
 
 
 	align-items : center;
-	animation   : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global(editorOpenFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display     : flex;
 	gap         : var( --spa-hor-m02 );
 	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ) var( --spa-ver-m02 );
@@ -528,7 +528,7 @@
 	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
 	--rem-inline-foot-margin     : 0; /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
 	--rem-inline-foot-padding    : var( --spa-ver-bas ) var( --spa-hor-bas ) 0; /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
-	animation                    : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation                    : global(editorOpenFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background                   : var( --bac-sun-col );
 	border                       : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius                : var( --rad-bor-med );
@@ -596,7 +596,7 @@
 .today-card[data-card-exhale-active] { /* What: Exhaling Reminder Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.jsx sets on each card. */
 
 
-	animation : global(cardExhale) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardCelebrateSwell) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -624,7 +624,7 @@
 .today-card.is-removing { /* What: Removing Tutorial Card. Why: The tutorial card leaves with the rest of the checklist. How: This plays the shared skip-out collapse and stops it taking clicks. */
 
 
-	animation      : global(cardSkipOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(cardRemoveSlideOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -891,7 +891,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card.is-fresh .check-ripple { /* What: Fresh Checkbox Ripple. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
 
 
-	animation : global(checkRipple) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkDoneRipple) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global checkDoneRipple Keyframes. Why: The checkDoneRipple keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -913,7 +913,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when a reminder is checked. How: This plays the shared spring on the mark. */
 
 
-	animation : global(checkSpring) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkDoneBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global checkDoneBounce Keyframes. Why: The checkDoneBounce keyframes are shared with the entry cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1126,7 +1126,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 
 
 	align-items     : center;
-	animation       : global(np-row-in) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global np-row-in Keyframes. Why: The np-row-in keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(editorOpenFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ); /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background      : var( --bac-sun-col );
 	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius   : var( --rad-bor-med );

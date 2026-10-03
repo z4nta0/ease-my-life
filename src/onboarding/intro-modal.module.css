@@ -22,7 +22,7 @@
 .ob-scrim { /* What: Intro Modal Scrim. Why: The modal needs a dimmed backdrop over the whole app that can scroll when the card is taller than the screen. How: This covers the viewport in a fading dim layer and stacks the card in a scrollable column. */
 
 
-	animation      : global(obFade) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : oklch( from var( --scr-mai-col ) l c h / 0.5 );
 	display        : flex;
 	flex-direction : column;

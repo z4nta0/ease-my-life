@@ -70,7 +70,7 @@
 .today-card.is-removing { /* What: Removing Page Tour Card. Why: A card leaving the list should slide out and collapse rather than vanish. How: This plays the shared slide-and-collapse and stops the card from taking clicks while it leaves. */
 
 
-	animation      : global(cardSkipOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global Skip Keyframes. Why: The cardSkipOut keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(cardRemoveSlideOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global Skip Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -188,7 +188,7 @@ button.check { /* What: Clickable Page Tour Check Button. Why: The check spot is
 .today-card[data-card-done-active] .check svg { /* What: Done Page Tour Checkmark. Why: The checkmark should spring in when the tour finishes. How: This plays the shared spring animation on the glyph. */
 
 
-	animation : global(checkSpring) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkSpring keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkDoneBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkDoneBounce keyframes are shared with the other Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

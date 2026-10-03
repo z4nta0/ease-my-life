@@ -24,7 +24,7 @@
 .rem-inline-foot { /* What: Editor Footer. Why: Delete sits apart on the left while Cancel and Save pair up on the right, with room above them so a destructive tap is hard to hit by accident. How: This spreads the footer's children across a flex row, reading its spacing and divider from --rem-inline-foot-* properties a parent may set, and slides the row in each time it mounts. */
 
 
-	animation       : global(footSwapIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global Swap Keyframes. Why: The footSwapIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global(footerSwapFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global Swap Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top      : var(--rem-inline-foot-border-top, none); /* What: Footer Divider. Why: An editor laid out in full-bleed rows needs a hairline between its last row and the footer. How: A parent sets --rem-inline-foot-border-top, falling back to no divider. */
 	display         : flex;
 	gap             : var( --spa-hor-m02 );

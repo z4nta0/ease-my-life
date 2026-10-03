@@ -126,7 +126,7 @@
 .ob-coach { /* What: Tour Coach Card. Why: Each step's explanation needs a raised card that floats beside its target. How: This fixes a surface card over the page that takes the pointer back from the overlay and fades in. */
 
 
-	animation      : global(obFade) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The obFade keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : var(--bac-sur-col);
 	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius  : var( --rad-bor-med );

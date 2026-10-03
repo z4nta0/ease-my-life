@@ -142,7 +142,7 @@
 	 * @summary
 	 * The completion celebration's "Ripple" style is the pure-CSS default:
 	 * every card on Today exhales once, sized and timed by these values, which
-	 * the cardExhale keyframes and the card modules read. "Confetti" and
+	 * the cardCelebrateSwell keyframes and the card modules read. "Confetti" and
 	 * "Sparkle" are separate particle effects rendered in tab-today.jsx. The
 	 * ring number pulse and the title text swap stay the same across all three
 	 * styles, since they aren't part of the ripple itself.
@@ -151,10 +151,10 @@
 	 *
 	*/
 
-	--exh-car-dur : var( --dur-ani-p07 );                /* What: Exhale Card Duration ~= 1130.0ms. Why: Each card's exhale plays for this long. How: The card modules read it as their cardExhale duration. */
-	--exh-car-sca : 1.012;                               /* What: Exhale Card Scale = 1.012. Why: Each card swells only slightly, small enough that swelling cards never crowd each other, so it stays literal. How: cardExhale reads it as its peak scale. */
-	--exh-glo-opa : var( --cdn-pow-006-rec );            /* What: Exhale Glow Opacity ~= 0.185. Why: The exhale's accent ring stays faint. How: cardExhale reads it as the ring's alpha. */
-	--exh-glo-spr : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Exhale Glow Spread ~= 6.268px. Why: The exhale's accent ring reaches this far out. How: cardExhale reads it as its box-shadow spread. */
+	--exh-car-dur : var( --dur-ani-p07 );                /* What: Exhale Card Duration ~= 1130.0ms. Why: Each card's exhale plays for this long. How: The card modules read it as their cardCelebrateSwell duration. */
+	--exh-car-sca : 1.012;                               /* What: Exhale Card Scale = 1.012. Why: Each card swells only slightly, small enough that swelling cards never crowd each other, so it stays literal. How: cardCelebrateSwell reads it as its peak scale. */
+	--exh-glo-opa : var( --cdn-pow-006-rec );            /* What: Exhale Glow Opacity ~= 0.185. Why: The exhale's accent ring stays faint. How: cardCelebrateSwell reads it as the ring's alpha. */
+	--exh-glo-spr : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Exhale Glow Spread ~= 6.268px. Why: The exhale's accent ring reaches this far out. How: cardCelebrateSwell reads it as its box-shadow spread. */
 
 	/* #endregion Celebration Tokens */
 
@@ -621,7 +621,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 /* #region Shared Keyframes */
 
-@keyframes cardExhale { /* What: Card Exhale Keyframes. Why: The Ripple celebration makes each card swell and glow once. How: This scales the card up with an accent ring, then settles it back. */
+@keyframes cardCelebrateSwell { /* What: Card Celebrate Swell Keyframes. Why: The Ripple celebration makes each card swell and glow once. How: This scales the card up with an accent ring, then settles it back. */
 
 
 	0% {
@@ -654,7 +654,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes cardSkipOut { /* What: Card Skip Out Keyframes. Why: A skipped card should slide away and close its gap. How: This fades and slides it left, then collapses its height, spacing, and borders. */
+@keyframes cardRemoveSlideOut { /* What: Card Remove Slide Out Keyframes. Why: A skipped card should slide away and close its gap. How: This fades and slides it left, then collapses its height, spacing, and borders. */
 
 
 	0% {
@@ -703,7 +703,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes catEnter { /* What: Category Enter Keyframes. Why: When the Data tab's filter changes, the list remounts and each card should reflow in rather than pop. How: This fades each card in while sliding it up one m02 spacing step. */
+@keyframes categoryEnterFadeIn { /* What: Category Enter Fade In Keyframes. Why: When the Data tab's filter changes, the list remounts and each card should reflow in rather than pop. How: This fades each card in while sliding it up one m02 spacing step. */
 
 
 	from {
@@ -727,33 +727,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes checkRipple { /* What: Check Ripple Keyframes. Why: Checking an item off sends a ring out from its checkbox. How: This grows the ring while thinning and fading it. */
-
-
-	0% {
-
-
-		border-width : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */
-		opacity      : 0.85;
-		transform    : scale( 1 );
-
-
-	}
-
-	100% {
-
-
-		border-width : var( --bor-wid-sma ); /* Border Width Small ~= 0.499px */
-		opacity      : 0;
-		transform    : scale( 2.6 );
-
-
-	}
-
-
-}
-
-@keyframes checkSpring { /* What: Check Spring Keyframes. Why: The checkmark should land with a little bounce. How: This scales it up past full size and back. */
+@keyframes checkDoneBounce { /* What: Check Done Bounce Keyframes. Why: The checkmark should land with a little bounce. How: This scales it up past full size and back. */
 
 
 	0% {
@@ -785,7 +759,33 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes confettiBurst { /* What: Confetti Burst Keyframes. Why: Each confetti piece flies out from the center along its own angle. How: This moves it by its --angle and --dist with a slight drop, spinning by --rot as it fades. */
+@keyframes checkDoneRipple { /* What: Check Done Ripple Keyframes. Why: Checking an item off sends a ring out from its checkbox. How: This grows the ring while thinning and fading it. */
+
+
+	0% {
+
+
+		border-width : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */
+		opacity      : 0.85;
+		transform    : scale( 1 );
+
+
+	}
+
+	100% {
+
+
+		border-width : var( --bor-wid-sma ); /* Border Width Small ~= 0.499px */
+		opacity      : 0;
+		transform    : scale( 2.6 );
+
+
+	}
+
+
+}
+
+@keyframes confettiCelebrateBurst { /* What: Confetti Celebrate Burst Keyframes. Why: Each confetti piece flies out from the center along its own angle. How: This moves it by its --angle and --dist with a slight drop, spinning by --rot as it fades. */
 
 
 	0% {
@@ -809,7 +809,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes dashSweep { /* What: Dash Sweep Keyframes. Why: A group's progress dash should draw in from the left. How: This scales it from nothing to full width. */
+@keyframes dashFreshSweep { /* What: Dash Fresh Sweep Keyframes. Why: A group's progress dash should draw in from the left. How: This scales it from nothing to full width. */
 
 
 	0% {
@@ -831,55 +831,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes footSwapIn { /* What: Foot Swap In Keyframes. Why: When an editor footer swaps with its delete confirm, the incoming row should ease in; each row is keyed so the swap replays this. How: This fades it in while rising 3px. */
-
-
-	from {
-
-
-		opacity   : 0;
-		transform : translateY( 3px );
-
-
-	}
-
-	to {
-
-
-		opacity   : 1;
-		transform : none;
-
-
-	}
-
-
-}
-
-@keyframes footSwapOut { /* What: Foot Swap Out Keyframes. Why: The outgoing footer row should ease away rather than vanish. How: This fades it out while sinking 3px. */
-
-
-	from {
-
-
-		opacity   : 1;
-		transform : none;
-
-
-	}
-
-	to {
-
-
-		opacity   : 0;
-		transform : translateY( 3px );
-
-
-	}
-
-
-}
-
-@keyframes np-row-in { /* What: New Picker Row In Keyframes. Why: A new row in the picker form should settle into place. How: This fades it in while dropping 3px. */
+@keyframes editorOpenFadeIn { /* What: Editor Open Fade In Keyframes. Why: A new row in the picker form should settle into place. How: This fades it in while dropping 3px. */
 
 
 	from {
@@ -903,59 +855,14 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes obFade { /* What: Onboarding Fade Keyframes. Why: Onboarding overlays should fade in rather than appear. How: This fades opacity from 0 to 1. */
-
-
-	from {
-
-
-		opacity : 0;
-
-
-	}
-
-	to {
-
-
-		opacity : 1;
-
-
-	}
-
-
-}
-
-@keyframes obTourFade { /* What: Onboarding Tour Fade Keyframes. Why: A tour target's outline should pulse gently to draw the eye. How: This fades the accent outline down to 20% and back. */
-
-
-	0%,
-	100% {
-
-
-		outline-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-
-
-	}
-
-	50% {
-
-
-		outline-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-006-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 6 Reciprocal ~= 0.185 */
-
-
-	}
-
-
-}
-
-@keyframes pickerTabEnter { /* What: Picker Tab Enter Keyframes. Why: When the group changes, the Show tabs should slide in, staggered, rather than pop; the row is keyed on the group so this replays. How: This fades each tab in while sliding it in from one m01 spacing step to the left. */
+@keyframes footerSwapFadeIn { /* What: Footer Swap Fade In Keyframes. Why: When an editor footer swaps with its delete confirm, the incoming row should ease in; each row is keyed so the swap replays this. How: This fades it in while rising 3px. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateX( calc( var( --spa-hor-m01 ) * -1 ) ); /* Spacing Horizontal Base Minus 1 = 11px */
+		transform : translateY( 3px );
 
 
 	}
@@ -972,19 +879,10 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes pvNewItemIn { /* What: Picker View New Item In Keyframes. Why: The add-item editor should drop into place. How: This fades it in while lowering and growing it slightly. */
+@keyframes footerSwapFadeOut { /* What: Footer Swap Fade Out Keyframes. Why: The outgoing footer row should ease away rather than vanish. How: This fades it out while sinking 3px. */
 
 
 	from {
-
-
-		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
-
-
-	}
-
-	to {
 
 
 		opacity   : 1;
@@ -993,10 +891,19 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 	}
 
+	to {
+
+
+		opacity   : 0;
+		transform : translateY( 3px );
+
+
+	}
+
 
 }
 
-@keyframes pvNewItemOut { /* What: Picker View New Item Out Keyframes. Why: When an item is saved, its editor should fold away before the item pops into the pool. How: This fades it out while lifting and shrinking it slightly. */
+@keyframes newItemCloseFadeOut { /* What: New Item Close Fade Out Keyframes. Why: When an item is saved, its editor should fold away before the item pops into the pool. How: This fades it out while lifting and shrinking it slightly. */
 
 
 	from {
@@ -1020,7 +927,53 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes rowInsert { /* What: Row Insert Keyframes. Why: A freshly added reminder or item row should read as a deliberate insertion, while its editor expands below it. How: This fades the row in while sliding it down one m02 spacing step. */
+@keyframes newItemOpenFadeIn { /* What: New Item Open Fade In Keyframes. Why: The add-item editor should drop into place. How: This fades it in while lowering and growing it slightly. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes overlayOpenFadeIn { /* What: Overlay Open Fade In Keyframes. Why: Onboarding overlays should fade in rather than appear. How: This fades opacity from 0 to 1. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+
+@keyframes rowInsertSlideIn { /* What: Row Insert Slide In Keyframes. Why: A freshly added reminder or item row should read as a deliberate insertion, while its editor expands below it. How: This fades the row in while sliding it down one m02 spacing step. */
 
 
 	from {
@@ -1044,29 +997,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes setSubFade { /* What: Set Sub Fade Keyframes. Why: A live explanation line should fade in its new wording when its setting changes. How: This fades opacity from 0 to 1. */
-
-
-	from {
-
-
-		opacity : 0;
-
-
-	}
-
-	to {
-
-
-		opacity : 1;
-
-
-	}
-
-
-}
-
-@keyframes sparkleTwinkle { /* What: Sparkle Twinkle Keyframes. Why: Each sparkle should glint once at its own spot. How: This grows it in and back out while fading it up and down. */
+@keyframes sparkleCelebrateTwinkle { /* What: Sparkle Celebrate Twinkle Keyframes. Why: Each sparkle should glint once at its own spot. How: This grows it in and back out while fading it up and down. */
 
 
 	0%,
@@ -1091,7 +1022,53 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes tabFadeIn { /* What: Tab Fade In Keyframes. Why: A tab's content should rise in when it opens, the same for every tab. How: This fades it in while rising one m02 spacing step. */
+@keyframes subtitleChangeFadeIn { /* What: Subtitle Change Fade In Keyframes. Why: A live explanation line should fade in its new wording when its setting changes. How: This fades opacity from 0 to 1. */
+
+
+	from {
+
+
+		opacity : 0;
+
+
+	}
+
+	to {
+
+
+		opacity : 1;
+
+
+	}
+
+
+}
+
+@keyframes tabGroupSlideIn { /* What: Tab Group Slide In Keyframes. Why: When the group changes, the Show tabs should slide in, staggered, rather than pop; the row is keyed on the group so this replays. How: This fades each tab in while sliding it in from one m01 spacing step to the left. */
+
+
+	from {
+
+
+		opacity   : 0;
+		transform : translateX( calc( var( --spa-hor-m01 ) * -1 ) ); /* Spacing Horizontal Base Minus 1 = 11px */
+
+
+	}
+
+	to {
+
+
+		opacity   : 1;
+		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes tabOpenFadeIn { /* What: Tab Open Fade In Keyframes. Why: A tab's content should rise in when it opens, the same for every tab. How: This fades it in while rising one m02 spacing step. */
 
 
 	from {
@@ -1108,6 +1085,29 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 		opacity   : 1;
 		transform : none;
+
+
+	}
+
+
+}
+
+@keyframes targetTourPulse { /* What: Target Tour Pulse Keyframes. Why: A tour target's outline should pulse gently to draw the eye. How: This fades the accent outline down to 20% and back. */
+
+
+	0%,
+	100% {
+
+
+		outline-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+	}
+
+	50% {
+
+
+		outline-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-006-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 6 Reciprocal ~= 0.185 */
 
 
 	}

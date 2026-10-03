@@ -510,7 +510,7 @@
 .picker-tab { /* What: Show Tab. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
 
 
-	animation         : global(pickerTabEnter) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation         : global(tabGroupSlideIn) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--bac-sur-col);
 	border            : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius     : var( --rad-bor-med );
@@ -667,7 +667,7 @@
 .cat { /* What: Category Card. Why: Each picker reads as one card in the list, and the list's cards slide in each time the filters remount it. How: This draws a bordered, rounded surface that clips its body, and plays the shared entrance. */
 
 
-	animation     : global(catEnter) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global catEnter Keyframes. Why: The catEnter keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global(categoryEnterFadeIn) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global categoryEnterFadeIn Keyframes. Why: The categoryEnterFadeIn keyframes are shared with the Data tab's other sections, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var(--bac-sur-col);
 	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius : var( --rad-bor-med );
@@ -746,7 +746,7 @@
 .ob-tour-pulse { /* What: Tour Target. Why: The Edit Item tour points at the specific card, toggle, or row it wants clicked inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
-	animation      : global(obTourFade) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* What: Global obTourFade Keyframes. Why: The obTourFade keyframes are shared with the Pickers tab's tour target, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(targetTourPulse) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with the Pickers tab's tour target, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
 	outline-offset : calc( var( --bor-wid-lar ) * -1 );
 
@@ -1039,7 +1039,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .set-sub-fade { /* What: Fading Toggle Label. Why: The toggle's label fades in each time it flips. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global(setSubFade) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(subtitleChangeFadeIn) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1209,7 +1209,7 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .rd-item--insert { /* What: Inserted Item. Why: A just-added item springs into the list. How: This plays the shared row insert once, cleared by the row's own animationend handler. */
 
 
-	animation : global(rowInsert) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* What: Global rowInsert Keyframes. Why: The rowInsert keyframes are shared with the Data tab's reminder rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(rowInsertSlideIn) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* What: Global rowInsertSlideIn Keyframes. Why: The rowInsertSlideIn keyframes are shared with the Data tab's reminder rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

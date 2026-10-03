@@ -522,7 +522,7 @@
 .picker-tab { /* What: Show Tab. Why: Everything and each picker in scope is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode. */
 
 
-	animation         : global(pickerTabEnter) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global pickerTabEnter Keyframes. Why: The pickerTabEnter keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation         : global(tabGroupSlideIn) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Pickers and Data tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background        : var(--bac-sur-col);
 	border            : var( --bor-wid-sma ) solid var(--bor-mai-col);
 	border-radius     : var( --rad-bor-med );
@@ -719,7 +719,7 @@
 .stat-body { /* What: Stats Body. Why: The cards fade in under the filters, spaced as one column. How: This lays them out in a full-width grid with a row gap and plays the shared tab fade each time it remounts. */
 
 
-	animation             : global(tabFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global tabFadeIn Keyframes. Why: The tabFadeIn keyframes are shared with the Pickers tab and the picker form, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation             : global(tabOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global tabOpenFadeIn Keyframes. Why: The tabOpenFadeIn keyframes are shared with the Pickers tab and the picker form, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display               : grid;
 	gap                   : var( --spa-ver-p02 ) var( --spa-hor-p02 );
 	grid-auto-rows        : auto;
@@ -1855,7 +1855,7 @@ button.heat-cell[data-cell-select-active] { /* What: Selected Heat Cell. Why: Th
 .bd-list-fade { /* What: Refreshing List. Why: A list that changes with its metric or sort should fade and rise in. How: This plays the shared fade alongside a short rise each time the keyed list remounts. */
 
 
-	animation : global(setSubFade) var( --dur-ani-p02 ) var( --mot-sta-eas ), bdListRise var( --dur-ani-p02 ) var( --mot-dec-eas ); /* What: Global setSubFade Keyframes. Why: The setSubFade keyframes are shared with every live explanation line, so they stay in the global sheet, while bdListRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
+	animation : global(subtitleChangeFadeIn) var( --dur-ani-p02 ) var( --mot-sta-eas ), bdListRise var( --dur-ani-p02 ) var( --mot-dec-eas ); /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every live explanation line, so they stay in the global sheet, while bdListRise is this file's own. How: global() keeps CSS modules from renaming the shared reference to a scoped name that doesn't exist. */
 
 
 }

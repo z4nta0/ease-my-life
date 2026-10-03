@@ -46,7 +46,7 @@
 .today-card[data-card-exhale-active] { /* What: Exhaling Entry Card. Why: The ripple celebration pulses every card with a soft halo in a top-to-bottom cascade. How: This plays the shared exhale, delayed by the --exh-car-del tab-today.jsx sets on each card. */
 
 
-	animation : global(cardExhale) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global cardExhale Keyframes. Why: The cardExhale keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(cardCelebrateSwell) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -74,7 +74,7 @@
 .today-card.is-removing { /* What: Removing Entry Card. Why: A skipped entry or a finished tutorial card slides out and collapses. How: This plays the shared skip-out collapse and stops it taking clicks. */
 
 
-	animation      : global(cardSkipOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global cardSkipOut Keyframes. Why: The cardSkipOut keyframes are shared with the reminder and page tour cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global(cardRemoveSlideOut) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the reminder and page tour cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow       : hidden;
 	pointer-events : none;
 
@@ -372,7 +372,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card.is-fresh .check-ripple { /* What: Fresh Checkbox Ripple. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
 
 
-	animation : global(checkRipple) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global checkRipple Keyframes. Why: The checkRipple keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkDoneRipple) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* What: Global checkDoneRipple Keyframes. Why: The checkDoneRipple keyframes are shared with the reminder cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -394,7 +394,7 @@ button.check { /* What: Checkbox Button. Why: The checkbox is clickable. How: Th
 .today-card[data-card-done-active] .check svg { /* What: Done Check Mark. Why: The mark springs in when an entry is checked. How: This plays the shared spring on the mark. */
 
 
-	animation : global(checkSpring) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global checkSpring Keyframes. Why: The checkSpring keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global(checkDoneBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global checkDoneBounce Keyframes. Why: The checkDoneBounce keyframes are shared with the reminder, page tour, and app feature cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
