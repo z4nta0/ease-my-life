@@ -2096,6 +2096,13 @@ still passes.
   JS block, every rule's declarations get exactly 2 blank lines after
   the rule's opening `{` line and 2 before its closing `}`. See
   `tabs/pickers/progress-bar.module.css` for the reference example.
+  - **Custom properties come first** (decided 2026-10-03): a rule's own
+    custom property declarations (`--fad-edg-off`, `--pill-flex`, ...)
+    sit above its ordinary declarations, alphabetized among themselves,
+    with exactly 1 blank line between the two groups. The `:` and
+    comment columns still align across both groups as one rule. A rule
+    holding only custom properties, or none, has no blank line. See
+    `tabs/pickers/tab-picker.module.css`'s own `.picTabDiv`.
 - **Parentheses in CSS functions** (decided 2026-09-29) follow the same
   spacing as JS calls under "### Parentheses spacing": a space after `(`
   and before `)` when there's anything inside, e.g. `var( --fon-siz-p01 )`
