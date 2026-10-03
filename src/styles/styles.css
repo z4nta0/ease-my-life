@@ -601,7 +601,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-.sr-live { /* What: Screen Reader Live Region. Why: Status changes must be announced reliably, so the region exists from load and stays in the accessibility tree. How: This clips it to one invisible pixel instead of hiding it with display none. */
+.livRegDiv { /* What: Live Region Div. Why: Status changes must be announced reliably, so the region exists from load and stays in the accessibility tree. How: This clips it to one invisible pixel instead of hiding it with display none. */
 
 
 	border      : 0;

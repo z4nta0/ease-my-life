@@ -2200,7 +2200,7 @@ still passes.
   - Only what genuinely can't belong to one component stays global:
     design tokens and themes, base element styles, `@font-face`, keyframes
     several modules share, body/html-level state selectors, `index.html`'s
-    boot splash, and elements created outside React (e.g. the `sr-live`
+    boot splash, and elements created outside React (e.g. the `livRegDiv`
     live region).
   - Splitting rules across module files changes the order they apply in,
     so every move is checked for a rule that relied on appearing later in

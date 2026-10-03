@@ -64,7 +64,7 @@ let annStaFun; // What: Announce Status Function. Why: The real implementation i
 	const livRegEle = document.createElement( 'div' ); // What: Live Region Element. Why: This is the actual DOM node screen readers watch for status announcements. How: This is a plain div, styled invisibly by CSS via its own class below, that persists for the app's whole lifetime.
 
 
-	livRegEle.className = 'sr-live';                 // What: Live Region Class Name. Why: CSS needs a selector to visually hide this element while keeping it in the accessibility tree. How: This sets the class the app's stylesheet targets.
+	livRegEle.className = 'livRegDiv';               // What: Live Region Class Name. Why: CSS needs a selector to visually hide this element while keeping it in the accessibility tree. How: This sets the class the app's stylesheet targets.
 	livRegEle.setAttribute( 'role', 'status' );      // What: Live Region Role Attribute. Why: This tells assistive tech that this element carries transient status updates. How: This sets the standard ARIA role.
 	livRegEle.setAttribute( 'aria-live', 'polite' ); // What: Live Region Live Attribute. Why: A default politeness level is needed before any real annStaFun() call can override it per-call. How: This starts the region at "polite", overwritten per-call below.
 	livRegEle.setAttribute( 'aria-atomic', 'true' ); // What: Live Region Atomic Attribute. Why: A screen reader should read the whole message, not just whatever text node changed. How: This tells assistive tech to treat content changes as replacing the whole region.
