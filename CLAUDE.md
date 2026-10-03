@@ -2572,7 +2572,8 @@ are renamed to this as their files come up in the design-system pass.
     editor hands its footer). `rad` (a border radius, decided 2026-10-03,
     matching the `--rad-bor-*` tokens, since `bor` already means a whole
     border, e.g. `--ent-edi-rad`, the rounding a row strips from the item
-    editor). A keyword value a parent hands a child
+    editor). `wid` (a width, decided 2026-10-03, the counterpart of `hei`,
+    e.g. `--pil-tag-wid`, the fixed column a pool row hands its pill). A keyword value a parent hands a child
     (decided 2026-10-03) takes the first 3 letters of the CSS property it
     feeds as its kind: `dis` (a `display`), `fle` (a `flex`), `whi` (a
     `white-space`), and `fig` (a `font-variant-numeric`, since it sets
