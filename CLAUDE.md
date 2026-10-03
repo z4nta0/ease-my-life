@@ -2076,6 +2076,13 @@ still passes.
   '(prefers-reduced-motion: reduce)' )`) is a string value, not CSS, and
   stays as written. CSS modules' `global( name )` wrapper follows the same
   spacing as any other CSS function.
+- **Parentheses in functional pseudo-classes** (decided 2026-10-02) get
+  the same inner spaces: `:not( .basRowDiv--group )`, `:has( input:focus-visible )`,
+  `:is( a, b )`, `:nth-child( 2 )`, nested ones included
+  (`:not( :has( .easConDiv ) )`). A selector string inside JS (a hook
+  lookup such as `[data-element-name-hook~="..."]:not(:disabled)`) is a
+  string value, not CSS, and stays as written, the same as a JS query
+  string.
 - **`@media` blocks**: a `@media` override is a variant of the element it
   styles, so it sits directly under that element's base rule with its
   other variants. The block gets its own What/Why/How comment after its
