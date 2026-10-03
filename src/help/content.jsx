@@ -2306,7 +2306,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 	// #region Headline Numbers
 
-	// Three different card sets share the same position (between the Range filter and the heatmap/breakdown below), one per scope: All/a specific picker, Reminders, and Conditionals. Each card needed its own stat-mk-* marker class in tab-stats.jsx first, since they all otherwise share the plain .stat-card class with nothing to distinguish one from another. // padXcoNum/padYcoNum: 4, these 4 cards sit in a CSS grid with only a 10px gap (both row-gap and column-gap, since it's a single `gap: 10px` on .stat-row), so the default 8px pad on each side would overlap a neighbor's own pad by 6px, on whichever edge is shared (right/left in the desktop single-row layout, all four edges in the mobile 2x2 grid). 4+4=8 leaves 2px of daylight in the 10px gap instead. // All and a specific picker scope both render these same stat-mk-* cards (see tab-stats.jsx's own comment on stat-mk-scope-*), so each gets its own entry below scoped to stat-mk-scope-all/-picker, with its own title/copy.
+	// Three different card sets share the same position (between the Range filter and the heatmap/breakdown below), one per scope: All/a specific picker, Reminders, and Conditionals. Each card needed its own stat-mk-* marker class in tab-stats.jsx first, since they all otherwise share the plain .staCarDiv class with nothing to distinguish one from another. // padXcoNum/padYcoNum: 4, these 4 cards sit in a CSS grid with only a 10px gap (both row-gap and column-gap, since it's a single `gap: 10px` on .staRowDiv), so the default 8px pad on each side would overlap a neighbor's own pad by 6px, on whichever edge is shared (right/left in the desktop single-row layout, all four edges in the mobile 2x2 grid). 4+4=8 leaves 2px of daylight in the 10px gap instead. // All and a specific picker scope both render these same stat-mk-* cards (see tab-stats.jsx's own comment on stat-mk-scope-*), so each gets its own entry below scoped to stat-mk-scope-all/-picker, with its own title/copy.
 	{ // What: Day Streak Help Item. Why: This is the on-demand help tip for the Day Streak element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2411,7 +2411,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 	},
 
-	// padXcoNum/padYcoNum: 4, same .stat-row (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
+	// padXcoNum/padYcoNum: 4, same .staRowDiv (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
 	{ // What: Reminders Completed Help Item. Why: This is the on-demand help tip for the Reminders Completed element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2464,7 +2464,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 	},
 
-	// padXcoNum/padYcoNum: 4, same .stat-row (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
+	// padXcoNum/padYcoNum: 4, same .staRowDiv (10px gap) bleed fix as the other headline-card rows: default 8px pad on each side overlaps a neighbor's own pad across the shared edge, side by side on wide viewports and 2x2 on narrow ones.
 	{ // What: Conditionals Triggered Help Item. Why: This is the on-demand help tip for the Conditionals Triggered element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2650,7 +2650,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
-		padYcoNum : 2, // padYcoNum: 2, the mode pill sits only 4px below, a little tighter than the Pickers page's 6px (see .stat-picker-id's own --pill-margin-top in tab-stats.module.css); the default 8px pad on each side would overlap by 12px otherwise.
+		padYcoNum : 2, // padYcoNum: 2, the mode pill sits only 4px below, a little tighter than the Pickers page's 6px (see .picIdeDiv's own --pill-margin-top in tab-stats.module.css); the default 8px pad on each side would overlap by 12px otherwise.
 		selStr    : '[data-element-name-hook~="picIdeDiv"] [data-element-name-hook~="picTitHea"]',
 		titStr    : 'Picker Name'
 
