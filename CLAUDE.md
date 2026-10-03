@@ -2551,7 +2551,9 @@ are renamed to this as their files come up in the design-system pass.
     2026-10-02, e.g. `--tab-tou-pad`, the room a tab adds below its content
     during a tour), `bor` (a whole `border` value, width, style, and color
     together, decided 2026-10-02, e.g. `--sor-row-bor`, the divider a Data
-    section hands its sort row). A keyword value a parent hands a child
+    section hands its sort row). `mar` (a margin, decided 2026-10-03, the
+    counterpart of `pad`, e.g. `--edi-foo-mar`, the margin a full-bleed
+    editor hands its footer). A keyword value a parent hands a child
     (decided 2026-10-03) takes the first 3 letters of the CSS property it
     feeds as its kind: `dis` (a `display`), `fle` (a `flex`), `whi` (a
     `white-space`), and `fig` (a `font-variant-numeric`, since it sets
