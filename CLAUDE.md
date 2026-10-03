@@ -2268,6 +2268,15 @@ still passes.
     child still owns every one of its styles and the parent only names
     the layout. A case that fits neither this nor a custom property is
     raised with the user first.
+  - **A parent's own styling on an element a shared component renders**
+    (decided 2026-10-03), such as an animation on one icon (the Pickers
+    tab's sent check popping in): the component accepts a `className`
+    prop and forwards it to that element, and the parent passes a class
+    from its own module (`<IcoSvgCom className={ cssModObj.senCheSvg }
+    ... />`). Hashing only renames the class, so the parent's rule still
+    matches the element wherever it renders. A descendant tag selector
+    reaching into the component's markup (`.pool-send svg`) is replaced
+    this way as each module comes up.
   - A class several components use (`btn`, `pill`, ...) has its
     declarations copied into each module that uses it, attached to that
     element's existing class.
