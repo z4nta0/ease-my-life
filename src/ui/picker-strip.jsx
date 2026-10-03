@@ -240,10 +240,10 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 		return (
 
 
-			<div className={` ${ cssModObj.dissolve }   ${ cssModObj.dissolveSettled } `}>{ /* What: Dissolve Div Element. Why: This is the single calm end-state shown under reduced motion, regardless of the requested style. How: This renders the picked candidate's own name, already landed. */ }
+			<div className={` ${ cssModObj.picDisDiv }   ${ cssModObj.picDisDivSettled } `}>{ /* What: Dissolve Div Element. Why: This is the single calm end-state shown under reduced motion, regardless of the requested style. How: This renders the picked candidate's own name, already landed. */ }
 
 
-				<span className={ cssModObj.dissolveName }>{ picIteObj ? picIteObj.name : '' }</span>{ /* What: Name Span Element. Why: The picked candidate's name is the only thing this end-state needs to show. How: This renders picked.name, or an empty string while nothing is picked yet. */ }
+				<span className={ cssModObj.disNamSpa }>{ picIteObj ? picIteObj.name : '' }</span>{ /* What: Name Span Element. Why: The picked candidate's name is the only thing this end-state needs to show. How: This renders picked.name, or an empty string while nothing is picked yet. */ }
 
 
 			</div>
@@ -270,7 +270,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 			<div
-				className={` ${ cssModObj.reel }   ${ cycPhaStr === 'settled' ? cssModObj.reelSettled : '' } `}
+				className={` ${ cssModObj.picReeDiv }   ${ cycPhaStr === 'settled' ? cssModObj.picReeDivSettled : '' } `}
 
 				style={{ height : `calc( ${ rowHeiStr } * ${ visRowNum } )` }}
 
@@ -279,7 +279,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 				<div
-					className={ cssModObj.reelTrack }
+					className={ cssModObj.reeTraDiv }
 
 					style={{
 						transform          : `translateY( calc( ${ rowHeiStr } * ${ offRowNum } ) )`,
@@ -294,7 +294,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 						<div
 							key={ rowIndNum }
 
-							className={ cssModObj.reelRow }
+							className={ cssModObj.reeRowDiv }
 
 							data-row-highlight-active={ ( cycPhaStr === 'settled' && rowIndNum === rowPosNum ) || undefined } // What: Row Highlight Active Attribute. Why: Once the reel settles, the row on the center line is marked as the pick. How: This sets the presence-only attribute on that one row after settling and removes it otherwise.
 						>{ /* What: Row Div Element. Why: Each row shows one candidate's name at its own position in the endless scrolling loop. How: This marks itself with data-row-highlight-active only once the cycle has settled and this is the exact landing row. */ }
@@ -311,9 +311,9 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 				</div>
 
-				<div className={ cssModObj.reelMask } />{ /* What: Mask Div Element. Why: The reel's own top/bottom edges need a soft fade instead of a hard visual cutoff. How: This is a purely decorative overlay, styled entirely via CSS. */ }
+				<div className={ cssModObj.reeMasDiv } />{ /* What: Mask Div Element. Why: The reel's own top/bottom edges need a soft fade instead of a hard visual cutoff. How: This is a purely decorative overlay, styled entirely via CSS. */ }
 
-				<div className={ cssModObj.reelLine } />{ /* What: Line Div Element. Why: The center landing row needs a visible marker line so the eye has somewhere to settle. How: This is a purely decorative overlay, styled entirely via CSS. */ }
+				<div className={ cssModObj.reeLinDiv } />{ /* What: Line Div Element. Why: The center landing row needs a visible marker line so the eye has somewhere to settle. How: This is a purely decorative overlay, styled entirely via CSS. */ }
 
 
 			</div>
@@ -337,7 +337,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 			<div
-				className={` ${ cssModObj.dissolve }   ${ cycPhaStr === 'settled' ? cssModObj.dissolveSettled : '' } `}
+				className={` ${ cssModObj.picDisDiv }   ${ cycPhaStr === 'settled' ? cssModObj.picDisDivSettled : '' } `}
 
 				data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
 			>{ /* What: Dissolve Div Element. Why: This is the dissolve style's own root, wrapping the fading name and its optional settled glow. How: This is keyed by rowPosNum and curCanObj's own id below so React remounts the span, replaying the fade, on every change. */ }
@@ -346,7 +346,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 				<span
 					key={ rowPosNum + '_' + curCanObj.id }
 
-					className={ cssModObj.dissolveName }
+					className={ cssModObj.disNamSpa }
 				>{ /* What: Name Span Element. Why: This is the actual name that cross-fades between candidates. How: This renders curCanObj's own name, or an empty string on the rare frame where none resolves. */ }
 
 
@@ -355,7 +355,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 				</span>
 
-				{ cycPhaStr === 'settled' && <div className={ cssModObj.dissolveGlow } /> }{ /* What: Settled Glow Check. Why: A soft highlight should only appear once the cycle has actually landed. How: This renders the glow div only while cycPhaStr is 'settled', otherwise nothing. */ }
+				{ cycPhaStr === 'settled' && <div className={ cssModObj.disGloDiv } /> }{ /* What: Settled Glow Check. Why: A soft highlight should only appear once the cycle has actually landed. How: This renders the glow div only while cycPhaStr is 'settled', otherwise nothing. */ }
 
 
 			</div>
@@ -380,7 +380,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 		<div
 			ref={ wraSpoRef }
 
-			className={` ${ cssModObj.spot }   ${ cycPhaStr === 'settled' ? cssModObj.spotSettled : '' } `}
+			className={` ${ cssModObj.picSpoDiv }   ${ cycPhaStr === 'settled' ? cssModObj.picSpoDivSettled : '' } `}
 
 			data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
 		>{ /* What: Spotlight Div Element. Why: This is the spotlight style's own root, listing every visible candidate with the active one highlighted. How: This wraps one row per entry in visCanArr below. */ }
@@ -399,7 +399,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 					<div
 						key={ curCanObj.id }
 
-						className={ cssModObj.spotRow }
+						className={ cssModObj.spoRowDiv }
 
 						data-row-highlight-active={ isaActBoo || undefined } // What: Row Highlight Active Attribute. Why: The row the highlight is currently on stands out from the rest. How: This sets the presence-only attribute on that one row and removes it otherwise.
 					>{ /* What: Row Div Element. Why: Each row shows one candidate's name, highlighted only while it's the current landing row. How: This marks itself with data-row-highlight-active whenever isaActBoo is true for this row. */ }

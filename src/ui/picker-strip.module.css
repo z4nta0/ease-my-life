@@ -23,12 +23,12 @@
 
 
 
-/* #region reel */
+/* #region picReeDiv */
 
-.reel { /* What: Picker Reel. Why: The reel shows a window of names sliding past a fixed center line. How: This clips a full-width, capped-width window over the sliding track. */
+.picReeDiv { /* What: Picker Reel Div. Why: The reel shows a window of names sliding past a fixed center line. How: This clips a full-width, capped-width window over the sliding track. */
 
 
-	max-width : calc( var( --ver-rhy-p12 ) * 1rem );
+	max-width : calc( var( --ver-rhy-p12 ) * 1rem ); /* Vertical Rhythm Base Plus 12 ~= 425.596px */
 	overflow  : hidden;
 	position  : relative;
 	width     : 100%;
@@ -36,23 +36,24 @@
 
 }
 
-/* #region reel-track */
 
-.reel-track { /* What: Picker Reel Track. Why: The names slide as one continuous strip, each move lasting exactly until the next. How: This stacks the rows and transitions only their transform, with the duration written inline per step. */
+/* #region reeTraDiv */
+
+.reeTraDiv { /* What: Reel Track Div. Why: The names slide as one continuous strip, each move lasting exactly until the next. How: This stacks the rows and transitions only their transform, with the duration written inline per step. */
 
 
 	display                    : flex;
 	flex-direction             : column;
 	transition-property        : transform;
 	transition-timing-function : linear;
-	will-change                : transform;
+	will-change                : transform; /* What: Track Motion Hint. Why: The track exists only while the reel runs, sliding every step of its life, so promoting it up front saves a first-frame hitch on each move. How: This keeps the track on its own layer for as long as the reel is mounted. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Reel Track. Why: Someone who asked for less motion shouldn't see the strip slide, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Track Div. Why: Someone who asked for less motion shouldn't see the strip slide, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
-	.reel:not([data-motion-force-active]) .reel-track { /* What: Still Picker Reel Track. Why: The strip should simply jump to each position. How: This turns the transform transition off, except inside a forced-motion preview. */
+	.picReeDiv:not( [data-motion-force-active] ) .reeTraDiv { /* What: Still Reel Track Div. Why: The strip should simply jump to each position. How: This turns the transform transition off, except inside a forced-motion preview. */
 
 
 		transition-property : none;
@@ -63,44 +64,44 @@
 
 }
 
-.reel-row { /* What: Picker Reel Row. Why: Each candidate is one fixed-height row of large centered text. How: This sizes the row, centers its name in muted text, and fades its color as it becomes current. */
+.reeRowDiv { /* What: Reel Row Div. Why: Each candidate is one fixed-height row of large centered text. How: This sizes the row, centers its name in muted text, and fades its color as it becomes current. */
 
 
 	align-items     : center;
-	color           : var(--tex-mut-col);
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : flex;
-	font-size       : var( --fon-siz-p02 );
+	font-size       : var( --fon-siz-p02 );                /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight     : 500;
-	height          : calc( var( --ver-rhy-p05 ) * 1rem );
+	height          : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	justify-content : center;
 	letter-spacing  : -0.015em;
-	padding         : 0 var( --spa-hor-m01 );
+	padding         : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
 	text-align      : center;
 	text-wrap       : pretty;
-	transition      : color var( --dur-tra-p02 );
+	transition      : color var( --dur-tra-p02 );          /* Duration Transition Base Plus 2 ~= 277.0ms */
 
 
 }
-.reel-row[data-row-highlight-active] { /* What: Current Picker Reel Row. Why: The row on the center line should read as the current name. How: This sets it in the full text color. */
+.reeRowDiv[data-row-highlight-active] { /* What: Current Reel Row Div. Why: The row on the center line should read as the current name. How: This sets it in the full text color. */
 
 
-	color : var(--tex-mai-col);
-
-
-}
-.reel--settled .reel-row[data-row-highlight-active] { /* What: Landed Picker Reel Row. Why: The final pick should stand out once the reel settles. How: This sets it in the accent color, slightly larger. */
-
-
-	color     : var(--acc-mai-col);
-	font-size : var( --fon-siz-p02 );
-	transform : scale(1.02);
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Reel Row. Why: Someone who asked for less motion shouldn't see the row's color fade, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+.picReeDiv--settled .reeRowDiv[data-row-highlight-active] { /* What: Landed Reel Row Div. Why: The final pick should stand out once the reel settles. How: This sets it in the accent color, slightly larger. */
 
 
-	.reel:not([data-motion-force-active]) .reel-row { /* What: Still Picker Reel Row. Why: The row's color should simply switch. How: This turns the color fade off, except inside a forced-motion preview. */
+	color     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-size : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+	transform : scale( 1.02 );
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Row Div. Why: Someone who asked for less motion shouldn't see the row's color fade, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+
+
+	.picReeDiv:not( [data-motion-force-active] ) .reeRowDiv { /* What: Still Reel Row Div. Why: The row's color should simply switch. How: This turns the color fade off, except inside a forced-motion preview. */
 
 
 		transition : none;
@@ -111,13 +112,13 @@
 
 }
 
-/* #endregion reel-track */
+/* #endregion reeTraDiv */
 
 
-.reel-mask { /* What: Picker Reel Mask. Why: The reel's top and bottom edges should fade out instead of cutting off hard. How: This lays a gradient from the surface color to transparent over both ends. */
+.reeMasDiv { /* What: Reel Mask Div. Why: The reel's top and bottom edges should fade out instead of cutting off hard. How: This lays a gradient from the surface color to transparent over both ends. */
 
 
-	background     : linear-gradient(180deg, var(--bac-sur-col), transparent 28%, transparent 72%, var(--bac-sur-col));
+	background     : linear-gradient( 180deg, var( --bac-sur-col ), transparent 28%, transparent 72%, var( --bac-sur-col ) ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	inset          : 0;
 	pointer-events : none;
 	position       : absolute;
@@ -125,45 +126,45 @@
 
 }
 
-.reel-line { /* What: Picker Reel Line. Why: The center landing row needs a marker so the eye has somewhere to settle. How: This draws hairlines above and below the center row's position. */
+.reeLinDiv { /* What: Reel Line Div. Why: The center landing row needs a marker so the eye has somewhere to settle. How: This draws hairlines above and below the center row's position. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-top     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	height         : calc( var( --ver-rhy-p05 ) * 1rem );
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	height         : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	left           : 8%;
 	pointer-events : none;
 	position       : absolute;
 	right          : 8%;
-	top            : calc( 50% - var( --ver-rhy-p05 ) * 1rem / 2 ); /* What: Center Row Top. Why: The line must frame the middle row exactly. How: This sits the row-high band half its height above the reel's midpoint. */
+	top            : calc( 50% - var( --ver-rhy-p05 ) * 1rem / 2 );   /* Vertical Rhythm Base Plus 5 ~= 59.447px */ /* What: Center Row Top. Why: The line must frame the middle row exactly. How: This sits the row-high band half its height above the reel's midpoint. */
 
 
 }
 
-/* #endregion reel */
+/* #endregion picReeDiv */
 
 
 
-/* #region dissolve */
+/* #region picDisDiv */
 
-.dissolve { /* What: Picker Dissolve. Why: The dissolve shows one name at a time in a roomy centered stage. How: This centers the name in a full-width box with a minimum height. */
+.picDisDiv { /* What: Picker Dissolve Div. Why: The dissolve shows one name at a time in a roomy centered stage. How: This centers the name in a full-width box with a minimum height. */
 
 
 	align-items     : center;
 	display         : flex;
 	justify-content : center;
-	min-height      : calc( var( --ver-rhy-p07 ) * 1rem );
+	min-height      : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
 	position        : relative;
 	width           : 100%;
 
 
 }
 
-.dissolve-name { /* What: Picker Dissolve Name. Why: Each candidate should fade in rather than blink. How: This sets the name large and centered and fades it up each time it remounts. */
+.disNamSpa { /* What: Dissolve Name Span. Why: Each candidate should fade in rather than blink. How: This sets the name large and centered and fades it up each time it remounts. */
 
 
-	animation      : dissolveIn var( --dur-ani-p01 ) var( --mot-sta-eas );
-	font-size      : var( --fon-siz-p04 );
+	animation      : disNamSpaSwapFadeIn var( --dur-ani-p01 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	font-size      : var( --fon-siz-p04 );                                          /* Font Size Base Plus 4 ~= 33.876px */
 	font-weight    : 500;
 	letter-spacing : -0.025em;
 	text-align     : center;
@@ -171,18 +172,18 @@
 
 
 }
-.dissolve--settled .dissolve-name { /* What: Landed Picker Dissolve Name. Why: The final pick should land with a small bounce in the accent color. How: This colors it and plays the settle animation. */
+.picDisDiv--settled .disNamSpa { /* What: Landed Dissolve Name Span. Why: The final pick should land with a small bounce in the accent color. How: This colors it and plays the settle animation. */
 
 
-	animation : settleIn var( --dur-ani-p04 ) var( --mot-ove-eas );
-	color     : var(--acc-mai-col);
+	animation : disNamSpaLandPopIn var( --dur-ani-p04 ) var( --mot-ove-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+	color     : var( --acc-mai-col );                                         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Dissolve Name. Why: Someone who asked for less motion should see the landed name without the fade-through or bounce, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Dissolve Name Span. Why: Someone who asked for less motion should see the landed name without the fade-through or bounce, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
-	.dissolve:not([data-motion-force-active]) .dissolve-name { /* What: Still Picker Dissolve Name. Why: The name should simply be there. How: This turns its animations off and holds it fully visible in place, except inside a forced-motion preview. */
+	.picDisDiv:not( [data-motion-force-active] ) .disNamSpa { /* What: Still Dissolve Name Span. Why: The name should simply be there. How: This turns its animations off and holds it fully visible in place, except inside a forced-motion preview. */
 
 
 		animation : none;
@@ -194,14 +195,14 @@
 
 
 }
-@keyframes dissolveIn { /* What: Dissolve In. Why: A quick fade and rise reads as one name replacing the last. How: This fades the name in from slightly lower and smaller. */
+@keyframes disNamSpaSwapFadeIn { /* What: Dissolve Name Span Swap Fade In. Why: A quick fade and rise reads as one name replacing the last. How: This fades the name in from slightly lower and smaller. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(4px) scale(0.985);
+		transform : translateY( 4px ) scale( 0.985 );
 
 
 	}
@@ -217,14 +218,14 @@
 
 
 }
-@keyframes settleIn { /* What: Settle In. Why: A rise with a slight overshoot reads as the pick locking in. How: This lifts the name in, scales it past and back to size. */
+@keyframes disNamSpaLandPopIn { /* What: Dissolve Name Span Land Pop In. Why: A rise with a slight overshoot reads as the pick locking in. How: This lifts the name in, scales it past and back to size. */
 
 
 	0% {
 
 
 		opacity   : 0;
-		transform : translateY(6px) scale(0.97);
+		transform : translateY( var( --spa-ver-m03 ) ) scale( 0.97 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 	}
@@ -233,7 +234,7 @@
 
 
 		opacity   : 1;
-		transform : translateY(0) scale(1.03);
+		transform : translateY( 0 ) scale( 1.03 );
 
 
 	}
@@ -241,7 +242,7 @@
 	100% {
 
 
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
@@ -249,24 +250,24 @@
 
 }
 
-.dissolve-glow { /* What: Picker Dissolve Glow. Why: A soft halo marks the moment the pick lands. How: This draws a faint accent radial glow behind the name that grows in. */
+.disGloDiv { /* What: Dissolve Glow Div. Why: A soft halo marks the moment the pick lands. How: This draws a faint accent radial glow behind the name that grows in. */
 
 
-	animation      : glow var( --dur-ani-p04 ) var( --mot-dec-eas );
-	background     : radial-gradient(circle, var(--acc-tin-col), transparent 70%);
+	animation      : disGloDivLandBloom var( --dur-ani-p04 ) var( --mot-dec-eas );     /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	background     : radial-gradient( circle, var( --acc-tin-col ), transparent 70% ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 	border-radius  : 50%;
 	height         : 60%;
 	pointer-events : none;
 	position       : absolute;
 	width          : 60%;
-	z-index        : -1;
+	z-index        : -1;                                                               /* What: Glow Stack Level. Why: The halo has to sit behind the name it lights, within the dissolve's own stage. How: This puts it one level below the stage's other content. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Dissolve Glow. Why: The glow is decorative motion, unless the user asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Dissolve Glow Div. Why: The glow is decorative motion, unless the user asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
-	.dissolve:not([data-motion-force-active]) .dissolve-glow { /* What: Hidden Picker Dissolve Glow. Why: Without its bloom the glow adds nothing. How: This turns it off and hides it, except inside a forced-motion preview. */
+	.picDisDiv:not( [data-motion-force-active] ) .disGloDiv { /* What: Hidden Dissolve Glow Div. Why: Without its bloom the glow adds nothing. How: This turns it off and hides it, except inside a forced-motion preview. */
 
 
 		animation : none;
@@ -277,14 +278,14 @@
 
 
 }
-@keyframes glow { /* What: Glow. Why: The halo should bloom rather than appear. How: This fades and scales it up from smaller. */
+@keyframes disGloDivLandBloom { /* What: Dissolve Glow Div Land Bloom. Why: The halo should bloom rather than appear. How: This fades and scales it up from smaller. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : scale(0.6);
+		transform : scale( 0.6 );
 
 
 	}
@@ -293,7 +294,7 @@
 
 
 		opacity   : 1;
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
@@ -301,32 +302,32 @@
 
 }
 
-/* #endregion dissolve */
+/* #endregion picDisDiv */
 
 
 
-/* #region spot */
+/* #region picSpoDiv */
 
-.spot { /* What: Picker Spotlight. Why: The spotlight lists the candidates with the highlight hopping between them. How: This stacks the rows in a capped-width, capped-height column. */
+.picSpoDiv { /* What: Picker Spotlight Div. Why: The spotlight lists the candidates with the highlight hopping between them. How: This stacks the rows in a capped-width, capped-height column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m07 );
-	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten spotlight rows. */
-	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );
+	gap            : var( --spa-ver-m07 );                     /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten spotlight rows. */
+	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );      /* Vertical Rhythm Base Plus 12 ~= 425.596px */
 	overflow       : hidden;
 	width          : 100%;
 
 
 }
-@media (max-height: 750px) { /* What: Short Viewport Picker Spotlight. Why: A short screen needs the list to squeeze, the same as the picker stage around it. How: This applies only when the viewport is 750px tall or less. */
+@media ( max-height : 750px ) { /* What: Short Viewport Picker Spotlight Div. Why: A short screen needs the list to squeeze, the same as the picker stage around it. How: This applies only when the viewport is 750px tall or less. */
 
 
-	.spot { /* What: Squeezed Picker Spotlight. Why: The list should fit a short screen. How: This lowers its maximum height. */
+	.picSpoDiv { /* What: Squeezed Picker Spotlight Div. Why: The list should fit a short screen. How: This lowers its maximum height. */
 
 
-		max-height : calc( var( --ver-rhy-p03 ) * 1rem * 5.5 ); /* What: Short Spotlight Cap. Why: A short screen shows about five rows. How: This caps the list at five and a half spotlight rows. */
+		max-height : calc( var( --ver-rhy-p03 ) * 1rem * 5.5 ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Short Spotlight Cap. Why: A short screen shows about five rows. How: This caps the list at five and a half spotlight rows. */
 
 
 	}
@@ -334,42 +335,42 @@
 
 }
 
-.spot-row { /* What: Picker Spotlight Row. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, taking its alignment from --spot-row-text-align, and fades as the highlight moves. */
+.spoRowDiv { /* What: Spotlight Row Div. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, taking its alignment from --spo-row-tex, and fades as the highlight moves. */
 
 
-	border-radius : var( --rad-bor-sma );
-	color         : var(--tex-mut-col);
-	font-size     : var( --fon-siz-p01 );
-	height        : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding       : 0 var( --spa-hor-bas );
-	text-align    : var(--spot-row-text-align, inherit); /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spot-row-text-align, falling back to the inherited alignment. */
+	border-radius : var( --rad-bor-sma );                                                                        /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mut-col );                                                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size     : var( --fon-siz-p01 );                                                                        /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );                                                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding       : 0 var( --spa-hor-bas );                                                                      /* Spacing Horizontal Base ~= 14.572px */
+	text-align    : var( --spo-row-tex, inherit );                                                               /* Spotlight Row Text, set by its parent, falling back to inherit */ /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spo-row-tex, falling back to the inherited alignment. */
 	text-wrap     : pretty;
-	transition    : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m01 );
+	transition    : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
-.spot-row[data-row-highlight-active] { /* What: Highlighted Picker Spotlight Row. Why: The row the highlight is on should stand out. How: This darkens its background and sets it in the text color. */
+.spoRowDiv[data-row-highlight-active] { /* What: Highlighted Spotlight Row Div. Why: The row the highlight is on should stand out. How: This darkens its background and sets it in the text color. */
 
 
-	background : oklch(from var(--bac-pag-col) calc(l - 0.01) c h);
-	color      : var(--tex-mai-col);
+	background : oklch( from var( --bac-pag-col ) calc( l - 0.01 ) c h ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	color      : var( --tex-mai-col );                                    /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.spot--settled .spot-row[data-row-highlight-active] { /* What: Landed Picker Spotlight Row. Why: The final pick should stand out once the highlight settles. How: This fills it with the accent tint, colors its text accent, and scales it up slightly. */
+.picSpoDiv--settled .spoRowDiv[data-row-highlight-active] { /* What: Landed Spotlight Row Div. Why: The final pick should stand out once the highlight settles. How: This fills it with the accent tint, colors its text accent, and scales it up slightly. */
 
 
-	background  : var(--acc-tin-col);
-	color       : var(--acc-mai-col);
+	background  : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	color       : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	font-weight : 500;
-	transform   : scale(1.01);
+	transform   : scale( 1.01 );
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Spotlight Row. Why: Someone who asked for less motion shouldn't see the highlight fade and scale, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spotlight Row Div. Why: Someone who asked for less motion shouldn't see the highlight fade and scale, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
-	.spot:not([data-motion-force-active]) .spot-row { /* What: Still Picker Spotlight Row. Why: The highlight should simply switch. How: This turns its fades off, except inside a forced-motion preview. */
+	.picSpoDiv:not( [data-motion-force-active] ) .spoRowDiv { /* What: Still Spotlight Row Div. Why: The highlight should simply switch. How: This turns its fades off, except inside a forced-motion preview. */
 
 
 		transition : none;
@@ -380,6 +381,6 @@
 
 }
 
-/* #endregion spot */
+/* #endregion picSpoDiv */
 
 

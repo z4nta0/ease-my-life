@@ -264,7 +264,7 @@
 .aniStaDiv { /* What: Animation Stage Div. Why: The picked name or the running animation should sit centered in a fixed-height stage. How: This centers its content in a full-width box with a minimum height, and centers the spotlight's rows. */
 
 
-	--spot-row-text-align : center; /* What: Spotlight Row Alignment. Why: The spotlight's rows read best centered in this narrow stage. How: The picker strip's spotlight rows read this as their text alignment. */
+	--spo-row-tex : center; /* What: Spotlight Row Alignment. Why: The spotlight's rows read best centered in this narrow stage. How: The picker strip's spotlight rows read this as their text alignment. */
 
 	align-items     : center;
 	display         : flex;
