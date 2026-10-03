@@ -498,7 +498,7 @@
 
 
 }
-@supports (-moz-appearance: none) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+@supports ( -moz-appearance : none ) { /* What: Firefox Show Tab Strip. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
 	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
