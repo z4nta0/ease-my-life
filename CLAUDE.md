@@ -2095,7 +2095,10 @@ still passes.
     while disabled), each tag gets its own class matching its own hook
     (`rowAddBut`, `rowAddSpa`). Declarations both share go in one
     multi-selector rule, and a rule only one tag needs targets that tag's
-    class alone.
+    class alone. Variants both tags share (decided 2026-10-03) become a
+    modifier on each tag's class, sharing one multi-selector rule per
+    variant, e.g. the Stats heat cells' levels, `.hetCelIta--level2,
+    .hetCelBut--level2`.
   - **A copied element keeps one name across modules** (decided
     2026-10-02): when several modules carry their own copies of the same
     element's rules (e.g. the Data tab's section cards, headers, and
