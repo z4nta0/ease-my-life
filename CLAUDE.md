@@ -1900,6 +1900,42 @@ one, whether the motion comes from CSS or from JS.
 - The modules migrated before this rule were brought in line in one
   pass; everything else is checked as its file is next touched.
 
+### Animation performance
+Decided 2026-10-03, and not specific to this project. Covers every
+animation and transition, CSS or JS-driven (an `Element.animate` call, a
+`requestAnimationFrame` loop writing styles).
+- **Animate compositor properties.** Motion uses `transform` (translate,
+  scale, rotate) and `opacity`, which the browser can run on the GPU
+  without redoing layout or paint, plus `filter` where a blur or glow is
+  the effect itself. Layout properties (`top`/`left`/`right`/`bottom`,
+  `width`/`height`, `max-height`, `margin`, `padding`, `inset`, ...) and
+  heavy paint properties (an animated `box-shadow` spread, a moving
+  `background-position`, ...) are animated only when no compositor
+  version can produce the effect, e.g. a collapse that has to push the
+  content below it, which a `transform` can't do. Such an exception gets
+  a comment on its line saying why the compositor version won't work. A
+  color change (a hover's `color`, `background-color`, or
+  `border-color`) has no compositor equivalent and is fine as is, since
+  it only repaints the one element.
+- **Decide on `will-change` deliberately.** For every animation, check
+  whether the hint helps, and add it when it does:
+  - **Use it** when JS moves an element frame by frame through
+    `transform` (no CSS animation is running to promote it), or when an
+    animation must start without a first-frame hitch on something that
+    isn't on its own layer yet. Set it for the motion's duration only (JS
+    adds it when the motion starts and clears it when it ends, the way
+    `tabs/today/reorder.js` does for a drag), or put it in CSS only on an
+    element that exists solely while it's moving (e.g. `ui/
+    picker-strip.module.css`'s reel track).
+  - **Leave it off** a plain CSS animation or transition, which the
+    browser already promotes for exactly as long as it runs, and never
+    leave it permanently on an element that only moves now and then:
+    each hint holds a layer in memory, and on text it can soften the
+    rendering.
+- Existing animations are checked against both bullets as each file comes
+  up in the CSS pass, and a property swap that changes how the motion
+  looks is raised with the user first.
+
 ### CSS modules and JS hooks
 Decided 2026-09-27, for the CSS pass that follows the file-split pass. The
 pass runs in two stages, in this order: first every JS lookup across the
