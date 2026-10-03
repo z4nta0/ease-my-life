@@ -467,12 +467,12 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } ) {
 
 		},
 
-		{ // What: Closing Step Object. Why: This is the tour's own last step, closing out the Welcome Tour and pointing at where the per-page mini-tours will appear next. How: This spotlights .groups-dnd, scrolled to the top, with a 'Done' priStr that finishes the tour instead of advancing.
+		{ // What: Closing Step Object. Why: This is the tour's own last step, closing out the Welcome Tour and pointing at where the per-page mini-tours will appear next. How: This spotlights .groDraDiv, scrolled to the top, with a 'Done' priStr that finishes the tour instead of advancing.
 
 
 			bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to the previous, Settings step. How: GuiTouCom shows its own Back button whenever this is true.
 			priStr : 'Done',                                  // What: Primary String. Why: This is the tour's own last step, so its main action finishes the tour instead of advancing. How: GuiTouCom reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
-			selStr : '[data-element-name-hook~="groDraDiv"]', // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuiTouCom spotlights whatever .groups-dnd matches.
+			selStr : '[data-element-name-hook~="groDraDiv"]', // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuiTouCom spotlights whatever .groDraDiv matches.
 			sttBoo : true,                                    // What: Scroll-To-Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuiTouCom scrolls all the way to 0 instead of just nudging the target into view.
 			tabStr : 'today',                                 // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 			titStr : 'You’re all finished!',                  // What: Title String. Why: This closing step's own coach card needs a heading marking the tour's own end. How: GuiTouCom renders this as the step's own heading text.

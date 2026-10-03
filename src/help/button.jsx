@@ -42,9 +42,9 @@ import cssModObj from './button.module.css'; // What: CSS Module Object. Why: Th
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actModBoo - Active Mode Boolean: Whether help mode is
- *                          currently on for this page; drives both the
- *                          "is-on" styling and the button's own pressed
- *                          state.
+ *                          currently on for this page; drives the button's
+ *                          own pressed state, which its module styles as
+ *                          on.
  * @param props.onClick   - On Click: Called when the button is pressed. The
  *                          caller owns actually flipping its own on/off
  *                          state.

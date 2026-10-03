@@ -160,16 +160,17 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
  *
  * @summary
  * The recurring tour's own Step 3: all 4 non-"Once" pills of the Repeat
- * segmented control, highlighted together as one combined region. '.seg-btn ~
- * .seg-btn' matches every pill after the first, that is every option except
- * "Once", since schedule-editor.jsx's own REP_OPT_ARR always lists "Once" first.
+ * segmented control, highlighted together as one combined region. The
+ * segConBut ~ segConBut hook pair matches every pill after the first, that is
+ * every option except "Once", since schedule-editor.jsx's own REP_OPT_ARR
+ * always lists "Once" first.
  *
- * Also scoped to '.seg[aria-label="Repeat"]' specifically, not just
- * 'remAddDiv', since Monthly/Yearly's own Date/Weekday toggle below
- * is a second, nested SegConCom control ('aria-label="Day selection"');
- * without that extra scoping, finTarFun's own querySelectorAll would match its
- * pills too the moment one of those repeat kinds is selected, unioning the
- * highlight down to include that whole control as well.
+ * Also scoped to the segConDiv hook with aria-label="Repeat" specifically, not
+ * just 'remAddDiv', since Monthly/Yearly's own Date/Weekday toggle below is a
+ * second, nested SegConCom control ('aria-label="Day selection"'); without
+ * that extra scoping, finTarFun's own querySelectorAll would match its pills
+ * too the moment one of those repeat kinds is selected, unioning the highlight
+ * down to include that whole control as well.
  *
  * No cirBoo: there is no single correct pill to click, the prefilled "Weekly"
  * is just a starting point the user is free to change.

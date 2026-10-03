@@ -13,9 +13,9 @@
  * line, so a height glide would read as janky; it rides a stronger, slower
  * fade instead.
  *
- * The rows' declarations are copied from the shared mode-radio classes the
- * Data tab still uses, resolved for the unpadded Appearance card this list
- * always sits in, until the design-system pass merges them.
+ * The rows' declarations are copied from the Data tab's own mode radio rules
+ * (modRadDiv and modOptLab), resolved for the unpadded Appearance card this
+ * list always sits in, until the design-system pass merges them.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

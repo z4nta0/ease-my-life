@@ -8,7 +8,7 @@ import React     from 'react';           // What: React. Why: This is the UI lib
 
 
 import { APP_NAM_OBJ  } from './platform/appearance.js';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through this file's theme functions. How: This is read as APP_NAM_OBJ.resTheFun, resCusFun, PAL_SET_OBJ and appPalFun in the palette effect.
-import { BacFloCom    } from './ui/bg-flourish.jsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared main-inner ref and the current tab id.
+import { BacFloCom    } from './ui/bg-flourish.jsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared maiInnDiv ref and the current tab id.
 import { durMilFun    } from './utils/rhythm.js';                // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FeaTouCom    } from './onboarding/app-features.jsx';    // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
 import { IcoSvgCom    } from './ui/icon.jsx';                    // What: Icon Svg Component. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
@@ -435,7 +435,7 @@ function AppRooCom () {
 
 
 
-	const maiInnRef = React.useRef( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .maiInnDiv wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared main-inner div's ref prop below and read by BacFloCom to measure it.
+	const maiInnRef = React.useRef( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .maiInnDiv wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared maiInnDiv div's ref prop below and read by BacFloCom to measure it.
 
 
 
@@ -720,10 +720,10 @@ function AppRooCom () {
 
 				data-element-name-hook='appConMai'
 				data-tab-today-active={ actIdeStr === 'today' || undefined } // What: Tab Today Active Attribute. Why: The Today tab runs edge to edge, so the main area drops its side padding while it shows. How: This sets the presence-only attribute while actIdeStr is 'today' and removes it otherwise.
-			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active. How: This renders the Today tab directly, or wraps every other tab in a shared main-inner div, based on actIdeStr. Its data-element-name-hook is read by every tab's, tour's, and help surface's own scroll-into-view code. */ }
+			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active. How: This renders the Today tab directly, or wraps every other tab in a shared maiInnDiv div, based on actIdeStr. Its data-element-name-hook is read by every tab's, tour's, and help surface's own scroll-into-view code. */ }
 
 
-				{ actIdeStr === 'today' && ( // What: Today Tab Visibility Check. Why: The Today tab is rendered directly, not through the shared main-inner wrapper other tabs use. How: This renders TabTodCom, wrapped in its own fade/key transition div, only while actIdeStr is 'today'.
+				{ actIdeStr === 'today' && ( // What: Today Tab Visibility Check. Why: The Today tab is rendered directly, not through the shared maiInnDiv wrapper other tabs use. How: This renders TabTodCom, wrapped in its own fade/key transition div, only while actIdeStr is 'today'.
 
 
 					<div
@@ -750,7 +750,7 @@ function AppRooCom () {
 
 				) }
 
-				{ actIdeStr !== 'today' && ( // What: Other Tabs Visibility Check. Why: Every tab except Today shares one main-inner wrapper for its background flourish and fade transition. How: This renders the shared wrapper, and inside it whichever specific tab matches actIdeStr, only while actIdeStr isn't 'today'.
+				{ actIdeStr !== 'today' && ( // What: Other Tabs Visibility Check. Why: Every tab except Today shares one maiInnDiv wrapper for its background flourish and fade transition. How: This renders the shared wrapper, and inside it whichever specific tab matches actIdeStr, only while actIdeStr isn't 'today'.
 
 
 					<div
@@ -764,7 +764,7 @@ function AppRooCom () {
 						<BacFloCom
 							meaEleRef={ maiInnRef }
 							tabIdeStr={ actIdeStr }
-						/>{ /* What: Background Flourish Component. Why: The decorative background glyphs need to know which tab they're behind and where to measure their bounds. How: This is passed the shared main-inner ref and the current tab id. */ }
+						/>{ /* What: Background Flourish Component. Why: The decorative background glyphs need to know which tab they're behind and where to measure their bounds. How: This is passed the shared maiInnDiv ref and the current tab id. */ }
 
 
 

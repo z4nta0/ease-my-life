@@ -69,7 +69,7 @@ import { uniRecFun    } from './geometry.js';      // What: Union Rect Function.
 
 // #region Constants
 
-const NAV_TAB_ARR = [ // What: Nav Tab Array. Why: The shared nav tip describes each of the 5 tabs in the same icon/label/description form. How: NAV_HEL_OBJ's own bodEle maps every row to one help-nav-item block.
+const NAV_TAB_ARR = [ // What: Nav Tab Array. Why: The shared nav tip describes each of the 5 tabs in the same icon/label/description form. How: NAV_HEL_OBJ's own bodEle maps every row to one navIteDiv block.
 
 
 	{ icoStr : 'today',    labStr : 'Today',    desStr : 'This is the main page of the app and contains your auto-generated daily todo list.' }, // What: Today Tab Row. Why: This describes the Today tab inside the shared nav tip. How: The map below renders its icon, label and description.
@@ -116,10 +116,10 @@ const NAV_HEL_OBJ = { // What: Nav Help Object. Why: Every page shares the same 
 	bodEle : ( // What: Body Element. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps NAV_TAB_ARR, reusing each tab's own real nav icon so it can never drift from the real button.
 
 
-		<>{ /* What: Nav Tip Fragment. Why: The tip body is several sibling blocks with no wrapper of its own. How: This groups one help-nav-item per NAV_TAB_ARR row. */ }
+		<>{ /* What: Nav Tip Fragment. Why: The tip body is several sibling blocks with no wrapper of its own. How: This groups one navIteDiv per NAV_TAB_ARR row. */ }
 
 
-			{ NAV_TAB_ARR.map( ( curTabObj ) => ( // What: Tab Row Map. Why: Each tab row renders the same icon/label/description block. How: This maps every NAV_TAB_ARR row to a help-nav-item div.
+			{ NAV_TAB_ARR.map( ( curTabObj ) => ( // What: Tab Row Map. Why: Each tab row renders the same icon/label/description block. How: This maps every NAV_TAB_ARR row to a navIteDiv div.
 
 
 				<div

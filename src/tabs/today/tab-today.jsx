@@ -14,7 +14,7 @@ import { ButBasCom    } from '../../ui/button.jsx';                 // What: But
 import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math shared with the rest of the app. How: This is called for perKeyFun/comPerFun throughout generate() and the charging checks.
 import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntEdiCom, gated on whichever key/eid currently owns the open state.
 import { CON_NAM_OBJ  } from '../../core/conditionals.js';          // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
-import { createPortal } from 'react-dom';                           // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
+import { createPortal } from 'react-dom';                           // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tabFadDiv wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
 import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { emlTouObj    } from '../../state/tour-bus.js';             // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
 import { EntCarCom    } from './entry-card.jsx';                    // What: Entry Card Component. Why: Every Today entry renders as one card row. How: This is rendered once per entry inside its group.
@@ -129,7 +129,7 @@ import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use
 function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPagFun, onStaPicFun, staAppObj } ) {
 
 
-	const todBodRef = React.useRef( null ); // What: Today Body Reference. Why: Today does not share app.jsx's shared .maiInnDiv wrapper (see .today-body's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .today-body div's own ref prop below and read by BacFloCom to measure it.
+	const todBodRef = React.useRef( null ); // What: Today Body Reference. Why: Today does not share app.jsx's shared .maiInnDiv wrapper (see .todBodDiv's own comment below), so it measures/caches its own flourish instance instead of reusing a ref threaded down from there. How: This is attached to the .todBodDiv div's own ref prop below and read by BacFloCom to measure it.
 
 
 
@@ -706,7 +706,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const [ celRecObj, setCelRecObj ] = React.useState( null ); // What: Celebration Rect Object And Setter. Why: See the doc comment just above. How: This is computed by the celebration effect below, right before the overlay portal renders from it.
 
-	const carAreRef = React.useRef( null ); // What: Card Area Reference. Why: The celebration effect needs a DOM handle on the cards column itself to measure celRecObj's own horizontal bounds. How: This is attached to the .today-groups div's own ref prop further down.
+	const carAreRef = React.useRef( null ); // What: Card Area Reference. Why: The celebration effect needs a DOM handle on the cards column itself to measure celRecObj's own horizontal bounds. How: This is attached to the .todGroDiv div's own ref prop further down.
 
 	// #endregion Celebration Overlay Rect
 
@@ -818,7 +818,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				: [];                                                                          // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
 
 
-			carEleLis.forEach( ( curCarEle, curIndNum ) => { // What: Card Exhale Stagger Loop. Why: Each card's own exhale needs a slightly later delay than the one before it, so the cascade reads as a wave. How: This sets a CSS variable and adds the is-exhaling class to each card in turn.
+			carEleLis.forEach( ( curCarEle, curIndNum ) => { // What: Card Exhale Stagger Loop. Why: Each card's own exhale needs a slightly later delay than the one before it, so the cascade reads as a wave. How: This sets a CSS variable and sets the data-card-exhale-active attribute on each card in turn.
 
 
 				curCarEle.style.setProperty( '--exh-car-del', `${ curIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card starts its exhale a beat after the one before it. How: This sets --exh-car-del to one m03 duration step per card index. // Duration Base Minus 3 ~= 67.9ms
@@ -1444,7 +1444,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ actGroStr, setActGroStr ] = React.useState( '__reminders' ); // What: Active Group String And Setter. Why: This is the single source of truth for which rail button is highlighted. How: This starts on the Reminders sentinel and is updated by the scroll-spy effect below.
 
 	const secRefObj = React.useRef( {} );    // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
-	const maiScrRef = React.useRef( null );  // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .today-layout div's own ref prop further down.
+	const maiScrRef = React.useRef( null );  // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jumGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .todLayDiv div's own ref prop further down.
 	const skiSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A programmatic scroll (jumGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
 	const pinGroRef = React.useRef( null );  // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jumGroFun and read/cleared by the scroll-spy effect below.
 
@@ -1688,7 +1688,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const [ banCloBoo, setBanCloBoo ] = React.useState( false ); // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
 	const [ merProObj, setMerProObj ] = React.useState( null );  // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own merPenObj prop.
 
-	const groDndRef = React.useRef( null ); // What: Group Dnd Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groups-dnd div's own ref prop further down.
+	const groDndRef = React.useRef( null ); // What: Group Dnd Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
 	const shoOrdRef = React.useRef( [] );   // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded bloOrdArr. How: This is written just before the return JSX below and read by groDraFun's own onDroOrdFun.
 	const ordSnaRef = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by opeModFun and read/cleared by cloModFun.
 
@@ -3720,7 +3720,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-													<span>{ visDonNum + tasDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ dueTasArr.length + tasCarNum }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+													<span>{ visDonNum + tasDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ dueTasArr.length + tasCarNum }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
 
 
 												</span>
@@ -3770,7 +3770,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-													<span>{ touDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ ONB_EPT_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+													<span>{ touDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ ONB_EPT_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
 
 
 												</span>
@@ -3820,7 +3820,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-												<span>{ curDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ curGroObj.entArr.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+												<span>{ curDonNum }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ curGroObj.entArr.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
 
 
 											</span>
@@ -3858,7 +3858,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										<span className={ cssModObj.raiCouSpa }>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
 
-											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ APP_FEA_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via rail-of. */ }
+											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }</span>{ /* What: Rail Done Span Element. Why: The rail pill shows how many of this block's own items are done. How: This renders the done count. */ }<span className={ cssModObj.raiTotSpa }>/{ APP_FEA_ARR.length }</span>{ /* What: Rail Total Span Element. Why: The done count needs its own total beside it. How: This renders a slash and the block's own total, styled dimmer via raiTotSpa. */ }
 
 
 										</span>

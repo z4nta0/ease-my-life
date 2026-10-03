@@ -16,7 +16,7 @@ import React     from 'react';                    // What: React. Why: This is t
  * @summary
  * Subtle decorative math/randomness glyphs sprinkled in the empty side margins
  * around the main content column, never behind actual content, purely in the
- * gutters .maiInnDiv (or Today's own .today-body, which shares the same
+ * gutters .maiInnDiv (or Today's own .todBodDiv, which shares the same
  * centered-column shape) leaves open once there's enough room for at least a
  * couple of grid columns (see MIN_COL_NUM below).
  *
@@ -75,7 +75,7 @@ const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs 
  *
  * @summary
  * Originally calibrated against a 1920px-wide viewport on a tab using the
- * wider of the app's two content max-widths (Today's own .today-body, 960px,
+ * wider of the app's two content max-widths (Today's own .todBodDiv, 960px,
  * the tighter case, leaving less gutter than the other tabs' 720px at the same
  * viewport width): (1920 - 40 padding - 960) / 2 = 460px of gutter, for 6 full
  * columns + 1 half column. Sized down twice since (71->60->50, 60->48->40) for
@@ -570,7 +570,7 @@ function genSidFun( gutWidNum, conHeiNum ) {
  * Loads (from floCacMap) or generates this tab's own left/right flourish
  * items, caching the result once generated. Uses a plain useEffect
  * rather than useLayoutEffect deliberately: meaEleRef points at this
- * component's own PARENT (.maiInnDiv / .today-body), and React attaches
+ * component's own PARENT (.maiInnDiv / .todBodDiv), and React attaches
  * refs and fires layout effects bottom-up within the same commit, so a
  * child's useLayoutEffect would run before its ancestor's own ref has
  * even been attached, leaving meaEleRef.current still null. A plain

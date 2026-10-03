@@ -2588,7 +2588,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							>{ /* What: Set About Div Element. Why: The brand name, version, and links all belong to one identity block. How: This wraps the brand span and the version/creator/GitHub spans. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-								<div className={ cssModObj.aboBraDiv }>{ /* What: Set About Brand Div Element. Why: The brand name needs its own small wrapper, separate from the version/link lines below it. How: This wraps the single brand-name span. */ }
+								<div className={ cssModObj.aboBraDiv }>{ /* What: Set About Brand Div Element. Why: The brand name needs its own small wrapper, separate from the version/link lines below it. How: This wraps the single aboNamSpa span. */ }
 
 
 									<span className={ cssModObj.aboNamSpa }>Ease My Life</span>{ /* What: Set About Name Span Element. Why: The identity block needs its own visible app name. How: This renders the fixed text "Ease My Life". */ }

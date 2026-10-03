@@ -2441,7 +2441,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					className={ cssModObj.heaLeaDiv }
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the section-h title block. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Lead Div Element. Why: The brand mark and the page title sit together as the header's own lead row. How: This wraps the brand button and the heaTitDiv title block. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<button

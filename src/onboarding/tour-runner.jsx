@@ -145,7 +145,7 @@ const safBotFun = () => { // What: Safe Bottom Function. Why: A bottom-anchored 
  * the header, that rail too, plus the Edit Mode banner (present whenever
  * editMode is on, at any width; see tab-today.jsx's ediBanDiv, which
  * sits sticky just below the header and, despite being in normal flow, does
- * not actually push .today-layout's content down to clear it). A target
+ * not actually push .todLayDiv's content down to clear it). A target
  * scrolled up underneath any of these would be genuinely HIDDEN (they are
  * sticky, so they keep painting on top of whatever scrolls beneath them), not
  * just visually crowded; this floor exists to stop that, and applies to the

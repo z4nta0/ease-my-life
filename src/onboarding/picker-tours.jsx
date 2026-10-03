@@ -248,7 +248,7 @@ const PIC_SAM_OBJ = Object.fromEntries( [ ONB_EXA_OBJ, ...ONB_ESP_ARR ].map( ( c
  * BOO_STE_OBJ = Boost Step Object
  *
  * @summary
- * Highlights the Boost row, the second .pie-row, right after Weight, in the
+ * Highlights the Boost row, the second .ediRowDiv, right after Weight, in the
  * editor's own isaDynBoo-only branch (Dynamic mode specifically; unlike
  * Weight, Weighted-mode pickers do not get this row at all). Not interactive
  * (there is no cirBoo, since the BooResCom control only ever does something
@@ -524,7 +524,7 @@ const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the i
  * WEI_STE_OBJ = Weight Step Object
  *
  * @summary
- * Highlights the Weight stepper row, the first .pie-row in the editor's own
+ * Highlights the Weight stepper row, the first .ediRowDiv in the editor's own
  * hasWeiBoo branch (Weighted/Dynamic modes only, mutually exclusive with the
  * isaEasBoo branch, so reusing the same :first-child position is safe since
  * only one of the two ever renders for a given picker). PicTouCom only
@@ -637,7 +637,7 @@ const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This bui
  * buiLatFun = Build Latest Function
  *
  * @summary
- * Highlights the Latest/Longest row, the second .pie-row in the item editor,
+ * Highlights the Latest/Longest row, the second .ediRowDiv in the item editor,
  * right after Soonest/Shortest. It has the same mode gating as buiSooFun
  * below: PicTouCom only includes it for an Ease Up/Ease Down sample. Its body
  * is this sample's own picCopObj.latEle when set, falling back to DEF_LAT_ELE.
@@ -656,7 +656,7 @@ const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This bui
  *
 */
 
-const buiLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This builds the step that highlights the item editor's own Latest/Longest row, the second .pie-row right after Soonest/Shortest, same mode gating and per-picker override as buiSooFun above. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_LAT_ELE.
+const buiLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This builds the step that highlights the item editor's own Latest/Longest row, the second .ediRowDiv right after Soonest/Shortest, same mode gating and per-picker override as buiSooFun above. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_LAT_ELE.
 
 
 	bacBoo : true,                                                                                       // What: Back Boolean. Why: The user should always be able to return to the previous, Soonest/Shortest step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -871,10 +871,10 @@ const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Wh
  * buiSooFun = Build Soonest Function
  *
  * @summary
- * Highlights the Soonest/Shortest row, the first .pie-row in the editor's own
+ * Highlights the Soonest/Shortest row, the first .ediRowDiv in the editor's own
  * isaEasBoo branch. Only meaningful for Ease Up/Ease Down samples (the row
  * does not exist at all for Weighted/Dynamic/Random modes, where this same
- * .pie-row position is a Weight stepper instead); PicTouCom only includes this
+ * .ediRowDiv position is a Weight stepper instead); PicTouCom only includes this
  * step when the sample's own mode is one of the ease modes (see its own
  * isaEasBoo below). The whole body is per-picker (picCopObj.sooEle),
  * defaulting to the original Ease Up/"task item"/"week" wording; Daily Chores

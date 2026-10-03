@@ -652,7 +652,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						className={ cssModObj.ediRowDiv }
 
 						data-element-name-hook='ediRowDiv'
-					>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight-stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Weight Row Div Element. Why: This is the weighted/dynamic weight control row. How: This renders the label/subtitle plus the plus/minus weight stepper below. Its data-element-name-hook is read by the picker mini-tours, help mode's Today catalog, the help items' own unit-word lookups, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 						<div className={ cssModObj.ediLabDiv }>{ /* What: Row Label Div Element. Why: The label and the live weight subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }

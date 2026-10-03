@@ -848,7 +848,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 
 
 
-		if ( cliEveObj.target.closest( '[data-element-name-hook~="entNamInp"]' ) ) return; // What: Name Input Guard. Why: Clicking into the inline rename field must not toggle the row. How: This bails out when the click landed inside .entry-card-name-input.
+		if ( cliEveObj.target.closest( '[data-element-name-hook~="entNamInp"]' ) ) return; // What: Name Input Guard. Why: Clicking into the inline rename field must not toggle the row. How: This bails out when the click landed inside .entNamInp.
 
 
 
