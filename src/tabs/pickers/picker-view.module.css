@@ -25,125 +25,134 @@
 
 
 
-/* #region picker-view */
+/* #region picVieDiv */
 
-.picker-view { /* What: Picker View. Why: The header, hints, run, and pool stack as one view. How: This stacks them in a spaced column. */
+.picVieDiv { /* What: Picker View Div. Why: The header, hints, run, and pool stack as one view. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-p01 );
+	gap            : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
 
-/* #region picker-h */
 
-.picker-h { /* What: Picker Header. Why: The name block sits left of the Edit button, aligned to its top. How: This spreads them across a top-aligned row. */
+/* #region picHeaHea */
+
+.picHeaHea { /* What: Picker Header Header. Why: The name block sits left of the Edit button, aligned to its top. How: This spreads them across a top-aligned row. */
 
 
 	align-items     : flex-start;
 	display         : flex;
-	gap             : var( --spa-hor-bas );
+	gap             : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
 	justify-content : space-between;
 
 
 }
-.picker-h > div { /* What: Picker Header Name Block. Why: The mode pill sits below the name and needs a little room above it. How: This sets the --pill-margin-top PilTagCom reads. */
 
 
-	--pill-margin-top : var( --spa-ver-m03 );
+/* #region heaTitDiv */
+
+.heaTitDiv { /* What: Header Title Div. Why: The mode pill sits below the name and needs a little room above it. How: This sets the --pill-margin-top PilTagCom reads. */
+
+
+	--pill-margin-top : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 }
 
-.kicker { /* What: Kicker. Why: A small eyebrow label sits above the picker's name and over the pool. How: This sets it in small uppercase muted mono type. */
+.picKicDiv,
+.pooKicSpa { /* What: Picker Kicker Div And Pool Kicker Span. Why: A small eyebrow label sits above the picker's name and over the pool. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	font-weight    : 500;
 	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-p01 );
+	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
 	text-transform : uppercase;
 
 
 }
 
-.picker-title { /* What: Picker Title. Why: The picker's name heads the view. How: This sets it large and tight. */
+.picTitHea { /* What: Picker Title Heading. Why: The picker's name heads the view. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p03 );
+	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	margin         : var( --spa-ver-m05 ) 0 0;
+	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
 
-/* #endregion picker-h */
+/* #endregion heaTitDiv */
+
+/* #endregion picHeaHea */
 
 
 
-.picker-hint { /* What: Picker Hint. Why: A hint under the header explains the picker's mode. How: This sets muted body text with a capped line length. */
+.picHinPar { /* What: Picker Hint Paragraph. Why: A hint under the header explains the picker's mode. How: This sets muted body text with a capped line length. */
 
 
-	color     : var(--tex-mut-col);
-	font-size : var( --fon-siz-p01 );
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	margin    : 0;
-	max-width : var( --tex-wid-bas );
+	max-width : var( --tex-wid-bas ); /* Text Width Base Maximum ~= 29.207em */
 	text-wrap : pretty;
 
 
 }
-.picker-hint + .picker-hint { /* What: Following Picker Hint. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
+.picHinPar + .picHinPar { /* What: Following Picker Hint. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
 
 
-	margin-top : var( --spa-ver-m02 );
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
 
 
 
-/* #region picker-run */
+/* #region picRunDiv */
 
-.picker-run { /* What: Picker Run. Why: The stage and its buttons form one block the page tour can highlight together. How: This stacks them in a column spaced like the view. */
+.picRunDiv { /* What: Picker Run Div. Why: The stage and its buttons form one block the page tour can highlight together. How: This stacks them in a column spaced like the view. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-p01 );
+	gap            : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
 
-/* #region picker-stage */
 
-.picker-stage { /* What: Picker Stage. Why: The run plays out on a card whose height stays fixed at the reel's, so the buttons under it never jump as the phase changes. How: This centers the phase's content in a padded, rounded card held at the reel's height, five reel rows plus padding. */
+/* #region picStaDiv */
+
+.picStaDiv { /* What: Picker Stage Div. Why: The run plays out on a card whose height stays fixed at the reel's, so the buttons under it never jump as the phase changes. How: This centers the phase's content in a padded, rounded card held at the reel's height, five reel rows plus padding. */
 
 
 	align-items     : center;
-	background      : var(--bac-sur-col);
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-xla );
+	background      : var( --bac-sur-col );                                               /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                    /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-xla );                                               /* Radius Border Extra Large ~= 19.304px */
 	display         : flex;
 	justify-content : center;
-	min-height      : calc( var( --ver-rhy-p05 ) * 1rem * 5 + 2 * var( --spa-ver-p03 ) ); /* What: Stage Minimum. Why: The stage stays the reel's height so the buttons under it never jump. How: This fits five reel rows plus the stage's own padding. */
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem * 5 + 2 * var( --spa-ver-p03 ) ); /* Vertical Rhythm Base Plus 5 ~= 59.447px, Spacing Vertical Base Plus 3 ~= 33.876px */ /* What: Stage Minimum. Why: The stage stays the reel's height so the buttons under it never jump. How: This fits five reel rows plus the stage's own padding. */
 	overflow        : hidden;
-	padding         : var( --spa-ver-p03 ) var( --spa-hor-p01 );
+	padding         : var( --spa-ver-p03 ) var( --spa-hor-p01 );                          /* Spacing Vertical Base Plus 3 ~= 33.876px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 	position        : relative;
 
 
 }
-@media (max-height: 750px) { /* What: Short Picker Stage. Why: On a short viewport the full stage would push the buttons below the fold, and clipping the reel a little is the better tradeoff. How: This applies only when the viewport matches (max-height: 750px). */
+@media ( max-height : 750px ) { /* What: Short Picker Stage. Why: On a short viewport the full stage would push the buttons below the fold, and clipping the reel a little is the better tradeoff. How: This applies only when the viewport matches ( max-height : 750px ). */
 
 
-	.picker-stage { /* What: Shorter Picker Stage. Why: The buttons must stay reachable. How: This lowers the stage to three reel rows plus padding. */
+	.picStaDiv { /* What: Shorter Picker Stage Div. Why: The buttons must stay reachable. How: This lowers the stage to three reel rows plus padding. */
 
 
-		min-height : calc( var( --ver-rhy-p05 ) * 1rem * 3 + 2 * var( --spa-ver-p03 ) ); /* What: Short Stage Minimum. Why: A short screen shows three reel rows. How: This fits three reel rows plus the stage's own padding. */
+		min-height : calc( var( --ver-rhy-p05 ) * 1rem * 3 + 2 * var( --spa-ver-p03 ) ); /* Vertical Rhythm Base Plus 5 ~= 59.447px, Spacing Vertical Base Plus 3 ~= 33.876px */ /* What: Short Stage Minimum. Why: A short screen shows three reel rows. How: This fits three reel rows plus the stage's own padding. */
 
 
 	}
@@ -151,41 +160,42 @@
 
 }
 
-/* #region stage-idle */
 
-.stage-idle,
-.stage-empty { /* What: Stage Idle And Empty States. Why: Before a run, and when nothing can be picked, the stage shows a big centered figure over a label. How: This stacks them in a centered column. */
+/* #region staIdlDiv */
+
+.staIdlDiv,
+.staEmpDiv { /* What: Stage Idle Div And Stage Empty Div. Why: Before a run, and when nothing can be picked, the stage shows a big centered figure over a label. How: This stacks them in a centered column. */
 
 
 	align-items    : center;
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m05 );
+	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
 	text-align     : center;
 
 
 }
 
-.stage-idle-num { /* What: Stage Count. Why: The pool's size is the stage's headline before a run. How: This sets it large in tabular mono type. */
+.staNumDiv { /* What: Stage Number Div. Why: The pool's size is the stage's headline before a run. How: This sets it large in tabular mono type. */
 
 
-	color                : var(--tex-mai-col);
-	font-family          : var(--fon-fam-sec);
-	font-size            : var( --fon-siz-p06 );
+	color                : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p06 ); /* Font Size Base Plus 6 ~= 59.447px */
 	font-variant-numeric : tabular-nums;
 	font-weight          : 400;
 	letter-spacing       : -0.04em;
-	line-height          : var( --ver-rhy-m01 );
+	line-height          : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
 
 
 }
-@container app (max-width: 560px) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches (max-width: 560px). */
+@container app ( max-width : 560px ) { /* What: Narrow Stage Count. Why: A narrow app needs a smaller figure. How: This applies only when the app matches ( max-width : 560px ). */
 
 
-	.stage-idle-num { /* What: Smaller Stage Count. Why: The figure has less room. How: This drops it one step, to the extra large 4 font size. */
+	.staNumDiv { /* What: Smaller Stage Number Div. Why: The figure has less room. How: This drops it one step, to the extra large 4 font size. */
 
 
-		font-size : var( --fon-siz-p05 );
+		font-size : var( --fon-siz-p05 ); /* Font Size Base Plus 5 ~= 44.876px */
 
 
 	}
@@ -193,42 +203,41 @@
 
 }
 
-.stage-idle-lbl { /* What: Stage Label. Why: The figure's label reads as quiet metadata under it. How: This sets it in small uppercase muted mono type, capped at the small text width. */
+.staLabDiv { /* What: Stage Label Div. Why: The figure's label reads as quiet metadata under it. How: This sets it in small uppercase muted mono type, capped at the small text width. */
 
 
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	letter-spacing : 0.06em;
-	margin-bottom  : var( --spa-ver-m02 );
-	max-width      : var( --tex-wid-sma );
+	margin-bottom  : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	max-width      : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
 	text-transform : uppercase;
 
 
 }
 
-/* #endregion stage-idle */
+/* #endregion staIdlDiv */
 
 
+/* #region staSenDiv */
 
-/* #region stage-sent */
-
-.stage-sent { /* What: Stage Sent Confirmation. Why: After Send to Today, the stage briefly confirms what was sent. How: This stacks the check, name, and label in a centered column that rises in. */
+.staSenDiv { /* What: Stage Sent Div. Why: After Send to Today, the stage briefly confirms what was sent. How: This stacks the check, name, and label in a centered column that rises in. */
 
 
 	align-items    : center;
-	animation      : sentRise var( --dur-ani-p03 ) var( --mot-ove-eas );
+	animation      : staSenDivOpenFadeIn var( --dur-ani-p03 ) var( --mot-ove-eas ); /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m01 );
+	gap            : var( --spa-ver-m01 );                                          /* Spacing Vertical Base Minus 1 = 11px */
 	text-align     : center;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Stage Sent Confirmation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stage Sent Confirmation. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.stage-sent { /* What: Still Stage Sent Confirmation. Why: The confirmation should simply appear. How: This turns its rise off and pins it in place. */
+	.staSenDiv { /* What: Still Stage Sent Div. Why: The confirmation should simply appear. How: This turns its rise off and pins it in place. */
 
 
 		animation : none;
@@ -240,14 +249,14 @@
 
 
 }
-@keyframes sentRise { /* What: Sent Rise. Why: A short rise reads as the confirmation arriving. How: This fades it in from slightly below. */
+@keyframes staSenDivOpenFadeIn { /* What: Stage Sent Div Open Fade In Keyframes. Why: A short rise reads as the confirmation arriving. How: This fades it in from slightly below. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(8px);
+		transform : translateY( var( --spa-ver-m02 ) ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 	}
@@ -264,25 +273,25 @@
 
 }
 
-.stage-sent-check { /* What: Stage Sent Check. Why: A filled check leads the confirmation. How: This draws an accent circle around the check that pops in. */
+.senCheDiv { /* What: Sent Check Div. Why: A filled check leads the confirmation. How: This draws an accent circle around the check that pops in. */
 
 
 	align-items     : center;
-	animation       : sentPop var( --dur-ani-p04 ) var( --mot-bou-eas );
-	background      : var(--acc-mai-col);
+	animation       : senCheDivOpenPopIn var( --dur-ani-p04 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	background      : var( --acc-mai-col );                                         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius   : 50%;
-	color           : var(--bac-pag-col);
+	color           : var( --bac-pag-col );                                         /* Background Page Color = oklch( 0.985 0.003 240 ) */
 	display         : flex;
-	height          : calc( var( --ver-rhy-p05 ) * 1rem );
+	height          : calc( var( --ver-rhy-p05 ) * 1rem );                          /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	justify-content : center;
-	width           : calc( var( --ver-rhy-p05 ) * 1rem );
+	width           : calc( var( --ver-rhy-p05 ) * 1rem );                          /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Stage Sent Check. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Stage Sent Check. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.stage-sent-check { /* What: Still Stage Sent Check. Why: The check should simply appear. How: This turns its pop off and pins it at full size. */
+	.senCheDiv { /* What: Still Sent Check Div. Why: The check should simply appear. How: This turns its pop off and pins it at full size. */
 
 
 		animation : none;
@@ -294,13 +303,13 @@
 
 
 }
-@keyframes sentPop { /* What: Sent Pop. Why: An overshooting scale reads as the check landing. How: This grows it from nothing past full size and back. */
+@keyframes senCheDivOpenPopIn { /* What: Sent Check Div Open Pop In Keyframes. Why: An overshooting scale reads as the check landing. How: This grows it from nothing past full size and back. */
 
 
 	0% {
 
 
-		transform : scale(0);
+		transform : scale( 0 );
 
 
 	}
@@ -308,7 +317,7 @@
 	60% {
 
 
-		transform : scale(1.12);
+		transform : scale( 1.12 );
 
 
 	}
@@ -316,7 +325,7 @@
 	100% {
 
 
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
@@ -324,11 +333,11 @@
 
 }
 
-.stage-sent-name { /* What: Stage Sent Name. Why: The sent item's name is the confirmation's headline. How: This sets it large and wrapping cleanly. */
+.senNamDiv { /* What: Sent Name Div. Why: The sent item's name is the confirmation's headline. How: This sets it large and wrapping cleanly. */
 
 
-	color          : var(--tex-mai-col);
-	font-size      : var( --fon-siz-p03 );
+	color          : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size      : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
 	letter-spacing : -0.015em;
 	text-wrap      : pretty;
@@ -336,47 +345,50 @@
 
 }
 
-/* #endregion stage-sent */
+/* #endregion staSenDiv */
 
-/* #endregion picker-stage */
+/* #endregion picStaDiv */
 
 
 
-/* #region picker-actions */
+/* #region picActDiv */
 
-.picker-actions { /* What: Picker Actions. Why: The run's buttons sit in a wrapping row under the stage. How: This lays them out in a centered, wrapping row. */
+.picActDiv { /* What: Picker Actions Div. Why: The run's buttons sit in a wrapping row under the stage. How: This lays them out in a centered, wrapping row. */
 
 
 	align-items : center;
 	display     : flex;
 	flex-wrap   : wrap;
-	gap         : var( --spa-ver-m01 ) var( --spa-hor-m01 );
+	gap         : var( --spa-ver-m01 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
 
 
 }
 
-.picker-actions .pv-act { /* What: Picker Action. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
+
+/* #region picActBut */
+
+.picActDiv .picActBut { /* What: Picker Action Button. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
 
 
-	animation : pvActIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both;
-
-
-}
-.picker-actions .pv-act.is-leaving { /* What: Leaving Picker Action. Why: Re-Roll and Done fall away before their action runs. How: This plays the action exit while the button carries its leaving class. */
-
-
-	animation : pvActOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both;
+	animation : picActButEnterFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 
 
 }
-.picker-actions .pv-act--send.is-sent { /* What: Sent Send Button. Why: Send to Today swells once as it confirms, winning over the entrance the other actions play. How: This plays the button pop while it carries its sent class. */
+.picActDiv .picActBut--leaving { /* What: Leaving Picker Action. Why: Re-Roll and Done fall away before their action runs. How: This plays the action exit while the button carries its leaving class. */
 
 
-	animation : sentBtnPop var( --dur-ani-p03 ) var( --mot-bou-eas );
+	animation : picActButLeaveFadeOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
 
 
 }
-.pv-act[data-tour-disabled-active] { /* What: Tour-Disabled Picker Action. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
+.picActDiv .picActBut--sent { /* What: Sent Send Button. Why: Send to Today swells once as it confirms, winning over the entrance the other actions play. How: This plays the button pop while it carries its sent class. */
+
+
+	animation : picActButSentPop var( --dur-ani-p03 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+
+
+}
+.picActBut[data-tour-disabled-active] { /* What: Tour-Disabled Picker Action. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
 
 
 	cursor         : default;
@@ -385,11 +397,11 @@
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Picker Action. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Action. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.picker-actions .pv-act,
-	.picker-actions .pv-act.is-leaving { /* What: Instant Picker Actions. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
+	.picActDiv .picActBut,
+	.picActDiv .picActBut--leaving { /* What: Instant Picker Actions. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -397,7 +409,7 @@
 
 	}
 
-	.picker-actions .pv-act--send.is-sent { /* What: Still Sent Send Button. Why: The swell is only decoration. How: This turns it off. */
+	.picActDiv .picActBut--sent { /* What: Still Sent Send Button. Why: The swell is only decoration. How: This turns it off. */
 
 
 		animation : none;
@@ -407,13 +419,13 @@
 
 
 }
-@keyframes sentBtnPop { /* What: Sent Button Pop. Why: A brief swell reads as the send landing. How: This scales the button up slightly and back. */
+@keyframes picActButSentPop { /* What: Picker Action Button Sent Pop Keyframes. Why: A brief swell reads as the send landing. How: This scales the button up slightly and back. */
 
 
 	0% {
 
 
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
@@ -421,7 +433,7 @@
 	40% {
 
 
-		transform : scale(1.06);
+		transform : scale( 1.06 );
 
 
 	}
@@ -429,21 +441,21 @@
 	100% {
 
 
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
 
 
 }
-@keyframes pvActIn { /* What: Picker Action In. Why: A short rise reads as the buttons arriving. How: This fades them in from slightly below. */
+@keyframes picActButEnterFadeIn { /* What: Picker Action Button Enter Fade In Keyframes. Why: A short rise reads as the buttons arriving. How: This fades them in from slightly below. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(6px);
+		transform : translateY( var( --spa-ver-m03 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 	}
@@ -459,7 +471,7 @@
 
 
 }
-@keyframes pvActOut { /* What: Picker Action Out. Why: A short fall reads as the buttons leaving. How: This fades them out downward. */
+@keyframes picActButLeaveFadeOut { /* What: Picker Action Button Leave Fade Out Keyframes. Why: A short fall reads as the buttons leaving. How: This fades them out downward. */
 
 
 	from {
@@ -475,7 +487,7 @@
 
 
 		opacity   : 0;
-		transform : translateY(6px);
+		transform : translateY( var( --spa-ver-m03 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 	}
@@ -483,25 +495,24 @@
 
 }
 
-.pv-send-label { /* What: Send Label. Why: The label swaps text with a fade, which needs a box to animate. How: This makes it an inline block. */
+.senLabSpa { /* What: Send Label Span. Why: The label swaps text with a fade, which needs a box to animate. How: This makes it an inline block. */
 
 
 	display : inline-block;
 
 
 }
+.senLabSpa--fade { /* What: Fading Send Label Span. Why: The label fades in each time its text changes. How: This plays the shared fade whenever its keyed span remounts. */
 
-.set-sub-fade { /* What: Fading Send Label. Why: The label fades in each time its text changes. How: This plays the shared fade whenever its keyed span remounts. */
 
-
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live label, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live label, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Send Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Send Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.set-sub-fade { /* What: Still Fading Send Label. Why: The change should happen at once. How: This turns its animation off. */
+	.senLabSpa--fade { /* What: Still Fading Send Label Span. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -512,39 +523,43 @@
 
 }
 
-/* #endregion picker-actions */
+/* #endregion picActBut */
 
-/* #endregion picker-run */
+/* #endregion picActDiv */
 
-
-
-/* #region picker-pool */
-
-.picker-pool { /* What: Picker Pool. Why: The pool and the add-item rows stack under the run. How: This stacks them in a spaced column. */
+/* #endregion picRunDiv */
 
 
-	display        : flex;
-	flex-direction : column;
-	gap            : var( --spa-ver-m01 );
 
+/* #region picPooDiv */
 
-}
-
-/* #region pool-items */
-
-.pool-items { /* What: Pool Items. Why: The pool's header and list form one block the page tour can highlight. How: This stacks them in a column spaced like the pool. */
+.picPooDiv { /* What: Picker Pool Div. Why: The pool and the add-item rows stack under the run. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m01 );
+	gap            : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-/* #region pool-h */
 
-.pool-h { /* What: Pool Header. Why: The pool's count and its reset link sit on one line at opposite ends. How: This spreads them across a centered row. */
+/* #region pooIteDiv */
+
+.pooIteDiv { /* What: Pool Items Div. Why: The pool's header and list form one block the page tour can highlight. How: This stacks them in a column spaced like the pool. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+
+
+/* #region pooHeaDiv */
+
+.pooHeaDiv { /* What: Pool Header Div. Why: The pool's count and its reset link sit on one line at opposite ends. How: This spreads them across a centered row. */
 
 
 	align-items     : center;
@@ -554,40 +569,40 @@
 
 }
 
-.ghost-link { /* What: Pool Reset Link. Why: Resetting the pool is a quiet text action. How: This sets an uppercase mono label beside its icon that darkens on hover. */
+.driTogBut { /* What: Drift Toggle Button. Why: Resetting the pool is a quiet text action. How: This sets an uppercase mono label beside its icon that darkens on hover. */
 
 
 	align-items    : center;
-	color          : var(--tex-mut-col);
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display        : inline-flex;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	gap            : var( --spa-hor-m04 );
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.731px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
 
 }
-.ghost-link:hover { /* What: Hovered Pool Reset Link. Why: The link should respond to the pointer. How: This darkens it. */
+.driTogBut:hover { /* What: Hovered Pool Reset Link. Why: The link should respond to the pointer. How: This darkens it. */
 
 
-	color : var(--tex-mai-col);
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
 
-/* #endregion pool-h */
+/* #endregion pooHeaDiv */
 
 
 
-/* #region pool-list */
+/* #region pooLisDiv */
 
-.pool-list { /* What: Pool List. Why: The items read as one bordered list. How: This stacks the rows in a rounded surface that clips them. */
+.pooLisDiv { /* What: Pool List Div. Why: The items read as one bordered list. How: This stacks the rows in a rounded surface that clips them. */
 
 
-	background     : var(--bac-sur-col);
-	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius  : var( --rad-bor-med );
+	background     : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
 	display        : flex;
 	flex-direction : column;
 	overflow       : hidden;
@@ -595,81 +610,82 @@
 
 }
 
-/* #region pool-row */
 
-.pool-row { /* What: Pool Row. Why: Each item is one row: name, meta, and three buttons. How: This lays them out on a five-column grid, divided from the next row. */
+/* #region pooRowDiv */
+
+.pooRowDiv { /* What: Pool Row Div. Why: Each item is one row: name, meta, and three buttons. How: This lays them out on a five-column grid, divided from the next row. */
 
 
 	align-items           : center;
-	border-bottom         : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-bottom         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display               : grid;
-	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	grid-template-columns : 1fr auto auto auto auto;
-	padding               : var( --spa-ver-p01 ) var( --spa-hor-bas );
+	padding               : var( --spa-ver-p01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-@container app (max-width: 440px) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches (max-width: 440px). */
+@container app ( max-width : 440px ) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches ( max-width : 440px ). */
 
 
-	.pool-row { /* What: Tight Pool Row. Why: The columns need the room. How: This tightens the gap. */
+	.pooRowDiv { /* What: Tight Pool Row Div. Why: The columns need the room. How: This tightens the gap. */
 
 
-		gap : var( --spa-ver-m01 ) var( --spa-hor-m01 );
+		gap : var( --spa-ver-m01 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
 
 
 	}
 
 
 }
-.pool-row:last-child { /* What: Last Pool Row. Why: The list's own border already closes it. How: This drops the last row's hairline. */
+.pooRowDiv:last-child { /* What: Last Pool Row. Why: The list's own border already closes it. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.pool-row[data-row-vacation-active] { /* What: Inactive Pool Row. Why: An inactive item reads as set aside. How: This fades the row, keying off data-row-vacation-active. */
+.pooRowDiv[data-row-vacation-active] { /* What: Inactive Pool Row. Why: An inactive item reads as set aside. How: This fades the row, keying off data-row-vacation-active. */
 
 
-	opacity : 0.45;
-
-
-}
-.pool-row[data-row-ineligible-active] { /* What: Ineligible Pool Row. Why: An item that can't be picked right now reads a little quieter. How: This fades the row, keying off data-row-ineligible-active. */
-
-
-	opacity : 0.6;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
-.pool-row--confirm { /* What: Confirming Pool Row. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
+.pooRowDiv[data-row-ineligible-active] { /* What: Ineligible Pool Row. Why: An item that can't be picked right now reads a little quieter. How: This fades the row, keying off data-row-ineligible-active. */
+
+
+	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+
+
+}
+.pooRowDiv--confirm { /* What: Confirming Pool Row Div. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
 
 
 	grid-template-columns : 1fr;
 
 
 }
-.pool-row--insert { /* What: Inserted Pool Row. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
+.pooRowDiv--insert { /* What: Inserting Pool Row Div. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
 
 
-	animation : poolRowInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both;
+	animation : pooRowDivInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 
 
 }
-.pool-row--removing { /* What: Removing Pool Row. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
+.pooRowDiv--removing { /* What: Removing Pool Row Div. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
 
 
-	animation : poolRowRemove var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
+	animation : pooRowDivRemoveFold var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 	overflow  : hidden;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-row--insert,
-	.pool-row--removing { /* What: Instant Pool Row Animations. Why: The row should arrive and leave at once, while still ending the animations its handler waits on. How: This shortens both to .01ms. */
+	.pooRowDiv--insert,
+	.pooRowDiv--removing { /* What: Instant Inserting And Removing Pool Row Divs. Why: The row should arrive and leave at once, while still ending the animations its handler waits on. How: This shortens both to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -679,14 +695,14 @@
 
 
 }
-@keyframes poolRowInsertFadeIn { /* What: Pool Row Insert Fade In. Why: A short rise reads as the item settling in. How: This fades the row in from below. */
+@keyframes pooRowDivInsertFadeIn { /* What: Pool Row Div Insert Fade In Keyframes. Why: A short rise reads as the item settling in. How: This fades the row in from below. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(16px);
+		transform : translateY( var( --spa-ver-bas ) ); /* Spacing Vertical Base ~= 14.572px */
 
 
 	}
@@ -702,13 +718,13 @@
 
 
 }
-@keyframes poolRowRemove { /* What: Pool Row Remove. Why: The row should fold away rather than vanish. How: This fades it while collapsing its height, padding, and divider. */
+@keyframes pooRowDivRemoveFold { /* What: Pool Row Div Remove Fold Keyframes. Why: The row should fold away rather than vanish. How: This fades it while collapsing its height, padding, and divider. */
 
 
 	from {
 
 
-		max-height : calc( var( --ver-rhy-p09 ) * 1rem );
+		max-height : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */ /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
 		opacity    : 1;
 
 
@@ -717,11 +733,11 @@
 	to {
 
 
-		border-bottom-width : 0;
-		max-height          : 0;
+		border-bottom-width : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		max-height          : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
 		opacity             : 0;
-		padding-bottom      : 0;
-		padding-top         : 0;
+		padding-bottom      : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		padding-top         : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
 
 
 	}
@@ -729,32 +745,33 @@
 
 }
 
-/* #region pool-confirm */
 
-.pool-confirm { /* What: Pool Delete Confirm. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in. */
+/* #region delConDiv */
+
+.delConDiv { /* What: Delete Confirm Div. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in. */
 
 
 	align-items     : center;
-	animation       : global(footerSwapFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );
+	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );                                 /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : space-between;
 
 
 }
-.pool-confirm.is-leaving { /* What: Leaving Pool Delete Confirm. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
+.delConDiv--leaving { /* What: Leaving Delete Confirm Div. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
-	animation : global(footerSwapFadeOut) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Delete Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Delete Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-confirm,
-	.pool-confirm.is-leaving { /* What: Still Pool Delete Confirm. Why: The confirm should simply appear and go. How: This turns both slides off. */
+	.delConDiv,
+	.delConDiv--leaving { /* What: Still Delete Confirm Divs. Why: The confirm should simply appear and go. How: This turns both slides off. */
 
 
 		animation : none;
@@ -765,55 +782,54 @@
 
 }
 
-.pool-confirm-msg { /* What: Pool Delete Question. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
+.delMesSpa { /* What: Delete Message Span. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
 
 
-	font-size : var( --fon-siz-p01 );
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	text-wrap : pretty;
 
 
 }
 
-.pool-confirm-actions { /* What: Pool Delete Actions. Why: Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+.delActDiv { /* What: Delete Actions Div. Why: Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
 
 
 	display : flex;
 	flex    : 0 0 auto;
-	gap     : var( --spa-hor-m02 );
+	gap     : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
 
-/* #endregion pool-confirm */
+/* #endregion delConDiv */
 
 
+/* #region pooNamDiv */
 
-/* #region pool-name */
-
-.pool-name { /* What: Pool Item Name. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered 80px so every row's pill lines up in one column. */
+.pooNamDiv { /* What: Pool Name Div. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered 80px so every row's pill lines up in one column. */
 
 
-	--pill-flex            : 0 0 calc( var( --ver-rhy-p06 ) * 1rem );
+	--pill-flex            : 0 0 calc( var( --ver-rhy-p06 ) * 1rem );   /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	--pill-justify-content : center;
-	--pill-width           : calc( var( --ver-rhy-p06 ) * 1rem );
+	--pill-width           : calc( var( --ver-rhy-p06 ) * 1rem );       /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	align-items            : center;
 	display                : flex;
-	font-size              : var( --fon-siz-p01 );
-	gap                    : var( --spa-ver-m02 ) var( --spa-hor-m02 );
+	font-size              : var( --fon-siz-p01 );                      /* Font Size Base Plus 1 ~= 14.572px */
+	gap                    : var( --spa-ver-m02 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	min-width              : 0;
 	text-wrap              : pretty;
 
 
 }
-@container app (max-width: 640px) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 640px wide or less. */
+@container app ( max-width : 640px ) { /* What: Narrow Pool Item Name. Why: On a narrow row the pill drops under the name instead of competing with it for width. How: This applies only when the app is 640px wide or less. */
 
 
-	.pool-name { /* What: Wrapped Pool Item Name. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
+	.pooNamDiv { /* What: Wrapped Pool Name Div. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
 
 
 		--pill-flex            : 0 0 auto;
 		--pill-justify-content : flex-start;
-		--pill-margin-left     : calc( var( --spa-hor-m03 ) * -1 );
+		--pill-margin-left     : calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 		--pill-width           : auto;
 		flex-wrap              : wrap;
 
@@ -823,18 +839,18 @@
 
 }
 
-.pool-item-name { /* What: Pool Item Name Text. Why: Every row gives the name the same width, which lines the pills up, while a longer name wraps rather than widening the column. How: This sets a rhythm-step basis that can only shrink, so it acts as the column's maximum width. */
+.iteNamSpa { /* What: Item Name Span. Why: Every row gives the name the same width, which lines the pills up, while a longer name wraps rather than widening the column. How: This sets a rhythm-step basis that can only shrink, so it acts as the column's maximum width. */
 
 
-	flex      : 0 1 calc( var( --ver-rhy-p09 ) * 1rem );
+	flex      : 0 1 calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
 	min-width : 0;
 
 
 }
-@container app (max-width: 640px) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 640px wide or less. */
+@container app ( max-width : 640px ) { /* What: Narrow Pool Item Name Text. Why: The name claims the whole first line so the pill wraps below it. How: This applies only when the app is 640px wide or less. */
 
 
-	.pool-item-name { /* What: Full-Width Pool Item Name Text. Why: The pill belongs on its own line. How: This makes the name take the full row. */
+	.iteNamSpa { /* What: Full-Width Item Name Span. Why: The pill belongs on its own line. How: This makes the name take the full row. */
 
 
 		flex : 1 1 100%;
@@ -845,44 +861,43 @@
 
 }
 
-/* #endregion pool-name */
+/* #endregion pooNamDiv */
 
 
+/* #region pooMetDiv */
 
-/* #region pool-meta */
-
-.pool-meta { /* What: Pool Item Meta. Why: The progress and weight read as small mono figures at the row's end. How: This lines them up right-aligned in muted mono type. */
+.pooMetDiv { /* What: Pool Meta Div. Why: The progress and weight read as small mono figures at the row's end. How: This lines them up right-aligned in muted mono type. */
 
 
 	align-items     : center;
-	color           : var(--tex-mut-col);
+	color           : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : flex;
-	font-family     : var(--fon-fam-sec);
-	font-size       : var( --fon-siz-bas );
-	gap             : var( --spa-hor-m01 );
+	font-family     : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : flex-end;
 	justify-self    : end;
 
 
 }
 
-.pool-prog { /* What: Pool Item Progress. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least a rhythm step wide. */
+.pooProSpa { /* What: Pool Progress Span. Why: The progress bar and value hold a steady width across rows. How: This lines them up in a row at least a rhythm step wide. */
 
 
 	align-items : center;
 	display     : flex;
-	gap         : var( --spa-hor-m02 );
-	min-width   : calc( var( --ver-rhy-p07 ) * 1rem );
+	gap         : var( --spa-hor-m02 );                /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	min-width   : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
 
 
 }
-@container app (max-width: 640px) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
+@container app ( max-width : 640px ) { /* What: Narrow Pool Item Progress. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
 
 
-	.pool-prog { /* What: Narrower Pool Item Progress. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */
+	.pooProSpa { /* What: Narrower Pool Progress Span. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */
 
 
-		min-width : calc( var( --ver-rhy-p06 ) * 1rem );
+		min-width : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 	}
@@ -890,17 +905,17 @@
 
 }
 
-.pool-val { /* What: Pool Item Value. Why: The value figure lines up across rows. How: This sets it in tabular figures, right-aligned in a small minimum width. */
+.pooValSpa { /* What: Pool Value Span. Why: The value figure lines up across rows. How: This sets it in tabular figures, right-aligned in a small minimum width. */
 
 
 	font-variant-numeric : tabular-nums;
-	min-width            : calc( var( --ver-rhy-p01 ) * 1rem );
+	min-width            : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	text-align           : right;
 
 
 }
 
-.pool-weight { /* What: Pool Item Weight. Why: The weight figure lines up across rows. How: This sets it in tabular figures. */
+.pooWeiSpa { /* What: Pool Weight Span. Why: The weight figure lines up across rows. How: This sets it in tabular figures. */
 
 
 	font-variant-numeric : tabular-nums;
@@ -908,91 +923,83 @@
 
 }
 
-/* #endregion pool-meta */
+/* #endregion pooMetDiv */
 
 
+/* #region pooSenBut */
 
-/* #region pool-send */
-
-.pool-send { /* What: Pool Send Button. Why: Each item can be sent straight to Today. How: This draws a small outlined square that tints on hover. */
+.pooSenBut,
+.pooSenSpa { /* What: Pool Send Button And Span. Why: Each item can be sent straight to Today. How: This draws a small outlined square that tints on hover. */
 
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-sma );
-	color           : var(--tex-mut-col);
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
-.pool-send:hover { /* What: Hovered Pool Send Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+.pooSenBut:hover { /* What: Hovered Pool Send Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.pool-send.is-sent { /* What: Sent Pool Send Button. Why: Once sent, the button becomes a settled check. How: This fills it in the soft accent and drops the pointer cursor. */
+.pooSenBut--sent { /* What: Sent Pool Send Button. Why: Once sent, the button becomes a settled check. How: This fills it in the soft accent and drops the pointer cursor. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor       : default;
 
 
 }
-.pool-send[data-action-disabled-active] { /* What: Unavailable Pool Send Button. Why: An item already on Today can't be sent again, but its tip still explains why. How: This dims the tip's trigger, keying off data-action-disabled-active, which its info tip forwards. */
+.pooSenSpa[data-action-disabled-active] { /* What: Unavailable Pool Send Span. Why: An item already on Today can't be sent again, but its tip still explains why. How: This dims the tip's trigger, keying off data-action-disabled-active, which its info tip forwards. */
 
 
 	cursor  : default;
-	opacity : 0.4;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
-.pool-send[data-action-disabled-active]:hover { /* What: Hovered Unavailable Pool Send Button. Why: An unavailable button shouldn't react like a live one. How: This keeps its resting look. */
+.pooSenBut--tour { /* What: Tour Pool Send Button. Why: App Features' manual-pick tour points at the Send to Today button inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
-	background   : none;
-	border-color : var(--bor-mai-col);
-	color        : var(--tex-mut-col);
-
-
-}
-.pool-send.ob-tour-pulse { /* What: Tour Target Pool Send Button. Why: App Features' manual-pick tour points at the Send to Today button inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
-
-
-	animation      : global(targetTourPulse) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : calc( var( --bor-wid-lar ) * -1 );
+	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with the Data tab's tour targets, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col );                              /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );                                            /* Border Width Large ~= 2.035px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Send Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Send Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-send { /* What: Still Pool Send Button. Why: The tint should simply switch. How: This turns its transition off. */
+	.pooSenBut,
+	.pooSenSpa { /* What: Still Pool Send Button And Span. Why: The tint should simply switch. How: This turns its transition off. */
 
 
 		transition : none;
 
 
 	}
-	.pool-send.ob-tour-pulse { /* What: Still Tour Target Pool Send Button. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
+	.pooSenBut--tour { /* What: Still Tour Pool Send Button. Why: An outline frozen mid-fade would read as paused, so it pins to full color instead. How: This turns its animation off and sets the outline to the accent. */
 
 
 		animation     : none;
-		outline-color : var(--acc-mai-col);
+		outline-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 	}
@@ -1000,17 +1007,17 @@
 
 }
 
-.pool-send.is-sent svg { /* What: Sent Pool Check. Why: The check pops in when the send lands. How: This plays the pop on the icon. */
+.senCheSvg { /* What: Sent Check Svg. Why: The check pops in when the send lands. How: This plays the pop on the icon. */
 
 
-	animation : poolSendPop var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
+	animation : senCheSvgSentPopIn var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Sent Pool Check. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Pool Check. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-send.is-sent svg { /* What: Still Sent Pool Check. Why: The check should simply appear. How: This shortens its pop to .01ms. */
+	.senCheSvg { /* What: Instant Sent Check Svg. Why: The check should simply appear. How: This shortens its pop to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1020,14 +1027,14 @@
 
 
 }
-@keyframes poolSendPop { /* What: Pool Send Pop. Why: An overshooting scale reads as the check landing. How: This grows the check from small past full size and back while fading it in. */
+@keyframes senCheSvgSentPopIn { /* What: Sent Check Svg Sent Pop In Keyframes. Why: An overshooting scale reads as the check landing. How: This grows the check from small past full size and back while fading it in. */
 
 
 	0% {
 
 
-		opacity   : .3;
-		transform : scale(.4);
+		opacity   : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+		transform : scale( .4 );
 
 
 	}
@@ -1035,7 +1042,7 @@
 	60% {
 
 
-		transform : scale(1.18);
+		transform : scale( 1.18 );
 
 
 	}
@@ -1044,7 +1051,7 @@
 
 
 		opacity   : 1;
-		transform : scale(1);
+		transform : scale( 1 );
 
 
 	}
@@ -1052,42 +1059,41 @@
 
 }
 
-/* #endregion pool-send */
+/* #endregion pooSenBut */
 
 
-
-.pool-edit { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover. */
+.pooEdiBut { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover. */
 
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-sma );
-	color           : var(--tex-mut-col);
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
-.pool-edit:hover { /* What: Hovered Pool Edit Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+.pooEdiBut:hover { /* What: Hovered Pool Edit Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Edit Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Edit Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-edit { /* What: Still Pool Edit Button. Why: The change should happen at once. How: This turns its transition off. */
+	.pooEdiBut { /* What: Still Pool Edit Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1100,55 +1106,48 @@
 
 
 
-.pool-del { /* What: Pool Delete Button. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover. */
+.pooDelBut,
+.pooDelSpa { /* What: Pool Delete Button And Span. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover. */
 
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-sma );
-	color           : var(--tex-mut-col);
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
-.pool-del:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
+.pooDelBut:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
 
 
-	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ));
-	border-color : var( --err-mai-col );
-	color        : var( --err-mai-col );
+	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Error Main Color = oklch( 0.55 0.17 25 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : var( --err-mai-col );                                                /* Error Main Color = oklch( 0.55 0.17 25 ) */
+	color        : var( --err-mai-col );                                                /* Error Main Color = oklch( 0.55 0.17 25 ) */
 
 
 }
-.pool-del[aria-disabled="true"] { /* What: Blocked Pool Delete Button. Why: A delete blocked at the two-item minimum still shows its tip. How: This dims the tip's trigger, keying off the aria-disabled its info tip sets. */
+.pooDelSpa[aria-disabled='true'] { /* What: Blocked Pool Delete Span. Why: A delete blocked at the two-item minimum still shows its tip. How: This dims the tip's trigger, keying off the aria-disabled its info tip sets. */
 
 
 	cursor  : default;
-	opacity : 0.4;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
-.pool-del[aria-disabled="true"]:hover { /* What: Hovered Blocked Pool Delete Button. Why: A blocked button shouldn't react like a live one. How: This keeps its resting look. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Delete Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	background   : none;
-	border-color : var(--bor-mai-col);
-	color        : var(--tex-mut-col);
-
-
-}
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Delete Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
-
-
-	.pool-del { /* What: Still Pool Delete Button. Why: The change should happen at once. How: This turns its transition off. */
+	.pooDelBut,
+	.pooDelSpa { /* What: Still Pool Delete Button And Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1159,55 +1158,56 @@
 
 }
 
-/* #endregion pool-row */
+/* #endregion pooRowDiv */
 
-/* #endregion pool-list */
+/* #endregion pooLisDiv */
 
-/* #endregion pool-items */
+/* #endregion pooIteDiv */
 
 
 
-/* #region pv-additem-wrap */
+/* #region iteAddDiv */
 
-.pv-additem-wrap { /* What: Add Item Area. Why: The new-item row, an open item editor, and the Add Item button share one slot below the pool. How: This stacks them in a spaced column. */
+.iteAddDiv { /* What: Item Add Div. Why: The new-item row, an open item editor, and the Add Item button share one slot below the pool. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m01 );
+	gap            : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-/* #region pv-newitem */
 
-.pv-newitem { /* What: Add Item Row. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --entry-editor-* properties the editor reads. */
+/* #region lisIteDiv */
+
+.lisIteDiv { /* What: List Item Div. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --entry-editor-* properties the editor reads. */
 
 
 	--entry-editor-delete-display  : none;
 	--entry-editor-foot-justify    : flex-end;
 	--entry-editor-rows-border-top : 0;
 	--entry-editor-rows-margin-top : 0;
-	animation                      : global(newItemOpenFadeIn) var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* What: Global newItemOpenFadeIn Keyframes. Why: The newItemOpenFadeIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background                     : var(--bac-sur-col);
-	border                         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius                  : var( --rad-bor-med );
+	animation                      : global( newItemOpenFadeIn ) var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global newItemOpenFadeIn Keyframes. Why: The newItemOpenFadeIn keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background                     : var( --bac-sur-col );                                                       /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border                         : var( --bor-wid-sma ) solid var( --bor-mai-col );                            /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius                  : var( --rad-bor-med );                                                       /* Radius Border Medium = 11px */
 	overflow                       : hidden;
 
 
 }
-.pv-newitem.is-closing { /* What: Closing Add Item Row. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
+.lisIteDiv--closing { /* What: Closing List Item Div. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
 
 
-	animation : global(newItemCloseFadeOut) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global newItemCloseFadeOut Keyframes. Why: The newItemCloseFadeOut keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( newItemCloseFadeOut ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global newItemCloseFadeOut Keyframes. Why: The newItemCloseFadeOut keyframes are shared with the picker form's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow  : hidden;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pv-newitem { /* What: Still Add Item Row. Why: The card should simply appear. How: This turns its entrance off. */
+	.lisIteDiv { /* What: Still List Item Div. Why: The card should simply appear. How: This turns its entrance off. */
 
 
 		animation : none;
@@ -1215,7 +1215,7 @@
 
 	}
 
-	.pv-newitem.is-closing { /* What: Instant Closing Add Item Row. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
+	.lisIteDiv--closing { /* What: Instant Closing List Item Div. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1226,9 +1226,10 @@
 
 }
 
-/* #region rd-row */
 
-.rd-row { /* What: Add Item Name Row. Why: The item's name is edited in the row's header, which isn't clickable here. How: This lays the name field out in a padded row with the default cursor. */
+/* #region lisRowDiv */
+
+.lisRowDiv { /* What: List Row Div. Why: The item's name is edited in the row's header, which isn't clickable here. How: This lays the name field out in a padded row with the default cursor. */
 
 
 	-webkit-appearance : none;
@@ -1240,8 +1241,8 @@
 	cursor             : default;
 	display            : flex;
 	font               : inherit;
-	gap                : var( --spa-hor-m01 );
-	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );
+	gap                : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -1249,56 +1250,57 @@
 
 }
 
-/* #region rd-main */
 
-.rd-main { /* What: Add Item Name Column. Why: The name field takes the row's remaining width. How: This makes it a shrinkable column. */
+/* #region rowMaiSpa */
+
+.rowMaiSpa { /* What: Row Main Span. Why: The name field takes the row's remaining width. How: This makes it a shrinkable column. */
 
 
 	display        : flex;
 	flex           : 1 1 auto;
 	flex-direction : column;
-	gap            : var( --spa-ver-m07 );
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	min-width      : 0;
 
 
 }
 
-.rd-name-input { /* What: Add Item Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline. */
+.rowNamInp { /* What: Row Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline. */
 
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	font           : inherit;
-	font-size      : var( --fon-siz-p01 );
+	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color var( --dur-tra-m01 );
+	padding        : var( --spa-ver-m09 ) 0;                          /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
 	width          : 100%;
 
 
 }
-.rd-name-input:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+.rowNamInp:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--acc-mai-col);
+	border-bottom-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	outline             : none;
 
 
 }
-.rd-name-input::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+.rowNamInp::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--tex-mut-col);
-	opacity : 0.7;
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rd-name-input { /* What: Still Add Item Name Input. Why: The change should happen at once. How: This turns its transition off. */
+	.rowNamInp { /* What: Still Row Name Input. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1309,13 +1311,13 @@
 
 }
 
-/* #endregion rd-main */
+/* #endregion rowMaiSpa */
 
-/* #endregion rd-row */
+/* #endregion lisRowDiv */
 
 
 
-.rd-edit { /* What: Add Item Editor Slot. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --entry-editor-* properties that strip the editor's chrome. */
+.iteEdiDiv { /* What: Item Edit Div. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --entry-editor-* properties that strip the editor's chrome. */
 
 
 	--entry-editor-background    : none;
@@ -1323,51 +1325,51 @@
 	--entry-editor-border-radius : 0;
 	--entry-editor-margin        : 0;
 	--entry-editor-padding       : 0;
-	border-top                   : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );
+	border-top                   : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */
 
 
 }
 
-/* #endregion pv-newitem */
+/* #endregion lisIteDiv */
 
 
 
-.pv-additem-btn { /* What: Add Item Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover. */
+.iteAddBut { /* What: Item Add Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover. */
 
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-bas ) dashed var(--bor-mai-col);
-	border-radius   : var( --rad-bor-med );
-	color           : var(--tex-mut-col);
+	border          : var( --bor-wid-bas ) dashed var( --bor-mai-col );                                               /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                                                                           /* Radius Border Medium = 11px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
-	font-size       : var( --fon-siz-p01 );
+	font-size       : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight     : 500;
-	gap             : var( --spa-hor-m03 );
-	height          : calc( var( --ver-rhy-p04 ) * 1rem );
+	gap             : var( --spa-hor-m03 );                                                                           /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height          : calc( var( --ver-rhy-p04 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	justify-content : center;
-	padding         : 0 var( --spa-hor-bas );
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
+	padding         : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
 	width           : 100%;
 
 
 }
-.pv-additem-btn:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+.iteAddBut:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pv-additem-btn { /* What: Still Add Item Button. Why: The change should happen at once. How: This turns its transition off. */
+	.iteAddBut { /* What: Still Item Add Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1378,10 +1380,10 @@
 
 }
 
-/* #endregion pv-additem-wrap */
+/* #endregion iteAddDiv */
 
-/* #endregion picker-pool */
+/* #endregion picPooDiv */
 
-/* #endregion picker-view */
+/* #endregion picVieDiv */
 
 

@@ -94,8 +94,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	const intSenBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 7;                         // What: Intercept Send Boolean. Why: The Pickers page tour's own "Add to Todo List" step wants the real Send to Today -> Sent! animation to play, so the user sees what the button actually does, but explicitly does NOT want a real entry landing on Today from it, since this is a tutorial pick on a disposable sample picker, not something the user meant to act on. How: This gates on the exact tourId and step that step is shown at.
 	const disDonBoo = intSenBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 3 ); // What: Disable Done Boolean. Why: Done needs the same visual and functional disabling during App Features' own "Make your first manual pick" tour's equivalent step (buildAppFeatureSteps, feat_manual_pick's Step 4, index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection, Step 3 is Manual Generation), since leaving would discard the very pick that tour just walked the user through making, and would also make the step's own target (this whole done/sent view) vanish. How: Re-roll is deliberately NOT included here, unlike intSenBoo above: App Features wants Re-roll to stay genuinely usable without counting as this step's own advancing click; this is deliberately a SEPARATE flag from intSenBoo, since that one also skips the real actions.addEntFun call in senTodFun below, which is correct for the page tour's disposable sample pick but wrong here.
 	const disIteBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 8;                         // What: Disable Item Boolean. Why: Step 9 ("Picker Items") highlights the pool's per-item Send to Today/Edit/Delete buttons but explicitly doesn't want any of them actually usable from there, since narrating what they do is the point, not inviting the user to act on a disposable tutorial picker's real items. How: This gates on the exact tourId and step that step is shown at.
-	const disEdiBoo = disIteBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4 ); // What: Disable Edit-Delete Boolean. Why: App Features' own "Make your first manual pick" tour reaches this same pool at its own Step 5 (index 4), but unlike the page tour above, Send to Today should stay genuinely usable there (real data, a second valid way to land a pick besides Manual Generation), only Edit/Delete stay narrated-not-usable. How: This deliberately only gates the pool-edit/pool-del buttons below, NOT pool-send's own disabled prop (still disIteBoo alone, naturally unaffected/enabled during this tour).
-	const higSenBoo = isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4;                  // What: Highlight Send Boolean. Why: The same fading-outline pulse (.ob-tour-pulse) tab-data.jsx's own Edit Item tour uses on its own per-element targets draws the eye to the still-genuinely-usable Send to Today buttons specifically, not just the whole .pool-items box the step's own coach already frames. How: This is only ever applied to the real, enabled button below, since disIteBoo is false here and this never touches the sent or disabled Send branches.
+	const disEdiBoo = disIteBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4 ); // What: Disable Edit-Delete Boolean. Why: App Features' own "Make your first manual pick" tour reaches this same pool at its own Step 5 (index 4), but unlike the page tour above, Send to Today should stay genuinely usable there (real data, a second valid way to land a pick besides Manual Generation), only Edit/Delete stay narrated-not-usable. How: This deliberately only gates the pooEdiBut/pooDelBut buttons below, NOT pooSenBut's own disabled prop (still disIteBoo alone, naturally unaffected/enabled during this tour).
+	const higSenBoo = isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4;                  // What: Highlight Send Boolean. Why: The same fading-outline pulse (here pooSenBut--tour) tab-data.jsx's own Edit Item tour uses on its own per-element targets draws the eye to the still-genuinely-usable Send to Today buttons specifically, not just the whole pooIteDiv box the step's own coach already frames. How: This is only ever applied to the real, enabled button below, since disIteBoo is false here and this never touches the sent or disabled Send branches.
 	const disAddBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 9;                         // What: Disable Add Boolean. Why: Step 10 ("Add Picker Item") highlights "+ Add Item" but explicitly doesn't want the user opening the real create-item form from a disposable tutorial picker. How: This gates on the exact tourId and step that step is shown at.
 
 	// #endregion Tour Gating
@@ -315,7 +315,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 	const [ newCloStr, setNewCloStr ] = React.useState( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below.
 
-	const addWraRef = React.useRef( null );                                           // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the .pv-additem-wrap div's own ref prop, below.
+	const addWraRef = React.useRef( null );                                           // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
 	const useWeiBoo = picDatObj.mode === 'weighted' || picDatObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
 	const isaEasBoo = picDatObj.mode === 'ease-up' || picDatObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates whether ease fields are carried over/shown throughout this view.
 
@@ -1010,22 +1010,22 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 		<div
-			className={ cssModObj.pickerView }
+			className={ cssModObj.picVieDiv }
 
 			data-element-name-hook='picVieDiv'
 		>{ /* What: Picker View Div Element. Why: This is PicVieCom's own root, holding the header, the run stage/actions, and the pool. How: This wraps every piece of the selected picker's own live view. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-			<header className={ cssModObj.pickerH }>{ /* What: Picker Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
+			<header className={ cssModObj.picHeaHea }>{ /* What: Picker Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
 
 
-				<div>{ /* What: Title Block Div Element. Why: The kicker, name, and mode pill read as one grouped title. How: This wraps those three pieces so the header's own flex layout can place the Edit button beside them. */ }
+				<div className={ cssModObj.heaTitDiv }>{ /* What: Title Block Div Element. Why: The kicker, name, and mode pill read as one grouped title. How: This wraps those three pieces so the header's own flex layout can place the Edit button beside them. */ }
 
 
-					<div className={ cssModObj.kicker }>Picker</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the picker's own name. How: This renders the literal word "Picker". */ }
+					<div className={ cssModObj.picKicDiv }>Picker</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the picker's own name. How: This renders the literal word "Picker". */ }
 
 					<h2
-						className={ cssModObj.pickerTitle }
+						className={ cssModObj.picTitHea }
 
 						data-element-name-hook='picTitHea'
 					>{ picDatObj.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
@@ -1066,7 +1066,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 					<p
 						key={ parIndNum }
 
-						className={ cssModObj.pickerHint }
+						className={ cssModObj.picHinPar }
 
 						data-element-name-hook='picHinPar'
 					>{ parTexStr }</p> // What: Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
@@ -1078,7 +1078,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 					<p
-						className={ cssModObj.pickerHint }
+						className={ cssModObj.picHinPar }
 
 						data-element-name-hook='picHinPar'
 					>{ modInfObj.hinArr }</p> // What: Hint Paragraph Element. Why: A single-paragraph hint renders as one hint line. How: This renders modInfObj.hinArr directly. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
@@ -1090,7 +1090,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 			}
 
 			<p
-				className={ cssModObj.pickerHint }
+				className={ cssModObj.picHinPar }
 
 				data-element-name-hook='picHinPar'
 			>Please note that any items in this picker&rsquo;s pool that are already included in the Today tab will be excluded from being selected.</p>{ /* What: Exclusion Hint Paragraph Element. Why: The pool's own eligible count can otherwise look wrong to someone who doesn't know Today-listed items are excluded from picking. How: This renders a fixed explanatory sentence under every mode's own hint. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
@@ -1098,24 +1098,24 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 			<div
-				className={ cssModObj.pickerRun }
+				className={ cssModObj.picRunDiv }
 
 				data-element-name-hook='picRunDiv'
-			>{ /* What: Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picker-stage and picker-actions together. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+			>{ /* What: Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picStaDiv and picActDiv together. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
-				<div className={ cssModObj.pickerStage }>{ /* What: Stage Div Element. Why: Exactly one of five states (idle/running-or-done/sent/empty) is showing at any moment. How: This wraps whichever of the branches below currently matches runPhaStr. */ }
+				<div className={ cssModObj.picStaDiv }>{ /* What: Stage Div Element. Why: Exactly one of five states (idle/running-or-done/sent/empty) is showing at any moment. How: This wraps whichever of the branches below currently matches runPhaStr. */ }
 
 
 					{ runPhaStr === 'idle' && ( // What: Idle Stage Check. Why: The idle state shows a simple eligible-count readout. How: This renders only while runPhaStr is 'idle'.
 
 
-						<div className={ cssModObj.stageIdle }>{ /* What: Idle Stage Div Element. Why: This groups the eligible count and its own label. How: This wraps stage-idle-num and stage-idle-lbl. */ }
+						<div className={ cssModObj.staIdlDiv }>{ /* What: Idle Stage Div Element. Why: This groups the eligible count and its own label. How: This wraps staNumDiv and staLabDiv. */ }
 
 
-							<div className={ cssModObj.stageIdleNum }>{ eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) ).length }</div>{ /* What: Idle Number Div Element. Why: The user needs to see how many items are actually eligible right now. How: This counts eliIteArr minus whatever's already on Today. */ }
+							<div className={ cssModObj.staNumDiv }>{ eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) ).length }</div>{ /* What: Idle Number Div Element. Why: The user needs to see how many items are actually eligible right now. How: This counts eliIteArr minus whatever's already on Today. */ }
 
-							<div className={ cssModObj.stageIdleLbl }>items in the pool</div>{ /* What: Idle Label Div Element. Why: The bare number above needs a caption. How: This renders the fixed literal text. */ }
+							<div className={ cssModObj.staLabDiv }>items in the pool</div>{ /* What: Idle Label Div Element. Why: The bare number above needs a caption. How: This renders the fixed literal text. */ }
 
 
 						</div>
@@ -1144,10 +1144,10 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 					{ runPhaStr === 'sent' && picResObj && picResObj.picObj && ( // What: Sent Stage Check. Why: A brief confirmation replaces the stage right after Send to Today commits. How: This renders only while runPhaStr is 'sent' and a real pick result still exists.
 
 
-						<div className={ cssModObj.stageSent }>{ /* What: Sent Stage Div Element. Why: The checkmark, the sent item's own name, and its caption read as one confirmation block. How: This wraps those three pieces. */ }
+						<div className={ cssModObj.staSenDiv }>{ /* What: Sent Stage Div Element. Why: The checkmark, the sent item's own name, and its caption read as one confirmation block. How: This wraps those three pieces. */ }
 
 
-							<div className={ cssModObj.stageSentCheck }>{ /* What: Sent Check Div Element. Why: A checkmark icon needs its own small badge to sit in. How: This wraps a single IcoSvgCom. */ }
+							<div className={ cssModObj.senCheDiv }>{ /* What: Sent Check Div Element. Why: A checkmark icon needs its own small badge to sit in. How: This wraps a single IcoSvgCom. */ }
 
 
 								<IcoSvgCom
@@ -1158,9 +1158,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 							</div>
 
-							<div className={ cssModObj.stageSentName }>{ picResObj.picObj.name }</div>{ /* What: Sent Name Div Element. Why: The user should see exactly which item just landed on Today. How: This renders picResObj.picObj.name. */ }
+							<div className={ cssModObj.senNamDiv }>{ picResObj.picObj.name }</div>{ /* What: Sent Name Div Element. Why: The user should see exactly which item just landed on Today. How: This renders picResObj.picObj.name. */ }
 
-							<div className={ cssModObj.stageIdleLbl }>Added to Today</div>{ /* What: Sent Label Div Element. Why: The confirmation needs a short caption. How: This renders the fixed literal text. */ }
+							<div className={ cssModObj.staLabDiv }>Added to Today</div>{ /* What: Sent Label Div Element. Why: The confirmation needs a short caption. How: This renders the fixed literal text. */ }
 
 
 						</div>
@@ -1172,12 +1172,12 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 					{ runPhaStr === 'empty' && ( // What: Empty Stage Check. Why: A pool with nothing eligible needs its own explanatory state instead of a blank stage. How: This renders only while runPhaStr is 'empty'.
 
 
-						<div className={ cssModObj.stageEmpty }>{ /* What: Empty Stage Div Element. Why: The placeholder number, its explanation, and (for Ease Down) a Refill button read as one block. How: This wraps those pieces. */ }
+						<div className={ cssModObj.staEmpDiv }>{ /* What: Empty Stage Div Element. Why: The placeholder number, its explanation, and (for Ease Down) a Refill button read as one block. How: This wraps those pieces. */ }
 
 
-							<div className={ cssModObj.stageIdleNum }>&mdash;</div>{ /* What: Empty Number Div Element. Why: A dash stands in for "nothing to count" in the same slot the idle count normally uses. How: This renders a literal em dash glyph, the documented display-character exception to the no-em-dash copy rule. */ }
+							<div className={ cssModObj.staNumDiv }>&mdash;</div>{ /* What: Empty Number Div Element. Why: A dash stands in for "nothing to count" in the same slot the idle count normally uses. How: This renders a literal em dash glyph, the documented display-character exception to the no-em-dash copy rule. */ }
 
-							<div className={ cssModObj.stageIdleLbl }>{ /* What: Empty Label Div Element. Why: Each mode empties out for a different reason and needs its own explanation. How: This picks one of three fixed sentences based on picDatObj.mode. */ }
+							<div className={ cssModObj.staLabDiv }>{ /* What: Empty Label Div Element. Why: Each mode empties out for a different reason and needs its own explanation. How: This picks one of three fixed sentences based on picDatObj.mode. */ }
 
 
 								{ picDatObj.mode === 'ease-up' // What: Ease Up Check. Why: An ease-up picker empties because nothing has drifted to eligibility yet. How: This picks the ease-up sentence when the mode matches.
@@ -1217,7 +1217,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-				<div className={ cssModObj.pickerActions }>{ /* What: Actions Div Element. Why: Exactly one action row (the done/sent trio, or the single Pick One button) shows at a time. How: This wraps whichever branch below currently matches runPhaStr. */ }
+				<div className={ cssModObj.picActDiv }>{ /* What: Actions Div Element. Why: Exactly one action row (the done/sent trio, or the single Pick One button) shows at a time. How: This wraps whichever branch below currently matches runPhaStr. */ }
 
 
 					{ ( runPhaStr === 'done' || runPhaStr === 'sent' ) ? ( // What: Done-Or-Sent Actions Check. Why: Send to Today, Re-Roll, and Done only make sense once a pick has actually settled. How: This renders that trio while runPhaStr is 'done' or 'sent', otherwise the single Pick One button below.
@@ -1227,7 +1227,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 							<ButBasCom
-								className={` ${ cssModObj.pvAct }   ${ cssModObj.pvActSend }   ${ runPhaStr === 'sent' ? cssModObj.isSent : '' } `}
+								className={` ${ cssModObj.picActBut }   ${ runPhaStr === 'sent' ? cssModObj.picActButSent : '' } `}
 
 								style={{ animationDelay : '0ms' }}
 
@@ -1244,7 +1244,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 								<span
 									key={ runPhaStr === 'sent' ? 'sent' : 'send' }
 
-									className={` ${ cssModObj.pvSendLabel }   ${ cssModObj.setSubFade } `}
+									className={` ${ cssModObj.senLabSpa }   ${ cssModObj.senLabSpaFade } `}
 								>{ /* What: Send Label Span Element. Why: The label itself needs to cross-fade between its two states. How: This is re-keyed by runPhaStr so React replays the fade on every change. */ }
 
 
@@ -1259,7 +1259,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 							<ButBasCom
-								className={` ${ cssModObj.pvAct }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.isLeaving : '' } `}
+								className={` ${ cssModObj.picActBut }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.picActButLeaving : '' } `}
 
 								style={{ animationDelay : '60ms' }}
 
@@ -1271,12 +1271,12 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 								kinValStr='ghost'
 
 								onClick={ () => aftExiFun( rerActFun ) }
-							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Classname Design Note. Why: The pv-act--reroll class lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.jsx) without also matching Send to Today or Done. How: disabled and data-tour-disabled-active below still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the App Features tours. */ }
+							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Hook Design Note. Why: The picRerBut hook lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.jsx) without also matching Send to Today or Done. How: disabled and data-tour-disabled-active below still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 
 							<ButBasCom
-								className={` ${ cssModObj.pvAct }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.isLeaving : '' } `}
+								className={` ${ cssModObj.picActBut }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.picActButLeaving : '' } `}
 
 								style={{ animationDelay : '120ms' }}
 
@@ -1304,7 +1304,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 						<ButBasCom
-							className={ cssModObj.pvAct }
+							className={ cssModObj.picActBut }
 
 							data-element-name-hook='picOneBut'
 
@@ -1326,26 +1326,26 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-			<div className={ cssModObj.pickerPool }>{ /* What: Pool Div Element. Why: The item list and the add/edit slot below it form one visual section. How: This wraps pool-items and pv-additem-wrap. */ }
+			<div className={ cssModObj.picPooDiv }>{ /* What: Pool Div Element. Why: The item list and the add/edit slot below it form one visual section. How: This wraps pooIteDiv and iteAddDiv. */ }
 
 
 				<div
-					className={ cssModObj.poolItems }
+					className={ cssModObj.pooIteDiv }
 
 					data-element-name-hook='pooIteDiv'
-				>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pool-h and pool-list. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see .pv-additem-wrap further down). How: This mirrors .picker-pool's own flex/gap so wrapping these two doesn't change their spacing. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+				>{ /* What: Pool Items Div Element. Why: The pool's own header and its list of rows need one shared box the tour can highlight together. How: This wraps pooHeaDiv and pooLisDiv. */ }{ /* What: Pool Items Wrap Design Note. Why: This wrapper is purely structural, letting the Pickers page tour highlight the header + item list as one combined box without also catching "+ Add Item" below (a step of its own, see iteAddDiv further down). How: This mirrors picPooDiv's own flex/gap so wrapping these two doesn't change their spacing. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
-					<div className={ cssModObj.poolH }>{ /* What: Pool Header Div Element. Why: The eligible-count kicker and the drift-toggle link sit on one row. How: This wraps those two pieces. */ }
+					<div className={ cssModObj.pooHeaDiv }>{ /* What: Pool Header Div Element. Why: The eligible-count kicker and the drift-toggle link sit on one row. How: This wraps those two pieces. */ }
 
 
-						<span className={ cssModObj.kicker }>Pool &middot; { eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) && PIC_NAM_OBJ.modEliFun( iteCurObj, picDatObj ) ).length } of { picIteArr.length } eligible</span>{ /* What: Kicker Span Element. Why: The user needs a quick sense of how many of the pool's own items are actually pickable right now. How: This renders both the mode-eligible-and-not-on-Today count and the pool's own total size. */ }
+						<span className={ cssModObj.pooKicSpa }>Pool &middot; { eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) && PIC_NAM_OBJ.modEliFun( iteCurObj, picDatObj ) ).length } of { picIteArr.length } eligible</span>{ /* What: Kicker Span Element. Why: The user needs a quick sense of how many of the pool's own items are actually pickable right now. How: This renders both the mode-eligible-and-not-on-Today count and the pool's own total size. */ }
 
 						{ ( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ) && ( // What: Drift Toggle Check. Why: Only a mode that actually tracks a drifting value has anything to show or hide here. How: This renders the Show/Hide drift link only for those modes.
 
 
 							<button
-								className={ cssModObj.ghostLink }
+								className={ cssModObj.driTogBut }
 
 								onClick={ () => setShoDriBoo( ( preValBoo ) => !preValBoo ) }
 							>{ /* What: Drift Toggle Button Element. Why: The user needs a way to reveal or hide each row's own drift/readiness bar. How: This flips shoDriBoo on click. */ }
@@ -1369,7 +1369,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-					<div className={ cssModObj.poolList }>{ /* What: Pool List Div Element. Why: One row per pool item needs a shared list container. How: This maps picIteArr to one row per item below. */ }
+					<div className={ cssModObj.pooLisDiv }>{ /* What: Pool List Div Element. Why: One row per pool item needs a shared list container. How: This maps picIteArr to one row per item below. */ }
 
 
 						{ picIteArr.map( ( curIteObj ) => { // What: Pool Row List Render. Why: Every item in this picker's own pool needs its own row, computed fresh each render from its current readiness/eligibility. How: This maps picIteArr to one row per curIteObj, deriving each row's own tooltip text from its mode-specific meaning.
@@ -1404,7 +1404,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 								<div
 									key={ curIteObj.id }
 
-									className={` ${ cssModObj.poolRow }   ${ insSavStr === curIteObj.id ? cssModObj.poolRowInsert : '' }   ${ conDelStr === curIteObj.id ? cssModObj.poolRowConfirm : '' }   ${ rmvIdeStr === curIteObj.id ? cssModObj.poolRowRemoving : '' } `}
+									className={` ${ cssModObj.pooRowDiv }   ${ insSavStr === curIteObj.id ? cssModObj.pooRowDivInsert : '' }   ${ conDelStr === curIteObj.id ? cssModObj.pooRowDivConfirm : '' }   ${ rmvIdeStr === curIteObj.id ? cssModObj.pooRowDivRemoving : '' } `}
 
 									data-row-ineligible-active={ !eliHerBoo || undefined } // What: Row Ineligible Active Attribute. Why: An item that can't be picked right now reads a little quieter. How: This sets the presence-only attribute while eliHerBoo is false.
 									data-row-vacation-active={ curIteObj.vacation || undefined } // What: Row Vacation Active Attribute. Why: An inactive item reads as set aside. How: This sets the presence-only attribute while the item is inactive.
@@ -1433,12 +1433,12 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 									{ conDelStr === curIteObj.id ? ( // What: Delete Confirm Check. Why: A row pending delete confirmation replaces its own normal content entirely. How: This renders the confirm row while conDelStr matches this item, otherwise the row's real content below.
 
 
-										<div className={` ${ cssModObj.poolConfirm }   ${ conLeaStr === curIteObj.id ? cssModObj.isLeaving : '' } `}>{ /* What: Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps pool-confirm-msg and pool-confirm-actions. */ }
+										<div className={` ${ cssModObj.delConDiv }   ${ conLeaStr === curIteObj.id ? cssModObj.delConDivLeaving : '' } `}>{ /* What: Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps delMesSpa and delActDiv. */ }
 
 
-											<span className={ cssModObj.poolConfirmMsg }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Confirm Message Span Element. Why: The user must see exactly which item they're about to delete. How: This renders curIteObj.name inside the fixed question text. */ }
+											<span className={ cssModObj.delMesSpa }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Confirm Message Span Element. Why: The user must see exactly which item they're about to delete. How: This renders curIteObj.name inside the fixed question text. */ }
 
-											<div className={ cssModObj.poolConfirmActions }>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
+											<div className={ cssModObj.delActDiv }>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
 												<ButBasCom
@@ -1478,10 +1478,10 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 										<React.Fragment>{ /* What: Row Content Fragment Element. Why: The name/meta block and the send/edit/delete actions below are true siblings with no shared wrapper of their own. How: This groups all of this row's own real content without adding an extra DOM node. */ }
 
 
-											<div className={ cssModObj.poolName }>{ /* What: Name Div Element. Why: The item's own name and its status pills (inactive/not yet/spent) belong together. How: This wraps the name span and its conditional pills. */ }
+											<div className={ cssModObj.pooNamDiv }>{ /* What: Name Div Element. Why: The item's own name and its status pills (inactive/not yet/spent) belong together. How: This wraps the name span and its conditional pills. */ }
 
 
-												<span className={ cssModObj.poolItemName }>{ curIteObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
+												<span className={ cssModObj.iteNamSpa }>{ curIteObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
 
 
 
@@ -1494,14 +1494,14 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 											</div>
 
-											<div className={ cssModObj.poolMeta }>{ /* What: Meta Div Element. Why: The optional drift bar and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
+											<div className={ cssModObj.pooMetDiv }>{ /* What: Meta Div Element. Why: The optional drift bar and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
 
 
 												{ shoDriBoo && reaValNum != null && ( // What: Drift Bar Check. Why: The drift bar only makes sense once the toggle is on and this mode actually has a readiness value at all. How: This renders the InfTipCom-wrapped bar only when both conditions hold.
 
 
 													<InfTipCom
-														className={ cssModObj.poolProg }
+														className={ cssModObj.pooProSpa }
 
 														labTexStr={ valTipStr }
 													>{ /* What: Info Tip Component. Why: The drift bar benefits from an on-demand explanation of what its value means. How: This shows valTipStr on hover or focus. */ }
@@ -1515,7 +1515,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 
-														<span className={ cssModObj.poolVal }>{ Math.round( curIteObj.value ) }</span>{ /* What: Value Span Element. Why: The exact underlying number is still useful alongside the bar. How: This renders curIteObj.value, rounded. */ }
+														<span className={ cssModObj.pooValSpa }>{ Math.round( curIteObj.value ) }</span>{ /* What: Value Span Element. Why: The exact underlying number is still useful alongside the bar. How: This renders curIteObj.value, rounded. */ }
 
 
 													</InfTipCom>
@@ -1529,7 +1529,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 													<InfTipCom
-														className={ cssModObj.poolWeight }
+														className={ cssModObj.pooWeiSpa }
 
 														labTexStr={ weiTipStr }
 													>w{ curIteObj.weight }</InfTipCom> // What: Info Tip Component. Why: The weight number benefits from the same hover explanation every other tooltip in this row gets. How: This renders "w" plus the raw weight, tipped with weiTipStr.
@@ -1546,7 +1546,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 												<button
-													className={` ${ cssModObj.poolSend }   ${ cssModObj.isSent } `}
+													className={` ${ cssModObj.pooSenBut }   ${ cssModObj.pooSenButSent } `}
 
 													disabled
 													type='button'
@@ -1557,6 +1557,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 													<IcoSvgCom
+														className={ cssModObj.senCheSvg }
+
 														icoNamStr='cheEle'
 														sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 													/>{ /* What: Icon Svg Component. Why: A sent row shows a checkmark instead of the send glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
@@ -1569,7 +1571,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 												<InfTipCom
-													className={ cssModObj.poolSend }
+													className={ cssModObj.pooSenSpa }
 
 													data-action-disabled-active // What: Action Disabled Active Attribute. Why: An item already on Today can't be sent again, so the tip standing in for Send always looks unavailable. How: This sets the presence-only attribute, which InfTipCom forwards to its trigger.
 
@@ -1590,7 +1592,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 												<button
-													className={` ${ cssModObj.poolSend }   ${ higSenBoo ? cssModObj.obTourPulse : '' } `}
+													className={` ${ cssModObj.pooSenBut }   ${ higSenBoo ? cssModObj.pooSenButTour : '' } `}
 
 													disabled={ disIteBoo }
 													type='button'
@@ -1616,7 +1618,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 											<button
-												className={ cssModObj.poolEdit }
+												className={ cssModObj.pooEdiBut }
 
 												disabled={ disEdiBoo }
 												type='button'
@@ -1642,7 +1644,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 												<InfTipCom
-													className={ cssModObj.poolDel }
+													className={ cssModObj.pooDelSpa }
 
 													actNamStr='Delete'
 													labTexStr='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
@@ -1662,7 +1664,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 												<button
-													className={ cssModObj.poolDel }
+													className={ cssModObj.pooDelBut }
 
 													disabled={ disEdiBoo }
 													type='button'
@@ -1710,7 +1712,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 				<div
 					ref={ addWraRef }
 
-					className={ cssModObj.pvAdditemWrap }
+					className={ cssModObj.iteAddDiv }
 
 					data-element-name-hook='iteAddDiv'
 				>{ /* What: Add Item Wrap Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
@@ -1733,7 +1735,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 								<div
-									className={` ${ cssModObj.pvNewitem }   ${ ediCloBoo ? cssModObj.isClosing : '' } `}
+									className={` ${ cssModObj.lisIteDiv }   ${ ediCloBoo ? cssModObj.lisIteDivClosing : '' } `}
 
 									data-element-name-hook='lisIteDiv'
 
@@ -1766,17 +1768,17 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 									<div
-										className={ cssModObj.rdRow }
+										className={ cssModObj.lisRowDiv }
 
 										onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
 									>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool row itself listens for. How: This stops propagation on every click. */ }
 
 
-										<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
+										<span className={ cssModObj.rowMaiSpa }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
 
 
 											<input
-												className={ cssModObj.rdNameInput }
+												className={ cssModObj.rowNamInp }
 
 												data-element-name-hook='rowNamInp'
 
@@ -1808,7 +1810,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 									</div>
 
-									<div className={ cssModObj.rdEdit }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance. */ }
+									<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance. */ }
 
 
 										<EntEdiCom
@@ -1819,7 +1821,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 											picDatObj={ picDatObj }
 
 											onCloEdiFun={ () => setEdiCloBoo( true ) }
-										/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the live item, the picker, and the actions it edits through. */ }{ /* What: No-Ondelete Design Note. Why: EntEdiCom's own footer Delete button is already hidden by the existing .pv-newitem CSS rule (".rd-edit-foot > .btn--danger { display: none }"), same as the new-item flow below. How: Deleting an existing item stays solely the row's own trash icon + confirm flow, one delete affordance per item instead of two that could disagree with each other, so no onDelete prop is passed below. */ }{ /* What: Editor Key Design Note. Why: Without a key keyed to ediLivObj.id, switching ediIteStr straight from one item to another (see staEdiFun) can commit in a single React batch with no intervening null render, so this would stay the SAME EntEdiCom instance across the switch: its internal `orig` snapshot ref (captured once, on mount) would keep pointing at the FIRST item, and its unmount effect, which is what discards live edits via window.__editGuard when a close wasn't an explicit Save/Cancel, would never run at all. How: The key below forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
+										/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the live item, the picker, and the actions it edits through. */ }{ /* What: No-Ondelete Design Note. Why: EntEdiCom's own footer Delete button is already hidden by the existing lisIteDiv rule (its --entry-editor-delete-display : none), same as the new-item flow below. How: Deleting an existing item stays solely the row's own trash icon + confirm flow, one delete affordance per item instead of two that could disagree with each other, so no onDelete prop is passed below. */ }{ /* What: Editor Key Design Note. Why: Without a key keyed to ediLivObj.id, switching ediIteStr straight from one item to another (see staEdiFun) can commit in a single React batch with no intervening null render, so this would stay the SAME EntEdiCom instance across the switch: its internal `orig` snapshot ref (captured once, on mount) would keep pointing at the FIRST item, and its unmount effect, which is what discards live edits via window.__editGuard when a close wasn't an explicit Save/Cancel, would never run at all. How: The key below forces React to unmount the old instance and mount a fresh one whenever the id changes, even within one commit. */ }
 
 
 									</div>
@@ -1842,7 +1844,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 							<button
-								className={ cssModObj.pvAdditemBtn }
+								className={ cssModObj.iteAddBut }
 
 								data-element-name-hook='iteAddBut'
 
@@ -1870,7 +1872,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 							<div
-								className={` ${ cssModObj.pvNewitem }   ${ newCloStr ? cssModObj.isClosing : '' } `}
+								className={` ${ cssModObj.lisIteDiv }   ${ newCloStr ? cssModObj.lisIteDivClosing : '' } `}
 
 								data-element-name-hook='lisIteDiv'
 
@@ -1907,17 +1909,17 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 								<div
-									className={ cssModObj.rdRow }
+									className={ cssModObj.lisRowDiv }
 
 									onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
 								>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool wrap itself listens for. How: This stops propagation on every click. */ }
 
 
-									<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
+									<span className={ cssModObj.rowMaiSpa }>{ /* What: Main Span Element. Why: The name input needs the same wrapper the closed row's name uses. How: This wraps the input below. */ }
 
 
 										<input
-											className={ cssModObj.rdNameInput }
+											className={ cssModObj.rowNamInp }
 
 											data-element-name-hook='rowNamInp'
 
@@ -1949,7 +1951,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 								</div>
 
-								<div className={ cssModObj.rdEdit }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
+								<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
 
 
 									<EntEdiCom
