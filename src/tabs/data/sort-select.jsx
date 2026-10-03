@@ -63,14 +63,14 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } ) {
 	return (
 
 
-		<div className={ cssModObj.dataSortRow }>{ /* What: Container Sort Row Div Element. Why: This groups the label and its own select as one labeled control. How: This wraps the label below and the actual select element. */ }
+		<div className={ cssModObj.sorRowDiv }>{ /* What: Sort Row Div Element. Why: This groups the label and its own select as one labeled control. How: This wraps the label below and the actual select element. */ }
 
 
 			<label
-				className={ cssModObj.dataSortLbl }
+				className={ cssModObj.sorLabLab }
 
 				htmlFor={ selIdeStr }
-			>{ /* What: Sort Label Element. Why: The select below needs an associated visible label for accessibility. How: This is linked to the select via htmlFor/id and shows the caller's own labTexStr text. */ }
+			>{ /* What: Sort Label Label Element. Why: The select below needs an associated visible label for accessibility. How: This is linked to the select via htmlFor/id and shows the caller's own labTexStr text. */ }
 
 
 				{ labTexStr }
@@ -81,14 +81,14 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } ) {
 			<select
 				id={ selIdeStr }
 
-				className={ cssModObj.dataSortSel }
+				className={ cssModObj.sorDroSel }
 
 				data-element-name-hook='sorDroSel'
 
 				value={ value }
 
 				onChange={ ( chaEveObj ) => onChange( chaEveObj.target.value ) }
-			>{ /* What: Sort Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in optLisArr below, and reports the chosen key up via onChange. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Sort Dropdown Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in optLisArr below, and reports the chosen key up via onChange. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				{ optLisArr.map( ( optCurObj ) => ( // What: Sort Option Map. Why: One <option> is needed per entry in optLisArr. How: This maps optLisArr to one <option> per entry, keyed by its own keyStr.

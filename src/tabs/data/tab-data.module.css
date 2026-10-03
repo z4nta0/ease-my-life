@@ -1070,10 +1070,10 @@ button.cat-h-l { /* What: Category Header Toggle Button. Why: The toggle is a re
 .cat-body { /* What: Category Body. Why: The section's contents sit on a slightly recessed panel below the header. How: This shades it under a hairline and hands the sort row its padding and divider. */
 
 
-	--data-sort-row-border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Sort Row Divider. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
-	--data-sort-row-padding       : var( --spa-ver-bas ) var( --spa-hor-bas ); /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
-	background                    : var( --bac-sun-col );
-	border-top                    : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	--sor-row-bor : var( --bor-wid-sma ) solid var(--bor-mai-col); /* What: Sort Row Border. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
+	--sor-row-pad : var( --spa-ver-bas ) var( --spa-hor-bas ); /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+	background    : var( --bac-sun-col );
+	border-top    : var( --bor-wid-sma ) solid var(--bor-mai-col);
 
 
 }
