@@ -741,12 +741,13 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 			<svg
 				className={ cssModObj.dimLaySvg }
+
 				height={ vieHeiNum }
 				width={ vieWidNum }
 			>{ /* What: Help Dim Svg Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
 
 
-				<mask id='help-mask'>{ /* What: Help Mask Element. Why: One shared SVG mask lets arbitrarily many cutouts coexist in a single dim layer, instead of the guided tour's own single-spotlight box-shadow trick. How: This paints a full white rect, then one black rounded-rect per highlighted target/toggle button below. */ }
+				<mask id='helDimMas'>{ /* What: Help Mask Element. Why: One shared SVG mask lets arbitrarily many cutouts coexist in a single dim layer, instead of the guided tour's own single-spotlight box-shadow trick. How: This paints a full white rect, then one black rounded-rect per highlighted target/toggle button below. */ }
 
 
 					<rect
@@ -809,7 +810,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 					className={ cssModObj.dimFilRec }
 
 					height={ vieHeiNum }
-					mask='url(#help-mask)'
+					mask='url(#helDimMas)'
 					width={ vieWidNum }
 					x='0'
 					y='0'
