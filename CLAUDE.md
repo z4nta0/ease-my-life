@@ -2450,7 +2450,9 @@ are renamed to this as their files come up in the design-system pass.
     (a height, decided 2026-09-30, e.g. `--cat-rem-hei`, the measured
     height a removing Data card collapses from), `pad` (a padding, decided
     2026-10-02, e.g. `--tab-tou-pad`, the room a tab adds below its content
-    during a tour). New categories are added
+    during a tour), `bor` (a whole `border` value, width, style, and color
+    together, decided 2026-10-02, e.g. `--sor-row-bor`, the divider a Data
+    section hands its sort row). New categories are added
     here as they come up.
 - **A scaled family ends in its step**, and the family moves to the first
   segment: `--fon-siz-p01` (font size, base plus 1), `--gri-gap-sma` (grid gap,
