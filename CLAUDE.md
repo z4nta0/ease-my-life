@@ -2216,7 +2216,10 @@ still passes.
     counterpart of the themed-region object variant under "### Sectioning
     / fold regions"): the sections are ordered alphabetically by name, the
     tokens alphabetically within each, 1 blank line between a marker and
-    its tokens, and 3 blank lines between sections. Every token gets its
+    its tokens, and 3 blank lines between sections. Two families inside
+    one section (e.g. the `--dur-ani-*` and `--dur-tra-*` durations, or
+    the `--spa-hor-*` and `--spa-ver-*` spacing) sit 2 blank lines apart
+    (decided 2026-10-02). Every token gets its
     own one-line What/Why/How comment after its `;` (decided 2026-10-02,
     replacing an earlier rule that only commented tokens whose names didn't
     say what they were), and a run of tokens column-aligns its comments
