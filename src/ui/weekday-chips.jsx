@@ -115,7 +115,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 
 
 		<div
-			className={` ${ cssModObj.dowChips }   ${ sizValStr === 'sm' ? cssModObj.dowChipsSm : '' } `}
+			className={` ${ cssModObj.dowChiDiv }   ${ sizValStr === 'sm' ? cssModObj.dowChiDivSm : '' } `}
 
 			data-element-name-hook='dowChiDiv'
 
@@ -137,7 +137,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 					<InfTipCom
 						key={ dayIndNum }
 
-						className={` ${ cssModObj.dowChip }   ${ cssModObj.isOn }   ${ cssModObj.isLocked }   ${ sizValStr === 'sm' ? cssModObj.dowChipSm : '' } `}
+						className={ cssModObj.dowChiSpa }
 
 						labTexStr={ locTipStr }
 					>{ labChrStr }</InfTipCom> // What: Locked Day Chip Element. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
@@ -153,7 +153,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 					<button
 						key={ dayIndNum }
 
-						className={ cssModObj.dowChip }
+						className={ cssModObj.dowChiBut }
 
 						type='button'
 
