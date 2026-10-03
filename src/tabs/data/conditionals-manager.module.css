@@ -193,6 +193,7 @@
 
 	--sor-row-bor : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Sort Row Border. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own bottom border. */
 	--sor-row-pad : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */ /* What: Sort Row Padding. Why: The sort row lines up with the rows around it. How: SorSelCom reads this for its own padding. */
+
 	background    : var( --bac-sun-col );                            /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
 	border-top    : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 
