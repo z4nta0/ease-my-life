@@ -99,7 +99,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 		<article
-			className={ cssModObj.todayCard }
+			className={ cssModObj.todCarArt }
 
 			data-card-done-active={ tutDonBoo || undefined } // What: Card Done Active Attribute. Why: A resolved tutorial's card dims, fills its check, and strikes its text through from its module. How: This sets the presence-only attribute while tutDonBoo is true and removes it otherwise.
 			data-card-needed-active={ !!bloReaStr || undefined } // What: Card Needed Active Attribute. Why: A tutorial that can't run yet takes the warm needs-attention tint from its module. How: This sets the presence-only attribute while bloReaStr holds a reason and removes it otherwise.
@@ -113,7 +113,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<button
-					className={ cssModObj.check }
+					className={ cssModObj.carCheBut }
 
 					data-element-name-hook='carCheBut'
 
@@ -134,12 +134,14 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 					<span
-						className={ cssModObj.checkRipple }
+						className={ cssModObj.cheRipSpa }
 
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
 					<IcoSvgCom
+						className={ cssModObj.cheIcoSvg }
+
 						icoNamStr='cheEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
@@ -152,7 +154,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<InfTipCom
-					className={` ${ cssModObj.check }   ${ cssModObj.isDisabled } `}
+					className={ cssModObj.carCheSpa }
 
 					data-element-name-hook='carCheSpa'
 
@@ -174,7 +176,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<button
-					className={ cssModObj.check }
+					className={ cssModObj.carCheBut }
 
 					data-element-name-hook='carCheBut'
 
@@ -206,10 +208,10 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 
-			<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
+			<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
-				<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
+				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
 
 
 					<span>{ PAG_LAB_OBJ[ feaRecObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own pagStr in PAG_LAB_OBJ. */ }
@@ -222,7 +224,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
-							<span className={ cssModObj.metaDot }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
+							<span className={ cssModObj.metDotSpa }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
 							<span>{ feaRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
 
@@ -235,7 +237,7 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 				</div>
 
-				<div className={ cssModObj.todayCardName }>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
+				<div className={ cssModObj.carNamDiv }>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
 
 
 			</div>
@@ -245,14 +247,14 @@ function AppFeaCom ( { actStoObj, feaRecObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 				<div
-					className={ cssModObj.todayCardActions }
+					className={ cssModObj.carActDiv }
 
 					data-element-name-hook='carActDiv'
 				>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 					<button
-						className={ cssModObj.iconBtn }
+						className={ cssModObj.actIcoBut }
 
 						aria-label='Cancel tutorial'
 						title='Cancel'
