@@ -106,7 +106,7 @@ const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animatio
  * The celebration preview's own few mock "done" cards for the ripple/
  * confetti/sparkle effects to visibly act on, mirroring the Today list
  * rather than the progress ring. This is mapped inside CelPreCom to
- * render one mock .today-card row per entry.
+ * render one mock todCarDiv row per entry.
  *
  * Every entry shares this exact shape, and none of them repeat these
  * same fields' own boilerplate comments on their own lines (see the
@@ -127,12 +127,12 @@ const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animatio
  *
 */
 
-const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock done-cards for its effects to act on. How: CelPreCom maps this to one mock .today-card row per entry.
+const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock done-cards for its effects to act on. How: CelPreCom maps this to one mock todCarDiv row per entry.
 
 
-	{ ideStr : 'pc1', namStr : 'Make the bed',     picStr : 'Morning' }, // What: Make The Bed Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one .today-card row.
-	{ ideStr : 'pc2', namStr : 'Water the plants', picStr : 'Chores'  }, // What: Water The Plants Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one .today-card row.
-	{ ideStr : 'pc3', namStr : 'Inbox zero',       picStr : 'Focus'   }  // What: Inbox Zero Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one .today-card row.
+	{ ideStr : 'pc1', namStr : 'Make the bed',     picStr : 'Morning' }, // What: Make The Bed Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one todCarDiv row.
+	{ ideStr : 'pc2', namStr : 'Water the plants', picStr : 'Chores'  }, // What: Water The Plants Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one todCarDiv row.
+	{ ideStr : 'pc3', namStr : 'Inbox zero',       picStr : 'Focus'   }  // What: Inbox Zero Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one todCarDiv row.
 
 
 ];
@@ -189,7 +189,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 
 
-		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll( '[data-element-name-hook~="preCarDiv"]' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every '.today-card' inside carConRef's own current element, or an empty array before it has mounted.
+		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll( '[data-element-name-hook~="preCarDiv"]' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every preCarDiv hook inside carConRef's own current element, or an empty array before it has mounted.
 
 		let ripCleTim; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
 
@@ -200,13 +200,13 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 			carEleArr.forEach( ( carCurEle, iteIndNum ) => { // What: Ripple Start Loop. Why: Every mock card needs its own staggered exhale animation restarted, matching the real Today list's own cascade. How: This iterates carEleArr, giving each card a delay proportional to its own position before re-triggering its exhale class.
 
 
-				carCurEle.classList.remove( cssModObj.isExhaling ); // What: Exhale Class Reset. Why: A card already mid-animation from a previous Play press must be reset before it can replay. How: This removes the module's isExhaling class so it can be re-added below to actually restart the CSS animation.
+				carCurEle.classList.remove( cssModObj.todCarDivExhaling ); // What: Exhale Class Reset. Why: A card already mid-animation from a previous Play press must be reset before it can replay. How: This removes the module's isExhaling class so it can be re-added below to actually restart the CSS animation.
 
 				void carCurEle.offsetWidth; // What: Reflow Force. Why: Re-adding the same class immediately after removing it would otherwise be batched by the browser and never restart the animation. How: Reading offsetWidth forces a synchronous layout flush between the remove above and the add below.
 
 				carCurEle.style.setProperty( '--exh-car-del', `${ iteIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card's own cascade position needs its own staggered start time. How: This writes the '--exh-car-del' custom property, read by the CSS animation, proportional to this card's own index. // Duration Base Minus 3 ~= 67.9ms
 
-				carCurEle.classList.add( cssModObj.isExhaling ); // What: Exhale Class Restart. Why: This is the actual trigger that (re)starts the CSS exhale animation on this card. How: This re-adds the module's isExhaling class, now that the reflow above guarantees the browser treats it as a fresh start.
+				carCurEle.classList.add( cssModObj.todCarDivExhaling ); // What: Exhale Class Restart. Why: This is the actual trigger that (re)starts the CSS exhale animation on this card. How: This re-adds the module's isExhaling class, now that the reflow above guarantees the browser treats it as a fresh start.
 
 
 			} );
@@ -218,7 +218,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 				carEleArr.forEach( ( carCurEle ) => { // What: Ripple Cleanup Loop. Why: Every card the loop above set exhaling needs its own animation state cleared afterward. How: This iterates carEleArr, clearing both the class and the custom property from each one.
 
 
-					carCurEle.classList.remove( cssModObj.isExhaling ); // What: Exhale Class Clear. Why: This class must not linger past the end of the cascade animation. How: This removes the module's isExhaling class from the current card element.
+					carCurEle.classList.remove( cssModObj.todCarDivExhaling ); // What: Exhale Class Clear. Why: This class must not linger past the end of the cascade animation. How: This removes the module's isExhaling class from the current card element.
 
 					carCurEle.style.removeProperty( '--exh-car-del' ); // What: Exhale Delay Clear. Why: This inline custom property must not linger past the end of the cascade animation either. How: This removes the '--exh-car-del' custom property from the current card element.
 
@@ -306,36 +306,38 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 	return (
 
 
-		<div className={ cssModObj.celebPreviewStage }>{ /* What: Celebration Preview Stage Div Element. Why: This is CelPreCom's own root element, sized to match the Today cards area so the preview reads as a faithful copy. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
+		<div className={ cssModObj.celPreDiv }>{ /* What: Celebration Preview Stage Div Element. Why: This is CelPreCom's own root element, sized to match the Today cards area so the preview reads as a faithful copy. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
 
 
 			<div
 				ref={ carConRef }
 
-				className={ cssModObj.celebPreviewCards }
+				className={ cssModObj.preLisDiv }
 			>{ /* What: Celebration Preview Cards Div Element. Why: The ripple style animates these specific card elements directly, so they need a stable container carConRef can query into. How: This renders one mock done-card per entry in PRE_CAR_ARR. */ }
 
 
-				{ PRE_CAR_ARR.map( ( carCurObj ) => ( // What: Preview Card Map. Why: One mock done-card is needed per entry in PRE_CAR_ARR. How: This maps PRE_CAR_ARR to one .today-card row per entry, keyed by its own ideStr.
+				{ PRE_CAR_ARR.map( ( carCurObj ) => ( // What: Preview Card Map. Why: One mock done-card is needed per entry in PRE_CAR_ARR. How: This maps PRE_CAR_ARR to one todCarDiv row per entry, keyed by its own ideStr.
 
 
 					<div
 						key={ carCurObj.ideStr }
 
-						className={ cssModObj.todayCard }
+						className={ cssModObj.todCarDiv }
 
 						data-element-name-hook='preCarDiv'
 					>{ /* What: Preview Card Div Element. Why: This mirrors the real Today tab's own done-card markup so the ripple/confetti/sparkle effects render identically here. How: This renders the check glyph and the card's own picker/name text. Its data-element-name-hook is read by the completion-celebration preview. */ }
 
 
 						<span
-							className={ cssModObj.check }
+							className={ cssModObj.carCheSpa }
 
 							aria-hidden='true'
 						>{ /* What: Check Span Element. Why: A completed Today card always shows a check glyph. How: This wraps the IcoSvgCom component rendering the 'cheEle' glyph. */ }
 
 
 							<IcoSvgCom
+								className={ cssModObj.cheIcoSvg }
+
 								icoNamStr='cheEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: This is the actual check glyph shown on a completed card. How: This renders the 'cheEle' icon at a fixed size matching the real Today card. */ }
@@ -344,10 +346,10 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 						</span>
 
 
-						<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The picker/name text needs its own grouping wrapper, matching the real Today card markup. How: This wraps the meta row and the name line below. */ }
+						<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The picker/name text needs its own grouping wrapper, matching the real Today card markup. How: This wraps the meta row and the name line below. */ }
 
 
-							<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The picker name needs its own row, matching the real Today card markup. How: This wraps the single meta-picker span below. */ }
+							<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker name needs its own row, matching the real Today card markup. How: This wraps the single meta-picker span below. */ }
 
 
 								<span>{ carCurObj.picStr }</span>{ /* What: Meta Picker Span Element. Why: Every real Today card shows which picker an item came from. How: This renders the mock card's own picStr. */ }
@@ -355,7 +357,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 							</div>
 
-							<div className={ cssModObj.todayCardName }>{ carCurObj.namStr }</div>{ /* What: Card Name Div Element. Why: Every real Today card shows the item's own name. How: This renders the mock card's own namStr. */ }
+							<div className={ cssModObj.carNamDiv }>{ carCurObj.namStr }</div>{ /* What: Card Name Div Element. Why: Every real Today card shows the item's own name. How: This renders the mock card's own namStr. */ }
 
 
 						</div>
@@ -372,7 +374,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 
 
 			<div
-				className={ cssModObj.celebPreviewParticles }
+				className={ cssModObj.preParDiv }
 
 				aria-hidden='true'
 			>{ /* What: Celebration Preview Particles Div Element. Why: The confetti/sparkle overlay renders above the mock cards but must never be exposed to assistive tech, since it is purely decorative. How: This renders one piece per entry in parIteArr, each already fully styled/positioned. */ }
@@ -387,7 +389,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 						<i
 							key={ parCurObj.ideStr }
 
-							className={ cssModObj.confettiPiece }
+							className={ cssModObj.conPieIta }
 
 							style={{
 								'--con-dir-ang' : parCurObj.angNum + 'deg',
@@ -396,7 +398,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 								'--con-tra-off' : parCurObj.disNum + 'px',
 								animationDelay  : parCurObj.delNum + 'ms'
 							}}
-						/> // What: Confetti Piece Element. Why: This is one falling confetti piece of the celebration. How: This is styled entirely via CSS custom properties read by the .confetti-piece animation.
+						/> // What: Confetti Piece Element. Why: This is one falling confetti piece of the celebration. How: This is styled entirely via CSS custom properties read by the conPieIta animation.
 
 
 					) : ( // What: Sparkle Piece Branch. Why: A non-confetti particle renders as a sparkle piece instead. How: This renders the else branch, taken whenever parCurObj.kinStr isn't 'confetti'.
@@ -405,7 +407,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 						<span
 							key={ parCurObj.ideStr }
 
-							className={ cssModObj.sparklePiece }
+							className={ cssModObj.spaPieSpa }
 
 							style={{
 								animationDelay : parCurObj.delNum + 'ms',
@@ -484,7 +486,7 @@ function PicAniCom ( { repTokNum, styKeyStr } ) {
 	return (
 
 
-		<div className={ cssModObj.pickanimPreviewStage }>{ /* What: Picker Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PicStrCom cycle or a static fallback, based on whether Play has been pressed. */ }
+		<div className={ cssModObj.aniStaDiv }>{ /* What: Picker Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PicStrCom cycle or a static fallback, based on whether Play has been pressed. */ }
 
 
 			{ repTokNum > 0 ? ( // What: Play Pressed Check. Why: The real cycle animation should only mount once the user has actually pressed Play at least once. How: This renders PicStrCom while repTokNum is greater than 0, a static preview of the landing candidate's own name otherwise.
@@ -503,7 +505,7 @@ function PicAniCom ( { repTokNum, styKeyStr } ) {
 			) : ( // What: Static Pick Branch. Why: Before Play is first pressed, the stage still needs something meaningful to show instead of the cycling strip. How: This renders the else branch, taken while repTokNum is still 0.
 
 
-				<span className={ cssModObj.pickanimPreviewPick }>{ picCanObj.name }</span> // What: Picker Preview Pick Span Element. Why: Before Play is first pressed, the stage still needs to show something meaningful. How: This renders the fixed landing candidate's own name as a static placeholder.
+				<span className={ cssModObj.aniPicSpa }>{ picCanObj.name }</span> // What: Picker Preview Pick Span Element. Why: Before Play is first pressed, the stage still needs to show something meaningful. How: This renders the fixed landing candidate's own name as a static placeholder.
 
 
 			) }

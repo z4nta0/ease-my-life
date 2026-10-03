@@ -24,84 +24,82 @@
 
 
 
-/* #region celeb-preview-stage */
+/* #region celPreDiv */
 
-.celeb-preview-stage { /* What: Celebration Preview Stage. Why: The preview should echo the Today cards area it stands in for, and keep its particles inside it. How: This pads a clipped, slightly darker block under a top divider. */
+.celPreDiv { /* What: Celebration Preview Div. Why: The preview should echo the Today cards area it stands in for, and keep its particles inside it. How: This pads a clipped, slightly darker block under a top divider. */
 
 
-	background : var( --bac-wel-col );
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	background : var( --bac-wel-col );                            /* Background Well Color = oklch( 0.96 0.004 240 ) */
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display    : block;
 	overflow   : hidden;
-	padding    : var( --spa-ver-p01 ) var( --spa-hor-p01 );
+	padding    : var( --spa-ver-p01 ) var( --spa-hor-p01 );       /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 	position   : relative;
 
 
 }
 
 
+/* #region preLisDiv */
 
-/* #region celeb-preview-cards */
-
-.celeb-preview-cards { /* What: Celebration Preview Cards. Why: The mock cards stack like a real Today list. How: This stacks them in a column with a small gap. */
+.preLisDiv { /* What: Preview List Div. Why: The mock cards stack like a real Today list. How: This stacks them in a column with a small gap. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m01 );
+	gap            : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 	position       : relative;
 
 
 }
 
 
+/* #region todCarDiv */
 
-/* #region today-card */
-
-.today-card { /* What: Preview Card. Why: Each mock card should look exactly like a done Today card, so the celebration renders the same as the real one. How: This lays out the check and body in the Today card's grid, with the done card's dimmed surface. */
+.todCarDiv { /* What: Today Card Div. Why: Each mock card should look exactly like a done Today card, so the celebration renders the same as the real one. How: This lays out the check and body in the Today card's grid, with the done card's dimmed surface. */
 
 
 	align-items           : center;
-	background            : var( --bac-sun-col );
-	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius         : var( --rad-bor-lar );
+	background            : var( --bac-sun-col );                                                                             /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
+	border                : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                  /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius         : var( --rad-bor-lar );                                                                             /* Radius Border Large ~= 14.572px */
 	cursor                : default;
 	display               : grid;
-	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : var( --spa-ver-m01 );
-	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
-	perspective           : 800px;
-	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 );
+	margin-bottom         : var( --spa-ver-m01 );                                                                             /* Spacing Vertical Base Minus 1 = 11px */
+	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	perspective           : calc( var( --ver-rhy-p14 ) * 1rem );                                                              /* Vertical Rhythm Base Plus 14 ~= 746.868px */
+	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 ); /* Duration Transition Base ~= 157.8ms, Duration Transition Base Plus 1 ~= 209.1ms, Duration Transition Base Minus 1 ~= 119.2ms */
 	user-select           : none;
 
 
 }
-.today-card:last-child { /* What: Last Preview Card. Why: The last card needs no gap below it. How: This drops its bottom margin. */
+.todCarDiv:last-child { /* What: Last Preview Card. Why: The last card needs no gap below it. How: This drops its bottom margin. */
 
 
 	margin-bottom : 0;
 
 
 }
-.today-card:hover { /* What: Hovered Preview Card. Why: The mock card responds to the pointer like a real one. How: This darkens its border slightly. */
+.todCarDiv:hover { /* What: Hovered Preview Card. Why: The mock card responds to the pointer like a real one. How: This darkens its border slightly. */
 
 
-	border-color : var( --bor-hov-col );
-
-
-}
-.today-card.is-exhaling { /* What: Exhaling Preview Card. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
-
-
-	animation : global(cardCelebrateSwell) var(--exh-car-dur) var( --mot-dec-eas ) var(--exh-car-del, 0ms) both; /* What: Global Exhale Keyframes. Why: The cardCelebrateSwell keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	border-color : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Preview Card. Why: Someone who asked for less motion shouldn't see the card's colors fade on hover; the exhale itself is the previewed animation, so it stays. How: This applies only when the reduced-motion preference is set. */
+.todCarDiv--exhaling { /* What: Exhaling Today Card Div. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
 
 
-	.today-card { /* What: Still Preview Card. Why: The hover border should simply switch. How: This turns the card's fades off. */
+	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global Exhale Keyframes. Why: The cardCelebrateSwell keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Preview Card. Why: Someone who asked for less motion shouldn't see the card's colors fade on hover; the exhale itself is the previewed animation, so it stays. How: This applies only when the reduced-motion preference is set. */
+
+
+	.todCarDiv { /* What: Still Today Card Div. Why: The hover border should simply switch. How: This turns the card's fades off. */
 
 
 		transition : none;
@@ -113,36 +111,35 @@
 }
 
 
+/* #region carCheSpa */
 
-/* #region check */
-
-.check { /* What: Preview Card Check. Why: A done card shows a filled accent check. How: This draws the rounded check box with the button chrome reset, filled with the accent color and its glyph in the background color. */
+.carCheSpa { /* What: Card Check Span. Why: A done card shows a filled accent check. How: This draws the rounded check box with the button chrome reset, filled with the accent color and its glyph in the background color. */
 
 
-	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping native control styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none;                                                                                           /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping native control styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
-	background         : var(--acc-mai-col);
-	border             : var( --bor-wid-bas ) solid var(--acc-mai-col);
-	border-radius      : var( --rad-bor-sma );
-	color              : var(--bac-pag-col);
+	background         : var( --acc-mai-col );                                                                           /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border             : var( --bor-wid-bas ) solid var( --acc-mai-col );                                                /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius      : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color              : var( --bac-pag-col );                                                                           /* Background Page Color = oklch( 0.985 0.003 240 ) */
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p02 ) * 1rem );
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content    : center;
 	margin             : 0;
 	padding            : 0;
 	position           : relative;
-	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 );
-	width              : calc( var( --ver-rhy-p02 ) * 1rem );
+	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Preview Card Check. Why: Someone who asked for less motion shouldn't see the check's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Preview Card Check. Why: Someone who asked for less motion shouldn't see the check's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.check { /* What: Still Preview Card Check. Why: Its colors should simply switch. How: This turns the fades off. */
+	.carCheSpa { /* What: Still Card Check Span. Why: Its colors should simply switch. How: This turns the fades off. */
 
 
 		transition : none;
@@ -153,71 +150,70 @@
 
 }
 
-.check svg { /* What: Preview Card Checkmark. Why: The checkmark springs in like a freshly checked card, which is part of the previewed celebration. How: This plays the shared spring animation on the glyph. */
+.cheIcoSvg { /* What: Check Icon Svg. Why: The checkmark springs in like a freshly checked card, which is part of the previewed celebration. How: This plays the shared spring animation on the glyph. */
 
 
-	animation : global(checkDoneBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Spring Keyframes. Why: The checkDoneBounce keyframes are shared with the real Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( checkDoneBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global Spring Keyframes. Why: The checkDoneBounce keyframes are shared with the real Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
 
-/* #endregion check */
+/* #endregion carCheSpa */
 
 
+/* #region carBodDiv */
 
-/* #region today-card-body */
-
-.today-card-body { /* What: Preview Card Body. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
+.carBodDiv { /* What: Card Body Div. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m07 );
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	min-width      : 0;
 
 
 }
 
-.today-card-meta { /* What: Preview Card Meta Row. Why: The picker name sits above the item like a real card's meta line. How: This sets it in small, spaced, muted mono capitals. */
+.carMetDiv { /* What: Card Meta Div. Why: The picker name sits above the item like a real card's meta line. How: This sets it in small, spaced, muted mono capitals. */
 
 
 	align-items    : center;
-	color          : var(--tex-mut-col);
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display        : flex;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	gap            : var( --spa-hor-m03 );
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
 
 }
 
-.today-card-name { /* What: Preview Card Name. Why: A done card's item name reads as checked off. How: This sets it in large medium-weight muted text struck through with a hairline. */
+.carNamDiv { /* What: Card Name Div. Why: A done card's item name reads as checked off. How: This sets it in large medium-weight muted text struck through with a hairline. */
 
 
-	color                     : var(--tex-mut-col);
-	font-size                 : var( --fon-siz-p02 );
+	color                     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size                 : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight               : 500;
 	letter-spacing            : -0.01em;
 	text-decoration           : line-through;
-	text-decoration-thickness : 0.5px;
+	text-decoration-thickness : var( --bor-wid-sma ); /* Border Width Small ~= 0.499px */
 	text-wrap                 : pretty;
 
 
 }
 
-/* #endregion today-card-body */
+/* #endregion carBodDiv */
 
-/* #endregion today-card */
+/* #endregion todCarDiv */
 
-/* #endregion celeb-preview-cards */
+/* #endregion preLisDiv */
 
 
 
-/* #region celeb-preview-particles */
+/* #region preParDiv */
 
-.celeb-preview-particles { /* What: Celebration Preview Particles. Why: The confetti and sparkle pieces overlay the mock cards without ever taking the pointer. How: This covers the stage as an inert positioned layer. */
+.preParDiv { /* What: Preview Particles Div. Why: The confetti and sparkle pieces overlay the mock cards without ever taking the pointer. How: This covers the stage as an inert positioned layer. */
 
 
 	inset          : 0;
@@ -227,68 +223,69 @@
 
 }
 
-.confetti-piece { /* What: Preview Confetti Piece. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --con-dir-ang, --con-tra-off, and --con-spi-ang. */
+.conPieIta { /* What: Confetti Piece Italic. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --con-dir-ang, --con-tra-off, and --con-spi-ang. */
 
 
-	animation     : global(confettiCelebrateBurst) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* What: Global Burst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background    : var(--acc-mai-col);
-	border-radius : var( --rad-bor-xsm );
-	height        : calc( var( --ver-rhy-bas ) * 1rem );
+	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global Burst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background    : var( --acc-mai-col );                                                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : var( --rad-bor-xsm );                                                            /* Radius Border Extra Small ~= 3.571px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                             /* Vertical Rhythm Base ~= 14.572px */
 	left          : 50%;
 	opacity       : 0;
 	position      : absolute;
 	top           : 50%;
-	width         : calc( var( --ver-rhy-m02 ) * 1rem );
+	width         : calc( var( --ver-rhy-m02 ) * 1rem );                                             /* Vertical Rhythm Base Minus 2 ~= 8.304px */
 
 
 }
 
-.sparkle-piece { /* What: Preview Sparkle Piece. Why: Each sparkle glints at its own spot like the real sparkle celebration. How: This centers an accent glyph on its inline position and twinkles it with the shared animation. */
+.spaPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle glints at its own spot like the real sparkle celebration. How: This centers an accent glyph on its inline position and twinkles it with the shared animation. */
 
 
-	animation   : global(sparkleCelebrateTwinkle) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* What: Global Twinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	color       : var(--acc-mai-col);
-	font-size   : var( --fon-siz-p02 );
-	line-height : var( --ver-rhy-m01 );
+	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global Twinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var( --acc-mai-col );                                                             /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-size   : var( --fon-siz-p02 );                                                             /* Font Size Base Plus 2 ~= 19.304px */
+	line-height : var( --ver-rhy-m01 );                                                             /* Vertical Rhythm Base Minus 1 = 1 */
 	opacity     : 0;
 	position    : absolute;
-	transform   : translate(-50%, -50%) scale(0.4);
+	transform   : translate( -50%, -50% ) scale( 0.4 );
 
 
 }
 
-/* #endregion celeb-preview-particles */
+/* #endregion preParDiv */
 
-/* #endregion celeb-preview-stage */
+/* #endregion celPreDiv */
 
 
 
-/* #region pickanim-preview-stage */
+/* #region aniStaDiv */
 
-.pickanim-preview-stage { /* What: Pick Animation Preview Stage. Why: The picked name or the running animation should sit centered in a fixed-height stage. How: This centers its content in a full-width box with a minimum height, and centers the spotlight's rows. */
+.aniStaDiv { /* What: Animation Stage Div. Why: The picked name or the running animation should sit centered in a fixed-height stage. How: This centers its content in a full-width box with a minimum height, and centers the spotlight's rows. */
 
 
 	--spot-row-text-align : center; /* What: Spotlight Row Alignment. Why: The spotlight's rows read best centered in this narrow stage. How: The picker strip's spotlight rows read this as their text alignment. */
-	align-items           : center;
-	display               : flex;
-	justify-content       : center;
-	min-height            : calc( var( --ver-rhy-p09 ) * 1rem );
-	width                 : 100%;
+
+	align-items     : center;
+	display         : flex;
+	justify-content : center;
+	min-height      : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+	width           : 100%;
 
 
 }
 
-.pickanim-preview-pick { /* What: Pick Animation Preview Name. Why: Before Play is pressed, the stage shows the picked name on its own. How: This sets it in bold accent mono text. */
+.aniPicSpa { /* What: Animation Pick Span. Why: Before Play is pressed, the stage shows the picked name on its own. How: This sets it in bold accent mono text. */
 
 
-	color       : var(--acc-mai-col);
-	font-family : var(--fon-fam-sec);
-	font-size   : var( --fon-siz-p01 );
+	color       : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-family : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 600;
 
 
 }
 
-/* #endregion pickanim-preview-stage */
+/* #endregion aniStaDiv */
 
 
