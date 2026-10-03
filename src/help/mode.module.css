@@ -145,7 +145,7 @@
 
 
 }
-@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Help Badge Button. Why: Someone who asked for less motion shouldn't see the badge fade between colors. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Badge Button. Why: Someone who asked for less motion shouldn't see the badge fade between colors. How: This applies only when the reduced-motion preference is set. */
 
 
 	.helBadBut { /* What: Still Help Badge Button. Why: The badge should change color at once. How: This turns its color transition off. */

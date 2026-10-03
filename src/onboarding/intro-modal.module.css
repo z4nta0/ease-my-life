@@ -22,19 +22,19 @@
 .intScrDiv { /* What: Intro Scrim Div. Why: The modal needs a dimmed backdrop over the whole app that can scroll when the card is taller than the screen. How: This covers the viewport in a fading dim layer and stacks the card in a scrollable column. */
 
 
-	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background     : oklch( from var( --scr-mai-col ) l c h / 0.5 );                           /* Scrim Main Color = oklch( 0.15 0.02 250 ) */
+	animation      : global( overlayOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background     : oklch( from var( --scr-mai-col ) l c h / 0.5 );                             /* Scrim Main Color = oklch( 0.15 0.02 250 ) */
 	display        : flex;
 	flex-direction : column;
 	inset          : 0;
 	overflow-y     : auto;
-	padding        : var( --spa-ver-p02 ) var( --spa-hor-p02 );                                /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
+	padding        : var( --spa-ver-p02 ) var( --spa-hor-p02 );                                  /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
 	position       : fixed;
 	z-index        : 1000;
 
 
 }
-@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Intro Scrim Div. Why: Someone who asked for less motion shouldn't see the backdrop fade in. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Intro Scrim Div. Why: Someone who asked for less motion shouldn't see the backdrop fade in. How: This applies only when the reduced-motion preference is set. */
 
 
 	.intScrDiv { /* What: Motionless Intro Scrim Div. Why: The backdrop should simply appear. How: This turns its fade and transitions off. */
@@ -73,7 +73,7 @@
 
 
 }
-@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Welcome Card Div. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Welcome Card Div. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
 
 
 	.welCarDiv { /* What: Motionless Welcome Card Div. Why: The card should simply appear. How: This turns its animation and transitions off. */

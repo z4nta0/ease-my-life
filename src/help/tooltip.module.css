@@ -22,7 +22,7 @@
 .helTipDiv { /* What: Help Tip Div. Why: A help tip should look like the tour's own coach card, sized to its explanation. How: This floats a raised surface card over the page that fades in, fits its body text, and takes clicks, since help mode's overlay otherwise makes the page click-through. */
 
 
-	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both;                                  /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global( overlayOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both;                                /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background     : var( --bac-sur-col );                                                                                      /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                           /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius  : var( --rad-bor-med );                                                                                      /* Radius Border Medium = 11px */
@@ -66,7 +66,7 @@
 
 
 }
-@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Help Tip Div. Why: Someone who asked for less motion shouldn't see the tip fade in. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Tip Div. Why: Someone who asked for less motion shouldn't see the tip fade in. How: This applies only when the reduced-motion preference is set. */
 
 
 	.helTipDiv { /* What: Motionless Help Tip Div. Why: The tip should simply appear. How: This turns its fade and transitions off. */
