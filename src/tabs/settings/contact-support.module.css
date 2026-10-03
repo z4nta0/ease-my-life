@@ -90,7 +90,7 @@
 .set-import-msg { /* What: Sent Note. Why: A successful send should confirm itself with a small, noticeable pop. How: This sets the note in small accent text and pops it in each time it remounts. */
 
 
-	animation  : global(importMsgPop) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation  : global(messageResultBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color      : var(--acc-mai-col);
 	font-size  : var( --fon-siz-bas );
 	margin-top : var( --spa-ver-m07 );
@@ -289,7 +289,7 @@
 .support-valid-msg { /* What: Support Validation Note. Why: An empty-field send attempt should explain itself right beside the buttons. How: This sets the note in small red text, pushes it left, and pops it in. */
 
 
-	animation    : global(importMsgPop) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation    : global(messageResultBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color        : var( --err-dar-col );
 	font-size    : var( --fon-siz-bas );
 	margin-right : auto;
@@ -316,7 +316,7 @@
 .support-fallback { /* What: Support Fallback Note. Why: A send that didn't go through lost nothing, so its note reads as advice rather than an error. How: This sets it in small warm text, pushes it left, and pops it in. */
 
 
-	animation    : global(importMsgPop) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Pop Keyframes. Why: The importMsgPop keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation    : global(messageResultBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color        : var( --war-dar-col );
 	font-size    : var( --fon-siz-bas );
 	line-height  : var( --ver-rhy-bas );

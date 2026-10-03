@@ -900,7 +900,7 @@
 .set-import-msg { /* What: Result Message. Why: An action's result pops in under its row's description. How: This sets small text that plays a springy pop. */
 
 
-	animation  : importMsgPop var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
+	animation  : global(messageResultBounce) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* What: Global Bounce Keyframes. Why: The messageResultBounce keyframes are shared with the contact form's messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name. */
 	font-size  : var( --fon-siz-bas );
 	margin-top : var( --spa-ver-m07 );
 
@@ -936,38 +936,6 @@
 
 
 		animation : none;
-
-
-	}
-
-
-}
-@keyframes importMsgPop { /* What: Import Message Pop Keyframes. Why: A result should land with a little bounce. How: This scales it up past full size and back while fading it in. */
-
-
-	0% {
-
-
-		opacity   : 0;
-		transform : scale(.9);
-
-
-	}
-
-	60% {
-
-
-		opacity   : 1;
-		transform : scale(1.06);
-
-
-	}
-
-	100% {
-
-
-		opacity   : 1;
-		transform : scale(1);
 
 
 	}

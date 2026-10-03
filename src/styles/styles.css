@@ -905,6 +905,39 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
+@keyframes messageResultBounce { /* What: Message Result Bounce Keyframes. Why: A result should land with a little bounce. How: This scales it up past full size and back while fading it in. */
+
+
+	0% {
+
+
+		opacity   : 0;
+		transform : scale( .9 );
+
+
+	}
+
+	60% {
+
+
+		opacity   : 1;
+		transform : scale( 1.06 );
+
+
+	}
+
+	100% {
+
+
+		opacity   : 1;
+		transform : scale( 1 );
+
+
+	}
+
+
+}
+
 @keyframes newItemCloseFadeOut { /* What: New Item Close Fade Out Keyframes. Why: When an item is saved, its editor should fold away before the item pops into the pool. How: This fades it out while lifting and shrinking it slightly. */
 
 
