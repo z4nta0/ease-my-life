@@ -319,20 +319,20 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 
 
 		<div
-			className={ cssModObj.rdMatrix }
+			className={ cssModObj.remMatDiv }
 
 			data-element-name-hook='remMatDiv'
 		>{ /* What: Matrix Div Element. Why: This is OptMatCom's own root element. How: This renders the head row, one row per REM_MAT_ARR entry, and the foot below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-			<div className={ cssModObj.rdMxHead }>{ /* What: Matrix Head Div Element. Why: The 2 column labels need their own header row above the data rows. How: This renders an empty leading cell (aligning with each row's own name column) plus the 2 column-label spans. */ }
+			<div className={ cssModObj.matHeaDiv }>{ /* What: Matrix Header Div Element. Why: The 2 column labels need their own header row above the data rows. How: This renders an empty leading cell (aligning with each row's own name column) plus the 2 column-label spans. */ }
 
 
 				<span></span>{ /* What: Matrix Head Spacer Span Element. Why: This aligns the head row's own 2 column labels under the data rows' own switch cells, leaving the name column's own header cell blank. How: This renders an empty span. */ }
 
-				<span className={ cssModObj.rdMxCol }>One-time</span>{ /* What: Matrix Col Span Element. Why: This labels the first switch column. How: This renders the literal text "One-time". */ }
+				<span className={ cssModObj.matColSpa }>One-time</span>{ /* What: Matrix Column Span Element. Why: This labels the first switch column. How: This renders the literal text "One-time". */ }
 
-				<span className={ cssModObj.rdMxCol }>Recurring</span>{ /* What: Matrix Col Span Element. Why: This labels the second switch column. How: This renders the literal text "Recurring". */ }
+				<span className={ cssModObj.matColSpa }>Recurring</span>{ /* What: Matrix Column Span Element. Why: This labels the second switch column. How: This renders the literal text "Recurring". */ }
 
 
 			</div>
@@ -343,11 +343,11 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 				<div
 					key={ optDefObj.keyStr }
 
-					className={ cssModObj.rdMxRow }
+					className={ cssModObj.matRowDiv }
 				>{ /* What: Matrix Row Div Element. Why: One setting's own name/sub-explanation and both switch cells need to sit together as one row. How: This renders the name span, then maps the 2 classes into their own switch cells below. */ }
 
 
-					<span className={ cssModObj.rdMxName }>{ /* What: Matrix Name Span Element. Why: The plain label and its own live sub-explanation read together as one unit. How: This renders optDefObj's own label, then its dynFun's live result. */ }
+					<span className={ cssModObj.matNamSpa }>{ /* What: Matrix Name Span Element. Why: The plain label and its own live sub-explanation read together as one unit. How: This renders optDefObj's own label, then its dynFun's live result. */ }
 
 
 						{ optDefObj.labStr }{ /* What: Matrix Name Render. Why: This is the row's own plain, static setting name. How: This renders optDefObj's own labStr directly as text. */ }
@@ -355,7 +355,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 						<span
 							key={ ( remOptObj.once[ optDefObj.keyStr ] ? 1 : 0 ) + '' + ( remOptObj.recurring[ optDefObj.keyStr ] ? 1 : 0 ) } // What: Toggle State Key. Why: The explanation should re-fade only when either class's toggle for this row flips. How: This joins the two toggle states into one key.
 
-							className={ cssModObj.rdMxSub }
+							className={ cssModObj.matSubSpa }
 						>{ optDefObj.dynFun( !!remOptObj.once[ optDefObj.keyStr ], !!remOptObj.recurring[ optDefObj.keyStr ] ) }</span>{ /* What: Dynamic Sub Span Element. Why: Every row needs its own live, re-fading explanation. How: This re-keys on the combined once/recurring toggle state and calls optDefObj's own dynFun. */ }
 
 
@@ -374,12 +374,12 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 							<span
 								key={ tasClaStr }
 
-								className={ cssModObj.rdMxCell }
+								className={ cssModObj.matCelSpa }
 							>{ /* What: Matrix Cell Span Element. Why: Each switch needs its own cell wrapper for layout. How: This wraps the single switch button below. */ }
 
 
 								<button
-									className={ cssModObj.switch }
+									className={ cssModObj.togSwiBut }
 
 									data-element-name-hook='togSwiBut'
 
@@ -390,7 +390,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setOptFun. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-									<i />{ /* What: Switch Thumb Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
+									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
 
 
 								</button>
@@ -412,13 +412,13 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 
 
 			<div
-				className={ cssModObj.rdMxFoot }
+				className={ cssModObj.matFooDiv }
 
 				data-element-name-hook='matFooDiv'
-			>{ /* What: Matrix Foot Div Element. Why: The Cancel/Save actions need their own row below every matrix row. How: This wraps the rem-foot-right div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Matrix Foot Div Element. Why: The Cancel/Save actions need their own row below every matrix row. How: This wraps the fooRigDiv div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-				<div className={ cssModObj.remFootRight }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned. How: This wraps both ButBasCom elements below. */ }
+				<div className={ cssModObj.fooRigDiv }>{ /* What: Footer Right Div Element. Why: Cancel and Save read as a pair, right-aligned. How: This wraps both ButBasCom elements below. */ }
 
 
 					<ButBasCom
@@ -668,21 +668,21 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 		<section
-			className={ cssModObj.cat }
+			className={ cssModObj.datCatSec }
 
 			data-element-name-hook='datCatSec remCatSec'
 		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
 
 
 			<header
-				className={ cssModObj.catH }
+				className={ cssModObj.catHeaHea }
 
 				data-element-name-hook='catHeaHea'
 			>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				<button
-					className={ cssModObj.catHL }
+					className={ cssModObj.catHeaBut }
 
 					data-element-name-hook='catHeaBut'
 
@@ -695,7 +695,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 					<span
-						className={ cssModObj.chev }
+						className={ cssModObj.chvDisSpa }
 
 						data-chevron-open-active={ secOpeBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while secOpeBoo is true.
 					>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates the disclosure's open/closed state. How: This rotates via data-chevron-open-active while secOpeBoo is true. */ }
@@ -709,12 +709,12 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 					</span>
 
-					<span className={ cssModObj.catHMain }>{ /* What: Category Header Main Span Element. Why: The name and count read together as one unit, distinct from the chevron beside them. How: This wraps the heading and the count span below. */ }
+					<span className={ cssModObj.catMaiSpa }>{ /* What: Category Main Span Element. Why: The name and count read together as one unit, distinct from the chevron beside them. How: This wraps the heading and the count span below. */ }
 
 
-						<h2 className={ cssModObj.catName }>Reminders</h2>{ /* What: Category Name Heading Element. Why: This is the category's own fixed title. How: This renders the literal text "Reminders". */ }
+						<h2 className={ cssModObj.catNamHea }>Reminders</h2>{ /* What: Category Name Heading Element. Why: This is the category's own fixed title. How: This renders the literal text "Reminders". */ }
 
-						<span className={ cssModObj.catCount }>{ /* What: Category Count Span Element. Why: Reminders have no active/inactive concept yet (unlike pickers' eligible-of-total and Conditionals' active-of-total), so both numbers are the same for now, kept in this "N of N" shape for visual consistency and in case that changes later. How: This wraps 2 identical count spans and the literal word "of" between them. */ }
+						<span className={ cssModObj.catCouSpa }>{ /* What: Category Count Span Element. Why: Reminders have no active/inactive concept yet (unlike pickers' eligible-of-total and Conditionals' active-of-total), so both numbers are the same for now, kept in this "N of N" shape for visual consistency and in case that changes later. How: This wraps 2 identical count spans and the literal word "of" between them. */ }
 
 
 							<span>{ visTasArr.length }</span>{ /* What: Category Count Number Span Element. Why: Reminders have no active/inactive split yet, so this same number stands in for both halves of the "N of N" shape. How: This renders visTasArr's own length. */ }
@@ -737,18 +737,18 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-			<ColDisCom open={ secOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The entire body below only exists while the category itself is expanded. How: This animates cat-body open/closed based on secOpeBoo. */ }
+			<ColDisCom open={ secOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The entire body below only exists while the category itself is expanded. How: This animates catBodDiv open/closed based on secOpeBoo. */ }
 
 
 				<div
-					className={ cssModObj.catBody }
+					className={ cssModObj.catBodDiv }
 
 					data-element-name-hook='catBodDiv'
 				>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 					<button
-						className={ cssModObj.rdCtl }
+						className={ cssModObj.catTogBut }
 
 						data-element-name-hook='catTogBut'
 
@@ -760,11 +760,11 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 					>{ /* What: Controls Disclosure Button Element. Why: Controls is a nested collapsible, open by default, remembered per section. How: This toggles conColBoo via actStoObj.togColFun. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-						<span className={ cssModObj.rdCtlL }>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker read together as one unit. How: This wraps both below. */ }
+						<span className={ cssModObj.togLabSpa }>{ /* What: Controls Toggle Label Span Element. Why: The chevron and the "Controls" kicker read together as one unit. How: This wraps both below. */ }
 
 
 							<span
-								className={ cssModObj.chev }
+								className={ cssModObj.chvDisSpa }
 
 								data-chevron-open-active={ !conColBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while !conColBoo is true.
 							>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether Controls is currently open (note the inverted sense: open while NOT collapsed). How: This rotates via data-chevron-open-active while conColBoo is false. */ }
@@ -778,12 +778,12 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 							</span>
 
-							<span className={ cssModObj.kicker }>Controls</span>{ /* What: Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders the literal text "Controls". */ }
+							<span className={ cssModObj.togKicSpa }>Controls</span>{ /* What: Toggle Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders the literal text "Controls". */ }
 
 
 						</span>
 
-						{ conColBoo && <span className={ cssModObj.rdCtlSum }>{ REM_MAT_ARR.length } settings</span> }{ /* What: Controls Summary Span Element. Why: A collapsed disclosure still needs a hint of how much content it's hiding. How: This renders REM_MAT_ARR's own length only while conColBoo is true. */ }
+						{ conColBoo && <span className={ cssModObj.togSumSpa }>{ REM_MAT_ARR.length } settings</span> }{ /* What: Controls Summary Span Element. Why: A collapsed disclosure still needs a hint of how much content it's hiding. How: This renders REM_MAT_ARR's own length only while conColBoo is true. */ }
 
 
 					</button>
@@ -806,7 +806,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 					<button
-						className={ cssModObj.rdCtl }
+						className={ cssModObj.catTogBut }
 
 						data-element-name-hook='catTogBut'
 
@@ -818,11 +818,11 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 					>{ /* What: Items Disclosure Button Element. Why: Items is the same kind of nested collapsible as Controls, independently remembered. How: This toggles iteColBoo via actStoObj.togColFun. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-						<span className={ cssModObj.rdCtlL }>{ /* What: Items Left Span Element. Why: The chevron and the "Items" kicker read together as one unit. How: This wraps both below. */ }
+						<span className={ cssModObj.togLabSpa }>{ /* What: Items Toggle Label Span Element. Why: The chevron and the "Items" kicker read together as one unit. How: This wraps both below. */ }
 
 
 							<span
-								className={ cssModObj.chev }
+								className={ cssModObj.chvDisSpa }
 
 								data-chevron-open-active={ !iteColBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while !iteColBoo is true.
 							>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether Items is currently open. How: This rotates via data-chevron-open-active while iteColBoo is false. */ }
@@ -836,12 +836,12 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 							</span>
 
-							<span className={ cssModObj.kicker }>Items</span>{ /* What: Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders the literal text "Items". */ }
+							<span className={ cssModObj.togKicSpa }>Items</span>{ /* What: Toggle Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders the literal text "Items". */ }
 
 
 						</span>
 
-						{ iteColBoo && <span className={ cssModObj.rdCtlSum }>{ visTasArr.length } items</span> }{ /* What: Items Summary Span Element. Why: A collapsed disclosure still needs a hint of how many reminders it's hiding. How: This renders visTasArr's own length only while iteColBoo is true. */ }
+						{ iteColBoo && <span className={ cssModObj.togSumSpa }>{ visTasArr.length } items</span> }{ /* What: Items Summary Span Element. Why: A collapsed disclosure still needs a hint of how many reminders it's hiding. How: This renders visTasArr's own length only while iteColBoo is true. */ }
 
 
 					</button>
@@ -858,7 +858,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 								<InfTipCom
-									className={ cssModObj.rdAdd }
+									className={ cssModObj.rowAddSpa }
 
 									data-element-name-hook='rowAddSpa'
 									data-tour-disabled-active // What: Tour Disabled Active Attribute. Why: This add control only renders while the tutorials hold it disabled, so it always reads dimmed. How: This sets the presence-only attribute, which InfTipCom forwards to its trigger.
@@ -881,7 +881,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 								<button
-									className={ cssModObj.rdAdd }
+									className={ cssModObj.rowAddBut }
 
 									data-element-name-hook='rowAddBut'
 
@@ -905,7 +905,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 							{ visTasArr.length === 0 ? ( // What: Empty List Check. Why: With no reminders at all, a plain empty-state message belongs here instead of a list. How: This renders the empty message while visTasArr is empty, the real list otherwise.
 
 
-								<div className={ cssModObj.rdEmpty }>No reminders yet. Add one to see it on Today.</div> // What: Empty State Div Element. Why: With no reminders at all, the list area needs a plain explanation. How: This renders a fixed prompt to add one.
+								<div className={ cssModObj.lisEmpDiv }>No reminders yet. Add one to see it on Today.</div> // What: List Empty Div Element. Why: With no reminders at all, the list area needs a plain explanation. How: This renders a fixed prompt to add one.
 
 
 							) : ( // What: Reminder List Branch. Why: With at least one reminder, the real list of rows belongs here instead. How: This renders the else branch, taken while visTasArr has entries.
@@ -945,7 +945,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 												key={ curTasObj.id }
 												ref={ carOpeBoo ? opeRowRef : undefined } // What: Open Row Ref. Why: Only the open row is scrolled into view. How: This attaches opeRowRef only while this row is open.
 
-												className={` ${ cssModObj.rdItem }   ${ insIdeStr === curTasObj.id ? cssModObj.rdItemInsert : '' } `}
+												className={` ${ cssModObj.lisIteDiv }   ${ insIdeStr === curTasObj.id ? cssModObj.lisIteDivInsert : '' } `}
 
 												data-element-name-hook='lisIteDiv'
 												data-row-edit-active={ carOpeBoo || undefined } // What: Row Edit Active Attribute. Why: An open row's header stops reacting like a button and its chevron turns the accent color. How: This sets the presence-only attribute while carOpeBoo is true.
@@ -958,14 +958,14 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 													<div
-														className={ cssModObj.rdRow }
+														className={ cssModObj.lisRowDiv }
 
 														data-element-name-hook='lisRowDiv'
 													>{ /* What: Row Editing Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 														<span
-															className={ cssModObj.rdIco }
+															className={ cssModObj.rowIcoSpa }
 
 															data-element-name-hook='rowIcoSpa'
 															data-reminder-once-active={ isaOncBoo || undefined } // What: Reminder Once Active Attribute. Why: Help mode finds a one-time reminder's row by its icon without reading its classes. How: This is present only while isaOncBoo is true, since undefined drops the attribute entirely.
@@ -980,7 +980,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 														</span>
 
-														<span className={ cssModObj.rdMain }>{ /* What: Row Main Span Element. Why: The live name input needs its own wrapper matching the closed row's own layout. How: This wraps the single input below. */ }
+														<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The live name input needs its own wrapper matching the closed row's own layout. How: This wraps the single input below. */ }
 
 
 															<input
@@ -1000,7 +1000,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 																} }
 
-																className={ cssModObj.rdNameInput }
+																className={ cssModObj.rowNamInp }
 
 																data-element-name-hook='rowNamInp'
 
@@ -1029,7 +1029,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 														</span>
 
 														<button
-															className={` ${ cssModObj.rdChev }   ${ cssModObj.chev } `}
+															className={` ${ cssModObj.rowChvBut }   ${ cssModObj.chvDisSpa } `}
 
 															data-chevron-open-active // What: Chevron Open Active Attribute. Why: This chevron only renders on an open row, so it always points down. How: This sets the presence-only attribute unconditionally.
 
@@ -1057,7 +1057,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 													<button
-														className={ cssModObj.rdRow }
+														className={ cssModObj.lisRowBut }
 
 														data-element-name-hook='lisRowBut'
 
@@ -1070,7 +1070,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 														<span
-															className={ cssModObj.rdIco }
+															className={ cssModObj.rowIcoSpa }
 
 															data-element-name-hook='rowIcoSpa'
 															data-reminder-once-active={ isaOncBoo || undefined } // What: Reminder Once Active Attribute. Why: Help mode finds a one-time reminder's row by its icon without reading its classes. How: This is present only while isaOncBoo is true, since undefined drops the attribute entirely.
@@ -1085,22 +1085,22 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 														</span>
 
-														<span className={ cssModObj.rdMain }>{ /* What: Row Main Span Element. Why: The name and schedule summary read together as one unit, matching the editing state's own layout. How: This wraps both spans below. */ }
+														<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name and schedule summary read together as one unit, matching the editing state's own layout. How: This wraps both spans below. */ }
 
 
 															<span
-																className={ cssModObj.rdName }
+																className={ cssModObj.rowNamSpa }
 
 																data-element-name-hook='rowNamSpa'
 															>{ curTasObj.name }</span>{ /* What: Row Name Span Element. Why: This is the row's own primary text. How: This renders curTasObj's own name. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
-															<span className={ cssModObj.rdSched }>{ TAS_NAM_OBJ.sumTasFun( curTasObj ) }</span>{ /* What: Row Schedule Span Element. Why: This is the row's own secondary, schedule-summary text. How: This calls TAS_NAM_OBJ.sumTasFun against curTasObj. */ }
+															<span className={ cssModObj.rowSumSpa }>{ TAS_NAM_OBJ.sumTasFun( curTasObj ) }</span>{ /* What: Row Summary Span Element. Why: This is the row's own secondary, schedule-summary text. How: This calls TAS_NAM_OBJ.sumTasFun against curTasObj. */ }
 
 
 														</span>
 
 														<span
-															className={` ${ cssModObj.rdChev }   ${ cssModObj.chev } `}
+															className={` ${ cssModObj.rowChvSpa }   ${ cssModObj.chvDisSpa } `}
 
 															aria-hidden='true'
 														>{ /* What: Row Chevron Span Element. Why: The plain state's own chevron is purely decorative (the whole row is already the real toggle), so it's a span rather than a separate button. How: This wraps the single IcoSvgCom below, hidden from screen readers. */ }
@@ -1125,11 +1125,11 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 												<ColDisCom open={ carOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The schedule editor and its own footer only exist while this exact row is open. How: This animates the editor div below open/closed based on carOpeBoo. */ }
 
 
-													<div className={ cssModObj.rdEdit }>{ /* What: Edit Div Element. Why: The editor needs its own padding/framing distinct from the plain row above it. How: This wraps the shared rem-inline-editor div below. */ }
+													<div className={ cssModObj.remEdiDiv }>{ /* What: Reminder Editor Div Element. Why: The editor needs its own padding/framing distinct from the plain row above it. How: This wraps the shared inlEdiDiv div below. */ }
 
 
 														<div
-															className={ cssModObj.remInlineEditor }
+															className={ cssModObj.inlEdiDiv }
 
 															data-element-name-hook='inlEdiDiv'
 														>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, matching InlEdiCom's own root layout. How: This renders SchEdiCom against curTasObj directly (the real store, not a local draft), then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
