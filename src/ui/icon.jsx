@@ -34,6 +34,9 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param props.className - Class Name: An optional class from the parent's
+ *                          own module, set on the svg so the parent can
+ *                          style this one icon (e.g. animate it).
  * @param props.icoNamStr - Icon Name String: Which icon to draw, a key of the
  *                          icon table.
  * @param props.sizSteStr - Size Step String: The vertical rhythm step for
@@ -44,12 +47,12 @@
  *
  * @example
  * ```tsx
- * IcoSvgCom({ icoNamStr: 'plus', sizSteStr: 'p01' }) // => <IcoSvgCom />
+ * IcoSvgCom({ className, icoNamStr: 'plus', sizSteStr: 'p01' }) // => <IcoSvgCom />
  * ```
  *
 */
 
-const IcoSvgCom = ( { icoNamStr, sizSteStr = 'p01' } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
+const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
 
 
 	const icoPatObj = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
@@ -99,6 +102,8 @@ const IcoSvgCom = ( { icoNamStr, sizSteStr = 'p01' } ) => { // What: Icon Svg Co
 
 
 		<svg
+			className={ className }
+
 			style={{
 				height : sizCssStr,
 				width  : sizCssStr
