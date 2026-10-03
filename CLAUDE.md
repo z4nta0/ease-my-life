@@ -1979,6 +1979,12 @@ still passes.
     container's own class (`.panBodDiv h2`, `.panBodDiv p`) rather
     than a class on every element. This covers long, uniform prose
     only; any other element gets its own class.
+  - **A wrapper styling its caller's children keeps the tag** (decided
+    2026-10-03): when a component has to style content its caller passes
+    in as children (e.g. InfTipCom letting touch pass through a disabled
+    button it wraps), it has no way to put a class on that content, so the
+    selector names the child by tag under the wrapper's own class
+    (`.infTriSpa button:disabled`), with a comment on the rule saying why.
 - **Body-level state stays global**: `body[data-palette]`,
   `body[data-placement]`, and the other attributes set on `<body>` or
   `<html>` already follow this pattern and are styled from global CSS.
