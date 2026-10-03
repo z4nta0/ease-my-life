@@ -1968,6 +1968,13 @@ still passes.
     own module styles `.today-card[data-card-exhale-active]`. Removing and
     re-adding the attribute restarts the animation the same way a class
     does. A trigger that stays within one file keeps its module class.
+  - **Long-form prose keeps tag selectors** (decided 2026-10-03): a
+    container holding a document's worth of the file's own prose
+    (headings, paragraphs, list items), such as the legal documents'
+    body, styles that content through descendant tag selectors on the
+    container's own class (`.panBodDiv h2`, `.panBodDiv p`) rather
+    than a class on every element. This covers long, uniform prose
+    only; any other element gets its own class.
 - **Body-level state stays global**: `body[data-palette]`,
   `body[data-placement]`, and the other attributes set on `<body>` or
   `<html>` already follow this pattern and are styled from global CSS.
