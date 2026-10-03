@@ -51,6 +51,10 @@ import React     from 'react';                            // What: React. Why: S
  * @param props.desIdeStr - Description Identifier String: An optional id of an
  *                          external element (an advisory note) that describes
  *                          this control.
+ * @param props.layStr    - Layout String: An optional layout, 'grid' for a
+ *                          control whose many options wrap into aligned
+ *                          columns (Repeat), or 'snug' for one kept to its
+ *                          content's width (Day selection).
  * @param props.onChange  - On Change: Called with the clicked entry's own key.
  * @param props.optIteArr - Option Item Array: The array of { keyStr, labStr }
  *                          entries this control renders one button per; also
@@ -64,12 +68,12 @@ import React     from 'react';                            // What: React. Why: S
  *
  * @example
  * ```tsx
- * SegConCom({ ariLabStr, desIdeStr, onChange, ... }) // => <SegConCom />
+ * SegConCom({ ariLabStr, desIdeStr, layStr, onChange, ... }) // => <SegConCom />
  * ```
  *
 */
 
-function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
+function SegConCom ( { ariLabStr, desIdeStr, layStr, onChange, optIteArr, value } ) {
 
 
 	const segEleRef = React.useRef( null );                                                               // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
@@ -178,7 +182,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 		<div
 			ref={ segEleRef }
 
-			className={ cssModObj.seg }
+			className={` ${ cssModObj.segConDiv }   ${ layStr === 'grid' ? cssModObj.segConDivGrid : '' }   ${ layStr === 'snug' ? cssModObj.segConDivSnug : '' } `}
 
 			data-element-name-hook='segConDiv'
 
@@ -191,7 +195,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 			<span
 				ref={ thuEleRef }
 
-				className={ cssModObj.segThumb }
+				className={ cssModObj.segThuSpa }
 
 				aria-hidden='true'
 			/>{ /* What: Thumb Span Element. Why: This is the small sliding pill plaThuFun positions and sizes via direct style writes. How: This starts with no inline position at all, until the first layout effect above places it. */ }
@@ -202,7 +206,7 @@ function SegConCom ( { ariLabStr, desIdeStr, onChange, optIteArr, value } ) {
 				<button
 					key={ optConObj.keyStr }
 
-					className={ cssModObj.segBtn }
+					className={ cssModObj.segConBut }
 
 					data-element-name-hook='segConBut'
 

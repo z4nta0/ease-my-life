@@ -13,7 +13,7 @@
  * Its fields share their look with the reminder schedule editor and the
  * app's other forms, so their declarations are copied here, under the names
  * those editors share, until the design-system pass merges them. The segmented controls
- * inside it get their extra bottom space through --seg-margin-bottom rather
+ * inside it get their extra bottom space through --seg-bot-mar rather
  * than being styled from here.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -27,7 +27,7 @@
 .cadConDiv { /* What: Cadence Control Div. Why: Every segmented control inside the cadence editor needs a little room below it before the next line. How: This sets the property the segmented control reads for its bottom margin. */
 
 
-	--seg-margin-bottom : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */ /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
+	--seg-bot-mar : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */ /* What: Segment Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
 
 
 }

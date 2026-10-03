@@ -12,10 +12,10 @@
  *
  * A parent that needs the control sized or spaced differently sets the
  * --seg-* custom properties on itself (flex sizing and wrapping, a max width,
- * space below, and the Repeat control's flex basis) instead of styling the
- * control from outside. The Repeat and Day selection controls get their own
- * layouts through their aria-label, until the design-system pass decides
- * whether those become a layout prop.
+ * space below, and the grid layout's flex basis) instead of styling the
+ * control from outside. A control whose layout changes structure takes the
+ * layStr prop: 'grid' lines Repeat's wrapping options up in columns, and
+ * 'snug' keeps Day selection to its content's width.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -23,37 +23,37 @@
 
 
 
-/* #region seg */
+/* #region segConDiv */
 
-.seg { /* What: Segmented Control. Why: The options read as one rounded control, spread across it. How: This lays the buttons out in a wrapping, bordered pill track, reading its fit from --seg-* properties a parent may set. */
+.segConDiv { /* What: Segment Control Div. Why: The options read as one rounded control, spread across it. How: This lays the buttons out in a wrapping, bordered pill track, reading its fit from --seg-* properties a parent may set. */
 
 
-	background      : var(--bac-pag-col);
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-xla );
+	background      : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-xla );                            /* Radius Border Extra Large ~= 19.304px */
 	display         : inline-flex;
-	flex            : var(--seg-flex, 0 1 auto); /* What: Segmented Control Flex. Why: A control in a tight row, like a Settings row, must keep its size. How: A parent sets --seg-flex, falling back to the normal flex sizing. */
-	flex-wrap       : var(--seg-flex-wrap, wrap); /* What: Segmented Control Wrapping. Why: A control in a Settings row must stay on one line. How: A parent sets --seg-flex-wrap, falling back to wrapping. */
-	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );
+	flex            : var( --seg-con-fle, 0 1 auto );                  /* Segment Control Flex, set by its parent, falling back to 0 1 auto */ /* What: Segment Control Flex. Why: A control in a tight row, like a Settings row, must keep its size. How: A parent sets --seg-con-fle, falling back to the normal flex sizing. */
+	flex-wrap       : var( --seg-wra-fle, wrap );                      /* Segment Wrap Flex, set by its parent, falling back to wrap */ /* What: Segment Wrap Flex. Why: A control in a Settings row must stay on one line. How: A parent sets --seg-wra-fle, falling back to wrapping. */
+	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	justify-content : space-between;
-	margin-bottom   : var(--seg-margin-bottom, 0); /* What: Segmented Control Bottom Margin. Why: The cadence editor wants room below its controls. How: A parent sets --seg-margin-bottom, falling back to none. */
-	max-width       : var(--seg-max-width, none); /* What: Segmented Control Max Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-width, falling back to no limit. */
-	padding         : var( --spa-ver-m05 ) var( --spa-hor-m05 );
+	margin-bottom   : var( --seg-bot-mar, 0 );                         /* Segment Bottom Margin, set by its parent, falling back to 0 */ /* What: Segment Bottom Margin. Why: The cadence editor wants room below its controls. How: A parent sets --seg-bot-mar, falling back to none. */
+	max-width       : var( --seg-max-wid, none );                      /* Segment Max Width, set by its parent, falling back to none */ /* What: Segment Max Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-wid, falling back to no limit. */
+	padding         : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	position        : relative;
 
 
 }
-.seg[aria-label="Repeat"] { /* What: Repeat Segmented Control. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
+.segConDiv--grid { /* What: Grid Segment Control Div. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
 
 
 	display               : grid;
-	flex-basis            : var(--seg-repeat-flex-basis, auto); /* What: Repeat Flex Basis. Why: The schedule editor's rows layout gives Repeat its own full-width line. How: A parent sets --seg-repeat-flex-basis, falling back to auto. */
-	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) );
+	flex-basis            : var( --seg-gri-fle, auto );                                                     /* Segment Grid Flex, set by its parent, falling back to auto */ /* What: Segment Grid Flex. Why: The schedule editor's rows layout gives Repeat its own full-width line. How: A parent sets --seg-gri-fle, falling back to auto. */
+	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	justify-content       : space-between;
 
 
 }
-.seg[aria-label="Day selection"] { /* What: Day Selection Segmented Control. Why: Its two short options would otherwise stretch across a column flex field and land at opposite edges. How: This keeps the control to its content's width with the buttons snug together. */
+.segConDiv--snug { /* What: Snug Segment Control Div. Why: Day selection's two short options would otherwise stretch across a column flex field and land at opposite edges. How: This keeps the control to its content's width with the buttons snug together. */
 
 
 	align-self      : flex-start;
@@ -62,10 +62,10 @@
 
 }
 
-.seg-thumb { /* What: Segmented Control Thumb. Why: One accent pill slides under the pressed option to mark it. How: This draws the pill behind the buttons, hidden until JS measures the pressed button and writes its position and size. */
+.segThuSpa { /* What: Segment Thumb Span. Why: One accent pill slides under the pressed option to mark it. How: This draws the pill behind the buttons, hidden until JS measures the pressed button and writes its position and size. */
 
 
-	background     : var(--acc-mai-col);
+	background     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius  : 999px;
 	height         : 0;
 	left           : 0;
@@ -74,62 +74,62 @@
 	position       : absolute;
 	top            : 0;
 	width          : 0;
-	z-index        : 0;
+	z-index        : 0;                    /* What: Thumb Stack Level. Why: The thumb has to sit under the option buttons it marks, at 1. How: This keeps it on the track's base level. */
 
 
 }
 
-.seg-btn { /* What: Segmented Control Button. Why: Each option is a borderless pill above the thumb. How: This sets it in muted text over a transparent background, raised above the thumb, with a color fade. */
+.segConBut { /* What: Segment Control Button. Why: Each option is a borderless pill above the thumb. How: This sets it in muted text over a transparent background, raised above the thumb, with a color fade. */
 
 
 	background    : none;
 	border        : none;
 	border-radius : 999px;
-	color         : var(--tex-mut-col);
+	color         : var( --tex-mut-col );                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor        : pointer;
-	font-family   : var(--fon-fam-mai);
-	font-size     : var( --fon-siz-p01 );
+	font-family   : var( --fon-fam-mai );                                        /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                                        /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 500;
-	min-height    : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );
+	min-height    : calc( var( --ver-rhy-p03 ) * 1rem );                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding       : var( --spa-ver-m03 ) var( --spa-hor-bas );                   /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
 	position      : relative;
-	transition    : background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
-	z-index       : 1;
+	transition    : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	z-index       : 1;                                                           /* What: Button Stack Level. Why: The option buttons have to sit above the sliding thumb at 0. How: This raises them one level. */
 
 
 }
-.seg[aria-label="Repeat"] .seg-btn { /* What: Repeat Segmented Control Button. Why: At the larger font size Repeat's five labels squeeze and wrap on a narrow screen, turning the pills tall and nearly round. How: This sets its options at the base font size, so each label stays on one line. */
+.segConDiv--grid .segConBut { /* What: Grid Segment Control Button. Why: At the larger font size Repeat's five labels squeeze and wrap on a narrow screen, turning the pills tall and nearly round. How: This sets its options at the base font size, so each label stays on one line. */
 
 
-	font-size : var( --fon-siz-bas );
-
-
-}
-.seg-btn:hover { /* What: Hovered Segmented Control Button. Why: An option should respond to the pointer. How: This darkens its text. */
-
-
-	color : var(--tex-mai-col);
+	font-size : var( --fon-siz-bas ); /* Font Size Base = 11px */
 
 
 }
-.seg-btn[aria-pressed="true"] { /* What: Pressed Segmented Control Button. Why: The pressed option's text sits on the accent thumb. How: This switches its text to the background color, keyed off the button's own pressed state. */
+.segConBut:hover { /* What: Hovered Segment Control Button. Why: An option should respond to the pointer. How: This darkens its text. */
 
 
-	color : var(--bac-pag-col);
-
-
-}
-.seg-btn[aria-pressed="true"]:hover { /* What: Hovered Pressed Segmented Control Button. Why: Hover shouldn't darken the pressed option's text against the thumb. How: This keeps it the background color. */
-
-
-	color : var(--bac-pag-col);
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Segmented Control Button. Why: Someone who asked for less motion shouldn't see the text color fade. How: This applies only when the reduced-motion preference is set. */
+.segConBut[aria-pressed='true'] { /* What: Pressed Segment Control Button. Why: The pressed option's text sits on the accent thumb. How: This switches its text to the background color, keyed off the button's own pressed state. */
 
 
-	.seg-btn { /* What: Still Segmented Control Button. Why: The text color should simply switch. How: This turns the color fade off. */
+	color : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+
+
+}
+.segConBut[aria-pressed='true']:hover { /* What: Hovered Pressed Segment Control Button. Why: Hover shouldn't darken the pressed option's text against the thumb. How: This keeps it the background color. */
+
+
+	color : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Segment Control Button. Why: Someone who asked for less motion shouldn't see the text color fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.segConBut { /* What: Still Segment Control Button. Why: The text color should simply switch. How: This turns the color fade off. */
 
 
 		transition : none;
@@ -140,6 +140,6 @@
 
 }
 
-/* #endregion seg */
+/* #endregion segConDiv */
 
 

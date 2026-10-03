@@ -16,8 +16,8 @@
  * with a divider between fields. The Data tab's rows layout
  * (.schEdiDiv--rows) puts each field on its own full-bleed row, label left
  * and control right, matching the picker item editor. The segmented controls
- * inside a row read --seg-max-width and --seg-repeat-flex-basis, which the
- * rows layout sets, rather than being styled from here.
+ * inside a row read --seg-max-wid and --seg-gri-fle, which the rows layout
+ * sets, rather than being styled from here.
  *
  * The fields share their look with the cadence editor and the app's other
  * forms, so those declarations are copied here from the shared classes until
@@ -100,8 +100,8 @@
 .schEdiDiv--rows .forFieDiv { /* What: Rows Form Field Div. Why: In the Data tab each field is one full-bleed row, label left and control right, wrapping on a narrow screen. How: This lays the field out as a wrapping row pulled out to the edges with a bottom divider, and sets the segmented control's row sizing. */
 
 
-	--seg-max-width         : 100%; /* What: Segmented Control Max Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
-	--seg-repeat-flex-basis : 100%; /* What: Repeat Control Flex Basis. Why: The Repeat control always takes its own full-width line under the label, so every browser lays it out the same way. How: The Repeat segmented control reads this as its flex basis. */
+	--seg-gri-fle : 100%; /* What: Segment Grid Flex. Why: The Repeat control always takes its own full-width line under the label, so every browser lays it out the same way. How: The Repeat segmented control reads this as its flex basis. */
+	--seg-max-wid : 100%; /* What: Segment Max Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
 
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

@@ -949,6 +949,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 						<SegConCom
+							layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 							optIteArr={ datModArr }
 							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
 
@@ -1183,6 +1184,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 						<SegConCom
+							layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 							optIteArr={ datModArr }
 							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
 
@@ -1425,6 +1427,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 				<SegConCom
+					layStr='grid' // What: Layout String. Why: Repeat's five options wrap on a narrow screen and must line up in columns. How: SegConCom applies its grid layout for this value.
 					optIteArr={ REP_OPT_ARR }
 					value={ tasRcdObj.repeat }
 

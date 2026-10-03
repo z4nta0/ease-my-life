@@ -392,6 +392,7 @@ function CadConCom ( { onChange, value } ) {
 
 
 							<SegConCom
+								layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 
@@ -552,6 +553,7 @@ function CadConCom ( { onChange, value } ) {
 
 
 							<SegConCom
+								layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 
