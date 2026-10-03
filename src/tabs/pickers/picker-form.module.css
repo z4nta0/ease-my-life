@@ -1507,7 +1507,7 @@
 
 
 }
-.lisIteDiv--closing { /* What: Closing List Item Div. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
+.lisIteDiv.lisIteDiv--closing { /* What: Closing List Item Div. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest, with the base class chained in so it outranks the card's own reduced-motion animation : none. */
 
 
 	animation : global( newItemCloseFadeOut ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global newItemCloseFadeOut Keyframes. Why: The newItemCloseFadeOut keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1526,7 +1526,7 @@
 
 	}
 
-	.lisIteDiv--closing { /* What: Instant Closing List Item Div. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
+	.lisIteDiv.lisIteDiv--closing { /* What: Instant Closing List Item Div. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
 
 
 		animation-duration : .01ms;
