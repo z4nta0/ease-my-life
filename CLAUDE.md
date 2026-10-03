@@ -2167,8 +2167,12 @@ still passes.
     alike) and updated in the same commit. The pre-commit check covers
     this.
 - **Spacing inside a region**: exactly 1 blank line between a parent's
-  own rule and its first child's rule. A variant (see below) sits
-  directly under its base rule, 0 blank lines.
+  own rule (with its variants) and its first child's rule, or 2 blank
+  lines when that first child contains elements of its own and so opens
+  its own region (decided 2026-10-02), so a nested section stands out the
+  way it does between siblings. A variant (see below) sits directly under
+  its base rule, 0 blank lines. The closing side is unaffected: stacked
+  `#endregion` markers stay 1 blank line apart.
 - **Modifier classes built from a string** (`prog--${ tonValStr }`) can't
   be looked up that way once hashed, so each one becomes its own
   conditional interpolation (`${ tonValStr === 'warm' ?
