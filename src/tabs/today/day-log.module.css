@@ -14,9 +14,11 @@
  * block off its header's aria-expanded, a neutral mode pill off
  * data-mode-neutral-active, a zero boost off data-boost-zero-active, and a
  * row's status off data-row-done-active, data-row-due-active,
- * data-row-upcoming-active, or data-row-vacation-active. The trend classes
- * (up, down, flat) and the status pill kinds stay modifier classes. The
- * narrower widths re-grid the tables through container queries on the app.
+ * data-row-upcoming-active, or data-row-vacation-active. The trend
+ * directions (up, down, flat), the status icon tints, and the status pill
+ * kinds are modifier classes. Each table cell carries its own column's
+ * alignment, and the narrower widths re-grid the tables through container
+ * queries on the app.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -24,51 +26,51 @@
 
 
 
-/* #region dl-chip */
+/* #region logChiBut */
 
-.dl-chip { /* What: Log Chip. Why: The Log toggle sits in a group header as a small mono pill. How: This draws an outlined pill with its icon and label that fades between colors. */
+.logChiBut { /* What: Log Chip Button. Why: The Log toggle sits in a group header as a small mono pill. How: This draws an outlined pill with its icon and label that fades between colors. */
 
 
 	align-items    : center;
 	align-self     : center;
-	background     : var(--bac-sur-col);
-	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	background     : var( --bac-sur-col );                                                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius  : 999px;
-	color          : var(--tex-mut-col);
+	color          : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor         : pointer;
 	display        : inline-flex;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	gap            : var( --spa-hor-m04 );
-	height         : calc( var( --ver-rhy-p02 ) * 1rem );
+	font-family    : var( --fon-fam-sec );                                                                           /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                                           /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m04 );                                                                           /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height         : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	letter-spacing : 0.05em;
-	padding        : 0 var( --spa-hor-m02 );
+	padding        : 0 var( --spa-hor-m02 );                                                                         /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-transform : uppercase;
-	transition     : background var( --dur-tra-bas ),color var( --dur-tra-bas ),border-color var( --dur-tra-bas );
+	transition     : background var( --dur-tra-bas ), color var( --dur-tra-bas ), border-color var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
 
 
 }
-.dl-chip:hover { /* What: Hovered Log Chip. Why: The chip should respond to the pointer. How: This darkens its text and border. */
+.logChiBut:hover { /* What: Hovered Log Chip. Why: The chip should respond to the pointer. How: This darkens its text and border. */
 
 
-	border-color : var(--tex-mut-col);
-	color        : var(--tex-mai-col);
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.dl-chip[aria-pressed="true"] { /* What: Open Log Chip. Why: While its log is open the chip reads as on. How: This fills it in the soft accent, keying off the aria-pressed it already sets. */
+.logChiBut[aria-pressed='true'] { /* What: Open Log Chip. Why: While its log is open the chip reads as on. How: This fills it in the soft accent, keying off the aria-pressed it already sets. */
 
 
-	background   : var(--acc-tin-col);
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 	border-color : transparent;
-	color        : var(--acc-mai-col);
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Log Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Log Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.dl-chip { /* What: Still Log Chip. Why: The change should happen at once. How: This turns its transition off. */
+	.logChiBut { /* What: Still Log Chip. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -79,111 +81,112 @@
 
 }
 
-.dl-chip svg { /* What: Log Chip Icon. Why: The icon sits small beside the label. How: This sizes it to the base rhythm step. */
+.chiIcoSvg { /* What: Chip Icon Svg. Why: The icon sits small beside the label. How: This sizes it to the base rhythm step. */
 
 
-	height : calc( var( --ver-rhy-bas ) * 1rem );
-	width  : calc( var( --ver-rhy-bas ) * 1rem );
+	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
 
-/* #endregion dl-chip */
+/* #endregion logChiBut */
 
 
 
-/* #region dl-panel */
+/* #region logPanDiv */
 
-.dl-panel { /* What: Log Panel. Why: The log opens as its own inset card under the group header. How: This draws a bordered, rounded, slightly lifted card that clips its content. */
+.logPanDiv { /* What: Log Panel Div. Why: The log opens as its own inset card under the group header. How: This draws a bordered, rounded, slightly lifted card that clips its content. */
 
 
-	background    : var( --bac-rai-col );
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-med );
-	margin        : var( --spa-ver-m07 ) 0 var( --spa-ver-bas );
+	background    : var( --bac-rai-col );                            /* Background Raised Color = oklch( 0.981 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
+	margin        : var( --spa-ver-m07 ) 0 var( --spa-ver-bas );     /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Vertical Base ~= 14.572px */
 	overflow      : hidden;
 
 
 }
 
-/* #region dl-panel-h */
 
-.dl-panel-h { /* What: Log Header. Why: The panel's kicker and close button sit on a header bar. How: This spreads them across a padded bar on the page background above a hairline. */
+/* #region panHeaDiv */
+
+.panHeaDiv { /* What: Panel Header Div. Why: The panel's kicker and close button sit on a header bar. How: This spreads them across a padded bar on the page background above a hairline. */
 
 
 	align-items     : center;
-	background      : var(--bac-pag-col);
-	border-bottom   : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	background      : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display         : flex;
 	justify-content : space-between;
-	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );
+	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
 
-/* #region dl-kicker */
 
-.dl-kicker { /* What: Log Kicker. Why: The panel and key are headed by a small mono label. How: This lines its icon and text up in small uppercase muted mono type. */
+/* #region panKicSpa */
+
+.panKicSpa { /* What: Panel Kicker Span. Why: The panel and key are headed by a small mono label. How: This lines its icon and text up in small uppercase muted mono type. */
 
 
 	align-items    : center;
-	color          : var(--tex-mut-col);
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display        : inline-flex;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	gap            : var( --spa-hor-m03 );
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	letter-spacing : 0.06em;
 	text-transform : uppercase;
 
 
 }
 
-.dl-kicker svg { /* What: Log Kicker Icon. Why: The kicker's icon reads in the accent. How: This sizes it small in the accent color. */
+.kicIcoSvg { /* What: Kicker Icon Svg. Why: The kicker's icon reads in the accent. How: This sizes it small in the accent color. */
 
 
-	color  : var(--acc-mai-col);
-	height : calc( var( --ver-rhy-bas ) * 1rem );
-	width  : calc( var( --ver-rhy-bas ) * 1rem );
+	color  : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
 
-/* #endregion dl-kicker */
+/* #endregion panKicSpa */
 
 
+/* #region panCloBut */
 
-/* #region dl-close */
-
-.dl-close { /* What: Log Close Button. Why: The panel closes from a small square button. How: This draws an outlined rounded square centering its icon, fading its colors. */
+.panCloBut { /* What: Panel Close Button. Why: The panel closes from a small square button. How: This draws an outlined rounded square centering its icon, fading its colors. */
 
 
 	align-items     : center;
-	background      : var(--bac-sur-col);
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-sma );
-	color           : var(--tex-mut-col);
+	background      : var( --bac-sur-col );                                          /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );               /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                          /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                          /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : flex;
 	flex            : none;
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );
+	height          : calc( var( --ver-rhy-p02 ) * 1rem );                           /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	transition      : color var( --dur-tra-bas ),border-color var( --dur-tra-bas );
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	width           : calc( var( --ver-rhy-p02 ) * 1rem );                           /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
-.dl-close:hover { /* What: Hovered Log Close Button. Why: The button should respond to the pointer. How: This darkens its icon and border. */
+.panCloBut:hover { /* What: Hovered Log Close Button. Why: The button should respond to the pointer. How: This darkens its icon and border. */
 
 
-	border-color : var(--tex-mut-col);
-	color        : var(--tex-mai-col);
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color        : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Log Close Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Log Close Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.dl-close { /* What: Still Log Close Button. Why: The change should happen at once. How: This turns its transition off. */
+	.panCloBut { /* What: Still Log Close Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -194,189 +197,197 @@
 
 }
 
-.dl-close svg { /* What: Log Close Icon. Why: The icon fits the small button. How: This sizes it to the base rhythm step. */
+.cloIcoSvg { /* What: Close Icon Svg. Why: The icon fits the small button. How: This sizes it to the base rhythm step. */
 
 
-	height : calc( var( --ver-rhy-bas ) * 1rem );
-	width  : calc( var( --ver-rhy-bas ) * 1rem );
+	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
 
-/* #endregion dl-close */
+/* #endregion panCloBut */
 
-/* #endregion dl-panel-h */
+/* #endregion panHeaDiv */
 
 
 
-/* #region dl-key */
+/* #region logKeyDiv */
 
-.dl-key { /* What: Log Key. Why: A key explains the status icons above the log. How: This lines its label and items up in a padded band above a hairline. */
+.logKeyDiv { /* What: Log Key Div. Why: A key explains the status icons above the log. How: This lines its label and items up in a padded band above a hairline. */
 
 
 	align-items   : baseline;
-	background    : var( --bac-rai-col );
-	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	background    : var( --bac-rai-col );                            /* Background Raised Color = oklch( 0.981 0.004 240 ) */
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display       : flex;
 	flex-wrap     : nowrap;
-	gap           : var( --spa-hor-bas );
-	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );
+	gap           : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
 
-/* #region dl-key-items */
 
-.dl-key-items { /* What: Key Items. Why: The icons and their meanings flow into columns as wide as they need. How: This lays them out on an auto-fitting grid. */
+/* #region keyIteSpa */
+
+.keyIteSpa { /* What: Key Items Span. Why: The icons and their meanings flow into columns as wide as they need. How: This lays them out on an auto-fitting grid. */
 
 
 	align-items           : center;
 	display               : grid;
 	flex                  : 1;
-	gap                   : var( --spa-ver-m02 ) var( --spa-hor-bas );
-	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) );
+	gap                   : var( --spa-ver-m02 ) var( --spa-hor-bas );                                      /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px */
+	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	justify-content       : start;
 	min-width             : 0;
 
 
 }
 
-/* #region dl-ki */
 
-.dl-ki { /* What: Key Item. Why: Each icon sits beside its meaning. How: This lines them up in small muted text. */
+/* #region keyEntSpa */
+
+.keyEntSpa { /* What: Key Entry Span. Why: Each icon sits beside its meaning. How: This lines them up in small muted text. */
 
 
 	align-items : center;
-	color       : var(--tex-mut-col);
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display     : inline-flex;
-	font-size   : var( --fon-siz-bas );
-	gap         : var( --spa-hor-m03 );
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap         : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 
 
 }
 
-.dl-ki b { /* What: Key Item Name. Why: The status name reads darker than its description. How: This sets it in body color and medium weight. */
+
+/* #region staIcoSpa */
+
+.staIcoSpa { /* What: Status Icon Span. Why: Each status shows as a small tinted icon tile, in the key and in the rows. How: This centers the icon in a rounded tile at the large rhythm step. */
 
 
-	color       : var(--tex-mai-col);
+	align-items     : center;
+	border-radius   : var( --rad-bor-sma );                /* Radius Border Small ~= 8.304px */
+	display         : inline-flex;
+	flex            : none;
+	height          : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	justify-content : center;
+	width           : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+
+
+}
+.staIcoSpa--auto { /* What: Auto Status Icon Span. Why: An auto pick reads in the accent. How: This tints the tile in the soft accent. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.staIcoSpa--push { /* What: Push Status Icon Span. Why: A pushed item reads orange. How: This tints the tile orange. */
+
+
+	background : var( --war-tin-col ); /* Warning Tint Color = oklch( 0.95 0.045 50 ) */
+	color      : var( --war-mai-col ); /* Warning Main Color = oklch( 0.55 0.13 50 ) */
+
+
+}
+.staIcoSpa--roll { /* What: Roll Status Icon Span. Why: A rolled-off item reads neutral. How: This outlines the tile on the surface. */
+
+
+	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color      : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+.staIcoSpa--skip { /* What: Skip Status Icon Span. Why: A skipped item reads red. How: This tints the tile red. */
+
+
+	background : var( --err-tin-col ); /* Error Tint Color = oklch( 0.955 0.02 25 ) */
+	color      : var( --err-mai-col ); /* Error Main Color = oklch( 0.55 0.17 25 ) */
+
+
+}
+.staIcoSpa--done { /* What: Done Status Icon Span. Why: A completed item reads green. How: This tints the tile green. */
+
+
+	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
+	color      : var( --suc-mai-col ); /* Success Main Color = oklch( 0.5 0.11 155 ) */
+
+
+}
+
+.icoGlySvg { /* What: Icon Glyph Svg. Why: The glyph sits small in its tile. How: This sizes it to the base rhythm step. */
+
+
+	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+
+/* #endregion staIcoSpa */
+
+
+.keyNamBol { /* What: Key Name Bold. Why: The status name reads darker than its description. How: This sets it in body color and medium weight. */
+
+
+	color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	font-weight : 500;
 
 
 }
 
-/* #region dl-ico */
+/* #endregion keyEntSpa */
 
-.dl-ico { /* What: Status Icon. Why: Each status shows as a small tinted icon tile, in the key and in the rows. How: This centers the icon in a rounded tile at the large rhythm step. */
+/* #endregion keyIteSpa */
 
-
-	align-items     : center;
-	border-radius   : var( --rad-bor-sma );
-	display         : inline-flex;
-	flex            : none;
-	height          : calc( var( --ver-rhy-p01 ) * 1rem );
-	justify-content : center;
-	width           : calc( var( --ver-rhy-p01 ) * 1rem );
+/* #endregion logKeyDiv */
 
 
-}
-.dl-c-auto { /* What: Auto-Picked Icon. Why: An auto pick reads in the accent. How: This tints the tile in the soft accent. */
+
+/* #region logBodDiv */
+
+.logBodDiv { /* What: Log Body Div. Why: The blocks sit inset under the key. How: This pads the body. */
 
 
-	background : var(--acc-tin-col);
-	color      : var(--acc-mai-col);
+	padding : var( --spa-ver-m07 ) var( --spa-hor-m01 ) var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 1 = 11px */
 
 
 }
-.dl-c-push { /* What: Pushed Icon. Why: A pushed item reads orange. How: This tints the tile orange. */
+.logBodDiv--rem { /* What: Reminders Log Body Div. Why: The reminders table needs a little more room around it. How: This pads it more evenly. */
 
 
-	background : var( --war-tin-col );
-	color      : var( --war-mai-col );
-
-
-}
-.dl-c-roll { /* What: Rolled Off Icon. Why: A rolled-off item reads neutral. How: This outlines the tile on the surface. */
-
-
-	background : var(--bac-sur-col);
-	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	color      : var(--tex-mut-col);
-
-
-}
-.dl-c-skip { /* What: Skipped Icon. Why: A skipped item reads red. How: This tints the tile red. */
-
-
-	background : var( --err-tin-col );
-	color      : var( --err-mai-col );
-
-
-}
-.dl-c-done { /* What: Completed Icon. Why: A completed item reads green. How: This tints the tile green. */
-
-
-	background : var( --suc-tin-col );
-	color      : var( --suc-mai-col );
+	padding : var( --spa-ver-m02 ) var( --spa-hor-m01 ) var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-.dl-ico svg { /* What: Status Icon Glyph. Why: The glyph sits small in its tile. How: This sizes it to the base rhythm step. */
+.logEmpDiv { /* What: Log Empty Div. Why: A picker with no items, or no reminders yet, says so. How: This sets a small muted padded message. */
 
 
-	height : calc( var( --ver-rhy-bas ) * 1rem );
-	width  : calc( var( --ver-rhy-bas ) * 1rem );
-
-
-}
-
-/* #endregion dl-ico */
-
-/* #endregion dl-ki */
-
-/* #endregion dl-key-items */
-
-/* #endregion dl-key */
-
-
-
-/* #region dl-body */
-
-.dl-body { /* What: Log Body. Why: The blocks sit inset under the key. How: This pads the body. */
-
-
-	padding : var( --spa-ver-m07 ) var( --spa-hor-m01 ) var( --spa-ver-m01 );
-
-
-}
-.dl-body--rem { /* What: Reminders Log Body. Why: The reminders table needs a little more room around it. How: This pads it more evenly. */
-
-
-	padding : var( --spa-ver-m02 ) var( --spa-hor-m01 ) var( --spa-ver-m01 );
+	color     : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 );                      /* Font Size Base Plus 1 ~= 14.572px */
+	padding   : var( --spa-ver-m01 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
 
 
 }
 
-.dl-empty { /* What: Empty Log. Why: A picker with no items, or no reminders yet, says so. How: This sets a small muted padded message. */
 
 
-	color     : var(--tex-mut-col);
-	font-size : var( --fon-siz-p01 );
-	padding   : var( --spa-ver-m01 ) var( --spa-hor-m01 );
+/* #region logBloDiv */
+
+.logBloDiv,
+.logConDiv { /* What: Log Block Div And Log Conditionals Div. Why: Each picker block, and the Conditionals block, is divided from the one above. How: This draws a hairline above every block. */
 
 
-}
-
-/* #region dl-block */
-
-.dl-block { /* What: Log Block. Why: Each picker block, and the Conditionals block, is divided from the one above. How: This draws a hairline above every block. */
-
-
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 
 
 }
-.dl-block:first-child { /* What: First Log Block. Why: The panel header already divides the first block. How: This drops its hairline. */
+.logBloDiv:first-child,
+.logConDiv:first-child { /* What: First Log Block. Why: The panel header already divides the first block. How: This drops its hairline. */
 
 
 	border-top : 0;
@@ -384,48 +395,51 @@
 
 }
 
-/* #region dl-block-h */
 
-.dl-block-h { /* What: Block Header. Why: Each picker block's header opens and closes it, laying the chevron, name, and summary out in columns. How: This strips the button chrome and lays them out on a three-column grid. */
+/* #region bloHeaBut */
+
+.bloHeaBut,
+.bloHeaDiv { /* What: Block Header Button And Div. Why: Each picker block's header opens and closes it, laying the chevron, name, and summary out in columns. How: This strips the button chrome and lays them out on a three-column grid. */
 
 
 	align-items           : center;
 	background            : none;
 	border                : 0;
-	color                 : var(--tex-mai-col);
+	color                 : var( --tex-mai-col );                                                                     /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor                : pointer;
 	display               : grid;
 	font                  : inherit;
-	gap                   : var( --spa-ver-m02 ) var( --spa-hor-m02 );
-	grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p09 ) * 1rem ) );
-	padding               : var( --spa-ver-bas ) var( --spa-hor-m07 );
+	gap                   : var( --spa-ver-m02 ) var( --spa-hor-m02 );                                                /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p09 ) * 1rem ) ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base Plus 9 ~= 183.074px */
+	padding               : var( --spa-ver-bas ) var( --spa-hor-m07 );                                                /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Minus 7 ~= 2.035px */
 	text-align            : left;
 	width                 : 100%;
 
 
 }
-.dl-block-h--static { /* What: Static Block Header. Why: A header that doesn't toggle shouldn't look clickable. How: This resets the cursor. */
+.bloHeaDiv { /* What: Block Header Div. Why: A header that doesn't toggle shouldn't look clickable. How: This resets the cursor. */
 
 
 	cursor : default;
 
 
 }
-.dl-cond-sec .dl-block-h { /* What: Conditionals Header. Why: The Conditionals header is just a title and count. How: This lays them out in a plain row. */
+.logConDiv .bloHeaDiv { /* What: Conditionals Header. Why: The Conditionals header is just a title and count. How: This lays them out in a plain row. */
 
 
 	display : flex;
-	gap     : var( --spa-hor-m02 );
+	gap     : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
-@container app (max-width: 500px) { /* What: Narrow Block Header. Why: A narrow app gives the summary column less room. How: This applies only when the app is 500px wide or less. */
+@container app ( max-width : 500px ) { /* What: Narrow Block Header. Why: A narrow app gives the summary column less room. How: This applies only when the app is 500px wide or less. */
 
 
-	.dl-block-h { /* What: Tighter Block Header. Why: The summary column needs to shrink. How: This caps it at a smaller rhythm step. */
+	.bloHeaBut,
+	.bloHeaDiv { /* What: Tighter Block Header. Why: The summary column needs to shrink. How: This caps it at a smaller rhythm step. */
 
 
-		grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p07 ) * 1rem ) );
+		grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p07 ) * 1rem ) ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base Plus 7 ~= 104.323px */
 
 
 	}
@@ -433,35 +447,36 @@
 
 }
 
-/* #region dl-chev */
 
-.dl-chev { /* What: Block Chevron. Why: The chevron shows whether the block is open. How: This sets a muted icon in the first column that turns when closed. */
+/* #region bloChvSpa */
+
+.bloChvSpa { /* What: Block Chevron Span. Why: The chevron shows whether the block is open. How: This sets a muted icon in the first column that turns when closed. */
 
 
-	color      : var(--tex-mut-col);
+	color      : var( --tex-mut-col );           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display    : inline-flex;
-	transition : transform var( --dur-tra-p01 );
+	transition : transform var( --dur-tra-p01 ); /* Duration Transition Base Plus 1 ~= 209.1ms */
 
 
 }
-.dl-block-h .dl-chev { /* What: Header Chevron. Why: The chevron takes the first column. How: This places it in column 1. */
+.bloHeaBut .bloChvSpa { /* What: Header Chevron. Why: The chevron takes the first column. How: This places it in column 1. */
 
 
 	grid-column : 1;
 
 
 }
-.dl-block-h[aria-expanded="false"] .dl-chev { /* What: Closed Block Chevron. Why: A closed block points its chevron sideways. How: This turns it back a quarter, keying off the header's aria-expanded. */
+.bloHeaBut[aria-expanded='false'] .bloChvSpa { /* What: Closed Block Chevron. Why: A closed block points its chevron sideways. How: This turns it back a quarter, keying off the header's aria-expanded. */
 
 
-	transform : rotate(-90deg);
+	transform : rotate( -90deg );
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Block Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Block Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.dl-chev { /* What: Still Block Chevron. Why: The change should happen at once. How: This turns its transition off. */
+	.bloChvSpa { /* What: Still Block Chevron. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -472,33 +487,33 @@
 
 }
 
-.dl-chev svg { /* What: Block Chevron Glyph. Why: The glyph sits at a fixed size. How: This sizes it to the base rhythm step as a block. */
+.chvIcoSvg { /* What: Chevron Icon Svg. Why: The glyph sits at a fixed size. How: This sizes it to the base rhythm step as a block. */
 
 
 	display : block;
-	height  : calc( var( --ver-rhy-bas ) * 1rem );
-	width   : calc( var( --ver-rhy-bas ) * 1rem );
+	height  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width   : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
 
-/* #endregion dl-chev */
+/* #endregion bloChvSpa */
 
 
+/* #region namModSpa */
 
-/* #region dl-name-mode */
-
-.dl-name-mode { /* What: Picker Name And Mode. Why: The picker's name and mode pill sit together. How: This lines them up in a row that can shrink. */
+.namModSpa { /* What: Name Mode Span. Why: The picker's name and mode pill sit together. How: This lines them up in a row that can shrink. */
 
 
 	align-items : center;
 	display     : flex;
-	gap         : var( --spa-hor-m02 );
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	min-width   : 0;
 
 
 }
-.dl-block-h .dl-name-mode { /* What: Header Name And Mode. Why: In the header grid the name block takes the middle column. How: This places it in column 2. */
+.bloHeaBut .namModSpa,
+.bloHeaDiv .namModSpa { /* What: Header Name And Mode. Why: In the header grid the name block takes the middle column. How: This places it in column 2. */
 
 
 	grid-column : 2;
@@ -507,93 +522,97 @@
 
 }
 
-.dl-block-name { /* What: Block Name. Why: Each block leads with its picker's name, or Conditionals. How: This sets it in semibold. */
+.bloNamSpa,
+.conTitSpa { /* What: Block Name Span And Conditionals Title Span. Why: Each block leads with its picker's name, or Conditionals. How: This sets it in semibold. */
 
 
-	font-size      : var( --fon-siz-p01 );
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 600;
 	letter-spacing : -0.01em;
 
 
 }
-.dl-name-mode .dl-block-name { /* What: Header Block Name. Why: Beside its pill the name takes up to a rhythm step's width. How: This lets it shrink from that basis. */
+.namModSpa .bloNamSpa { /* What: Header Block Name. Why: Beside its pill the name takes up to a rhythm step's width. How: This lets it shrink from that basis. */
 
 
-	flex      : 0 1 calc( var( --ver-rhy-p08 ) * 1rem );
+	flex      : 0 1 calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
 	min-width : 0;
 
 
 }
-.dl-cond-title { /* What: Conditionals Title. Why: The Conditionals block's title reads in the accent. How: This colors it. */
+.conTitSpa { /* What: Conditionals Title Span. Why: The Conditionals block's title reads in the accent. How: This colors it. */
 
 
-	color : var(--acc-mai-col);
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
 
-.dl-mode { /* What: Mode Pill. Why: A picker's mode, or the Conditionals count, reads as a small accent pill. How: This sets small uppercase mono text on a soft accent pill. */
+.conCouSpa,
+.picModSpa,
+.conModSpa { /* What: Conditionals Count Span And Picker Mode Span And Conditional Mode Span. Why: A picker's mode, or the Conditionals count, reads as a small accent pill. How: This sets small uppercase mono text on a soft accent pill. */
 
 
-	background     : var(--acc-tin-col);
+	background     : var( --acc-tin-col );                      /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 	border-radius  : 999px;
-	color          : var(--acc-mai-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-family    : var( --fon-fam-sec );                      /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                      /* Font Size Base = 11px */
 	letter-spacing : 0.05em;
-	padding        : var( --spa-ver-m07 ) var( --spa-hor-m02 );
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-align     : center;
 	text-transform : uppercase;
 	white-space    : nowrap;
 
 
 }
-.dl-mode[data-mode-neutral-active] { /* What: Neutral Mode Pill. Why: Weighted and random pickers don't drift, so their mode reads neutral. How: This outlines the pill on the surface in muted text, keying off data-mode-neutral-active. */
+.picModSpa[data-mode-neutral-active],
+.conModSpa[data-mode-neutral-active] { /* What: Neutral Mode Pill. Why: Weighted and random pickers don't drift, so their mode reads neutral. How: This outlines the pill on the surface in muted text, keying off data-mode-neutral-active. */
 
 
-	background : var(--bac-sur-col);
-	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	color      : var(--tex-mut-col);
+	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color      : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.dl-name-mode .dl-mode { /* What: Header Mode Pill. Why: Beside a picker's name the pill keeps a fixed width so the names line up. How: This fixes it at a rhythm step, ending in an ellipsis. */
+.namModSpa .picModSpa { /* What: Header Mode Pill. Why: Beside a picker's name the pill keeps a fixed width so the names line up. How: This fixes it at a rhythm step, ending in an ellipsis. */
 
 
 	min-width     : 0;
 	overflow      : hidden;
 	text-overflow : ellipsis;
-	width         : calc( var( --ver-rhy-p08 ) * 1rem );
+	width         : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
 
 
 }
 
-/* #endregion dl-name-mode */
+/* #endregion namModSpa */
 
 
 
-/* #region dl-sum */
+/* #region bloSumSpa */
 
-.dl-sum { /* What: Block Summary. Why: A picker's header ends with its done counts, pushed right and wrapping when tight. How: This lays them out in a right-aligned wrapping mono row. */
+.bloSumSpa { /* What: Block Summary Span. Why: A picker's header ends with its done counts, pushed right and wrapping when tight. How: This lays them out in a right-aligned wrapping mono row. */
 
 
 	align-items     : center;
-	color           : var(--tex-mut-col);
+	color           : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
 	flex-wrap       : wrap;
-	font-family     : var(--fon-fam-sec);
-	font-size       : var( --fon-siz-bas );
-	gap             : var( --spa-ver-m02 ) var( --spa-hor-m02 );
+	font-family     : var( --fon-fam-sec );                      /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas );                      /* Font Size Base = 11px */
+	gap             : var( --spa-ver-m02 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	justify-content : flex-end;
 	margin-left     : auto;
 	min-width       : 0;
 
 
 }
-@container app (max-width: 440px) { /* What: Very Narrow Block Summary. Why: On a very narrow app the wrapped summary reads better centered. How: This applies only when the app is 440px wide or less. */
+@container app ( max-width : 440px ) { /* What: Very Narrow Block Summary. Why: On a very narrow app the wrapped summary reads better centered. How: This applies only when the app is 440px wide or less. */
 
 
-	.dl-sum { /* What: Centered Block Summary. Why: The wrapped lines center under each other. How: This centers its text. */
+	.bloSumSpa { /* What: Centered Block Summary. Why: The wrapped lines center under each other. How: This centers its text. */
 
 
 		text-align : center;
@@ -604,50 +623,55 @@
 
 }
 
-.dl-dchip { /* What: Done Count. Why: The done count reads green with its icon. How: This lines them up in green. */
+
+/* #region donChiSpa */
+
+.donChiSpa { /* What: Done Chip Span. Why: The done count reads green with its icon. How: This lines them up in green. */
 
 
 	align-items : center;
-	color       : var( --suc-mai-col );
+	color       : var( --suc-mai-col ); /* Success Main Color = oklch( 0.5 0.11 155 ) */
 	display     : inline-flex;
-	gap         : var( --spa-hor-m05 );
+	gap         : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
 
 
 }
 
-.dl-dchip svg { /* What: Done Count Icon. Why: The icon sits small beside the count. How: This sizes it to the small rhythm step. */
+.donIcoSvg { /* What: Done Icon Svg. Why: The icon sits small beside the count. How: This sizes it to the small rhythm step. */
 
 
-	height : calc( var( --ver-rhy-m01 ) * 1rem );
-	width  : calc( var( --ver-rhy-m01 ) * 1rem );
+	height : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
+	width  : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
 
 
 }
 
-/* #endregion dl-sum */
+/* #endregion donChiSpa */
+
+/* #endregion bloSumSpa */
 
 
 
-/* #region dl-rest */
+/* #region bloResSpa */
 
-.dl-rest { /* What: Rested Note. Why: A picker that rested today says so, and why, at its header's end. How: This stacks the note right-aligned in small uppercase accent mono type. */
+.bloResSpa { /* What: Block Rested Span. Why: A picker that rested today says so, and why, at its header's end. How: This stacks the note right-aligned in small uppercase accent mono type. */
 
 
 	align-items    : flex-end;
-	color          : var(--acc-mai-col);
+	color          : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	display        : flex;
 	flex-direction : column;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	gap            : var( --spa-ver-m07 );
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	letter-spacing : 0.03em;
 	margin-left    : auto;
 	text-transform : uppercase;
 
 
 }
-.dl-block-h .dl-sum,
-.dl-block-h .dl-rest { /* What: Header Summary Column. Why: The summary or rested note takes the header's last column. How: This places it in column 3. */
+.bloHeaBut .bloSumSpa,
+.bloHeaDiv .bloResSpa { /* What: Header Summary Column. Why: The summary or rested note takes the header's last column. How: This places it in column 3. */
 
 
 	grid-column : 3;
@@ -655,18 +679,33 @@
 
 }
 
-.dl-rest-l1 { /* What: Rested Line. Why: The icon and "Rested" read as one line. How: This lines them up without wrapping. */
+
+/* #region resLinSpa */
+
+.resLinSpa { /* What: Rested Line Span. Why: The icon and "Rested" read as one line. How: This lines them up without wrapping. */
 
 
 	align-items : center;
 	display     : inline-flex;
-	gap         : var( --spa-hor-m03 );
+	gap         : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	white-space : nowrap;
 
 
 }
 
-.dl-rest-cond { /* What: Rested Conditional. Why: The conditional that rested it sits right-aligned under the line. How: This right-aligns it. */
+.resIcoSvg { /* What: Rested Icon Svg. Why: The icon sits small. How: This sizes it to the base rhythm step. */
+
+
+	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+
+/* #endregion resLinSpa */
+
+
+.resConSpa { /* What: Rested Conditional Span. Why: The conditional that rested it sits right-aligned under the line. How: This right-aligns it. */
 
 
 	text-align : right;
@@ -674,93 +713,88 @@
 
 }
 
-.dl-rest svg { /* What: Rested Icon. Why: The icon sits small. How: This sizes it to the base rhythm step. */
+/* #endregion bloResSpa */
 
-
-	height : calc( var( --ver-rhy-bas ) * 1rem );
-	width  : calc( var( --ver-rhy-bas ) * 1rem );
-
-
-}
-
-/* #endregion dl-rest */
-
-/* #endregion dl-block-h */
+/* #endregion bloHeaBut */
 
 
 
-/* #region dl-table */
+/* #region logTabDiv */
 
-.dl-table { /* What: Log Table. Why: The table ends with room below. How: This pads its bottom. */
+.logTabDiv { /* What: Log Table Div. Why: The table ends with room below. How: This pads its bottom. */
 
 
-	padding-bottom : var( --spa-ver-m01 );
+	padding-bottom : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-/* #region dl-thead */
 
-.dl-thead,
-.dl-trow { /* What: Log Table Grid. Why: The header and every row share the table's five columns. How: This lays them out on a five-column grid. */
+/* #region tabHeaDiv */
+
+.tabHeaDiv,
+.tabRowDiv,
+.conRowDiv { /* What: Table Header Div And Table Row Div And Conditional Row Div. Why: The header and every row share the table's five columns. How: This lays them out on a five-column grid. */
 
 
 	align-items           : center;
 	display               : grid;
-	gap                   : var( --spa-ver-m03 ) var( --spa-hor-m03 );
-	grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
+	gap                   : var( --spa-ver-m03 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px, Vertical Rhythm Base Plus 8 ~= 138.199px */
 
 
 }
-@container app (max-width: 560px) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
+@container app ( max-width : 560px ) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
 
 
-	.dl-thead,
-	.dl-trow { /* What: Tighter Log Table Grid. Why: The value columns need to shrink. How: This narrows them and the gap. */
+	.tabHeaDiv,
+	.tabRowDiv,
+	.conRowDiv { /* What: Tighter Log Table Grid. Why: The value columns need to shrink. How: This narrows them and the gap. */
 
 
-		gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 );
-		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
+		gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px, Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 8 ~= 138.199px */
 
 
 	}
 
 
 }
-@container app (max-width: 500px) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
+@container app ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
-	.dl-thead,
-	.dl-trow { /* What: Tightest Log Table Grid. Why: The status column needs to shrink too. How: This halves it. */
+	.tabHeaDiv,
+	.tabRowDiv,
+	.conRowDiv { /* What: Tightest Log Table Grid. Why: The status column needs to shrink too. How: This halves it. */
 
 
-		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p05 ) * 1rem );
+		grid-template-columns : 1fr calc( var( --ver-rhy-p04 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px, Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 5 ~= 59.447px */
 
 
 	}
 
 
 }
-.dl-thead { /* What: Log Table Header. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
+.tabHeaDiv { /* What: Table Header Div. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	letter-spacing : 0.06em;
-	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 );
+	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
 	text-transform : uppercase;
 
 
 }
-@container app (max-width: 500px) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
+@container app ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
 
 
-	.dl-cond-sec .dl-thead { /* What: Conditionals Table Header. Why: The Conditionals header keeps room for its Triggered pills. How: This narrows the three value columns so the wider status column still fits. */
+	.logConDiv .tabHeaDiv { /* What: Conditionals Table Header. Why: The Conditionals header keeps room for its Triggered pills. How: This narrows the three value columns so the wider status column still fits. */
 
 
-		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem );
+		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 
 	}
@@ -768,8 +802,10 @@
 
 }
 
-.dl-thead .r,
-.dl-trow .r { /* What: Right Cell. Why: Numeric cells align to their column's right edge. How: This right-aligns them. */
+
+/* #region heaGenSpa */
+
+.heaGenSpa { /* What: Header Generation Span. Why: The at-generation label aligns to its column's right edge, over the numbers below it. How: This right-aligns it in its grid cell. */
 
 
 	justify-self : end;
@@ -777,40 +813,23 @@
 
 
 }
-.dl-thead .dl-mk-delta,
-.dl-trow .dl-mk-delta { /* What: Change Cell. Why: The change column reads centered, overriding the right alignment. How: This centers it. */
 
-
-	justify-self : center;
-	text-align   : center;
-
-
-}
-.dl-thead .dl-mk-after,
-.dl-trow .dl-mk-after { /* What: After Cell. Why: The after column starts at its left edge, overriding the right alignment. How: This aligns it to the start. */
-
-
-	justify-self : start;
-
-
-}
-
-.dl-th-ic--open { /* What: At Generation Icon. Why: The open-circle icon reads a touch smaller. How: This scales it to 0.9. */
+.genIcoSpa { /* What: Generation Icon Span. Why: The open-circle icon reads a touch smaller. How: This scales it to 0.9. */
 
 
 	display   : inline-block;
-	transform : scale(0.9);
+	transform : scale( 0.9 );
 
 
 }
 
-.dl-vh { /* What: Visually Hidden Label. Why: Icon-only column headers still need a name for screen readers. How: This clips the label to nothing without removing it. */
+.visHidSpa { /* What: Visually Hidden Span. Why: Icon-only column headers still need a name for screen readers. How: This clips the label to nothing without removing it. */
 
 
 	border      : 0;
-	clip-path   : inset(50%);
+	clip-path   : inset( 50% );
 	height      : 1px;
-	margin      : calc( var( --spa-ver-m09 ) * -1 ) -1px;
+	margin      : calc( var( --spa-ver-m09 ) * -1 ) -1px; /* Spacing Vertical Base Minus 9 ~= 1.160px */
 	overflow    : hidden;
 	padding     : 0;
 	position    : absolute;
@@ -820,506 +839,38 @@
 
 }
 
-/* #endregion dl-thead */
+/* #endregion heaGenSpa */
 
 
+/* #region heaDelSpa */
 
-/* #region dl-trow */
-
-.dl-trow { /* What: Log Row. Why: Each item is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
-
-
-	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h / var( --cdn-pow-002-rec ));
-	border-radius : var( --rad-bor-sma );
-	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
+.heaDelSpa { /* What: Header Delta Span. Why: The change label centers over its column, like the changes below it. How: This centers it in its grid cell. */
 
 
-}
-.dl-trow:last-child { /* What: Last Log Row. Why: The table's end needs no divider. How: This drops the hairline. */
-
-
-	border-bottom : 0;
-
-
-}
-.dl-trow[data-row-done-active] { /* What: Done Log Row. Why: A completed item's row reads green. How: This tints it green, keying off data-row-done-active. */
-
-
-	background : var( --suc-tin-col );
-
-
-}
-.dl-cond-row { /* What: Conditional Row. Why: A conditional's row tints in the accent and joins the rested line under it. How: This forces an accent tint and drops its divider over any row state. */
-
-
-	background    : oklch(from var(--acc-mai-col) 0.93 0.05 h)!important;
-	border-bottom : 0!important;
-	margin-bottom : var( --spa-ver-m07 );
-
-
-}
-@container app (max-width: 500px) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
-
-
-	.dl-cond-row { /* What: Tightest Conditional Row. Why: The row keeps room for its Triggered pill. How: This narrows the three value columns so the wider status column still fits. */
-
-
-		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem );
-
-
-	}
+	justify-self : center;
+	text-align   : center;
 
 
 }
 
-/* #region dl-item */
-
-.dl-item { /* What: Row Item. Why: The name row and its subline stack in the first column. How: This stacks them in a tight column that can shrink. */
+/* #endregion heaDelSpa */
 
 
-	display        : flex;
-	flex-direction : column;
-	gap            : var( --spa-ver-m09 );
-	min-width      : 0;
+/* #region heaAftSpa */
+
+.heaAftSpa { /* What: Header After Span. Why: The after label starts at its column's left edge, like the values below it. How: This aligns it to the start of its grid cell while keeping its text right-aligned. */
 
 
-}
-
-/* #region dl-nrow */
-
-.dl-nrow { /* What: Name Row. Why: A name and a conditional's mode pill sit on one line. How: This lines them up in a row that can shrink. */
-
-
-	align-items : center;
-	display     : flex;
-	gap         : var( --spa-ver-m03 ) var( --spa-hor-m03 );
-	min-width   : 0;
+	justify-self : start;
+	text-align   : right;
 
 
 }
 
-.dl-name { /* What: Row Name. Why: The item or conditional name leads the row on one line. How: This sets it in medium weight, ending in an ellipsis. */
+/* #endregion heaAftSpa */
 
 
-	font-size     : var( --fon-siz-p01 );
-	font-weight   : 500;
-	overflow      : hidden;
-	text-overflow : ellipsis;
-	white-space   : nowrap;
-
-
-}
-.dl-nrow .dl-name { /* What: Conditional Row Name. Why: Beside its mode pill the name keeps a fixed width so the pills line up. How: This fixes its basis at a rhythm step. */
-
-
-	flex      : 0 0 calc( var( --ver-rhy-p08 ) * 1rem );
-	min-width : 0;
-
-
-}
-.dl-trow[data-row-vacation-active] .dl-name { /* What: Vacationing Row Name. Why: An item on vacation reads quieter. How: This mutes its name, keying off the row's data-row-vacation-active. */
-
-
-	color : var(--tex-mut-col);
-
-
-}
-@container app (min-width: 761px) and (max-width: 880px) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
-
-
-	.dl-cond-row .dl-nrow { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
-
-
-		flex-wrap : wrap;
-		gap       : var( --spa-ver-m05 ) var( --spa-hor-m05 );
-
-
-	}
-
-	.dl-cond-row .dl-name { /* What: Full-Width Conditional Name. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
-
-
-		flex  : 0 0 100%;
-		width : 100%;
-
-
-	}
-
-
-}
-@container app (max-width: 640px) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
-
-
-	.dl-cond-row .dl-nrow { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
-
-
-		flex-wrap : wrap;
-		gap       : var( --spa-ver-m05 ) var( --spa-hor-m05 );
-
-
-	}
-
-	.dl-cond-row .dl-name { /* What: Full-Width Conditional Name. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
-
-
-		flex  : 0 0 100%;
-		width : 100%;
-
-
-	}
-
-
-}
-
-.dl-mode--cond { /* What: Conditional Mode Pill. Why: A conditional's mode reads as an outlined accent pill at a fixed width. How: This outlines it on the page background at a rhythm-step width, ending in an ellipsis. */
-
-
-	background    : var(--bac-pag-col);
-	border        : var( --bor-wid-sma ) solid oklch(from var(--acc-mai-col) l c h / var( --cdn-pow-003-rec ));
-	color         : var(--acc-mai-col);
-	min-width     : 0;
-	overflow      : hidden;
-	text-overflow : ellipsis;
-	white-space   : nowrap;
-	width         : calc( var( --ver-rhy-p08 ) * 1rem );
-
-
-}
-.dl-mode--cond[data-mode-neutral-active] { /* What: Neutral Conditional Mode Pill. Why: Weighted and random conditionals read neutral. How: This outlines the pill in the border color with muted text, keying off data-mode-neutral-active. */
-
-
-	background   : var(--bac-pag-col);
-	border-color : var(--bor-mai-col);
-	color        : var(--tex-mut-col);
-
-
-}
-@container app (min-width: 761px) and (max-width: 880px) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
-
-
-	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
-
-
-		display     : block;
-		margin-left : calc( var( --spa-hor-m05 ) * -1 );
-		max-width   : calc( var( --ver-rhy-p08 ) * 1rem );
-		text-align  : left;
-		width       : auto;
-
-
-	}
-
-
-}
-@container app (max-width: 640px) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
-
-
-	.dl-cond-row .dl-mode--cond { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
-
-
-		display     : block;
-		margin-left : calc( var( --spa-hor-m05 ) * -1 );
-		max-width   : calc( var( --ver-rhy-p08 ) * 1rem );
-		text-align  : left;
-		width       : auto;
-
-
-	}
-
-
-}
-
-/* #endregion dl-nrow */
-
-
-
-.dl-sub { /* What: Row Subline. Why: The line under a name explains the item's value or the conditional's state. How: This sets it in small muted mono type. */
-
-
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	letter-spacing : 0.02em;
-
-
-}
-
-/* #endregion dl-item */
-
-
-
-.dl-val { /* What: Row Value. Why: The values line up in their columns. How: This sets them in tabular mono numerals. */
-
-
-	font-family          : var(--fon-fam-sec);
-	font-size            : var( --fon-siz-p01 );
-	font-variant-numeric : tabular-nums;
-
-
-}
-
-.dl-after { /* What: After Value. Why: The value after today's changes is the one that matters. How: This sets it in semibold. */
-
-
-	font-weight : 600;
-
-
-}
-
-.dl-delta { /* What: Row Change. Why: The change reads in tabular mono numerals, colored by direction. How: This sets it small in tabular mono type. */
-
-
-	font-family          : var(--fon-fam-sec);
-	font-size            : var( --fon-siz-bas );
-	font-variant-numeric : tabular-nums;
-
-
-}
-.dl-delta.up { /* What: Rising Change. Why: A rise reads green. How: This colors it green. */
-
-
-	color : var( --suc-mai-col );
-
-
-}
-.dl-delta.down { /* What: Falling Change. Why: A fall reads in the accent. How: This colors it in the accent. */
-
-
-	color : var(--acc-mai-col);
-
-
-}
-.dl-delta.flat { /* What: Flat Change. Why: No change reads faint. How: This colors it a faded muted. */
-
-
-	color : oklch(from var(--tex-mut-col) l c h/0.5);
-
-
-}
-
-.dl-boost { /* What: Row Boost. Why: A dynamic item's boost reads green. How: This colors it green. */
-
-
-	color : var( --suc-mai-col );
-
-
-}
-.dl-boost[data-boost-zero-active] { /* What: Zero Boost. Why: No boost reads faint. How: This colors it a faded muted, keying off data-boost-zero-active. */
-
-
-	color : oklch(from var(--tex-mut-col) l c h/0.5);
-
-
-}
-
-.dl-na { /* What: Not Applicable Value. Why: A value that doesn't apply reads faint. How: This sets it in small faded mono type. */
-
-
-	color       : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-002-rec ));
-	font-family : var(--fon-fam-sec);
-	font-size   : var( --fon-siz-bas );
-
-
-}
-
-/* #region dl-status */
-
-.dl-status { /* What: Row Status. Why: A row's status chips or pill sit right-aligned in the last column, wrapping when tight. How: This lines them up in a right-aligned wrapping row. */
-
-
-	align-items     : center;
-	display         : flex;
-	flex-wrap       : wrap;
-	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );
-	justify-content : flex-end;
-	justify-self    : end;
-
-
-}
-
-.dl-st-pill { /* What: Status Pill. Why: A row's status reads as a small mono pill. How: This sets small uppercase mono text on an unpadded pill that each kind fills in. */
-
-
-	align-items    : center;
-	border-radius  : 999px;
-	display        : inline-flex;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	height         : calc( var( --ver-rhy-p01 ) * 1rem );
-	letter-spacing : 0.04em;
-	padding        : 0;
-	text-transform : uppercase;
-	white-space    : nowrap;
-
-
-}
-.dl-st-trig { /* What: Triggered Pill. Why: A conditional that triggered reads as a solid accent pill. How: This fills it in the accent with page-colored text. */
-
-
-	background : var(--acc-mai-col);
-	color      : var(--bac-pag-col);
-	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 );
-
-
-}
-.dl-st-nottrig { /* What: Not Triggered Pill. Why: A conditional that didn't trigger reads neutral. How: This outlines the pill on the surface in muted text. */
-
-
-	background : var(--bac-sur-col);
-	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	color      : var(--tex-mut-col);
-	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 );
-
-
-}
-.dl-st-done { /* What: Done Pill. Why: A done reminder reads green. How: This tints the pill green. */
-
-
-	background : var( --suc-tin-col );
-	color      : var( --suc-mai-col );
-
-
-}
-.dl-st-due { /* What: Due Pill. Why: A reminder due today reads in the accent. How: This tints the pill in the soft accent. */
-
-
-	background : var(--acc-tin-col);
-	color      : var(--acc-mai-col);
-
-
-}
-.dl-st-skip { /* What: Skipped Pill. Why: A skipped reminder reads red. How: This tints the pill red. */
-
-
-	background : var( --err-tin-col );
-	color      : var( --err-mai-col );
-
-
-}
-
-/* #endregion dl-status */
-
-
-
-.dl-none { /* What: No Status. Why: A row with no status shows a faint dash. How: This sets it faint and right-aligned in mono. */
-
-
-	color       : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-003-rec ));
-	font-family : var(--fon-fam-sec);
-	font-size   : var( --fon-siz-p01 );
-	text-align  : right;
-
-
-}
-
-.dl-vac { /* What: Inactive Note. Why: An item on vacation says so where its status would be. How: This sets small uppercase faded mono text. */
-
-
-	color          : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-001-rec ));
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	letter-spacing : 0.04em;
-	text-transform : uppercase;
-
-
-}
-
-/* #endregion dl-trow */
-
-
-
-/* #region dl-cond-aff */
-
-.dl-cond-aff { /* What: Conditional Effect Line. Why: Under each conditional row a line says which pickers it rested or is attached to. How: This draws a soft accent strip with small mono text that closes the row above. */
-
-
-	align-items    : center;
-	background     : oklch(from var(--acc-mai-col) 0.95 0.035 h);
-	border-radius  : 0 0 var( --rad-bor-sma ) var( --rad-bor-sma );
-	color          : oklch(from var(--acc-mai-col) calc(l - 0.02) c h);
-	display        : flex;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	gap            : var( --spa-hor-m03 );
-	letter-spacing : 0.02em;
-	margin         : 0 0 var( --spa-ver-m02 );
-	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-m03 ) var( --spa-hor-m01 );
-
-
-}
-
-.dl-cond-aff svg { /* What: Conditional Effect Icon. Why: The icon sits small and a little faded. How: This sizes it to the small rhythm step at 0.8 opacity. */
-
-
-	flex    : none;
-	height  : calc( var( --ver-rhy-m01 ) * 1rem );
-	opacity : 0.8;
-	width   : calc( var( --ver-rhy-m01 ) * 1rem );
-
-
-}
-
-.dl-cond-aff b { /* What: Conditional Effect Name. Why: The affected picker names read in the accent. How: This sets them in semibold accent. */
-
-
-	color       : var(--acc-mai-col);
-	font-weight : 600;
-
-
-}
-
-/* #endregion dl-cond-aff */
-
-/* #endregion dl-table */
-
-/* #endregion dl-block */
-
-
-
-/* #region dl-rt */
-
-.dl-rt-head,
-.dl-rt-row { /* What: Reminders Table Grid. Why: The reminders header and rows share three columns. How: This lays them out on a three-column grid. */
-
-
-	align-items           : center;
-	display               : grid;
-	gap                   : var( --spa-ver-m02 ) var( --spa-hor-m02 );
-	grid-template-columns : 1fr calc( var( --ver-rhy-p08 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem );
-
-
-}
-@container app (max-width: 560px) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
-
-
-	.dl-rt-head,
-	.dl-rt-row { /* What: Tighter Reminders Table Grid. Why: The when and status columns need to shrink. How: This narrows them and the gap. */
-
-
-		gap                   : var( --spa-ver-m03 ) var( --spa-hor-m03 );
-		grid-template-columns : 1fr calc( var( --ver-rhy-p07 ) * 1rem ) calc( var( --ver-rhy-p07 ) * 1rem );
-
-
-	}
-
-
-}
-.dl-rt-head { /* What: Reminders Table Header. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
-
-
-	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	letter-spacing : 0.06em;
-	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 );
-	text-transform : uppercase;
-
-
-}
-
-.dl-rt-head .r,
-.dl-rt-row .r { /* What: Reminders Right Cell. Why: The status column aligns to its right edge. How: This right-aligns it. */
+.heaStaSpa { /* What: Header Status Span. Why: The status label, in the log and reminders tables alike, aligns to its column's right edge. How: This right-aligns it in its grid cell. */
 
 
 	justify-self : end;
@@ -1327,7 +878,536 @@
 
 
 }
-.dl-rt-head .dl-mk-rwhen { /* What: When Header. Why: The when label centers over its column. How: This centers it. */
+
+/* #endregion tabHeaDiv */
+
+
+
+/* #region tabRowDiv */
+
+.tabRowDiv,
+.conRowDiv { /* What: Table Row Div And Conditional Row Div. Why: Each item is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
+
+
+	border-bottom : var( --bor-wid-sma ) solid oklch( from var( --bor-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+	border-radius : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );                                                      /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+.tabRowDiv:last-child,
+.conRowDiv:last-child { /* What: Last Log Row. Why: The table's end needs no divider. How: This drops the hairline. */
+
+
+	border-bottom : 0;
+
+
+}
+.tabRowDiv[data-row-done-active] { /* What: Done Log Row. Why: A completed item's row reads green. How: This tints it green, keying off data-row-done-active. */
+
+
+	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
+
+
+}
+.conRowDiv { /* What: Conditional Row Div. Why: A conditional's row tints in the accent and joins the rested line under it. How: This forces an accent tint and drops its divider over any row state. */
+
+
+	background    : oklch( from var( --acc-mai-col ) 0.93 0.05 h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-bottom : 0;
+	margin-bottom : var( --spa-ver-m07 );                           /* Spacing Vertical Base Minus 7 ~= 2.035px */
+
+
+}
+@container app ( max-width : 500px ) { /* What: Very Narrow Log Table. Why: At 500px and below the status column shrinks too. How: This applies only when the app is 500px wide or less. */
+
+
+	.conRowDiv { /* What: Tightest Conditional Row. Why: The row keeps room for its Triggered pill. How: This narrows the three value columns so the wider status column still fits. */
+
+
+		grid-template-columns : 1fr calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p03 ) * 1rem ) calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 6 ~= 78.750px */
+
+
+	}
+
+
+}
+
+
+/* #region rowIteSpa */
+
+.rowIteSpa { /* What: Row Item Span. Why: The name row and its subline stack in the first column. How: This stacks them in a tight column that can shrink. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	min-width      : 0;
+
+
+}
+
+
+/* #region namRowSpa */
+
+.namRowSpa { /* What: Name Row Span. Why: A name and a conditional's mode pill sit on one line. How: This lines them up in a row that can shrink. */
+
+
+	align-items : center;
+	display     : flex;
+	gap         : var( --spa-ver-m03 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	min-width   : 0;
+
+
+}
+
+.rowNamSpa { /* What: Row Name Span. Why: The item or conditional name leads the row on one line. How: This sets it in medium weight, ending in an ellipsis. */
+
+
+	font-size     : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-weight   : 500;
+	overflow      : hidden;
+	text-overflow : ellipsis;
+	white-space   : nowrap;
+
+
+}
+.namRowSpa .rowNamSpa { /* What: Conditional Row Name. Why: Beside its mode pill the name keeps a fixed width so the pills line up. How: This fixes its basis at a rhythm step. */
+
+
+	flex      : 0 0 calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+	min-width : 0;
+
+
+}
+.tabRowDiv[data-row-vacation-active] .rowNamSpa { /* What: Vacationing Row Name. Why: An item on vacation reads quieter. How: This mutes its name, keying off the row's data-row-vacation-active. */
+
+
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+@container app ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
+
+
+	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
+
+
+		flex-wrap : wrap;
+		gap       : var( --spa-ver-m05 ) var( --spa-hor-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+
+
+	}
+
+	.conRowDiv .rowNamSpa { /* What: Full-Width Conditional Name. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
+
+
+		flex  : 0 0 100%;
+		width : 100%;
+
+
+	}
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
+
+
+	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
+
+
+		flex-wrap : wrap;
+		gap       : var( --spa-ver-m05 ) var( --spa-hor-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+
+
+	}
+
+	.conRowDiv .rowNamSpa { /* What: Full-Width Conditional Name. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
+
+
+		flex  : 0 0 100%;
+		width : 100%;
+
+
+	}
+
+
+}
+
+.conModSpa { /* What: Conditional Mode Span. Why: A conditional's mode reads as an outlined accent pill at a fixed width. How: This outlines it on the page background at a rhythm-step width, ending in an ellipsis. */
+
+
+	background    : var( --bac-pag-col );                                                                           /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-003-rec ) ); /* Border Width Small ~= 0.499px, Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+	color         : var( --acc-mai-col );                                                                           /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	min-width     : 0;
+	overflow      : hidden;
+	text-overflow : ellipsis;
+	white-space   : nowrap;
+	width         : calc( var( --ver-rhy-p08 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+
+
+}
+.conModSpa[data-mode-neutral-active] { /* What: Neutral Conditional Mode Pill. Why: Weighted and random conditionals read neutral. How: This outlines the pill in the border color with muted text, keying off data-mode-neutral-active. */
+
+
+	background   : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-color : var( --bor-mai-col ); /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	color        : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+@container app ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
+
+
+	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
+
+
+		display     : block;
+		margin-left : calc( var( --spa-hor-m05 ) * -1 );   /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+		max-width   : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+		text-align  : left;
+		width       : auto;
+
+
+	}
+
+
+}
+@container app ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
+
+
+	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
+
+
+		display     : block;
+		margin-left : calc( var( --spa-hor-m05 ) * -1 );   /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+		max-width   : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+		text-align  : left;
+		width       : auto;
+
+
+	}
+
+
+}
+
+/* #endregion namRowSpa */
+
+
+/* #region rowSubSpa */
+
+.rowSubSpa { /* What: Row Subline Span. Why: The line under a name explains the item's value or the conditional's state. How: This sets it in small muted mono type. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	letter-spacing : 0.02em;
+
+
+}
+
+.booValSpa { /* What: Boost Value Span. Why: A dynamic item's boost reads green. How: This colors it green. */
+
+
+	color : var( --suc-mai-col ); /* Success Main Color = oklch( 0.5 0.11 155 ) */
+
+
+}
+.booValSpa[data-boost-zero-active] { /* What: Zero Boost. Why: No boost reads faint. How: This colors it a faded muted, keying off data-boost-zero-active. */
+
+
+	color : oklch( from var( --tex-mut-col ) l c h / 0.5 ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+
+/* #endregion rowSubSpa */
+
+/* #endregion rowIteSpa */
+
+
+
+/* #region celGenSpa */
+
+.celGenSpa { /* What: Cell Generation Span. Why: The value at generation lines up at its column's right edge in tabular numerals. How: This sets it in tabular mono numerals, right-aligned in its grid cell. */
+
+
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	justify-self         : end;
+	text-align           : right;
+
+
+}
+
+.notAppSpa { /* What: Not Applicable Span. Why: A value that doesn't apply reads faint. How: This sets it in small faded mono type. */
+
+
+	color       : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-002-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+	font-family : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size   : var( --fon-siz-bas );                                                /* Font Size Base = 11px */
+
+
+}
+
+/* #endregion celGenSpa */
+
+
+.celDelSpa { /* What: Cell Delta Span. Why: The change reads in tabular mono numerals, colored by direction and centered in its column. How: This sets it small in tabular mono type, centered in its grid cell. */
+
+
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-variant-numeric : tabular-nums;
+	justify-self         : center;
+	text-align           : center;
+
+
+}
+.celDelSpa--up { /* What: Up Cell Delta Span. Why: A rise reads green. How: This colors it green. */
+
+
+	color : var( --suc-mai-col ); /* Success Main Color = oklch( 0.5 0.11 155 ) */
+
+
+}
+.celDelSpa--down { /* What: Down Cell Delta Span. Why: A fall reads in the accent. How: This colors it in the accent. */
+
+
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.celDelSpa--flat { /* What: Flat Cell Delta Span. Why: No change reads faint. How: This colors it a faded muted. */
+
+
+	color : oklch( from var( --tex-mut-col ) l c h / 0.5 ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+
+
+}
+
+.celAftSpa { /* What: Cell After Span. Why: The value after today's changes is the one that matters, starting at its column's left edge. How: This sets it in semibold tabular mono numerals, aligned to the start of its grid cell with its text right-aligned. */
+
+
+	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	font-weight          : 600;
+	justify-self         : start;
+	text-align           : right;
+
+
+}
+.celAftSpa--empty { /* What: Empty Cell After Span. Why: With no value, the N/A placeholder shouldn't read semibold. How: This returns the cell to its row's own weight. */
+
+
+	font-weight : inherit;
+
+
+}
+
+
+
+/* #region rowStaSpa */
+
+.rowStaSpa { /* What: Row Status Span. Why: A row's status chips or pill sit right-aligned in the last column, wrapping when tight. How: This lines them up in a right-aligned wrapping row. */
+
+
+	align-items     : center;
+	display         : flex;
+	flex-wrap       : wrap;
+	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	justify-content : flex-end;
+	justify-self    : end;
+
+
+}
+
+.staPilSpa { /* What: Status Pill Span. Why: A row's status reads as a small mono pill. How: This sets small uppercase mono text on an unpadded pill that each kind fills in. */
+
+
+	align-items    : center;
+	border-radius  : 999px;
+	display        : inline-flex;
+	font-family    : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	height         : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	letter-spacing : 0.04em;
+	padding        : 0;
+	text-transform : uppercase;
+	white-space    : nowrap;
+
+
+}
+.staPilSpa--triggered { /* What: Triggered Status Pill Span. Why: A conditional that triggered reads as a solid accent pill. How: This fills it in the accent with page-colored text. */
+
+
+	background : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color      : var( --bac-pag-col );                      /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+.staPilSpa--untriggered { /* What: Untriggered Status Pill Span. Why: A conditional that didn't trigger reads neutral. How: This outlines the pill on the surface in muted text. */
+
+
+	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color      : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	padding    : var( --spa-ver-m07 ) var( --spa-hor-m02 );       /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+
+
+}
+.staPilSpa--done { /* What: Done Status Pill Span. Why: A done reminder reads green. How: This tints the pill green. */
+
+
+	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
+	color      : var( --suc-mai-col ); /* Success Main Color = oklch( 0.5 0.11 155 ) */
+
+
+}
+.staPilSpa--due { /* What: Due Status Pill Span. Why: A reminder due today reads in the accent. How: This tints the pill in the soft accent. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.staPilSpa--skipped { /* What: Skipped Status Pill Span. Why: A skipped reminder reads red. How: This tints the pill red. */
+
+
+	background : var( --err-tin-col ); /* Error Tint Color = oklch( 0.955 0.02 25 ) */
+	color      : var( --err-mai-col ); /* Error Main Color = oklch( 0.55 0.17 25 ) */
+
+
+}
+
+.vacNotSpa { /* What: Vacation Note Span. Why: An item on vacation says so where its status would be. How: This sets small uppercase faded mono text. */
+
+
+	color          : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+	font-family    : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                /* Font Size Base = 11px */
+	letter-spacing : 0.04em;
+	text-transform : uppercase;
+
+
+}
+
+/* #endregion rowStaSpa */
+
+
+
+.staNonSpa { /* What: Status None Span. Why: A row with no status shows a faint dash. How: This sets it faint and right-aligned in mono. */
+
+
+	color       : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-003-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
+	font-family : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size   : var( --fon-siz-p01 );                                                /* Font Size Base Plus 1 ~= 14.572px */
+	text-align  : right;
+
+
+}
+
+/* #endregion tabRowDiv */
+
+
+
+/* #region conAffDiv */
+
+.conAffDiv { /* What: Conditional Affected Div. Why: Under each conditional row a line says which pickers it rested or is attached to. How: This draws a soft accent strip with small mono text that closes the row above. */
+
+
+	align-items    : center;
+	background     : oklch( from var( --acc-mai-col ) 0.95 0.035 h );                                     /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius  : 0 0 var( --rad-bor-sma ) var( --rad-bor-sma );                                       /* Radius Border Small ~= 8.304px */
+	color          : oklch( from var( --acc-mai-col ) calc( l - 0.02 ) c h );                             /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	display        : flex;
+	font-family    : var( --fon-fam-sec );                                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                                /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 );                                                                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	letter-spacing : 0.02em;
+	margin         : 0 0 var( --spa-ver-m02 );                                                            /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-m03 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+
+
+}
+
+.affIcoSvg { /* What: Affected Icon Svg. Why: The icon sits small and a little faded. How: This sizes it to the small rhythm step at 0.8 opacity. */
+
+
+	flex    : none;
+	height  : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
+	opacity : var( --cdn-pow-001-rec );            /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+	width   : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
+
+
+}
+
+.affNamBol { /* What: Affected Name Bold. Why: The affected picker names read in the accent. How: This sets them in semibold accent. */
+
+
+	color       : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-weight : 600;
+
+
+}
+
+/* #endregion conAffDiv */
+
+/* #endregion logTabDiv */
+
+/* #endregion logBloDiv */
+
+
+
+/* #region remHeaDiv */
+
+.remHeaDiv,
+.remRowDiv { /* What: Reminders Header Div And Reminders Row Div. Why: The reminders header and rows share three columns. How: This lays them out on a three-column grid. */
+
+
+	align-items           : center;
+	display               : grid;
+	gap                   : var( --spa-ver-m02 ) var( --spa-hor-m02 );                                   /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	grid-template-columns : 1fr calc( var( --ver-rhy-p08 ) * 1rem ) calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+
+
+}
+@container app ( max-width : 560px ) { /* What: Narrow Log Table. Why: At 560px and below the value columns tighten. How: This applies only when the app is 560px wide or less. */
+
+
+	.remHeaDiv,
+	.remRowDiv { /* What: Tighter Reminders Table Grid. Why: The when and status columns need to shrink. How: This narrows them and the gap. */
+
+
+		gap                   : var( --spa-ver-m03 ) var( --spa-hor-m03 );                                   /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+		grid-template-columns : 1fr calc( var( --ver-rhy-p07 ) * 1rem ) calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
+
+
+	}
+
+
+}
+.remHeaDiv { /* What: Reminders Header Div. Why: The column labels read as a quiet header above a hairline. How: This sets small uppercase muted mono type in a padded row. */
+
+
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	color          : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	letter-spacing : 0.06em;
+	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+	text-transform : uppercase;
+
+
+}
+
+.heaWheSpa { /* What: Header When Span. Why: The when label centers over its column. How: This centers it. */
 
 
 	text-align : center;
@@ -1335,43 +1415,47 @@
 
 }
 
-/* #region dl-rt-row */
-
-.dl-rt-row { /* What: Reminder Row. Why: Each reminder is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
+/* #endregion remHeaDiv */
 
 
-	border-bottom : var( --bor-wid-sma ) solid oklch(from var(--bor-mai-col) l c h / var( --cdn-pow-002-rec ));
-	border-radius : var( --rad-bor-sma );
-	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );
+
+/* #region remRowDiv */
+
+.remRowDiv { /* What: Reminders Row Div. Why: Each reminder is a padded row divided from the next. How: This pads it with a faint hairline and rounded corners. */
+
+
+	border-bottom : var( --bor-wid-sma ) solid oklch( from var( --bor-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
+	border-radius : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-m01 );                                                      /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 1 = 11px */
 
 
 }
-.dl-rt-row:last-child { /* What: Last Reminder Row. Why: The table's end needs no divider. How: This drops the hairline. */
+.remRowDiv:last-child { /* What: Last Reminder Row. Why: The table's end needs no divider. How: This drops the hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.dl-rt-row[data-row-done-active] { /* What: Done Reminder Row. Why: A done reminder's row reads green. How: This tints it green, keying off data-row-done-active. */
+.remRowDiv[data-row-done-active] { /* What: Done Reminder Row. Why: A done reminder's row reads green. How: This tints it green, keying off data-row-done-active. */
 
 
-	background : var( --suc-tin-col );
-
-
-}
-.dl-rt-row[data-row-due-active] { /* What: Due Reminder Row. Why: A reminder due today reads in the accent. How: This tints it in the soft accent, keying off data-row-due-active. */
-
-
-	background : var(--acc-tin-col);
+	background : var( --suc-tin-col ); /* Success Tint Color = oklch( 0.95 0.035 155 ) */
 
 
 }
+.remRowDiv[data-row-due-active] { /* What: Due Reminder Row. Why: A reminder due today reads in the accent. How: This tints it in the soft accent, keying off data-row-due-active. */
 
-.dl-r-name { /* What: Reminder Name. Why: The reminder's name leads its row on one line. How: This sets it in medium weight, ending in an ellipsis. */
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 
 
-	font-size     : var( --fon-siz-p01 );
+}
+
+.remNamSpa { /* What: Reminder Name Span. Why: The reminder's name leads its row on one line. How: This sets it in medium weight, ending in an ellipsis. */
+
+
+	font-size     : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 500;
 	min-width     : 0;
 	overflow      : hidden;
@@ -1380,31 +1464,35 @@
 
 
 }
-.dl-rt-row[data-row-upcoming-active] .dl-r-name { /* What: Upcoming Reminder Name. Why: A reminder not due yet reads quieter. How: This mutes its name, keying off the row's data-row-upcoming-active. */
+.remRowDiv[data-row-upcoming-active] .remNamSpa { /* What: Upcoming Reminder Name. Why: A reminder not due yet reads quieter. How: This mutes its name, keying off the row's data-row-upcoming-active. */
 
 
-	color : var(--tex-mut-col);
+	color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
 
-.dl-r-when { /* What: Reminder When. Why: When the reminder is due reads as centered mono metadata. How: This sets it small, muted, and centered. */
+.remWheSpa { /* What: Reminder When Span. Why: When the reminder is due reads as centered mono metadata. How: This sets it small, muted, and centered. */
 
 
-	color       : var(--tex-mut-col);
-	font-family : var(--fon-fam-sec);
-	font-size   : var( --fon-siz-bas );
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	text-align  : center;
 
 
 }
 
-.dl-r-st { /* What: Reminder Status. Why: The status icon and pill sit right-aligned in the last column. How: This lines them up at the column's end. */
+
+
+/* #region remStaSpa */
+
+.remStaSpa { /* What: Reminder Status Span. Why: The status icon and pill sit right-aligned in the last column. How: This lines them up at the column's end. */
 
 
 	align-items     : center;
 	display         : inline-flex;
-	gap             : var( --spa-hor-m03 );
+	gap             : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	justify-content : flex-end;
 	justify-self    : end;
 	text-align      : right;
@@ -1412,12 +1500,12 @@
 
 }
 
-.dl-st-not { /* What: Not Due Label. Why: A reminder not due yet shows when it will be, quieter than a pill. How: This sets right-aligned small uppercase faded mono text. */
+.notDueSpa { /* What: Not Due Span. Why: A reminder not due yet shows when it will be, quieter than a pill. How: This sets right-aligned small uppercase faded mono text. */
 
 
-	color          : oklch(from var(--tex-mut-col) l c h / var( --cdn-pow-001-rec ));
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
+	font-family    : var( --fon-fam-sec );                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                                /* Font Size Base = 11px */
 	letter-spacing : 0.04em;
 	text-align     : right;
 	text-transform : uppercase;
@@ -1425,12 +1513,12 @@
 
 }
 
-/* #endregion dl-rt-row */
+/* #endregion remStaSpa */
 
-/* #endregion dl-rt */
+/* #endregion remRowDiv */
 
-/* #endregion dl-body */
+/* #endregion logBodDiv */
 
-/* #endregion dl-panel */
+/* #endregion logPanDiv */
 
 
