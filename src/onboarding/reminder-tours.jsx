@@ -72,7 +72,7 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
  *
  * @summary
  * Step 4 highlights whichever schedule control Step 3's own pill choice
- * reveals below it, the same container ('.rem-extra-fade') regardless of which
+ * reveals below it, the same container ('.remExtDiv') regardless of which
  * one that is, since schedule-editor.jsx's own SchEdiCom only ever renders one
  * at a time. Only the copy needs to track the live selection, keyed by
  * schedule-editor.jsx's own REP_OPT_ARR keys (interval/weekly/monthly/annual, "Once"
@@ -335,7 +335,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
  * @summary
  * Builds the recurring tour's own Step 4, highlighting whichever schedule
  * control the draft's repeat kind reveals below the Repeat pills
- * (.rem-extra-fade, the same container for every kind). Its title and body
+ * (.remExtDiv, the same container for every kind). Its title and body
  * come from REP_COP_OBJ for that kind, falling back to the weekly copy for the
  * one frame before reminders-section.jsx's own draft has published a real repeat kind
  * onto the bus.

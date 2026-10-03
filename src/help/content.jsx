@@ -561,7 +561,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 		ideStr    : 'dataReminderRepeat',
-		padYcoNum : 0, // padYcoNum:0, unlike Today's card-based editor, this tab's .iteEdiDiv wrapper overrides .ediFooDiv's margin-top to 0 (through --edi-foo-mar in tabs/data/tab-data.module.css), so .rem-editor touches the footer row with zero gap.
+		padYcoNum : 0, // padYcoNum:0, unlike Today's card-based editor, this tab's .iteEdiDiv wrapper overrides .ediFooDiv's margin-top to 0 (through --edi-foo-mar in tabs/data/tab-data.module.css), so .schEdiDiv touches the footer row with zero gap.
 		scrBoo    : true, // scrBoo is true here too, same reasoning as Today's addReminderRepeat.
 		selStr    : '[data-element-name-hook~="inlEdiDiv"]:not([data-element-name-hook~="remAddDiv"] *) [data-element-name-hook~="schEdiDiv"]',
 		titStr    : 'Reminder Schedule',
@@ -1702,7 +1702,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Picker Cadence Help Item. Why: This is the on-demand help tip for the Picker Cadence element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .cad-ctl wraps BOTH the pill row and whichever extra "which day/date" field is currently showing below it, same "one editor, styled together" shape as Today's own addReminderRepeat/.rem-editor, so one highlight over the whole thing, growing/shrinking with the selection, instead of a per-option split.
+	{ // What: Picker Cadence Help Item. Why: This is the on-demand help tip for the Picker Cadence element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .cad-ctl wraps BOTH the pill row and whichever extra "which day/date" field is currently showing below it, same "one editor, styled together" shape as Today's own addReminderRepeat/.schEdiDiv, so one highlight over the whole thing, growing/shrinking with the selection, instead of a per-option split.
 
 
 		ideStr : 'newPickerCadence',
@@ -3195,7 +3195,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .rem-editor (not just .seg, the pill row) so this always covers whatever extra fields the current selection reveals below the pills (the weekday chips for Weekly, the day/date pickers for the others), every option's own extra fields, not just whichever ones happened to share a class with the Reminder Name field above. No pinBelowSel here (unlike a first attempt at this), the highlighted rect IS .rem-editor itself, so the tip's normal "below the target" placement already tracks its own bottom edge as it grows/shrinks with the selection, without needing to pin to some other, unrelated element.
+	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .schEdiDiv (not just .seg, the pill row) so this always covers whatever extra fields the current selection reveals below the pills (the weekday chips for Weekly, the day/date pickers for the others), every option's own extra fields, not just whichever ones happened to share a class with the Reminder Name field above. No pinBelowSel here (unlike a first attempt at this), the highlighted rect IS .schEdiDiv itself, so the tip's normal "below the target" placement already tracks its own bottom edge as it grows/shrinks with the selection, without needing to pin to some other, unrelated element.
 
 
 		ideStr : 'addReminderRepeat',

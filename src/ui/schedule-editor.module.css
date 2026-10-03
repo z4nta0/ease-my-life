@@ -12,9 +12,9 @@
  * visibility notes beneath them.
  *
  * The editor has two layouts, chosen by its own layStr prop. Today's stacked
- * layout (.rem-editor--stacked) keeps each field's label above its control,
+ * layout (.schEdiDiv--stacked) keeps each field's label above its control,
  * with a divider between fields. The Data tab's rows layout
- * (.rem-editor--rows) puts each field on its own full-bleed row, label left
+ * (.schEdiDiv--rows) puts each field on its own full-bleed row, label left
  * and control right, matching the picker item editor. The segmented controls
  * inside a row read --seg-max-width and --seg-repeat-flex-basis, which the
  * rows layout sets, rather than being styled from here.
@@ -29,26 +29,26 @@
 
 
 
-/* #region rem-editor */
+/* #region schEdiDiv */
 
-.rem-editor { /* What: Schedule Editor. Why: The editor's fields read top to bottom as one form. How: This stacks them in a column with a gap between. */
+.schEdiDiv { /* What: Schedule Editor Div. Why: The editor's fields read top to bottom as one form. How: This stacks them in a column with a gap between. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-bas );
+	gap            : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
 
 
 }
-.rem-editor--stacked { /* What: Stacked Schedule Editor. Why: On Today, dividers separate the fields instead of a gap, and a closing line meets the footer's own divider. How: This drops the gap and draws a bottom border. */
+.schEdiDiv--stacked { /* What: Stacked Schedule Editor Div. Why: On Today, dividers separate the fields instead of a gap, and a closing line meets the footer's own divider. How: This drops the gap and draws a bottom border. */
 
 
-	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	gap           : 0;
 
 
 }
-.rem-editor--rows { /* What: Rows Schedule Editor. Why: In the Data tab, each field's own row borders do the separating. How: This drops the gap between fields. */
+.schEdiDiv--rows { /* What: Rows Schedule Editor Div. Why: In the Data tab, each field's own row borders do the separating. How: This drops the gap between fields. */
 
 
 	gap : 0;
@@ -56,105 +56,108 @@
 
 }
 
-/* #region rem-field */
 
-.rem-field { /* What: Schedule Field. Why: A field's label sits above its control. How: This stacks the label block, the control, and any note in a column. */
+/* #region forFieDiv */
+
+.forFieDiv { /* What: Form Field Div. Why: A field's label sits above its control. How: This stacks the label block, the control, and any note in a column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
-.rem-editor--stacked .rem-field { /* What: Stacked Schedule Field. Why: Each field on Today needs room around it inside the card. How: This pads the field on every side. */
+.schEdiDiv--stacked .forFieDiv { /* What: Stacked Form Field Div. Why: Each field on Today needs room around it inside the card. How: This pads the field on every side. */
 
 
-	padding : var( --spa-ver-m01 ) var( --spa-hor-bas );
+	padding : var( --spa-ver-m01 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.rem-editor--stacked .rem-field:first-child { /* What: First Stacked Schedule Field. Why: The top field sits right under the card's own padding. How: This drops its top padding. */
+.schEdiDiv--stacked .forFieDiv:first-child { /* What: First Stacked Form Field Div. Why: The top field sits right under the card's own padding. How: This drops its top padding. */
 
 
 	padding-top : 0;
 
 
 }
-.rem-editor--stacked .rem-field + .rem-field { /* What: Following Stacked Schedule Field. Why: Consecutive fields read as separate rows. How: This draws a divider above every field after the first. */
+.schEdiDiv--stacked .forFieDiv + .forFieDiv { /* What: Following Stacked Form Field Div. Why: Consecutive fields read as separate rows. How: This draws a divider above every field after the first. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
-
-
-}
-.rem-editor--stacked .rem-extra-fade > .rem-field { /* What: Wrapped Stacked Schedule Field. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses both the divider and the padding the rules above give. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
-
-
-	border-top  : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	padding-top : var( --spa-ver-m01 );
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 
 
 }
-.rem-editor--rows .rem-field { /* What: Rows Schedule Field. Why: In the Data tab each field is one full-bleed row, label left and control right, wrapping on a narrow screen. How: This lays the field out as a wrapping row pulled out to the edges with a bottom divider, and sets the segmented control's row sizing. */
+.schEdiDiv--stacked .remExtDiv > .forFieDiv { /* What: Wrapped Stacked Form Field Div. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses both the divider and the padding the rules above give. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
+
+
+	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding-top : var( --spa-ver-m01 );                            /* Spacing Vertical Base Minus 1 = 11px */
+
+
+}
+.schEdiDiv--rows .forFieDiv { /* What: Rows Form Field Div. Why: In the Data tab each field is one full-bleed row, label left and control right, wrapping on a narrow screen. How: This lays the field out as a wrapping row pulled out to the edges with a bottom divider, and sets the segmented control's row sizing. */
 
 
 	--seg-max-width         : 100%; /* What: Segmented Control Max Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
 	--seg-repeat-flex-basis : 100%; /* What: Repeat Control Flex Basis. Why: The Repeat control always takes its own full-width line under the label, so every browser lays it out the same way. How: The Repeat segmented control reads this as its flex basis. */
-	align-items             : center;
-	border-bottom           : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	box-sizing              : border-box;
-	column-gap              : var( --spa-hor-m01 );
-	flex-direction          : row;
-	flex-wrap               : wrap;
-	justify-content         : space-between;
-	margin                  : 0 calc( var( --spa-hor-bas ) * -1 );
-	min-height              : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding                 : var( --spa-ver-m03 ) var( --spa-hor-bas );
-	row-gap                 : var( --spa-ver-m02 );
+
+	align-items     : center;
+	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	box-sizing      : border-box;
+	column-gap      : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
+	flex-direction  : row;
+	flex-wrap       : wrap;
+	justify-content : space-between;
+	margin          : 0 calc( var( --spa-hor-bas ) * -1 );             /* Spacing Horizontal Base ~= 14.572px */
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	padding         : var( --spa-ver-m03 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
+	row-gap         : var( --spa-ver-m02 );                            /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
-.rem-editor--rows .rem-field:first-child { /* What: First Rows Schedule Field. Why: The top row needs a divider above it too, matching the line under the picker item editor's name field. How: This draws a top border. */
+.schEdiDiv--rows .forFieDiv:first-child { /* What: First Rows Form Field Div. Why: The top row needs a divider above it too, matching the line under the picker item editor's name field. How: This draws a top border. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 
 
 }
 
-/* #region rem-flabel-wrap */
 
-.rem-flabel-wrap { /* What: Schedule Field Label Block. Why: The field's label and its live summary read as one unit. How: This stacks them in a tight column. */
+/* #region fieLabDiv */
+
+.fieLabDiv { /* What: Field Label Div. Why: The field's label and its live summary read as one unit. How: This stacks them in a tight column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m07 );
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 
 
 }
-.rem-editor--rows .rem-flabel-wrap { /* What: Rows Schedule Field Label Block. Why: The label column should take only the width the control leaves, wrapping its sentence instead of pushing the control onto a second line. How: This grows from a zero basis with a readable minimum width. */
+.schEdiDiv--rows .fieLabDiv { /* What: Rows Field Label Div. Why: The label column should take only the width the control leaves, wrapping its sentence instead of pushing the control onto a second line. How: This grows from a zero basis with a readable minimum width. */
 
 
 	flex      : 1 1 0;
-	min-width : calc( var( --ver-rhy-p08 ) * 1rem );
+	min-width : calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
 
 
 }
 
-.rem-flabel { /* What: Schedule Field Label. Why: Field labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
+.fieLabSpa { /* What: Field Label Span. Why: Field labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
 
 
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
 
 
 }
-.rem-editor--rows .rem-flabel { /* What: Rows Schedule Field Label. Why: The label itself should never be squeezed. How: This stops it from shrinking. */
+.schEdiDiv--rows .fieLabSpa { /* What: Rows Field Label Span. Why: The label itself should never be squeezed. How: This stops it from shrinking. */
 
 
 	flex : 0 0 auto;
@@ -162,27 +165,26 @@
 
 }
 
-.rem-flabel-sub { /* What: Schedule Field Summary. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
+.fieSubSpa { /* What: Field Summary Span. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
-
-
-}
-
-.set-sub-fade { /* What: Fading Schedule Field Summary. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
-
-
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Schedule Field Summary. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
+.fieSubSpa--fading { /* What: Fading Field Summary Span. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
 
 
-	.set-sub-fade { /* What: Still Schedule Field Summary. Why: The new summary should simply appear. How: This turns the fade off. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Field Summary Span. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.fieSubSpa--fading { /* What: Still Field Summary Span. Why: The new summary should simply appear. How: This turns the fade off. */
 
 
 		animation : none;
@@ -193,17 +195,17 @@
 
 }
 
-/* #endregion rem-flabel-wrap */
+/* #endregion fieLabDiv */
 
 
-/* #region rem-vis-live */
+/* #region visLivDiv */
 
-.rem-vis-live:empty { /* What: Empty Visibility Note Region. Why: The live region stays mounted so a later advisory is announced, but while empty it must not add a gap of dead space to the field. How: This takes it out of the layout while keeping it in the accessibility tree. */
+.visLivDiv:empty { /* What: Empty Visibility Live Div. Why: The live region stays mounted so a later advisory is announced, but while empty it must not add a gap of dead space to the field. How: This takes it out of the layout while keeping it in the accessibility tree. */
 
 
-	clip-path : inset(50%);
+	clip-path : inset( 50% );
 	height    : 1px;
-	margin    : calc( var( --spa-ver-m09 ) * -1 ) -1px;
+	margin    : calc( var( --spa-ver-m09 ) * -1 ) -1px; /* Spacing Vertical Base Minus 9 ~= 1.160px */
 	overflow  : hidden;
 	position  : absolute;
 	width     : 1px;
@@ -211,41 +213,41 @@
 
 }
 
-.rem-vis-note { /* What: Visibility Note. Why: A schedule that won't show today should say so under the control that caused it, calmly, since nothing is broken. How: This sets the note in small warm text. */
+.visNotPar { /* What: Visibility Note Paragraph. Why: A schedule that won't show today should say so under the control that caused it, calmly, since nothing is broken. How: This sets the note in small warm text. */
 
 
-	color       : var( --war-dar-col ); /* What: Darkened Warm Text. Why: The raw warm color doesn't reach AA contrast at this size. How: This darkens it until it does. */
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
-	margin      : var( --spa-ver-m02 ) 0 0;
-	max-width   : var( --tex-wid-sma );
-
-
-}
-.rem-vis-note.is-never { /* What: Never Visibility Note. Why: A schedule that can never show is a dead configuration, not a deferral. How: This turns the note red, darkened for AA contrast. */
-
-
-	color : var( --err-dar-col );
+	color       : var( --war-dar-col );     /* Warning Dark Color = oklch( 0.45 0.13 50 ) */ /* What: Darkened Warm Text. Why: The raw warm color doesn't reach AA contrast at this size. How: This darkens it until it does. */
+	font-size   : var( --fon-siz-bas );     /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas );     /* Vertical Rhythm Base ~= 1.325 */
+	margin      : var( --spa-ver-m02 ) 0 0; /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	max-width   : var( --tex-wid-sma );     /* Text Width Small Maximum ~= 22.047em */
 
 
 }
-
-/* #endregion rem-vis-live */
-
-
-/* #region rem-hint */
-
-.rem-hint { /* What: Schedule Hint. Why: Notes like where a clamped date lands, or when an interval is counted from, read as quiet asides. How: This sets them small and muted with no margin. */
+.visNotPar--never { /* What: Never Visibility Note Paragraph. Why: A schedule that can never show is a dead configuration, not a deferral. How: This turns the note red, darkened for AA contrast. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
+	color : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+
+
+}
+
+/* #endregion visLivDiv */
+
+
+/* #region fieHinPar */
+
+.fieHinPar { /* What: Field Hint Paragraph. Why: Notes like where a clamped date lands, or when an interval is counted from, read as quiet asides. How: This sets them small and muted with no margin. */
+
+
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 	margin      : 0;
 
 
 }
-.rem-editor--rows .rem-hint { /* What: Rows Schedule Hint. Why: In a row, a field's hint drops below on its own full line. How: This gives it the row's full width. */
+.schEdiDiv--rows .fieHinPar { /* What: Rows Field Hint Paragraph. Why: In a row, a field's hint drops below on its own full line. How: This gives it the row's full width. */
 
 
 	flex-basis : 100%;
@@ -253,12 +255,12 @@
 
 }
 
-.rem-date-link { /* What: Counted From Date Link. Why: The anchor date inside the hint should read as something to click and change. How: This styles a bare button as a bold, underlined accent link. */
+.datLinBut { /* What: Date Link Button. Why: The anchor date inside the hint should read as something to click and change. How: This styles a bare button as a bold, underlined accent link. */
 
 
 	background                : none;
 	border                    : none;
-	color                     : var(--acc-mai-col);
+	color                     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor                    : pointer;
 	font                      : inherit;
 	font-weight               : 600;
@@ -269,60 +271,60 @@
 
 
 }
-.rem-date-link:hover { /* What: Hovered Counted From Date Link. Why: The link should respond to the pointer. How: This fades it slightly. */
+.datLinBut:hover { /* What: Hovered Date Link Button. Why: The link should respond to the pointer. How: This fades it slightly. */
 
 
-	opacity : 0.82;
-
-
-}
-.rem-date-link:focus-visible { /* What: Focused Counted From Date Link. Why: A keyboard user needs to see the link has focus. How: This draws the accent outline around it. */
-
-
-	border-radius  : var( --rad-bor-xsm );
-	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : var( --bor-wid-lar );
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
+.datLinBut:focus-visible { /* What: Focused Date Link Button. Why: A keyboard user needs to see the link has focus. How: This draws the accent outline around it. */
 
-.rem-date-inline { /* What: Counted From Date Input. Why: Clicking the link swaps it for a small date input that should sit in the sentence like the link did. How: This styles a compact mono field aligned to the text's baseline. */
+
+	border-radius  : var( --rad-bor-xsm );                            /* Radius Border Extra Small ~= 3.571px */
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-lar );                            /* Border Width Large ~= 2.035px */
 
 
-	background     : var(--bac-pag-col);
-	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius  : var( --rad-bor-sma );
-	color          : var(--tex-mai-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );
+}
+
+.datInlInp { /* What: Date Inline Input. Why: Clicking the link swaps it for a small date input that should sit in the sentence like the link did. How: This styles a compact mono field aligned to the text's baseline. */
+
+
+	background     : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color          : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
+	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );       /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
 	vertical-align : baseline;
 
 
 }
-.rem-date-inline:focus { /* What: Focused Counted From Date Input. Why: The focused input needs a visible cue without the browser's own outline. How: This switches its border to the accent color. */
+.datInlInp:focus { /* What: Focused Date Inline Input. Why: The focused input needs a visible cue without the browser's own outline. How: This switches its border to the accent color. */
 
 
-	border-color : var(--acc-mai-col);
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	outline      : none;
 
 
 }
 
-.rem-date-link,
-.rem-date-inline { /* What: Counted From Date Swap. Why: The link and the input swap on click, and the swap should ease instead of snapping. How: This plays a short fade-and-settle from their left edge each time either mounts. */
+.datLinBut,
+.datInlInp { /* What: Date Link Button And Inline Input. Why: The link and the input swap on click, and the swap should ease instead of snapping. How: This plays a short fade-and-settle from their left edge each time either mounts. */
 
 
-	animation        : dateSwapIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both;
+	animation        : datLinButSwapFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 	transform-origin : left center;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Counted From Date Swap. Why: Someone who asked for less motion shouldn't see the swap animate. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Date Link Button And Inline Input. Why: Someone who asked for less motion shouldn't see the swap animate. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rem-date-link,
-	.rem-date-inline { /* What: Still Counted From Date Swap. Why: The link or input should simply appear. How: This turns the swap animation off. */
+	.datLinBut,
+	.datInlInp { /* What: Still Date Link Button And Inline Input. Why: The link or input should simply appear. How: This turns the swap animation off. */
 
 
 		animation : none;
@@ -332,14 +334,14 @@
 
 
 }
-@keyframes dateSwapIn { /* What: Date Swap In. Why: A small fade and settle reads as the same control changing form. How: This fades the element in from slightly lower and smaller. */
+@keyframes datLinButSwapFadeIn { /* What: Date Link Button Swap Fade In. Why: A small fade and settle reads as the same control changing form. How: This fades the element in from slightly lower and smaller. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(1px) scale(.94);
+		transform : translateY( 1px ) scale( .94 );
 
 
 	}
@@ -356,30 +358,30 @@
 
 }
 
-/* #endregion rem-hint */
+/* #endregion fieHinPar */
 
 
 
-/* #region rem-inline */
+/* #region fieRowDiv */
 
-.rem-inline { /* What: Schedule Inline Row. Why: A field's number input or selects read as a sentence with their surrounding words. How: This lines the words and controls up in a centered row of muted text. */
+.fieRowDiv { /* What: Field Row Div. Why: A field's number input or selects read as a sentence with their surrounding words. How: This lines the words and controls up in a centered row of muted text. */
 
 
 	align-items : center;
-	color       : var(--tex-mut-col);
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display     : flex;
-	font-size   : var( --fon-siz-p01 );
-	gap         : var( --spa-hor-m02 );
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
-@container app (max-width: 440px) { /* What: Narrow Schedule Inline Row. Why: On an iPhone SE-width screen a row of three selects clips at the normal gap. How: This applies only when the app container is 440px wide or less. */
+@container app ( max-width : 440px ) { /* What: Narrow Field Row Div. Why: On an iPhone SE-width screen a row of three selects clips at the normal gap. How: This applies only when the app container is 440px wide or less. */
 
 
-	.rem-inline { /* What: Tight Schedule Inline Row. Why: The selects need just enough room to fit. How: This shaves the gap down. */
+	.fieRowDiv { /* What: Tight Field Row Div. Why: The selects need just enough room to fit. How: This shaves the gap down. */
 
 
-		gap : var( --spa-hor-m05 );
+		gap : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
 
 
 	}
@@ -387,44 +389,38 @@
 
 }
 
-.np-input { /* What: Schedule Field Control. Why: The number inputs and selects should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
+.eveNumInp { /* What: Every Number Input. Why: An every-N count is a short number that looks like the app's other form fields but sits inline in its sentence. How: This gives it the shared field border, radius, padding, and focus fade in a narrow field with its digits centered in tabular mono. */
 
 
-	background    : var(--bac-pag-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-sma );
-	color         : var(--tex-mai-col);
-	font-family   : var(--fon-fam-mai);
-	font-size     : var( --fon-siz-p01 );
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );
-	margin-top    : var( --spa-ver-m07 );
-	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
-	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color var( --dur-tra-m01 );
-	width         : 100%;
-
-
-}
-.np-input::placeholder { /* What: Schedule Field Control Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
-
-
-	color   : var(--tex-mut-col);
-	opacity : 0.7;
+	background           : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border               : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius        : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color                : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : tabular-nums;
+	height               : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top           : 0;
+	max-width            : calc( var( --ver-rhy-p06 ) * 1rem );             /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	outline              : none;
+	padding              : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	text-align           : center;
+	transition           : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width                : calc( var( --ver-rhy-p06 ) * 1rem );             /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 
 }
-.np-input:focus { /* What: Focused Schedule Field Control. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+.eveNumInp:focus { /* What: Focused Every Number Input. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	border-color : var(--acc-mai-col);
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Schedule Field Control. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Every Number Input. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.np-input { /* What: Still Schedule Field Control. Why: The focus border should simply switch. How: This turns the border fade off. */
+	.eveNumInp { /* What: Still Every Number Input. Why: The focus border should simply switch. How: This turns the border fade off. */
 
 
 		transition : none;
@@ -435,45 +431,61 @@
 
 }
 
-.rem-num { /* What: Schedule Number Input. Why: An every-N count is a short number that should sit inline in its sentence. How: This narrows the field, drops its top margin, and centers the digits in tabular mono. */
+.ancPicSel { /* What: Anchor Pick Select. Why: An anchor's selects look like the app's other form fields but sit inside a sentence, sized to their content. How: This gives them the shared field border, radius, padding, and type at their natural width with no top margin, a pointer, and a border fade on focus. */
 
 
-	font-family          : var(--fon-fam-sec);
-	font-variant-numeric : tabular-nums;
-	margin-top           : 0;
-	max-width            : calc( var( --ver-rhy-p06 ) * 1rem );
-	text-align           : center;
-	width                : calc( var( --ver-rhy-p06 ) * 1rem );
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	cursor        : pointer;
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : 0;
+	max-width     : none;
+	outline       : none;
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : auto;
+
+
+}
+.ancPicSel:focus { /* What: Focused Anchor Pick Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Anchor Pick Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ancPicSel { /* What: Still Anchor Pick Select. Why: The focus border should simply switch. How: This turns the border fade off. */
+
+
+		transition : none;
+
+
+	}
 
 
 }
 
-.rem-sel { /* What: Schedule Inline Select. Why: A select inside a sentence should size to its content rather than fill the row. How: This lets it take its natural width, drops the field's top margin, and shows a pointer. */
+/* #endregion fieRowDiv */
 
 
-	cursor     : pointer;
-	margin-top : 0;
-	max-width  : none;
-	width      : auto;
+.ancFadDiv { /* What: Anchor Fade Div. Why: The "counted from" hint appears when an interval goes above 1, and should ease in rather than snap. How: This fades the block in each time it mounts. */
 
 
-}
-
-/* #endregion rem-inline */
-
-
-
-.cad-anchor-fade { /* What: Schedule Anchor Hint Block. Why: The "counted from" hint appears when an interval goes above 1, and should ease in rather than snap. How: This fades the block in each time it mounts. */
-
-
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Schedule Anchor Hint Block. Why: Someone who asked for less motion shouldn't see the block fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Anchor Fade Div. Why: Someone who asked for less motion shouldn't see the block fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.cad-anchor-fade { /* What: Still Schedule Anchor Hint Block. Why: The hint should simply appear. How: This turns the fade off. */
+	.ancFadDiv { /* What: Still Anchor Fade Div. Why: The hint should simply appear. How: This turns the fade off. */
 
 
 		animation : none;
@@ -484,21 +496,21 @@
 
 }
 
-/* #endregion rem-field */
+/* #endregion forFieDiv */
 
 
 
-.rem-extra-fade { /* What: Schedule Extra Fields Block. Why: Switching the repeat kind swaps the fields below it, which should cross-fade rather than snap. How: This fades the block in each time it remounts. */
+.remExtDiv { /* What: Reminder Extra Div. Why: Switching the repeat kind swaps the fields below it, which should cross-fade rather than snap. How: This fades the block in each time it remounts. */
 
 
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Schedule Extra Fields Block. Why: Someone who asked for less motion shouldn't see the fields cross-fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Extra Div. Why: Someone who asked for less motion shouldn't see the fields cross-fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rem-extra-fade { /* What: Still Schedule Extra Fields Block. Why: The new fields should simply appear. How: This turns the fade off. */
+	.remExtDiv { /* What: Still Reminder Extra Div. Why: The new fields should simply appear. How: This turns the fade off. */
 
 
 		animation : none;
@@ -509,6 +521,6 @@
 
 }
 
-/* #endregion rem-editor */
+/* #endregion schEdiDiv */
 
 
