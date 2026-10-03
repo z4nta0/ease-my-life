@@ -51,6 +51,7 @@
 
 }
 
+
 /* #region catHeaHea */
 
 .catHeaHea { /* What: Category Header Header. Why: The header opens and closes the whole section. How: This spreads its contents across a padded row with a pointer cursor and no text selection. */
@@ -67,6 +68,7 @@
 
 
 }
+
 
 /* #region catHeaBut */
 
@@ -91,6 +93,7 @@
 
 
 }
+
 
 /* #region chvDisSpa */
 
@@ -196,6 +199,7 @@
 
 }
 
+
 /* #region rowAddBut */
 
 .rowAddSpa,
@@ -270,6 +274,7 @@
 
 }
 
+
 /* #region lisRowBut */
 
 .lisRowDiv,
@@ -317,6 +322,7 @@
 
 
 }
+
 
 /* #region rowMaiSpa */
 
@@ -465,6 +471,7 @@
 
 }
 
+
 /* #region ediBodDiv */
 
 .ediBodDiv { /* What: Editor Body Div. Why: The editor reads as a slightly recessed panel under its row. How: This shades it darker than the surface and stacks its fields in a column. */
@@ -508,6 +515,7 @@
 
 
 }
+
 
 /* #region delConDiv */
 
@@ -594,6 +602,7 @@
 
 
 }
+
 
 /* #region fooRigDiv */
 

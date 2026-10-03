@@ -38,6 +38,7 @@
 
 }
 
+
 /* #region ctlGroDiv */
 
 .ctlGroDiv,
@@ -93,6 +94,7 @@
 
 
 }
+
 
 /* #region ctlSubDiv */
 
@@ -228,6 +230,7 @@
 
 }
 
+
 /* #region groPilDiv */
 
 .groPilDiv { /* What: Group Pill Div. Why: The groups wrap as pills beside their label, taking the row's remaining width. How: This lays them out in a wrapping row that can shrink. */
@@ -287,6 +290,7 @@
 
 
 }
+
 
 /* #region groPilBut */
 
@@ -626,6 +630,7 @@
 
 }
 
+
 /* #region modOptLab */
 
 .modOptLab { /* What: Mode Option Label. Why: Each pick mode is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at. */
@@ -766,6 +771,7 @@
 
 }
 
+
 /* #region modTexSpa */
 
 .modTexSpa { /* What: Mode Text Span. Why: The mode's name sits over its hints. How: This stacks them in a column that can shrink. */
@@ -842,6 +848,7 @@
 
 }
 
+
 /* #region schLabSpa */
 
 .schLabSpa { /* What: Schedule Label Span. Why: A setting's name sits over its live explanation, taking the row's spare width. How: This stacks them in a column that grows from zero but never narrows past a rhythm step. */
@@ -855,6 +862,7 @@
 
 
 }
+
 
 /* #region schNamSpa */
 
@@ -1048,6 +1056,7 @@
 
 }
 
+
 /* #region conRaiDiv */
 
 .conRaiDiv { /* What: Conditional Rail Div. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
@@ -1087,6 +1096,7 @@
 
 
 }
+
 
 /* #region conPilBut */
 
@@ -1291,6 +1301,7 @@
 
 }
 
+
 /* #region ediRowDiv */
 
 .ediRowDiv { /* What: Editor Row Div. Why: Fill or Refill reads like the other setting rows. How: This spreads the label and button across a padded row divided from the next. */
@@ -1313,6 +1324,7 @@
 
 
 }
+
 
 /* #region ediLabDiv */
 
