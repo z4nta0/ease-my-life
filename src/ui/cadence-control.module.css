@@ -11,8 +11,8 @@
  * fades in below it with its inline selects and clamp hints.
  *
  * Its fields share their look with the reminder schedule editor and the
- * app's other forms, so their declarations are copied here from those shared
- * classes until the design-system pass merges them. The segmented controls
+ * app's other forms, so their declarations are copied here, under the names
+ * those editors share, until the design-system pass merges them. The segmented controls
  * inside it get their extra bottom space through --seg-margin-bottom rather
  * than being styled from here.
  *
@@ -22,105 +22,101 @@
 
 
 
-/* #region cad-ctl */
+/* #region cadConDiv */
 
-.cad-ctl { /* What: Cadence Control. Why: Every segmented control inside the cadence editor needs a little room below it before the next line. How: This sets the property the segmented control reads for its bottom margin. */
+.cadConDiv { /* What: Cadence Control Div. Why: Every segmented control inside the cadence editor needs a little room below it before the next line. How: This sets the property the segmented control reads for its bottom margin. */
 
 
-	--seg-margin-bottom : var( --spa-ver-m01 ); /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
+	--seg-margin-bottom : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */ /* What: Segmented Control Bottom Margin. Why: The cadence and date-mode controls need breathing room above the summary or selects that follow them. How: Every segmented control inside the editor reads this as its bottom margin. */
 
 
 }
 
-/* #region rem-field */
 
-.rem-field { /* What: Cadence Field. Why: A field's label sits above its control. How: This stacks the label block and the control in a column. */
+/* #region forFieDiv */
+
+.forFieDiv { /* What: Form Field Div. Why: A field's label sits above its control. How: This stacks the label block and the control in a column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
 
-/* #region rem-flabel-wrap */
 
-.rem-flabel-wrap { /* What: Cadence Field Label Block. Why: The field's label and its live summary read as one unit. How: This stacks them in a tight column. */
+/* #region fieLabDiv */
+
+.fieLabDiv { /* What: Field Label Div. Why: The field's label and its live summary read as one unit. How: This stacks them in a tight column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m07 );
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 
 
 }
 
-/* #region rem-flabel */
 
-.rem-flabel { /* What: Cadence Field Label. Why: Field labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
+/* #region fieLabSpa */
+
+.fieLabSpa { /* What: Field Label Span. Why: Field labels read as small captions, with a help bubble on the same line. How: This sets them in small, spaced, muted mono capitals, lined up in a centered inline row with the bubble. */
 
 
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	align-items    : center;
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display        : inline-flex;
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	letter-spacing : 0.05em;
 	text-transform : uppercase;
 
 
 }
 
-.pie-lbl-row { /* What: Cadence Field Label Row. Why: The label and its help bubble sit on one line. How: This lines them up in a centered inline row. */
-
-
-	align-items : center;
-	display     : inline-flex;
-	gap         : var( --spa-hor-m03 );
-
-
-}
-
-.pie-help { /* What: Cadence Help Bubble. Why: A small circled "?" beside the label opens its explanation without competing with the label. How: This draws a muted round badge that brightens on hover. */
+.helBubSpa { /* What: Help Bubble Span. Why: A small circled "?" beside the label opens its explanation without competing with the label. How: This draws a muted round badge that brightens on hover. */
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var(--tex-mut-col);
+	border          : var( --bor-wid-bas ) solid var( --tex-mut-col ); /* Border Width Base ~= 1.160px, Text Muted Color = oklch( 0.5 0.012 250 ) */
 	border-radius   : 50%;
-	color           : var(--tex-mut-col);
+	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : help;
 	display         : inline-flex;
 	flex            : 0 0 auto;
-	font-size       : var( --fon-siz-bas );
+	font-size       : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	font-weight     : 700;
-	height          : calc( var( --ver-rhy-bas ) * 1rem );
+	height          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 	justify-content : center;
-	line-height     : var( --ver-rhy-m01 );
-	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas );
-	width           : calc( var( --ver-rhy-bas ) * 1rem );
+	line-height     : var( --ver-rhy-m01 );                            /* Vertical Rhythm Base Minus 1 = 1 */
+	transition      : border-color var( --dur-tra-p01 ) var( --mot-sta-eas ), color var( --dur-tra-p01 ) var( --mot-sta-eas ), background var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
+	width           : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.pie-help:hover { /* What: Hovered Cadence Help Bubble. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
+.helBubSpa:hover { /* What: Hovered Help Bubble Span. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
-
-
-}
-.pie-help--sm { /* What: Small Cadence Help Bubble. Why: The standard bubble reads oversized beside the cadence field's short caption. How: This shrinks it slightly. */
-
-
-	height : calc( var( --ver-rhy-bas ) * 1rem );
-	width  : calc( var( --ver-rhy-bas ) * 1rem );
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Help Bubble. Why: Someone who asked for less motion shouldn't see the bubble's colors fade. How: This applies only when the reduced-motion preference is set. */
+.helBubSpa--sm { /* What: Small Help Bubble Span. Why: The standard bubble reads oversized beside the cadence field's short caption. How: This shrinks it slightly. */
 
 
-	.pie-help { /* What: Still Cadence Help Bubble. Why: The hover colors should simply switch. How: This turns the color fade off. */
+	height : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+	width  : calc( var( --ver-rhy-bas ) * 1rem ); /* Vertical Rhythm Base ~= 14.572px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Help Bubble. Why: Someone who asked for less motion shouldn't see the bubble's colors fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.helBubSpa { /* What: Still Help Bubble Span. Why: The hover colors should simply switch. How: This turns the color fade off. */
 
 
 		transition : none;
@@ -131,30 +127,29 @@
 
 }
 
-/* #endregion rem-flabel */
+/* #endregion fieLabSpa */
 
 
-.rem-flabel-sub { /* What: Cadence Field Summary. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
+.fieSubSpa { /* What: Field Summary Span. Why: The live summary reads as a quiet sentence under the label. How: This sets it small and muted in normal case. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
-
-
-}
-
-.set-sub-fade { /* What: Fading Cadence Field Summary. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
-
-
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Field Summary. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
+.fieSubSpa--fading { /* What: Fading Field Summary Span. Why: A summary that changes should ease in rather than snap. How: This fades it in each time it remounts. */
 
 
-	.set-sub-fade { /* What: Still Cadence Field Summary. Why: The new summary should simply appear. How: This turns the fade off. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Field Summary. Why: Someone who asked for less motion shouldn't see the summary fade. How: This applies only when the reduced-motion preference is set. */
+
+
+	.fieSubSpa--fading { /* What: Still Field Summary Span. Why: The new summary should simply appear. How: This turns the fade off. */
 
 
 		animation : none;
@@ -165,30 +160,30 @@
 
 }
 
-/* #endregion rem-flabel-wrap */
+/* #endregion fieLabDiv */
 
 
 
-/* #region rem-inline */
+/* #region fieRowDiv */
 
-.rem-inline { /* What: Cadence Inline Row. Why: An anchor's selects read as a sentence with their leading words. How: This lines the words and selects up in a centered row of muted text. */
+.fieRowDiv { /* What: Field Row Div. Why: An anchor's selects read as a sentence with their leading words. How: This lines the words and selects up in a centered row of muted text. */
 
 
 	align-items : center;
-	color       : var(--tex-mut-col);
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display     : flex;
-	font-size   : var( --fon-siz-p01 );
-	gap         : var( --spa-hor-m02 );
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
-@container app (max-width: 440px) { /* What: Narrow Cadence Inline Row. Why: On an iPhone SE-width screen the yearly nth-weekday row's three selects clip at the normal gap. How: This applies only when the app container is 440px wide or less. */
+@container app ( max-width : 440px ) { /* What: Narrow Cadence Inline Row. Why: On an iPhone SE-width screen the yearly nth-weekday row's three selects clip at the normal gap. How: This applies only when the app container is 440px wide or less. */
 
 
-	.rem-inline { /* What: Tight Cadence Inline Row. Why: The three selects need just enough room to fit. How: This shaves the gap down. */
+	.fieRowDiv { /* What: Tight Field Row Div. Why: The three selects need just enough room to fit. How: This shaves the gap down. */
 
 
-		gap : var( --spa-hor-m05 );
+		gap : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
 
 
 	}
@@ -196,44 +191,37 @@
 
 }
 
-.np-input { /* What: Cadence Select. Why: The anchor selects should look like the app's other form fields. How: This gives them the shared field border, radius, padding, and type, with a border fade on focus. */
+.ancPicSel { /* What: Anchor Pick Select. Why: An anchor's selects look like the app's other form fields but sit inside a sentence, sized to their content. How: This gives them the shared field border, radius, padding, and type at their natural width with no top margin, a pointer, and a border fade on focus. */
 
 
-	background    : var(--bac-pag-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-sma );
-	color         : var(--tex-mai-col);
-	font-family   : var(--fon-fam-mai);
-	font-size     : var( --fon-siz-p01 );
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );
-	margin-top    : var( --spa-ver-m07 );
-	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	cursor        : pointer;
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : 0;
+	max-width     : none;
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color var( --dur-tra-m01 );
-	width         : 100%;
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : auto;
 
 
 }
-.np-input::placeholder { /* What: Cadence Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
+.ancPicSel:focus { /* What: Focused Anchor Pick Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
-	color   : var(--tex-mut-col);
-	opacity : 0.7;
-
-
-}
-.np-input:focus { /* What: Focused Cadence Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
-
-
-	border-color : var(--acc-mai-col);
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Anchor Pick Select. Why: Someone who asked for less motion shouldn't see the border fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.np-input { /* What: Still Cadence Select. Why: The focus border should simply switch. How: This turns the border fade off. */
+	.ancPicSel { /* What: Still Anchor Pick Select. Why: The focus border should simply switch. How: This turns the border fade off. */
 
 
 		transition : none;
@@ -244,47 +232,35 @@
 
 }
 
-.rem-sel { /* What: Cadence Inline Select. Why: A select inside a sentence should size to its content rather than fill the row. How: This lets it take its natural width, drops the field's top margin, and shows a pointer. */
+/* #endregion fieRowDiv */
 
 
-	cursor     : pointer;
-	margin-top : 0;
-	max-width  : none;
-	width      : auto;
+.fieHinPar { /* What: Field Hint Paragraph. Why: A date that some months or years don't have needs a quiet note on where it lands instead. How: This sets the note small and muted with no margin. */
 
 
-}
-
-/* #endregion rem-inline */
-
-
-
-.rem-hint { /* What: Cadence Clamp Hint. Why: A date that some months or years don't have needs a quiet note on where it lands instead. How: This sets the note small and muted with no margin. */
-
-
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 	margin      : 0;
 
 
 }
 
-/* #endregion rem-field */
+/* #endregion forFieDiv */
 
 
 
-.cad-anchor-fade { /* What: Cadence Anchor Block. Why: Switching cadence swaps the anchor field below, which should ease in rather than snap. How: This fades the block in each time it remounts. */
+.ancFadDiv { /* What: Anchor Fade Div. Why: Switching cadence swaps the anchor field below, which should ease in rather than snap. How: This fades the block in each time it remounts. */
 
 
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The subtitleChangeFadeIn keyframes are shared across many components, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Cadence Anchor Block. Why: Someone who asked for less motion shouldn't see the block fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Cadence Anchor Block. Why: Someone who asked for less motion shouldn't see the block fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.cad-anchor-fade { /* What: Still Cadence Anchor Block. Why: The new block should simply appear. How: This turns the fade off. */
+	.ancFadDiv { /* What: Still Anchor Fade Div. Why: The new block should simply appear. How: This turns the fade off. */
 
 
 		animation : none;
@@ -295,6 +271,6 @@
 
 }
 
-/* #endregion cad-ctl */
+/* #endregion cadConDiv */
 
 
