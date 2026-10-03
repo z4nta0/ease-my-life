@@ -24,53 +24,46 @@
 
 
 
-/* #region today-card */
+/* #region todCarArt */
 
-.today-card { /* What: Loader Card. Why: The placeholder should sit in the list exactly like the card it stands in for. How: This lays out the check, body, and actions in the same three-column grid, surface, border, and spacing as a real Today card. */
+.todCarArt { /* What: Today Card Article. Why: The placeholder should sit in the list exactly like the card it stands in for, but it isn't a real card and shouldn't respond to the pointer. How: This lays out the check, body, and actions in the same three-column grid, surface, border, and spacing as a real Today card, with no pointer cursor or pointer events. */
 
 
 	align-items           : center;
-	background            : var(--bac-sur-col);
-	border                : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius         : var( --rad-bor-lar );
-	cursor                : pointer;
+	background            : var( --bac-sur-col );                                                                             /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border                : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                  /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius         : var( --rad-bor-lar );                                                                             /* Radius Border Large ~= 14.572px */
+	cursor                : default;
 	display               : grid;
-	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	grid-template-columns : auto 1fr auto;
-	margin-bottom         : var( --spa-ver-m01 );
-	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );
-	perspective           : 800px;
-	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 );
+	margin-bottom         : var( --spa-ver-m01 );                                                                             /* Spacing Vertical Base Minus 1 = 11px */
+	padding               : var( --spa-ver-bas ) var( --spa-hor-p01 );                                                        /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	perspective           : calc( var( --ver-rhy-p14 ) * 1rem );                                                              /* Vertical Rhythm Base Plus 14 ~= 746.868px */
+	pointer-events        : none;
+	transition            : background var( --dur-tra-bas ), opacity var( --dur-tra-p01 ), border-color var( --dur-tra-m01 ); /* Duration Transition Base ~= 157.8ms, Duration Transition Base Plus 1 ~= 209.1ms, Duration Transition Base Minus 1 ~= 119.2ms */
 	user-select           : none;
 
 
 }
-.today-card:last-child { /* What: Last Loader Card. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
+.todCarArt:last-child { /* What: Last Today Card Article. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
 
 
 	margin-bottom : 0;
 
 
 }
-.today-card--loader { /* What: Inert Loader Card. Why: A placeholder isn't a real card and shouldn't respond to the pointer. How: This drops the pointer cursor and all pointer events. */
+.todCarArt[data-slot-pending-active] { /* What: Pending Loader Card. Why: A slot still waiting its turn should read as not started yet. How: This lightens the card's surface slightly. */
 
 
-	cursor         : default;
-	pointer-events : none;
-
-
-}
-.today-card--loader[data-slot-pending-active] { /* What: Pending Loader Card. Why: A slot still waiting its turn should read as not started yet. How: This lightens the card's surface slightly. */
-
-
-	background : var( --bac-rai-col );
+	background : var( --bac-rai-col ); /* Background Raised Color = oklch( 0.981 0.004 240 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Loader Card. Why: Someone who asked for less motion shouldn't see the card's colors fade between states. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Loader Card. Why: Someone who asked for less motion shouldn't see the card's colors fade between states. How: This applies only when the reduced-motion preference is set. */
 
 
-	.today-card { /* What: Still Loader Card. Why: The card's state changes should simply switch. How: This turns its fades off. */
+	.todCarArt { /* What: Still Loader Card. Why: The card's state changes should simply switch. How: This turns its fades off. */
 
 
 		transition : none;
@@ -81,41 +74,35 @@
 
 }
 
-.check { /* What: Loader Check Spot. Why: The placeholder keeps the same slot a real card's check button fills. How: This draws the same rounded square, with the button chrome reset, since here it's an inert span. */
+.carCheSpa { /* What: Card Check Span. Why: The placeholder keeps the same slot a real card's check button fills, reading as a placeholder rather than a real checkbox. How: This draws the same rounded square with the button chrome reset, since here it's an inert span, dimmed with a dashed border. */
 
 
-	-webkit-appearance : none; /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none;                                                                                           /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
 	background         : none;
-	border             : var( --bor-wid-bas ) solid var(--bor-mai-col);
-	border-radius      : var( --rad-bor-sma );
+	border             : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius      : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	border-style       : dashed;
 	color              : inherit;
 	display            : inline-flex;
 	flex               : none;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p02 ) * 1rem );
+	height             : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content    : center;
 	margin             : 0;
+	opacity            : var( --cdn-pow-003-rec );                                                                       /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 	padding            : 0;
 	position           : relative;
-	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 );
-	width              : calc( var( --ver-rhy-p02 ) * 1rem );
+	transition         : background var( --dur-tra-m01 ), border-color var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width              : calc( var( --ver-rhy-p02 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
-.today-card--loader .check { /* What: Dashed Loader Check Spot. Why: The check spot should read as a placeholder, not a real checkbox. How: This dims it and dashes its border. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Loader Check Spot. Why: Someone who asked for less motion shouldn't see the spot's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	border-style : dashed;
-	opacity      : 0.4;
-
-
-}
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Loader Check Spot. Why: Someone who asked for less motion shouldn't see the spot's colors fade. How: This applies only when the reduced-motion preference is set. */
-
-
-	.check { /* What: Still Loader Check Spot. Why: The spot's colors should simply switch. How: This turns its fades off. */
+	.carCheSpa { /* What: Still Card Check Span. Why: The spot's colors should simply switch. How: This turns its fades off. */
 
 
 		transition : none;
@@ -128,89 +115,89 @@
 
 
 
-/* #region today-card-body */
+/* #region carBodDiv */
 
-.today-card-body { /* What: Loader Card Body. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
+.carBodDiv { /* What: Card Body Div. Why: The meta row and name row read as one block beside the check. How: This stacks them in a tight column that may shrink below its content's width. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m07 );
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	min-width      : 0;
 
 
 }
 
-.today-card-meta { /* What: Loader Card Meta Row. Why: The picker's name sits above the slot's value like a real card's meta line. How: This sets it in small, spaced, muted mono capitals. */
+.carMetDiv { /* What: Card Meta Div. Why: The picker's name sits above the slot's value like a real card's meta line. How: This sets it in small, spaced, muted mono capitals. */
 
 
 	align-items    : center;
-	color          : var(--tex-mut-col);
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display        : flex;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
-	gap            : var( --spa-hor-m03 );
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
 
 }
-.today-card--loader[data-slot-pending-active] .today-card-meta { /* What: Pending Loader Card Meta Row. Why: A waiting slot's text should read as not started yet. How: This fades the meta row. */
+.todCarArt[data-slot-pending-active] .carMetDiv { /* What: Pending Loader Card Meta Row. Why: A waiting slot's text should read as not started yet. How: This fades the meta row. */
 
 
-	opacity : 0.55;
+	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
 
 
 }
 
 
-/* #region today-card-name */
+/* #region carNamDiv */
 
-.today-card-name { /* What: Loader Card Name Row. Why: The slot's waiting dots, reel, or settled name sit where a real card's item name goes. How: This sets the row in the same large medium-weight text. */
+.carNamDiv { /* What: Card Name Div. Why: The slot's waiting dots, reel, or settled name sit where a real card's item name goes. How: This sets the row in the same large medium-weight text. */
 
 
-	font-size      : var( --fon-siz-p02 );
+	font-size      : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 	text-wrap      : pretty;
 
 
 }
-.today-card--loader[data-slot-pending-active] .today-card-name { /* What: Pending Loader Card Name Row. Why: A waiting slot's text should read as not started yet. How: This fades the name row. */
+.todCarArt[data-slot-pending-active] .carNamDiv { /* What: Pending Loader Card Name Row. Why: A waiting slot's text should read as not started yet. How: This fades the name row. */
 
 
-	opacity : 0.55;
+	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
 
 
 }
 
-.loader-pending { /* What: Loader Waiting Dots. Why: A slot with nothing to show yet displays quiet waiting dots. How: This sets them muted and widely spaced. */
+.penDotSpa { /* What: Pending Dots Span. Why: A slot with nothing to show yet displays quiet waiting dots. How: This sets them muted and widely spaced. */
 
 
-	color          : var(--tex-mut-col);
-	font-size      : var( --fon-siz-p01 );
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	letter-spacing : 0.2em;
 
 
 }
 
-.loader-reel-name { /* What: Loader Reel Name. Why: Each candidate name the reel flashes should drop in rather than blink. How: This plays a quick fade-and-drop each time a new name mounts. */
+.reeNamSpa { /* What: Reel Name Span. Why: Each candidate name the reel flashes should drop in rather than blink. How: This plays a quick fade-and-drop each time a new name mounts. */
 
 
-	animation   : loaderReelStep var( --dur-ani-m02 ) var( --mot-dec-eas );
+	animation   : reeNamSpaTickFadeIn var( --dur-ani-m02 ) var( --mot-dec-eas ); /* Duration Animation Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	display     : inline-block;
-	will-change : transform, opacity;
+	will-change : transform, opacity;                                            /* What: Reel Name Will Change. Why: Each reel name mounts for a single quick tick and starts its drop at once, so promoting it up front avoids a first-frame hitch. How: The hint lives only as long as each short-lived name does, since the next tick replaces the element. */
 
 
 }
-@keyframes loaderReelStep { /* What: Loader Reel Step. Why: A short drop reads as the reel ticking to the next name. How: This fades a name in from slightly above. */
+@keyframes reeNamSpaTickFadeIn { /* What: Reel Name Span Tick Fade In Keyframes. Why: A short drop reads as the reel ticking to the next name. How: This fades a name in from slightly above. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(-4px);
+		transform : translateY( -4px );
 
 
 	}
@@ -227,23 +214,24 @@
 
 }
 
-.loader-settled { /* What: Loader Settled Name. Why: The final pick should land with a small bounce and a flash of accent before reading as normal text. How: This plays the landing animation, which starts in the accent color and eases to the text color. */
+.setNamSpa { /* What: Settled Name Span. Why: The final pick should land with a small bounce and a flash of accent before reading as normal text. How: This plays the landing animation as an inline block, starting in the accent color and easing to the text color. */
 
 
-	animation : loaderSettleLand var( --dur-ani-p03 ) var( --mot-bou-eas ) both;
-	color     : var(--acc-mai-col);
+	animation : setNamSpaLandBounce var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	color     : var( --acc-mai-col );                                               /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	display   : inline-block;
 
 
 }
-@keyframes loaderSettleLand { /* What: Loader Settle Land. Why: A rise, a slight overshoot, and a color ease read as the pick locking in. How: This lifts the name in, scales it past and back to size, and fades its color from accent to text. */
+@keyframes setNamSpaLandBounce { /* What: Settled Name Span Land Bounce Keyframes. Why: A rise, a slight overshoot, and a color ease read as the pick locking in. How: This lifts the name in, scales it past and back to size, and fades its color from accent to text. */
 
 
 	0% {
 
 
-		color     : var(--acc-mai-col);
+		color     : var( --acc-mai-col );                             /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 		opacity   : 0;
-		transform : translateY(6px) scale(0.96);
+		transform : translateY( var( --spa-ver-m03 ) ) scale( 0.96 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 	}
@@ -251,9 +239,9 @@
 	50% {
 
 
-		color     : var(--acc-mai-col);
+		color     : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 		opacity   : 1;
-		transform : scale(1.04);
+		transform : scale( 1.04 );
 
 
 	}
@@ -261,19 +249,19 @@
 	100% {
 
 
-		color     : var(--tex-mai-col);
-		transform : scale(1);
+		color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+		transform : scale( 1 );
 
 
 	}
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Loader Names. Why: Someone who asked for less motion should see the settled name directly, with no cycling or landing bounce. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Loader Names. Why: Someone who asked for less motion should see the settled name directly, with no cycling or landing bounce. How: This applies only when the reduced-motion preference is set. */
 
 
-	.loader-reel-name,
-	.loader-settled { /* What: Still Loader Names. Why: The name should simply be there, in the accent color. How: This turns the animations off and holds the name fully visible in place. */
+	.reeNamSpa,
+	.setNamSpa { /* What: Still Loader Names. Why: The name should simply be there, in the accent color. How: This turns the animations off and holds the name fully visible in place. */
 
 
 		animation : none;
@@ -286,21 +274,21 @@
 
 }
 
-/* #endregion today-card-name */
+/* #endregion carNamDiv */
 
-/* #endregion today-card-body */
+/* #endregion carBodDiv */
 
 
 
-.today-card-actions { /* What: Loader Card Actions Strip. Why: The placeholder keeps the same slot a real card's action buttons fill, so the layout doesn't shift when the real card replaces it. How: This lays the (empty) strip out as a small-gap row. */
+.carActDiv { /* What: Card Actions Div. Why: The placeholder keeps the same slot a real card's action buttons fill, so the layout doesn't shift when the real card replaces it. How: This lays the (empty) strip out as a small-gap row. */
 
 
 	display : flex;
-	gap     : var( --spa-hor-m05 );
+	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
 
 
 }
 
-/* #endregion today-card */
+/* #endregion todCarArt */
 
 
