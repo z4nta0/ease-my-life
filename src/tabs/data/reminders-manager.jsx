@@ -531,7 +531,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (see .collapse in ui/collapse.module.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits that animation's own p02 duration step, then scrolls smoothly. // Duration Base Plus 2 ~= 277.0ms
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), durMilFun( 'p02' ) ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (see .colDisDiv in ui/collapse.module.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits that animation's own p02 duration step, then scrolls smoothly. // Duration Base Plus 2 ~= 277.0ms
 
 
 

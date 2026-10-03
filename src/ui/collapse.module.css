@@ -10,7 +10,7 @@
  * wrapper clips the content and fades and slides it in. The open state is the
  * data-collapse-open-active attribute ColDisCom sets. A parent wanting a
  * different pace or slide (the mode-option rows' slower hint swap) sets the
- * --collapse-* custom properties on itself.
+ * --col-* custom properties on itself.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -18,28 +18,28 @@
 
 
 
-/* #region collapse */
+/* #region colDisDiv */
 
-.collapse { /* What: Collapse Disclosure. Why: Opening and closing should glide rather than snap, even though the content's height is unknown. How: This eases a one-row grid from 0fr to 1fr, which animates to the content's natural height. */
+.colDisDiv { /* What: Collapse Disclosure Div. Why: Opening and closing should glide rather than snap, even though the content's height is unknown. How: This eases a one-row grid from 0fr to 1fr, which animates to the content's natural height. */
 
 
 	display            : grid;
 	grid-template-rows : 0fr;
-	transition         : grid-template-rows var(--collapse-row-duration, var( --dur-tra-p02 )) var( --mot-sta-eas ); /* What: Collapse Row Duration. Why: The mode-option rows swap one short line, where the standard glide reads as janky. How: A parent sets --collapse-row-duration to slow the glide, falling back to the standard p02 step. */
+	transition         : grid-template-rows var( --col-row-dur, var( --dur-tra-p02 ) ) var( --mot-sta-eas ); /* Collapse Row Duration, set by its parent, falling back to Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Layout Row Transition. Why: The content below has to move as the disclosure grows, which a transform can't do. How: This animates the grid row's own height instead. */
 
 
 }
-.collapse[data-collapse-open-active] { /* What: Open Collapse Disclosure. Why: An open disclosure shows all of its content. How: This grows the grid's row to its full height. */
+.colDisDiv[data-collapse-open-active] { /* What: Open Collapse Disclosure Div. Why: An open disclosure shows all of its content. How: This grows the grid's row to its full height. */
 
 
 	grid-template-rows : 1fr;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Collapse Disclosure. Why: Someone who asked for less motion shouldn't see the height glide. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Collapse Disclosure Div. Why: Someone who asked for less motion shouldn't see the height glide. How: This applies only when the reduced-motion preference is set, and ColDisCom unmounts its content itself since no transitionend fires. */
 
 
-	.collapse { /* What: Instant Collapse Disclosure. Why: The disclosure should simply open or close. How: This turns the row transition off. */
+	.colDisDiv { /* What: Instant Collapse Disclosure Div. Why: The disclosure should simply open or close. How: This turns the row transition off. */
 
 
 		transition : none;
@@ -50,18 +50,18 @@
 
 }
 
-.collapse-inner { /* What: Collapse Disclosure Content. Why: The content should fade and slide in while the row grows, not just get uncovered. How: This clips the content to the growing row and holds it faded and nudged up until the disclosure opens. */
+.colInnDiv { /* What: Collapse Inner Div. Why: The content should fade and slide in while the row grows, not just get uncovered. How: This clips the content to the growing row and holds it faded and nudged up until the disclosure opens. */
 
 
 	min-height : 0;
 	opacity    : 0;
 	overflow   : hidden;
-	transform  : var(--collapse-inner-offset, translateY(-4px)); /* What: Collapse Inner Offset. Why: The mode-option rows slide their hint in from further up. How: A parent sets --collapse-inner-offset to change where closed content starts, falling back to 4px up. */
-	transition : var(--collapse-inner-transition, opacity var( --dur-tra-p01 ) var( --mot-sta-eas ), transform var( --dur-tra-p01 ) var( --mot-sta-eas )); /* What: Collapse Inner Transition. Why: The mode-option rows carry their hint swap with a slower, stronger fade. How: A parent sets --collapse-inner-transition to replace the whole fade and slide timing, falling back to the standard p01 step. */
+	transform  : translateY( var( --col-inn-off, -4px ) ); /* Collapse Inner Offset, set by its parent, falling back to -4px */
+	transition : opacity var( --col-inn-dur, var( --dur-tra-p01 ) ) var( --mot-sta-eas ) var( --col-inn-del, 0s ), transform var( --col-inn-dur, var( --dur-tra-p01 ) ) var( --col-inn-eas, var( --mot-sta-eas ) ) var( --col-inn-del, 0s ); /* Collapse Inner Duration, set by its parent, falling back to Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Collapse Inner Delay, set by its parent, falling back to 0s, Collapse Inner Easing, set by its parent, falling back to Motion Standard Easing = ease */
 
 
 }
-.collapse[data-collapse-open-active] > .collapse-inner { /* What: Open Collapse Disclosure Content. Why: Open content is fully visible in place. How: This fades it in and settles it at its resting position. */
+.colDisDiv[data-collapse-open-active] > .colInnDiv { /* What: Open Collapse Inner Div. Why: Open content is fully visible in place. How: This fades it in and settles it at its resting position. */
 
 
 	opacity   : 1;
@@ -69,10 +69,10 @@
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Collapse Disclosure Content. Why: Someone who asked for less motion shouldn't see the content fade and slide. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Collapse Inner Div. Why: Someone who asked for less motion shouldn't see the content fade and slide. How: This applies only when the reduced-motion preference is set. */
 
 
-	.collapse-inner { /* What: Instant Collapse Disclosure Content. Why: The content should simply appear or disappear. How: This turns the fade and slide transition off. */
+	.colInnDiv { /* What: Instant Collapse Inner Div. Why: The content should simply appear or disappear. How: This turns the fade and slide transition off. */
 
 
 		transition : none;
@@ -83,6 +83,6 @@
 
 }
 
-/* #endregion collapse */
+/* #endregion colDisDiv */
 
 

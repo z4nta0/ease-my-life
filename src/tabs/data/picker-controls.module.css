@@ -637,9 +637,11 @@
 .modOptLab { /* What: Mode Option Label. Why: Each pick mode is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at. */
 
 
-	--collapse-inner-offset     : translateY( calc( var( --spa-ver-m02 ) * -1 ) );                                                                                                  /* Spacing Vertical Base Minus 2 ~= 8.304px */
-	--collapse-inner-transition : opacity var( --dur-tra-p06 ) var( --mot-sta-eas ) var( --dur-tra-m03 ), transform var( --dur-tra-p06 ) var( --mot-dec-eas ) var( --dur-tra-m03 ); /* Duration Transition Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease, Duration Transition Base Minus 3 ~= 67.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
-	--collapse-row-duration     : var( --dur-tra-p06 ); /* Duration Transition Base Plus 6 ~= 853.0ms */
+	--col-inn-del : var( --dur-tra-m03 );              /* Duration Transition Base Minus 3 ~= 67.9ms */
+	--col-inn-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
+	--col-inn-eas : var( --mot-dec-eas );              /* Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	--col-inn-off : calc( var( --spa-ver-m02 ) * -1 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	--col-row-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
 
 	align-items   : flex-start;
 	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col );      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

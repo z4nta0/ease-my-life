@@ -144,7 +144,7 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
 
 
 		<div
-			className={` ${ cssModObj.collapse }   ${ className } `}
+			className={` ${ cssModObj.colDisDiv }   ${ className } `}
 
 			data-collapse-open-active={ expStaBoo || undefined } // What: Collapse Open Active Attribute. Why: The disclosure's open state drives its CSS row and fade transitions. How: This is present only while expStaBoo is true, since undefined drops the attribute entirely.
 
@@ -152,7 +152,7 @@ function ColDisCom ( { children, className = '', isaInsBoo = false, open } ) {
 		>{ /* What: Disclosure Div Element. Why: This is ColDisCom's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This sets its data-collapse-open-active attribute per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
 
 
-			<div className={ cssModObj.collapseInner }>{ children }</div>{ /* What: Disclosure Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
+			<div className={ cssModObj.colInnDiv }>{ children }</div>{ /* What: Disclosure Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
 
 
 		</div>
