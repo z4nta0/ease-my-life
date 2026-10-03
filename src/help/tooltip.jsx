@@ -94,7 +94,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 
 
 		topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The always-below branch places the tip a fixed base step under the target regardless of available room. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
-		tipClaStr = 'ob-coach--up';                        // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
+		tipClaStr = 'helTipDiv--up';                        // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
 		maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
 
 
@@ -114,7 +114,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 
 
 			topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The ordinary case's own below branch places the tip a base step under the target once it genuinely has the room. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
-			tipClaStr = 'ob-coach--up';                        // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
+			tipClaStr = 'helTipDiv--up';                        // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
 			maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
 
 
@@ -124,7 +124,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 
 
 			topTipNum = Math.max( edgMarNum, aboAncNum - gapAboNum - tipHeiNum ); // What: Above Top Set. Why: The flip-above branch places the tip so its own bottom edge clears aboAncNum by gapAboNum, capped to never rise above the edge margin. How: This sets topTipNum via Math.max against edgMarNum.
-			tipClaStr = 'ob-coach--down';                                         // What: Down Arrow Set. Why: A tip above the target points its arrow down at it. How: This sets tipClaStr to the down-pointing arrow class.
+			tipClaStr = 'helTipDiv--down';                                         // What: Down Arrow Set. Why: A tip above the target points its arrow down at it. How: This sets tipClaStr to the down-pointing arrow class.
 			maxHeiNum = spaAboNum;                                                // What: Above Max Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spaAboNum instead.
 
 
@@ -169,7 +169,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
  * time offsetWidth first measures it. tipIteObj.scrBoo caps the tip
  * to whatever vertical room plaTipFun found and scrolls internally
  * past that instead of overflowing the viewport; it is applied to an
- * inner wrapper rather than the outer .ob-coach box itself, since
+ * inner wrapper rather than the outer .helTipDiv box itself, since
  * overflow:auto on the outer box would clip its own arrow, which is
  * deliberately positioned outside the box's own normal content area to
  * poke out and point at the target.
@@ -195,7 +195,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 
 	const tipEleRef                   = React.useRef( null );             // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
 	const [ tipStyObj, setTipStyObj ] = React.useState( null );           // What: Tip Style Object And Setter. Why: The tip's own absolute position is not known until after its first mount/measure. How: This starts null (rendered off-screen) and is written by the layout effect below.
-	const [ arrClaStr, setArrClaStr ] = React.useState( 'ob-coach--up' ); // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
+	const [ arrClaStr, setArrClaStr ] = React.useState( 'helTipDiv--up' ); // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
 	const [ scrMaxNum, setScrMaxNum ] = React.useState( null );           // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
 
 	const widStyObj = tipIteObj.mtwBoo && tarRecObj.tipWidNum != null ? { width : tarRecObj.tipWidNum } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidth, should override the usual fixed 280px. How: This reads tarRecObj.tipWidNum only under that combined condition, otherwise falls through to no override at all.
@@ -217,16 +217,16 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 		setTipStyObj({ // What: Tip Style Update. Why: The rendered tip needs its own top/left plus the CSS custom property its own arrow reads. How: This writes the freshly-computed position into tipStyObj.
 
 
-			'--ob-ax' : arrHorNum + 'px', // What: Arrow Offset Property. Why: The tip's own arrow reads its horizontal offset from this custom property. How: This converts arrHorNum to a px string.
-			left      : lefTipNum,        // What: Left Position. Why: This is the tip's own clamped left edge. How: This is lefTipNum as computed by plaTipFun.
-			top       : topTipNum         // What: Top Position. Why: This is the tip's own chosen top edge. How: This is topTipNum as computed by plaTipFun.
+			'--tip-arr-off' : arrHorNum + 'px', // What: Tip Arrow Offset Property. Why: The tip's own arrow reads its horizontal offset from this custom property. How: This converts arrHorNum to a px string.
+			left            : lefTipNum,        // What: Left Position. Why: This is the tip's own clamped left edge. How: This is lefTipNum as computed by plaTipFun.
+			top             : topTipNum         // What: Top Position. Why: This is the tip's own chosen top edge. How: This is topTipNum as computed by plaTipFun.
 
 
 		});
 
 
 		setArrClaStr( tipClaStr );                                                    // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes tipClaStr into arrClaStr.
-		setScrMaxNum( tipIteObj.scrBoo ? maxHeiNum - rhyPxlFun( 'bas' ) * 2 : null ); // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .ob-coach's own top and bottom padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all. // Vertical Rhythm Base ~= 14.572px
+		setScrMaxNum( tipIteObj.scrBoo ? maxHeiNum - rhyPxlFun( 'bas' ) * 2 : null ); // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .helTipDiv's own top and bottom padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all. // Vertical Rhythm Base ~= 14.572px
 
 
 	}, [ tarRecObj, tipIteObj.mtwBoo, tipIteObj.scrBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the target it is anchored to moves or resizes, or whenever the item's own width/scroll behavior could change. How: tarRecObj changing means a new position is needed, and tipIteObj.mtwBoo/tipIteObj.scrBoo changing means the sizing rules themselves changed.
@@ -243,7 +243,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 		<div
 			ref={ tipEleRef }
 
-			className={` ${ cssModObj.obCoach }   ${ cssModObj.helpTip }   ${ arrClaStr === 'ob-coach--up' ? cssModObj.obCoachUp : '' }   ${ arrClaStr === 'ob-coach--down' ? cssModObj.obCoachDown : '' } `}
+			className={` ${ cssModObj.helTipDiv }   ${ arrClaStr === 'helTipDiv--up' ? cssModObj.helTipDivUp : '' }   ${ arrClaStr === 'helTipDiv--down' ? cssModObj.helTipDivDown : '' } `}
 
 			style={{
 				...( tipStyObj || { left : -9999, top : -9999 } ),
@@ -259,9 +259,9 @@ function HelTipCom ( { tarRecObj, tipIteObj } ) {
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }
 
 
-				<p className={ cssModObj.helpTipTitle }>{ typeof tipIteObj.titStr === 'function' ? tipIteObj.titStr( tarRecObj ) : tipIteObj.titStr }</p>{ /* What: Help Tip Title Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls tipIteObj.titStr with tarRecObj when it is a function, otherwise renders it directly. */ }
+				<p className={ cssModObj.tipTitPar }>{ typeof tipIteObj.titStr === 'function' ? tipIteObj.titStr( tarRecObj ) : tipIteObj.titStr }</p>{ /* What: Tip Title Paragraph Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls tipIteObj.titStr with tarRecObj when it is a function, otherwise renders it directly. */ }
 
-				<div className={ cssModObj.obBody }>{ typeof tipIteObj.bodEle === 'function' ? tipIteObj.bodEle() : tipIteObj.bodEle }</div>{ /* What: Ob Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls tipIteObj.bodEle when it is a function, otherwise renders it directly. */ }
+				<div className={ cssModObj.tipBodDiv }>{ typeof tipIteObj.bodEle === 'function' ? tipIteObj.bodEle() : tipIteObj.bodEle }</div>{ /* What: Tip Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls tipIteObj.bodEle when it is a function, otherwise renders it directly. */ }
 
 
 			</div>

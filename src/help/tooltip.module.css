@@ -17,66 +17,59 @@
 
 
 
-/* #region ob-coach */
+/* #region helTipDiv */
 
-.ob-coach { /* What: Help Tip Card. Why: A help tip should look like the tour's own coach card. How: This floats a raised surface card over the page and fades it in. */
+.helTipDiv { /* What: Help Tip Div. Why: A help tip should look like the tour's own coach card, sized to its explanation. How: This floats a raised surface card over the page that fades in, fits its body text, and takes clicks, since help mode's overlay otherwise makes the page click-through. */
 
 
-	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background     : var(--bac-sur-col);
-	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius  : var( --rad-bor-med );
-	box-shadow     : var( --ele-lar-sha );
-	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
+	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both;                                  /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background     : var( --bac-sur-col );                                                                                      /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                           /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-med );                                                                                      /* Radius Border Medium = 11px */
+	box-shadow     : var( --ele-lar-sha );                                                                                      /* Elevation Large Shadow, about 0 19px 45px -15px plus 0 6px 15px -4px */
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );                                                                 /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	pointer-events : auto;
 	position       : fixed;
+	width          : calc( var( --cdn-pow-011 ) * var( --fon-siz-bas ) + ( var( --spa-hor-bas ) + var( --bor-wid-sma ) ) * 2 ); /* Core-Design-Number to the Power of 11 ~= 22.047, Font Size Base = 11px, Spacing Horizontal Base ~= 14.572px, Border Width Small ~= 0.499px */ /* What: Help Tip Width. Why: The tip exists to hold a short explanation, so it should fit its body text at the small text width. How: This is the small text width at the body's base font size plus the card's side padding and side border, each counted twice. */
 
 
 }
-.help-tip { /* What: Help Tip. Why: Help mode's tip differs from a tour coach card only in width and pointer events. How: This sizes it to its body text and lets it take clicks, since help mode's overlay otherwise makes the page click-through. */
+.helTipDiv::before { /* What: Help Tip Arrow. Why: The tip should point at the element it explains. How: This draws a small rotated square that pokes out of the card at the target's horizontal position. */
 
 
-	pointer-events : auto;
-	width          : calc( var( --cdn-pow-011 ) * var( --fon-siz-bas ) + ( var( --spa-hor-bas ) + var( --bor-wid-sma ) ) * 2 ); /* What: Help Tip Width. Why: The tip exists to hold a short explanation, so it should fit its body text at the small text width. How: This is the small text width at the body's base font size plus the card's side padding and side border, each counted twice. */
-
-
-}
-.ob-coach::before { /* What: Help Tip Arrow. Why: The tip should point at the element it explains. How: This draws a small rotated square that pokes out of the card at the target's horizontal position. */
-
-
-	background : var(--bac-sur-col);
-	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	content    : "";
-	height     : calc( var( --ver-rhy-bas ) * 1rem );
-	left       : var( --ob-ax, var( --spa-hor-p02 ) ); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: HelTipCom writes --ob-ax as the target's center offset from the tip's left edge, falling back to the p02 horizontal spacing step. */
+	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	content    : '';
+	height     : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	left       : var( --tip-arr-off, var( --spa-hor-p02 ) );      /* Spacing Horizontal Base Plus 2 ~= 25.572px */ /* What: Tip Arrow Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: HelTipCom writes --tip-arr-off as the target's center offset from the tip's left edge, falling back to the p02 horizontal spacing step. */
 	position   : absolute;
-	transform  : translateX(-50%) rotate(45deg); /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would land half its width right of the target's midpoint. How: This shifts it back by half its width before rotating it into a diamond. */
-	width      : calc( var( --ver-rhy-bas ) * 1rem );
+	transform  : translateX( -50% ) rotate( 45deg );              /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would land half its width right of the target's midpoint. How: This shifts it back by half its width before rotating it into a diamond. */
+	width      : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.ob-coach--up::before { /* What: Upward Help Tip Arrow. Why: A tip below its target points up at it. How: This sets the arrow on the card's top edge, showing only its upper two sides. */
+.helTipDiv--up::before { /* What: Upward Help Tip Arrow. Why: A tip below its target points up at it. How: This sets the arrow on the card's top edge, showing only its upper two sides. */
 
 
 	border-bottom : 0;
 	border-right  : 0;
-	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 );
+	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.ob-coach--down::before { /* What: Downward Help Tip Arrow. Why: A tip above its target points down at it. How: This sets the arrow on the card's bottom edge, showing only its lower two sides. */
+.helTipDiv--down::before { /* What: Downward Help Tip Arrow. Why: A tip above its target points down at it. How: This sets the arrow on the card's bottom edge, showing only its lower two sides. */
 
 
 	border-left : 0;
 	border-top  : 0;
-	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 );
+	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Help Tip. Why: Someone who asked for less motion shouldn't see the tip fade in. How: This applies only when the reduced-motion preference is set. */
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Help Tip Div. Why: Someone who asked for less motion shouldn't see the tip fade in. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ob-coach { /* What: Motionless Help Tip Card. Why: The tip should simply appear. How: This turns its fade and transitions off. */
+	.helTipDiv { /* What: Motionless Help Tip Div. Why: The tip should simply appear. How: This turns its fade and transitions off. */
 
 
 		animation  : none;
@@ -88,47 +81,48 @@
 
 }
 
-.help-tip-title { /* What: Help Tip Title. Why: The tip's title leads its explanation. How: This sets it slightly larger and bold above the body. */
+.tipTitPar { /* What: Tip Title Paragraph. Why: The tip's title leads its explanation. How: This sets it slightly larger and bold above the body. */
 
 
-	font-size   : var( --fon-siz-p01 );
+	font-size   : var( --fon-siz-p01 );     /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 600;
-	margin      : 0 0 var( --spa-ver-m04 );
+	margin      : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
 
 
 }
 
 
-/* #region ob-body */
 
-.ob-coach .ob-body { /* What: Help Tip Body. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in the muted color at a comfortable line height. */
+/* #region tipBodDiv */
+
+.tipBodDiv { /* What: Tip Body Div. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in the muted color at a comfortable line height. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 	margin      : 0;
 
 
 }
 
-.help-tip .ob-body p { /* What: Help Tip Paragraph. Why: The body's paragraphs shouldn't add their own default spacing. How: This removes their margins. */
+.tipBodDiv p { /* What: Tip Body Paragraph. Why: The body's paragraphs shouldn't add their own default spacing. How: This removes their margins. */
 
 
 	margin : 0;
 
 
 }
-.help-tip .ob-body p+p { /* What: Following Help Tip Paragraph. Why: Consecutive paragraphs still need a small gap between them. How: This adds top margin to every paragraph after the first. */
+.tipBodDiv p + p { /* What: Following Tip Body Paragraph. Why: Consecutive paragraphs still need a small gap between them. How: This adds top margin to every paragraph after the first. */
 
 
-	margin-top : var( --spa-ver-m02 );
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
 
-/* #endregion ob-body */
+/* #endregion tipBodDiv */
 
-/* #endregion ob-coach */
+/* #endregion helTipDiv */
 
 
