@@ -1227,12 +1227,12 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :not(.np-form) excludes the Edit/Create-picker form's own reused .picker-title header, same name, different element, only ever one or the other on screen at once, but the selector still needs to be unambiguous for whichever is actually showing.
+	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoping the picTitHea hook under picVieDiv keeps this to the picker view's own title, never the Edit/Create-picker form's heading, only ever one or the other on screen at once, but the selector still needs to be unambiguous for whichever is actually showing.
 
 
 		bodEle    : <>This is the name of the currently selected picker.</>,
 		ideStr    : 'pickerName',
-		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see picker-view.module.css's .picker-h > div rule, which sets the pill's --pill-margin-top); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
+		padYcoNum : 2, // padYcoNum: 2, the mode pill sits directly below with only a 6px margin-top (see picker-view.module.css's .heaTitDiv rule, which sets the pill's --pill-margin-top); the default 8px pad on each side would overlap by 10px otherwise, bleeding into the pill's own highlight.
 		selStr    : '[data-element-name-hook~="picVieDiv"] [data-element-name-hook~="picTitHea"]',
 		titStr    : 'Picker Name'
 
@@ -1317,7 +1317,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		),
 
 		ideStr    : 'pickerItems',
-		padYcoNum : 4, // padYcoNum: 4, .picker-pool (the shared flex-column parent) only has a 10px gap to the Add Picker Item button below; the default 8px pad on each side would overlap by 6px otherwise.
+		padYcoNum : 4, // padYcoNum: 4, picPooDiv (the shared flex-column parent) only has an 11px gap to the Add Picker Item button below; the default 8px pad on each side would overlap by 5px otherwise.
 		selStr    : '[data-element-name-hook~="pooIteDiv"]',
 		titStr    : 'Picker Items'
 
@@ -1336,7 +1336,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// Clicking Edit on a pool item opens the shared EntEdiCom (same component/markup as Today's and Data's item-editor coverage, see those catalogs' own comments), but it renders inside .pv-additem-wrap, BELOW the pool list, not inline where the item's own row is. No scroll-into-view step exists in help mode (unlike the guided tour), so these badges simply appear wherever that section currently sits once an edit is open; the user scrolls to find them like anything else below the fold. This same markup/selector set is ALSO what Step 2 of the Create a Picker form uses for each new item's editor (identical .pv-newitem/.rd-item/.entry-editor structure), one shared set of entries covers editing an existing pool item, adding one from an existing picker's own pool, and building a brand new picker's pool. .rd-name-input is also used by the Conditionals section elsewhere in the app (same .rd-item wrapper shape), :has(.entry-editor) picks out only a .rd-item that's actually an ITEM editor.
+	// Clicking Edit on a pool item opens the shared EntEdiCom (same component/markup as Today's and Data's item-editor coverage, see those catalogs' own comments), but it renders inside iteAddDiv, BELOW the pool list, not inline where the item's own row is. No scroll-into-view step exists in help mode (unlike the guided tour), so these badges simply appear wherever that section currently sits once an edit is open; the user scrolls to find them like anything else below the fold. This same markup/selector set is ALSO what Step 2 of the Create a Picker form uses for each new item's editor (identical lisIteDiv/entEdiDiv structure), one shared set of entries covers editing an existing pool item, adding one from an existing picker's own pool, and building a brand new picker's pool. The rowNamInp hook is also used by the Conditionals section elsewhere in the app (same lisIteDiv wrapper shape), so :has() on the entEdiDiv hook picks out only a lisIteDiv that's actually an ITEM editor.
 	{ // What: Item Name Help Item. Why: This is the on-demand help tip for the Item Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -1462,7 +1462,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Cancel / Save Help Item. Why: This is the on-demand help tip for the Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Unlike Today/Data, the Delete button is CSS-hidden here (.pv-newitem .rd-edit-foot > .btn--danger), deleting an existing item stays solely the pool row's own trash icon + confirm flow on this tab, so the copy only covers Cancel/Save.
+	{ // What: Cancel / Save Help Item. Why: This is the on-demand help tip for the Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Unlike Today/Data, the Delete button is CSS-hidden here (the lisIteDiv wrapper sets --entry-editor-delete-display : none), deleting an existing item stays solely the pool row's own trash icon + confirm flow on this tab, so the copy only covers Cancel/Save.
 
 
 		ideStr : 'itemFoot',
@@ -1494,7 +1494,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	// #region Create A Picker Form Step 1
 
-	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#np-name) scopes to just this field, since every field in the form shares the plain .np-field wrapper class.
+	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#np-name) scopes to just this field, since every field in the form shares the same forFieDiv/forFieFie hooks.
 
 
 		bodEle : <>This is the name field for your new picker, and it should have a short, descriptive name.</>,
@@ -1505,7 +1505,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Picker Group Help Item. Why: This is the on-demand help tip for the Picker Group element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(.np-groups) scopes to just this field, same reasoning as newPickerName's own comment.
+	{ // What: Picker Group Help Item. Why: This is the on-demand help tip for the Picker Group element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has() on the forGroDiv hook scopes to just this field, same reasoning as newPickerName's own comment.
 
 
 		bodEle : <>This will let you choose which group this new picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
@@ -1538,7 +1538,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Select a Conditional Help Item. Why: This is the on-demand help tip for the Select a Conditional element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Only present once the toggle above is on (the whole .cnd-attach block is a ColDisCom), finTarFun naturally won't match anything while it's closed, no visibility check needed here.
+	{ // What: Select a Conditional Help Item. Why: This is the on-demand help tip for the Select a Conditional element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Only present once the toggle above is on (the whole conAttDiv block is a ColDisCom), finTarFun naturally won't match anything while it's closed, no visibility check needed here.
 
 
 		bodEle : <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add New Conditional button to build one inline.</>,
@@ -1732,7 +1732,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Picker Day Selection Help Item. Why: This is the on-demand help tip for the Picker Day Selection element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(.np-sched-row) distinguishes this from the OTHER .np-sched-block (CadConCom's own wrapper), which shares the same bare class.
+	{ // What: Picker Day Selection Help Item. Why: This is the on-demand help tip for the Picker Day Selection element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has() on the schRowDiv hook distinguishes this from the OTHER schBloDiv (CadConCom's own wrapper), which shares the same hook.
 
 
 		bodEle : <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off, or use the Every day/Weekdays/Weekends presets to quickly set a common pattern.</>,
@@ -1743,7 +1743,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Picker Holidays Toggle Help Item. Why: This is the on-demand help tip for the Picker Holidays Toggle element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#np-skiphol) distinguishes this from the OTHER .np-sched-toggle just below it (Picker Duplicate Items Toggle), both share the same bare class.
+	{ // What: Picker Holidays Toggle Help Item. Why: This is the on-demand help tip for the Picker Holidays Toggle element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :has(#np-skiphol) distinguishes this from the OTHER schTogDiv just below it (Picker Duplicate Items Toggle), both share the same hook.
 
 
 		bodEle : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
@@ -1765,7 +1765,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	{ // What: Picker Form Status Help Item. Why: This is the on-demand help tip for the Picker Form Status element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .np-footer--step1 scopes this to Step 1 specifically, Step 2's own footer (see newPickerItemsFooterNote below) is a bare .np-footer with no modifier class, so without this both steps' .np-footer-note would match the same selector and only one entry could ever win.
+	{ // What: Picker Form Status Help Item. Why: This is the on-demand help tip for the Picker Form Status element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // The detFooDiv hook scopes this to Step 1 specifically, Step 2's own footer (see newPickerItemsFooterNote below) is iteFooDiv, so without it both steps' fooNotDiv would match the same selector and only one entry could ever win.
 
 
 		bodEle : <>This area lets you know if anything still needs to be filled out before you can advance to the next step, or confirms that you're ready to move on.</>,
@@ -1808,7 +1808,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	// #region Create A Picker Form Step 2
 
-	{ // What: Add Items Form Status Help Item. Why: This is the on-demand help tip for the Add Items Form Status element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :not(.np-footer--step1), see newPickerFooterNote's own comment.
+	{ // What: Add Items Form Status Help Item. Why: This is the on-demand help tip for the Add Items Form Status element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // The iteFooDiv hook, see newPickerFooterNote's own comment.
 
 
 		bodEle : <>This area lets you know if anything still needs to be filled out before you can submit the form, or confirms that the picker is ready to be created.</>,

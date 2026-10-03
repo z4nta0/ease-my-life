@@ -319,7 +319,7 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
 
 
 
-const GRO_STE_OBJ = { // What: Group Step Object. Why: This step highlights the create-picker form's own Group field, the second .np-field right after Name. How: This is spread as-is into every picker's own steObjArr below.
+const GRO_STE_OBJ = { // What: Group Step Object. Why: This step highlights the create-picker form's own Group field, the second forFieDiv right after Name. How: This is spread as-is into every picker's own steObjArr below.
 
 
 	bacBoo : true,                // What: Back Boolean. Why: The user should always be able to return to the previous, Name step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -413,7 +413,7 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
  *
  * @summary
  * Highlights the Name field's whole group (label + description + input) as one
- * region, the first .np-field in the Details step, which is what is showing
+ * region, the first forFieDiv in the Details step, which is what is showing
  * once Step 2's own click opens the form (the sample template's own step of 1
  * keeps it on Details rather than jumping to Items). resBoo is false: this and
  * every step through the Create Picker step only has a target because the
@@ -570,7 +570,7 @@ const WEI_STE_OBJ = { // What: Weight Step Object. Why: This step highlights the
  *
  * @summary
  * Highlights the "+ Add Item" button on the now-showing Items sub-step
- * (reached via ITE_STE_OBJ's own click), .pv-additem-btn. runFun() stages the
+ * (reached via ITE_STE_OBJ's own click), iteAddBut. runFun() stages the
  * item's own name (and, if this sample overrides them, its Soonest/Latest days
  * too, see pkr_ob_monthly's own sooNum/latNum) on the bus, the same timing
  * trick as buiNewFun's own picker-level prefill (fires in the click-guard's
@@ -681,9 +681,9 @@ const buiLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This 
  * buiModFun = Build Mode Function
  *
  * @summary
- * Highlights ONLY the sample's own mode option, .mode-opt[data-mode="..."]
+ * Highlights ONLY the sample's own mode option, modOptLab[data-mode="..."]
  * (the data-mode attribute exists purely for this), rather than the whole
- * .mode-radio list. Deliberately narrow: the click-guard blocks clicks outside
+ * modRadDiv list. Deliberately narrow: the click-guard blocks clicks outside
  * a step's own target for non-cirBoo steps too, so scoping to just this one
  * mode also prevents switching to a different type here, which would break the
  * mode-specific copy/targets later steps assume (Soonest/Latest wording, the
@@ -763,7 +763,7 @@ const buiNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This bu
 	bacBoo : true,                                                                          // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Item" step. How: GuiTouCom shows its own Back button whenever this is true.
 	priStr : 'Next',                                                                        // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
 	resBoo : false,                                                                         // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false.
-	selStr : '[data-element-name-hook~="iteAddDiv"] [data-element-name-hook~="rowNamInp"]', // What: Selector String. Why: This step highlights the item name input inside the inline editor, scoped under .pv-additem-wrap since the same class is reused (mutually exclusively at render time) by the existing-picker "add item" flow elsewhere on this tab. How: GuiTouCom spotlights whatever this selector matches.
+	selStr : '[data-element-name-hook~="iteAddDiv"] [data-element-name-hook~="rowNamInp"]', // What: Selector String. Why: This step highlights the item name input inside the inline editor, scoped under iteAddDiv since the same hook is reused (mutually exclusively at render time) by the existing-picker "add item" flow elsewhere on this tab. How: GuiTouCom spotlights whatever this selector matches.
 	tabStr : 'picker',                                                                      // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 	titStr : 'Give it a name',                                                              // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 

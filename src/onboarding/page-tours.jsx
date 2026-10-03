@@ -390,7 +390,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Back Branch Check. Why: Only the Pickers tour's own steps have this one-way pick-animation state to reverse. How: This branches on pagIdeStr matching 'explore_pickers'.
 
 
-					if ( tarSteNum === 3 ) { // What: Add Tab Scroll Check. Why: Back from Picker Selection to Create New Pickers must undo Picker Selection's own scroll-into-view, which can scroll .picker-tabs rightward past the Add tab (the first tab in the row) if there are enough pickers to overflow it. How: This scrolls .picker-tabs back to its own left edge.
+					if ( tarSteNum === 3 ) { // What: Add Tab Scroll Check. Why: Back from Picker Selection to Create New Pickers must undo Picker Selection's own scroll-into-view, which can scroll picTabDiv rightward past the Add tab (the first tab in the row) if there are enough pickers to overflow it. How: This scrolls picTabDiv back to its own left edge.
 
 
 						const tabRowEle = document.querySelector( '[data-element-name-hook~="picTabDiv"]' ); // What: Tab Row Element. Why: This is the real, horizontally-scrollable strip that needs resetting. How: This looks it up fresh, since it only exists on the Pickers tab.
@@ -417,7 +417,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 					}
 
-					else if ( tarSteNum === 7 ) { // What: Picker Items Redo Check. Why: Back from Picker Items to Add To Todo List needs a real 'done' result synthesized, that step's own target (.pv-act--send) only exists while phase is 'done'/'sent', and by the time this fires the advDelNum wait has already let it revert to idle. How: This bumps a SEPARATE bus nonce telling PickerView to synthesize a result directly, skipping the spin animation since this is a revisit.
+					else if ( tarSteNum === 7 ) { // What: Picker Items Redo Check. Why: Back from Picker Items to Add To Todo List needs a real 'done' result synthesized, that step's own target (picSenBut) only exists while phase is 'done'/'sent', and by the time this fires the advDelNum wait has already let it revert to idle. How: This bumps a SEPARATE bus nonce telling PickerView to synthesize a result directly, skipping the spin animation since this is a revisit.
 
 
 						emlTouObj.set( { redNonNum : ( emlTouObj.get().redNonNum || 0 ) + 1 } ); // What: Redo Nonce Publish. Why: Unlike a plain reset, this step NEEDS a real 'done' result to show Send to Today at all. How: This increments the bus's own current redNonNum by 1.

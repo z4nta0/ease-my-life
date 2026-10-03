@@ -51,7 +51,7 @@ const CHR_PRI_OBJ = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-elemen
  * Same fix as onboarding/tour-runner.jsx's own cliHorFun
  * (see its header comment there for the full story), ported here for
  * the same reason: an item like Pickers' "Picker Selection" matches
- * every tab in a horizontally-scrollable row (.picker-tabs), and once
+ * every tab in a horizontally-scrollable row (picTabDiv), and once
  * there are enough pickers to overflow it, the ones scrolled out of
  * view still report a real, full-width getBoundingClientRect(); unioning
  * them in stretches the highlight into empty space past the row's own
