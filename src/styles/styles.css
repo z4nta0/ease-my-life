@@ -573,7 +573,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 	[data-theme-fade-active] * { /* What: Still Theme Cross-Fade. Why: The theme should switch at once. How: This turns the transition off. */
 
 
-		transition : none !important;
+		transition : none !important; /* What: Important Transition Override. Why: During a swap the page-wide fade has to stop every element's transition at once, including each module's own hover fades, which a plain declaration here would only beat by order. How: The !important wins over every element's own transition for the swap's length. */
 
 
 	}
@@ -587,8 +587,8 @@ body[data-page-reorder-active],
 body[data-page-reorder-active] * { /* What: Drag In Progress. Why: While a card is being dragged, hovering over text shouldn't select it or change the cursor. How: This holds the grabbing cursor and turns off text selection everywhere. */
 
 
-	cursor      : grabbing !important;
-	user-select : none !important;
+	cursor      : grabbing !important; /* What: Important Cursor Override. Why: Elements under the dragged card set their own cursors, some through two-class selectors that outrank this one, and the grabbing cursor has to win over all of them at once. How: The !important holds the grabbing cursor on every element for the drag's length. */
+	user-select : none;
 
 
 }
