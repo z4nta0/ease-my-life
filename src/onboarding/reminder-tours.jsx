@@ -165,7 +165,7 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
  * "Once", since schedule-editor.jsx's own REP_OPT_ARR always lists "Once" first.
  *
  * Also scoped to '.seg[aria-label="Repeat"]' specifically, not just
- * '.rem-quickadd-wrap', since Monthly/Yearly's own Date/Weekday toggle below
+ * 'remAddDiv', since Monthly/Yearly's own Date/Weekday toggle below
  * is a second, nested SegConCom control ('aria-label="Day selection"');
  * without that extra scoping, finTarFun's own querySelectorAll would match its
  * pills too the moment one of those repeat kinds is selected, unioning the

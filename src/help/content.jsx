@@ -430,7 +430,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Reminders Manager
 
-	// The participation-settings matrix is new content (not present anywhere else); the per-reminder row + its editor reuse Today's own editReminderRepeat/editReminderFoot verbatim, since this is the exact same .rem-inline-editor markup either way.
+	// The participation-settings matrix is new content (not present anywhere else); the per-reminder row + its editor reuse Today's own editReminderRepeat/editReminderFoot verbatim, since this is the exact same .inlEdiDiv markup either way.
 	{ // What: Reminders Help Item. Why: This is the on-demand help tip for the Reminders element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -556,7 +556,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// Reused verbatim from TOD_HEL_ARR's editReminderRepeat/editReminderFoot same .rem-inline-editor markup, and this tab has no quickadd form for that selector's own :not(.rem-quickadd-wrap *) exclusion to worry about.
+	// Reused verbatim from TOD_HEL_ARR's editReminderRepeat/editReminderFoot same .inlEdiDiv markup, and this tab has no quickadd form for that selector's own :not(.remAddDiv *) exclusion to worry about.
 	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2758,19 +2758,19 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 		ideStr    : 'editMode',
-		padXcoNum : 4, // padXcoNum: 4 exists because .foot-editmode sits right next to .ob-generate (Regenerate) with only a 10px gap between them, and the default 8px pad on each side would overlap by 6px.
+		padXcoNum : 4, // padXcoNum: 4 exists because fooEdiBut sits right next to genLisBut (Regenerate) with only a 10px gap between them, and the default 8px pad on each side would overlap by 6px.
 		selStr    : '[data-element-name-hook~="ediRaiBut"], [data-element-name-hook~="fooEdiBut"]',
 
-		titStr : () => document.querySelector( '[data-element-name-hook~="ediRaiBut"]' )?.hasAttribute( 'data-edit-mode-active' ) ? 'Done Button' : 'Edit Mode', // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
+		titStr : () => document.querySelector( '[data-element-name-hook~="ediRaiBut"]' )?.hasAttribute( 'data-edit-mode-active' ) ? 'Done Button' : 'Edit Mode', // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because ediRaiBut is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; fooEdiBut only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editModeFootActions item below for what replaces it), so reading ediRaiBut's own data-edit-mode-active attribute here correctly reflects either case regardless of which of the two elements actually got matched.
 
-		bodEle : () => document.querySelector( '[data-element-name-hook~="ediRaiBut"]' )?.hasAttribute( 'data-edit-mode-active' ) // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because .em-rail-btn is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; .foot-editmode only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editmode-foot-actions item below for what replaces it), so reading .em-rail-btn's own is-on class here correctly reflects either case regardless of which of the two elements actually got matched.
+		bodEle : () => document.querySelector( '[data-element-name-hook~="ediRaiBut"]' )?.hasAttribute( 'data-edit-mode-active' ) // title/body are functions (see help/tooltip.jsx's HelTipCom for this pattern, e.g. the Charge Controls items) because ediRaiBut is the SAME button throughout, relabeled "Done" once Edit Mode is on rather than being swapped for a different element, so a static "Edit Mode" tip would otherwise keep showing even after the button (and its real behavior) had already become Done; fooEdiBut only ever matches while NOT editing (it unmounts entirely once editMode is true, see the editModeFootActions item below for what replaces it), so reading ediRaiBut's own data-edit-mode-active attribute here correctly reflects either case regardless of which of the two elements actually got matched.
 			? <>This button saves any edits that you have made and exits Edit Mode.</> // What: Done Body Branch. Why: With Edit Mode on, this same button saves and exits instead. How: This renders the Done copy.
 			: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</> // What: Edit Mode Body Branch. Why: With Edit Mode off, this button opens it. How: This renders the Edit Mode copy.
 
 
 	},
 
-	// .editmode-banner-actions is the Cancel/Done pair in Edit Mode's own sticky banner. .editmode-foot-actions (tab-today.jsx) is the identical pair repeated in the footer, distinguished from the OTHER (non-editing) footer actions row that shares .today-foot-actions with it, finTarFun's comma syntax is fallback-only (see groupNameEdit's own comment in this file for why that distinction matters), so this needs its own class rather than reusing the shared one, and can't be combined with editmode-banner-actions into one selStr either, for the same reason (both are always present together while Edit Mode is on, so the first one found would always win).
+	// ediBanSpa is the Cancel/Done pair in Edit Mode's own sticky banner. ediActDiv (tab-today.jsx) is the identical pair repeated in the footer, distinguished from the OTHER (non-editing) footer actions row that shares fooActDiv with it, finTarFun's comma syntax is fallback-only (see groupNameEdit's own comment in this file for why that distinction matters), so this needs its own hook rather than reusing the shared one, and can't be combined with ediBanSpa into one selStr either, for the same reason (both are always present together while Edit Mode is on, so the first one found would always win).
 	{ // What: Cancel / Done Help Item. Why: This is the on-demand help tip for the Cancel / Done element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2830,7 +2830,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		bodEle    : <>While Edit Mode is on, drag this handle to change this group's position in your todo list.</>,
 		ideStr    : 'groupGrip',
 		mulBoo    : true,
-		padXcoNum : 1, // padXcoNum: 1 exists because .group-grip and .group-name--editable sit only 4px apart in practice (the negative margin on .group-grip eats into .group-h-l's own 10px gap); the default 8px pad on each side, and even editMode's own padXcoNum:4 fix above, both still overlap here, so 1px each side leaves 2px of real clearance instead.
+		padXcoNum : 1, // padXcoNum: 1 exists because groGriSpa and groNamBut sit only 4px apart in practice (the negative margin on groGriSpa eats into heaLefDiv's own 10px gap); the default 8px pad on each side, and even editMode's own padXcoNum:4 fix above, both still overlap here, so 1px each side leaves 2px of real clearance instead.
 		selStr    : '[data-element-name-hook~="groGriSpa"]',
 		titStr    : 'Reorder Group'
 
@@ -2849,7 +2849,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Rename Group Help Item. Why: This is the on-demand help tip for the Rename Group element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .group-name-slot is a shared class on BOTH the button (idle) and the input (mid-edit), finTarFun's comma syntax is fallback-only (try the first selector, only try the next if it matched NOTHING at all), not a union, so '.group-name--editable, .group-name-input' silently dropped whichever group was actively being edited the moment any OTHER group's plain button still matched. One stable class sidesteps that entirely: clicking a name to rename it used to make this exact highlight vanish and leave the now-visible input hidden behind the dimmer, right when a user is actually interacting with it.
+	{ // What: Rename Group Help Item. Why: This is the on-demand help tip for the Rename Group element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // :is() joins the button (idle) and the input (mid-edit), since finTarFun's comma syntax is fallback-only (try the first selector, only try the next if it matched NOTHING at all), not a union, so '.groNamBut, .groNamInp' silently dropped whichever group was actively being edited the moment any OTHER group's plain button still matched. Matching both at once sidesteps that entirely: clicking a name to rename it used to make this exact highlight vanish and leave the now-visible input hidden behind the dimmer, right when a user is actually interacting with it.
 
 
 		bodEle    : <>While Edit Mode is on, click a group's name to rename it.</>,
@@ -2895,7 +2895,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	// Reminders and picker-generated entries share the same .today-card-actions markup but not the same buttons (reminders have no Re-Roll, there's nothing to re-roll TO, it's a fixed task, not a random pick), so this needs two separate items rather than one shared description. Also excludes day-off and charging cards, both render a .today-card-actions row too, but with Re-Roll and/or Edit genuinely disabled (the app's own InfTipCom there says "This action is disabled for this type of item"), which this tip's copy doesn't describe. mulBoo is true on both because every OTHER card gets its own badge; a single shared one could land on a card whose buttons happen to be in an unusual state, or just not be near wherever the user actually scrolled to.
+	// Reminders and picker-generated entries share the same carActDiv markup but not the same buttons (reminders have no Re-Roll, there's nothing to re-roll TO, it's a fixed task, not a random pick), so this needs two separate items rather than one shared description. Also excludes day-off and charging cards, both render a carActDiv row too, but with Re-Roll and/or Edit genuinely disabled (the app's own InfTipCom there says "This action is disabled for this type of item"), which this tip's copy doesn't describe. mulBoo is true on both because every OTHER card gets its own badge; a single shared one could land on a card whose buttons happen to be in an unusual state, or just not be near wherever the user actually scrolled to.
 	{ // What: Card Actions Help Item. Why: This is the on-demand help tip for the Card Actions element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2995,7 +2995,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Skip Help Item. Why: This is the on-demand help tip for the Skip element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // A day-off card (a conditional's triggered "rest" state) is excluded from cardActionsPicker above since it doesn't have the normal 3-button set, but unlike a charging card (where Re-Roll/Skip/Edit are ALL genuinely disabled, nothing real to highlight), a day-off card's own Skip IS a real, working button, only Re-Roll and Edit are disabled there. `button` (not .icon-btn generally) specifically targets that one real button, the disabled Re-Roll/Edit are InfTipCom's own <span> root, not a <button>, so this selector can't accidentally catch them.
+	{ // What: Skip Help Item. Why: This is the on-demand help tip for the Skip element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // A day-off card (a conditional's triggered "rest" state) is excluded from cardActionsPicker above since it doesn't have the normal 3-button set, but unlike a charging card (where Re-Roll/Skip/Edit are ALL genuinely disabled, nothing real to highlight), a day-off card's own Skip IS a real, working button, only Re-Roll and Edit are disabled there. `button` (not actIcoBut generally) specifically targets that one real button, the disabled Re-Roll/Edit are InfTipCom's own <span> root, not a <button>, so this selector can't accidentally catch them.
 
 
 		bodEle : <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-Roll and Edit are disabled for this type of card.</>,
@@ -3184,7 +3184,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Reminder Name Help Item. Why: This is the on-demand help tip for the Reminder Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to .rem-quickadd specifically, NOT the wider .rem-quickadd-wrap, .np-input is reused by the Repeat editor's own extra fields (the Every N Days number input, the Monthly/Yearly selects), so the wider scope was unioning the name field with whichever of those happened to be visible, stretching this highlight down into the Repeat section.
+	{ // What: Reminder Name Help Item. Why: This is the on-demand help tip for the Reminder Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to remFieDiv specifically, NOT the wider remAddDiv, since addNamInp's old shared class was reused by the Repeat editor's own extra fields (the Every N Days number input, the Monthly/Yearly selects), so the wider scope was unioning the name field with whichever of those happened to be visible, stretching this highlight down into the Repeat section.
 
 
 		bodEle : <>This is the name field for your new reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
@@ -3272,7 +3272,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .rem-inline-editor is shared markup used by THREE different editors: the Add Reminder quick-add form, an existing reminder's own editor (this item), AND a picker item's EntEdiCom (tab-today.jsx). The picker-item case is excluded via :not(.entry-editor) (its root carries that extra class), but :not(.rem-quickadd-wrap *) is ALSO required: .rem-quickadd-wrap merely WRAPS its own .rem-inline-editor, it doesn't stop the bare :not(.entry-editor) check from still matching that inner element too, which produced two overlapping "Reminder Schedule" badges at once whenever the Add Reminder form was open (found via live testing, addReminderRepeat's own comment above claiming this was "already covered, doesn't conflict" was wrong).
+	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // inlEdiDiv is shared markup used by THREE different editors: the Add Reminder quick-add form, an existing reminder's own editor (this item), AND a picker item's EntEdiCom (tab-today.jsx). The picker-item case is excluded via :not(.entry-editor) (its root carries that extra class), but :not(.remAddDiv *) is ALSO required: remAddDiv merely WRAPS its own inlEdiDiv, it doesn't stop the bare :not(.entry-editor) check from still matching that inner element too, which produced two overlapping "Reminder Schedule" badges at once whenever the Add Reminder form was open (found via live testing, addReminderRepeat's own comment above claiming this was "already covered, doesn't conflict" was wrong).
 
 
 		ideStr : 'editReminderRepeat',
@@ -3305,7 +3305,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // BUG FIXED HERE: this used to be the unscoped '.rd-edit-foot .btn', which, since .rd-edit-foot is the SAME class a picker item's own EntEdiCom footer uses, was ALSO matching that footer on the Today tab, showing this reminder-specific copy ("this reminder...") on a picker item's Delete/Cancel/Save instead of itemFoot's own "this item..." copy just below. .rem-inline-editor:not(.entry-editor) (see editReminderRepeat's own comment) properly scopes this to an actual reminder's editor. selStr targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot specifically, Delete's own confirm prompt swaps in a DIFFERENT sibling class (.rem-foot-confirm), which a selector scoped to .rd-edit-foot would miss entirely: no dim-mask hole, AND the click-guard would treat its Cancel/Delete buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on, this was wrongly assumed harmless ("gracefully has nothing to highlight") until the user found it actually blocks the click too, not just the highlight. // :not(.rem-quickadd-wrap *) is also needed since the Add Reminder quickadd form (Today only) uses this exact same .rem-inline-editor > .rem-inline-foot structure for its own Cancel/Add buttons (no rd-edit-foot/rem-foot-confirm distinction there, since a brand-new draft has nothing to delete yet); widening from .rd-edit-foot to the shared .rem-inline-foot wrapper (see the comment above) would otherwise ALSO match those, duplicating this badge the same way editReminderRepeat's own selector once did.
+	{ // What: Delete / Cancel / Save Help Item. Why: This is the on-demand help tip for the Delete / Cancel / Save element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // BUG FIXED HERE: this used to be the unscoped '.rd-edit-foot .btn', which, since .rd-edit-foot is the SAME class a picker item's own EntEdiCom footer uses, was ALSO matching that footer on the Today tab, showing this reminder-specific copy ("this reminder...") on a picker item's Delete/Cancel/Save instead of itemFoot's own "this item..." copy just below. inlEdiDiv:not(.entry-editor) (see editReminderRepeat's own comment) properly scopes this to an actual reminder's editor. selStr targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot specifically, Delete's own confirm prompt swaps in a DIFFERENT sibling class (.rem-foot-confirm), which a selector scoped to .rd-edit-foot would miss entirely: no dim-mask hole, AND the click-guard would treat its Cancel/Delete buttons as off-target and block them, making the confirmation genuinely unreachable while help mode is on, this was wrongly assumed harmless ("gracefully has nothing to highlight") until the user found it actually blocks the click too, not just the highlight. // :not(.remAddDiv *) is also needed since the Add Reminder quickadd form (Today only) uses this exact same inlEdiDiv > ediFooDiv structure for its own Cancel/Add buttons (no rd-edit-foot/rem-foot-confirm distinction there, since a brand-new draft has nothing to delete yet); widening from .rd-edit-foot to the shared .rem-inline-foot wrapper (see the comment above) would otherwise ALSO match those, duplicating this badge the same way editReminderRepeat's own selector once did.
 
 
 		ideStr : 'editReminderFoot',
@@ -3350,7 +3350,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	{ // What: Section Log Help Item. Why: This is the on-demand help tip for the Section Log element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Every OTHER group section (Chores, Food, ...) gets the same Log chip as Reminders, :not(.rem-section):not(.pt-section) excludes Reminders itself (already covered above) and the Page Tours onboarding section.
+	{ // What: Section Log Help Item. Why: This is the on-demand help tip for the Section Log element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Every OTHER group section (Chores, Food, ...) gets the same Log chip as Reminders, :not(remGroSec):not(pagTouSec) excludes Reminders itself (already covered above) and the Page Tours onboarding section.
 
 
 		bodEle : <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,

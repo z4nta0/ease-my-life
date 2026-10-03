@@ -120,8 +120,7 @@ const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animatio
  *   name, rendered inside the card's own name line.
  *
  * - `picStr` (String): Picker String names the picker a real Today
- *   card's item came from, rendered inside the card's own meta-picker
- *   span.
+ *   card's item came from, rendered inside the card's own meta row.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -349,7 +348,7 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 						<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The picker/name text needs its own grouping wrapper, matching the real Today card markup. How: This wraps the meta row and the name line below. */ }
 
 
-							<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker name needs its own row, matching the real Today card markup. How: This wraps the single meta-picker span below. */ }
+							<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker name needs its own row, matching the real Today card markup. How: This wraps the single picker name span below. */ }
 
 
 								<span>{ carCurObj.picStr }</span>{ /* What: Meta Picker Span Element. Why: Every real Today card shows which picker an item came from. How: This renders the mock card's own picStr. */ }

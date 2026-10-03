@@ -174,7 +174,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 	 * finCloFun = Finish Close Function
 	 *
 	 * @summary
-	 * Plays the out animation (is-closing) for its base duration step, then
+	 * Plays the out animation (groNamInp--closing) for its base duration step, then
 	 * unmounts the field and, for a real change, commits the rename. Guarded
 	 * so the blur that Enter triggers can't double-fire alongside an
 	 * explicit commit/cancel already in flight.

@@ -670,7 +670,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * @summary
 	 * Confetti/sparkle particles for the completion celebration
 	 * (Appearance -> Completion celebration). Ripple/Pulse/Cascade are
-	 * pure CSS variants of the existing ring-ripple/card-exhale elements;
+	 * pure CSS variants of the existing rinRipIta/card-exhale elements;
 	 * these two styles use a genuinely different mechanism (small
 	 * generated particles), so they need actual DOM nodes, generated
 	 * fresh each celebration and cleared after.
@@ -810,7 +810,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			 *
 			*/
 
-			rinCurEle.classList.add( cssModObj.proRinDivCelebrating ); // What: Celebrating Class Add. Why: This is the actual CSS trigger for the ring's own celebration animation. How: This adds the is-celebrating class to rinCurEle.
+			rinCurEle.classList.add( cssModObj.proRinDivCelebrating ); // What: Celebrating Class Add. Why: This is the actual CSS trigger for the ring's own celebration animation. How: This adds the proRinDiv--celebrating modifier to rinCurEle.
 
 
 			const carEleLis = ( celStyStr === 'ripple' && maiScrRef.current ) // What: Card Element List. Why: Only the Ripple style needs the per-card exhale cascade at all. How: This queries every rendered card only under that style, otherwise an empty array.
@@ -834,7 +834,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const celEndTim = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotNum, clearing every piece of state/CSS this branch set.
 
 
-				if ( rinEleRef.current ) rinEleRef.current.classList.remove( cssModObj.proRinDivCelebrating ); // What: Ring Celebration Clear. Why: The ring's own celebration class must not linger after the animation ends. How: This removes is-celebrating when the ring is still mounted.
+				if ( rinEleRef.current ) rinEleRef.current.classList.remove( cssModObj.proRinDivCelebrating ); // What: Ring Celebration Clear. Why: The ring's own celebration class must not linger after the animation ends. How: This removes proRinDiv--celebrating when the ring is still mounted.
 
 
 
@@ -876,9 +876,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			rinCurEle.classList.remove( cssModObj.proRinDivPulsing ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes the class unconditionally before the reflow forcing line below.
 			void rinCurEle.offsetWidth;                        // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
-			rinCurEle.classList.add( cssModObj.proRinDivPulsing );    // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the is-pulsing class to rinCurEle.
+			rinCurEle.classList.add( cssModObj.proRinDivPulsing );    // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the proRinDiv--pulsing modifier to rinCurEle.
 
-			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.proRinDivPulsing ), durMilFun( 'p06' ) ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing after the glow pulse's own p06 duration step, the longest of the pulse's animations. // Duration Base Plus 6 ~= 853.0ms
+			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.proRinDivPulsing ), durMilFun( 'p06' ) ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes proRinDiv--pulsing after the glow pulse's own p06 duration step, the longest of the pulse's animations. // Duration Base Plus 6 ~= 853.0ms
 
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
@@ -913,11 +913,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const stkCurEle = stkEleRef.current; // What: Streak Current Element. Why: Every DOM manipulation below targets this same node. How: This reads stkEleRef.current once and reuses it below.
 
 
-			stkCurEle.classList.remove( cssModObj.todStrDivBumped ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes is-bumped unconditionally before the reflow forcing line below.
+			stkCurEle.classList.remove( cssModObj.todStrDivBumped ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes todStrDiv--bumped unconditionally before the reflow forcing line below.
 			void stkCurEle.offsetWidth;                       // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
-			stkCurEle.classList.add( cssModObj.todStrDivBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the is-bumped class to stkCurEle.
+			stkCurEle.classList.add( cssModObj.todStrDivBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the todStrDiv--bumped modifier to stkCurEle.
 
-			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.todStrDivBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped after the bump's own p06 duration step. // Duration Base Plus 6 ~= 853.0ms
+			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.todStrDivBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes todStrDiv--bumped after the bump's own p06 duration step. // Duration Base Plus 6 ~= 853.0ms
 
 
 			preClaRef.current = claNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClaRef with claNowBoo.
@@ -1836,7 +1836,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		const wraCurEle = groDndRef.current;                                            // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
 		const griCurEle = poiEveObj.currentTarget;                                      // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
-		const secCurEle = griCurEle.closest( '[data-element-name-hook~="todGroSec"]' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest .group-section ancestor.
+		const secCurEle = griCurEle.closest( '[data-element-name-hook~="todGroSec"]' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest todGroSec ancestor.
 
 
 		if ( !wraCurEle || !secCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
@@ -1849,7 +1849,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			conLisEle   : wraCurEle,                                                             // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes wraCurEle.
 			griIcoEle   : griCurEle,                                                             // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
 			hanDraEle   : secCurEle,                                                             // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes secCurEle.
-			iteSelStr   : '[data-element-name-hook~="todGroSec"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .group-section selector.
+			iteSelStr   : '[data-element-name-hook~="todGroSec"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the todGroSec hook selector.
 			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                          // What: On End Drag Function. Why: The coach must reappear once the gesture ends. How: This publishes draActBoo : false onto the shared tour bus.
 			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                           // What: On Start Drag Function. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes draActBoo : true onto the shared tour bus, a harmless no-op when no tour is mounted.
 			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
@@ -1905,8 +1905,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		const griCurEle = poiEveObj.currentTarget;                                      // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
-		const lisCurEle = griCurEle.closest( '[data-element-name-hook~="todLisDiv"]' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest .today-list ancestor.
-		const carCurEle = griCurEle.closest( '[data-element-name-hook~="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
+		const lisCurEle = griCurEle.closest( '[data-element-name-hook~="todLisDiv"]' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest todLisDiv ancestor.
+		const carCurEle = griCurEle.closest( '[data-element-name-hook~="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest todCarArt ancestor.
 
 
 		if ( !lisCurEle || !carCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
@@ -1919,7 +1919,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			conLisEle   : lisCurEle,                                                             // What: Container List Element. Why: The drag needs the element whose children are being reordered. How: This passes lisCurEle.
 			griIcoEle   : griCurEle,                                                             // What: Grip Icon Element. Why: The drag starts from the grip that received the pointerdown. How: This passes griCurEle.
 			hanDraEle   : carCurEle,                                                             // What: Handle Drag Element. Why: The whole row moves, not just its grip. How: This passes carCurEle.
-			iteSelStr   : '[data-element-name-hook~="todCarArt"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the .today-card selector.
+			iteSelStr   : '[data-element-name-hook~="todCarArt"]',                               // What: Item Selector String. Why: The drag needs to know which children count as reorderable rows. How: This passes the todCarArt hook selector.
 			onEndDraFun : () => emlTouObj.set( { draActBoo : false } ),                          // What: On End Drag Function. Why: Same reasoning as groDraFun's own onEndDraFun above. How: This publishes draActBoo : false onto the shared tour bus.
 			onStaDraFun : () => emlTouObj.set( { draActBoo : true } ),                           // What: On Start Drag Function. Why: Same reasoning as groDraFun's own onStaDraFun above. How: This publishes draActBoo : true onto the shared tour bus.
 			scrConEle   : maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ), // What: Scroll Container Element. Why: Dragging near an edge should auto-scroll the real scroll container. How: This passes the nearest .main ancestor.
@@ -3309,7 +3309,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					<div className={ cssModObj.heaColDiv }>{ /* What: Header Left Div Element. Why: Every piece of header content reads as one left-aligned column. How: This wraps the kicker row and the brand/title/ring row below. */ }
 
 
-						<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The date/time and the streak/help cluster sit on one shared row. How: This wraps the kicker span and the kicker-row-right div below. */ }
+						<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The date/time and the streak/help cluster sit on one shared row. How: This wraps the kicker span and the rowRigDiv div below. */ }
 
 
 							<div className={ cssModObj.pagKicDiv }>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders forDatFun and forTimFun against curNowDat. */ }
@@ -3378,7 +3378,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								aria-label='Ease My Life link to go to the Today page'
 
 								onClick={ onNavHomFun }
-							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which .brand-mark sets to var(--acc-mai-col); the grid lines use var(--acc-tin-col), the same color as the Today group-rail/tabbar selected backgrounds. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the top of Today. How: This calls onNavHomFun on click. Logo colors are wired to the UI theme: the border and easing-checkmark use currentColor, which braMarBut sets to var(--acc-mai-col); the grid lines use var(--acc-tin-col), the same color as the Today groRaiAsi/tabbar selected backgrounds. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								<svg
@@ -3479,7 +3479,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							</button>
 
 
-							<h1 className={ cssModObj.todTitHea }>{ /* What: Today Title Heading Element. Why: The default hero line and the "all done" celebratory line swap visibility based on isaFulBoo, but both stay mounted so the swap can animate. How: This renders both title-state spans below, keyed so the done state re-plays its per-word reveal on every fresh completion. */ }
+							<h1 className={ cssModObj.todTitHea }>{ /* What: Today Title Heading Element. Why: The default hero line and the "all done" celebratory line swap visibility based on isaFulBoo, but both stay mounted so the swap can animate. How: This renders both titStaSpa spans below, keyed so the done state re-plays its per-word reveal on every fresh completion. */ }
 
 
 								<span
@@ -4151,7 +4151,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										className={ cssModObj.todGroSec }
 
 										data-element-name-hook='todGroSec'
-									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and help mode's Today catalog. */ }
+									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own todLisDiv list. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, and help mode's Today catalog. */ }
 
 
 										<GroHeaCom

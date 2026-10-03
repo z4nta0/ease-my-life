@@ -1058,7 +1058,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 			className={ cssModObj.todGroSec }
 
 			data-element-name-hook='todGroSec remGroSec'
-		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the Today page tour. */ }
+		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the todLisDiv list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the Today page tour. */ }
 
 
 			<header className={ cssModObj.groHeaHea }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders heaLefDiv and heaRigDiv below, marking itself reorderable while ediModBoo is on. */ }
