@@ -2061,9 +2061,9 @@ still passes.
 - **`@keyframes`**: a keyframe only one module uses moves into that
   module (Vite scopes its name and rewrites the `animation` reference);
   one several modules share stays global. A module that plays a global
-  keyframe writes its name as `global(obFade)`: CSS modules rename every
-  bare keyframe name in a module to a scoped one, so a plain `obFade`
-  would point at a keyframe that doesn't exist and silently not animate. It sits directly after the
+  keyframe writes its name as `global(overlayOpenFadeIn)`: CSS modules rename
+  every bare keyframe name in a module to a scoped one, so a plain
+  `overlayOpenFadeIn` would point at a keyframe that doesn't exist and silently not animate. It sits directly after the
   variants of the element that uses it, with one What/Why/How comment
   on its own `@keyframes` line. Its steps (`from`, `to`, `50%`, ...) get
   no comment of their own, are indented one tab, get the usual 2 blank
@@ -2083,6 +2083,12 @@ still passes.
   `fadeOut`, `spin`, `flip`, ...). Like class names, existing keyframes
   keep their current names while they move into modules; renaming them
   belongs to the design-system pass, where this rule may be refined.
+  - **A shared keyframe names its role** (decided 2026-10-02): a keyframe
+    in the global sheet that several elements play names segment 1 after
+    what those elements are (`card`, `check`, `confetti`, `footer`, ...)
+    rather than their HTML tag, since shared elements are mostly generic
+    `<div>`s and `<span>`s and a tag says nothing about what moves, e.g.
+    `cardRemoveSlideOut` or `overlayOpenFadeIn`.
 - **A rule with more than one selector** puts each selector on its own
   line, ending with `,`, and only the last one carries the `{` and the
   rule's comment, the same "once it's multi-line, one entry per line"
