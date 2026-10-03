@@ -10,7 +10,7 @@
  * type radio with each mode's hint, and the setting rows under the selected
  * mode (odds, boost, charge, fill, and the Active switch). The picker form
  * shows it as spaced fields with the radio in a bordered card; the Data tab
- * passes isaInlBoo, which adds the --inline modifier and lays every field out
+ * passes isaInlBoo, which adds the conConDiv--inline modifier and lays every field out
  * as a full-bleed row with hairline dividers, matching the other Data editors.
  * The selected mode keys off data-option-select-active, the Active switch off
  * its own aria-checked, and an invalid name off its own aria-invalid.
@@ -21,19 +21,19 @@
 
 
 
-/* #region cnd-controls */
+/* #region conConDiv */
 
-.cnd-controls { /* What: Conditional Controls. Why: The editor's fields stack as spaced blocks. How: This stacks them in a column. */
+.conConDiv { /* What: Conditional Controls Div. Why: The editor's fields stack as spaced blocks. How: This stacks them in a column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-p01 );
-	padding-top    : var( --spa-ver-m05 );
+	gap            : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	padding-top    : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
-.cnd-controls--inline { /* What: Inline Conditional Controls. Why: In the Data tab every field is a flush full-bleed row. How: This drops the gap and padding. */
+.conConDiv--inline { /* What: Inline Conditional Controls Div. Why: In the Data tab every field is a flush full-bleed row. How: This drops the gap and padding. */
 
 
 	gap     : 0;
@@ -42,134 +42,143 @@
 
 }
 
-/* #region np-field */
 
-.np-field { /* What: Editor Field. Why: Each field stacks its label over its input. How: This stacks them in a column. */
+/* #region forFieDiv */
+
+.forFieDiv,
+.forFieFie { /* What: Form Field Div And Fieldset. Why: Each field stacks its label over its input. How: This stacks them in a column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
-.cnd-controls--inline > .np-field { /* What: Inline Editor Field. Why: In the Data tab each field is a full-bleed row divided from the one above. How: This pads the field as a row under a hairline. */
+.conConDiv--inline > .forFieDiv { /* What: Inline Form Field Div. Why: In the Data tab each field is a full-bleed row divided from the one above. How: This pads the field as a row under a hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	gap        : var( --spa-ver-m03 );
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	gap        : var( --spa-ver-m03 );                            /* Spacing Vertical Base Minus 3 ~= 6.268px */
 	margin     : 0;
-	padding    : var( --spa-ver-m01 ) var( --spa-hor-bas );
+	padding    : var( --spa-ver-m01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.cnd-controls--inline > .np-field:first-child { /* What: First Inline Editor Field. Why: The editor's own top edge already closes the first row. How: This drops its hairline. */
+.conConDiv--inline > .forFieDiv:first-child { /* What: First Inline Form Field Div. Why: The editor's own top edge already closes the first row. How: This drops its hairline. */
 
 
 	border-top : 0;
 
 
 }
-.cnd-controls--inline > .np-field--cardtext { /* What: Inline Card Text Field. Why: In the Data tab the card text's label and help sit left of its input. How: This lays the field out as a centered row. */
+.conConDiv--inline > .forFieDiv--cardtext { /* What: Inline Card Text Form Field Div. Why: In the Data tab the card text's label and help sit left of its input. How: This lays the field out as a centered row. */
 
 
 	align-items     : center;
 	flex-direction  : row;
-	gap             : var( --spa-hor-bas );
+	gap             : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
 	justify-content : space-between;
 
 
 }
 
-.np-label { /* What: Field Label. Why: Each field is named above its input. How: This sets the label in medium weight. */
+.forLabLab,
+.forLabLeg { /* What: Form Label Label And Legend. Why: Each field is named above its input. How: This sets the label in medium weight. */
 
 
-	font-size      : var( --fon-siz-p01 );
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 
 
 }
 
-.cnd-controls--inline > .np-field--cardtext .np-cardtext-text { /* What: Inline Card Text Label. Why: The card text's label and help stack together beside the input. How: This stacks them in a capped column. */
+
+/* #region carTexDiv */
+
+.conConDiv--inline > .forFieDiv--cardtext .carTexDiv { /* What: Inline Card Text Div. Why: The card text's label and help stack together beside the input. How: This stacks them in a capped column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m05 );
-	max-width      : calc( var( --ver-rhy-p11 ) * 1rem );
+	gap            : var( --spa-ver-m05 );                /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	max-width      : calc( var( --ver-rhy-p11 ) * 1rem ); /* Vertical Rhythm Base Plus 11 ~= 321.273px */
 
 
 }
 
-.np-help { /* What: Field Help. Why: The help line explains what the card text is for. How: This sets muted body text with a capped line length. */
+.forHelPar { /* What: Form Help Paragraph. Why: The help line explains what the card text is for. How: This sets muted body text with a capped line length. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-p01 );
-	line-height : var( --ver-rhy-bas );
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 	margin      : 0;
-	max-width   : var( --tex-wid-sma );
+	max-width   : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
 	text-wrap   : pretty;
 
 
 }
 
-.np-input { /* What: Field Input. Why: Names and card text are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
+/* #endregion carTexDiv */
 
 
-	background    : var(--bac-pag-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-sma );
-	color         : var(--tex-mai-col);
-	font-family   : var(--fon-fam-mai);
-	font-size     : var( --fon-siz-p01 );
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );
-	margin-top    : var( --spa-ver-m07 );
-	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
+.forTexInp { /* What: Form Text Input. Why: Names and card text are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
+
+
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color var( --dur-tra-m01 );
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
 	width         : 100%;
 
 
 }
-.np-input[aria-invalid="true"] { /* What: Invalid Field Input. Why: A blank or colliding name has to stand out. How: This borders and insets the field in red, keying off the aria-invalid it already sets. */
+.forTexInp[aria-invalid='true'] { /* What: Invalid Form Text Input. Why: A blank or colliding name has to stand out. How: This borders and insets the field in red, keying off the aria-invalid it already sets. */
 
 
-	border-color : var( --err-mai-col );
-	box-shadow   : 0 0 0 var( --bor-wid-bas ) var( --err-mai-col ) inset;
-
-
-}
-.np-input::placeholder { /* What: Field Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
-
-
-	color   : var(--tex-mut-col);
-	opacity : 0.7;
+	border-color : var( --err-mai-col );                                  /* Error Main Color = oklch( 0.55 0.17 25 ) */
+	box-shadow   : 0 0 0 var( --bor-wid-bas ) var( --err-mai-col ) inset; /* Border Width Base ~= 1.160px, Error Main Color = oklch( 0.55 0.17 25 ) */
 
 
 }
-.np-input:focus { /* What: Focused Field Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+.forTexInp::placeholder { /* What: Form Text Input Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
 
 
-	border-color : var(--acc-mai-col);
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
-.cnd-controls--inline > .np-field--cardtext .np-input { /* What: Inline Card Text Input. Why: Beside its label, the input takes the row's remaining width up to a cap. How: This lets it grow and shrink within a rhythm step. */
+.forTexInp:focus { /* What: Focused Form Text Input. Why: The focused field should stand out. How: This borders it in the accent color. */
+
+
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.conConDiv--inline > .forFieDiv--cardtext .forTexInp { /* What: Inline Card Text Input. Why: Beside its label, the input takes the row's remaining width up to a cap. How: This lets it grow and shrink within a rhythm step. */
 
 
 	flex      : 1 1 auto;
-	max-width : calc( var( --ver-rhy-p10 ) * 1rem );
+	max-width : calc( var( --ver-rhy-p10 ) * 1rem ); /* Vertical Rhythm Base Plus 10 ~= 242.522px */
 	min-width : 0;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Field Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Form Text Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.np-input { /* What: Still Field Input. Why: The change should happen at once. How: This turns its transition off. */
+	.forTexInp { /* What: Still Form Text Input. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -180,33 +189,33 @@
 
 }
 
-.np-error { /* What: Field Error. Why: A blank or colliding name explains itself under the field. How: This sets a small red message. */
+.forErrPar { /* What: Form Error Paragraph. Why: A blank or colliding name explains itself under the field. How: This sets a small red message. */
 
 
-	color       : var( --err-dar-col );
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
-	margin      : var( --spa-ver-m03 ) 0 0;
+	color       : var( --err-dar-col );     /* Error Dark Color = oklch( 0.5 0.18 25 ) */
+	font-size   : var( --fon-siz-bas );     /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas );     /* Vertical Rhythm Base ~= 1.325 */
+	margin      : var( --spa-ver-m03 ) 0 0; /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 }
 
-/* #endregion np-field */
+/* #endregion forFieDiv */
 
 
 
-/* #region cnd-type-group */
+/* #region typGroDiv */
 
-.cnd-type-group { /* What: Type Group. Why: The type radio and the chosen type's settings read as one group. How: This stacks them in a column. */
+.typGroDiv { /* What: Type Group Div. Why: The type radio and the chosen type's settings read as one group. How: This stacks them in a column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m03 );
+	gap            : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 }
-.cnd-controls--inline .cnd-type-group { /* What: Inline Type Group. Why: In the Data tab the rows sit flush. How: This drops the gap. */
+.conConDiv--inline .typGroDiv { /* What: Inline Type Group Div. Why: In the Data tab the rows sit flush. How: This drops the gap. */
 
 
 	gap : 0;
@@ -214,7 +223,10 @@
 
 }
 
-fieldset.np-field { /* What: Type Fieldset. Why: The type radio is a real fieldset for its group name, stripped of the browser's frame. How: This clears its border, margin, and padding and lets it shrink. */
+
+/* #region forFieFie */
+
+.forFieFie { /* What: Form Field Fieldset. Why: The type radio is a real fieldset for its group name, stripped of the browser's frame. How: This clears its border, margin, and padding and lets it shrink. */
 
 
 	border    : 0;
@@ -224,18 +236,18 @@ fieldset.np-field { /* What: Type Fieldset. Why: The type radio is a real fields
 
 
 }
-.cnd-controls--inline .cnd-type-group > .np-field { /* What: Inline Type Fieldset. Why: In the Data tab the type's heading sits in a row under a hairline, its options full-bleed below. How: This pads only the top and draws the hairline. */
+.conConDiv--inline .typGroDiv > .forFieFie { /* What: Inline Form Field Fieldset. Why: In the Data tab the type's heading sits in a row under a hairline, its options full-bleed below. How: This pads only the top and draws the hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	gap        : var( --spa-ver-m02 );
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	gap        : var( --spa-ver-m02 );                            /* Spacing Vertical Base Minus 2 ~= 8.304px */
 	margin     : 0;
-	padding    : var( --spa-ver-m01 ) 0 0;
+	padding    : var( --spa-ver-m01 ) 0 0;                        /* Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like any other field label. How: This clears the legend's own padding and float. */
+.forLabLeg { /* What: Form Label Legend. Why: The fieldset's legend reads like any other field label. How: This clears the legend's own padding and float. */
 
 
 	float   : none;
@@ -244,42 +256,43 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 }
-.cnd-controls--inline .cnd-type-group > .np-field > .np-label { /* What: Inline Type Heading. Why: The heading lines up with the row padding around it. How: This insets it base horizontal spacing on each side. */
+.conConDiv--inline .typGroDiv > .forFieFie > .forLabLeg { /* What: Inline Form Label Legend. Why: The heading lines up with the row padding around it. How: This insets it base horizontal spacing on each side. */
 
 
-	padding : 0 var( --spa-hor-bas );
+	padding : 0 var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
 
 
 }
 
 
 
-/* #region cnd-mode-card */
+/* #region modCarDiv */
 
-.cnd-mode-card { /* What: Mode Card. Why: In the picker form the type options sit in a bordered card. How: This draws a rounded border that clips the options. */
+.modCarDiv { /* What: Mode Card Div. Why: In the picker form the type options sit in a bordered card. How: This draws a rounded border that clips the options. */
 
 
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-med );
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
 	overflow      : hidden;
 
 
 }
 
-/* #region rd-mode-radio */
 
-.rd-mode-radio { /* What: Mode Radio. Why: The type options stack edge to edge, pulled past the editor's padding between hairlines. How: This stacks them in a column bleeding base horizontal spacing each side. */
+/* #region conModDiv */
+
+.conModDiv { /* What: Conditional Mode Div. Why: The type options stack edge to edge, pulled past the editor's padding between hairlines. How: This stacks them in a column bleeding base horizontal spacing each side. */
 
 
-	border-bottom  : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-top     : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display        : flex;
 	flex-direction : column;
-	margin         : 0 calc( var( --spa-hor-bas ) * -1 );
+	margin         : 0 calc( var( --spa-hor-bas ) * -1 );             /* Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.cnd-mode-card .rd-mode-radio { /* What: Carded Mode Radio. Why: Inside its card the card's border already frames the options. How: This drops the bleed and both hairlines. */
+.modCarDiv .conModDiv { /* What: Carded Conditional Mode Div. Why: Inside its card the card's border already frames the options. How: This drops the bleed and both hairlines. */
 
 
 	border-bottom : 0;
@@ -288,90 +301,91 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 
 }
-.cnd-controls--inline .rd-mode-radio { /* What: Inline Mode Radio. Why: In the Data tab the options sit flush between the rows' hairlines. How: This drops the bleed and keeps the top hairline. */
+.conConDiv--inline .conModDiv { /* What: Inline Conditional Mode Div. Why: In the Data tab the options sit flush between the rows' hairlines. How: This drops the bleed and keeps the top hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	margin     : 0;
 
 
 }
 
-/* #region rd-mode-opt */
 
-.rd-mode-opt { /* What: Mode Option. Why: Each conditional type is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at. */
+/* #region modOptLab */
+
+.modOptLab { /* What: Mode Option Label. Why: Each conditional type is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at. */
 
 
-	--col-inn-del : var( --dur-tra-m03 );
-	--col-inn-dur : var( --dur-tra-p06 );
-	--col-inn-eas : var( --mot-dec-eas );
-	--col-inn-off : -8px;
-	--col-row-dur : var( --dur-tra-p06 );
+	--col-inn-del : var( --dur-tra-m03 );              /* Duration Transition Base Minus 3 ~= 67.9ms */
+	--col-inn-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
+	--col-inn-eas : var( --mot-dec-eas );              /* Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	--col-inn-off : calc( var( --spa-ver-m02 ) * -1 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	--col-row-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
 
 	align-items   : flex-start;
-	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col );      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	cursor        : pointer;
 	display       : flex;
-	gap           : var( --spa-hor-m01 );
-	padding                     : var( --spa-ver-m01 ) var( --spa-hor-bas );
-	position                    : relative;
-	transition                  : background var( --dur-tra-p02 ) var( --mot-sta-eas );
+	gap           : var( --spa-hor-m01 );                                 /* Spacing Horizontal Base Minus 1 = 11px */
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-bas );            /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
+	position      : relative;
+	transition    : background var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
 
 
 }
-.rd-mode-opt:last-child { /* What: Last Mode Option. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
+.modOptLab:last-child { /* What: Last Mode Option Label. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.rd-mode-opt:hover { /* What: Hovered Mode Option. Why: The option should respond to the pointer. How: This shades it. */
+.modOptLab:hover { /* What: Hovered Mode Option Label. Why: The option should respond to the pointer. How: This shades it. */
 
 
-	background : var( --bac-wel-col );
-
-
-}
-.rd-mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
-
-
-	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : calc( var( --bor-wid-lar ) * -1 );
+	background : var( --bac-wel-col ); /* Background Well Color = oklch( 0.96 0.004 240 ) */
 
 
 }
-.rd-mode-opt[data-option-select-active] { /* What: Selected Mode Option. Why: The chosen type should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option Label. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
 
 
-	background : var(--acc-tin-col);
-
-
-}
-.rd-mode-opt[data-option-select-active]:hover { /* What: Hovered Selected Mode Option. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
-
-
-	background : var(--acc-tin-col);
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );               /* Border Width Large ~= 2.035px */
 
 
 }
-.rd-mode-opt[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen type. How: This draws a thin accent strip down the option's left side. */
+.modOptLab[data-option-select-active] { /* What: Selected Mode Option Label. Why: The chosen type should stand out. How: This fills it in the soft accent, keying off data-option-select-active. */
 
 
-	background : var(--acc-mai-col);
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+.modOptLab[data-option-select-active]:hover { /* What: Hovered Selected Mode Option Label. Why: The selection shouldn't fade on hover. How: This keeps the soft accent. */
+
+
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+
+
+}
+.modOptLab[data-option-select-active]::before { /* What: Selected Mode Option Bar. Why: A bar on the edge marks the chosen type. How: This draws a thin accent strip down the option's left side. */
+
+
+	background : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	bottom     : 0;
 	content    : '';
 	left       : 0;
 	position   : absolute;
 	top        : 0;
-	width      : calc( var( --ver-rhy-m07 ) * 1rem );
+	width      : calc( var( --ver-rhy-m07 ) * 1rem ); /* Vertical Rhythm Base Minus 7 ~= 2.035px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option Label. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rd-mode-opt { /* What: Still Mode Option. Why: The change should happen at once. How: This turns its transition off. */
+	.modOptLab { /* What: Still Mode Option Label. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -382,7 +396,7 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 }
 
-.rd-mode-opt input { /* What: Mode Option Radio. Why: The native radio keeps keyboard and screen reader behavior while the dot draws the state. How: This hides it without removing it. */
+.modOptInp { /* What: Mode Option Input. Why: The native radio keeps keyboard and screen reader behavior while the dot draws the state. How: This hides it without removing it. */
 
 
 	height         : 0;
@@ -394,42 +408,42 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 }
 
-.rd-mode-dot { /* What: Mode Option Dot. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
+.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
 
 
-	border        : var( --bor-wid-bas ) solid var(--bor-mai-col);
+	border        : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 50%;
 	flex          : 0 0 auto;
-	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	margin-top    : var( --spa-ver-m09 );
+	height        : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	margin-top    : var( --spa-ver-m09 );                            /* Spacing Vertical Base Minus 9 ~= 1.160px */
 	position      : relative;
-	transition    : border-color var( --dur-tra-m01 );
-	width         : calc( var( --ver-rhy-bas ) * 1rem );
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.rd-mode-opt[data-option-select-active] .rd-mode-dot { /* What: Selected Mode Option Dot. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
+.modOptLab[data-option-select-active] .modDotSpa { /* What: Selected Mode Dot Span. Why: The chosen option's dot rings in the accent. How: This borders it in the accent. */
 
 
-	border-color : var(--acc-mai-col);
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.rd-mode-opt[data-option-select-active] .rd-mode-dot::after { /* What: Selected Mode Option Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
+.modOptLab[data-option-select-active] .modDotSpa::after { /* What: Selected Mode Dot Fill. Why: The chosen option's dot is filled. How: This draws an accent disc inside the ring. */
 
 
-	background    : var(--acc-mai-col);
+	background    : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius : 50%;
 	content       : '';
-	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
+	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
 	position      : absolute;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option Dot. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Dot Span. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rd-mode-dot { /* What: Still Mode Option Dot. Why: The change should happen at once. How: This turns its transition off. */
+	.modDotSpa { /* What: Still Mode Dot Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -440,71 +454,74 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 }
 
-/* #region rd-mode-text */
 
-.rd-mode-text { /* What: Mode Option Text. Why: The type's name sits over its hints. How: This stacks them in a column that can shrink. */
+/* #region modTexSpa */
+
+.modTexSpa { /* What: Mode Text Span. Why: The type's name sits over its hints. How: This stacks them in a column that can shrink. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m06 );
+	gap            : var( --spa-ver-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px */
 	min-width      : 0;
 
 
 }
 
-.rd-mode-name { /* What: Mode Option Name. Why: The type's name leads the option. How: This sets it in medium weight. */
+.modNamSpa { /* What: Mode Name Span. Why: The type's name leads the option. How: This sets it in medium weight. */
 
 
-	font-size      : var( --fon-siz-p01 );
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.005em;
 
 
 }
 
-.rd-mode-hint { /* What: Mode Option Hint. Why: Each type explains itself under its name. How: This sets small muted text on its own line. */
+.modHinSpa { /* What: Mode Hint Span. Why: Each type explains itself under its name. How: This sets small muted text on its own line. */
 
 
-	color       : var(--tex-mut-col);
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display     : block;
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 	text-wrap   : pretty;
 
 
 }
-.rd-mode-hint + .rd-mode-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+.modHinSpa + .modHinSpa { /* What: Following Mode Hint Span. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
-	margin-top : var( --spa-ver-m02 );
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
 
-/* #endregion rd-mode-text */
+/* #endregion modTexSpa */
 
-/* #endregion rd-mode-opt */
+/* #endregion modOptLab */
 
-/* #endregion rd-mode-radio */
+/* #endregion conModDiv */
 
-/* #endregion cnd-mode-card */
+/* #endregion modCarDiv */
+
+/* #endregion forFieFie */
 
 
 
-/* #region cnd-typectl */
+/* #region conTypDiv */
 
-.cnd-typectl { /* What: Type Settings. Why: The chosen type's settings sit just under the radio. How: This stacks the setting rows in a flush column. */
+.conTypDiv { /* What: Conditional Type Div. Why: The chosen type's settings sit just under the radio. How: This stacks the setting rows in a flush column. */
 
 
 	display        : flex;
 	flex-direction : column;
 	gap            : 0;
-	margin-top     : var( --spa-ver-m05 );
+	margin-top     : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
-.cnd-controls--inline .cnd-typectl { /* What: Inline Type Settings. Why: In the Data tab the rows sit flush against the radio. How: This drops the margin. */
+.conConDiv--inline .conTypDiv { /* What: Inline Conditional Type Div. Why: In the Data tab the rows sit flush against the radio. How: This drops the margin. */
 
 
 	margin : 0;
@@ -512,88 +529,97 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 }
 
-/* #region pie-row */
 
-.cnd-typectl .pie-row { /* What: Setting Row. Why: Each setting under the chosen type is one row, name left and control right. How: This spreads them across a short row. */
+/* #region ediRowDiv */
+
+.ediRowDiv { /* What: Editor Row Div. Why: Each setting under the chosen type is one row, name left and control right. How: This spreads them across a short row. */
 
 
 	align-items     : center;
 	display         : flex;
-	gap             : var( --spa-hor-m01 );
+	gap             : var( --spa-hor-m01 );                /* Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : space-between;
-	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding         : var( --spa-ver-m05 ) 0;
+	min-height      : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding         : var( --spa-ver-m05 ) 0;              /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
-.cnd-controls--inline .cnd-typectl .pie-row { /* What: Inline Setting Row. Why: In the Data tab each setting is a full-bleed row divided from the one above. How: This pads the row taller under a hairline. */
+.conConDiv--inline .ediRowDiv { /* What: Inline Editor Row Div. Why: In the Data tab each setting is a full-bleed row divided from the one above. How: This pads the row taller under a hairline. */
 
 
-	border-top : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	min-height : calc( var( --ver-rhy-p05 ) * 1rem );
-	padding    : var( --spa-ver-m03 ) var( --spa-hor-bas );
-
-
-}
-.cnd-controls--inline > .cnd-type-group > .cnd-typectl:last-child .pie-row { /* What: Inline Active Row. Why: The standalone Active row doubles its bottom hairline against the footer's top one, like the other Data editors. How: This adds a bottom hairline. */
-
-
-	border-bottom : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	min-height : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	padding    : var( --spa-ver-m03 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
+.conConDiv--inline > .typGroDiv > .conTypDiv:last-child .ediRowDiv { /* What: Inline Active Editor Row Div. Why: The standalone Active row doubles its bottom hairline against the footer's top one, like the other Data editors. How: This adds a bottom hairline. */
 
-/* #region pie-rowlabel */
 
-.cnd-typectl .pie-rowlabel { /* What: Setting Label. Why: A setting's name sits over its live explanation. How: This stacks them in a tight column. */
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+
+
+}
+
+
+/* #region ediLabDiv */
+
+.ediLabDiv { /* What: Editor Label Div. Why: A setting's name sits over its live explanation. How: This stacks them in a tight column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m09 );
+	gap            : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
 
 
 }
 
-.pie-lbl-row { /* What: Setting Label Row. Why: A setting's name can carry an inline note. How: This lines them up in an inline row. */
+
+/* #region namRowSpa */
+
+.namRowSpa { /* What: Name Row Span. Why: A setting's name can carry an inline note. How: This lines them up in an inline row. */
 
 
 	align-items : center;
 	display     : inline-flex;
-	gap         : var( --spa-hor-m03 );
+	gap         : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 
 
 }
 
-.cnd-typectl .pie-lbl { /* What: Setting Name. Why: Each setting row leads with its name. How: This sets it in medium weight. */
+.ediNamSpa { /* What: Editor Name Span. Why: Each setting row leads with its name. How: This sets it in medium weight. */
 
 
-	font-size   : var( --fon-siz-p01 );
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 500;
 
 
 }
 
-.cnd-typectl .pie-sub { /* What: Setting Explanation. Why: The line under a setting explains its current value. How: This sets it small and muted. */
+/* #endregion namRowSpa */
 
 
-	color     : var(--tex-mut-col);
-	font-size : var( --fon-siz-bas );
+.ediSubSpa { /* What: Editor Sub Span. Why: The line under a setting explains its current value. How: This sets it small and muted. */
 
 
-}
-
-.set-sub-fade { /* What: Fading Setting Text. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
-
-
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-bas ); /* Font Size Base = 11px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Setting Text. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+.ediNamSpa--fade,
+.ediSubSpa--fade { /* What: Fading Editor Name And Sub Spans. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	.set-sub-fade { /* What: Still Fading Setting Text. Why: The change should happen at once. How: This turns its animation off. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Editor Spans. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.ediNamSpa--fade,
+	.ediSubSpa--fade { /* What: Still Fading Editor Spans. Why: The change should happen at once. How: This turns their animation off. */
 
 
 		animation : none;
@@ -604,148 +630,132 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 }
 
-/* #endregion pie-rowlabel */
+/* #endregion ediLabDiv */
 
 
 
-/* #region pie-ctl */
-
-.cnd-typectl .pie-ctl { /* What: Setting Control. Why: A setting's field and unit stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
+.weiNonSpa { /* What: Weight None Span. Why: A random conditional has no odds to set, and says so where the control would be. How: This sets the note small and muted at its natural size. */
 
 
-	align-items : center;
-	display     : flex;
-	flex        : 0 0 auto;
-	gap         : var( --spa-hor-m02 );
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	flex      : 0 0 auto;
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 
 
 }
 
-.np-ease-unit { /* What: Setting Unit. Why: The unit after a number reads quieter than the number. How: This sets it muted, centered on the field. */
 
+/* #region weiSteDiv */
 
-	align-self : center;
-	color      : var(--tex-mut-col);
-	font-size  : var( --fon-siz-p01 );
-
-
-}
-.cnd-typectl .pie-ctl .np-ease-unit { /* What: Row Setting Unit. Why: Inside a setting row the unit sits a size smaller. How: This drops it to the base font size. */
-
-
-	font-size : var( --fon-siz-bas );
-
-
-}
-
-/* #endregion pie-ctl */
-
-
-
-/* #region weight-stepper */
-
-.weight-stepper { /* What: Odds Stepper. Why: The odds step up and down in a compact pill. How: This draws a rounded outlined pill around the two buttons and the value. */
+.weiSteDiv { /* What: Weight Stepper Div. Why: The odds step up and down in a compact pill. How: This draws a rounded outlined pill around the two buttons and the value. */
 
 
 	align-items   : center;
-	background    : var(--bac-pag-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	display       : inline-flex;
 
 
 }
 
-.weight-stepper button { /* What: Odds Step Button. Why: Each end of the pill is a small step button. How: This sizes a square hit area with a muted glyph. */
+.weiSteBut { /* What: Weight Step Button. Why: Each end of the pill is a small step button. How: This sizes a square hit area with a muted glyph. */
 
 
 	align-items     : center;
-	color           : var(--tex-mut-col);
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	font-size       : var( --fon-siz-p01 );
-	height          : calc( var( --ver-rhy-p02 ) * 1rem );
+	font-size       : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	height          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	width           : calc( var( --ver-rhy-p02 ) * 1rem );
+	width           : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 
 
 }
-.weight-stepper button:hover:not(:disabled) { /* What: Hovered Odds Step Button. Why: A live step button should respond to the pointer. How: This darkens its glyph. */
+.weiSteBut:hover:not( :disabled ) { /* What: Hovered Weight Step Button. Why: A live step button should respond to the pointer. How: This darkens its glyph. */
 
 
-	color : var(--tex-mai-col);
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.weight-stepper button:disabled { /* What: Disabled Odds Step Button. Why: A step past the odds' limit is unavailable and should look it. How: This dims the button and drops the pointer cursor. */
+.weiSteBut:disabled { /* What: Disabled Weight Step Button. Why: A step past the odds' limit is unavailable and should look it. How: This dims the button and drops the pointer cursor. */
 
 
 	cursor  : default;
-	opacity : 0.35;
+	opacity : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
 
 
 }
 
-.weight-val { /* What: Odds Value. Why: The current odds read between the step buttons. How: This sets them in small muted tabular mono type. */
+.weiValSpa { /* What: Weight Value Span. Why: The current odds read between the step buttons. How: This sets them in small muted tabular mono type. */
 
 
-	color                : var(--tex-mut-col);
-	font-family          : var(--fon-fam-sec);
-	font-size            : var( --fon-siz-bas );
+	color                : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );   /* Font Size Base = 11px */
 	font-variant-numeric : tabular-nums;
-	padding              : 0 var( --spa-hor-m02 );
+	padding              : 0 var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
 
-/* #endregion weight-stepper */
+/* #endregion weiSteDiv */
 
 
+/* #region ediConDiv */
 
-.cnd-typectl .pie-noweight { /* What: No Weight Note. Why: A random conditional has no odds to set, and says so where the control would be. How: This sets the note small and muted at its natural size. */
+.ediConDiv { /* What: Editor Control Div. Why: A setting's field and unit stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
 
 
-	color     : var(--tex-mut-col);
-	flex      : 0 0 auto;
-	font-size : var( --fon-siz-p01 );
+	align-items : center;
+	display     : flex;
+	flex        : 0 0 auto;
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
 
+.easUniSpa { /* What: Ease Unit Span. Why: The unit after a number reads quieter than the number. How: This sets it small and muted, centered on the field. */
 
 
-/* #region switch */
+	align-self : center;
+	color      : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size  : var( --fon-siz-bas ); /* Font Size Base = 11px */
 
-.switch { /* What: Active Switch. Why: A conditional turns active or inactive with a switch. How: This draws a pill track whose knob slides across, fading its color. */
+
+}
+
+/* #endregion ediConDiv */
 
 
-	background    : var(--bor-mai-col);
+/* #region togSwiBut */
+
+.togSwiBut { /* What: Toggle Switch Button. Why: A conditional turns active or inactive with a switch that keeps its size in its row. How: This draws a pill track whose knob slides across, fading its color. */
+
+
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
-	height        : calc( var( --ver-rhy-p01 ) * 1rem );
+	cursor        : pointer;
+	flex          : 0 0 auto;
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	position      : relative;
-	transition    : background var( --dur-tra-bas );
-	width         : calc( var( --ver-rhy-p03 ) * 1rem );
+	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
-.switch[aria-checked="true"] { /* What: On Active Switch. Why: An active conditional reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
+.togSwiBut[aria-checked='true'] { /* What: On Toggle Switch Button. Why: An active conditional reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
 
 
-	background : var(--acc-mai-col);
-
-
-}
-.cnd-typectl .switch { /* What: Row Active Switch. Why: In a setting row the switch keeps its size and reads as clickable. How: This stops it shrinking and sets the pointer cursor. */
-
-
-	cursor : pointer;
-	flex   : 0 0 auto;
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Active Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Toggle Switch Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.switch { /* What: Still Active Switch. Why: The change should happen at once. How: This turns its transition off. */
+	.togSwiBut { /* What: Still Toggle Switch Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -756,32 +766,32 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 }
 
-.switch i { /* What: Active Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+.swiKnoIta { /* What: Switch Knob Italic. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
 
 
-	background    : var(--bac-pag-col);
+	background    : var( --bac-pag-col );                                               /* Background Page Color = oklch( 0.985 0.003 240 ) */
 	border-radius : 50%;
-	box-shadow    : var( --ele-sma-sha );
-	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	box-shadow    : var( --ele-sma-sha );                                               /* Elevation Small Shadow, about 0 1.2px 2px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform var( --dur-tra-bas );
-	width         : calc( var( --ver-rhy-bas ) * 1rem );
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.switch[aria-checked="true"] i { /* What: On Active Switch Knob. Why: An active switch has its knob on the right. How: This slides the knob across. */
+.togSwiBut[aria-checked='true'] .swiKnoIta { /* What: On Switch Knob Italic. Why: An active switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) );
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px, Vertical Rhythm Base Plus 1 ~= 19.304px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Active Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Switch Knob Italic. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.switch i { /* What: Still Active Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -792,14 +802,14 @@ legend.np-label { /* What: Type Heading. Why: The fieldset's legend reads like a
 
 }
 
-/* #endregion switch */
+/* #endregion togSwiBut */
 
-/* #endregion pie-row */
+/* #endregion ediRowDiv */
 
-/* #endregion cnd-typectl */
+/* #endregion conTypDiv */
 
-/* #endregion cnd-type-group */
+/* #endregion typGroDiv */
 
-/* #endregion cnd-controls */
+/* #endregion conConDiv */
 
 

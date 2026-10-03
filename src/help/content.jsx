@@ -239,7 +239,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCond* entries were copied over for this pass. // padYcoNum:0, .cnd-controls--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
+	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCond* entries were copied over for this pass. // padYcoNum:0, .conConDiv--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
 	{ // What: Conditional Card Text Help Item. Why: This is the on-demand help tip for the Conditional Card Text element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -718,7 +718,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PickerControls' own "How it picks" group, ConditionalEditor has its own separate .rd-mode-radio inside .cnd-controls, which doesn't live under .ctlGroFie--picks.
+	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PickerControls' own "How it picks" group, ConditionalEditor has its own separate .conModDiv inside .conConDiv, which doesn't live under .ctlGroFie--picks.
 
 
 		bodEle    : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
@@ -1571,7 +1571,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// Deliberately doesn't re-explain each type, every option already has its own ruleset/explanation copy right there on the page, same as newPickerMode's own comment. // padYcoNum: 0, this whole cluster (Type/Weight/Odds/Boost/Charge Controls/Active) sits close enough together, .cnd-type-group's own gap to a sibling block is only 6px, and Odds-to-Boost specifically share the SAME block with next to no gap at all, that the default 8px pad would overlap somewhere no matter which type is selected. Zero pad on all of them relies on newCondActive's own padYcoNum to open a gap instead (see its comment), same "let one side of the boundary do the work" approach as EntEdiCom's itemWeight/itemBoost.
+	// Deliberately doesn't re-explain each type, every option already has its own ruleset/explanation copy right there on the page, same as newPickerMode's own comment. // padYcoNum: 0, this whole cluster (Type/Weight/Odds/Boost/Charge Controls/Active) sits close enough together, .typGroDiv's own gap to a sibling block is only 6px, and Odds-to-Boost specifically share the SAME block with next to no gap at all, that the default 8px pad would overlap somewhere no matter which type is selected. Zero pad on all of them relies on newCondActive's own padYcoNum to open a gap instead (see its comment), same "let one side of the boundary do the work" approach as EntEdiCom's itemWeight/itemBoost.
 	{ // What: Conditional Type Help Item. Why: This is the on-demand help tip for the Conditional Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
