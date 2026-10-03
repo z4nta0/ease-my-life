@@ -173,7 +173,7 @@
 
 
 }
-.basRowDiv:not(.basRowDiv--group) .basLabSpa { /* What: Name Label. Why: The name row is centered, so its label needs no nudge. How: This drops the top padding. */
+.basRowDiv:not( .basRowDiv--group ) .basLabSpa { /* What: Name Label. Why: The name row is centered, so its label needs no nudge. How: This drops the top padding. */
 
 
 	padding-top : 0;
@@ -540,7 +540,7 @@
 
 
 }
-.groOkaBut:not(:disabled):hover { /* What: Hovered Confirm Button. Why: A live confirm should respond to the pointer. How: This tints it in the accent. */
+.groOkaBut:not( :disabled ):hover { /* What: Hovered Confirm Button. Why: A live confirm should respond to the pointer. How: This tints it in the accent. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -659,7 +659,7 @@
 
 
 }
-.modOptLab:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
+.modOptLab:has( input:focus-visible ) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus, though the radio itself is hidden. How: This outlines the option while its input has visible focus. */
 
 
 	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -834,7 +834,7 @@
 
 }
 .ctlGroDiv--sched .schLinDiv:last-child,
-.ctlGroDiv--items:not(:has(.easConDiv)) .schLinDiv:last-child { /* What: Last Setting Row. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
+.ctlGroDiv--items:not( :has( .easConDiv ) ) .schLinDiv:last-child { /* What: Last Setting Row. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
