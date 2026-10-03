@@ -2023,6 +2023,16 @@ still passes.
   carry styling, since it changes what assistive technology announces.
   Animation-trigger classes (`is-celebrating`, `is-pulsing`,
   `is-closing`, ...) stay module classes, per the exception above.
+  - **A converted modifier keeps its old specificity** (decided
+    2026-10-03): turning `.x.is-state` (2 classes) into `.x--state` (1
+    class) drops its specificity, so wherever the old selector won by
+    specificity rather than order, the base class stays chained in
+    (`.x.x--state`), in the base rule and its `@media` variants alike.
+    The common case is an animation trigger beside a reduced-motion
+    `.x { animation : none }`: without the chain the modifier's
+    animation loses, its end event never fires, and the state it waits
+    on gets stuck (the Pickers add-item close, fixed in `3e21a11`).
+    Check each converted trigger with reduced motion on.
 - **Other `data-*` attribute names** (state attributes, and any future
   attribute) are kebab-case and built like any other name (name,
   descriptor, purpose, in that order), but from 3 full words with no
