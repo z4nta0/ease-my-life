@@ -25,150 +25,152 @@
 
 
 
-/* #region picker-view */
+/* #region picForDiv */
 
-.picker-view { /* What: Picker Form. Why: The header, steps, and current step stack as one form. How: This stacks them in a spaced column. */
+.picForDiv { /* What: Picker Form Div. Why: The header, steps, and current step stack as one form. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-p01 );
+	gap            : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
 
-/* #region picker-h */
 
-.picker-h { /* What: Form Header. Why: The kicker and title head the form. How: This lays them out in a top-aligned row. */
+/* #region forHeaHea */
+
+.forHeaHea { /* What: Form Header Header. Why: The kicker and title head the form. How: This lays them out in a top-aligned row. */
 
 
 	align-items     : flex-start;
 	display         : flex;
-	gap             : var( --spa-hor-bas );
+	gap             : var( --spa-hor-bas ); /* Spacing Horizontal Base ~= 14.572px */
 	justify-content : space-between;
 
 
 }
 
-.kicker { /* What: Kicker. Why: A small eyebrow label names whether the form creates or edits. How: This sets it in small uppercase muted mono type. */
+.forKicDiv { /* What: Form Kicker Div. Why: A small eyebrow label names whether the form creates or edits. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	font-weight    : 500;
 	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-p01 );
+	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
 	text-transform : uppercase;
 
 
 }
 
-.picker-title { /* What: Form Title. Why: The form's title, or the picker's name while editing, heads the form. How: This sets it large and tight. */
+.forTitHea { /* What: Form Title Heading. Why: The form's title, or the picker's name while editing, heads the form. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p03 );
+	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	margin         : var( --spa-ver-m05 ) 0 0;
+	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
 
-/* #endregion picker-h */
+/* #endregion forHeaHea */
 
 
 
-/* #region np-steps */
+/* #region steBarDiv */
 
-.np-steps { /* What: Step Bar. Why: The form's two steps read as a small numbered bar joined by a line. How: This lines the steps and their connector up in a row. */
+.steBarDiv { /* What: Step Bar Div. Why: The form's two steps read as a small numbered bar joined by a line. How: This lines the steps and their connector up in a row. */
 
 
 	align-items : center;
 	display     : flex;
-	gap         : var( --spa-hor-m01 );
-	margin      : var( --spa-ver-m07 ) 0 var( --spa-ver-m05 );
+	gap         : var( --spa-hor-m01 );                        /* Spacing Horizontal Base Minus 1 = 11px */
+	margin      : var( --spa-ver-m07 ) 0 var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
 
-/* #region np-step */
 
-.np-step { /* What: Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label. */
+/* #region forSteBut */
+
+.forSteBut { /* What: Form Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label. */
 
 
 	align-items : center;
 	background  : none;
 	border      : none;
-	color       : var(--tex-mut-col);
+	color       : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor      : pointer;
 	display     : inline-flex;
-	gap         : var( --spa-hor-m02 );
-	padding     : var( --spa-ver-m07 ) var( --spa-hor-m07 );
+	gap         : var( --spa-hor-m02 );                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding     : var( --spa-ver-m07 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 7 ~= 2.035px */
 
 
 }
-.np-step:disabled { /* What: Unavailable Step Button. Why: The Items step can't be reached until the details are ready. How: This drops the pointer cursor. */
+.forSteBut:disabled { /* What: Unavailable Step Button. Why: The Items step can't be reached until the details are ready. How: This drops the pointer cursor. */
 
 
 	cursor : default;
 
 
 }
-.np-step[data-step-current-active] { /* What: Current Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
+.forSteBut[data-step-current-active] { /* What: Current Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
 
 
-	color : var(--tex-mai-col);
-
-
-}
-.np-step[data-step-done-active] { /* What: Finished Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
-
-
-	color : var(--tex-mai-col);
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
+.forSteBut[data-step-done-active] { /* What: Finished Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
 
-.np-step-num { /* What: Step Number. Why: Each step shows its number, or a check once done, in a small circle. How: This centers it in an outlined circle at the large rhythm step that fades between states. */
+
+	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+
+
+}
+
+.steNumSpa { /* What: Step Number Span. Why: Each step shows its number, or a check once done, in a small circle. How: This centers it in an outlined circle at the large rhythm step that fades between states. */
 
 
 	align-items     : center;
-	border          : var( --bor-wid-bas ) solid var(--bor-mai-col);
+	border          : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : 999px;
-	color           : var(--tex-mut-col);
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : inline-flex;
-	font-family     : var(--fon-fam-sec);
-	font-size       : var( --fon-siz-bas );
+	font-family     : var( --fon-fam-sec );                                                                           /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas );                                                                           /* Font Size Base = 11px */
 	font-weight     : 600;
-	height          : calc( var( --ver-rhy-p01 ) * 1rem );
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	justify-content : center;
-	transition      : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
-	width           : calc( var( --ver-rhy-p01 ) * 1rem );
+	transition      : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width           : calc( var( --ver-rhy-p01 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 
 
 }
-.np-step[data-step-current-active] .np-step-num { /* What: Current Step Number. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
+.forSteBut[data-step-current-active] .steNumSpa { /* What: Current Step Number. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
 
 
-	background   : var(--acc-mai-col);
-	border-color : var(--acc-mai-col);
-	color        : var( --tex-acc-col );
-
-
-}
-.np-step[data-step-done-active] .np-step-num { /* What: Finished Step Number. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
-
-
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --tex-acc-col ); /* Text Accent Color = oklch( 1 0 0 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Step Number. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+.forSteBut[data-step-done-active] .steNumSpa { /* What: Finished Step Number. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
 
 
-	.np-step-num { /* What: Still Step Number. Why: The change should happen at once. How: This turns its transition off. */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Step Number. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.steNumSpa { /* What: Still Step Number Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -179,46 +181,45 @@
 
 }
 
-.np-step-lbl { /* What: Step Label. Why: Each step names itself beside its number. How: This sets it in medium weight. */
+.steLabSpa { /* What: Step Label Span. Why: Each step names itself beside its number. How: This sets it in medium weight. */
 
 
-	font-size   : var( --fon-siz-p01 );
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 500;
 
 
 }
 
-/* #endregion np-step */
+/* #endregion forSteBut */
 
 
+.steLinSpa { /* What: Step Line Span. Why: A short line joins the two steps. How: This draws a short line as a top border, so it snaps to a whole pixel. */
 
-.np-step-line { /* What: Step Connector. Why: A short line joins the two steps. How: This draws a short line as a top border, so it snaps to a whole pixel. */
 
-
-	border-top : var( --bor-wid-bas ) solid var(--bor-mai-col);
-	flex       : 0 0 calc( var( --ver-rhy-p02 ) * 1rem );
+	border-top : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	flex       : 0 0 calc( var( --ver-rhy-p02 ) * 1rem );         /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	height     : 0;
 
 
 }
 
-/* #endregion np-steps */
+/* #endregion steBarDiv */
 
 
 
-/* #region tab-fade */
+/* #region steFadDiv */
 
-.tab-fade { /* What: Step Fade. Why: Each step fades in as the form switches to it. How: This plays the shared tab fade. */
+.steFadDiv { /* What: Step Fade Div. Why: Each step fades in as the form switches to it. How: This plays the shared tab fade. */
 
 
-	animation : global(tabOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global tabOpenFadeIn Keyframes. Why: The tabOpenFadeIn keyframes are shared with the app shell and the Pickers tab, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( tabOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global tabOpenFadeIn Keyframes. Why: The tabOpenFadeIn keyframes are shared with the app shell and the Pickers tab, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Step Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Step Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.tab-fade { /* What: Still Step Fade. Why: The change should happen at once. How: This turns its animation off. */
+	.steFadDiv { /* What: Still Step Fade Div. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -229,59 +230,61 @@
 
 }
 
-.picker-hint { /* What: Step Hint. Why: A hint opens each step, explaining what it asks for. How: This sets muted body text with a capped line length. */
+.steHinPar { /* What: Step Hint Paragraph. Why: A hint opens each step, explaining what it asks for. How: This sets muted body text with a capped line length. */
 
 
-	color     : var(--tex-mut-col);
-	font-size : var( --fon-siz-p01 );
+	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	margin    : 0;
-	max-width : var( --tex-wid-bas );
+	max-width : var( --tex-wid-bas ); /* Text Width Base Maximum ~= 29.207em */
 	text-wrap : pretty;
 
 
 }
-.picker-hint + .picker-hint { /* What: Following Step Hint. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
+.steHinPar + .steHinPar { /* What: Following Step Hint. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
 
 
-	margin-top : var( --spa-ver-m02 );
-
-
-}
-.np-weight-note { /* What: Mode Note. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up by extra small 6 vertical spacing (about 2px). */
-
-
-	margin-top : calc( var( --spa-ver-m07 ) * -1 );
+	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
+.steHinPar--mode { /* What: Mode Step Hint Paragraph. Why: The Items step's note about the chosen mode tucks up under the hint above it. How: This pulls it up by extra small 6 vertical spacing (about 2px). */
+
+
+	margin-top : calc( var( --spa-ver-m07 ) * -1 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+
+
+}
 
 
 
-/* #region np-fields */
+/* #region picFieDiv */
 
-.np-fields { /* What: Details Fields. Why: The Details step's fields stack with room between them. How: This stacks them in a widely spaced column. */
+.picFieDiv { /* What: Picker Fields Div. Why: The Details step's fields stack with room between them. How: This stacks them in a widely spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-p02 );
-	margin-top     : var( --spa-ver-bas );
+	gap            : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	margin-top     : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
 
 
 }
 
-/* #region np-field */
 
-.np-field { /* What: Field. Why: Each field stacks its label, help, and control. How: This stacks them in a column. */
+/* #region forFieDiv */
+
+.forFieDiv,
+.forFieFie { /* What: Form Field Div And Fieldset. Why: Each field stacks its label, help, and control. How: This stacks them in a column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
-fieldset.np-field { /* What: Mode Fieldset. Why: The mode radio is a real fieldset for its group name, stripped of the browser's frame. How: This clears its border, margin, and padding and lets it shrink. */
+.forFieFie { /* What: Form Field Fieldset. Why: The mode radio is a real fieldset for its group name, stripped of the browser's frame. How: This clears its border, margin, and padding and lets it shrink. */
 
 
 	border    : 0;
@@ -291,31 +294,33 @@ fieldset.np-field { /* What: Mode Fieldset. Why: The mode radio is a real fields
 
 
 }
-.np-daily-group { /* What: Daily Generator Field. Why: The toggle and its schedule sit closer together than other fields' pieces. How: This tightens the gap. */
+.forFieDiv--daily { /* What: Daily Form Field Div. Why: The toggle and its schedule sit closer together than other fields' pieces. How: This tightens the gap. */
 
 
-	gap : var( --spa-ver-m05 );
-
-
-}
-.np-tour-name { /* What: Tour Name Field. Why: The Items step's name field, shown during the tour, needs room above and below. How: This adds base vertical spacing margins. */
-
-
-	margin : var( --spa-ver-bas ) 0 var( --spa-ver-bas );
+	gap : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
+.forFieDiv--tour { /* What: Tour Form Field Div. Why: The Items step's name field, shown during the tour, needs room above and below. How: This adds base vertical spacing margins. */
 
-.np-label { /* What: Field Label. Why: Each field is named above its control. How: This sets the label in medium weight. */
+
+	margin : var( --spa-ver-bas ) 0 var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
 
 
-	font-size      : var( --fon-siz-p01 );
+}
+
+.forLabLab,
+.forLabSpa,
+.forLabLeg { /* What: Form Label Label, Span, And Legend. Why: Each field is named above its control. How: This sets the label in medium weight. */
+
+
+	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.01em;
 
 
 }
-legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like any other field label. How: This clears the legend's own padding and float. */
+.forLabLeg { /* What: Form Label Legend. Why: The fieldset's legend reads like any other field label. How: This clears the legend's own padding and float. */
 
 
 	float   : none;
@@ -325,30 +330,30 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.np-help { /* What: Field Help. Why: The help line explains what each field is for. How: This sets muted body text with a capped line length. */
+.forHelPar { /* What: Form Help Paragraph. Why: The help line explains what each field is for. How: This sets muted body text with a capped line length. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-p01 );
-	line-height : var( --ver-rhy-bas );
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 	margin      : 0;
-	max-width   : var( --tex-wid-sma );
+	max-width   : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
 	text-wrap   : pretty;
 
 
 }
 
-.set-sub-fade { /* What: Fading Help. Why: Help that changes with its switch fades in each time it does. How: This plays the shared fade whenever its keyed paragraph remounts. */
+.forHelPar--fade { /* What: Fading Form Help Paragraph. Why: Help that changes with its switch fades in each time it does. How: This plays the shared fade whenever its keyed paragraph remounts. */
 
 
-	animation : global(subtitleChangeFadeIn) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fading Help. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Fading Help. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.set-sub-fade { /* What: Still Fading Help. Why: The change should happen at once. How: This turns its animation off. */
+	.forHelPar--fade { /* What: Still Fading Form Help Paragraph. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -359,51 +364,51 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.np-input { /* What: Text Input. Why: Names are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
+.forTexInp { /* What: Form Text Input. Why: Names are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
 
 
-	background    : var(--bac-pag-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-sma );
-	color         : var(--tex-mai-col);
-	font-family   : var(--fon-fam-mai);
-	font-size     : var( --fon-siz-p01 );
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );
-	margin-top    : var( --spa-ver-m07 );
-	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family   : var( --fon-fam-mai );                            /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	margin-top    : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	max-width     : calc( var( --ver-rhy-p11 ) * 1rem );             /* Vertical Rhythm Base Plus 11 ~= 321.273px */
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );
-	transition    : border-color var( --dur-tra-m01 );
+	padding       : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
 	width         : 100%;
 
 
 }
-.np-input::placeholder { /* What: Text Input Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
+.forTexInp::placeholder { /* What: Text Input Placeholder. Why: The hint should read quieter than real input. How: This sets it muted and faded. */
 
 
-	color   : var(--tex-mut-col);
-	opacity : 0.7;
-
-
-}
-.np-input:focus { /* What: Focused Text Input. Why: The focused field should stand out. How: This borders it in the accent color. */
-
-
-	border-color : var(--acc-mai-col);
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
-.np-input--sm { /* What: Short Text Input. Why: The new group's name needs less width. How: This caps it at a smaller rhythm step. */
+.forTexInp:focus { /* What: Focused Text Input. Why: The focused field should stand out. How: This borders it in the accent color. */
 
 
-	max-width : calc( var( --ver-rhy-p10 ) * 1rem );
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Text Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+.forTexInp--short { /* What: Short Form Text Input. Why: The new group's name needs less width. How: This caps it at a smaller rhythm step. */
 
 
-	.np-input { /* What: Still Text Input. Why: The change should happen at once. How: This turns its transition off. */
+	max-width : calc( var( --ver-rhy-p10 ) * 1rem ); /* Vertical Rhythm Base Plus 10 ~= 242.522px */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Text Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.forTexInp { /* What: Still Form Text Input. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -415,75 +420,74 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 }
 
 
+/* #region forGroDiv */
 
-/* #region np-groups */
-
-.np-groups { /* What: Group Chips. Why: The existing groups and the New Group chip wrap together under the label. How: This lays them out in a wrapping row. */
+.forGroDiv { /* What: Form Groups Div. Why: The existing groups and the New Group chip wrap together under the label. How: This lays them out in a wrapping row. */
 
 
 	display    : flex;
 	flex-wrap  : wrap;
-	gap        : var( --spa-ver-m02 ) var( --spa-hor-m02 );
-	margin-top : var( --spa-ver-m07 );
+	gap        : var( --spa-ver-m02 ) var( --spa-hor-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	margin-top : var( --spa-ver-m07 );                      /* Spacing Vertical Base Minus 7 ~= 2.035px */
 
 
 }
 
-.np-chip { /* What: Group Chip. Why: Each group is a chip that files the picker under it. How: This draws an outlined pill that fades between colors. */
+.groChiBut { /* What: Group Chip Button. Why: Each group is a chip that files the picker under it. How: This draws an outlined pill that fades between colors. */
 
 
 	align-items   : center;
-	background    : var(--bac-sur-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	background    : var( --bac-sur-col );                                                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
-	color         : var(--tex-mai-col);
+	color         : var( --tex-mai-col );                                                                           /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor        : pointer;
 	display       : inline-flex;
-	font-size     : var( --fon-siz-p01 );
+	font-size     : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 500;
-	gap           : var( --spa-hor-m04 );
-	height        : calc( var( --ver-rhy-p03 ) * 1rem );
-	padding       : 0 var( --spa-hor-bas );
-	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 );
+	gap           : var( --spa-hor-m04 );                                                                           /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	height        : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	padding       : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
+	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ), color var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
-.np-chip:hover { /* What: Hovered Group Chip. Why: The chip should respond to the pointer. How: This darkens its border. */
+.groChiBut:hover { /* What: Hovered Group Chip. Why: The chip should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--tex-mut-col);
-
-
-}
-.np-chip[data-chip-select-active] { /* What: Chosen Group Chip. Why: The picker's group should stand out. How: This fills it in the soft accent, keying off data-chip-select-active. */
-
-
-	background   : var( --acc-tin-col );
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.np-chip--new { /* What: New Group Chip. Why: Adding a group reads as a dashed placeholder chip. How: This dashes it in muted text. */
+.groChiBut[data-chip-select-active] { /* What: Chosen Group Chip. Why: The picker's group should stand out. How: This fills it in the soft accent, keying off data-chip-select-active. */
+
+
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.groChiBut--new { /* What: New Group Chip Button. Why: Adding a group reads as a dashed placeholder chip. How: This dashes it in muted text. */
 
 
 	border-style : dashed;
-	color        : var(--tex-mut-col);
+	color        : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.np-chip--new[data-chip-select-active] { /* What: Open New Group Chip. Why: While its name field is open, the chip reads as chosen. How: This solidifies it in the accent. */
+.groChiBut--new[data-chip-select-active] { /* What: Open New Group Chip. Why: While its name field is open, the chip reads as chosen. How: This solidifies it in the accent. */
 
 
 	border-style : solid;
-	color        : var(--acc-mai-col);
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Group Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Group Chip. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.np-chip { /* What: Still Group Chip. Why: The change should happen at once. How: This turns its transition off. */
+	.groChiBut { /* What: Still Group Chip Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -494,66 +498,67 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #endregion np-groups */
+/* #endregion forGroDiv */
 
 
 
-/* #region mode-radio */
+/* #region modRadDiv */
 
-.mode-radio { /* What: Mode Radio. Why: The pick modes stack as bordered option cards. How: This stacks them in a tight column. */
+.modRadDiv { /* What: Mode Radio Div. Why: The pick modes stack as bordered option cards. How: This stacks them in a tight column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m05 );
+	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
 
-/* #region mode-opt */
 
-.mode-opt { /* What: Mode Option. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states. */
+/* #region modOptLab */
+
+.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states. */
 
 
 	align-items   : flex-start;
-	background    : var( --bac-sun-col );
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-med );
+	background    : var( --bac-sun-col );                                               /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                    /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                                               /* Radius Border Medium = 11px */
 	cursor        : pointer;
 	display       : flex;
-	gap           : var( --spa-hor-m01 );
-	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );
-	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 );
+	gap           : var( --spa-hor-m01 );                                               /* Spacing Horizontal Base Minus 1 = 11px */
+	padding       : var( --spa-ver-m01 ) var( --spa-hor-m01 );                          /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
+	transition    : border-color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
-.mode-opt:hover { /* What: Hovered Mode Option. Why: The card should respond to the pointer. How: This darkens its border. */
+.modOptLab:hover { /* What: Hovered Mode Option. Why: The card should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--tex-mut-col);
-
-
-}
-.mode-opt:has(input:focus-visible) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
-
-
-	outline        : var( --bor-wid-lar ) solid var(--acc-mai-col);
-	outline-offset : var( --bor-wid-lar );
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.mode-opt[data-option-select-active] { /* What: Chosen Mode Option. Why: The picker's mode should stand out. How: This fills the card in the soft accent, keying off data-option-select-active. */
+.modOptLab:has( .modOptInp:focus-visible ) { /* What: Focused Mode Option. Why: A keyboard user needs to see which option has focus. How: This outlines the card while its radio has visible focus. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
+	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	outline-offset : var( --bor-wid-lar );                            /* Border Width Large ~= 2.035px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+.modOptLab[data-option-select-active] { /* What: Chosen Mode Option. Why: The picker's mode should stand out. How: This fills the card in the soft accent, keying off data-option-select-active. */
 
 
-	.mode-opt { /* What: Still Mode Option. Why: The change should happen at once. How: This turns its transition off. */
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+
+
+	.modOptLab { /* What: Still Mode Option Label. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -564,44 +569,44 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.mode-opt input { /* What: Mode Option Radio. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look and draws an outlined circle at the base rhythm step. */
+.modOptInp { /* What: Mode Option Input. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look and draws an outlined circle at the base rhythm step. */
 
 
 	-webkit-appearance : none;
 	appearance         : none;
-	border             : var( --bor-wid-bas ) solid var(--bor-mai-col);
+	border             : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius      : 50%;
-	height             : calc( var( --ver-rhy-bas ) * 1rem );
-	margin-top         : var( --spa-ver-m07 );
-	min-width          : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Radio Minimum Width. Why: In its flex row the radio could otherwise shrink below its own width when space runs short. How: This holds it at the same rhythm step as its width. */
+	height             : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	margin-top         : var( --spa-ver-m07 );                            /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	min-width          : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */ /* What: Radio Minimum Width. Why: In its flex row the radio could otherwise shrink below its own width when space runs short. How: This holds it at the same rhythm step as its width. */
 	position           : relative;
-	transition         : border-color var( --dur-tra-m01 );
-	width              : calc( var( --ver-rhy-bas ) * 1rem );
+	transition         : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
+	width              : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.mode-opt[data-option-select-active] input { /* What: Chosen Mode Option Radio. Why: The chosen radio rings in the accent. How: This borders it in the accent. */
+.modOptLab[data-option-select-active] .modOptInp { /* What: Chosen Mode Option Radio. Why: The chosen radio rings in the accent. How: This borders it in the accent. */
 
 
-	border-color : var(--acc-mai-col);
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.mode-opt[data-option-select-active] input::after { /* What: Chosen Mode Option Radio Dot. Why: The chosen radio is filled. How: This draws an accent disc inside the ring. */
+.modOptLab[data-option-select-active] .modOptInp::after { /* What: Chosen Mode Option Radio Dot. Why: The chosen radio is filled. How: This draws an accent disc inside the ring. */
 
 
-	background    : var(--acc-mai-col);
+	background    : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius : 50%;
 	content       : '';
-	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 );
+	inset         : var( --spa-ver-m06 ) var( --spa-hor-m06 ); /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
 	position      : absolute;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Mode Option Radio. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Mode Option Radio. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.mode-opt input { /* What: Still Mode Option Radio. Why: The change should happen at once. How: This turns its transition off. */
+	.modOptInp { /* What: Still Mode Option Input. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -612,99 +617,100 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.mode-opt-name { /* What: Mode Option Name. Why: The mode's name leads the card. How: This sets it in medium weight. */
+.modNamDiv { /* What: Mode Name Div. Why: The mode's name leads the card. How: This sets it in medium weight. */
 
 
-	font-size   : var( --fon-siz-p01 );
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 500;
 
 
 }
 
-.mode-opt-hint { /* What: Mode Option Hint. Why: Each mode explains itself under its name. How: This sets small muted text. */
+.modHinDiv { /* What: Mode Hint Div. Why: Each mode explains itself under its name. How: This sets small muted text. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
-
-
-}
-.mode-opt-hint + .mode-opt-hint { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
-
-
-	margin-top : var( --spa-ver-m03 );
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 
 
 }
-
-/* #endregion mode-opt */
-
-/* #endregion mode-radio */
+.modHinDiv + .modHinDiv { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
+	margin-top : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
-/* #region np-field--toggle */
 
-.np-field--toggle { /* What: Toggle Field. Why: A field whose answer is on or off puts its text beside a switch, divided from the field above. How: This spreads them across a top-aligned row under a hairline. */
+}
+
+/* #endregion modOptLab */
+
+/* #endregion modRadDiv */
+
+
+
+/* #region forTogDiv */
+
+.forTogDiv { /* What: Form Toggle Div. Why: A field whose answer is on or off puts its text beside a switch, divided from the field above. How: This spreads them across a top-aligned row under a hairline. */
 
 
 	align-items     : flex-start;
-	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top      : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display         : flex;
 	flex-direction  : row;
-	gap             : var( --spa-hor-p01 );
+	gap             : var( --spa-hor-p01 );                            /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 	justify-content : space-between;
-	padding-top     : var( --spa-ver-p01 );
+	padding-top     : var( --spa-ver-p01 );                            /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
 
-.np-field--toggle .np-toggle-text { /* What: Toggle Field Text. Why: A toggle field's label and help stack together beside its switch. How: This stacks them in a spaced column, while the schedule's own toggles keep their plain block flow. */
+.forTogDiv .togTexDiv { /* What: Toggle Field Text. Why: A toggle field's label and help stack together beside its switch. How: This stacks them in a spaced column, while the schedule's own toggles keep their plain block flow. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
-.np-cond .np-field--toggle .np-toggle-text { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
+.forFieDiv--conditional .forTogDiv .togTexDiv { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
 
 
-	max-width : calc( var( --ver-rhy-p12 ) * 1rem );
+	max-width : calc( var( --ver-rhy-p12 ) * 1rem ); /* Vertical Rhythm Base Plus 12 ~= 425.596px */
 
 
 }
 
-/* #region switch */
 
-.switch { /* What: Setting Switch. Why: Each on or off setting uses a switch that keeps its size beside its text. How: This draws a pill track whose knob slides across, fading its color. */
+/* #region togSwiBut */
+
+.togSwiBut { /* What: Toggle Switch Button. Why: Each on or off setting uses a switch that keeps its size beside its text. How: This draws a pill track whose knob slides across, fading its color. */
 
 
-	background    : var(--bor-mai-col);
+	background    : var( --bor-mai-col );                /* Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	cursor        : pointer;
 	flex-shrink   : 0;
-	height        : calc( var( --ver-rhy-p01 ) * 1rem );
-	margin-top    : var( --spa-ver-m07 );
+	height        : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	margin-top    : var( --spa-ver-m07 );                /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	position      : relative;
-	transition    : background var( --dur-tra-bas );
-	width         : calc( var( --ver-rhy-p03 ) * 1rem );
+	transition    : background var( --dur-tra-bas );     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
-.switch[aria-checked="true"] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
+.togSwiBut[aria-checked='true'] { /* What: On Setting Switch. Why: An enabled setting reads in the accent color. How: This fills the track, keying off the aria-checked the switch already sets. */
 
 
-	background : var(--acc-mai-col);
+	background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.switch { /* What: Still Setting Switch. Why: The change should happen at once. How: This turns its transition off. */
+	.togSwiBut { /* What: Still Toggle Switch Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -715,32 +721,32 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.switch i { /* What: Setting Switch Knob. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
+.swiKnoIta { /* What: Switch Knob Italic. Why: The knob shows which way the switch is set. How: This draws a small raised circle at the track's left that slides when switched. */
 
 
-	background    : var(--bac-pag-col);
+	background    : var( --bac-pag-col );                                               /* Background Page Color = oklch( 0.985 0.003 240 ) */
 	border-radius : 50%;
-	box-shadow    : var( --ele-sma-sha );
-	height        : calc( var( --ver-rhy-bas ) * 1rem );
-	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	box-shadow    : var( --ele-sma-sha );                                               /* Elevation Small Shadow, about 0 1.2px 2px */
+	height        : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
+	left          : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
 	position      : absolute;
-	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
-	transition    : transform var( --dur-tra-bas );
-	width         : calc( var( --ver-rhy-bas ) * 1rem );
+	top           : calc( ( var( --ver-rhy-p01 ) - var( --ver-rhy-bas ) ) * 1rem / 2 ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base ~= 14.572px */ /* What: Knob Inset. Why: The knob has to sit centered in the track at any root size. How: This splits the gap between the track height and the knob size evenly. */
+	transition    : transform var( --dur-tra-bas );                                     /* Duration Transition Base ~= 157.8ms */
+	width         : calc( var( --ver-rhy-bas ) * 1rem );                                /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.switch[aria-checked="true"] i { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
+.togSwiBut[aria-checked='true'] .swiKnoIta { /* What: On Setting Switch Knob. Why: An enabled switch has its knob on the right. How: This slides the knob across. */
 
 
-	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) );
+	transform : translateX( calc( var( --ver-rhy-p03 ) * 1rem - var( --ver-rhy-p01 ) * 1rem ) ); /* Vertical Rhythm Base Plus 3 ~= 33.875px, Vertical Rhythm Base Plus 1 ~= 19.304px */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Switch Knob. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.switch i { /* What: Still Setting Switch Knob. Why: The change should happen at once. How: This turns its transition off. */
+	.swiKnoIta { /* What: Still Switch Knob Italic. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -751,125 +757,127 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #endregion switch */
+/* #endregion togSwiBut */
 
-/* #endregion np-field--toggle */
+/* #endregion forTogDiv */
 
 
 
-/* #region cnd-attach */
+/* #region conAttDiv */
 
-.cnd-attach { /* What: Conditional Attach Area. Why: The conditional rail and the new-conditional editor stack under the toggle. How: This stacks them in a spaced column. */
+.conAttDiv { /* What: Conditional Attach Div. Why: The conditional rail and the new-conditional editor stack under the toggle. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-bas );
-	padding-top    : var( --spa-ver-m01 );
+	gap            : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
+	padding-top    : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-/* #region cnd-rail */
 
-.cnd-rail { /* What: Conditional Rail. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
+/* #region conRaiDiv */
+
+.conRaiDiv { /* What: Conditional Rail Div. Why: The rail scrolls sideways when its pills outgrow the row, with its edges faded as a cue. How: This lays them out in a scrolling flex row with its scrollbar hidden and a gradient mask on each end. */
 
 
-	--fade             : 28px; /* What: Fade Width. Why: This is how far each edge fade reaches into the rail. How: --fade-l and --fade-r start from it. */
-	--fade-l           : var(--fade); /* What: Left Fade. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
-	--fade-r           : var(--fade); /* What: Right Fade. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
-	-webkit-mask-image : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	--fad-edg-off      : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
+	--fad-lef-off      : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-start-active. */
+	--fad-rig-off      : var( --fad-edg-off );                /* Fade Edge Offset ~= 25.572px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.js zeroes it via data-scroll-end-active. */
+	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
 	display            : flex;
-	gap                : var( --spa-hor-m02 );
-	mask-image         : linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+	gap                : var( --spa-hor-m02 );                /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
 	overflow-x         : auto;
-	padding-bottom     : var( --spa-ver-m07 );
+	padding-bottom     : var( --spa-ver-m07 );                /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	scrollbar-width    : none;
 
 
 }
-.cnd-rail::-webkit-scrollbar { /* What: Conditional Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
+.conRaiDiv::-webkit-scrollbar { /* What: Conditional Rail Scrollbar. Why: The fades already signal scrolling, so the bar is clutter. How: This hides WebKit's scrollbar. */
 
 
 	display : none;
 
 
 }
-.cnd-rail[data-scroll-start-active] { /* What: Conditional Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
+.conRaiDiv[data-scroll-start-active] { /* What: Conditional Rail At Start. Why: No content hides past the left edge. How: This zeroes the left fade. */
 
 
-	--fade-l : 0px;
-
-
-}
-.cnd-rail[data-scroll-end-active] { /* What: Conditional Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
-
-
-	--fade-r : 0px;
+	--fad-lef-off : 0px;
 
 
 }
-
-/* #region cnd-pill */
-
-.cnd-pill { /* What: Conditional Pill. Why: Each conditional is a card-like pill that attaches it to the picker. How: This draws a bordered card with the name over the mode, fading between states. */
+.conRaiDiv[data-scroll-end-active] { /* What: Conditional Rail At End. Why: No content hides past the right edge. How: This zeroes the right fade. */
 
 
-	background      : var(--bac-sur-col);
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-med );
+	--fad-rig-off : 0px;
+
+
+}
+
+
+/* #region conPilBut */
+
+.conPilBut { /* What: Conditional Pill Button. Why: Each conditional is a card-like pill that attaches it to the picker. How: This draws a bordered card with the name over the mode, fading between states. */
+
+
+	background      : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
 	cursor          : pointer;
 	display         : flex;
 	flex-direction  : column;
 	flex-shrink     : 0;
-	gap             : var( --spa-ver-m06 );
+	gap             : var( --spa-ver-m06 );                            /* Spacing Vertical Base Minus 6 ~= 2.696px */
 	justify-content : center;
-	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );
-	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );
-	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );
+	min-height      : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	min-width       : calc( var( --ver-rhy-p08 ) * 1rem );             /* Vertical Rhythm Base Plus 8 ~= 138.199px */
+	padding         : var( --spa-ver-m02 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px */
 	text-align      : left;
-	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), box-shadow var( --dur-tra-p02 ) var( --mot-sta-eas );
+	transition      : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), background var( --dur-tra-p02 ) var( --mot-sta-eas ), box-shadow var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
 
 
 }
-.cnd-pill:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
+.conPilBut:hover { /* What: Hovered Conditional Pill. Why: The pill should respond to the pointer. How: This darkens its border. */
 
 
-	border-color : var(--tex-mut-col);
-
-
-}
-.cnd-pill[data-pill-select-active] { /* What: Chosen Conditional Pill. Why: The conditional to attach should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
-
-
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	box-shadow   : 0 0 0 var( --bor-wid-bas ) var(--acc-mai-col) inset;
+	border-color : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-.cnd-pill--new { /* What: New Conditional Pill. Why: Adding a conditional reads as a dashed placeholder with its icon beside the label. How: This lays it out in a row, dashed and muted. */
+.conPilBut[data-pill-select-active] { /* What: Chosen Conditional Pill. Why: The conditional to attach should stand out. How: This fills it in the soft accent with an inset accent ring, keying off data-pill-select-active. */
+
+
+	background   : var( --acc-tin-col );                                  /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col );                                  /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	box-shadow   : 0 0 0 var( --bor-wid-bas ) var( --acc-mai-col ) inset; /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+}
+.conPilBut--new { /* What: New Conditional Pill Button. Why: Adding a conditional reads as a dashed placeholder with its icon beside the label. How: This lays it out in a row, dashed and muted. */
 
 
 	align-items    : center;
 	border-style   : dashed;
-	color          : var(--tex-mut-col);
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	flex-direction : row;
-	gap            : var( --spa-hor-m02 );
+	gap            : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
-.cnd-pill--new[data-pill-select-active] { /* What: Open New Conditional Pill. Why: While the new-conditional editor is open, its pill reads as chosen. How: This colors it in the accent. */
+.conPilBut--new[data-pill-select-active] { /* What: Open New Conditional Pill. Why: While the new-conditional editor is open, its pill reads as chosen. How: This colors it in the accent. */
 
 
-	color : var(--acc-mai-col);
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Conditional Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Conditional Pill. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.cnd-pill { /* What: Still Conditional Pill. Why: The change should happen at once. How: This turns its transition off. */
+	.conPilBut { /* What: Still Conditional Pill Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -880,243 +888,248 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.cnd-pill-name { /* What: Conditional Pill Name. Why: The conditional's name leads its pill. How: This sets it in medium weight body color. */
+.conNamSpa { /* What: Conditional Name Span. Why: The conditional's name leads its pill. How: This sets it in medium weight body color. */
 
 
-	color       : var(--tex-mai-col);
-	font-size   : var( --fon-siz-p01 );
+	color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 500;
 
 
 }
-.cnd-pill--new .cnd-pill-name { /* What: New Conditional Pill Label. Why: The placeholder's label reads muted with its pill. How: This mutes it. */
+.conPilBut--new .conNamSpa { /* What: New Conditional Pill Label. Why: The placeholder's label reads muted with its pill. How: This mutes it. */
 
 
-	color       : var(--tex-mut-col);
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	font-weight : 500;
 
 
 }
-.cnd-pill--new[data-pill-select-active] .cnd-pill-name { /* What: Open New Conditional Pill Label. Why: The label follows its pill's accent. How: This colors it. */
+.conPilBut--new[data-pill-select-active] .conNamSpa { /* What: Open New Conditional Pill Label. Why: The label follows its pill's accent. How: This colors it. */
 
 
-	color : var(--acc-mai-col);
+	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
 
-.cnd-pill-mode { /* What: Conditional Pill Mode. Why: Each pill names its conditional's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
+.conModSpa { /* What: Conditional Mode Span. Why: Each pill names its conditional's mode as quiet metadata. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var(--tex-mut-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
 
 }
 
-/* #endregion cnd-pill */
+/* #endregion conPilBut */
 
-/* #endregion cnd-rail */
+/* #endregion conRaiDiv */
 
-/* #endregion cnd-attach */
-
-
-
-/* #region np-sched */
-
-.np-sched { /* What: Schedule Settings. Why: The daily generator's cadence, days, holidays, and duplicates settings stack under its toggle. How: This stacks them in a widely spaced column. */
+/* #endregion conAttDiv */
 
 
-	display        : flex;
-	flex-direction : column;
-	gap            : var( --spa-ver-p01 );
-	padding        : var( --spa-ver-p01 ) 0 0 0;
 
+/* #region schSetDiv */
 
-}
-
-/* #region np-sched-block */
-
-.np-sched-block { /* What: Schedule Block. Why: Each schedule setting's label, help, and control stack together. How: This stacks them in a column. */
+.schSetDiv { /* What: Schedule Settings Div. Why: The daily generator's cadence, days, holidays, and duplicates settings stack under its toggle. How: This stacks them in a widely spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
+	gap            : var( --spa-ver-p01 );       /* Spacing Vertical Base Plus 1 ~= 19.304px */
+	padding        : var( --spa-ver-p01 ) 0 0 0; /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
 
-/* #region np-sched-row */
 
-.np-sched-row { /* What: Days Row. Why: The weekday chips and their presets sit on one row that wraps when tight. How: This lines them up in a wrapping row. */
+/* #region schBloDiv */
+
+.schBloDiv { /* What: Schedule Block Div. Why: Each schedule setting's label, help, and control stack together. How: This stacks them in a column. */
+
+
+	display        : flex;
+	flex-direction : column;
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+
+
+}
+
+
+/* #region schRowDiv */
+
+.schRowDiv { /* What: Schedule Row Div. Why: The weekday chips and their presets sit on one row that wraps when tight. How: This lines them up in a wrapping row. */
 
 
 	align-items : center;
 	display     : flex;
 	flex-wrap   : wrap;
-	gap         : var( --spa-ver-bas ) var( --spa-hor-bas );
+	gap         : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
 
-/* #region np-sched-presets */
 
-.np-sched-presets { /* What: Day Presets. Why: The Every Day, Weekdays, and Weekends shortcuts sit together. How: This lines them up in a wrapping row. */
+/* #region schPreDiv */
+
+.schPreDiv { /* What: Schedule Presets Div. Why: The Every Day, Weekdays, and Weekends shortcuts sit together. How: This lines them up in a wrapping row. */
 
 
 	display   : flex;
 	flex-wrap : wrap;
-	gap       : var( --spa-ver-m03 ) var( --spa-hor-m03 );
+	gap       : var( --spa-ver-m03 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 3 ~= 6.268px */
 
 
 }
 
-.np-preset { /* What: Day Preset. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text. */
+.dayPreBut { /* What: Day Preset Button. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text. */
 
 
 	background    : none;
 	border        : none;
-	border-radius : var( --rad-bor-sma );
-	color         : var(--acc-mai-col);
+	border-radius : var( --rad-bor-sma );                      /* Radius Border Small ~= 8.304px */
+	color         : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor        : pointer;
-	font-size     : var( --fon-siz-bas );
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 );
+	font-size     : var( --fon-siz-bas );                      /* Font Size Base = 11px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 3 ~= 6.268px */
 
 
 }
-.np-preset:hover { /* What: Hovered Day Preset. Why: The preset should respond to the pointer. How: This tints it in the soft accent. */
+.dayPreBut:hover { /* What: Hovered Day Preset. Why: The preset should respond to the pointer. How: This tints it in the soft accent. */
 
 
-	background : var( --acc-tin-col );
+	background : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 
 
 }
 
-/* #endregion np-sched-presets */
+/* #endregion schPreDiv */
 
-/* #endregion np-sched-row */
+/* #endregion schRowDiv */
 
-/* #endregion np-sched-block */
+/* #endregion schBloDiv */
 
 
 
-.np-sched-toggle { /* What: Schedule Toggle. Why: The holidays and duplicates settings put their text beside a switch. How: This spreads them across a top-aligned row. */
+.schTogDiv { /* What: Schedule Toggle Div. Why: The holidays and duplicates settings put their text beside a switch. How: This spreads them across a top-aligned row. */
 
 
 	align-items     : flex-start;
 	display         : flex;
-	gap             : var( --spa-hor-p01 );
+	gap             : var( --spa-hor-p01 ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 	justify-content : space-between;
 
 
 }
 
-/* #endregion np-sched */
+/* #endregion schSetDiv */
 
-/* #endregion np-field */
+/* #endregion forFieDiv */
 
-/* #endregion np-fields */
+/* #endregion picFieDiv */
 
 
 
-/* #region np-footer */
+/* #region forFooDiv */
 
-.np-footer { /* What: Step Footer. Why: Each step ends with a note and its actions below a divider. How: This spreads them across a centered row under a hairline. */
+.forFooDiv { /* What: Form Footer Div. Why: Each step ends with a note and its actions below a divider. How: This spreads them across a centered row under a hairline. */
 
 
 	align-items     : center;
-	border-top      : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-top      : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display         : flex;
-	gap             : var( --spa-hor-bas );
+	gap             : var( --spa-hor-bas );                            /* Spacing Horizontal Base ~= 14.572px */
 	justify-content : space-between;
-	padding-top     : var( --spa-ver-bas );
+	padding-top     : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
 
 
 }
-.np-pool + .np-footer { /* What: Items Footer. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
+.itePooDiv + .forFooDiv { /* What: Items Footer. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
 
 
-	margin-top : var( --spa-ver-p01 );
-
-
-}
-.np-footer--step1 { /* What: Details Footer. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
-
-
-	margin-top : var( --spa-ver-p02 );
+	margin-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
+.forFooDiv--details { /* What: Details Form Footer Div. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
 
-.np-footer-note { /* What: Footer Note. Why: The note says what the step still needs, in quiet mono type that takes the spare width. How: This sets small muted mono text capped at 40ch. */
+
+	margin-top : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
 
 
-	color          : var(--tex-mut-col);
+}
+
+.fooNotDiv { /* What: Footer Note Div. Why: The note says what the step still needs, in quiet mono type that takes the spare width. How: This sets small muted mono text capped at 40ch. */
+
+
+	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	flex           : 1 1 auto;
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	letter-spacing : 0.03em;
-	max-width      : var( --tex-wid-sma );
+	max-width      : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
 	min-width      : 0;
 
 
 }
 
-.np-footer-actions { /* What: Footer Actions. Why: The step's buttons stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
+.forActDiv { /* What: Form Actions Div. Why: The step's buttons stay together at their natural size. How: This lines them up in a row that never grows or shrinks. */
 
 
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : var( --spa-hor-m02 );
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
 
-/* #endregion np-footer */
+/* #endregion forFooDiv */
 
 
 
-/* #region np-pool */
+/* #region itePooDiv */
 
-.np-pool { /* What: Items Pool. Why: The pool and the add-item area stack under the step's hints. How: This stacks them in a spaced column. */
+.itePooDiv { /* What: Item Pool Div. Why: The pool and the add-item area stack under the step's hints. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
-	margin-top     : var( --spa-ver-p01 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	margin-top     : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
 
-.np-pool-empty { /* What: Empty Pool. Why: A new picker with no items says what to add. How: This draws a dashed padded note in muted text. */
+.pooEmpDiv { /* What: Pool Empty Div. Why: A new picker with no items says what to add. How: This draws a dashed padded note in muted text. */
 
 
-	background    : oklch(from var(--bac-sur-col) l c h / 0.5);
-	border        : var( --bor-wid-bas ) dashed var(--bor-mai-col);
-	border-radius : var( --rad-bor-sma );
-	color         : var(--tex-mut-col);
-	font-size     : var( --fon-siz-p01 );
-	line-height   : var( --ver-rhy-bas );
-	padding       : var( --spa-ver-p01 ) var( --spa-hor-bas );
+	background    : oklch( from var( --bac-sur-col ) l c h / 0.5 );   /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-bas ) dashed var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-sma );                             /* Radius Border Small ~= 8.304px */
+	color         : var( --tex-mut-col );                             /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size     : var( --fon-siz-p01 );                             /* Font Size Base Plus 1 ~= 14.572px */
+	line-height   : var( --ver-rhy-bas );                             /* Vertical Rhythm Base ~= 1.325 */
+	padding       : var( --spa-ver-p01 ) var( --spa-hor-bas );        /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Horizontal Base ~= 14.572px */
 	text-wrap     : pretty;
 
 
 }
 
-/* #region pool-list */
-
-.pool-list { /* What: Pool List. Why: The items read as one bordered list. How: This stacks the rows in a rounded surface that clips them. */
 
 
-	background     : var(--bac-sur-col);
-	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius  : var( --rad-bor-med );
+/* #region pooLisDiv */
+
+.pooLisDiv { /* What: Pool List Div. Why: The items read as one bordered list. How: This stacks the rows in a rounded surface that clips them. */
+
+
+	background     : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
 	display        : flex;
 	flex-direction : column;
 	overflow       : hidden;
@@ -1124,67 +1137,68 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #region pool-row */
 
-.pool-row { /* What: Pool Row. Why: Each item is one row: name, meta, and its buttons. How: This lays them out on a five-column grid, divided from the next row. */
+/* #region pooRowDiv */
+
+.pooRowDiv { /* What: Pool Row Div. Why: Each item is one row: name, meta, and its buttons. How: This lays them out on a five-column grid, divided from the next row. */
 
 
 	align-items           : center;
-	border-bottom         : var( --bor-wid-sma ) solid var(--bor-mai-col);
+	border-bottom         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display               : grid;
-	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );
+	gap                   : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	grid-template-columns : 1fr auto auto auto auto;
-	padding               : var( --spa-ver-p01 ) var( --spa-hor-bas );
+	padding               : var( --spa-ver-p01 ) var( --spa-hor-bas );       /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-@container app (max-width: 440px) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches (max-width: 440px). */
+@container app ( max-width : 440px ) { /* What: Narrow Pool Row. Why: A very narrow app needs tighter columns. How: This applies only when the app matches ( max-width : 440px ). */
 
 
-	.pool-row { /* What: Tight Pool Row. Why: The columns need the room. How: This tightens the gap. */
+	.pooRowDiv { /* What: Tight Pool Row Div. Why: The columns need the room. How: This tightens the gap. */
 
 
-		gap : var( --spa-ver-m01 ) var( --spa-hor-m01 );
+		gap : var( --spa-ver-m01 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
 
 
 	}
 
 
 }
-.pool-row:last-child { /* What: Last Pool Row. Why: The list's own border already closes it. How: This drops the last row's hairline. */
+.pooRowDiv:last-child { /* What: Last Pool Row. Why: The list's own border already closes it. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
 
 
 }
-.pool-row--confirm { /* What: Confirming Pool Row. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
+.pooRowDiv--confirm { /* What: Confirming Pool Row Div. Why: While asking to delete, the row holds only the confirm. How: This collapses the grid to one column. */
 
 
 	grid-template-columns : 1fr;
 
 
 }
-.pool-row--insert { /* What: Inserted Pool Row. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
+.pooRowDiv--insert { /* What: Inserting Pool Row Div. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
 
 
-	animation : poolRowInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both;
+	animation : pooRowDivInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 
 
 }
-.pool-row--removing { /* What: Removing Pool Row. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
+.pooRowDiv--removing { /* What: Removing Pool Row Div. Why: A deleted row collapses and fades, letting the rows below slide up. How: This plays the removal, whose end drives the actual delete. */
 
 
-	animation : poolRowRemove var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards;
+	animation : pooRowDivRemoveFold var( --dur-ani-p03 ) var( --mot-sta-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 	overflow  : hidden;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-row--insert,
-	.pool-row--removing { /* What: Instant Pool Row Animations. Why: The row should arrive and leave at once, while still ending the animations its handler waits on. How: This shortens both to .01ms. */
+	.pooRowDiv--insert,
+	.pooRowDiv--removing { /* What: Instant Inserting And Removing Pool Row Divs. Why: The row should arrive and leave at once, while still ending the animations its handler waits on. How: This shortens both to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1194,14 +1208,14 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 }
-@keyframes poolRowInsertFadeIn { /* What: Pool Row Insert Fade In. Why: A short rise reads as the item settling in. How: This fades the row in from below. */
+@keyframes pooRowDivInsertFadeIn { /* What: Pool Row Div Insert Fade In Keyframes. Why: A short rise reads as the item settling in. How: This fades the row in from below. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(16px);
+		transform : translateY( var( --spa-ver-bas ) ); /* Spacing Vertical Base ~= 14.572px */
 
 
 	}
@@ -1217,13 +1231,13 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 
 }
-@keyframes poolRowRemove { /* What: Pool Row Remove. Why: The row should fold away rather than vanish. How: This fades it while collapsing its height, padding, and divider. */
+@keyframes pooRowDivRemoveFold { /* What: Pool Row Div Remove Fold Keyframes. Why: The row should fold away rather than vanish. How: This fades it while collapsing its height, padding, and divider. */
 
 
 	from {
 
 
-		max-height : calc( var( --ver-rhy-p09 ) * 1rem );
+		max-height : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */ /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
 		opacity    : 1;
 
 
@@ -1232,11 +1246,11 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	to {
 
 
-		border-bottom-width : 0;
-		max-height          : 0;
+		border-bottom-width : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		max-height          : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
 		opacity             : 0;
-		padding-bottom      : 0;
-		padding-top         : 0;
+		padding-bottom      : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
+		padding-top         : 0; /* What: Layout Collapse. Why: The rows below have to slide up into the removed row's place, which a transform can't make them do. How: This shrinks the row's own box so the list closes the gap as it fades. */
 
 
 	}
@@ -1244,32 +1258,33 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #region pool-confirm */
 
-.pool-confirm { /* What: Pool Delete Confirm. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in. */
+/* #region delConDiv */
+
+.delConDiv { /* What: Delete Confirm Div. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in. */
 
 
 	align-items     : center;
-	animation       : global(footerSwapFadeIn) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every other editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );
+	gap             : var( --spa-ver-m01 ) var( --spa-hor-m01 );                                 /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : space-between;
 
 
 }
-.pool-confirm.is-leaving { /* What: Leaving Pool Delete Confirm. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
+.delConDiv--leaving { /* What: Leaving Delete Confirm Div. Why: A cancelled confirm slides back out. How: This plays the shared swap-out while it carries its leaving class. */
 
 
-	animation : global(footerSwapFadeOut) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with the Settings reset confirm, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Delete Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Delete Confirm. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-confirm,
-	.pool-confirm.is-leaving { /* What: Still Pool Delete Confirm. Why: The confirm should simply appear and go. How: This turns both slides off. */
+	.delConDiv,
+	.delConDiv--leaving { /* What: Still Delete Confirm Divs. Why: The confirm should simply appear and go. How: This turns both slides off. */
 
 
 		animation : none;
@@ -1280,67 +1295,67 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.pool-confirm-msg { /* What: Pool Delete Question. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
+.delMesSpa { /* What: Delete Message Span. Why: The question reads as body text, the item's name in bold. How: This sets it with balanced wrapping. */
 
 
-	font-size : var( --fon-siz-p01 );
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	text-wrap : pretty;
 
 
 }
 
-.pool-confirm-actions { /* What: Pool Delete Actions. Why: Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
+.delActDiv { /* What: Delete Actions Div. Why: Cancel and Delete stay together at their natural size. How: This lays them out in a row that never grows or shrinks. */
 
 
 	display : flex;
 	flex    : 0 0 auto;
-	gap     : var( --spa-hor-m02 );
+	gap     : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }
 
-/* #endregion pool-confirm */
+/* #endregion delConDiv */
 
 
+.pooNamDiv { /* What: Pool Name Div. Why: The name takes the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This sets the name's size and lets it shrink and wrap cleanly. */
 
-.pool-name { /* What: Pool Item Name. Why: The name takes the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This sets the name's size and lets it shrink and wrap cleanly. */
 
-
-	font-size : var( --fon-siz-p01 );
+	font-size : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
 	min-width : 0;
 	text-wrap : pretty;
 
 
 }
 
-/* #region pool-meta */
 
-.pool-meta { /* What: Pool Item Meta. Why: The item's range or weight reads as small mono figures at the row's end. How: This lines them up right-aligned in muted mono type. */
+/* #region pooMetDiv */
+
+.pooMetDiv { /* What: Pool Meta Div. Why: The item's range or weight reads as small mono figures at the row's end. How: This lines them up right-aligned in muted mono type. */
 
 
 	align-items     : center;
-	color           : var(--tex-mut-col);
+	color           : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : flex;
-	font-family     : var(--fon-fam-sec);
-	font-size       : var( --fon-siz-bas );
-	gap             : var( --spa-hor-m01 );
+	font-family     : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	gap             : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : flex-end;
 	justify-self    : end;
 
 
 }
 
-.pool-ease-meta { /* What: Pool Item Range. Why: An ease item shows its soonest-to-latest range. How: This sets it in muted tabular figures. */
+.pooEasSpa { /* What: Pool Ease Span. Why: An ease item shows its soonest-to-latest range. How: This sets it in muted tabular figures. */
 
 
-	color                : var(--tex-mut-col);
-	font-size            : var( --fon-siz-bas );
+	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	font-variant-numeric : tabular-nums;
 
 
 }
 
-.pool-weight { /* What: Pool Item Weight. Why: The weight figure lines up across rows. How: This sets it in tabular figures. */
+.pooWeiSpa { /* What: Pool Weight Span. Why: The weight figure lines up across rows. How: This sets it in tabular figures. */
 
 
 	font-variant-numeric : tabular-nums;
@@ -1348,42 +1363,41 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #endregion pool-meta */
+/* #endregion pooMetDiv */
 
 
-
-.pool-edit { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover. */
+.pooEdiBut { /* What: Pool Edit Button. Why: Each item opens its editor from a small button. How: This draws a small outlined square that tints on hover. */
 
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-sma );
-	color           : var(--tex-mut-col);
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
-.pool-edit:hover { /* What: Hovered Pool Edit Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+.pooEdiBut:hover { /* What: Hovered Pool Edit Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Edit Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Edit Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-edit { /* What: Still Pool Edit Button. Why: The change should happen at once. How: This turns its transition off. */
+	.pooEdiBut { /* What: Still Pool Edit Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1394,55 +1408,57 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-.pool-del { /* What: Pool Delete Button. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover. */
+.pooDelBut,
+.pooDelSpa { /* What: Pool Delete Button And Span. Why: Each item can be deleted from a small button. How: This draws a small outlined square that tints in the danger color on hover. */
 
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius   : var( --rad-bor-sma );
-	color           : var(--tex-mut-col);
+	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-sma );                                                                           /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
-	height          : calc( var( --ver-rhy-p03 ) * 1rem );
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
 	justify-self    : end;
 	padding         : 0;
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
-	width           : calc( var( --ver-rhy-p03 ) * 1rem );
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
+	width           : calc( var( --ver-rhy-p03 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
 }
-.pool-del:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
+.pooDelBut:hover { /* What: Hovered Pool Delete Button. Why: The button should warn before it's pressed. How: This tints it in the danger color. */
 
 
-	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ));
-	border-color : var( --err-mai-col );
-	color        : var( --err-mai-col );
+	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Error Main Color = oklch( 0.55 0.17 25 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
+	border-color : var( --err-mai-col );                                                /* Error Main Color = oklch( 0.55 0.17 25 ) */
+	color        : var( --err-mai-col );                                                /* Error Main Color = oklch( 0.55 0.17 25 ) */
 
 
 }
-.pool-del[aria-disabled="true"] { /* What: Blocked Pool Delete Button. Why: A delete blocked at the two-item minimum still shows its tip. How: This dims the tip's trigger, keying off the aria-disabled its info tip sets. */
+.pooDelSpa[aria-disabled='true'] { /* What: Blocked Pool Delete Span. Why: A delete blocked at the two-item minimum still shows its tip. How: This dims the tip's trigger, keying off the aria-disabled its info tip sets. */
 
 
 	cursor  : default;
-	opacity : 0.4;
+	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
-.pool-del[aria-disabled="true"]:hover { /* What: Hovered Blocked Pool Delete Button. Why: A blocked button shouldn't react like a live one. How: This keeps its resting look. */
+.pooDelBut[aria-disabled='true']:hover { /* What: Hovered Blocked Pool Delete Button. Why: A blocked button shouldn't react like a live one. How: This keeps its resting look. */
 
 
 	background   : none;
-	border-color : var(--bor-mai-col);
-	color        : var(--tex-mut-col);
+	border-color : var( --bor-mai-col ); /* Border Main Color = oklch( 0.91 0.005 240 ) */
+	color        : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Pool Delete Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Pool Delete Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pool-del { /* What: Still Pool Delete Button. Why: The change should happen at once. How: This turns its transition off. */
+	.pooDelBut,
+	.pooDelSpa { /* What: Still Pool Delete Button And Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1453,53 +1469,54 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #endregion pool-row */
+/* #endregion pooRowDiv */
 
-/* #endregion pool-list */
+/* #endregion pooLisDiv */
 
 
 
-/* #region pv-additem-wrap */
+/* #region iteAddDiv */
 
-.pv-additem-wrap { /* What: Add Item Area. Why: The new-item row, an open item editor, and the Add Item button share one slot below the pool. How: This stacks them in a spaced column. */
+.iteAddDiv { /* What: Item Add Div. Why: The new-item row, an open item editor, and the Add Item button share one slot below the pool. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m01 );
+	gap            : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 
 
 }
 
-/* #region pv-newitem */
 
-.pv-newitem { /* What: Add Item Row. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --entry-editor-* properties the editor reads. */
+/* #region lisIteDiv */
+
+.lisIteDiv { /* What: List Item Div. Why: A new or edited item opens as its own card reusing the item editor, which drops its rows' top border and margin here since the name row already divides it, and a brand-new item's Delete is redundant. How: This draws a rounded bordered card that springs in, and sets the --entry-editor-* properties the editor reads. */
 
 
 	--entry-editor-delete-display  : none;
 	--entry-editor-foot-justify    : flex-end;
 	--entry-editor-rows-border-top : 0;
 	--entry-editor-rows-margin-top : 0;
-	animation                      : global(newItemOpenFadeIn) var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* What: Global newItemOpenFadeIn Keyframes. Why: The newItemOpenFadeIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background                     : var(--bac-sur-col);
-	border                         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius                  : var( --rad-bor-med );
+	animation                      : global( newItemOpenFadeIn ) var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global newItemOpenFadeIn Keyframes. Why: The newItemOpenFadeIn keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background                     : var( --bac-sur-col );                                                       /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border                         : var( --bor-wid-sma ) solid var( --bor-mai-col );                            /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius                  : var( --rad-bor-med );                                                       /* Radius Border Medium = 11px */
 	overflow                       : hidden;
 
 
 }
-.pv-newitem.is-closing { /* What: Closing Add Item Row. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
+.lisIteDiv--closing { /* What: Closing List Item Div. Why: The card folds away before the saved item appears in the pool. How: This plays the close, whose end drives the rest. */
 
 
-	animation : global(newItemCloseFadeOut) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* What: Global newItemCloseFadeOut Keyframes. Why: The newItemCloseFadeOut keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( newItemCloseFadeOut ) var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global newItemCloseFadeOut Keyframes. Why: The newItemCloseFadeOut keyframes are shared with the picker view's add-item rows, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	overflow  : hidden;
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pv-newitem { /* What: Still Add Item Row. Why: The card should simply appear. How: This turns its entrance off. */
+	.lisIteDiv { /* What: Still List Item Div. Why: The card should simply appear. How: This turns its entrance off. */
 
 
 		animation : none;
@@ -1507,7 +1524,7 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 	}
 
-	.pv-newitem.is-closing { /* What: Instant Closing Add Item Row. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
+	.lisIteDiv--closing { /* What: Instant Closing List Item Div. Why: The card should close at once, while still ending the animation its handler waits on. How: This shortens the close to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1518,9 +1535,10 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #region rd-row */
 
-.rd-row { /* What: Add Item Name Row. Why: The item's name is edited in the row's header, which isn't clickable here. How: This lays the name field out in a padded row with the default cursor. */
+/* #region lisRowDiv */
+
+.lisRowDiv { /* What: List Row Div. Why: The item's name is edited in the row's header, which isn't clickable here. How: This lays the name field out in a padded row with the default cursor. */
 
 
 	-webkit-appearance : none;
@@ -1532,8 +1550,8 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	cursor             : default;
 	display            : flex;
 	font               : inherit;
-	gap                : var( --spa-hor-m01 );
-	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas );
+	gap                : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
+	padding            : var( --spa-ver-m01 ) var( --spa-hor-bas ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	text-align         : left;
 	user-select        : none;
 	width              : 100%;
@@ -1541,56 +1559,57 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #region rd-main */
 
-.rd-main { /* What: Add Item Name Column. Why: The name field takes the row's remaining width. How: This makes it a shrinkable column. */
+/* #region rowMaiSpa */
+
+.rowMaiSpa { /* What: Row Main Span. Why: The name field takes the row's remaining width. How: This makes it a shrinkable column. */
 
 
 	display        : flex;
 	flex           : 1 1 auto;
 	flex-direction : column;
-	gap            : var( --spa-ver-m07 );
+	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	min-width      : 0;
 
 
 }
 
-.rd-name-input { /* What: Add Item Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline. */
+.rowNamInp { /* What: Row Name Input. Why: The name is edited in place, styled like a name. How: This draws a borderless field with only an underline. */
 
 
 	background     : transparent;
 	border         : 0;
-	border-bottom  : var( --bor-wid-bas ) solid var(--bor-mai-col);
+	border-bottom  : var( --bor-wid-bas ) solid var( --bor-mai-col ); /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	font           : inherit;
-	font-size      : var( --fon-siz-p01 );
+	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
 	letter-spacing : -0.005em;
-	padding        : var( --spa-ver-m09 ) 0;
-	transition     : border-color var( --dur-tra-m01 );
+	padding        : var( --spa-ver-m09 ) 0;                          /* Spacing Vertical Base Minus 9 ~= 1.160px */
+	transition     : border-color var( --dur-tra-m01 );               /* Duration Transition Base Minus 1 ~= 119.2ms */
 	width          : 100%;
 
 
 }
-.rd-name-input:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
+.rowNamInp:focus { /* What: Focused Add Item Name Input. Why: The focused field should show it's being edited. How: This drops the outline and turns the underline to the accent color. */
 
 
-	border-bottom-color : var(--acc-mai-col);
+	border-bottom-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	outline             : none;
 
 
 }
-.rd-name-input::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
+.rowNamInp::placeholder { /* What: Add Item Name Placeholder. Why: The hint should read quieter than a real name. How: This sets it muted and faded. */
 
 
-	color   : var(--tex-mut-col);
-	opacity : 0.7;
+	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Name Input. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rd-name-input { /* What: Still Add Item Name Input. Why: The change should happen at once. How: This turns its transition off. */
+	.rowNamInp { /* What: Still Row Name Input. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1601,13 +1620,13 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #endregion rd-main */
+/* #endregion rowMaiSpa */
 
-/* #endregion rd-row */
+/* #endregion lisRowDiv */
 
 
 
-.rd-edit { /* What: Add Item Editor Slot. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --entry-editor-* properties that strip the editor's chrome. */
+.iteEdiDiv { /* What: Item Edit Div. Why: The item editor runs flush inside the card under a divider, without its own card chrome. How: This pads the slot and sets the --entry-editor-* properties that strip the editor's chrome. */
 
 
 	--entry-editor-background    : none;
@@ -1615,51 +1634,51 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 	--entry-editor-border-radius : 0;
 	--entry-editor-margin        : 0;
 	--entry-editor-padding       : 0;
-	border-top                   : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas );
+	border-top                   : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding                      : var( --spa-ver-m07 ) var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base ~= 14.572px */
 
 
 }
 
-/* #endregion pv-newitem */
+/* #endregion lisIteDiv */
 
 
 
-.pv-additem-btn { /* What: Add Item Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover. */
+.iteAddBut { /* What: Item Add Button. Why: Adding an item is a full-width dashed button below the pool. How: This draws a dashed outline that tints in the accent on hover. */
 
 
 	align-items     : center;
 	background      : transparent;
-	border          : var( --bor-wid-bas ) dashed var(--bor-mai-col);
-	border-radius   : var( --rad-bor-med );
-	color           : var(--tex-mut-col);
+	border          : var( --bor-wid-bas ) dashed var( --bor-mai-col );                                               /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius   : var( --rad-bor-med );                                                                           /* Radius Border Medium = 11px */
+	color           : var( --tex-mut-col );                                                                           /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor          : pointer;
 	display         : inline-flex;
 	font            : inherit;
-	font-size       : var( --fon-siz-p01 );
+	font-size       : var( --fon-siz-p01 );                                                                           /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight     : 500;
-	gap             : var( --spa-hor-m03 );
-	height          : calc( var( --ver-rhy-p04 ) * 1rem );
+	gap             : var( --spa-hor-m03 );                                                                           /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height          : calc( var( --ver-rhy-p04 ) * 1rem );                                                            /* Vertical Rhythm Base Plus 4 ~= 44.876px */
 	justify-content : center;
-	padding         : 0 var( --spa-hor-bas );
-	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas );
+	padding         : 0 var( --spa-hor-bas );                                                                         /* Spacing Horizontal Base ~= 14.572px */
+	transition      : color var( --dur-tra-bas ), border-color var( --dur-tra-bas ), background var( --dur-tra-bas ); /* Duration Transition Base ~= 157.8ms */
 	width           : 100%;
 
 
 }
-.pv-additem-btn:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
+.iteAddBut:hover { /* What: Hovered Add Item Button. Why: The button should respond to the pointer. How: This tints it in the accent. */
 
 
-	background   : var(--acc-tin-col);
-	border-color : var(--acc-mai-col);
-	color        : var(--acc-mai-col);
+	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Add Item Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Add Item Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pv-additem-btn { /* What: Still Add Item Button. Why: The change should happen at once. How: This turns its transition off. */
+	.iteAddBut { /* What: Still Item Add Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -1670,12 +1689,12 @@ legend.np-label { /* What: Mode Legend. Why: The fieldset's legend reads like an
 
 }
 
-/* #endregion pv-additem-wrap */
+/* #endregion iteAddDiv */
 
-/* #endregion np-pool */
+/* #endregion itePooDiv */
 
-/* #endregion tab-fade */
+/* #endregion steFadDiv */
 
-/* #endregion picker-view */
+/* #endregion picForDiv */
 
 
