@@ -219,16 +219,16 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 		<div
-			className={ cssModObj.rdEdit }
+			className={ cssModObj.conEdiDiv }
 
 			data-element-name-hook='conEdiDiv'
-		>{ /* What: Editor Div Element. Why: This is ConEdiCom's own root element. How: This wraps the rd-ctl-body div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+		>{ /* What: Conditional Editor Div Element. Why: This is ConEdiCom's own root element. How: This wraps the ediBodDiv div below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-			<div className={ cssModObj.rdCtlBody }>{ /* What: Controls Body Div Element. Why: The name error, the shared Controls fields, and the footer all belong in one grouped body. How: This wraps the 3 pieces below. */ }
+			<div className={ cssModObj.ediBodDiv }>{ /* What: Editor Body Div Element. Why: The name error, the shared Controls fields, and the footer all belong in one grouped body. How: This wraps the 3 pieces below. */ }
 
 
-				{ namErrStr && <p className={ cssModObj.rdCndNameErr }>{ namErrStr }</p> }{ /* What: Name Error Check. Why: An invalid/colliding name needs an inline warning right above the fields. How: This renders the message only while namErrStr holds one. */ }
+				{ namErrStr && <p className={ cssModObj.namErrPar }>{ namErrStr }</p> }{ /* What: Name Error Check. Why: An invalid/colliding name needs an inline warning right above the fields. How: This renders the message only while namErrStr holds one. */ }
 
 
 
@@ -243,10 +243,10 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 				<div
-					className={ cssModObj.rdCtlGroupFoot }
+					className={ cssModObj.conFooDiv }
 
 					data-element-name-hook='conFooDiv'
-				>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. Its data-element-name-hook is read by help mode's Data catalog. */ }
+				>{ /* What: Conditional Footer Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					{ conDelBoo ? ( // What: Confirm Delete Check. Why: Delete morphs the footer into an inline confirm before actually deleting. How: This renders the confirm row while conDelBoo is true.
@@ -255,13 +255,13 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 						<div
 							key='confirm'
 
-							className={ cssModObj.rdCtlConfirm }
-						>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the rem-del-actions row below. */ }
+							className={ cssModObj.delConDiv }
+						>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the delActDiv row below. */ }
 
 
-							<div className={ cssModObj.confirmMsg }>Delete the &ldquo;{ curConObj.name }&rdquo; conditional? Pickers using it will be detached. This can&rsquo;t be undone.</div>{ /* What: Confirm Msg Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the conditional and states that any picker using it will be detached. */ }
+							<div className={ cssModObj.delMesDiv }>Delete the &ldquo;{ curConObj.name }&rdquo; conditional? Pickers using it will be detached. This can&rsquo;t be undone.</div>{ /* What: Delete Message Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the conditional and states that any picker using it will be detached. */ }
 
-							<div className={ cssModObj.remDelActions }>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both ButBasCom instances below. */ }
+							<div className={ cssModObj.delActDiv }>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both ButBasCom instances below. */ }
 
 
 								<ButBasCom
@@ -295,8 +295,8 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 						<div
 							key='foot'
 
-							className={ cssModObj.rdCtlFootRow }
-						>{ /* What: Foot Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete ButBasCom, then the rem-foot-right div below. */ }
+							className={ cssModObj.fooRowDiv }
+						>{ /* What: Footer Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete ButBasCom, then the fooRigDiv div below. */ }
 
 
 							{ !isaNewBoo && ( // What: Existing Conditional Check. Why: A brand-new conditional has nothing saved to delete. How: This renders the Delete button only while isaNewBoo is false.
@@ -317,7 +317,7 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 
-							<div className={ cssModObj.remFootRight }>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both ButBasCom instances below. */ }
+							<div className={ cssModObj.fooRigDiv }>{ /* What: Footer Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both ButBasCom instances below. */ }
 
 
 								<ButBasCom
@@ -773,21 +773,21 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 		<section
-			className={ cssModObj.cat }
+			className={ cssModObj.datCatSec }
 
 			data-element-name-hook='datCatSec conCatSec'
-		>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
+		>{ /* What: Data Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the App Features tours, the Data page tour, and help mode's Data catalog. */ }
 
 
 			<header
-				className={ cssModObj.catH }
+				className={ cssModObj.catHeaHea }
 
 				data-element-name-hook='catHeaHea'
-			>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Category Header Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				<button
-					className={ cssModObj.catHL }
+					className={ cssModObj.catHeaBut }
 
 					data-element-name-hook='catHeaBut'
 
@@ -796,14 +796,14 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 					aria-expanded={ secOpeBoo }
 
 					onClick={ () => actStoObj.togColFun( '__conditionals', true ) }
-				>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. Its data-element-name-hook is read by the App Features tours. */ }
+				>{ /* What: Category Header Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 					<span
-						className={ cssModObj.chev }
+						className={ cssModObj.chvDisSpa }
 
 						data-chevron-open-active={ secOpeBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while secOpeBoo is true.
-					>{ /* What: Chevron Span Element. Why: The section's own open/closed state needs a visible directional indicator. How: This rotates via data-chevron-open-active and renders the shared chevron icon. */ }
+					>{ /* What: Chevron Disclosure Span Element. Why: The section's own open/closed state needs a visible directional indicator. How: This rotates via data-chevron-open-active and renders the shared chevron icon. */ }
 
 
 						<IcoSvgCom
@@ -814,12 +814,12 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 					</span>
 
-					<span className={ cssModObj.catHMain }>{ /* What: Header Main Span Element. Why: The section's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
+					<span className={ cssModObj.catMaiSpa }>{ /* What: Category Main Span Element. Why: The section's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
 
 
-						<h2 className={ cssModObj.catName }>Conditionals</h2>{ /* What: Category Name Element. Why: Every section needs its own visible name. How: This renders the literal text "Conditionals". */ }
+						<h2 className={ cssModObj.catNamHea }>Conditionals</h2>{ /* What: Category Name Heading Element. Why: Every section needs its own visible name. How: This renders the literal text "Conditionals". */ }
 
-						<span className={ cssModObj.catCount }>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see conditionals-manager.module.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
+						<span className={ cssModObj.catCouSpa }>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see conditionals-manager.module.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
 
 
 							<span>{ conIteArr.filter( ( conCurObj ) => conCurObj.active !== false ).length }</span>{ /* What: Count N Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }
@@ -846,7 +846,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 				<div
-					className={ cssModObj.catBody }
+					className={ cssModObj.catBodDiv }
 
 					data-element-name-hook='catBodDiv'
 				>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
@@ -856,7 +856,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 						<InfTipCom
-							className={ cssModObj.rdAdd }
+							className={ cssModObj.rowAddSpa }
 
 							data-element-name-hook='rowAddSpa'
 
@@ -878,7 +878,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 						<button
-							className={ cssModObj.rdAdd }
+							className={ cssModObj.rowAddBut }
 
 							data-element-name-hook='rowAddBut'
 
@@ -900,7 +900,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 							} }
-						>{ /* What: Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row. Its data-element-name-hook is read by help mode's Data catalog. */ }
+						>{ /* What: Row Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<IcoSvgCom
@@ -919,7 +919,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 					{ !conIteArr.length && !penConObj && ( // What: Empty State Check. Why: A genuinely empty list needs its own explanatory message instead of an empty body. How: This renders only while there are no conditionals at all and none is currently being created.
 
 
-						<p className={ cssModObj.rdCndEmpty }>No conditionals yet. Add one here, then attach it to any picker.</p> // What: Empty List Paragraph Element. Why: A genuinely empty list needs its own explanatory message. How: This renders a fixed message.
+						<p className={ cssModObj.lisEmpPar }>No conditionals yet. Add one here, then attach it to any picker.</p> // What: List Empty Paragraph Element. Why: A genuinely empty list needs its own explanatory message. How: This renders a fixed message.
 
 
 					) }
@@ -959,24 +959,24 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 								key={ conCurObj.id }
 								ref={ isaOpeBoo ? opeRowRef : undefined }
 
-								className={ cssModObj.rdItem }
+								className={ cssModObj.lisIteDiv }
 
 								data-element-name-hook='lisIteDiv'
 								data-row-edit-active={ isaOpeBoo || undefined } // What: Row Edit Active Attribute. Why: An open row's header stops reacting like a button and its chevron turns the accent color. How: This sets the presence-only attribute while isaOpeBoo is true.
-							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself with data-row-edit-active while isaOpeBoo is true, and captures opeRowRef only while it's the open row. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							>{ /* What: List Item Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself with data-row-edit-active while isaOpeBoo is true, and captures opeRowRef only while it's the open row. Its data-element-name-hook is read by the App Features tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 								{ isaOpeBoo && conDraObj ? ( // What: Editing Check. Why: The open row swaps its own header for a live name input, since a real button can't legally contain that input (interactive-in-interactive) and would otherwise lose its own accessible name. How: This renders the editing header while isaOpeBoo is true and a draft exists, otherwise the normal clickable row.
 
 
 									<div
-										className={ cssModObj.rdRow }
+										className={ cssModObj.lisRowDiv }
 
 										data-element-name-hook='lisRowDiv'
-									>{ /* What: Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rd-main span and the chevron button below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+									>{ /* What: List Row Div Element. Why: The name input and its own chevron button need their own row. How: This wraps the rowMaiSpa span and the chevron button below. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-										<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
+										<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name input needs its own wrapper matching the closed row's own layout. How: This wraps the input below. */ }
 
 
 											<input
@@ -996,7 +996,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 												} }
 
-												className={ cssModObj.rdNameInput }
+												className={ cssModObj.rowNamInp }
 
 												data-element-name-hook='rowNamInp'
 
@@ -1011,27 +1011,27 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } }
 												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+											/>{ /* What: Row Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 										</span>
 
 										<button
-											className={ cssModObj.rdChev }
+											className={ cssModObj.rowChvBut }
 
 											type='button'
 
 											aria-label='Collapse'
 
 											onClick={ keeCloFun }
-										>{ /* What: Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler used elsewhere. */ }
+										>{ /* What: Row Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler used elsewhere. */ }
 
 
 											<span
-												className={ cssModObj.chev }
+												className={ cssModObj.chvDisSpa }
 
 												data-chevron-open-active // What: Chevron Open Active Attribute. Why: This chevron only renders on an open row, so it always points down. How: This sets the presence-only attribute unconditionally.
-											>{ /* What: Chevron Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via its own data-chevron-open-active. */ }
+											>{ /* What: Chevron Disclosure Span Element. Why: The disclosure's own open/closed state needs a visible directional indicator. How: This wraps the chevron icon, rotated via its own data-chevron-open-active. */ }
 
 
 												<IcoSvgCom
@@ -1053,7 +1053,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 									<button
-										className={ cssModObj.rdRow }
+										className={ cssModObj.lisRowBut }
 
 										data-element-name-hook='lisRowBut'
 
@@ -1070,19 +1070,19 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 
 										} }
-									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+									>{ /* What: List Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between opeEdiFun and cloEdiFun based on isaOpeBoo. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
-										<span className={ cssModObj.rdMain }>{ /* What: Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and sched spans below. */ }
+										<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and summary spans below. */ }
 
 
 											<span
-												className={ cssModObj.rdName }
+												className={ cssModObj.rowNamSpa }
 
 												data-element-name-hook='rowNamSpa'
-											>{ conCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. Its data-element-name-hook is read by help mode's Data catalog. */ }
+											>{ conCurObj.name }</span>{ /* What: Row Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
-											<span className={ cssModObj.rdSched }>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
+											<span className={ cssModObj.rowSumSpa }>{ /* What: Row Summary Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
 
 
 												{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).labStr || conCurObj.mode }{ /* What: Mode Label Expression. Why: The summary leads with the conditional's mode. How: This renders the mode's label, falling back to its raw id. */ }
@@ -1097,14 +1097,14 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 										</span>
 
-										<span className={ cssModObj.rdChev }>{ /* What: Chevron Holder Span Element. Why: The row's chevron needs its own fixed-width slot at the row's end. How: This wraps the rotating chevron span. */ }
+										<span className={ cssModObj.rowChvSpa }>{ /* What: Row Chevron Span Element. Why: The row's chevron needs its own fixed-width slot at the row's end. How: This wraps the rotating chevron span. */ }
 
 
 											<span
-												className={ cssModObj.chev }
+												className={ cssModObj.chvDisSpa }
 
 												data-chevron-open-active={ isaOpeBoo || undefined } // What: Chevron Open Active Attribute. Why: An open disclosure points its chevron down. How: This sets the presence-only attribute while isaOpeBoo is true.
-											>{ /* What: Chevron Span Element. Why: The closed row's own open/closed state needs a visible directional indicator. How: This rotates via data-chevron-open-active and renders the shared chevron icon. */ }
+											>{ /* What: Chevron Disclosure Span Element. Why: The closed row's own open/closed state needs a visible directional indicator. How: This rotates via data-chevron-open-active and renders the shared chevron icon. */ }
 
 
 												<IcoSvgCom
