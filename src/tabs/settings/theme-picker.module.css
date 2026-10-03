@@ -14,9 +14,8 @@
  * switches its label and name field to light-on-dark colors.
  *
  * The subsection heading and copy classes are copied from the shared Settings
- * classes until the design-system pass merges them. The selectors below keep
- * their original specificity, since several rules deliberately override each
- * other (the check sits inside the rows' generic span rule, for instance).
+ * classes until the design-system pass merges them. The label's span rule
+ * skips the check span, so the check keeps its own top-right accent styling.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -138,7 +137,7 @@
 
 }
 
-.theme-row span { /* What: Theme Row Label. Why: The theme's name sits in the strip's bottom-left corner, readable over its colors. How: This pins it there in small, spaced, translucent dark mono capitals. */
+.theme-row span:not(.theme-row-check) { /* What: Theme Row Label. Why: The theme's name sits in the strip's bottom-left corner, readable over its colors. How: This pins it there in small, spaced, translucent dark mono capitals. */
 
 
 	bottom         : var( --spa-ver-m03 );
@@ -153,17 +152,10 @@
 
 
 }
-.theme-row[data-theme-dark-active] span { /* What: Dark Theme Row Label. Why: Dark text would vanish on a dark theme's colors. How: This switches the label to translucent white. */
+.theme-row[data-theme-dark-active] span:not(.theme-row-check) { /* What: Dark Theme Row Label. Why: Dark text would vanish on a dark theme's colors. How: This switches the label to translucent white. */
 
 
 	color : rgba(255,255,255,.65);
-
-
-}
-.theme-row--custom[data-option-select-active] span { /* What: Selected Custom Theme Row Label. Why: The selected custom row's text should follow the row's own color. How: This inherits the color instead. */
-
-
-	color : inherit;
 
 
 }
@@ -185,14 +177,6 @@
 	right           : var( --spa-hor-m02 );
 	top             : var( --spa-ver-m03 );
 	width           : calc( var( --ver-rhy-p01 ) * 1rem );
-
-
-}
-.theme-row[data-theme-dark-active] .theme-row-check,
-.theme-row[data-theme-dark-active] .theme-row-check span { /* What: Dark Theme Row Check. Why: The dark row's label rule also matches the check and the text span the editor injects around its glyph, which would turn them white on the white disc. How: This keeps both accent blue. */
-
-
-	color : var( --acc-mai-col );
 
 
 }
