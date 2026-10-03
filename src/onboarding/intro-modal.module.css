@@ -17,27 +17,27 @@
 
 
 
-/* #region ob-scrim */
+/* #region intScrDiv */
 
-.ob-scrim { /* What: Intro Modal Scrim. Why: The modal needs a dimmed backdrop over the whole app that can scroll when the card is taller than the screen. How: This covers the viewport in a fading dim layer and stacks the card in a scrollable column. */
+.intScrDiv { /* What: Intro Scrim Div. Why: The modal needs a dimmed backdrop over the whole app that can scroll when the card is taller than the screen. How: This covers the viewport in a fading dim layer and stacks the card in a scrollable column. */
 
 
-	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background     : oklch( from var( --scr-mai-col ) l c h / 0.5 );
+	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with the tour's coach card, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background     : oklch( from var( --scr-mai-col ) l c h / 0.5 );                           /* Scrim Main Color = oklch( 0.15 0.02 250 ) */
 	display        : flex;
 	flex-direction : column;
 	inset          : 0;
 	overflow-y     : auto;
-	padding        : var( --spa-ver-p02 ) var( --spa-hor-p02 );
+	padding        : var( --spa-ver-p02 ) var( --spa-hor-p02 );                                /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px */
 	position       : fixed;
 	z-index        : 1000;
 
 
 }
-@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Intro Modal Scrim. Why: Someone who asked for less motion shouldn't see the backdrop fade in. How: This applies only when the reduced-motion preference is set. */
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Intro Scrim Div. Why: Someone who asked for less motion shouldn't see the backdrop fade in. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ob-scrim { /* What: Motionless Intro Modal Scrim. Why: The backdrop should simply appear. How: This turns its fade and transitions off. */
+	.intScrDiv { /* What: Motionless Intro Scrim Div. Why: The backdrop should simply appear. How: This turns its fade and transitions off. */
 
 
 		animation  : none;
@@ -49,34 +49,34 @@
 
 }
 
-/* #region ob-welcome */
+/* #region welCarDiv */
 
-.ob-welcome { /* What: Intro Modal Card. Why: The modal's content sits on one raised card centered in the backdrop. How: This styles the card and centers it with auto margins, which collapse to top-aligned once the card outgrows the screen. */
+.welCarDiv { /* What: Welcome Card Div. Why: The modal's content sits on one raised card centered in the backdrop. How: This styles the card and centers it with auto margins, which collapse to top-aligned once the card outgrows the screen. */
 
 
-	background    : var(--bac-sur-col);
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-lar );
-	box-shadow    : var( --ele-xla-sha );
-	margin        : auto; /* What: Card Auto Margin. Why: Center alignment on the backdrop would clip a card taller than the screen at both ends with no way to scroll to it. How: Auto margins only take up free space, so the card sits centered when it fits and falls back to top-aligned, scrollable flow when it doesn't. */
-	max-width     : calc( var( --cdn-pow-012 ) * var( --fon-siz-p01 ) + ( var( --spa-hor-p02 ) + var( --spa-hor-m03 ) + var( --bor-wid-sma ) ) * 2 ); /* What: Intro Modal Maximum Width. Why: The card should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the card's side padding, the paragraphs' side margin, and the card's side border, each counted twice, since the box is border-box. */
-	padding       : var( --spa-ver-p02 ) var( --spa-hor-p02 ) var( --spa-ver-p01 );
+	background    : var( --bac-sur-col );                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-lar );                                           /* Radius Border Large ~= 14.572px */
+	box-shadow    : var( --ele-xla-sha );                                           /* Elevation Extra Large Shadow, about 0 26px 59px -19px plus 0 8px 19px -5px */
+	margin        : auto;                                                           /* What: Card Auto Margin. Why: Center alignment on the backdrop would clip a card taller than the screen at both ends with no way to scroll to it. How: Auto margins only take up free space, so the card sits centered when it fits and falls back to top-aligned, scrollable flow when it doesn't. */
+	max-width     : calc( var( --cdn-pow-012 ) * var( --fon-siz-p01 ) + ( var( --spa-hor-p02 ) + var( --spa-hor-m03 ) + var( --bor-wid-sma ) ) * 2 ); /* Core-Design-Number to the Power of 12 ~= 29.207, Font Size Base Plus 1 ~= 14.572px, Spacing Horizontal Base Plus 2 ~= 25.572px, Spacing Horizontal Base Minus 3 ~= 6.268px, Border Width Small ~= 0.499px */ /* What: Intro Modal Maximum Width. Why: The card should fit its paragraphs at the base text width rather than a free-standing number. How: This is the base text width at the paragraphs' font size plus the card's side padding, the paragraphs' side margin, and the card's side border, each counted twice, since the box is border-box. */
+	padding       : var( --spa-ver-p02 ) var( --spa-hor-p02 ) var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 2 ~= 25.572px, Spacing Vertical Base Plus 1 ~= 19.304px */
 	text-align    : left;
 	width         : 100%;
 
 
 }
-.ob-welcome.ob-in { /* What: Rising Intro Modal Card. Why: The card should rise gently into place when the modal opens. How: This plays the obRise entrance, added only when reduced motion isn't requested. */
+.welCarDiv--rise { /* What: Rising Welcome Card Div. Why: The card should rise gently into place when the modal opens. How: This plays the welCarDivOpenRise entrance, added only when reduced motion isn't requested. */
 
 
-	animation : obRise var( --dur-ani-p02 ) var( --mot-dec-eas ) both;
+	animation : welCarDivOpenRise var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
-@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Intro Modal Card. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
+@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Welcome Card Div. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ob-welcome { /* What: Motionless Intro Modal Card. Why: The card should simply appear. How: This turns its animation and transitions off. */
+	.welCarDiv { /* What: Motionless Welcome Card Div. Why: The card should simply appear. How: This turns its animation and transitions off. */
 
 
 		animation  : none;
@@ -87,14 +87,14 @@
 
 
 }
-@keyframes obRise { /* What: Intro Modal Card Rise. Why: A card that fades up a little reads as arriving rather than blinking in. How: This fades the card in from slightly lower and smaller to its resting place. */
+@keyframes welCarDivOpenRise { /* What: Welcome Card Div Open Rise. Why: A card that fades up a little reads as arriving rather than blinking in. How: This fades the card in from slightly lower and smaller to its resting place. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY(12px) scale(.98);
+		transform : translateY( var( --spa-ver-m01 ) ) scale( .98 ); /* Spacing Vertical Base Minus 1 = 11px */
 
 
 	}
@@ -111,20 +111,20 @@
 
 }
 
-/* #region ob-wmark */
+/* #region icoMarDiv */
 
-.ob-wmark { /* What: Intro Modal Icon Mark. Why: Every intro modal shows a recognizable glyph above its title. How: This sizes and centers the glyph's box in the accent color. */
+.icoMarDiv { /* What: Icon Mark Div. Why: Every intro modal shows a recognizable glyph above its title. How: This sizes and centers the glyph's box in the accent color. */
 
 
-	color  : var(--acc-mai-col);
-	height : calc( var( --ver-rhy-p05 ) * 1rem );
-	margin : 0 auto var( --spa-ver-bas );
-	width  : calc( var( --ver-rhy-p05 ) * 1rem );
+	color  : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	height : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	margin : 0 auto var( --spa-ver-bas );         /* Spacing Vertical Base ~= 14.572px */
+	width  : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 
 
 }
 
-.ob-wmark svg { /* What: Intro Modal Icon. Why: The glyph should fill its mark box whatever size it was drawn at. How: This stretches the svg to the box. */
+.icoMarDiv svg { /* What: Icon Mark Div Icon. Why: The glyph should fill its mark box whatever size it was drawn at. How: This stretches the svg to the box. */
 
 
 	height : 100%;
@@ -133,125 +133,125 @@
 
 }
 
-/* #endregion ob-wmark */
+/* #endregion icoMarDiv */
 
 
-.ob-welcome h2 { /* What: Intro Modal Title. Why: The title leads the card. How: This centers it in a larger, tighter heading style. */
+.intTitHea { /* What: Intro Title Heading. Why: The title leads the card. How: This centers it in a larger, tighter heading style. */
 
 
-	font-size      : var( --fon-siz-p02 );
+	font-size      : var( --fon-siz-p02 );     /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 600;
 	letter-spacing : -0.02em;
-	margin         : 0 0 var( --spa-ver-m02 );
+	margin         : 0 0 var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 	text-align     : center;
 
 
 }
 
-.ob-welcome>p { /* What: Intro Modal Paragraph. Why: The body copy should read as quieter supporting text. How: This sets it in the muted color at a comfortable line height. */
+.intBodPar { /* What: Intro Body Paragraph. Why: The body copy should read as quieter supporting text. How: This sets it in the muted color at a comfortable line height. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-p01 );
-	line-height : var( --ver-rhy-bas );
-	margin      : 0 var( --spa-hor-m03 );
-
-
-}
-.ob-welcome>p+p { /* What: Following Intro Modal Paragraph. Why: Consecutive paragraphs need a gap between them. How: This adds top margin to every paragraph after the first. */
-
-
-	margin-top : var( --spa-ver-m01 );
+	color       : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-p01 );   /* Font Size Base Plus 1 ~= 14.572px */
+	line-height : var( --ver-rhy-bas );   /* Vertical Rhythm Base ~= 1.325 */
+	margin      : 0 var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 
 
 }
+.intBodPar + .intBodPar { /* What: Following Intro Body Paragraph. Why: Consecutive paragraphs need a gap between them. How: This adds top margin to every paragraph after the first. */
 
 
-/* #region ob-chips */
+	margin-top : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
 
-.ob-chips { /* What: Intro Modal Chips. Why: The topic chips read as one row below the paragraphs. How: This lays them out in a centered, wrapping row. */
+
+}
+
+
+/* #region chiRowDiv */
+
+.chiRowDiv { /* What: Chip Row Div. Why: The topic chips read as one row below the paragraphs. How: This lays them out in a centered, wrapping row. */
 
 
 	display         : flex;
 	flex-wrap       : wrap;
-	gap             : var( --spa-ver-m02 ) var( --spa-hor-m02 );
+	gap             : var( --spa-ver-m02 ) var( --spa-hor-m02 );   /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	justify-content : center;
-	margin          : var( --spa-ver-p01 ) 0 var( --spa-ver-m05 );
+	margin          : var( --spa-ver-p01 ) 0 var( --spa-ver-m05 ); /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
 
-.ob-chips span { /* What: Intro Modal Chip. Why: Each topic the tour covers shows as a small label chip. How: This styles it as an accent-tinted mono pill. */
+.topPilSpa { /* What: Topic Pill Span. Why: Each topic the tour covers shows as a small label chip. How: This styles it as an accent-tinted mono pill. */
 
 
 	align-items   : center;
-	background    : var(--acc-tin-col);
+	background    : var( --acc-tin-col );                /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 	border        : none;
 	border-radius : 999px;
-	color         : var(--acc-mai-col);
+	color         : var( --acc-mai-col );                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	display       : inline-flex;
-	font-family   : var(--fon-fam-sec);
-	font-size     : var( --fon-siz-bas );
-	height        : calc( var( --ver-rhy-p02 ) * 1rem );
+	font-family   : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size     : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	height        : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	outline       : none;
-	padding       : 0 var( --spa-hor-m01 );
+	padding       : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
 
 
 }
 
-/* #endregion ob-chips */
+/* #endregion chiRowDiv */
 
 
-/* #region ob-wact */
+/* #region actStaDiv */
 
-.ob-wact { /* What: Intro Modal Actions. Why: The start and skip buttons stack below the content. How: This lays them out in a spaced column. */
+.actStaDiv { /* What: Action Stack Div. Why: The start and skip buttons stack below the content. How: This lays them out in a spaced column. */
 
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m02 );
-	margin-top     : var( --spa-ver-p01 );
+	gap            : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	margin-top     : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
 
-.ob-btn { /* What: Intro Modal Button. Why: Both actions are full-width, tappable buttons. How: This gives them the shared outlined button look. */
+.intActBut { /* What: Intro Action Button. Why: Both actions are full-width, tappable buttons. How: This gives them the shared outlined button look. */
 
 
 	background    : transparent;
-	border        : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius : var( --rad-bor-med );
-	color         : var(--tex-mai-col);
+	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius : var( --rad-bor-med );                            /* Radius Border Medium = 11px */
+	color         : var( --tex-mai-col );                            /* Text Main Color = oklch( 0.17 0.012 250 ) */
 	cursor        : pointer;
 	font-family   : inherit;
-	font-size     : var( --fon-siz-p01 );
+	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 600;
-	height        : calc( var( --ver-rhy-p04 ) * 1rem );
-	padding       : 0 var( --spa-hor-bas );
+	height        : calc( var( --ver-rhy-p04 ) * 1rem );             /* Vertical Rhythm Base Plus 4 ~= 44.876px */
+	padding       : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.ob-btn--primary { /* What: Primary Intro Modal Button. Why: Starting the tour is the main call to action. How: This fills the button with the accent color. */
+.intActBut--primary { /* What: Primary Intro Action Button. Why: Starting the tour is the main call to action. How: This fills the button with the accent color. */
 
 
-	background   : var(--acc-mai-col);
-	border-color : var(--acc-mai-col);
-	color        : var( --tex-acc-col );
-
-
-}
-.ob-btn--ghost:hover { /* What: Hovered Skip Button. Why: The quiet skip button still needs a hover response. How: This gives it the shared hover tint. */
-
-
-	background : var( --bac-hov-col );
+	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color        : var( --tex-acc-col ); /* Text Accent Color = oklch( 1 0 0 ) */
 
 
 }
+.intActBut--ghost:hover { /* What: Hovered Ghost Intro Action Button. Why: The quiet skip button still needs a hover response. How: This gives it the shared hover tint. */
 
-/* #endregion ob-wact */
 
-/* #endregion ob-welcome */
+	background : var( --bac-hov-col ); /* Background Hover Color = oklch( 0 0 0 / 0.05 ) */
 
-/* #endregion ob-scrim */
+
+}
+
+/* #endregion actStaDiv */
+
+/* #endregion welCarDiv */
+
+/* #endregion intScrDiv */
 
 
