@@ -1820,6 +1820,11 @@ later, but don't invent one for anything else yet:
     `Celebration Fire Sequence`) for the reference example.
 
 ### Quotes
+- **CSS follows the same rule** (decided 2026-10-02): every CSS string is
+  single-quoted too, attribute selector values included
+  (`[aria-pressed='true']`, `url( '...' )`, `font-family : 'Geist'`), with
+  double quotes only inside a single-quoted string or where they're
+  genuinely required.
 - Use `'single quotes'` for every string literal, including JSX attribute
   values — even though double quotes are the idiomatic default there (e.g.
   `className="x"` becomes `className='x'`). If a string's own content
