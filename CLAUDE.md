@@ -2105,6 +2105,14 @@ still passes.
     rows), that element takes the same class name in every one of them,
     from its shared hook where it has one, so a later move into one shared
     component is a straight merge.
+  - **A hook shared by different elements names a group, not an
+    element** (decided 2026-10-03): when help mode or a tour marks several
+    different elements with one hook (e.g. the Day Log's `logGenSpa` on a
+    column's header cell and on every value cell under it), each element
+    takes its own class instead of the hook's name, and whatever the group
+    shares (a column's alignment) is written into each element's own rule
+    rather than a utility class stacked beside it. Identical elements
+    sharing a hook (every value cell in one column) still share one class.
 - **CSS file boundaries and header**: the same as a JS file: exactly 3
   blank lines before the first real line, exactly 2 blank lines after the
   last one, and a mandatory file-level `/** ... */` header comment
