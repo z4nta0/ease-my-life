@@ -590,7 +590,7 @@ body.is-reordering * { /* What: Drag In Progress. Why: While a card is being dra
 body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every tab needs room to scroll a bottom-anchored target clear of the tab bar. How: This sets the padding each tab's root reads, per CLAUDE.md's body-level state rule. */
 
 
-	--tab-tour-padding : calc( var( --ver-rhy-p10 ) * 1rem ); /* Vertical Rhythm Base Plus 10 ~= 242.522px */ /* What: Tab Tour Padding. Why: This is how much room a tab adds below its content during a tour. How: Each tab's module reads it as padding-bottom, falling back to none. */
+	--tab-tou-pad : calc( var( --ver-rhy-p10 ) * 1rem ); /* Vertical Rhythm Base Plus 10 ~= 242.522px */ /* What: Tab Tour Padding. Why: This is how much room a tab adds below its content during a tour. How: Each tab's module reads it as padding-bottom, falling back to none. */
 
 
 }
@@ -671,12 +671,12 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 	50% {
 
 
-		margin-bottom  : var( --spa-ver-m01 );                /* Spacing Vertical Base Minus 1 = 11px */
-		max-height     : calc( var( --ver-rhy-p09 ) * 1rem ); /* Vertical Rhythm Base Plus 9 ~= 183.074px */
+		margin-bottom  : var( --spa-ver-m01 );                            /* Spacing Vertical Base Minus 1 = 11px */
+		max-height     : calc( var( --ver-rhy-p09 ) * 1rem );             /* Vertical Rhythm Base Plus 9 ~= 183.074px */
 		opacity        : 0;
-		padding-bottom : var( --spa-ver-bas );                /* Spacing Vertical Base ~= 14.572px */
-		padding-top    : var( --spa-ver-bas );                /* Spacing Vertical Base ~= 14.572px */
-		transform      : translateX( -18px );
+		padding-bottom : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+		padding-top    : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
+		transform      : translateX( calc( var( --spa-hor-p01 ) * -1 ) ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 
 
 	}
@@ -691,7 +691,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 		opacity             : 0;
 		padding-bottom      : 0;
 		padding-top         : 0;
-		transform           : translateX( -18px );
+		transform           : translateX( calc( var( --spa-hor-p01 ) * -1 ) ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 
 
 	}
@@ -699,14 +699,14 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes catEnter { /* What: Category Enter Keyframes. Why: When the Data tab's filter changes, the list remounts and each card should reflow in rather than pop. How: This fades each card in while sliding it up 8px. */
+@keyframes catEnter { /* What: Category Enter Keyframes. Why: When the Data tab's filter changes, the list remounts and each card should reflow in rather than pop. How: This fades each card in while sliding it up one m02 spacing step. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY( 8px );
+		transform : translateY( var( --spa-ver-m02 ) ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 	}
@@ -797,7 +797,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translate( calc( -50% + cos( var( --angle ) ) * var( --dist ) ), calc( -50% + sin( var( --angle ) ) * var( --dist ) + 14px ) ) rotate( var( --rot ) ); /* Angle = set per confetti piece by JS, Distance = set per confetti piece by JS, Rotation = set per confetti piece by JS */
+		transform : translate( calc( -50% + cos( var( --angle ) ) * var( --dist ) ), calc( -50% + sin( var( --angle ) ) * var( --dist ) + var( --spa-ver-bas ) ) ) rotate( var( --rot ) ); /* Angle = set per confetti piece by JS, Distance = set per confetti piece by JS, Rotation = set per confetti piece by JS */
 
 
 	}
@@ -944,14 +944,14 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes pickerTabEnter { /* What: Picker Tab Enter Keyframes. Why: When the group changes, the Show tabs should slide in, staggered, rather than pop; the row is keyed on the group so this replays. How: This fades each tab in while sliding it from 10px to the left. */
+@keyframes pickerTabEnter { /* What: Picker Tab Enter Keyframes. Why: When the group changes, the Show tabs should slide in, staggered, rather than pop; the row is keyed on the group so this replays. How: This fades each tab in while sliding it in from one m01 spacing step to the left. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateX( -10px );
+		transform : translateX( calc( var( --spa-hor-m01 ) * -1 ) ); /* Spacing Horizontal Base Minus 1 = 11px */
 
 
 	}
@@ -975,7 +975,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY( -8px ) scale( .98 );
+		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 	}
@@ -1008,7 +1008,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY( -6px ) scale( .98 );
+		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 	}
@@ -1016,14 +1016,14 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes rowInsert { /* What: Row Insert Keyframes. Why: A freshly added reminder or item row should read as a deliberate insertion, while its editor expands below it. How: This fades the row in while sliding it down 8px. */
+@keyframes rowInsert { /* What: Row Insert Keyframes. Why: A freshly added reminder or item row should read as a deliberate insertion, while its editor expands below it. How: This fades the row in while sliding it down one m02 spacing step. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY( -8px );
+		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 	}
@@ -1087,14 +1087,14 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes tabFadeIn { /* What: Tab Fade In Keyframes. Why: A tab's content should rise in when it opens, the same for every tab. How: This fades it in while rising 9px. */
+@keyframes tabFadeIn { /* What: Tab Fade In Keyframes. Why: A tab's content should rise in when it opens, the same for every tab. How: This fades it in while rising one m02 spacing step. */
 
 
 	from {
 
 
 		opacity   : 0;
-		transform : translateY( 9px );
+		transform : translateY( var( --spa-ver-m02 ) ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 	}
