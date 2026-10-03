@@ -1873,7 +1873,7 @@ comes up and recorded here, per "### Undefined cases: stop and ask".
 Decided 2026-09-28. Everything that can have a reduced-motion variant gets
 one, whether the motion comes from CSS or from JS.
 - **CSS**: every `animation` or `transition`, color-only transitions
-  included, is paired with a `@media (prefers-reduced-motion: reduce)`
+  included, is paired with a `@media ( prefers-reduced-motion: reduce )`
   variant (placed per the `@media` bullet under "### CSS modules and JS
   hooks") that turns it off with `animation : none` or `transition :
   none`. The exception is one that JS waits on (an
@@ -2053,6 +2053,13 @@ still passes.
   and `calc( var( --fon-siz-bas ) * var( --cdn-pow-001 ) )`. Values still
   written tight (`var(--tex-mut-col)`) are converted as their files come up in
   the design-system pass.
+- **Parentheses in queries** (decided 2026-10-02) get the same inner
+  spaces: every condition in a `@media` or `@container` query is written
+  `( feature: value )`, e.g. `@media ( prefers-reduced-motion: reduce )`
+  and `@container app ( max-width: 640px )`, and each condition in a
+  combined query gets its own, `( min-width: 720px ) and ( max-width:
+  760px )`. The colon inside a condition keeps its single space after it
+  only, as browsers and the spec write it.
 - **`@media` blocks**: a `@media` override is a variant of the element it
   styles, so it sits directly under that element's base rule with its
   other variants. The block gets its own What/Why/How comment after its
