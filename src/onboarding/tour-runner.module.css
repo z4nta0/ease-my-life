@@ -15,7 +15,7 @@
  * The spotlight drops its dimming shadow while the user drags a group or item
  * so they can see where it lands, and pulses a white ring while a step waits
  * for a real click on its target. The coach card's arrow is positioned from
- * the --ob-ax custom property the placement code writes, since only that code
+ * the --coa-arr-off custom property the placement code writes, since only that code
  * knows where the target sits relative to the card.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -24,9 +24,9 @@
 
 
 
-/* #region ob-tour */
+/* #region touOveDiv */
 
-.ob-tour { /* What: Tour Overlay. Why: The tour's dim, spotlight, and coach card must sit above everything on screen, while clicks still reach the real target underneath. How: This fixes a full-screen layer above help mode's own layer that ignores the pointer, with only the coach card opting back in. */
+.touOveDiv { /* What: Tour Overlay Div. Why: The tour's dim, spotlight, and coach card must sit above everything on screen, while clicks still reach the real target underneath. How: This fixes a full-screen layer above help mode's own layer that ignores the pointer, with only the coach card opting back in. */
 
 
 	inset          : 0;
@@ -37,48 +37,48 @@
 
 }
 
-.ob-dim { /* What: Tour Dim. Why: Before a step's target is found, the whole page stays dimmed. How: This covers the overlay with a dark translucent scrim. */
+.touDimDiv { /* What: Tour Dim Div. Why: Before a step's target is found, the whole page stays dimmed. How: This covers the overlay with a dark translucent scrim. */
 
 
-	background : oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-002-rec ));
+	background : oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Scrim Main Color = oklch( 0.15 0.02 250 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
 	inset      : 0;
 	position   : absolute;
 
 
 }
 
-.ob-spot { /* What: Tour Spotlight. Why: The step's target should stand out against a darkened page. How: This outlines the target's box in the accent color and darkens everything around it with one huge box-shadow. */
+.touSpoDiv { /* What: Tour Spotlight Div. Why: The step's target should stand out against a darkened page. How: This outlines the target's box in the accent color and darkens everything around it with one huge box-shadow. */
 
 
-	border        : var( --bor-wid-lar ) solid oklch(from var(--acc-mai-col) l c h/0.9);
-	border-radius : var( --rad-bor-med );
-	box-shadow    : 0 0 0 9999px oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-002-rec )); /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
+	border        : var( --bor-wid-lar ) solid oklch( from var( --acc-mai-col ) l c h / 0.9 );        /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius : var( --rad-bor-med );                                                             /* Radius Border Medium = 11px */
+	box-shadow    : 0 0 0 9999px oklch( from var( --scr-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Scrim Main Color = oklch( 0.15 0.02 250 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */ /* What: Spotlight Scrim. Why: A real cut-out in the dim would take far more work than the effect needs. How: A spread shadow this wide darkens the whole page around the box while leaving the box itself clear. */
 	position      : fixed;
 
 
 }
-.ob-spot[data-spot-drag-active] { /* What: Dragging Tour Spotlight. Why: While a group or item is dragged, the user needs to see the whole page to judge where it lands. How: This drops the dimming shadow and keeps the border so the target stays marked. */
+.touSpoDiv[data-spot-drag-active] { /* What: Dragging Tour Spotlight Div. Why: While a group or item is dragged, the user needs to see the whole page to judge where it lands. How: This drops the dimming shadow and keeps the border so the target stays marked. */
 
 
 	box-shadow : none;
 
 
 }
-.ob-spot.is-pulsing::after { /* What: Pulsing Tour Spotlight Ring. Why: A step that waits for a real click on its target should draw the eye to it while Next stays disabled. How: This draws a separate ring over the spotlight's border that pings outward, so it doesn't fight the dimming shadow. */
+.touSpoDiv--pulse::after { /* What: Pulsing Tour Spotlight Div Ring. Why: A step that waits for a real click on its target should draw the eye to it while Next stays disabled. How: This draws a separate ring over the spotlight's border that pings outward, so it doesn't fight the dimming shadow. */
 
 
-	animation     : obSpotPing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite;
+	animation     : touSpoDivRingPing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	border-radius : inherit;
-	content       : "";
+	content       : '';
 	inset         : 0;
 	position      : absolute;
 
 
 }
-@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Tour Spotlight. Why: Someone who asked for less motion shouldn't see the ring ping. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Tour Spotlight Div. Why: Someone who asked for less motion shouldn't see the ring ping. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ob-spot.is-pulsing::after { /* What: Motionless Spotlight Ring. Why: The ring should stay still. How: This turns its ping and transitions off. */
+	.touSpoDiv--pulse::after { /* What: Motionless Tour Spotlight Div Ring. Why: The ring should stay still. How: This turns its ping and transitions off. */
 
 
 		animation  : none;
@@ -89,13 +89,13 @@
 
 
 }
-@keyframes obSpotPing { /* What: Spotlight Ring Ping. Why: A ring that grows and fades reads as a call to click. How: This spreads an attention ring shadow outward from the border while fading it out, white by default because the accent color barely shows against the dark scrim. */
+@keyframes touSpoDivRingPing { /* What: Tour Spotlight Div Ring Ping. Why: A ring that grows and fades reads as a call to click. How: This spreads an attention ring shadow outward from the border while fading it out, white by default because the accent color barely shows against the dark scrim. */
 
 
 	0% {
 
 
-		box-shadow : 0 0 0 0 oklch( from var( --att-rin-col ) l c h / 0.65 );
+		box-shadow : 0 0 0 0 oklch( from var( --att-rin-col ) l c h / 0.65 ); /* Attention Ring Color = oklch( 1 0 0 ) */
 
 
 	}
@@ -103,7 +103,7 @@
 	70% {
 
 
-		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch( from var( --att-rin-col ) l c h / 0 );
+		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch( from var( --att-rin-col ) l c h / 0 ); /* Vertical Rhythm Base Minus 1 = 11px, Attention Ring Color = oklch( 1 0 0 ) */
 
 
 	}
@@ -111,7 +111,7 @@
 	100% {
 
 
-		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch( from var( --att-rin-col ) l c h / 0 );
+		box-shadow : 0 0 0 calc( var( --ver-rhy-m01 ) * 1rem ) oklch( from var( --att-rin-col ) l c h / 0 ); /* Vertical Rhythm Base Minus 1 = 11px, Attention Ring Color = oklch( 1 0 0 ) */
 
 
 	}
@@ -121,58 +121,58 @@
 
 
 
-/* #region ob-coach */
+/* #region coaCarDiv */
 
-.ob-coach { /* What: Tour Coach Card. Why: Each step's explanation needs a raised card that floats beside its target. How: This fixes a surface card over the page that takes the pointer back from the overlay and fades in. */
+.coaCarDiv { /* What: Coach Card Div. Why: Each step's explanation needs a raised card that floats beside its target. How: This fixes a surface card over the page that takes the pointer back from the overlay and fades in. */
 
 
-	animation      : global(overlayOpenFadeIn) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
-	background     : var(--bac-sur-col);
-	border         : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	border-radius  : var( --rad-bor-med );
-	box-shadow     : var( --ele-lar-sha );
-	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );
+	animation      : global( overlayOpenFadeIn ) var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */ /* What: Global Fade Keyframes. Why: The overlayOpenFadeIn keyframes are shared with help mode's tip and the intro modal, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	background     : var( --bac-sur-col );                                                       /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border         : var( --bor-wid-sma ) solid var( --bor-mai-col );                            /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-radius  : var( --rad-bor-med );                                                       /* Radius Border Medium = 11px */
+	box-shadow     : var( --ele-lar-sha );                                                       /* Elevation Large Shadow, about 0 19px 45px -15px plus 0 6px 15px -4px */
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );                                  /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	pointer-events : auto;
 	position       : fixed;
 
 
 }
-.ob-coach::before { /* What: Tour Coach Arrow. Why: The card should point at the element its step explains. How: This draws a small rotated square that pokes out of the card's edge. */
+.coaCarDiv::before { /* What: Coach Card Div Arrow. Why: The card should point at the element its step explains. How: This draws a small rotated square that pokes out of the card's edge. */
 
 
-	background : var(--bac-sur-col);
-	border     : var( --bor-wid-sma ) solid var(--bor-mai-col);
-	content    : "";
-	height     : calc( var( --ver-rhy-bas ) * 1rem );
-	left       : var( --ob-ax, var( --spa-hor-p02 ) ); /* What: Arrow X Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: The tour writes --ob-ax as the target's center offset from the card's left edge, falling back to the p02 horizontal spacing step. */
+	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
+	border     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	content    : '';
+	height     : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
+	left       : var( --coa-arr-off, var( --spa-hor-p02 ) );      /* Spacing Horizontal Base Plus 2 ~= 25.572px */ /* What: Coach Arrow Offset. Why: The arrow has to line up with the target, which only the placement code knows. How: The tour writes --coa-arr-off as the target's center offset from the card's left edge, falling back to the p02 horizontal spacing step. */
 	position   : absolute;
-	transform  : translateX(-50%) rotate(45deg); /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would sit half its width right of the target's center. How: Shifting it back by half its width first centers it, then the turn makes it a diamond. */
-	width      : calc( var( --ver-rhy-bas ) * 1rem );
+	transform  : translateX( -50% ) rotate( 45deg );              /* What: Centered Arrow Turn. Why: left places the arrow's own left edge, not its center, so the arrow would sit half its width right of the target's center. How: Shifting it back by half its width first centers it, then the turn makes it a diamond. */
+	width      : calc( var( --ver-rhy-bas ) * 1rem );             /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.ob-coach--up::before { /* What: Upward Tour Coach Arrow. Why: A card below its target points up at it. How: This sets the arrow on the card's top edge, hiding the two borders that would cross into the card. */
+.coaCarDiv--up::before { /* What: Upward Coach Card Div Arrow. Why: A card below its target points up at it. How: This sets the arrow on the card's top edge, hiding the two borders that would cross into the card. */
 
 
 	border-bottom : 0;
 	border-right  : 0;
-	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 );
+	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-.ob-coach--down::before { /* What: Downward Tour Coach Arrow. Why: A card above its target points down at it. How: This sets the arrow on the card's bottom edge, hiding the two borders that would cross into the card. */
+.coaCarDiv--down::before { /* What: Downward Coach Card Div Arrow. Why: A card above its target points down at it. How: This sets the arrow on the card's bottom edge, hiding the two borders that would cross into the card. */
 
 
 	border-left : 0;
 	border-top  : 0;
-	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 );
+	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
 
 
 }
-@media (prefers-reduced-motion:reduce) { /* What: Reduced Motion Tour Coach Card. Why: Someone who asked for less motion shouldn't see the card fade in. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Coach Card Div. Why: Someone who asked for less motion shouldn't see the card fade in. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ob-coach { /* What: Motionless Tour Coach Card. Why: The card should simply appear. How: This turns its fade and transitions off. */
+	.coaCarDiv { /* What: Motionless Coach Card Div. Why: The card should simply appear. How: This turns its fade and transitions off. */
 
 
 		animation  : none;
@@ -184,34 +184,34 @@
 
 }
 
-.ob-coach .ob-prog { /* What: Tour Progress Line. Why: Each step shows where it sits in the tour. How: This sets the "Step N of M" line in small accent-colored mono type above the title. */
+.coaProPar { /* What: Coach Progress Paragraph. Why: Each step shows where it sits in the tour. How: This sets the "Step N of M" line in small accent-colored mono type above the title. */
 
 
-	color          : var(--acc-mai-col);
-	font-family    : var(--fon-fam-sec);
-	font-size      : var( --fon-siz-bas );
+	color          : var( --acc-mai-col );     /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-family    : var( --fon-fam-sec );     /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );     /* Font Size Base = 11px */
 	letter-spacing : 0.05em;
-	margin         : 0 0 var( --spa-ver-m04 );
+	margin         : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
 
 
 }
 
-.ob-coach-title { /* What: Tour Coach Title. Why: The step's title leads its explanation. How: This sets it slightly larger and bold above the body. */
+.coaTitPar { /* What: Coach Title Paragraph. Why: The step's title leads its explanation. How: This sets it slightly larger and bold above the body. */
 
 
-	font-size   : var( --fon-siz-p01 );
+	font-size   : var( --fon-siz-p01 );     /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 600;
-	margin      : 0 0 var( --spa-ver-m04 );
+	margin      : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
 
 
 }
 
-.ob-coach .ob-body { /* What: Tour Coach Body. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in small muted type with a relaxed line height. */
+.coaBodPar { /* What: Coach Body Paragraph. Why: The explanation should read as quieter supporting text under the title. How: This sets the body in small muted type with a relaxed line height. */
 
 
-	color       : var(--tex-mut-col);
-	font-size   : var( --fon-siz-bas );
-	line-height : var( --ver-rhy-bas );
+	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size   : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	line-height : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
 	margin      : 0;
 
 
@@ -219,91 +219,88 @@
 
 
 
-/* #region ob-crow */
+/* #region coaRowDiv */
 
-.ob-crow { /* What: Tour Coach Row. Why: Skip and Back sit on the left while Next sits on the right. How: This spreads the row's two groups apart below the body. */
+.coaRowDiv { /* What: Coach Row Div. Why: Skip and Back sit on the left while Next sits on the right. How: This spreads the row's two groups apart below the body. */
 
 
 	align-items     : center;
 	display         : flex;
-	gap             : var( --spa-hor-m02 );
+	gap             : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	justify-content : space-between;
-	margin-top      : var( --spa-ver-bas );
+	margin-top      : var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px */
 
 
 }
 
+/* #region lefNavDiv */
 
-
-/* #region ob-lnav */
-
-.ob-lnav { /* What: Tour Coach Left Nav. Why: Skip and the optional Back button read as one group. How: This lays them out in a centered row. */
+.lefNavDiv { /* What: Left Nav Div. Why: Skip and the optional Back button read as one group. How: This lays them out in a centered row. */
 
 
 	align-items : center;
 	display     : flex;
-	gap         : var( --spa-hor-m01 );
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
 
 
 }
 
-.ob-skip { /* What: Tour Skip Button. Why: Leaving the tour should always be possible but shouldn't compete with Next. How: This styles a borderless text button in small muted type. */
+.touSkiBut { /* What: Tour Skip Button. Why: Leaving the tour should always be possible but shouldn't compete with Next. How: This styles a borderless text button in small muted type. */
 
 
 	background  : 0;
 	border      : 0;
-	color       : var(--tex-mut-col);
+	color       : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor      : pointer;
 	font-family : inherit;
-	font-size   : var( --fon-siz-bas );
-	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 );
+	font-size   : var( --fon-siz-bas );                      /* Font Size Base = 11px */
+	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 7 ~= 2.035px */
 
 
 }
 
-.ob-back { /* What: Tour Back Button. Why: A step that allows going back offers it as a quiet link. How: This styles a borderless text button in the accent color. */
+.touBacBut { /* What: Tour Back Button. Why: A step that allows going back offers it as a quiet link. How: This styles a borderless text button in the accent color. */
 
 
 	background  : 0;
 	border      : 0;
-	color       : var(--acc-mai-col);
+	color       : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor      : pointer;
 	font-family : inherit;
-	font-size   : var( --fon-siz-bas );
+	font-size   : var( --fon-siz-bas );                      /* Font Size Base = 11px */
 	font-weight : 500;
-	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 );
+	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 7 ~= 2.035px */
 
 
 }
 
-/* #endregion ob-lnav */
+/* #endregion lefNavDiv */
 
 
+.touNexBut { /* What: Tour Next Button. Why: Moving on is the step's main action. How: This styles a filled accent pill with white text. */
 
-.ob-next { /* What: Tour Next Button. Why: Moving on is the step's main action. How: This styles a filled accent pill with white text. */
 
-
-	background    : var(--acc-mai-col);
-	border        : var( --bor-wid-sma ) solid var(--acc-mai-col);
+	background    : var( --acc-mai-col );                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border        : var( --bor-wid-sma ) solid var( --acc-mai-col ); /* Border Width Small ~= 0.499px, Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius : 999px;
-	color         : var( --tex-acc-col );
+	color         : var( --tex-acc-col );                            /* Text Accent Color = oklch( 1 0 0 ) */
 	cursor        : pointer;
 	font-family   : inherit;
-	font-size     : var( --fon-siz-bas );
+	font-size     : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	font-weight   : 600;
-	padding       : var( --spa-ver-m02 ) var( --spa-hor-bas );
+	padding       : var( --spa-ver-m02 ) var( --spa-hor-bas );       /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.ob-next:disabled { /* What: Disabled Tour Next Button. Why: A step waiting on a real click keeps Next unavailable. How: This dims the button and drops the pointer cursor. */
+.touNexBut:disabled { /* What: Disabled Tour Next Button. Why: A step waiting on a real click keeps Next unavailable. How: This dims the button and drops the pointer cursor. */
 
 
 	cursor  : default;
-	opacity : .6;
+	opacity : var( --cdn-pow-002-rec ); /* Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
 
 
 }
-.ob-crow--solo .ob-next { /* What: Solo Tour Next Button. Why: A solo step drops Skip and Back entirely, and a lone button pinned to one side would read as off-balance. How: This stretches Next across the whole row with its label centered. */
+.coaRowDiv--solo .touNexBut { /* What: Solo Tour Next Button. Why: A solo step drops Skip and Back entirely, and a lone button pinned to one side would read as off-balance. How: This stretches Next across the whole row with its label centered. */
 
 
 	text-align : center;
@@ -312,10 +309,10 @@
 
 }
 
-/* #endregion ob-crow */
+/* #endregion coaRowDiv */
 
-/* #endregion ob-coach */
+/* #endregion coaCarDiv */
 
-/* #endregion ob-tour */
+/* #endregion touOveDiv */
 
 

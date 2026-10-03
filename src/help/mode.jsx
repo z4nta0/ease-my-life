@@ -41,7 +41,7 @@ import { uniRecFun    } from './geometry.js';      // What: Union Rect Function.
  * target) so arbitrarily many cutouts coexist in one dim layer, each
  * shaped to roughly match its own target's own border-radius rather
  * than always being a plain square. What does carry over from the tour
- * is reusing its exact coach visual language (.ob-coach and its arrow)
+ * is reusing its exact coach visual language (.coaCarDiv and its arrow)
  * for the tip itself, per the design conversation this was built from;
  * the only difference is the tip's own content (no nav chrome) and how
  * it is triggered (click a badge, not "the current tour step").
