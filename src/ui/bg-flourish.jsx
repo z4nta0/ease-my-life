@@ -685,9 +685,9 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
 
 
 		<div
-			className={` ${ cssModObj.bgFlourish }   ${ sidKeyStr === 'left' ? cssModObj.bgFlourishLeft : '' }   ${ sidKeyStr === 'right' ? cssModObj.bgFlourishRight : '' } `}
+			className={` ${ cssModObj.floColDiv }   ${ sidKeyStr === 'left' ? cssModObj.floColDivLeft : '' }   ${ sidKeyStr === 'right' ? cssModObj.floColDivRight : '' } `}
 			aria-hidden='true'
-		>{ /* What: Flourish Column Div Element. Why: This is one gutter's own root wrapper, positioned by CSS per its own bg-flourish--{side} modifier class. How: This renders every item below as an absolutely-positioned child span. */ }
+		>{ /* What: Flourish Column Div Element. Why: This is one gutter's own root wrapper, positioned by CSS per its own floColDiv side modifier class. How: This renders every item below as an absolutely-positioned child span. */ }
 
 
 			{ floIteArr.map( ( floCurObj ) => ( // What: Flourish Item Map. Why: One span is needed per already-generated item. How: This maps floIteArr to one absolutely-positioned span per entry, keyed by its own ideStr.
@@ -695,7 +695,7 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
 
 				<span
 					key={ floCurObj.ideStr }
-					className={ cssModObj.bgFlourishItem }
+					className={ cssModObj.floGlySpa }
 					style={{
 						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`,
 
