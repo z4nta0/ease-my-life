@@ -2136,6 +2136,19 @@ still passes.
     lines split by a blank line. A rule holding only custom properties,
     or none, has no blank line. See `tabs/pickers/tab-picker.module.css`'s
     own `.picTabDiv`.
+- **No `!important` unless it's genuinely necessary** (decided
+  2026-10-03). A rule wins through its selector's specificity or its place
+  in the cascade, never through `!important`, which can only be beaten by
+  another `!important` and so escalates. Before reaching for it, check
+  whether ordering, chaining the base class (see "A converted modifier
+  keeps its old specificity"), or a more specific selector does the job,
+  and whether the declaration it would fight is even reachable (the Day
+  Log's conditional row carried two that nothing ever contested). The
+  necessary case is a page-wide override that has to beat every element's
+  own rule at once, e.g. `styles.css`'s drag-in-progress cursor on `body[
+  data-page-reorder-active] *`. Each one kept gets a comment on its line
+  saying why nothing else works, and an existing one is checked as its
+  file comes up.
 - **Parentheses in CSS functions** (decided 2026-09-29) follow the same
   spacing as JS calls under "### Parentheses spacing": a space after `(`
   and before `)` when there's anything inside, e.g. `var( --fon-siz-p01 )`
