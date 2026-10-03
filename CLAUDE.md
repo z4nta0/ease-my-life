@@ -2291,7 +2291,11 @@ still passes.
       the nearest step: a padding it lines up with, a border width it
       covers, or half an element's own size (e.g. a tooltip arrow at
       `calc( var( --ver-rhy-bas ) * 1rem / -2 )`). An off-screen technique
-      (e.g. `left: -9999px`) isn't spacing and stays literal.
+      (e.g. `left: -9999px`) isn't spacing and stays literal. A motion
+      distance in a `translate` (decided 2026-10-02) follows the same axis
+      families, `translateX` reading `--spa-hor-*` and `translateY`
+      `--spa-ver-*` (negated with `* -1`), when its nearest step is within
+      10%; one that isn't (e.g. a 3px nudge, 10% off `m06`) stays literal.
     - **JavaScript follows the same scale** (decided 2026-10-01). An icon
       takes its size as a rhythm step name rather than a pixel number
       (`<IcoSvgCom icoNamStr='plus' sizSteStr='bas' />`), which the component
@@ -2396,7 +2400,9 @@ are renamed to this as their files come up in the design-system pass.
     glow's reach), `opa` (opacity), `sca` (scale factor), `sha` (a whole
     shadow value), `off` (offset or distance), `ang` (angle), `hei`
     (a height, decided 2026-09-30, e.g. `--cat-rem-hei`, the measured
-    height a removing Data card collapses from). New categories are added
+    height a removing Data card collapses from), `pad` (a padding, decided
+    2026-10-02, e.g. `--tab-tou-pad`, the room a tab adds below its content
+    during a tour). New categories are added
     here as they come up.
 - **A scaled family ends in its step**, and the family moves to the first
   segment: `--fon-siz-p01` (font size, base plus 1), `--gri-gap-sma` (grid gap,
