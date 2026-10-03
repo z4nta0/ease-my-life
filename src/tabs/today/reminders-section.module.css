@@ -527,12 +527,12 @@
 
 /* #region inlEdiDiv */
 
-.inlEdiDiv { /* What: Inline Editor Div. Why: Editing a reminder or filling in a new one opens a recessed card of fields, whose rows run edge to edge. How: This draws the card with no side padding, sets the --rem-inline-foot-* properties EdiFooCom reads for its divider, and fades it in. */
+.inlEdiDiv { /* What: Inline Editor Div. Why: Editing a reminder or filling in a new one opens a recessed card of fields, whose rows run edge to edge. How: This draws the card with no side padding, sets the --edi-foo-* properties EdiFooCom reads for its divider, and fades it in. */
 
 
-	--rem-inline-foot-border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
-	--rem-inline-foot-margin     : 0;                                               /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
-	--rem-inline-foot-padding    : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;     /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */ /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
+	--edi-foo-bor : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Footer Divider. Why: The footer needs a hairline above it. How: EdiFooCom reads this for its top border. */
+	--edi-foo-mar : 0;                                               /* What: Footer Margin. Why: The footer sits flush in the card. How: EdiFooCom reads this for its own margin. */
+	--edi-foo-pad : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;     /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */ /* What: Footer Padding. Why: The footer's buttons stay inset from the card's edges. How: EdiFooCom reads this for its own padding. */
 
 	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with every other inline editor, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var( --bac-sun-col );                                                 /* Background Sunken Color = oklch( 0.969 0.004 240 ) */

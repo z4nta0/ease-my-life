@@ -143,15 +143,15 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 			<div
 				key='confirm'
 
-				className={` ${ cssModObj.remInlineFoot }   ${ cssModObj.remFootConfirm } `}
+				className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
 				data-element-name-hook='ediFooDiv'
 			>{ /* What: Confirm Foot Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-				<span className={ cssModObj.remDelMsg }>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
+				<span className={ cssModObj.delMesSpa }>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
 
-				<div className={ cssModObj.remDelActions }>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
+				<div className={ cssModObj.delActDiv }>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
 
 
 					<ButBasCom
@@ -192,7 +192,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 		<div
 			key='foot'
 
-			className={ cssModObj.remInlineFoot }
+			className={ cssModObj.ediFooDiv }
 
 			data-element-name-hook='ediFooDiv'
 		>{ /* What: Plain Foot Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
@@ -216,7 +216,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 
 
 
-			<div className={ cssModObj.remFootRight }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
+			<div className={ cssModObj.fooRigDiv }>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
 				<ButBasCom
