@@ -144,7 +144,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 			<article
-				className={` ${ cssModObj.todayCard }   ${ extClaStr } `}
+				className={` ${ cssModObj.todCarArt }   ${ extClaStr } `}
 
 				data-card-done-active={ tutDonBoo || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while tutDonBoo is true.
 				data-element-name-hook='todCarArt tutCarArt remCarArt'
@@ -157,7 +157,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 					<button
-						className={ cssModObj.check }
+						className={ cssModObj.carCheBut }
 
 						data-element-name-hook='carCheBut'
 
@@ -179,12 +179,14 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 						<span
-							className={ cssModObj.checkRipple }
+							className={ cssModObj.cheRipSpa }
 
 							aria-hidden='true'
 						/>{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple, same as every other checkbox in the app. How: This renders an empty, purely decorative span. */ }
 
 						<IcoSvgCom
+							className={ cssModObj.cheIcoSvg }
+
 							icoNamStr='cheEle'
 							sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 						/>{ /* What: Icon Svg Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'cheEle' icon. */ }
@@ -197,7 +199,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 					<button
-						className={ cssModObj.check }
+						className={ cssModObj.carCheBut }
 
 						data-element-name-hook='carCheBut'
 
@@ -229,13 +231,13 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 				) }
 
 
-				<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The card's own kicker/time meta and name need to sit together, same layout as a real reminder row. How: This wraps the meta row and the name div below. */ }
+				<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The card's own kicker/time meta and name need to sit together, same layout as a real reminder row. How: This wraps the meta row and the name div below. */ }
 
 
-					<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: The kicker (schedule-like summary) and optional time estimate read together as one line. How: This renders the kicker span, then the optional dot/time pair. */ }
+					<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The kicker (schedule-like summary) and optional time estimate read together as one line. How: This renders the kicker span, then the optional dot/time pair. */ }
 
 
-						<span className={ cssModObj.metaPicker }>{ texDisObj.kicStr }</span>{ /* What: Meta Picker Span Element. Why: This is the card's own kicker text, reusing the same class a real entry's picker name uses. How: This renders texDisObj's own kicStr. */ }
+						<span className={ cssModObj.metLabSpa }>{ texDisObj.kicStr }</span>{ /* What: Meta Picker Span Element. Why: This is the card's own kicker text, reusing the same class a real entry's picker name uses. How: This renders texDisObj's own kicStr. */ }
 
 						{ texDisObj.timStr && ( // What: Time Visibility Check. Why: Not every sample card has a manually-timed estimate. How: This renders the dot/time pair only while texDisObj's own timStr is set.
 
@@ -243,7 +245,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 							<>{ /* What: Time Pair Fragment Element. Why: The dot separator and the time estimate show or hide together. How: This groups both spans with no wrapper element. */ }
 
 
-								<span className={ cssModObj.metaDot }>·</span>{ /* What: Meta Dot Span Element. Why: This visually separates the kicker from the time estimate. How: This renders a literal middle-dot character. */ }
+								<span className={ cssModObj.metDotSpa }>·</span>{ /* What: Meta Dot Span Element. Why: This visually separates the kicker from the time estimate. How: This renders a literal middle-dot character. */ }
 
 								<span>{ texDisObj.timStr }</span>{ /* What: Meta Time Span Element. Why: This shows roughly how long the mini-tour takes. How: This renders texDisObj's own timStr. */ }
 
@@ -256,7 +258,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 					</div>
 
-					<div className={ cssModObj.todayCardName }>{ texDisObj.namStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own primary, most prominent text. How: This renders texDisObj's own namStr. */ }
+					<div className={ cssModObj.carNamDiv }>{ texDisObj.namStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own primary, most prominent text. How: This renders texDisObj's own namStr. */ }
 
 
 				</div>
@@ -266,14 +268,14 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 					<div
-						className={ cssModObj.todayCardActions }
+						className={ cssModObj.carActDiv }
 
 						data-element-name-hook='carActDiv'
 					>{ /* What: Card Actions Div Element. Why: This is the click-isolated actions area onRowCliFun already excludes. How: This wraps the single Cancel button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 						<button
-							className={ cssModObj.iconBtn }
+							className={ cssModObj.actIcoBut }
 
 							aria-label='Cancel tutorial'
 							title='Cancel'
@@ -342,7 +344,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 		<article
-			className={` ${ cssModObj.todayCard }   ${ isaFreBoo ? cssModObj.isFresh : '' }   ${ extClaStr } `}
+			className={` ${ cssModObj.todCarArt }   ${ isaFreBoo ? cssModObj.todCarArtFresh : '' }   ${ extClaStr } `}
 
 			data-card-done-active={ isaDonBoo || undefined } // What: Card Done Active Attribute. Why: A done card is shaded, its checkbox filled, and its name struck through by its module. How: This sets the presence-only attribute while isaDonBoo is true.
 			data-card-edit-active={ isaOpeBoo || undefined } // What: Card Edit Active Attribute. Why: While its editor is open, the card stops looking clickable. How: This sets the presence-only attribute while isaOpeBoo is true.
@@ -354,7 +356,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 			<button
-				className={ cssModObj.check }
+				className={ cssModObj.carCheBut }
 
 				data-element-name-hook='carCheBut'
 
@@ -376,7 +378,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 				<span
-					className={ cssModObj.checkRipple }
+					className={ cssModObj.cheRipSpa }
 
 					aria-hidden='true'
 				/>{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple. How: This renders an empty, purely decorative span. */ }
@@ -385,6 +387,8 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 					<IcoSvgCom
+						className={ cssModObj.cheIcoSvg }
+
 						icoNamStr='cheEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 					/> // What: Icon Svg Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'cheEle' icon only while isaDonBoo.
@@ -396,18 +400,20 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 			</button>
 
 
-			<div className={ cssModObj.todayCardBody }>{ /* What: Card Body Div Element. Why: The schedule-summary meta row and the name (or its inline editor) need to sit together. How: This wraps the meta row and the name/input below. */ }
+			<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The schedule-summary meta row and the name (or its inline editor) need to sit together. How: This wraps the meta row and the name/input below. */ }
 
 
-				<div className={ cssModObj.todayCardMeta }>{ /* What: Card Meta Div Element. Why: A small type icon and the schedule summary read together as one line. How: This renders the type icon, then the summary span. */ }
+				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: A small type icon and the schedule summary read together as one line. How: This renders the type icon, then the summary span. */ }
 
 
 					<IcoSvgCom
+						className={ cssModObj.typIcoSvg }
+
 						icoNamStr={ tasRcdObj.repeat === 'once' ? 'pinEle' : 'calEle' } // What: Type Icon Pick. Why: A one-time reminder and a recurring one look different at a glance. How: This picks the pin for 'once' and the calendar otherwise.
 						sizSteStr='m01' // Vertical Rhythm Base Minus 1 = 11px
 					/>{ /* What: Icon Svg Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
-					<span className={ cssModObj.metaPicker }>{ TAS_NAM_OBJ.sumTasFun( tasRcdObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRcdObj. */ }
+					<span className={ cssModObj.metLabSpa }>{ TAS_NAM_OBJ.sumTasFun( tasRcdObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TAS_NAM_OBJ.sumTasFun against tasRcdObj. */ }
 
 
 				</div>
@@ -416,7 +422,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 					<input
-						className={ cssModObj.remCardNameInput }
+						className={ cssModObj.remNamInp }
 
 						data-element-name-hook='remNamInp'
 
@@ -448,7 +454,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaOpeBoo is false.
 
 
-					<div className={ cssModObj.todayCardName }>{ tasRcdObj.name }</div> // What: Card Name Div Element. Why: The plain, non-editing state just shows the name as text. How: This renders tasRcdObj's own name directly.
+					<div className={ cssModObj.carNamDiv }>{ tasRcdObj.name }</div> // What: Card Name Div Element. Why: The plain, non-editing state just shows the name as text. How: This renders tasRcdObj's own name directly.
 
 
 				) }
@@ -458,14 +464,14 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 
 
 			<div
-				className={ cssModObj.todayCardActions }
+				className={ cssModObj.carActDiv }
 
 				data-element-name-hook='carActDiv'
 			>{ /* What: Card Actions Div Element. Why: Skip and Edit are the row's own click-isolated actions. How: This wraps both buttons below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 				<button
-					className={ cssModObj.iconBtn }
+					className={ cssModObj.actIcoBut }
 
 					aria-label='Skip reminder'
 					title='Skip'
@@ -491,7 +497,7 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 				</button>
 
 				<button
-					className={ cssModObj.iconBtn }
+					className={ cssModObj.actIcoBut }
 
 					aria-expanded={ isaOpeBoo }
 					aria-label='Edit reminder'
@@ -579,7 +585,7 @@ function InlEdiCom ( { onCloEdiFun, onComTasFun, onDelTasFun, staAppObj, tasRcdO
 
 
 		<div
-			className={ cssModObj.remInlineEditor }
+			className={ cssModObj.inlEdiDiv }
 
 			data-element-name-hook='inlEdiDiv'
 		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
@@ -1049,23 +1055,23 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 		<section
 			ref={ secRefFun }
 
-			className={ cssModObj.groupSection }
+			className={ cssModObj.todGroSec }
 
 			data-element-name-hook='todGroSec remGroSec'
 		>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. Its data-element-name-hook is read by Today's own drag-to-reorder and scroll code, the Welcome Tour, help mode's Today catalog, and the Today page tour. */ }
 
 
-			<header className={ cssModObj.groupH }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders group-h-l and rem-h-r below, marking itself reorderable while ediModBoo is on. */ }
+			<header className={ cssModObj.groHeaHea }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders heaLefDiv and heaRigDiv below, marking itself reorderable while ediModBoo is on. */ }
 
 
-				<div className={ cssModObj.groupHL }>{ /* What: Group Header Left Div Element. Why: The drag grip, name, count, and log chip read together on the header's own left side. How: This wraps all 4 below, the grip only while ediModBoo is on. */ }
+				<div className={ cssModObj.heaLefDiv }>{ /* What: Group Header Left Div Element. Why: The drag grip, name, count, and log chip read together on the header's own left side. How: This wraps all 4 below, the grip only while ediModBoo is on. */ }
 
 
 					{ ediModBoo && ( // What: Grip Visibility Check. Why: The drag grip only makes sense while Edit Mode is on. How: This renders the grip span only while ediModBoo is true.
 
 
 						<span
-							className={ cssModObj.groupGrip }
+							className={ cssModObj.groGriSpa }
 
 							data-element-name-hook='groGriSpa'
 
@@ -1091,14 +1097,14 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 					) }
 
-					<h2 className={ cssModObj.groupName }>Reminders</h2>{ /* What: Group Name Heading Element. Why: This is the section's own fixed title, matching every other Today group's own heading. How: This renders the literal text "Reminders". */ }
+					<h2 className={ cssModObj.groNamHea }>Reminders</h2>{ /* What: Group Name Heading Element. Why: This is the section's own fixed title, matching every other Today group's own heading. How: This renders the literal text "Reminders". */ }
 
-					<span className={ cssModObj.groupCount }>{ /* What: Group Count Span Element. Why: The done and total counts read together as one "N of M" unit. How: This wraps the done span and the "of M" span below. */ }
+					<span className={ cssModObj.groCouSpa }>{ /* What: Group Count Span Element. Why: The done and total counts read together as one "N of M" unit. How: This wraps the done span and the "of M" span below. */ }
 
 
-						<span className={ cssModObj.groupDone }>{ remDonNum }</span>{ /* What: Group Done Span Element. Why: This is the header's own live completed count. How: This renders remDonNum directly. */ }
+						<span className={ cssModObj.groDonSpa }>{ remDonNum }</span>{ /* What: Group Done Span Element. Why: This is the header's own live completed count. How: This renders remDonNum directly. */ }
 
-						<span className={ cssModObj.groupOf }>of { remTotNum }</span>{ /* What: Group Of Span Element. Why: This is the header's own live total count. How: This renders remTotNum directly. */ }
+						<span className={ cssModObj.groTotSpa }>of { remTotNum }</span>{ /* What: Group Of Span Element. Why: This is the header's own live total count. How: This renders remTotNum directly. */ }
 
 
 					</span>
@@ -1121,10 +1127,10 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 				</div>
 
 
-				<div className={ cssModObj.remHR }>{ /* What: Header Right Div Element. Why: The progress dash-bar and the add button read together on the header's own right side. How: This wraps both below. */ }
+				<div className={ cssModObj.heaRigDiv }>{ /* What: Header Right Div Element. Why: The progress dash-bar and the add button read together on the header's own right side. How: This wraps both below. */ }
 
 
-					<div className={ cssModObj.groupProgress }>{ /* What: Group Progress Div Element. Why: This mirrors GroupHeader's own dash-bar for every other Today group, even though this section isn't rendered by that shared component. How: This renders one dash per remTotNum, marking the done ones and briefly flourishing the freshest one. */ }
+					<div className={ cssModObj.groProDiv }>{ /* What: Group Progress Div Element. Why: This mirrors GroupHeader's own dash-bar for every other Today group, even though this section isn't rendered by that shared component. How: This renders one dash per remTotNum, marking the done ones and briefly flourishing the freshest one. */ }
 
 
 						{ [ ...Array( remTotNum ).keys() ].map( ( dasIndNum ) => ( // What: Dash List Render. Why: One dash is needed per item this section counts toward its own total. How: This maps the indices of a remTotNum-length array to one <i> per dash, keyed by its own index (stable here, since remTotNum only ever grows/shrinks at its own end).
@@ -1133,7 +1139,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							<i
 								key={ dasIndNum }
 
-								className={ dasIndNum === remFreNum ? cssModObj.isFresh : '' }
+								className={` ${ cssModObj.proDasIta }   ${ dasIndNum === remFreNum ? cssModObj.proDasItaFresh : '' } `}
 
 								data-dash-done-active={ dasIndNum < remDonNum || undefined } // What: Dash Done Active Attribute. Why: A done row's dash is filled by its module. How: This sets the presence-only attribute while this dash's index is below remDonNum.
 							/> // What: Dash Element. Why: This is one individual dash in the progress bar. How: This marks itself done when its own index is below remDonNum, and fresh with the module's sweep class only for the single index remFreNum currently flourishing.
@@ -1153,7 +1159,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 							<InfTipCom
-								className={ cssModObj.remAddBtn }
+								className={ cssModObj.remAddSpa }
 
 								data-element-name-hook='remAddSpa'
 
@@ -1175,7 +1181,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 							<button
-								className={ cssModObj.remAddBtn }
+								className={ cssModObj.remAddBut }
 
 								data-element-name-hook='remAddBut'
 
@@ -1229,7 +1235,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 			<div
-				className={ cssModObj.todayList }
+				className={ cssModObj.todLisDiv }
 
 				data-element-name-hook='todLisDiv'
 			>{ /* What: Today List Div Element. Why: This is the shared vertical list every card/form below stacks inside, matching every other Today group's own list. How: This renders the added-message banner, the quick-add form, every tutorial card, and every real reminder row plus its inline editors. Its data-element-name-hook is read by Today's own drag-to-reorder code. */ }
@@ -1239,7 +1245,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 					<p
-						className={ cssModObj.remAddedMsg }
+						className={ cssModObj.addMesPar }
 
 						data-message-ok-active={ addMesObj.okaBoo || undefined } // What: Message Ok Active Attribute. Why: A reminder that lands in today's list reads as a success, anything else as a warning. How: This sets the presence-only attribute while addMesObj's okaBoo is true.
 
@@ -1255,14 +1261,14 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 					<div
-						className={` ${ cssModObj.remQuickaddWrap }   ${ addCloBoo ? cssModObj.isClosing : '' } `}
+						className={` ${ cssModObj.remAddDiv }   ${ addCloBoo ? cssModObj.remAddDivClosing : '' } `}
 
 						data-element-name-hook='remAddDiv'
 					>{ /* What: Quick-Add Wrap Div Element. Why: The name input row and the full schedule editor need to collapse together as one unit. How: This wraps both below, marking itself closing while addCloBoo is true. Its data-element-name-hook is read by the reminder mini-tours, help mode's Today catalog, and help mode's Data catalog. */ }
 
 
 						<div
-							className={ cssModObj.remQuickadd }
+							className={ cssModObj.remFieDiv }
 
 							data-element-name-hook='remFieDiv'
 						>{ /* What: Quick-Add Div Element. Why: The name input needs its own row above the schedule editor. How: This wraps the single name input below. Its data-element-name-hook is read by the reminder mini-tours and help mode's Today catalog. */ }
@@ -1271,7 +1277,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							<input
 								ref={ inpEleRef }
 
-								className={ cssModObj.npInput }
+								className={ cssModObj.addNamInp }
 
 								data-element-name-hook='addNamInp'
 
@@ -1291,7 +1297,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 						<div
-							className={ cssModObj.remInlineEditor }
+							className={ cssModObj.inlEdiDiv }
 
 							data-element-name-hook='inlEdiDiv'
 						>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
@@ -1308,7 +1314,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 							<div
-								className={ cssModObj.remInlineFoot }
+								className={ cssModObj.ediFooDiv }
 
 								data-element-name-hook='ediFooDiv'
 							>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
@@ -1354,7 +1360,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 						key={ curTasObj.id }
 
 						actStoObj={ actStoObj }
-						extClaStr={ cheExiBoo ? cssModObj.isRemoving : '' } // What: Checklist Exit Class. Why: Tutorial cards leave together with the onboarding checklist. How: This applies the removing class while cheExiBoo.
+						extClaStr={ cheExiBoo ? cssModObj.todCarArtRemoving : '' } // What: Checklist Exit Class. Why: Tutorial cards leave together with the onboarding checklist. How: This applies the removing class while cheExiBoo.
 						isaTutBoo
 						tasRcdObj={ curTasObj }
 						tutDonBoo={ !!ONB_CHE_OBJ.entLooFun( staAppObj, curTasObj.id ) }
@@ -1378,13 +1384,13 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							actStoObj={ actStoObj }
 							cheDatObj={ ancDatObj }
 							extClaStr={ insIdeStr === curTasObj.id // What: Card Class Pick. Why: A card plays at most one entrance or exit animation, picked by which transition it is currently in. How: This checks each transition in priority order below, falling back to no class.
-								? cssModObj.remCardInsert                        // What: Just Added Class. Why: A newly added card plays its entrance animation. How: This applies while insIdeStr matches this card.
+								? cssModObj.todCarArtInserting                        // What: Just Added Class. Why: A newly added card plays its entrance animation. How: This applies while insIdeStr matches this card.
 								: remIdeStr === curTasObj.id                     // What: Removing Check. Why: A card being deleted plays its exit animation next in priority. How: This compares remIdeStr against this card.
-								? cssModObj.remCardRemoving                      // What: Removing Class. Why: This is the deletion exit animation. How: This applies while remIdeStr matches this card.
+								? cssModObj.todCarArtDeleting                      // What: Removing Class. Why: This is the deletion exit animation. How: This applies while remIdeStr matches this card.
 								: ( leaTasSet && leaTasSet.has( curTasObj.id ) ) // What: Leaving Check. Why: A card leaving the list for another reason plays the purge animation. How: This checks leaTasSet for this card.
-								? cssModObj.remCardPurging                       // What: Purging Class. Why: This is the leave-the-list exit animation. How: This applies while leaTasSet holds this card.
+								? cssModObj.todCarArtPurging                       // What: Purging Class. Why: This is the leave-the-list exit animation. How: This applies while leaTasSet holds this card.
 								: ( arvTasSet && arvTasSet.has( curTasObj.id ) ) // What: Arriving Check. Why: A card newly arriving in the list (e.g. due again) also plays the entrance animation. How: This checks arvTasSet for this card.
-								? cssModObj.remCardInsert                        // What: Arriving Class. Why: An arriving card reuses the entrance animation. How: This applies while arvTasSet holds this card.
+								? cssModObj.todCarArtInserting                        // What: Arriving Class. Why: An arriving card reuses the entrance animation. How: This applies while arvTasSet holds this card.
 								: ''                                             // What: No Class. Why: A card in no transition needs no extra class. How: This is an empty string.
 							}
 							isaOpeBoo={ opeTasStr === curTasObj.id }
@@ -1491,7 +1497,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 								return (
 
 
-									<div className={ cssModObj.remSkipConfirm }>{ /* What: Skip Confirm Div Element. Why: This is the skip prompt's own root, replacing nothing (it renders inline below the card, inside its own ColDisCom). How: This renders one of the 2 branches below depending on whether skiLabStr resolved to a real day. */ }
+									<div className={ cssModObj.skiConDiv }>{ /* What: Skip Confirm Div Element. Why: This is the skip prompt's own root, replacing nothing (it renders inline below the card, inside its own ColDisCom). How: This renders one of the 2 branches below depending on whether skiLabStr resolved to a real day. */ }
 
 
 										{ skiLabStr ? ( // What: Skip Label Check. Why: The confirm prompt's own shape depends on whether a real eligible day was actually found. How: This renders the Skip-until confirm while skiLabStr holds a value, an explanatory no-day message otherwise.
@@ -1500,9 +1506,9 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 											<>{ /* What: Skip Confirm Fragment Element. Why: The skip message and its buttons render together as one branch. How: This groups them with no wrapper element. */ }
 
 
-												<div className={ cssModObj.remSkipMsg }>Skip until <strong>{ skiLabStr }</strong>?</div>{ /* What: Skip Message Div Element. Why: This names the exact day curTasObj would be deferred to. How: This renders skiLabStr inside the confirm question. */ }
+												<div className={ cssModObj.skiMesDiv }>Skip until <strong className={ cssModObj.skiDatStr }>{ skiLabStr }</strong>?</div>{ /* What: Skip Message Div Element. Why: This names the exact day curTasObj would be deferred to. How: This renders skiLabStr inside the confirm question. */ }
 
-												<div className={ cssModObj.remSkipActions }>{ /* What: Skip Actions Div Element. Why: Cancel and Confirm read as a pair. How: This wraps both ButBasCom elements below. */ }
+												<div className={ cssModObj.skiActDiv }>{ /* What: Skip Actions Div Element. Why: Cancel and Confirm read as a pair. How: This wraps both ButBasCom elements below. */ }
 
 
 													<ButBasCom
@@ -1550,9 +1556,9 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 											<>{ /* What: No Day Fragment Element. Why: The explanation and its Close button render together as one branch. How: This groups them with no wrapper element. */ }
 
 
-												<div className={ cssModObj.remSkipMsg }>No upcoming eligible day to skip to.</div>{ /* What: Skip Message Div Element. Why: curTasObj has no eligible day at all to defer to, e.g. every allowed weekday is excluded. How: This renders the plain explanatory text instead of a real confirm question. */ }
+												<div className={ cssModObj.skiMesDiv }>No upcoming eligible day to skip to.</div>{ /* What: Skip Message Div Element. Why: curTasObj has no eligible day at all to defer to, e.g. every allowed weekday is excluded. How: This renders the plain explanatory text instead of a real confirm question. */ }
 
-												<div className={ cssModObj.remSkipActions }>{ /* What: Skip Actions Div Element. Why: Even with nothing to confirm, the prompt still needs a way to close. How: This wraps the single Close ButBasCom below. */ }
+												<div className={ cssModObj.skiActDiv }>{ /* What: Skip Actions Div Element. Why: Even with nothing to confirm, the prompt still needs a way to close. How: This wraps the single Close ButBasCom below. */ }
 
 
 													<ButBasCom
