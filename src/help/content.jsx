@@ -1868,7 +1868,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	},
 
-	{ // What: Sections Navigation Help Item. Why: This is the on-demand help tip for the Sections Navigation element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Section rail, on mobile this collapses into a horizontal sticky pill bar pinned above the sections (see .settings-rail's own @container rule in tab-settings.module.css); on desktop it's a vertical sidebar. One combined highlight over the whole rail rather than per-button, matching the nav bar's own precedent.
+	{ // What: Sections Navigation Help Item. Why: This is the on-demand help tip for the Sections Navigation element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Section rail, on mobile this collapses into a horizontal sticky pill bar pinned above the sections (see setRaiAsi's own @container rule in tab-settings.module.css); on desktop it's a vertical sidebar. One combined highlight over the whole rail rather than per-button, matching the nav bar's own precedent.
 
 
 		bodEle    : <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
@@ -1908,7 +1908,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	},
 
-	// padYcoNum:4 (not the default 8), consecutive .set-subsection blocks have a real but modest 12px gap (.set-section's own flex gap), and 8+8 exceeds that by 4px; 4+4 stays safely inside it.
+	// padYcoNum:4 (not the default 8), consecutive setSubDiv blocks have a real but modest 11px gap (setSecSec's own flex gap), and 8+8 exceeds that by 5px; 4+4 stays safely inside it.
 	{ // What: Dark Theme Help Item. Why: This is the on-demand help tip for the Dark Theme element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -1963,7 +1963,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Daily Generator
 
-	// padYcoNum:0 on all three below, .set-data-row rows have no margin between them, just their own padding + a border-bottom (Card is a plain div, not a flex/grid gap container), so they touch with zero gap.
+	// padYcoNum:0 on all three below, setRowDiv rows have no margin between them, just their own padding + a border-bottom (Card is a plain div, not a flex/grid gap container), so they touch with zero gap.
 	{ // What: Run Generator Automatically Help Item. Why: This is the on-demand help tip for the Run Generator Automatically element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2037,7 +2037,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Data Control
 
-	// padYcoNum:0 on the whole group below, same zero-gap .set-data-row stacking as Daily generator above.
+	// padYcoNum:0 on the whole group below, same zero-gap setRowDiv stacking as Daily generator above.
 	{ // What: Protect Your Data Help Item. Why: This is the on-demand help tip for the Protect Your Data element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -2208,7 +2208,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 
 	// #region Legal
 
-	// padYcoNum:0 on both, same zero-gap .set-data-row stacking as above.
+	// padYcoNum:0 on both, same zero-gap setRowDiv stacking as above.
 	{ // What: Privacy Policy Help Item. Why: This is the on-demand help tip for the Privacy Policy element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 

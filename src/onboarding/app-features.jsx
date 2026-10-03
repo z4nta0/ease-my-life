@@ -663,7 +663,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 		return [ // What: Theme Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the app-theme tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 
-			{ // What: System Preferences Toggle Step. Why: This is the theme tour's own 2nd step. How: This spotlights the real System Preferences toggle as a reference blurb. // .set-subsection--systempref, a new modifier class added to tab-settings.jsx for exactly this (previously bare .set-subsection, ambiguous against its own siblings: --celebration/--pickanim/--layout further down the same Appearance section). catBoo: true, same reasoning as every other Settings section step in this app: content can easily run taller than the viewport.
+			{ // What: System Preferences Toggle Step. Why: This is the theme tour's own 2nd step. How: This spotlights the real System Preferences toggle as a reference blurb. // The sysPreDiv hook, added to tab-settings.jsx for exactly this (the shared setSubDiv class is ambiguous against its own siblings, the celStyDiv/picAniDiv/setLayDiv subsections further down the same Appearance section). catBoo: true, same reasoning as every other Settings section step in this app: content can easily run taller than the viewport.
 
 
 				bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuiTouCom shows its own Back button whenever this is true.
@@ -839,7 +839,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 			} ] ),
 
-			{ // What: Install The App Step. Why: This is the protect-data tour's own final step. How: This spotlights whichever real install control applies without needing to know the browser. // Comma-separated fallback (see findTargets' own comma-splitting in onboarding/tour-runner.jsx), .set-install-btn (new modifier class, only rendered when canInstall) is tried first; if this browser can't offer a real install prompt, falls back to .set-store-ios (shared by all of tab-settings.jsx's own browser-specific instructional blocks, iOS, Mac, or the generic "not available here" note, exactly one of which renders at a time), so this targets whichever one actually applies without needing to know which browser it's running in. No cirBoo, Done is enabled outright, last step of this tutorial.
+			{ // What: Install The App Step. Why: This is the protect-data tour's own final step. How: This spotlights whichever real install control applies without needing to know the browser. // Comma-separated fallback (see findTargets' own comma-splitting in onboarding/tour-runner.jsx), the insAppBut hook (only rendered when canInstall) is tried first; if this browser can't offer a real install prompt, falls back to the insRowDiv hook (shared by all of tab-settings.jsx's own browser-specific instructional blocks, iOS, Mac, or the generic "not available here" note, exactly one of which renders at a time), so this targets whichever one actually applies without needing to know which browser it's running in. No cirBoo, Done is enabled outright, last step of this tutorial.
 
 
 				bacBoo : true,                                                                           // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
