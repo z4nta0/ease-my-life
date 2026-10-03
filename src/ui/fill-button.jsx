@@ -77,9 +77,8 @@ function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } ) {
 
 
 		<ButBasCom
-			className={ spiAniBoo ? cssModObj.isSpinning : '' }
-
 			disabled={ isaDisBoo }
+			icoClaStr={ spiAniBoo ? cssModObj.refIcoSvgSpinning : '' }
 			icoNamStr='refEle'
 			kinValStr='ghost'
 			sizValStr='sm'

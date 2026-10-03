@@ -15,19 +15,17 @@
 
 
 
-/* #region is-spinning */
-
-.is-spinning svg { /* What: Spinning Fill Icon. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: This turns the button's icon once while FilButCom's spin class is on. */
+.refIcoSvg--spinning { /* What: Spinning Refresh Icon Svg. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: FilButCom hands ButBasCom this class for its icon while its spin state is on, which turns the icon once. */
 
 
-	animation : fillSpin var( --dur-ani-p05 ) var( --mot-sta-eas );
+	animation : refIcoSvgClickSpin var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Fill Icon. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Spinning Refresh Icon Svg. Why: Someone who asked for less motion shouldn't see the icon turn. How: This applies only when the reduced-motion preference is set. */
 
 
-	.is-spinning svg { /* What: Still Fill Icon. Why: The icon should stay put. How: This shortens the spin to an instant, so the button's own animationend handler still fires and clears the spin state. */
+	.refIcoSvg--spinning { /* What: Still Refresh Icon Svg. Why: The icon should stay put. How: This shortens the spin to an instant, so the button's own animationend handler still fires and clears the spin state. */
 
 
 		animation-duration : .01ms;
@@ -37,13 +35,13 @@
 
 
 }
-@keyframes fillSpin { /* What: Fill Icon Spin. Why: One full turn reads as a refresh. How: This rotates the icon a full circle. */
+@keyframes refIcoSvgClickSpin { /* What: Refresh Icon Svg Click Spin. Why: One full turn reads as a refresh. How: This rotates the icon a full circle. */
 
 
 	from {
 
 
-		transform : rotate(0);
+		transform : rotate( 0 );
 
 
 	}
@@ -51,14 +49,12 @@
 	to {
 
 
-		transform : rotate(360deg);
+		transform : rotate( 360deg );
 
 
 	}
 
 
 }
-
-/* #endregion is-spinning */
 
 

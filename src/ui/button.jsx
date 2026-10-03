@@ -53,6 +53,9 @@ import { IcoSvgCom } from './icon.jsx'; // What: Icon Svg Component. Why: A butt
  * @param props.children  - Children: The button's own visible content.
  * @param props.className - Class Name: Extra class name(s) to append;
  *                          defaults to an empty string.
+ * @param props.icoClaStr - Icon Class String: An optional class from the
+ *                          caller's own module for the icon, such as an
+ *                          animation trigger.
  * @param props.icoNamStr - Icon Name String: An optional IcoSvgCom icon name
  *                          to render ahead of the children.
  * @param props.kinValStr - Kind Value String: The visual kind modifier;
@@ -68,12 +71,12 @@ import { IcoSvgCom } from './icon.jsx'; // What: Icon Svg Component. Why: A butt
  *
  * @example
  * ```tsx
- * ButBasCom({ children, className, icoNamStr, ... }) // => <ButBasCom />
+ * ButBasCom({ children, className, icoClaStr, icoNamStr, ... }) // => <ButBasCom />
  * ```
  *
 */
 
-const ButBasCom = React.forwardRef( function ButBasCom ( { children, className = '', icoNamStr, kinValStr = 'ghost', sizValStr = 'md', ...resProObj }, forRefObj ) { // What: Button Base Component. Why: Nearly every button in the app shares the same chrome, and some callers need a ref on it to restore focus. How: This forwards forRefObj onto a real <button> carrying the kind/size classes and every other passed prop.
+const ButBasCom = React.forwardRef( function ButBasCom ( { children, className = '', icoClaStr, icoNamStr, kinValStr = 'ghost', sizValStr = 'md', ...resProObj }, forRefObj ) { // What: Button Base Component. Why: Nearly every button in the app shares the same chrome, and some callers need a ref on it to restore focus. How: This forwards forRefObj onto a real <button> carrying the kind/size classes and every other passed prop.
 
 
 	return (
@@ -92,9 +95,11 @@ const ButBasCom = React.forwardRef( function ButBasCom ( { children, className =
 
 
 				<IcoSvgCom
+					className={ icoClaStr }
+
 					icoNamStr={ icoNamStr }
 					sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-				/> // What: Leading Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size.
+				/> // What: Leading Icon Svg Component. Why: This is the optional glyph shown ahead of the button's own text. How: This renders icoNamStr at the base rhythm step for every button size, carrying any icoClaStr class the caller passed.
 
 
 			) }
