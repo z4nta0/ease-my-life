@@ -207,7 +207,7 @@ function ConSupCom () {
 
 	const broNamStr = React.useMemo( () => detBroFun(), [] );    // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
 	const appVerStr = APP_VER_STR == null ? '1.0' : APP_VER_STR; // What: App Version String. Why: The diagnostic fields still need a sane version to show even on a build where the define is missing. How: This falls back to '1.0' when APP_VER_STR is null.
-	const forCarRef = React.useRef( null );                      // What: Form Card Reference. Why: opeForFun needs a handle on the rendered form to scroll it into view. How: This is attached to the support-form div's own ref prop below.
+	const forCarRef = React.useRef( null );                      // What: Form Card Reference. Why: opeForFun needs a handle on the rendered form to scroll it into view. How: This is attached to the supForDiv div's own ref prop below.
 	const canSenBoo = draSubStr.trim() && draMesStr.trim();      // What: Can Send Boolean. Why: The Send button's own enabled state, and the validation guard, both depend on both drafts actually holding text. How: This is true only while both draSubStr and draMesStr trim to something non-empty.
 
 	// #endregion Form State
@@ -444,18 +444,18 @@ function ConSupCom () {
 
 
 				<div
-					className={ cssModObj.setDataRow }
+					className={ cssModObj.setRowDiv }
 
 					data-element-name-hook='supTriDiv'
 				>{ /* What: Contact Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-					<div className={ cssModObj.setDataInfo }>{ /* What: Contact Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and (conditionally) the sent-confirmation span. */ }
+					<div className={ cssModObj.setInfDiv }>{ /* What: Contact Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and (conditionally) the sent-confirmation span. */ }
 
 
-						<span className={ cssModObj.setDataName }>Having problems?</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Having problems?". */ }
+						<span className={ cssModObj.setNamSpa }>Having problems?</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Having problems?". */ }
 
-						<span className={ cssModObj.setDataSub }>Send a note and it&rsquo;ll come through with your app version and browser attached, so there&rsquo;s no back-and-forth to track those down.</span>{ /* What: Set Data Sub Span Element. Why: Every row in this tab explains itself with this same span. How: This renders the fixed description text. */ }
+						<span className={ cssModObj.setSubSpa }>Send a note and it&rsquo;ll come through with your app version and browser attached, so there&rsquo;s no back-and-forth to track those down.</span>{ /* What: Set Data Sub Span Element. Why: Every row in this tab explains itself with this same span. How: This renders the fixed description text. */ }
 
 						{ senTimNum > 0 && ( // What: Sent Confirmation Check. Why: A confirmation note should only exist right after an actual successful send. How: This renders the confirmation span only while senTimNum holds a real timestamp.
 
@@ -463,7 +463,7 @@ function ConSupCom () {
 							<span
 								key={ senTimNum }
 
-								className={ cssModObj.setImportMsg }
+								className={ cssModObj.setMesSpa }
 
 								role='status'
 							>Message sent, thanks! I&rsquo;ll be in touch.</span> // What: Sent Confirmation Span Element. Why: This is the actual confirmation text shown after a successful send. How: This is remounted (via its own senTimNum key) so a repeat send replays the announcement.
@@ -494,25 +494,25 @@ function ConSupCom () {
 			<ColDisCom open={ forOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The support form itself should stay collapsed until the trigger above is pressed. How: This mounts/expands its own CarSurCom below, gated on forOpeBoo. */ }
 
 
-				<CarSurCom>{ /* What: Card Surface Component. Why: The form's own fields need the same bordered container as every other card in this tab. How: This wraps the whole support-form div below. */ }
+				<CarSurCom>{ /* What: Card Surface Component. Why: The form's own fields need the same bordered container as every other card in this tab. How: This wraps the whole supForDiv div below. */ }
 
 
 					<div
 						ref={ forCarRef }
 
-						className={ cssModObj.supportForm }
+						className={ cssModObj.supForDiv }
 
 						data-element-name-hook='supForDiv'
 					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's own footer buttons. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
-						<label className={ cssModObj.supportField }>{ /* What: Subject Label Element. Why: The subject input needs its own labeled field wrapper, matching the message field below. How: This wraps the visible field label and the subject input itself. */ }
+						<label className={ cssModObj.supFieLab }>{ /* What: Subject Label Element. Why: The subject input needs its own labeled field wrapper, matching the message field below. How: This wraps the visible field label and the subject input itself. */ }
 
 
-							<span className={ cssModObj.supportFlabel }>Subject</span>{ /* What: Support Flabel Span Element. Why: The subject input needs a visible label. How: This renders the fixed text "Subject". */ }
+							<span className={ cssModObj.supLabSpa }>Subject</span>{ /* What: Support Flabel Span Element. Why: The subject input needs a visible label. How: This renders the fixed text "Subject". */ }
 
 							<input
-								className={ cssModObj.npInput }
+								className={ cssModObj.supSubInp }
 
 								placeholder='What’s going on?'
 								type='text'
@@ -524,11 +524,11 @@ function ConSupCom () {
 
 						</label>
 
-						<div className={ cssModObj.supportField }>{ /* What: Message Field Div Element. Why: The message textarea needs its own explicit label element rather than an implicit wrapping label, since its id must differ from index.html's own static form (see the comment on that id below). How: This wraps the message label and the message textarea. */ }
+						<div className={ cssModObj.supFieDiv }>{ /* What: Message Field Div Element. Why: The message textarea needs its own explicit label element rather than an implicit wrapping label, since its id must differ from index.html's own static form (see the comment on that id below). How: This wraps the message label and the message textarea. */ }
 
 
 							<label
-								className={ cssModObj.supportFlabel }
+								className={ cssModObj.supLabLab }
 
 								htmlFor='support-message-input'
 							>Message</label>{ /* What: Message Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is "support-message-input", not "support-message", since that id is already taken by index.html's hidden static Netlify form (see its own comment above the <form name="support">), and duplicate ids on the page confused the browser's label matching (both labels applied, announcing "Message Message"). */ }
@@ -536,7 +536,7 @@ function ConSupCom () {
 							<textarea
 								id='support-message-input'
 
-								className={` ${ cssModObj.npInput }   ${ cssModObj.supportTextarea } `}
+								className={ cssModObj.supMesTex }
 
 								placeholder='The more detail, the better.'
 								rows={ 4 }
@@ -549,25 +549,25 @@ function ConSupCom () {
 						</div>
 
 
-						<div className={ cssModObj.supportDiag }>{ /* What: Support Diag Div Element. Why: The 2 read-only diagnostic fields need their own grouping, separate from the editable fields above. How: This wraps the app-version field and the browser field. */ }
+						<div className={ cssModObj.supDiaDiv }>{ /* What: Support Diag Div Element. Why: The 2 read-only diagnostic fields need their own grouping, separate from the editable fields above. How: This wraps the app-version field and the browser field. */ }
 
 
-							<div className={ cssModObj.supportDiagField }>{ /* What: Version Diag Field Div Element. Why: The app version needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
+							<div className={ cssModObj.diaFieDiv }>{ /* What: Version Diag Field Div Element. Why: The app version needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
 
 
-								<span className={ cssModObj.supportFlabel }>App version</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "App version". */ }
+								<span className={ cssModObj.supLabSpa }>App version</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "App version". */ }
 
-								<span className={ cssModObj.supportDiagVal }>{ appVerStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders appVerStr. */ }
+								<span className={ cssModObj.diaValSpa }>{ appVerStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders appVerStr. */ }
 
 
 							</div>
 
-							<div className={ cssModObj.supportDiagField }>{ /* What: Browser Diag Field Div Element. Why: The detected browser needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
+							<div className={ cssModObj.diaFieDiv }>{ /* What: Browser Diag Field Div Element. Why: The detected browser needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
 
 
-								<span className={ cssModObj.supportFlabel }>Browser</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "Browser". */ }
+								<span className={ cssModObj.supLabSpa }>Browser</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "Browser". */ }
 
-								<span className={ cssModObj.supportDiagVal }>{ broNamStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders broNamStr. */ }
+								<span className={ cssModObj.diaValSpa }>{ broNamStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders broNamStr. */ }
 
 
 							</div>
@@ -577,7 +577,7 @@ function ConSupCom () {
 
 
 						<p
-							className={ cssModObj.supportHp }
+							className={ cssModObj.supHonPar }
 
 							aria-hidden='true'
 						>{ /* What: Honeypot Paragraph Element. Why: A real human never sees or fills this field, so any bot that does gives itself away. How: This wraps a label and input a screen reader never announces, hidden from assistive tech entirely. */ }
@@ -606,7 +606,7 @@ function ConSupCom () {
 						</p>
 
 						<div
-							className={ cssModObj.supportFormFoot }
+							className={ cssModObj.supFooDiv }
 
 							data-element-name-hook='supFooDiv'
 						>{ /* What: Support Form Foot Div Element. Why: The validation/failure messages and the form's own action buttons need their own grouping at the bottom. How: This wraps whichever messages currently apply plus the Cancel/Send buttons. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -618,7 +618,7 @@ function ConSupCom () {
 								<span
 									key='verr'
 
-									className={ cssModObj.supportValidMsg }
+									className={ cssModObj.supValSpa }
 								>Please fill out both form fields.</span> // What: Validation Message Span Element. Why: This is the actual validation copy shown on an empty-field send attempt. How: This renders fixed text explaining what is missing.
 
 
@@ -630,13 +630,13 @@ function ConSupCom () {
 								<span
 									key='sfail'
 
-									className={ cssModObj.supportFallback }
+									className={ cssModObj.supFalSpa }
 
 									role='status'
 								>{ /* What: Failure Message Span Element. Why: This is the actual fallback copy shown on a failed send. How: This explains the likely cause and surfaces the raw support address. */ }
 
 
-									Couldn&rsquo;t send. You may be offline. Your message is still here, so try again, or write to <span className={ cssModObj.supportFallbackAddr }>{ SUP_EMA_STR }</span>.
+									Couldn&rsquo;t send. You may be offline. Your message is still here, so try again, or write to <span className={ cssModObj.falAdrSpa }>{ SUP_EMA_STR }</span>.
 
 
 								</span>
