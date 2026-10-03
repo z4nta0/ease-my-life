@@ -242,13 +242,13 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 			setParIteArr( Array.from( Array( 26 ).keys(), ( iteIndNum ) => ( { // What: Confetti Particle Roll. Why: The confetti style needs a fresh batch of randomly-scattered pieces every time it replays. How: This builds 26 particle items, each with its own random angle, distance, rotation, delay, and opacity.
 
 
-				angNum : Math.round( Math.random() * 360 ),              // What: Angle Number. Why: Each piece needs its own random direction to fly outward in. How: This is a random integer degree value read by the '--angle' custom property.
+				angNum : Math.round( Math.random() * 360 ),              // What: Angle Number. Why: Each piece needs its own random direction to fly outward in. How: This is a random integer degree value read by the '--con-dir-ang' custom property.
 				delNum : Math.round( Math.random() * 180 ),              // What: Delay Number. Why: Pieces should not all start flying at exactly the same instant. How: This is a random millisecond value applied as this piece's own animationDelay.
-				disNum : 70 + Math.random() * 150,                       // What: Distance Number. Why: Each piece needs its own random travel distance. How: This is a random pixel value read by the '--dist' custom property.
+				disNum : 70 + Math.random() * 150,                       // What: Distance Number. Why: Each piece needs its own random travel distance. How: This is a random pixel value read by the '--con-tra-off' custom property.
 				ideStr : 'c' + repTokNum + '_' + iteIndNum,              // What: Identifier String. Why: Each rendered piece needs a stable, unique React key. How: This concatenates a 'c' tag, the current repTokNum, and this item's own index into one string.
 				kinStr : 'confetti',                                     // What: Kind String. Why: The renderer below needs to know which of the two particle shapes this item is. How: This is checked against 'confetti' when choosing between the <i> and <span> markup.
 				opaNum : 0.75 + Math.random() * 0.2,                     // What: Opacity Number. Why: Pieces should read as solid confetti rather than translucent. How: This is a random opacity value in a narrow, mostly-opaque range.
-				rotStr : Math.round( Math.random() * 540 - 270 ) + 'deg' // What: Rotate String. Why: Each piece needs its own random spin as it flies outward. How: This is a random degree value, already unit-suffixed, read by the '--rot' custom property.
+				rotStr : Math.round( Math.random() * 540 - 270 ) + 'deg' // What: Rotate String. Why: Each piece needs its own random spin as it flies outward. How: This is a random degree value, already unit-suffixed, read by the '--con-spi-ang' custom property.
 
 
 			} ) ) ); // What: Confetti State Update. Why: The freshly-rolled batch needs to actually render. How: This writes the 26-item array built above into parIteArr.
@@ -390,11 +390,11 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 							className={ cssModObj.confettiPiece }
 
 							style={{
-								'--angle'         : parCurObj.angNum + 'deg',
-								'--dist'          : parCurObj.disNum + 'px',
-								'--piece-opacity' : parCurObj.opaNum,
-								'--rot'           : parCurObj.rotStr,
-								animationDelay    : parCurObj.delNum + 'ms'
+								'--con-dir-ang' : parCurObj.angNum + 'deg',
+								'--con-pie-opa' : parCurObj.opaNum,
+								'--con-spi-ang' : parCurObj.rotStr,
+								'--con-tra-off' : parCurObj.disNum + 'px',
+								animationDelay  : parCurObj.delNum + 'ms'
 							}}
 						/> // What: Confetti Piece Element. Why: This is one falling confetti piece of the celebration. How: This is styled entirely via CSS custom properties read by the .confetti-piece animation.
 

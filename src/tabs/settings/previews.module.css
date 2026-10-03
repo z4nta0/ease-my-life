@@ -227,7 +227,7 @@
 
 }
 
-.confetti-piece { /* What: Preview Confetti Piece. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --angle, --dist, and --rot. */
+.confetti-piece { /* What: Preview Confetti Piece. Why: Each piece bursts out from the center like the real confetti celebration. How: This draws a small accent chip at the stage's center, flung outward by the shared burst animation using its own --con-dir-ang, --con-tra-off, and --con-spi-ang. */
 
 
 	animation     : global(confettiCelebrateBurst) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* What: Global Burst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

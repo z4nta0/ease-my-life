@@ -759,12 +759,12 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				setParIteArr( Array.from( Array( 26 ).keys(), ( curIndNum ) => ( { // What: Confetti Particle Set. Why: Each of the 26 pieces needs its own randomized flight. How: This maps every index from 0 to 25 (Array.keys yields the indices themselves) to one piece descriptor.
 
 
-					angNum : Math.round( Math.random() * 360 ),          // What: Angle Number. Why: Each piece flies out in its own direction. How: This is a random whole angle in degrees, read into --angle.
+					angNum : Math.round( Math.random() * 360 ),          // What: Angle Number. Why: Each piece flies out in its own direction. How: This is a random whole angle in degrees, read into --con-dir-ang.
 					delNum : Math.round( Math.random() * 180 ),          // What: Delay Number. Why: Staggered launches read as a burst instead of one flat pop. How: This is a random delay up to 180ms, read into animationDelay.
-					disNum : 90 + Math.random() * 220,                   // What: Distance Number. Why: Pieces should travel different distances. How: This is a random 90 to 310px, read into --dist.
+					disNum : 90 + Math.random() * 220,                   // What: Distance Number. Why: Pieces should travel different distances. How: This is a random 90 to 310px, read into --con-tra-off.
 					ideNum : curIndNum,                                  // What: Identifier Number. Why: Each piece needs a stable React key. How: This reuses the piece's own index.
-					opaStr : ( 0.7 + Math.random() * 0.3 ).toFixed( 2 ), // What: Opacity String. Why: Slightly varied opacity keeps the burst from looking uniform. How: This is a random 0.70 to 1.00, read into --piece-opacity.
-					rotNum : Math.round( Math.random() * 360 )           // What: Rotation Number. Why: Each piece spins to its own final angle. How: This is a random whole angle in degrees, read into --rot.
+					opaStr : ( 0.7 + Math.random() * 0.3 ).toFixed( 2 ), // What: Opacity String. Why: Slightly varied opacity keeps the burst from looking uniform. How: This is a random 0.70 to 1.00, read into --con-pie-opa.
+					rotNum : Math.round( Math.random() * 360 )           // What: Rotation Number. Why: Each piece spins to its own final angle. How: This is a random whole angle in degrees, read into --con-spi-ang.
 
 
 				} ) ) );
@@ -3954,11 +3954,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										className={ cssModObj.confettiPiece }
 
 										style={{
-											'--angle'         : `${ curParObj.angNum }deg`,
-											'--dist'          : `${ curParObj.disNum }px`,
-											'--piece-opacity' : curParObj.opaStr,
-											'--rot'           : `${ curParObj.rotNum }deg`,
-											animationDelay    : `${ curParObj.delNum }ms`
+											'--con-dir-ang' : `${ curParObj.angNum }deg`,
+											'--con-pie-opa' : curParObj.opaStr,
+											'--con-spi-ang' : `${ curParObj.rotNum }deg`,
+											'--con-tra-off' : `${ curParObj.disNum }px`,
+											animationDelay  : `${ curParObj.delNum }ms`
 										}}
 									/> // What: Confetti Piece Element. Why: This is one single confetti piece, positioned/rotated/timed entirely via inline CSS custom properties. How: This renders curParObj's own randomized angle/distance/rotation/opacity/delay.
 

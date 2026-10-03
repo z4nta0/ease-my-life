@@ -785,13 +785,13 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-@keyframes confettiCelebrateBurst { /* What: Confetti Celebrate Burst Keyframes. Why: Each confetti piece flies out from the center along its own angle. How: This moves it by its --angle and --dist with a slight drop, spinning by --rot as it fades. */
+@keyframes confettiCelebrateBurst { /* What: Confetti Celebrate Burst Keyframes. Why: Each confetti piece flies out from the center along its own angle. How: This moves it by its --con-dir-ang and --con-tra-off with a slight drop, spinning by --con-spi-ang as it fades. */
 
 
 	0% {
 
 
-		opacity   : var( --piece-opacity, 0.9 ); /* Piece Opacity = set per confetti piece by JS, falling back to 0.9 */
+		opacity   : var( --con-pie-opa, 0.9 ); /* Confetti Piece Opacity = set per confetti piece by JS, falling back to 0.9 */
 		transform : translate( -50%, -50% ) rotate( 0deg );
 
 
@@ -801,7 +801,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translate( calc( -50% + cos( var( --angle ) ) * var( --dist ) ), calc( -50% + sin( var( --angle ) ) * var( --dist ) + var( --spa-ver-bas ) ) ) rotate( var( --rot ) ); /* Angle = set per confetti piece by JS, Distance = set per confetti piece by JS, Rotation = set per confetti piece by JS */
+		transform : translate( calc( -50% + cos( var( --con-dir-ang ) ) * var( --con-tra-off ) ), calc( -50% + sin( var( --con-dir-ang ) ) * var( --con-tra-off ) + var( --spa-ver-bas ) ) ) rotate( var( --con-spi-ang ) ); /* Confetti Direction Angle = set per confetti piece by JS, Confetti Travel Offset = set per confetti piece by JS, Spacing Vertical Base ~= 14.572px, Confetti Spin Angle = set per confetti piece by JS */
 
 
 	}
