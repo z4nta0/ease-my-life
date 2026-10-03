@@ -34,7 +34,7 @@
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Intro Scrim Div. Why: Someone who asked for less motion shouldn't see the backdrop fade in. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Intro Scrim Div. Why: Someone who asked for less motion shouldn't see the backdrop fade in. How: This applies only when the reduced-motion preference is set. */
 
 
 	.intScrDiv { /* What: Motionless Intro Scrim Div. Why: The backdrop should simply appear. How: This turns its fade and transitions off. */
@@ -73,7 +73,7 @@
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Welcome Card Div. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Welcome Card Div. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
 
 
 	.welCarDiv { /* What: Motionless Welcome Card Div. Why: The card should simply appear. How: This turns its animation and transitions off. */

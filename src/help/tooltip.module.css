@@ -66,7 +66,7 @@
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Help Tip Div. Why: Someone who asked for less motion shouldn't see the tip fade in. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Help Tip Div. Why: Someone who asked for less motion shouldn't see the tip fade in. How: This applies only when the reduced-motion preference is set. */
 
 
 	.helTipDiv { /* What: Motionless Help Tip Div. Why: The tip should simply appear. How: This turns its fade and transitions off. */

@@ -58,7 +58,7 @@
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Help Toggle Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Help Toggle Button. Why: Someone who asked for less motion shouldn't see the button's colors fade. How: This applies only when the reduced-motion preference is set. */
 
 
 	.helTogBut { /* What: Still Help Toggle Button. Why: The colors should simply switch. How: This turns the color fade off. */

@@ -566,7 +566,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 
 
 }
-@media (prefers-reduced-motion: reduce) { /* What: Reduced Motion Theme Cross-Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion: reduce ) { /* What: Reduced Motion Theme Cross-Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
 	[data-theme-fade-active],
