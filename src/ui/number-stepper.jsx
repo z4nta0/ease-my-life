@@ -97,7 +97,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 
 
 		<div
-			className={ cssModObj.npStepper }
+			className={ cssModObj.numSteDiv }
 
 			aria-label={ ariLabStr }
 			role='group'
@@ -105,7 +105,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 
 
 			<button
-				className={ cssModObj.npWeightBtn }
+				className={ cssModObj.numSteBut }
 
 				disabled={ value <= minValNum }
 
@@ -115,7 +115,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 			>−</button>{ /* What: Decrement Button Element. Why: This is the "-" side of the stepper. How: This is disabled once value reaches minValNum, otherwise steps it down by 1 on click. */ }
 
 			<input
-				className={ cssModObj.npStepperInput }
+				className={ cssModObj.numSteInp }
 
 				inputMode='numeric'
 				type='text'
@@ -130,7 +130,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 			/>{ /* What: Stepper Input Element. Why: This lets the value be typed directly, handy for big jumps the +/- buttons make tedious. How: This mirrors texValStr, strips non-digit characters as the user types, selects-all on focus, commits on blur, and commits early on Enter. */ }
 
 			<button
-				className={ cssModObj.npWeightBtn }
+				className={ cssModObj.numSteBut }
 
 				disabled={ value >= maxValNum }
 
