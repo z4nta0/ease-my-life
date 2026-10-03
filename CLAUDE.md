@@ -2032,6 +2032,19 @@ still passes.
   existing `.prog--warm` form). Existing classes
   keep their current names while they move into modules; renaming them
   to this rule belongs to the design-system pass.
+  - **One element rendered as different tags** (decided 2026-10-02):
+    when one class sits on an element that renders as different tags
+    (e.g. an Add control that's a `<button>`, but an InfTipCom `<span>`
+    while disabled), each tag gets its own class matching its own hook
+    (`rowAddBut`, `rowAddSpa`). Declarations both share go in one
+    multi-selector rule, and a rule only one tag needs targets that tag's
+    class alone.
+  - **A copied element keeps one name across modules** (decided
+    2026-10-02): when several modules carry their own copies of the same
+    element's rules (e.g. the Data tab's section cards, headers, and
+    rows), that element takes the same class name in every one of them,
+    from its shared hook where it has one, so a later move into one shared
+    component is a straight merge.
 - **CSS file boundaries and header**: the same as a JS file: exactly 3
   blank lines before the first real line, exactly 2 blank lines after the
   last one, and a mandatory file-level `/** ... */` header comment
