@@ -49,7 +49,7 @@
 
 
 }
-.helTogBut[aria-pressed="true"] { /* What: Active Help Toggle Button. Why: While help mode is on, the toggle should read as switched on. How: This fills it with the accent color, keyed off the button's own pressed state. */
+.helTogBut[aria-pressed='true'] { /* What: Active Help Toggle Button. Why: While help mode is on, the toggle should read as switched on. How: This fills it with the accent color, keyed off the button's own pressed state. */
 
 
 	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
