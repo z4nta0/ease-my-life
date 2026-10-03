@@ -525,7 +525,7 @@
 
 
 	align-items     : center;
-	animation       : buttonOpenPopIn var( --dur-ani-bas ) var( --mot-dec-eas ) both;                                 /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation       : buttonOpenPopIn var( --dur-ani-bas ) var( --mot-dec-eas ) backwards;                            /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Backwards Fill. Why: A both fill would hold the end frame's full opacity after the pop, hiding the disabled confirm's dimming. How: backwards keeps the buttons hidden through the delay, then hands opacity back to their own rules once the pop ends. */
 	animation-delay : var( --dur-ani-m01 );                                                                           /* Duration Animation Base Minus 1 ~= 119.2ms */
 	background      : var( --bac-sur-col );                                                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border          : var( --bor-wid-bas ) solid var( --bor-mai-col );                                                /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
