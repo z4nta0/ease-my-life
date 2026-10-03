@@ -809,9 +809,9 @@
 .pooNamDiv { /* What: Pool Name Div. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered 80px so every row's pill lines up in one column. */
 
 
-	--pill-flex            : 0 0 calc( var( --ver-rhy-p06 ) * 1rem );   /* Vertical Rhythm Base Plus 6 ~= 78.751px */
+	--pill-flex            : 0 0 calc( var( --ver-rhy-p06 ) * 1rem );   /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	--pill-justify-content : center;
-	--pill-width           : calc( var( --ver-rhy-p06 ) * 1rem );       /* Vertical Rhythm Base Plus 6 ~= 78.751px */
+	--pill-width           : calc( var( --ver-rhy-p06 ) * 1rem );       /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	align-items            : center;
 	display                : flex;
 	font-size              : var( --fon-siz-p01 );                      /* Font Size Base Plus 1 ~= 14.572px */
@@ -897,7 +897,7 @@
 	.pooProSpa { /* What: Narrower Pool Progress Span. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */
 
 
-		min-width : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
+		min-width : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 
 	}

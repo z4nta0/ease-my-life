@@ -130,11 +130,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.751px */
+	height             : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
-	width              : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.751px */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem );                 /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 
 
 }

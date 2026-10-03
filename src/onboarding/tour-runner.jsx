@@ -1741,7 +1741,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			const padTopNum = rhyPxlFun( 'p06' );                                                      // What: Pad Top Number. Why: This is the ordinary top breathing-room margin used by the pad-based branch below. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 6 ~= 78.751px
+			const padTopNum = rhyPxlFun( 'p06' );                                                      // What: Pad Top Number. Why: This is the ordinary top breathing-room margin used by the pad-based branch below. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 6 ~= 78.750px
 			const padBotNum = rhyPxlFun( 'p08' );                                                      // What: Pad Bottom Number. Why: Same reasoning as padTopNum above, for the bottom margin. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 8 ~= 138.199px
 			const minTopNum = Math.max( scrRecObj.top + padTopNum, safTopFun() + rhyPxlFun( 'm01' ) ); // What: Min Top Number. Why: The top boundary also cannot sit above safTopFun(), since a fixed pad alone assumes Today's own sticky header (plus, when present, the Edit Mode banner) is shorter than it actually is, which on a short enough viewport (or once the banner adds its own height) lets a target that "fits" by the pad's math alone still land partly behind that chrome, with briTarFun then seeing no need to scroll further. How: This takes whichever floor is higher between the plain pad math and the safe-chrome floor. // Vertical Rhythm Base Minus 1 ~= 11.000px
 
