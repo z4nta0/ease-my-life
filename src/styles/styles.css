@@ -162,6 +162,8 @@
 
 	/* #region Color Tokens */
 
+	/* CTRL+ALT+C to toggle color swatches on and off *Requires Extension Toggle by Peng Lv */
+
 	--acc-mai-col : oklch( 0.5 0.14 250 );                                                  /* What: Accent Main Color. Why: Actions, selection, and progress share one main accent. How: Modules read it for accent text, fills, and outlines, and each theme overwrites it. */
 	--acc-sec-col : oklch( 0.62 0.13 50 );                                                  /* What: Accent Secondary Color. Why: Streaks, warnings, and a few highlights need a second accent alongside the main one. How: Modules use it where the main accent would blur together, and each theme overwrites it. */
 	--acc-tin-col : oklch( 0.95 0.025 250 );                                                /* What: Accent Tint Color. Why: Selected and highlighted surfaces need a pale tint of the main accent. How: Modules use it as a background behind accent text, and each theme overwrites it. */
