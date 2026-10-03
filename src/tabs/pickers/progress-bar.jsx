@@ -58,19 +58,33 @@ import cssModObj from './progress-bar.module.css'; // What: CSS Module Object. W
  *
 */
 
-const ProBarCom = ( { curValNum, maxValNum = 1, tonValStr = 'accent' } ) => ( // What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, whose width is the clamped curValNum/maxValNum ratio, colored by the tonValStr modifier class.
+const ProBarCom = ( { curValNum, maxValNum = 1, tonValStr = 'accent' } ) => { // What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, slid into place by the clamped curValNum/maxValNum ratio, colored by the tonValStr modifier class.
 
 
-	<div className={` ${ cssModObj.prog }   ${ tonValStr === 'warm' ? cssModObj.progWarm : '' } `}>{ /* What: Progress Track Div Element. Why: This is the fixed-width background track the filled bar sits inside. How: This applies the tonValStr modifier class and wraps the filled <i> below. */ }
+	const filFraNum = Math.max( 0, Math.min( 1, curValNum / maxValNum ) ); // What: Fill Fraction Number. Why: The fill's position comes from how far curValNum is toward maxValNum, never past either end. How: This clamps the ratio to the 0-1 range.
 
 
-		<i style={{ width : `${ Math.max( 0, Math.min( 1, curValNum / maxValNum ) ) * 100 }%` }} />{ /* What: Progress Fill Element. Why: This is the actual filled portion showing how far along curValNum is toward maxValNum. How: This is a self-closing <i>, purely styled via inline width, clamped to [0,100]%. */ }
+
+	return (
 
 
-	</div>
+		<div className={` ${ cssModObj.proTraDiv }   ${ tonValStr === 'warm' ? cssModObj.proTraDivWarm : '' } `}>{ /* What: Progress Track Div Element. Why: This is the fixed-width background track the filled bar sits inside. How: This applies the tonValStr modifier class and wraps the filled <i> below. */ }
 
 
-);
+			<i
+				className={ cssModObj.proFilIta }
+
+				style={{ transform : `translateX( calc( ${ ( filFraNum - 1 ) * 100 }% - ${ filFraNum === 0 ? 1 : 0 }px ) )` }} // What: Fill Slide Transform. Why: The fill spans the whole track, so sliding it left by the empty share shows the clamped progress while animating on the compositor rather than through layout. How: This turns filFraNum into a 0 to -100% translateX, pushing an empty fill 1px further so its antialiased edge can't leave a hairline at the track's left end.
+			/>{ /* What: Progress Fill Element. Why: This is the actual filled portion showing how far along curValNum is toward maxValNum. How: This is a self-closing <i> the track clips, positioned by its inline transform. */ }
+
+
+		</div>
+
+
+	);
+
+
+};
 
 // #endregion ProBarCom
 
