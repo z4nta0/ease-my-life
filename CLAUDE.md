@@ -2155,6 +2155,16 @@ still passes.
   data-page-reorder-active] *`. Each one kept gets a comment on its line
   saying why nothing else works, and an existing one is checked as its
   file comes up.
+- **`z-index` only as high as it needs to be** (decided 2026-10-03). A
+  `z-index` is the smallest value that puts the element above (or below)
+  exactly what it has to clear, judged within its own stacking context,
+  never a large round number picked to be safe (`999`, `9999`). Escalating
+  values turn into an arms race, the same way `!important` does. Where an
+  element has to clear a specific other layer, its comment names that
+  layer and its value (e.g. a tip at 1 above the tour's dim). Since
+  overlays are layered against each other, lowering one means checking
+  every layer it sits above or below and moving them together. An existing
+  value is checked as its file comes up.
 - **Parentheses in CSS functions** (decided 2026-09-29) follow the same
   spacing as JS calls under "### Parentheses spacing": a space after `(`
   and before `)` when there's anything inside, e.g. `var( --fon-siz-p01 )`
