@@ -271,17 +271,17 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 		<React.Fragment>{ /* What: Group Header Fragment Element. Why: The header itself and its own merge/error banners are true siblings with no shared wrapper of their own. How: This groups the header, the merge-confirm banner, and the name-error banner without adding an extra DOM node. */ }
 
 
-			<header className={ cssModObj.groupH }>{ /* What: Group Header Header Element. Why: This is GroHeaCom's own root landmark, holding the name/count row and the progress dash row beneath it. How: This renders as a semantic <header>. */ }
+			<header className={ cssModObj.groHeaHea }>{ /* What: Group Header Header Element. Why: This is GroHeaCom's own root landmark, holding the name/count row and the progress dash row beneath it. How: This renders as a semantic <header>. */ }
 
 
-				<div className={ cssModObj.groupHL }>{ /* What: Header Left Div Element. Why: The name, count, and Day Log chip read as one left-aligned cluster. How: This wraps the grip (Edit Mode only), the name/rename control, the count, and the Day Log chip. */ }
+				<div className={ cssModObj.heaLefDiv }>{ /* What: Header Left Div Element. Why: The name, count, and Day Log chip read as one left-aligned cluster. How: This wraps the grip (Edit Mode only), the name/rename control, the count, and the Day Log chip. */ }
 
 
 					{ ediModBoo && ( // What: Grip Visibility Check. Why: The drag handle only makes sense while Edit Mode is on. How: This renders the grip span only while ediModBoo is true.
 
 
 						<span
-							className={ cssModObj.groupGrip }
+							className={ cssModObj.groGriSpa }
 
 							data-element-name-hook='groGriSpa'
 
@@ -313,7 +313,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 						<input
 							ref={ namInpRef }
 
-							className={` ${ cssModObj.groupNameInput }   ${ cloOutBoo ? cssModObj.isClosing : '' } `}
+							className={` ${ cssModObj.groNamInp }   ${ cloOutBoo ? cssModObj.groNamInpClosing : '' } `}
 
 							data-element-name-hook='groNamInp'
 							data-name-invalid-active={ !!namErrStr || undefined } // What: Name Invalid Active Attribute. Why: A name that collides with another group gets a warm frame from its module. How: This sets the presence-only attribute while namErrStr holds an error and removes it otherwise.
@@ -359,7 +359,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 
 						<button
-							className={` ${ cssModObj.groupName }   ${ cssModObj.groupNameEditable } `}
+							className={ cssModObj.groNamBut }
 
 							data-element-name-hook='groNamBut'
 
@@ -373,6 +373,8 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 							{ groNamStr }
 							<IcoSvgCom
+								className={ cssModObj.penIcoSvg }
+
 								icoNamStr='ediEle'
 								sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'ediEle' icon at a fixed size. */ }
@@ -384,17 +386,17 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 					) : ( // What: Plain Heading Branch. Why: Outside Edit Mode the group's own name is just a plain, non-interactive heading. How: This renders a bare <h2> showing groNamStr.
 
 
-						<h2 className={ cssModObj.groupName }>{ groNamStr }</h2> // What: Group Name Heading Element. Why: This is the group's own plain, non-editable display name. How: This renders groNamStr directly.
+						<h2 className={ cssModObj.groNamHea }>{ groNamStr }</h2> // What: Group Name Heading Element. Why: This is the group's own plain, non-editable display name. How: This renders groNamStr directly.
 
 
 					) }
 
-					<span className={ cssModObj.groupCount }>{ /* What: Group Count Span Element. Why: The done/total pair reads as one small cluster next to the name. How: This wraps the done and "of total" spans below. */ }
+					<span className={ cssModObj.groCouSpa }>{ /* What: Group Count Span Element. Why: The done/total pair reads as one small cluster next to the name. How: This wraps the done and "of total" spans below. */ }
 
 
-						<span className={ cssModObj.groupDone }>{ donCouNum }</span>{ /* What: Group Done Span Element. Why: This is the group's own current done count. How: This renders donCouNum directly. */ }
+						<span className={ cssModObj.groDonSpa }>{ donCouNum }</span>{ /* What: Group Done Span Element. Why: This is the group's own current done count. How: This renders donCouNum directly. */ }
 
-						<span className={ cssModObj.groupOf }>of { totCouNum }</span>{ /* What: Group Of Span Element. Why: The done count alone is meaningless without the total it is out of. How: This renders the literal word "of" plus totCouNum. */ }
+						<span className={ cssModObj.groTotSpa }>of { totCouNum }</span>{ /* What: Group Of Span Element. Why: The done count alone is meaningless without the total it is out of. How: This renders the literal word "of" plus totCouNum. */ }
 
 
 					</span>
@@ -416,7 +418,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 				</div>
 
-				<div className={ cssModObj.groupProgress }>{ /* What: Group Progress Div Element. Why: The dash-bar row is its own visual band beneath the name/count row. How: This maps one dash per row in the group, flagging the done ones and whichever one just turned fresh. */ }
+				<div className={ cssModObj.groProDiv }>{ /* What: Group Progress Div Element. Why: The dash-bar row is its own visual band beneath the name/count row. How: This maps one dash per row in the group, flagging the done ones and whichever one just turned fresh. */ }
 
 
 					{ [ ...Array( totCouNum ).keys() ].map( ( curIndNum ) => ( // What: Dash Row Map. Why: One dash is needed per row in this group, regardless of what data backs it. How: This maps every index from 0 to totCouNum - 1 (Array.keys yields the indices themselves) to one <i>.
@@ -425,7 +427,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 						<i
 							key={ curIndNum }
 
-							className={ curIndNum === freIndNum ? cssModObj.isFresh : '' }
+							className={` ${ cssModObj.proDasIta }   ${ curIndNum === freIndNum ? cssModObj.proDasItaFresh : '' } `}
 
 							data-dash-done-active={ curIndNum < donCouNum || undefined } // What: Dash Done Active Attribute. Why: A done row's dash is filled by its module. How: This sets the presence-only attribute on every dash below donCouNum and removes it otherwise.
 						/> // What: Progress Dash Element. Why: This is one single dash in the group's own progress bar. How: This marks itself with data-dash-done-active once its own index falls under donCouNum, and takes the module's isFresh class for exactly one tick when it is the dash freIndNum names.
@@ -443,10 +445,10 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 			{ merPenObj && ( // What: Merge Confirm Visibility Check. Why: The merge-confirm banner only exists while a same-name rename is actually pending. How: This renders the banner only while merPenObj holds a value.
 
 
-				<div className={ cssModObj.groupMergeConfirm }>{ /* What: Merge Confirm Div Element. Why: This is the confirm-before-merging prompt's own root. How: This renders the explanatory message plus its own Cancel/Merge actions. */ }
+				<div className={ cssModObj.merConDiv }>{ /* What: Merge Confirm Div Element. Why: This is the confirm-before-merging prompt's own root. How: This renders the explanatory message plus its own Cancel/Merge actions. */ }
 
 
-					<span className={ cssModObj.confirmMsg }>{ /* What: Confirm Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own to/from names inside the fixed explanatory copy. */ }
+					<span className={ cssModObj.conMesSpa }>{ /* What: Confirm Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own to/from names inside the fixed explanatory copy. */ }
 
 
 						A group named &ldquo;{ merPenObj.to }&rdquo; already exists. Merge
@@ -455,7 +457,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 					</span>
 
-					<div className={ cssModObj.remDelActions }>{ /* What: Delete Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both ButBasCom elements below. */ }
+					<div className={ cssModObj.conActDiv }>{ /* What: Delete Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both ButBasCom elements below. */ }
 
 
 						<ButBasCom
@@ -487,10 +489,10 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 			{ ediOpeBoo && namErrStr && ( // What: Name Error Visibility Check. Why: The collision banner only exists while the field is open AND an error is actually staged. How: This renders the banner only while both conditions hold.
 
 
-				<div className={` ${ cssModObj.groupMergeConfirm }   ${ cssModObj.groupNameConflict } `}>{ /* What: Name Conflict Div Element. Why: A rename collision needs the same visual treatment as the merge-confirm banner above. How: This renders namErrStr as the banner's own message. */ }
+				<div className={ cssModObj.namConDiv }>{ /* What: Name Conflict Div Element. Why: A rename collision needs the same visual treatment as the merge-confirm banner above. How: This renders namErrStr as the banner's own message. */ }
 
 
-					<span className={ cssModObj.confirmMsg }>{ namErrStr }</span>{ /* What: Confirm Message Span Element. Why: This is the actual collision message text. How: This renders namErrStr directly. */ }
+					<span className={ cssModObj.conMesSpa }>{ namErrStr }</span>{ /* What: Confirm Message Span Element. Why: This is the actual collision message text. How: This renders namErrStr directly. */ }
 
 
 				</div>
