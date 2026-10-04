@@ -391,7 +391,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 			<div className={ cssModObj.ediLisDiv }>{ /* What: Pie Rows Div Element. Why: Every mode-specific control row shares this one column. How: This renders exactly one of the ease/weight/no-weight branches, plus the optional Boost row and the always-present Active/Inactive row. */ }
 
 
-				{ isaEasBoo ? ( // What: Ease Rows Branch. Why: Ease-up/ease-down show a cadence range instead of a weight stepper.
+				{ isaEasBoo ? ( // What: Ease Rows Branch. Why: Ease-up/ease-down show a cadence range instead of a weight stepper. How: This renders the Soonest/Latest rows while isaEasBoo is true.
 
 
 					// #region Ease Direction Split
@@ -705,7 +705,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 					</div>
 
 
-				) : ( // What: No-Weight Row Branch. Why: Random mode ignores weight entirely (it picks uniformly), so this row is purely informational.
+				) : ( // What: No-Weight Row Branch. Why: Random mode ignores weight entirely (it picks uniformly), so this row is purely informational. How: This renders a plain informational row with no stepper.
 
 
 					<div
@@ -828,7 +828,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 
-			{ conDelBoo ? ( // What: Confirm Delete Branch. Why: The delete confirm prompt replaces the plain footer entirely while it is up.
+			{ conDelBoo ? ( // What: Confirm Delete Branch. Why: The delete confirm prompt replaces the plain footer entirely while it is up. How: This renders the confirm prompt while conDelBoo is true.
 
 
 				<div
@@ -870,7 +870,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 				</div>
 
 
-			) : ( // What: Plain Foot Branch. Why: The normal, non-confirming footer shows whenever conDelBoo is false.
+			) : ( // What: Plain Foot Branch. Why: The normal, non-confirming footer shows whenever conDelBoo is false. How: This renders the normal footer while conDelBoo is false.
 
 
 				<div
@@ -882,7 +882,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab's new-item row hides the Delete button entirely by setting --ent-del-dis, which this footer passes to ButBasCom's danger variant, and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes iteCouNum here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isaNewBoo, then the Cancel/Save pair. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.
+					{ !isaNewBoo && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one. How: This hides Delete for a new item, and otherwise shows the blocked-delete tip while minIteBoo holds, or the real Delete button.
 
 
 						<InfTipCom

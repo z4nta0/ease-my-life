@@ -614,7 +614,7 @@ function AppRooCom () {
 	React.useLayoutEffect( () => { // What: Layout Switch Animation Effect. Why: Moving the tab bar to a new placement needs a ghost of the old bar to play an exit keyframe while the real bar enters from its new edge. How: This detects an actual placement change, stages the ghost's exit and the real bar's enter flags, then clears them after their keyframes finish.
 
 
-		const prePlaStr = prePlaRef.current; // What: Previous Placement String. Why: Detecting an actual change requires comparing against what was last recorded, not just the current value.
+		const prePlaStr = prePlaRef.current; // What: Previous Placement String. Why: Detecting an actual change requires comparing against what was last recorded, not just the current value. How: This reads prePlaRef.current, the placement recorded on the previous run.
 
 
 		if ( prePlaStr === tabPlaStr ) return; // What: No Change Guard. Why: The whole ghost/enter animation should only run when the placement actually changed. How: This bails out of the effect early when the previous and current placement are identical.

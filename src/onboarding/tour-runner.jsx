@@ -702,7 +702,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the ONLY thing that switches tabs at all, forward, back, or resuming alike.
+	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the ONLY thing that switches tabs at all, forward, back, or resuming alike. How: This switches to the step's own tabStr whenever the active tab differs.
 
 
 		if ( curSteObj && curSteObj.tabStr && actIdeStr !== curSteObj.tabStr ) selTabFun( curSteObj.tabStr ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selTabFun when the current step names a tab and it does not already match.
@@ -712,7 +712,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	React.useEffect( () => { // What: Rail Open Publish Effect. Why: On tabPlacement 'side', the rail collapses to an off-canvas drawer on small screens (App owns the actual open/close state via its own subscription to this same field), and a step targeting a nav button would otherwise never find it there.
+	React.useEffect( () => { // What: Rail Open Publish Effect. Why: On tabPlacement 'side', the rail collapses to an off-canvas drawer on small screens (App owns the actual open/close state via its own subscription to this same field), and a step targeting a nav button would otherwise never find it there. How: This publishes wanRaiBoo on the tour bus, true whenever the step's selector targets a nav tab.
 
 
 		emlTouObj.set( { wanRaiBoo : !!( curSteObj && curSteObj.selStr.includes( '[data-tab=' ) ) } ); // What: Rail Open Publish. Why: This is published unconditionally, not just when opening, so it also closes the drawer again once the tour moves to a step that does not need it, rather than leaving it open to cover a content target. How: This is a no-op at desktop widths, where the rail is never collapsed to begin with, and is keyed off the selector string itself (not resolved elements), since resolving would need the rail already open, which is exactly what this is for.
@@ -1108,7 +1108,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		const cliGuaFun = ( cliEveObj ) => { // What: Click Guard Function. Why: This is the real click-guard: it lets advCliStr/cliSelStr/cirBoo clicks through to trigger the tour's own advance, lets a pass-through click through untouched, and blocks everything else.
+		const cliGuaFun = ( cliEveObj ) => { // What: Click Guard Function. Why: This is the real click-guard: it lets advCliStr/cliSelStr/cirBoo clicks through to trigger the tour's own advance, lets a pass-through click through untouched, and blocks everything else. How: This lets coach card, advCliStr, and target clicks through in turn, and prevents and stops any other click that isn't a pass-through.
 
 
 			if ( supGuaRef.current ) return; // What: Suppression Guard. Why: A caller-driven synthetic click must never be intercepted by this guard at all. How: This returns immediately whenever supGuaRef.current is true.
@@ -1123,7 +1123,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( livSteObj && livSteObj.advCliStr && finTarFun( livSteObj.advCliStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in GuiTouCom's own JSDoc above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next.
+			if ( livSteObj && livSteObj.advCliStr && finTarFun( livSteObj.advCliStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in GuiTouCom's own JSDoc above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next. How: This runs the primary action when the click lands inside an advCliStr match, then returns.
 
 
 				priActRef.current(); // What: Primary Action Trigger. Why: An advCliStr click must run the exact same priActFun logic a real Next click would. How: This calls the latest priActFun via its own ref.
@@ -1137,7 +1137,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward.
+			if ( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward. How: This runs the primary action for a cirBoo step, then returns so the target click itself goes through.
 
 
 				if ( livSteObj.cirBoo ) priActRef.current(); // What: Require-Click Trigger. Why: Only a cirBoo step treats its own target click as the advancing action. How: This calls the latest priActFun only when the live step actually requires it.
@@ -1495,7 +1495,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	React.useEffect( () => { // What: Position Tracking Effect. Why: This follows the target every frame while a step is up: scrolling it into view once, clamping the spotlight/coach against chrome, deciding reserve space, and watchdog-skipping a step whose target never resolves.
+	React.useEffect( () => { // What: Position Tracking Effect. Why: This follows the target every frame while a step is up: scrolling it into view once, clamping the spotlight/coach against chrome, deciding reserve space, and watchdog-skipping a step whose target never resolves. How: This resets the previous step's rect and reserve, then runs a requestAnimationFrame loop that brings the target into view and repositions everything each frame.
 
 
 		setCurRecObj( null ); // What: Rect Reset. Why: The previous step's own position must not paint under new text. How: This drops curRecObj back to null the instant the step changes.
@@ -1552,7 +1552,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const getScrFun = ( curTarEle ) => { // What: Get Scroller Function. Why: The ACTUAL scrolling ancestor of the target must be resolved, since on narrow/mobile layouts the scroller is not ".main" (the page/body scrolls instead), and a hardcoded ".main" would leave the target below the fold with the coach and spot off-screen, the dim-only "no highlight" state.
+		const getScrFun = ( curTarEle ) => { // What: Get Scroller Function. Why: The ACTUAL scrolling ancestor of the target must be resolved, since on narrow/mobile layouts the scroller is not ".main" (the page/body scrolls instead), and a hardcoded ".main" would leave the target below the fold with the coach and spot off-screen, the dim-only "no highlight" state. How: This walks up from the target's parent to the first ancestor that actually scrolls, falling back to the document's own scroller.
 
 
 			let ancCurEle = curTarEle && curTarEle.parentElement; // What: Ancestor Current Element And Walker. Why: The walk needs to start from the target's own parent. How: This starts at curTarEle's own parentElement, or undefined when curTarEle itself is falsy.
@@ -1664,7 +1664,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const briTarFun = () => { // What: Bring Target Function. Why: This brings the target(s) into view once when the step opens.
+		const briTarFun = () => { // What: Bring Target Function. Why: This brings the target(s) into view once when the step opens. How: This finds the step's targets, then scrolls their scroller by the step's own flags, or by just enough to fit the target and the coach.
 
 
 			if ( isaCanBoo ) return; // What: Cancelled Guard. Why: This guards the recursive requestAnimationFrame(() => briTarFun()) call below (the reserve-space retry), which fires on its own timer, outside this effect's own raf loop, so the ordinary isaCanBoo check further down never gets a chance to catch it if the step/tour has already moved on by the time it fires. How: This returns immediately whenever isaCanBoo is already true.
@@ -1685,7 +1685,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			const curScrEle = getScrFun( curEleArr[ 0 ] ); // What: Current Scroll Element. Why: Every branch below needs to know which element actually scrolls. How: This resolves the first matched element's own scroller via getScrFun.
 
 
-			if ( curSteObj.sttBoo ) { // What: Scroll-To-Top Guard. Why: A step whose target starts right at the top of the page anyway (e.g. a full-list review step) should scroll all the way up rather than just nudging it into view, keeping everything visible from the top instead of opening mid-scroll.
+			if ( curSteObj.sttBoo ) { // What: Scroll-To-Top Guard. Why: A step whose target starts right at the top of the page anyway (e.g. a full-list review step) should scroll all the way up rather than just nudging it into view, keeping everything visible from the top instead of opening mid-scroll. How: This scrolls the target's scroller, or the window, to the very top, then returns.
 
 
 				const curBehStr = redMotFun() ? 'auto' : 'smooth';   // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
@@ -1705,7 +1705,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( curSteObj.stbBoo ) { // What: Scroll-To-Bottom Guard. Why: The symmetric case: a step whose target always sits at the very bottom of its page/form (e.g. a footer "next" button), where scrolling by pad math alone can undershoot after the surrounding content just changed shape (e.g. a form switching back from a longer sub-step to a shorter one), landing short of the target instead of reaching it.
+			if ( curSteObj.stbBoo ) { // What: Scroll-To-Bottom Guard. Why: The symmetric case: a step whose target always sits at the very bottom of its page/form (e.g. a footer "next" button), where scrolling by pad math alone can undershoot after the surrounding content just changed shape (e.g. a form switching back from a longer sub-step to a shorter one), landing short of the target instead of reaching it. How: This scrolls the target's scroller, or the window, to the very bottom, then returns.
 
 
 				const curBehStr = redMotFun() ? 'auto' : 'smooth'; // What: Current Behavior String. Why: Both branches below need the same behavior choice. How: This resolves the reduced-motion preference once.
@@ -1729,7 +1729,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			const scrRecObj = isaDocBoo ? { bottom : window.innerHeight, top : 0 } : curScrEle.getBoundingClientRect(); // What: Scroller Rect Object. Why: The pad math below needs the scroller's own visible bounds. How: This uses the viewport bounds for the document scroller, otherwise curScrEle's own bounding rect.
 
 
-			if ( curSteObj.catBoo ) { // What: Coach-At-Top Guard. Why: See catBoo's own doc comment in GuiTouCom's own JSDoc above, scrolls so the target starts right where the coach (pinned to safTopNum) leaves off, instead of trying to fit the target's WHOLE height within the normal pad/padBotNum window below, which a too-tall target cannot do.
+			if ( curSteObj.catBoo ) { // What: Coach-At-Top Guard. Why: See catBoo's own doc comment in GuiTouCom's own JSDoc above, scrolls so the target starts right where the coach (pinned to safTopNum) leaves off, instead of trying to fit the target's WHOLE height within the normal pad/padBotNum window below, which a too-tall target cannot do. How: This scrolls by the distance between the target's top and the spot just below the coach, then returns.
 
 
 				const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPxlFun( 'm01' ) + coaHeiRef.current + rhyPxlFun( 'bas' ); // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its small-step margin, its current measured height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
@@ -1758,7 +1758,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( !curSteObj.catBoo && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank.
+			if ( !curSteObj.catBoo && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank. How: This reserves extra room below the target when the coach would fit neither below nor above its predicted landing position.
 
 
 				const vieHeiNum = window.innerHeight;                                                                                   // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
@@ -1896,7 +1896,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const plaTarFun = ( curEleArr ) => { // What: Place Target Function. Why: This positions both the spotlight and the real coach imperatively, every frame, so neither one visibly lags behind a smooth scroll the way pure React state would.
+		const plaTarFun = ( curEleArr ) => { // What: Place Target Function. Why: This positions both the spotlight and the real coach imperatively, every frame, so neither one visibly lags behind a smooth scroll the way pure React state would. How: This writes the clipped target rect onto the spotlight's style, then places the coach beside it from the same rect.
 
 
 			const tarRecObj = claChrFun( uniRecFun( curEleArr ), curEleArr ); // What: Target Rect Object. Why: Both the spotlight and the coach below need the same clamped, unioned rect. How: This unions curEleArr, then clamps the result against chrome.
@@ -2124,7 +2124,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const perFraFun = () => { // What: Per Frame Function. Why: This is the per-frame heartbeat: it re-resolves the target, positions it, decides reserve, tracks the not-found watchdog, and reschedules itself.
+		const perFraFun = () => { // What: Per Frame Function. Why: This is the per-frame heartbeat: it re-resolves the target, positions it, decides reserve, tracks the not-found watchdog, and reschedules itself. How: This resolves the step's targets and either repositions everything or runs the not-found watchdog, then schedules the next frame.
 
 
 			if ( isaCanBoo ) return; // What: Cancelled Guard. Why: A cancelled effect must never schedule another frame. How: This returns immediately whenever isaCanBoo is already true.
@@ -2158,7 +2158,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 				else if ( preScrNum != null && Math.abs( scrHeiNum - preScrNum ) > 40 ) briTarFun(); // What: Content Grew Re-Bring. Why: See preScrNum's own doc comment above, the surrounding content changing size mid-step should re-trigger the bring. How: This re-calls briTarFun once the scroll height has moved by more than a 40px tolerance.
 
-				else if ( curSteObj.pulSelStr ) { // What: Pulse Transition Check. Why: A pulSelStr step's own primary target can stop matching mid-step (e.g. a button widening to its whole surrounding window once clicked), and the wider fallback highlight needs bringing into view too.
+				else if ( curSteObj.pulSelStr ) { // What: Pulse Transition Check. Why: A pulSelStr step's own primary target can stop matching mid-step (e.g. a button widening to its whole surrounding window once clicked), and the wider fallback highlight needs bringing into view too. How: This brings the target back into view on the frame the primary pulse target stops matching, then records whether it matches.
 
 
 					const isaPriBoo = !!document.querySelector( curSteObj.pulSelStr ); // What: Is-A Primary Boolean. Why: This is the live answer to whether the tight, pulsing target still matches. How: This checks curSteObj.pulSelStr directly against the document.
@@ -2210,7 +2210,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			}
 
-			else { // What: Target Not Found Branch. Why: The target currently does not exist, so this drives the not-found watchdog instead.
+			else { // What: Target Not Found Branch. Why: The target currently does not exist, so this drives the not-found watchdog instead. How: This clears the highlight and starts or checks the not-found timer, skipping the tour once it runs out.
 
 
 				setCurRecObj( null ); // What: Rect Clear. Why: Nothing should render as highlighted while the target is missing. How: This clears the React rect state back to null.
@@ -2311,7 +2311,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	const meaCoaEle = ( // What: Measurer Coach Element. Why: This is a hidden clone of the coach, rendered off-screen the moment a step's content is known, BEFORE its target (and so curRecObj) resolves, unlike the real coach below; its only job is to give meaCoaRef's own layout effect something to measure early enough for decResFun (which runs inside the position-tracking effect, as soon as the target is first found, before the real coach exists in the DOM at all) to see this step's REAL height instead of a stale one measured off whatever the previous, possibly shorter, step happened to be.
+	const meaCoaEle = ( // What: Measurer Coach Element. Why: This is a hidden clone of the coach, rendered off-screen the moment a step's content is known, BEFORE its target (and so curRecObj) resolves, unlike the real coach below; its only job is to give meaCoaRef's own layout effect something to measure early enough for decResFun (which runs inside the position-tracking effect, as soon as the target is first found, before the real coach exists in the DOM at all) to see this step's REAL height instead of a stale one measured off whatever the previous, possibly shorter, step happened to be. How: This renders a coach card holding the step's content fixed off-screen, so its measured height is ready before the real coach appears.
 
 
 		<div
