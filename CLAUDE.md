@@ -2331,7 +2331,7 @@ still passes.
     nested instance of the same child. Where a variant changes
     structure rather than values (decided 2026-09-28), the child takes
     a layout prop naming which layout it's in, e.g. `ui/
-    schedule-editor.jsx`'s own `layStr` (`'stacked'` on Today,
+    schedule-editor.jsx`'s own `layVarStr` (`'stacked'` on Today,
     `'rows'` in the Data tab), and its own module holds each layout as
     a modifier class on its root (`.rem-editor--stacked`,
     `.rem-editor--rows`) with that layout's descendant rules, so the

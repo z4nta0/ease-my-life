@@ -2020,10 +2020,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 		const sorIteArr = perIteArr.slice();             // What: Sorted Item Array. Why: The original perIteArr order must stay stable for other consumers, so a copy is sorted instead. How: This is a shallow copy, sorted in place by whichever branch below runs.
 
 
-		const nulSorFun = ( keyNamStr, tieFun ) => ( iteOneObj, iteTwoObj ) => { // What: Null Sort Function. Why: Frequency, Last Picked, and Spent all share the same "missing values sink to the bottom" comparator, differing only in which field they read and how they break a double-null tie. How: This returns a comparator over keyNamStr that pins nulls last and uses tieFun when both sides are null.
+		const nulSorFun = ( keyNamStr, tieBreFun ) => ( iteOneObj, iteTwoObj ) => { // What: Null Sort Function. Why: Frequency, Last Picked, and Spent all share the same "missing values sink to the bottom" comparator, differing only in which field they read and how they break a double-null tie. How: This returns a comparator over keyNamStr that pins nulls last and uses tieBreFun when both sides are null.
 
 
-			if ( iteOneObj[ keyNamStr ] == null && iteTwoObj[ keyNamStr ] == null ) return tieFun( iteOneObj, iteTwoObj ); // What: Both Null Guard. Why: Two equally-missing values fall back to the caller's own tie-break. How: This returns tieFun's own result.
+			if ( iteOneObj[ keyNamStr ] == null && iteTwoObj[ keyNamStr ] == null ) return tieBreFun( iteOneObj, iteTwoObj ); // What: Both Null Guard. Why: Two equally-missing values fall back to the caller's own tie-break. How: This returns tieBreFun's own result.
 
 
 
@@ -2429,7 +2429,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					<HelButCom
 						actModBoo={ helModBoo }
 
-						onClick={ () => setHelModBoo( ( preHelBoo ) => !preHelBoo ) }
+						onTogModFun={ () => setHelModBoo( ( preHelBoo ) => !preHelBoo ) }
 					/>{ /* What: Help Button Component. Why: This page needs its own header toggle for entering/leaving help mode. How: This flips helModBoo on click, reflecting its current state via actModBoo. */ }
 
 

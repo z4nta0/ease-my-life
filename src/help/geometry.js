@@ -155,23 +155,23 @@ function cliHorFun ( tarRecObj, tarDomEle ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param selStr - Select String: A comma-separated CSS selector list, tried
- *                 left to right until one alternative actually matches a
- *                 visible element.
+ * @param selLisStr - Selector List String: A comma-separated CSS selector
+ *                   list, tried left to right until one alternative actually
+ *                   matches a visible element.
  *
  * @returns The first alternative's matched, currently-visible elements.
  *
  * @example
  * ```ts
- * finTarFun( selStr ) // => matched elements, or []
+ * finTarFun( selLisStr ) // => matched elements, or []
  * ```
  *
 */
 
-function finTarFun ( selStr ) {
+function finTarFun ( selLisStr ) {
 
 
-	for ( const oneSelStr of splSelFun( selStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selStr's own alternatives left to right.
+	for ( const oneSelStr of splSelFun( selLisStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selLisStr's own alternatives left to right.
 
 
 		const tarEleArr = [ ...document.querySelectorAll( oneSelStr ) ] // What: Target Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array.
@@ -326,7 +326,7 @@ function uniRecFun ( tarEleArr ) {
 function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
 
 
-	let { bottom, left, right, top } = tarRecObj; // What: Working Rect Numbers. Why: Every clamp in the loop below needs its own mutable copy of tarRecObj's own 4 edges. How: This destructures tarRecObj directly into 4 reassignable bindings.
+	let { bottom : botEdgNum, left : lefEdgNum, right : rigEdgNum, top : topEdgNum } = tarRecObj; // What: Working Rect Numbers. Why: Every clamp in the loop below needs its own mutable copy of tarRecObj's own 4 edges. How: This destructures tarRecObj directly into 4 reassignable bindings.
 
 	const homChrObj = tarEleArr && chrIteArr.find( ( { chrDomEle } ) => tarEleArr.some( ( curTarEle ) => chrDomEle === curTarEle || chrDomEle.contains( curTarEle ) ) ); // What: Home Chrome Object. Why: The loop below needs to know which chrome item (if any) this target is itself a member of, e.g. the streak ring is part of todPagHea. How: This finds the first chrome item whose own element contains (or is) one of tarEleArr's own elements.
 	const homPriNum = homChrObj ? ( CHR_PRI_OBJ[ homChrObj.chrSelStr ] ?? 0 ) : -Infinity;                                                                               // What: Home Priority Number. Why: This target's own home chrome's priority is what every candidate chrome item below gets weighed against. How: This looks up homChrObj's own selector in CHR_PRI_OBJ, or stays at -Infinity when there is no home chrome at all.
@@ -339,8 +339,8 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
 
 
 
-		const horOveBoo = left < chrIteObj.chrRecObj.right && right > chrIteObj.chrRecObj.left; // What: Horizontal Overlap Boolean. Why: An actual rect intersection needs both axes checked, not just one. How: This checks whether the working rect and this chrome item's own rect overlap horizontally.
-		const verOveBoo = top < chrIteObj.chrRecObj.bottom && bottom > chrIteObj.chrRecObj.top; // What: Vertical Overlap Boolean. Why: An actual rect intersection needs both axes checked, not just one. How: This checks whether the working rect and this chrome item's own rect overlap vertically.
+		const horOveBoo = lefEdgNum < chrIteObj.chrRecObj.right && rigEdgNum > chrIteObj.chrRecObj.left; // What: Horizontal Overlap Boolean. Why: An actual rect intersection needs both axes checked, not just one. How: This checks whether the working rect and this chrome item's own rect overlap horizontally.
+		const verOveBoo = topEdgNum < chrIteObj.chrRecObj.bottom && botEdgNum > chrIteObj.chrRecObj.top; // What: Vertical Overlap Boolean. Why: An actual rect intersection needs both axes checked, not just one. How: This checks whether the working rect and this chrome item's own rect overlap vertically.
 
 
 		if ( !horOveBoo || !verOveBoo ) continue; // What: No Intersection Guard. Why: A target sharing only a horizontal (or only a vertical) range with a chrome item, but not both, is not actually behind it. How: This skips this chrome item unless both axes genuinely overlap.
@@ -350,12 +350,12 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
 		if ( chrIteObj.chrSidStr === 'top' ) { // What: Top Chrome Clamp. Why: A top-anchored chrome item (the header, the group rail) should clip whatever sits below it, preferring to keep the portion already below the chrome. How: This clamps the working rect's own top edge down to the chrome's own bottom edge when that still leaves a real, positive-height rect.
 
 
-			const canTopNum = Math.max( top, chrIteObj.chrRecObj.bottom ); // What: Candidate Top Number. Why: This is the natural-direction clamp candidate for a top-anchored chrome item. How: This pushes top down to at least the chrome's own bottom edge.
+			const canTopNum = Math.max( topEdgNum, chrIteObj.chrRecObj.bottom ); // What: Candidate Top Number. Why: This is the natural-direction clamp candidate for a top-anchored chrome item. How: This pushes top down to at least the chrome's own bottom edge.
 
 
-			if ( bottom - canTopNum > 0 ) top = canTopNum; // What: Natural Direction Win. Why: The natural direction (pushing the working rect's own top down to the chrome's own bottom edge) wins whenever it still leaves a real, positive-height rect. How: This adopts canTopNum as the new top.
+			if ( botEdgNum - canTopNum > 0 ) topEdgNum = canTopNum; // What: Natural Direction Win. Why: The natural direction (pushing the working rect's own top down to the chrome's own bottom edge) wins whenever it still leaves a real, positive-height rect. How: This adopts canTopNum as the new top.
 
-			else bottom = Math.min( bottom, chrIteObj.chrRecObj.top ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative height, the opposite side is the only real content left. How: This clamps bottom up to the chrome's own top edge instead.
+			else botEdgNum = Math.min( botEdgNum, chrIteObj.chrRecObj.top ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative height, the opposite side is the only real content left. How: This clamps bottom up to the chrome's own top edge instead.
 
 
 		}
@@ -363,12 +363,12 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
 		else if ( chrIteObj.chrSidStr === 'bottom' ) { // What: Bottom Chrome Clamp. Why: A bottom-anchored chrome item (the tab bar) should clip whatever sits below it, preferring to keep the portion already above the chrome. How: This clamps the working rect's own bottom edge up to the chrome's own top edge when that still leaves a real, positive-height rect.
 
 
-			const canBotNum = Math.min( bottom, chrIteObj.chrRecObj.top ); // What: Candidate Bottom Number. Why: This is the natural-direction clamp candidate for a bottom-anchored chrome item. How: This pulls bottom up to at most the chrome's own top edge.
+			const canBotNum = Math.min( botEdgNum, chrIteObj.chrRecObj.top ); // What: Candidate Bottom Number. Why: This is the natural-direction clamp candidate for a bottom-anchored chrome item. How: This pulls bottom up to at most the chrome's own top edge.
 
 
-			if ( canBotNum - top > 0 ) bottom = canBotNum; // What: Natural Direction Win. Why: The natural direction (pulling the working rect's own bottom up to the chrome's own top edge) wins whenever it still leaves a real, positive-height rect. How: This adopts canBotNum as the new bottom.
+			if ( canBotNum - topEdgNum > 0 ) botEdgNum = canBotNum; // What: Natural Direction Win. Why: The natural direction (pulling the working rect's own bottom up to the chrome's own top edge) wins whenever it still leaves a real, positive-height rect. How: This adopts canBotNum as the new bottom.
 
-			else top = Math.max( top, chrIteObj.chrRecObj.bottom ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative height, the opposite side is the only real content left. How: This clamps top down to the chrome's own bottom edge instead.
+			else topEdgNum = Math.max( topEdgNum, chrIteObj.chrRecObj.bottom ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative height, the opposite side is the only real content left. How: This clamps top down to the chrome's own bottom edge instead.
 
 
 		}
@@ -376,12 +376,12 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
 		else if ( chrIteObj.chrSidStr === 'left' ) { // What: Left Chrome Clamp. Why: A left-anchored chrome item should clip whatever sits to its right, preferring to keep the portion already to the right of the chrome. How: This clamps the working rect's own left edge right to the chrome's own right edge when that still leaves a real, positive-width rect.
 
 
-			const canLefNum = Math.max( left, chrIteObj.chrRecObj.right ); // What: Candidate Left Number. Why: This is the natural-direction clamp candidate for a left-anchored chrome item. How: This pushes left right to at least the chrome's own right edge.
+			const canLefNum = Math.max( lefEdgNum, chrIteObj.chrRecObj.right ); // What: Candidate Left Number. Why: This is the natural-direction clamp candidate for a left-anchored chrome item. How: This pushes left right to at least the chrome's own right edge.
 
 
-			if ( right - canLefNum > 0 ) left = canLefNum; // What: Natural Direction Win. Why: The natural direction (pushing the working rect's own left right to the chrome's own right edge) wins whenever it still leaves a real, positive-width rect. How: This adopts canLefNum as the new left.
+			if ( rigEdgNum - canLefNum > 0 ) lefEdgNum = canLefNum; // What: Natural Direction Win. Why: The natural direction (pushing the working rect's own left right to the chrome's own right edge) wins whenever it still leaves a real, positive-width rect. How: This adopts canLefNum as the new left.
 
-			else right = Math.min( right, chrIteObj.chrRecObj.left ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative width, the opposite side is the only real content left. How: This clamps right left to the chrome's own left edge instead.
+			else rigEdgNum = Math.min( rigEdgNum, chrIteObj.chrRecObj.left ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative width, the opposite side is the only real content left. How: This clamps right left to the chrome's own left edge instead.
 
 
 		}
@@ -389,12 +389,12 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
 		else if ( chrIteObj.chrSidStr === 'right' ) { // What: Right Chrome Clamp. Why: A right-anchored chrome item should clip whatever sits to its left, preferring to keep the portion already to the left of the chrome. How: This clamps the working rect's own right edge left to the chrome's own left edge when that still leaves a real, positive-width rect.
 
 
-			const canRigNum = Math.min( right, chrIteObj.chrRecObj.left ); // What: Candidate Right Number. Why: This is the natural-direction clamp candidate for a right-anchored chrome item. How: This pulls right left to at most the chrome's own left edge.
+			const canRigNum = Math.min( rigEdgNum, chrIteObj.chrRecObj.left ); // What: Candidate Right Number. Why: This is the natural-direction clamp candidate for a right-anchored chrome item. How: This pulls right left to at most the chrome's own left edge.
 
 
-			if ( canRigNum - left > 0 ) right = canRigNum; // What: Natural Direction Win. Why: The natural direction (pulling the working rect's own right left to the chrome's own left edge) wins whenever it still leaves a real, positive-width rect. How: This adopts canRigNum as the new right.
+			if ( canRigNum - lefEdgNum > 0 ) rigEdgNum = canRigNum; // What: Natural Direction Win. Why: The natural direction (pulling the working rect's own right left to the chrome's own left edge) wins whenever it still leaves a real, positive-width rect. How: This adopts canRigNum as the new right.
 
-			else left = Math.max( left, chrIteObj.chrRecObj.right ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative width, the opposite side is the only real content left. How: This clamps left right to the chrome's own right edge instead.
+			else lefEdgNum = Math.max( lefEdgNum, chrIteObj.chrRecObj.right ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative width, the opposite side is the only real content left. How: This clamps left right to the chrome's own right edge instead.
 
 
 		}
@@ -404,11 +404,11 @@ function cliChrFun ( tarRecObj, chrIteArr, tarEleArr ) {
 
 
 
-	if ( right - left <= 0 || bottom - top <= 0 ) return null; // What: Degenerate Guard. Why: A rect clamped down to zero or negative size is not a real, visible target any more. How: This returns null once either axis collapses.
+	if ( rigEdgNum - lefEdgNum <= 0 || botEdgNum - topEdgNum <= 0 ) return null; // What: Degenerate Guard. Why: A rect clamped down to zero or negative size is not a real, visible target any more. How: This returns null once either axis collapses.
 
 
 
-	return { bottom, left, right, top }; // What: Clipped Rect Return. Why: The caller needs the final, fully-clamped rect back. How: This builds the { bottom, left, right, top } shape every other rect helper in this file expects.
+	return { bottom : botEdgNum, left : lefEdgNum, right : rigEdgNum, top : topEdgNum }; // What: Clipped Rect Return. Why: The caller needs the final, fully-clamped rect back. How: This builds the { bottom, left, right, top } shape every other rect helper in this file expects.
 
 
 }

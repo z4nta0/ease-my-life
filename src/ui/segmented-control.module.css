@@ -14,7 +14,7 @@
  * --seg-* custom properties on itself (flex sizing and wrapping, a max width,
  * space below, and the grid layout's flex basis) instead of styling the
  * control from outside. A control whose layout changes structure takes the
- * layStr prop: 'grid' lines Repeat's wrapping options up in columns, and
+ * layVarStr prop: 'grid' lines Repeat's wrapping options up in columns, and
  * 'snug' keeps Day selection to its content's width.
  *
  * @author z4nta0 <https://github.com/z4nta0>

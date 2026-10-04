@@ -1460,7 +1460,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const onScrFun = () => { // What: On Scroll Function. Why: This is the actual recompute triggered by every scroll event. How: This resolves the sticky offset, checks the pinned-group/bottomed-out special cases first, then finds whichever section sits closest to the spy line.
+		const onScrStiFun = () => { // What: On Scroll Sticky Function. Why: This is the actual recompute triggered by every scroll event. How: This resolves the sticky offset, checks the pinned-group/bottomed-out special cases first, then finds whichever section sits closest to the spy line.
 
 
 			if ( skiSpyRef.current ) return; // What: Skip Spy Guard. Why: A programmatic scroll already in flight must not have this handler fight back. How: This bails out early while skiSpyRef is true.
@@ -1533,21 +1533,21 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		};
 
 
-		onScrFun(); // What: Initial Scroll Call. Why: The correct group must be highlighted immediately on mount/dependency change, without waiting for a scroll event. How: This invokes onScrFun once, synchronously.
+		onScrStiFun(); // What: Initial Scroll Call. Why: The correct group must be highlighted immediately on mount/dependency change, without waiting for a scroll event. How: This invokes onScrStiFun once, synchronously.
 
 		const conScrEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ) || window; // What: Container Scroll Element. Why: The scroll listener should attach to the real scroll container when one exists, falling back to the window. How: This walks up from maiScrRef.current, or defaults to window.
 
 
-		conScrEle.addEventListener( 'scroll', onScrFun, { passive : true } ); // What: Container Scroll Subscribe. Why: This is the primary trigger for re-evaluating the active group. How: This registers onScrFun as a passive scroll listener on conScrEle.
-		window.addEventListener( 'scroll', onScrFun, { passive : true } );    // What: Window Scroll Subscribe. Why: A window-level scroll listener is still needed as a fallback/supplement, matching the original dual-listener behavior. How: This registers onScrFun as a passive scroll listener on window too.
+		conScrEle.addEventListener( 'scroll', onScrStiFun, { passive : true } ); // What: Container Scroll Subscribe. Why: This is the primary trigger for re-evaluating the active group. How: This registers onScrStiFun as a passive scroll listener on conScrEle.
+		window.addEventListener( 'scroll', onScrStiFun, { passive : true } );    // What: Window Scroll Subscribe. Why: A window-level scroll listener is still needed as a fallback/supplement, matching the original dual-listener behavior. How: This registers onScrStiFun as a passive scroll listener on window too.
 
 
 
 		return () => { // What: Effect Cleanup Return. Why: Neither listener may outlive this effect run. How: This removes both.
 
 
-			conScrEle.removeEventListener( 'scroll', onScrFun ); // What: Container Listener Remove. Why: The scroll container's listener must not outlive this effect run. How: This removes onScrFun from conScrEle.
-			window.removeEventListener( 'scroll', onScrFun );    // What: Window Listener Remove. Why: The window listener must not outlive this effect run either. How: This removes onScrFun from window.
+			conScrEle.removeEventListener( 'scroll', onScrStiFun ); // What: Container Listener Remove. Why: The scroll container's listener must not outlive this effect run. How: This removes onScrStiFun from conScrEle.
+			window.removeEventListener( 'scroll', onScrStiFun );    // What: Window Listener Remove. Why: The window listener must not outlive this effect run either. How: This removes onScrStiFun from window.
 
 
 		};
@@ -3349,7 +3349,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								<HelButCom
 									actModBoo={ helModBoo }
 
-									onClick={ () => setHelModBoo( ( curBoo ) => !curBoo ) }
+									onTogModFun={ () => setHelModBoo( ( curModBoo ) => !curModBoo ) }
 								/>{ /* What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This toggles helModBoo. */ }
 
 

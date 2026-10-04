@@ -11,11 +11,11 @@
  * date that swaps between a link and a date input, and the hints and
  * visibility notes beneath them.
  *
- * The editor has two layouts, chosen by its own layStr prop. Today's stacked
- * layout (.schEdiDiv--stacked) keeps each field's label above its control,
- * with a divider between fields. The Data tab's rows layout
- * (.schEdiDiv--rows) puts each field on its own full-bleed row, label left
- * and control right, matching the picker item editor. The segmented controls
+ * The editor has two layouts, chosen by its own layVarStr prop. Today's
+ * stacked layout (.schEdiDiv--stacked) keeps each field's label above its
+ * control, with a divider between fields. The Data tab's rows layout
+ * (.schEdiDiv--rows) puts each field on its own full-bleed row, label left and
+ * control right, matching the picker item editor. The segmented controls
  * inside a row read --seg-max-wid and --seg-gri-fle, which the rows layout
  * sets, rather than being styled from here.
  *

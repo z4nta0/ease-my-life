@@ -258,12 +258,12 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
 
 
 
-const forTimFun = ( isoStr ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
+const forTimFun = ( isoTimStr ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
 
 
-	try { return new Date( isoStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoStr should render as a plain local time. How: This builds a Date from isoStr and formats it with no seconds.
+	try { return new Date( isoTimStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoTimStr should render as a plain local time. How: This builds a Date from isoTimStr and formats it with no seconds.
 
-	catch ( e ) { return ''; } // What: Format Error Guard. Why: A missing/invalid isoStr must not crash whichever caller invoked this. How: This returns an empty string instead of letting the error propagate.
+	catch ( e ) { return ''; } // What: Format Error Guard. Why: A missing/invalid isoTimStr must not crash whichever caller invoked this. How: This returns an empty string instead of letting the error propagate.
 
 
 };
@@ -273,11 +273,11 @@ const forTimFun = ( isoStr ) => { // What: Format Time Function. Why: Both GroLo
 const hasValFun = ( picModStr ) => { // What: Has Value Function. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
 
 
-	const easUpBoo  = picModStr === 'ease-up';   // What: Ease Up Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'ease-up' mode key.
+	const easUpwBoo = picModStr === 'ease-up';   // What: Ease Upward Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'ease-up' mode key.
 	const easDowBoo = picModStr === 'ease-down'; // What: Ease Down Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'ease-down' mode key.
 	const dynModBoo = picModStr === 'dynamic';   // What: Dynamic Mode Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'dynamic' mode key.
 
-	const hasValBoo = easUpBoo || easDowBoo || dynModBoo; // What: Has Value Boolean. Why: The caller only needs one combined answer, not the 3 individual mode checks. How: This is true whenever any one of the 3 value-tracking modes matched.
+	const hasValBoo = easUpwBoo || easDowBoo || dynModBoo; // What: Has Value Boolean. Why: The caller only needs one combined answer, not the 3 individual mode checks. How: This is true whenever any one of the 3 value-tracking modes matched.
 
 
 

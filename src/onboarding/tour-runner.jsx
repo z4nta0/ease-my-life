@@ -741,9 +741,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param selStr - Selector String: A step's own selector field (selStr,
-	 *                 cliSelStr, cptSelStr, advCliStr, or advSelStr),
-	 *                 comma-separated alternatives allowed.
+	 * @param selLisStr - Selector List String: A step's own selector field
+	 *                   (selStr, cliSelStr, cptSelStr, advCliStr, or
+	 *                   advSelStr), comma-separated alternatives allowed.
 	 *
 	 * @returns The visible elements the first matching alternative found, or an
 	 * empty array when no alternative matched anything.
@@ -756,10 +756,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *
 	*/
 
-	const finTarFun = ( selStr ) => { // What: Find Targets Function. Why: Every element a step's selector matches needs resolving, honoring selector ORDER (comma-separated fallbacks), so a step can spotlight more than one element (e.g. "the whole list") as a single combined highlight. How: This filters out zero-rect (CSS display:none) elements before checking emptiness, since some responsive pairs (e.g. the sidebar vs. footer Edit Mode button) both exist in the DOM at every width, only swapping which one is display:none via a container query, unlike genLisBut/genConDiv's conditional-render swap; without this, the first alternative in a fallback list would always win even when it is the hidden one.
+	const finTarFun = ( selLisStr ) => { // What: Find Targets Function. Why: Every element a step's selector matches needs resolving, honoring selector ORDER (comma-separated fallbacks), so a step can spotlight more than one element (e.g. "the whole list") as a single combined highlight. How: This filters out zero-rect (CSS display:none) elements before checking emptiness, since some responsive pairs (e.g. the sidebar vs. footer Edit Mode button) both exist in the DOM at every width, only swapping which one is display:none via a container query, unlike genLisBut/genConDiv's conditional-render swap; without this, the first alternative in a fallback list would always win even when it is the hidden one.
 
 
-		for ( const oneSelStr of splSelFun( selStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selStr's own alternatives left to right.
+		for ( const oneSelStr of splSelFun( selLisStr ) ) { // What: Selector Alternative Loop. Why: Each comma-separated alternative must be tried in order until one actually matches something visible. How: This walks selLisStr's own alternatives left to right.
 
 
 			const curEleArr = [ ...document.querySelectorAll( oneSelStr ) ].filter( ( curIteEle ) => { // What: Current Element Array. Why: Every element matching this one alternative needs collecting before it can be filtered down to visible ones. How: This spreads the live NodeList from querySelectorAll into a plain array, then keeps only the elements the visibility filter below accepts.

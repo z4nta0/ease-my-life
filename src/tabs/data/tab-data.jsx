@@ -1034,7 +1034,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					<HelButCom
 						actModBoo={ helOpeBoo }
 
-						onClick={ () => setHelOpeBoo( ( preOpeBoo ) => !preOpeBoo ) }
+						onTogModFun={ () => setHelOpeBoo( ( preOpeBoo ) => !preOpeBoo ) }
 					/>{ /* What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This flips helOpeBoo on click. */ }
 
 

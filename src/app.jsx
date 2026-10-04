@@ -675,7 +675,7 @@ function AppRooCom () {
 				tabPlaStr={ tabPlaStr }
 
 				onChange={ selTabFun }
-				onTogRaiFun={ () => setRaiOpeBoo( ( v ) => !v ) }
+				onTogRaiFun={ () => setRaiOpeBoo( ( curOpeBoo ) => !curOpeBoo ) }
 			/>{ /* What: Tab Bar Component. Why: This is the app's persistent navigation bar. How: This renders in its current placement/entering state, driven by the app's own active tab, rail-open, and placement values. */ }
 
 

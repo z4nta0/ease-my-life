@@ -77,7 +77,7 @@ function invColFun( hexColStr ) {
 
 		} )();
 
-		const srgLinFun = ( sRgbChaNum ) => sRgbChaNum <= 0.04045 ? sRgbChaNum / 12.92 : Math.pow( ( sRgbChaNum + 0.055 ) / 1.055, 2.4 ); // What: Srgb To Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
+		const srgLinFun = ( srgChaNum ) => srgChaNum <= 0.04045 ? srgChaNum / 12.92 : Math.pow( ( srgChaNum + 0.055 ) / 1.055, 2.4 ); // What: Srgb To Linear Function. Why: sRGB's own gamma curve must be undone before OKLab's linear-light math applies. How: This applies the standard sRGB-to-linear piecewise formula to one channel.
 
 		const linSrgFun = ( linChaNum ) => { // What: Linear To Srgb Function. Why: The final result must be re-encoded back into sRGB gamma before it's a displayable hex color. How: This applies the standard linear-to-sRGB piecewise formula to one clamped channel.
 
@@ -157,8 +157,8 @@ function invColFun( hexColStr ) {
 
 
 		const invRgbArr = oklLinFun( [ 1 - oklLigNum, oklAaxNum, oklBaxNum ] ) // What: Inverted Rgb Array. Why: This is the actual lightness inversion (1 - L), converted back to a displayable channel range. How: This inverts oklLigNum, converts back to linear RGB, re-encodes to sRGB, then scales/rounds each channel to a 0-255 integer.
-			.map( linSrgFun )                                         // What: Gamma Encode Step. Why: Screen colors are gamma-encoded sRGB, not linear light. How: This maps every channel through linSrgFun.
-			.map( ( sRgbChaNum ) => Math.round( sRgbChaNum * 255 ) ); // What: Byte Scale Step. Why: Hex output needs whole 0-255 channel values. How: This scales each 0-1 channel by 255 and rounds it.
+			.map( linSrgFun )                                       // What: Gamma Encode Step. Why: Screen colors are gamma-encoded sRGB, not linear light. How: This maps every channel through linSrgFun.
+			.map( ( srgChaNum ) => Math.round( srgChaNum * 255 ) ); // What: Byte Scale Step. Why: Hex output needs whole 0-255 channel values. How: This scales each 0-1 channel by 255 and rounds it.
 
 
 

@@ -150,7 +150,7 @@ function migStaFun( curStaObj ) {
 
 				const rspIdeStr = curIteObj.pickerId || itePicObj[ curIteObj.id ] || null; // What: Resolved-Picker Identifier String. Why: An item may already carry a pickerId, or only be inferable from the old itemIds inversion above. How: This prefers curIteObj's own pickerId, falling back to itePicObj's lookup, then null.
 
-				const { categoryId, ...remFieObj } = curIteObj; // What: Remaining Fields Object. Why: The old categoryId field must be dropped entirely, not merely ignored. How: This destructures categoryId off curIteObj, keeping every other field in remFieObj.
+				const { categoryId : catIdeStr, ...remFieObj } = curIteObj; // What: Remaining Fields Object. Why: The old categoryId field must be dropped entirely, not merely ignored. How: This destructures categoryId off curIteObj as catIdeStr, which goes unused, keeping every other field in remFieObj.
 
 
 
@@ -164,7 +164,17 @@ function migStaFun( curStaObj ) {
 
 
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => { const { itemIds, ...remFieObj } = curPicObj; return remFieObj; } ); // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This destructures itemIds off every picker, keeping every other field.
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => { // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This maps every picker to a copy without its itemIds.
+
+
+			const { itemIds : iteIdeArr, ...remFieObj } = curPicObj; // What: Remaining Fields Object. Why: The itemIds list must be dropped entirely. How: This destructures itemIds off the picker as iteIdeArr, which goes unused, keeping every other field in remFieObj.
+
+
+
+			return remFieObj; // What: Remaining Fields Return. Why: The map needs the picker without its itemIds. How: This returns remFieObj.
+
+
+		} );
 
 		delete curStaObj.categories; // What: Categories Entity Drop. Why: The categories entity is gone entirely under the new model. How: This deletes curStaObj's own categories field outright.
 

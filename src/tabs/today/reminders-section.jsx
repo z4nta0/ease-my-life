@@ -594,7 +594,7 @@ function InlEdiCom ( { onCloEdiFun, onComTasFun, onDelTasFun, staAppObj, tasRcdO
 			<SchEdiCom
 				actStoObj={ draActObj }
 				aniExtBoo
-				layStr='stacked' // What: Layout String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
+				layVarStr='stacked' // What: Layout Variant String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
 				staAppObj={ staAppObj }
 				tasRcdObj={ draTasObj }
 			/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the local draft. How: This is passed draActObj instead of the real store actions, so every edit stays local until Save. */ }
@@ -1306,7 +1306,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 							<SchEdiCom
 								actStoObj={ draActObj }
 								aniExtBoo
-								layStr='stacked' // What: Layout String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
+								layVarStr='stacked' // What: Layout Variant String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
 								staAppObj={ staAppObj }
 								tasRcdObj={ draTasObj }
 							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed draActObj instead of the real store actStoObj, so every field stays local until Add. */ }
@@ -1430,7 +1430,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 							} }
-							onRenTasFun={ ( namStr ) => actStoObj.renTasFun( curTasObj.id, namStr ) }
+							onRenTasFun={ ( renNamStr ) => actStoObj.renTasFun( curTasObj.id, renNamStr ) }
 							onSkiTasFun={ () => { // What: Skip Handler. Why: The row's own Skip button needs to toggle its own confirm prompt open/closed and close any unrelated open editor at the same time. How: This flips skiIdeStr and clears a matching actEdiStr sentinel.
 
 

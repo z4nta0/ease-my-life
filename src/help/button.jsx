@@ -41,24 +41,24 @@ import cssModObj from './button.module.css'; // What: CSS Module Object. Why: Th
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actModBoo - Active Mode Boolean: Whether help mode is
- *                          currently on for this page; drives the button's
- *                          own pressed state, which its module styles as
- *                          on.
- * @param props.onClick   - On Click: Called when the button is pressed. The
- *                          caller owns actually flipping its own on/off
- *                          state.
+ * @param props.actModBoo   - Active Mode Boolean: Whether help mode is
+ *                            currently on for this page; drives the
+ *                            button's own pressed state, which its module
+ *                            styles as on.
+ * @param props.onTogModFun - On Toggle Mode Function: Called when the button
+ *                            is pressed. The caller owns actually flipping
+ *                            its own on/off state.
  *
  * @returns The toggle's own single rendered button.
  *
  * @example
  * ```tsx
- * HelButCom({ actModBoo, onClick }) // => <HelButCom />
+ * HelButCom({ actModBoo, onTogModFun }) // => <HelButCom />
  * ```
  *
 */
 
-function HelButCom ( { actModBoo, onClick } ) {
+function HelButCom ( { actModBoo, onTogModFun } ) {
 
 
 	return (
@@ -74,8 +74,8 @@ function HelButCom ( { actModBoo, onClick } ) {
 			aria-label={ actModBoo ? 'Hide help highlights' : 'Show help highlights' } // What: Toggle Label Ternary. Why: A screen reader should announce what pressing the button will do next. How: This names the hide action while help mode is on, the show action otherwise.
 			aria-pressed={ actModBoo }
 
-			onClick={ onClick }
-		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as its aria-pressed state, which its module also styles as switched on, and calls onClick when pressed. Its data-element-name-hook is read by help mode and the App Features tours. */ }
+			onClick={ onTogModFun }
+		>{ /* What: Help Toggle Button Element. Why: This is HelButCom's own single rendered element. How: This shows actModBoo as its aria-pressed state, which its module also styles as switched on, and calls onTogModFun when pressed. Its data-element-name-hook is read by help mode and the App Features tours. */ }
 
 
 			i

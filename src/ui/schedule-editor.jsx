@@ -398,9 +398,10 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } ) {
  *                          subsection should animate open/closed via
  *                          ColDisCom, defaulting to false for a context that
  *                          doesn't need it.
- * @param props.layStr    - Layout String: Which layout the editor renders in,
- *                          'stacked' (Today, label above control) or 'rows'
- *                          (the Data tab, one full-bleed row per field).
+ * @param props.layVarStr - Layout Variant String: Which layout the editor
+ *                          renders in, 'stacked' (Today, label above
+ *                          control) or 'rows' (the Data tab, one full-bleed
+ *                          row per field).
  * @param props.staAppObj - State App Object: The shared app state, passed
  *                          through to VisNotCom for its own visibility
  *                          computation.
@@ -412,12 +413,12 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } ) {
  *
  * @example
  * ```tsx
- * SchEdiCom({ actStoObj, aniExtBoo, layStr, ... }) // => <SchEdiCom />
+ * SchEdiCom({ actStoObj, aniExtBoo, layVarStr, ... }) // => <SchEdiCom />
  * ```
  *
 */
 
-function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdObj } ) {
+function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRcdObj } ) {
 
 
 	const updPatFun = ( patValObj ) => actStoObj.updTasFun( tasRcdObj.id, patValObj ); // What: Update Patch Function. Why: Every schedule field editor below commits through this single call. How: This calls actStoObj.updTasFun with tasRcdObj's own id and the given patch.
@@ -723,7 +724,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 								{ ( tasRcdObj.daysOfWeek && tasRcdObj.daysOfWeek.length ) // What: Days Chosen Check. Why: The summary can only name days once at least one is chosen. How: This picks the chosen-days phrase while daysOfWeek has entries, the prompt otherwise.
-									? <>shows on the Today page <strong>every { ( tasRcdObj.interval || 1 ) > 1 ? `${ tasRcdObj.interval } weeks on ` : '' }{ [ ...tasRcdObj.daysOfWeek ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ).map( ( dowNum ) => dayAbbArr[ dowNum ] ).join( ', ' ) }</strong></> // What: Chosen Days Phrase. Why: At least one day is selected, so the summary names every chosen weekday in order. How: This sorts a copy of daysOfWeek ascending, maps each to its abbreviation, and joins them, prefixed by the every-N-weeks clause when interval is above 1.
+									? <>shows on the Today page <strong>every { ( tasRcdObj.interval || 1 ) > 1 ? `${ tasRcdObj.interval } weeks on ` : '' }{ [ ...tasRcdObj.daysOfWeek ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ).map( ( dowIndNum ) => dayAbbArr[ dowIndNum ] ).join( ', ' ) }</strong></> // What: Chosen Days Phrase. Why: At least one day is selected, so the summary names every chosen weekday in order. How: This sorts a copy of daysOfWeek ascending, maps each to its abbreviation, and joins them, prefixed by the every-N-weeks clause when interval is above 1.
 									: 'pick at least one day' // What: No Days Fallback. Why: No day is selected yet, an invalid, incomplete configuration. How: This renders a plain prompt instead of a broken summary.
 								}
 
@@ -949,7 +950,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 						<SegConCom
-							layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
+							layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 							optIteArr={ datModArr }
 							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
 
@@ -1047,14 +1048,14 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 								>{ /* What: Day-Of-Month Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new dayOfMonth. */ }
 
 
-									{ Array.from( { length : 31 }, ( _, domIndNum ) => domIndNum + 1 ).map( ( domNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domNum.
+									{ Array.from( Array( 31 ).keys(), ( arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum.
 
 
 										<option
-											key={ domNum }
+											key={ domValNum }
 
-											value={ domNum }
-										>{ ordSufFun( domNum ) }</option> // What: Day-Of-Month Option Element. Why: One option is needed per possible day-of-month. How: This renders domNum's own ordinal label.
+											value={ domValNum }
+										>{ ordSufFun( domValNum ) }</option> // What: Day-Of-Month Option Element. Why: One option is needed per possible day-of-month. How: This renders domValNum's own ordinal label.
 
 
 									) ) }
@@ -1184,7 +1185,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 						<SegConCom
-							layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
+							layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 							optIteArr={ datModArr }
 							value={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Value. Why: An older task may carry no dateMode at all, which should read as the plain date mode. How: This maps anything other than 'nthWeekday' to 'date'.
 
@@ -1334,14 +1335,14 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 								>{ /* What: Day Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new day. */ }
 
 
-									{ Array.from( { length : 31 }, ( _, domIndNum ) => domIndNum + 1 ).map( ( domNum ) => ( // What: Day Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domNum.
+									{ Array.from( Array( 31 ).keys(), ( arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum.
 
 
 										<option
-											key={ domNum }
+											key={ domValNum }
 
-											value={ domNum }
-										>{ domNum }</option> // What: Day Option Element. Why: One option is needed per possible day-of-month. How: This renders domNum's own plain numeric label, unlike the ordinal label the monthly subsection uses.
+											value={ domValNum }
+										>{ domValNum }</option> // What: Day Option Element. Why: One option is needed per possible day-of-month. How: This renders domValNum's own plain numeric label, unlike the ordinal label the monthly subsection uses.
 
 
 									) ) }
@@ -1401,7 +1402,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 		<div
-			className={` ${ cssModObj.schEdiDiv }   ${ layStr === 'stacked' ? cssModObj.schEdiDivStacked : '' }   ${ layStr === 'rows' ? cssModObj.schEdiDivRows : '' } `}
+			className={` ${ cssModObj.schEdiDiv }   ${ layVarStr === 'stacked' ? cssModObj.schEdiDivStacked : '' }   ${ layVarStr === 'rows' ? cssModObj.schEdiDivRows : '' } `}
 
 			data-element-name-hook='schEdiDiv'
 		>{ /* What: Reminder Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. Its data-element-name-hook is read by help mode's Today catalog and help mode's Data catalog. */ }
@@ -1427,7 +1428,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 
 
 				<SegConCom
-					layStr='grid' // What: Layout String. Why: Repeat's five options wrap on a narrow screen and must line up in columns. How: SegConCom applies its grid layout for this value.
+					layVarStr='grid' // What: Layout Variant String. Why: Repeat's five options wrap on a narrow screen and must line up in columns. How: SegConCom applies its grid layout for this value.
 					optIteArr={ REP_OPT_ARR }
 					value={ tasRcdObj.repeat }
 

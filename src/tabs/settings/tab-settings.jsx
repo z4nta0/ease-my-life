@@ -1114,7 +1114,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 					<HelButCom
 						actModBoo={ helModBoo }
 
-						onClick={ () => setHelModBoo( ( modCurBoo ) => !modCurBoo ) }
+						onTogModFun={ () => setHelModBoo( ( modCurBoo ) => !modCurBoo ) }
 					/>{ /* What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode. How: This flips helModBoo when clicked. */ }
 
 

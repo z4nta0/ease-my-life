@@ -304,7 +304,7 @@ function eveSpaFun( minValNum, maxValNum, couValNum ) {
 
 
 
-	return ranArrFun( couValNum ).map( ( i ) => minValNum + steValNum * i ); // What: Evenly Spaced Return. Why: The caller needs the actual spread values, not just the step. How: This maps each sequential index onto minValNum plus that many steps.
+	return ranArrFun( couValNum ).map( ( steIndNum ) => minValNum + steValNum * steIndNum ); // What: Evenly Spaced Return. Why: The caller needs the actual spread values, not just the step. How: This maps each sequential index onto minValNum plus that many steps.
 
 
 }

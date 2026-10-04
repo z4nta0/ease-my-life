@@ -428,7 +428,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					<HelButCom
 						actModBoo={ helOpeBoo }
 
-						onClick={ () => setHelOpeBoo( ( preOpeBoo ) => !preOpeBoo ) }
+						onTogModFun={ () => setHelOpeBoo( ( preOpeBoo ) => !preOpeBoo ) }
 					/>{ /* What: Help Button Component. Why: The user needs a way to toggle this page's own help mode. How: This flips helOpeBoo on click. */ }
 
 

@@ -35,7 +35,7 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param selStr - Selector String: The selector list to split.
+ * @param selLisStr - Selector List String: The selector list to split.
  *
  * @returns The list's own top-level alternatives, in order.
  * @see {@link altSelArr}
@@ -47,7 +47,7 @@
  *
 */
 
-const splSelFun = ( selStr ) => { // What: Split Selector Function. Why: Callers that try each alternative of a selector list in turn must not split a nested list apart. How: This walks selStr one character at a time and cuts only at commas outside any parentheses, brackets, or quotes.
+const splSelFun = ( selLisStr ) => { // What: Split Selector Function. Why: Callers that try each alternative of a selector list in turn must not split a nested list apart. How: This walks selLisStr one character at a time and cuts only at commas outside any parentheses, brackets, or quotes.
 
 
 	const altSelArr = []; // What: Alternative Selector Array. Why: Every finished top-level alternative is collected here. How: This is pushed onto at each top-level comma and once more at the end.
@@ -56,10 +56,10 @@ const splSelFun = ( selStr ) => { // What: Split Selector Function. Why: Callers
 	let staIndNum   = 0;  // What: Start Index Number. Why: Each alternative runs from the character after the previous top-level comma. How: This is moved past every top-level comma found.
 
 
-	for ( let chaIndNum = 0; chaIndNum < selStr.length; chaIndNum++ ) { // What: Character Loop. Why: Every character decides whether the depth, the quote state, or the alternatives change. How: This walks selStr from start to end.
+	for ( let chaIndNum = 0; chaIndNum < selLisStr.length; chaIndNum++ ) { // What: Character Loop. Why: Every character decides whether the depth, the quote state, or the alternatives change. How: This walks selLisStr from start to end.
 
 
-		const chaCurStr = selStr[ chaIndNum ]; // What: Character Current String. Why: Each check below reads this one character. How: This reads selStr at chaIndNum.
+		const chaCurStr = selLisStr[ chaIndNum ]; // What: Character Current String. Why: Each check below reads this one character. How: This reads selLisStr at chaIndNum.
 
 
 		if ( quoCurStr ) { // What: Inside Quote Check. Why: Inside a quoted value only the matching closing quote matters. How: This clears quoCurStr when chaCurStr closes the open quote.
@@ -79,7 +79,7 @@ const splSelFun = ( selStr ) => { // What: Split Selector Function. Why: Callers
 		else if ( chaCurStr === ',' && depValNum === 0 ) { // What: Top-Level Comma Branch. Why: Only a comma at depth 0 separates two alternatives. How: This pushes the alternative ending here and moves staIndNum past the comma.
 
 
-			altSelArr.push( selStr.slice( staIndNum, chaIndNum ).trim() ); // What: Alternative Push Call. Why: The alternative before this comma is finished. How: This pushes its trimmed text.
+			altSelArr.push( selLisStr.slice( staIndNum, chaIndNum ).trim() ); // What: Alternative Push Call. Why: The alternative before this comma is finished. How: This pushes its trimmed text.
 
 			staIndNum = chaIndNum + 1; // What: Start Index Advance. Why: The next alternative begins after this comma. How: This sets staIndNum to the following character.
 
@@ -91,7 +91,7 @@ const splSelFun = ( selStr ) => { // What: Split Selector Function. Why: Callers
 
 
 
-	altSelArr.push( selStr.slice( staIndNum ).trim() ); // What: Final Alternative Push Call. Why: The last alternative has no comma after it. How: This pushes the trimmed text from staIndNum to the end.
+	altSelArr.push( selLisStr.slice( staIndNum ).trim() ); // What: Final Alternative Push Call. Why: The last alternative has no comma after it. How: This pushes the trimmed text from staIndNum to the end.
 
 
 

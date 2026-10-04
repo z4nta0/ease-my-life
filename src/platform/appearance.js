@@ -22,7 +22,7 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  * appPalFun writes a resolved palette's own tokens onto the document's real
  * CSS custom properties, animating the cross-fade unless the user prefers
  * reduced motion. resCusFun derives a full palette from a user-picked custom
- * accent color (toHexFun/syncTinFun handle the OKLCH conversion), and
+ * accent color (covHexFun/synTinFun handle the OKLCH conversion), and
  * resTheFun resolves which theme key is actually active, including "system"
  * auto-switching via THE_PAI_OBJ's own light/dark theme pairings.
  *
@@ -394,10 +394,10 @@ function resTheFun( appSetObj, sysDarBoo ) {
 
 // #region Palette Application
 
-// #region toHexFun
+// #region covHexFun
 
 /**
- * toHexFun = To Hex Function
+ * covHexFun = Convert Hex Function
  *
  * @summary
  * Resolves an arbitrary CSS color string (palettes are authored in
@@ -420,12 +420,12 @@ function resTheFun( appSetObj, sysDarBoo ) {
  *
  * @example
  * ```ts
- * toHexFun(cssColStr) // => hex color string or null
+ * covHexFun(cssColStr) // => hex color string or null
  * ```
  *
 */
 
-function toHexFun( cssColStr ) {
+function covHexFun( cssColStr ) {
 
 
 	try { // What: Fill Style Probe Try. Why: Assigning an unsupported color to a canvas context's fillStyle could throw in some environments rather than silently no-op. How: This wraps the whole probe-and-resolve sequence below so any such error is caught and treated as an ordinary parse failure.
@@ -485,14 +485,14 @@ function toHexFun( cssColStr ) {
 
 }
 
-// #endregion toHexFun
+// #endregion covHexFun
 
 
 
-// #region syncTinFun
+// #region synTinFun
 
 /**
- * syncTinFun = Sync Tint Function
+ * synTinFun = Sync Tint Function
  *
  * @summary
  * Keeps an installed PWA's status-bar tint in sync with the app's own
@@ -508,21 +508,21 @@ function toHexFun( cssColStr ) {
  *
  * @param bacColStr - Background Color String: The resolved background color to
  *                    tint the status bar with, in any CSS color syntax
- *                    toHexFun accepts.
+ *                    covHexFun accepts.
  *
  * @returns This function does not return anything.
  *
  * @example
  * ```ts
- * syncTinFun(bacColStr) // => void
+ * synTinFun(bacColStr) // => void
  * ```
  *
 */
 
-function syncTinFun( bacColStr ) {
+function synTinFun( bacColStr ) {
 
 
-	const hexResStr = toHexFun( bacColStr ); // What: Hex Result String. Why: A <meta name="theme-color"> tag's content must be a color the UA will definitely parse. How: This resolves the given background color down to a plain hex string.
+	const hexResStr = covHexFun( bacColStr ); // What: Hex Result String. Why: A <meta name="theme-color"> tag's content must be a color the UA will definitely parse. How: This resolves the given background color down to a plain hex string.
 
 
 	if ( !hexResStr ) return; // What: No Hex Guard. Why: There is nothing safe to write if the color could not be resolved. How: This bails out early, leaving whatever theme-color tag already exists untouched.
@@ -566,7 +566,7 @@ function syncTinFun( bacColStr ) {
 
 }
 
-// #endregion syncTinFun
+// #endregion synTinFun
 
 
 
@@ -648,7 +648,7 @@ function appPalFun( palResObj, theKeyStr ) {
 
 
 
-	syncTinFun( palResObj.bacStr ); // What: Status Bar Tint Sync Call. Why: An installed PWA's status bar should follow the newly-applied background color too. How: This hands the resolved background color to syncTinFun.
+	synTinFun( palResObj.bacStr ); // What: Status Bar Tint Sync Call. Why: An installed PWA's status bar should follow the newly-applied background color too. How: This hands the resolved background color to synTinFun.
 
 
 }

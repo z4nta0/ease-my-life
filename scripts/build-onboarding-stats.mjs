@@ -175,14 +175,14 @@ const buiIteFun = () => PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.ma
 
 // #region History Building
 
-const isoIndFun = ( isoStr ) => { // What: Iso Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
+const isoIndFun = ( isoDayStr ) => { // What: Iso Index Function. Why: Day offsets need a comparable, timezone-safe day count rather than an ISO string. How: This parses the date's parts and converts them to whole UTC days since the epoch.
 
 
-	const [ yeaNum, monNum, dayNum ] = isoStr.split( '-' ).map( Number ); // What: Year Month Day Numbers. Why: Date.UTC needs each part as a number. How: This splits the ISO string on its dashes and parses each piece.
+	const [ yeaValNum, monValNum, dayValNum ] = isoDayStr.split( '-' ).map( Number ); // What: Year Month Day Numbers. Why: Date.UTC needs each part as a number. How: This splits the ISO string on its dashes and parses each piece.
 
 
 
-	return Math.floor( Date.UTC( yeaNum, monNum - 1, dayNum ) / 86400000 ); // What: Day Index Return. Why: The caller compares two dates as plain integers. How: This converts the UTC timestamp to whole days.
+	return Math.floor( Date.UTC( yeaValNum, monValNum - 1, dayValNum ) / 86400000 ); // What: Day Index Return. Why: The caller compares two dates as plain integers. How: This converts the UTC timestamp to whole days.
 
 
 };

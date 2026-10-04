@@ -51,10 +51,10 @@ import React     from 'react';                          // What: React. Why: Seg
  * @param props.desIdeStr - Description Identifier String: An optional id of an
  *                          external element (an advisory note) that describes
  *                          this control.
- * @param props.layStr    - Layout String: An optional layout, 'grid' for a
- *                          control whose many options wrap into aligned
- *                          columns (Repeat), or 'snug' for one kept to its
- *                          content's width (Day selection).
+ * @param props.layVarStr - Layout Variant String: An optional layout, 'grid'
+ *                          for a control whose many options wrap into
+ *                          aligned columns (Repeat), or 'snug' for one kept
+ *                          to its content's width (Day selection).
  * @param props.onChange  - On Change: Called with the clicked entry's own key.
  * @param props.optIteArr - Option Item Array: The array of { keyStr, labStr }
  *                          entries this control renders one button per; also
@@ -68,12 +68,12 @@ import React     from 'react';                          // What: React. Why: Seg
  *
  * @example
  * ```tsx
- * SegConCom({ ariLabStr, desIdeStr, layStr, ... }) // => <SegConCom />
+ * SegConCom({ ariLabStr, desIdeStr, layVarStr, ... }) // => <SegConCom />
  * ```
  *
 */
 
-function SegConCom ( { ariLabStr, desIdeStr, layStr, onChange, optIteArr, value } ) {
+function SegConCom ( { ariLabStr, desIdeStr, layVarStr, onChange, optIteArr, value } ) {
 
 
 	const segEleRef = React.useRef( null );                                                               // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
@@ -182,7 +182,7 @@ function SegConCom ( { ariLabStr, desIdeStr, layStr, onChange, optIteArr, value 
 		<div
 			ref={ segEleRef }
 
-			className={` ${ cssModObj.segConDiv }   ${ layStr === 'grid' ? cssModObj.segConDivGrid : '' }   ${ layStr === 'snug' ? cssModObj.segConDivSnug : '' } `}
+			className={` ${ cssModObj.segConDiv }   ${ layVarStr === 'grid' ? cssModObj.segConDivGrid : '' }   ${ layVarStr === 'snug' ? cssModObj.segConDivSnug : '' } `}
 
 			data-element-name-hook='segConDiv'
 

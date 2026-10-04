@@ -215,7 +215,7 @@ function CadConCom ( { onChange, value } ) {
 
 
 	const norCadObj = CAD_NAM_OBJ.norCadFun( value || {} );                                                         // What: Normalized Cadence Object. Why: Every field read throughout this component needs a fully-defaulted cadence value, not a possibly-partial draft. How: This calls CAD_NAM_OBJ.norCadFun against the caller's own value, falling back to an empty object for a brand-new draft.
-	const setPatFun = ( patObj ) => onChange( patObj );                                                             // What: Set Patch Function. Why: Every field editor below needs one shared way to forward a partial change up to the caller. How: This calls onChange directly with whatever patch object it is given.
+	const setPatFun = ( patValObj ) => onChange( patValObj );                                                       // What: Set Patch Function. Why: Every field editor below needs one shared way to forward a partial change up to the caller. How: This calls onChange directly with whatever patch object it is given.
 	const curSubEle = ( CAD_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === norCadObj.cadence ) || {} ).subEle; // What: Current Sub Element. Why: The cadence picker's own live sub-explanation needs whichever CAD_OPT_ARR entry matches the currently-selected cadence. How: This looks up norCadObj's own cadence in CAD_OPT_ARR and reads that entry's own subEle field.
 
 
@@ -392,7 +392,7 @@ function CadConCom ( { onChange, value } ) {
 
 
 							<SegConCom
-								layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
+								layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 
@@ -553,7 +553,7 @@ function CadConCom ( { onChange, value } ) {
 
 
 							<SegConCom
-								layStr='snug' // What: Layout String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
+								layVarStr='snug' // What: Layout Variant String. Why: The two Day selection options should sit snug at their content's width instead of spreading across the field. How: SegConCom applies its snug layout for this value.
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 
