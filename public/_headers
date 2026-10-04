@@ -31,10 +31,24 @@
 # The boot splash's dismiss script is its own file (public/boot-splash.js)
 # precisely so script-src needs no such allowance.
 #
+# Strict-Transport-Security keeps browsers on HTTPS for two years across
+# every subdomain (www already redirects over HTTPS through Cloudflare),
+# replacing Netlify's default of one year for this host only. It leaves out
+# preload, which commits the domain to the browsers' built-in HTTPS list and
+# is slow to undo. Referrer-Policy sends a referrer only to this same origin,
+# so the outbound links (the legal generators, the support site, GitHub)
+# never learn which page a visitor came from. Permissions-Policy turns off
+# every powerful browser feature the app never uses, leaving the ones it does
+# (the clipboard, storage, the service worker, and notifications, which no
+# policy covers) untouched.
+#
 # @author z4nta0 <https://github.com/z4nta0>
 
-# What: Security Headers Rule. Why: Every response should refuse framing, sniffing, and anything loaded from another origin. How: This applies the Content-Security-Policy, a nosniff content type, and a deny on framing to every path.
+# What: Security Headers Rule. Why: Every response should refuse framing, sniffing, plain HTTP, unused browser features, and anything loaded from another origin. How: This applies the Content-Security-Policy, the permissions and referrer policies, HSTS, a nosniff content type, and a deny on framing to every path.
 /*
 	Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'
+	Permissions-Policy: accelerometer=(), autoplay=(), browsing-topics=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=(), xr-spatial-tracking=()
+	Referrer-Policy: same-origin
+	Strict-Transport-Security: max-age=63072000; includeSubDomains
 	X-Content-Type-Options: nosniff
 	X-Frame-Options: DENY
