@@ -25,7 +25,7 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  * IndexedDB open never blocks booting, then calls booAppFun either way
  * once whichever settles first.
  *
- * booAppFun creates the single React 18 root on the #root DOM node, renders
+ * booAppFun creates the single React 18 root on the #appMouDiv DOM node, renders
  * AppRooCom into it, and dismisses index.html's own boot splash (a plain
  * CSS/inline-JS overlay, not React) once the first paint has had a chance to
  * settle.
@@ -50,7 +50,7 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  * @summary
  * This is the app's actual mount step, called once storage has resolved (or
  * the race below has given up waiting on it). It creates the single React 18
- * root on the #root DOM node and renders AppRooCom into it, then lets the
+ * root on the #appMouDiv DOM node and renders AppRooCom into it, then lets the
  * first paint settle before releasing the boot splash: a plain CSS/inline-JS
  * overlay defined in index.html, dismissed by calling its own exposed
  * window.__dismissBootSplash hook after one animation frame plus a further
@@ -72,7 +72,7 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
 function booAppFun () {
 
 
-	createRoot( document.getElementById( 'root' ) ).render( <AppRooCom /> ); // What: Root Render Call. Why: This is the app's actual first mount, deferred until storage has resolved or the race below has given up waiting on it. How: This creates a React root on the #root DOM node and renders AppRooCom into it.
+	createRoot( document.getElementById( 'appMouDiv' ) ).render( <AppRooCom /> ); // What: Root Render Call. Why: This is the app's actual first mount, deferred until storage has resolved or the race below has given up waiting on it. How: This creates a React root on the #appMouDiv DOM node and renders AppRooCom into it.
 
 
 
