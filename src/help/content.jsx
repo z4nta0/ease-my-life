@@ -57,6 +57,11 @@ import { IcoSvgCom } from '../ui/icon.jsx'; // What: Icon Svg Component. Why: Se
  * item's own opening line carries its identity comment instead, and a note
  * about one specific item follows that comment on the same line:
  *
+ * - `bodEle` (Element or Function): Body Element is the tip's own body copy,
+ *   rendered as JSX so specific phrases can be bolded or carry an inline
+ *   icon; a function is used when the body depends on live page state at open
+ *   time, called by help/tooltip.jsx's HelTipCom.
+ *
  * - `groStr` (String, optional): Group String marks this item as one column of
  *   a shared table-style row; HelOveCom groups every item sharing the same
  *   groStr and snaps their highlights flush edge-to-edge, with no gap or

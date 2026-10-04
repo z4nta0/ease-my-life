@@ -95,7 +95,7 @@ const splSelFun = ( selStr ) => { // What: Split Selector Function. Why: Callers
 
 
 
-	return altSelArr;
+	return altSelArr; // What: Alternative Selector Array Return. Why: The caller tries each top-level alternative in order. How: This returns every alternative split out above.
 
 
 };

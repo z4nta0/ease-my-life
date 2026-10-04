@@ -107,7 +107,7 @@ const rhyPxlFun = ( rhySteStr ) => { // What: Rhythm Pixel Function. Why: Layout
 
 
 
-	return rooPxlNum * Math.pow( COR_DES_NUM, powValNum );
+	return rooPxlNum * Math.pow( COR_DES_NUM, powValNum ); // What: Step Pixel Return. Why: The caller needs the step's size in pixels. How: This scales the root pixel size by the core design number raised to the step's power.
 
 
 };

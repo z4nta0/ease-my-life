@@ -592,7 +592,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 		},
 
-		iteSorStr
+		iteSorStr // What: Item Sort String Argument. Why: sorEntFun needs the section's chosen sort key and direction. How: This passes the current sort selection.
 
 
 	) );

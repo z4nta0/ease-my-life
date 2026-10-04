@@ -60,7 +60,7 @@ const minCssFun = ( styTexStr ) => traCssFun({ // What: Minify Css Function. Why
 	minify   : true                      // What: Minify. Why: The style should ship without its comments and whitespace. How: This turns minification on.
 
 
-}).code.toString();
+}).code.toString(); // What: Minified Code String. Why: The caller splices the minified CSS back into the page as text. How: This reads lightningcss's output buffer and converts it to a string.
 
 
 

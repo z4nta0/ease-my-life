@@ -239,7 +239,7 @@ function makCycFun( pooFacFun ) {
 
 
 
-	return () => {
+	return () => { // What: Cycler Function Return. Why: Each caller needs its own stateful cycler over the shuffled pool. How: This returns a closure that hands out the next pooled value, drawing a fresh pool once the current one runs out.
 
 
 		if ( pooIndNum >= curPooArr.length ) { // What: Pool Exhausted Guard. Why: Once every value in the current pool has been handed out, a fresh shuffled pool is needed. How: This draws a new pool from pooFacFun and resets the index when the current one runs out.

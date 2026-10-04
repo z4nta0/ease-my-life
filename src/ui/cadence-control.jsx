@@ -74,7 +74,7 @@ import { SegConCom   } from './segmented-control.jsx'; // What: Segment Control 
 const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence picker below needs one option per cadence, each carrying its own live sub-explanation; tab-data.jsx also reads this same array directly for its own cadence-summary lookup. How: This is passed as the top SegConCom's own optIteArr prop below.
 
 
-	{
+	{ // What: Daily Cadence Option. Why: A picker that surfaces every day it runs, the default needs its own option. How: This pairs the 'daily' key with its label and live explanation.
 
 
 		keyStr : 'daily',
@@ -84,7 +84,7 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 
 	},
 
-	{
+	{ // What: Weekly Cadence Option. Why: A picker that surfaces once a week on a chosen weekday needs its own option. How: This pairs the 'weekly' key with its label and live explanation.
 
 
 		keyStr : 'weekly',
@@ -95,7 +95,7 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 
 	},
 
-	{
+	{ // What: Monthly Cadence Option. Why: A picker that surfaces once a month on a chosen day needs its own option. How: This pairs the 'monthly' key with its label and live explanation.
 
 
 		keyStr : 'monthly',
@@ -106,7 +106,7 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 
 	},
 
-	{
+	{ // What: Yearly Cadence Option. Why: A picker that surfaces once a year on a chosen date needs its own option. How: This pairs the 'yearly' key with its label and live explanation.
 
 
 		keyStr : 'yearly',

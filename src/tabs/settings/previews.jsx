@@ -413,13 +413,13 @@ function CelPreCom ( { repTokNum, styKeyStr } ) {
 								left           : parCurObj.lefNum + '%',
 								top            : parCurObj.topNum + '%'
 							}}
-						>
+						>{ /* What: Sparkle Piece Element. Why: This is one glinting sparkle piece of the celebration. How: This is positioned via inline style and renders the fixed sparkle glyph. */ }
 
 
 							✦
 
 
-						</span> // What: Sparkle Piece Element. Why: This is one glinting sparkle piece of the celebration. How: This is positioned via inline style and renders the fixed sparkle glyph.
+						</span>
 
 
 					)

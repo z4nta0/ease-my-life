@@ -851,7 +851,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 				value      : 0                       // What: Value. Why: The picked item's own drift resets to 0 the moment it's picked. How: This is a fixed literal 0.
 
 
-			} : chrUpdFun( curIteObj ) );
+			} : chrUpdFun( curIteObj ) ); // What: Charge Update Branch. Why: Every item that wasn't picked charges by its own existing plan. How: This hands the item to chrUpdFun.
 
 			// #endregion Most Overdue Pick
 

@@ -1483,7 +1483,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layStr, staAppObj, tasRcdOb
 			) : ( // What: Plain Once Fields Branch. Why: A caller that didn't opt into animation just needs oncFieEle shown or hidden outright. How: This renders oncFieEle directly, with no ColDisCom wrapper, only while repeat is 'once'.
 
 
-				tasRcdObj.repeat === 'once' && oncFieEle
+				tasRcdObj.repeat === 'once' && oncFieEle // What: Once Fields Check. Why: The one-time fields only belong with a one-time reminder. How: This renders oncFieEle only while the repeat kind is once.
 
 
 			) }
