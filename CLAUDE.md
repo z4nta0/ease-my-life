@@ -2836,6 +2836,43 @@ Decided 2026-10-03, for the HTML pass that follows the CSS pass.
   under "### Comments"); a note about a whole group becomes that section's
   summary.
 
+### JSON
+Decided 2026-10-03. JSON can't hold comments and its syntax is fixed, so
+almost none of the JS rules apply. Instead, a JSON file matches exactly what
+`JSON.stringify( value, null, '\t' )` produces plus a single trailing
+newline, which is also what npm writes whenever it rewrites `package.json`
+(an `npm version` bump, `npm install <pkg>`), keeping only the file's own
+indentation and trailing newline. Formatting that matches the serializer
+never churns when a tool rewrites the file.
+- **Scope**: hand-maintained JSON files (`package.json`,
+  `public/manifest.webmanifest`). A generated one (`package-lock.json`) is
+  exempt: its tool owns its format, and nobody edits or reformats it.
+- **Format**: tab indentation, double quotes (JSON requires them, the one
+  exception to the single-quote rule), `"key": value` with no space before
+  the colon, every non-empty object or array expanded one entry per line,
+  `[]`/`{}` when empty, no trailing commas, and no blank lines anywhere.
+- **File boundaries**: JSON is exempt from the 3-blank-line start and
+  2-blank-line end rules. A file starts with its opening bracket and ends
+  with exactly one newline, since npm would strip anything else from
+  `package.json`.
+- **Key order**: object keys are alphabetical, except where a format has an
+  established order of its own, which it keeps: `package.json`'s top level
+  follows npm's conventional order (name, version, private, type, scripts,
+  then the dependency maps), its dependency maps stay as npm sorts them, and
+  `manifest.webmanifest` keeps the web app manifest's conventional order
+  throughout, with none of its keys alphabetized. Arrays always keep their
+  authored order.
+- **No comments**: anything a JSON file needs explained lives where the file
+  is used or in this doc (e.g. `vite.config.js` explains why the manifest is
+  hand-written).
+- **Check**: a JSON file passes when parsing and re-serializing it
+  reproduces it byte for byte:
+  ```
+  node -e "const s = require( 'fs' ).readFileSync( process.argv[ 1 ], 'utf8' );
+  process.exit( s === JSON.stringify( JSON.parse( s ), null, '\t' ) + '\n'
+  ? 0 : 1 )" <file>
+  ```
+
 ### Arrays and objects
 - **Once an array literal cannot stay on a single line, every one of its
   entries gets its own line — never 2+ entries packed onto one shared
