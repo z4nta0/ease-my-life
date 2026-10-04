@@ -765,10 +765,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 		<div className={ cssModObj.ediBodDiv }>{ /* What: Editor Body Div Element. Why: This is PicConCom's own root element, holding Picker Details, How it picks, When it runs, Item Controls, and the footer. How: This renders as a plain div; every field below commits through actStoObj. */ }
 
 
-			<div className={` ${ cssModObj.ctlGroDiv }   ${ cssModObj.ctlGroDivBasics } `}>{ /* What: Basics Group Div Element. Why: Name and Group are grouped as the picker's own basic identity fields. How: This wraps the subhead and the name/group rows below. */ }
+			<div className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivBasics } `}>{ /* What: Basics Group Div Element. Why: Name and Group are grouped as the picker's own basic identity fields. How: This wraps the subhead and the name/group rows below. */ }
 
 
-				<div className={ cssModObj.ctlSubDiv }>Picker Details</div>{ /* What: Basics Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "Picker Details". */ }
+				<div className={ cssModObj.conSubDiv }>Picker Details</div>{ /* What: Basics Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "Picker Details". */ }
 
 				<div
 					className={ cssModObj.basRowDiv }
@@ -960,13 +960,13 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 			<fieldset
-				className={` ${ cssModObj.ctlGroFie }   ${ cssModObj.ctlGroFiePicks } `}
+				className={` ${ cssModObj.conGroFie }   ${ cssModObj.conGroFiePicks } `}
 
-				data-element-name-hook='picCtlFie'
+				data-element-name-hook='picConFie'
 			>{ /* What: Picks Group Fieldset Element. Why: The mode radio group is a real form control set and belongs in a fieldset. How: This wraps the legend and the mode radio group below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-				<legend className={ cssModObj.ctlSubLeg }>How it picks</legend>{ /* What: Picks Legend Element. Why: A fieldset needs its own legend to label the radio group it contains. How: This renders the literal text "How it picks". */ }
+				<legend className={ cssModObj.conSubLeg }>How it picks</legend>{ /* What: Picks Legend Element. Why: A fieldset needs its own legend to label the radio group it contains. How: This renders the literal text "How it picks". */ }
 
 				<div
 					className={ cssModObj.modRadDiv }
@@ -1066,10 +1066,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 			</fieldset>
 
 
-			<div className={` ${ cssModObj.ctlGroDiv }   ${ cssModObj.ctlGroDivSched } `}>{ /* What: Schedule Group Div Element. Why: Attach-a-conditional and daily-generator membership + weekday/holiday gates all describe "when it runs". How: This wraps the subhead and every schedule row below. */ }
+			<div className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivSched } `}>{ /* What: Schedule Group Div Element. Why: Attach-a-conditional and daily-generator membership + weekday/holiday gates all describe "when it runs". How: This wraps the subhead and every schedule row below. */ }
 
 
-				<div className={ cssModObj.ctlSubDiv }>When it runs</div>{ /* What: Schedule Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "When it runs". */ }
+				<div className={ cssModObj.conSubDiv }>When it runs</div>{ /* What: Schedule Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "When it runs". */ }
 
 				<div
 					className={ cssModObj.schLinDiv }
@@ -1811,10 +1811,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 			</div>
 
 
-			<div className={` ${ cssModObj.ctlGroDiv }   ${ cssModObj.ctlGroDivItems } `}>{ /* What: Item Controls Group Div Element. Why: Avoid-duplicates and Fill/Refill both act on this picker's ITEMS rather than its own type/schedule, so they get their own separate group. How: This wraps the subhead, the avoid-duplicates row, and the Fill/Refill row below. */ }
+			<div className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivItems } `}>{ /* What: Item Controls Group Div Element. Why: Avoid-duplicates and Fill/Refill both act on this picker's ITEMS rather than its own type/schedule, so they get their own separate group. How: This wraps the subhead, the avoid-duplicates row, and the Fill/Refill row below. */ }
 
 
-				<div className={ cssModObj.ctlSubDiv }>Item Controls</div>{ /* What: Item Controls Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "Item Controls". */ }
+				<div className={ cssModObj.conSubDiv }>Item Controls</div>{ /* What: Item Controls Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "Item Controls". */ }
 
 				<div
 					className={ cssModObj.schLinDiv }
@@ -1962,7 +1962,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 
 			<div
-				className={` ${ cssModObj.ctlGroDiv }   ${ cssModObj.ctlGroDivFoot } `}
+				className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivFoot } `}
 
 				data-element-name-hook='picFooDiv'
 			>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the new-draft Cancel/Add-Items/Save variant) needs its own bottom group. How: This renders whichever of the 3 footer states below matches conDelBoo/isaNewBoo. Its data-element-name-hook is read by help mode's Data catalog. */ }

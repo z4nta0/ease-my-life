@@ -2371,7 +2371,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											<div
 												className={ cssModObj.lisRowDiv }
 
-												onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
+												onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
 											>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool wrap itself listens for. How: This stops propagation on every click. */ }
 
 
@@ -2517,7 +2517,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<div
 											className={ cssModObj.lisRowDiv }
 
-											onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
+											onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
 										>{ /* What: Row Div Element. Why: A click inside the name row must not bubble up to whatever the pool wrap itself listens for. How: This stops propagation on every click. */ }
 
 

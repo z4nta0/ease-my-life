@@ -39,10 +39,10 @@
 }
 
 
-/* #region ctlGroDiv */
+/* #region conGroDiv */
 
-.ctlGroDiv,
-.ctlGroFie { /* What: Controls Group Div And Fieldset. Why: Each group of controls stacks its pieces. How: This stacks them in a spaced column. */
+.conGroDiv,
+.conGroFie { /* What: Controls Group Div And Fieldset. Why: Each group of controls stacks its pieces. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
@@ -51,7 +51,7 @@
 
 
 }
-.ctlGroDiv--basics { /* What: Basics Controls Group Div. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
+.conGroDiv--basics { /* What: Basics Controls Group Div. Why: The details rows run edge to edge under their heading. How: This pulls the group past the body's padding, flush, closed by a hairline. */
 
 
 	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -61,7 +61,7 @@
 
 
 }
-.ctlGroFie--picks { /* What: Picks Controls Group Fieldset. Why: The mode radio runs edge to edge under its heading, and the details group above already closes with a hairline, so no line of its own is needed. How: This pulls the fieldset past the body's padding, flush and borderless. */
+.conGroFie--picks { /* What: Picks Controls Group Fieldset. Why: The mode radio runs edge to edge under its heading, and the details group above already closes with a hairline, so no line of its own is needed. How: This pulls the fieldset past the body's padding, flush and borderless. */
 
 
 	border    : 0;
@@ -72,8 +72,8 @@
 
 
 }
-.ctlGroDiv--sched,
-.ctlGroDiv--items { /* What: Schedule And Item Groups. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
+.conGroDiv--sched,
+.conGroDiv--items { /* What: Schedule And Item Groups. Why: The setting rows run edge to edge between hairlines. How: This pulls each group past the body's padding, flush, with a hairline above and below. */
 
 
 	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -84,7 +84,7 @@
 
 
 }
-.ctlGroDiv--foot { /* What: Footer Controls Group Div. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
+.conGroDiv--foot { /* What: Footer Controls Group Div. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
 
 
 	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -96,10 +96,10 @@
 }
 
 
-/* #region ctlSubDiv */
+/* #region conSubDiv */
 
-.ctlSubDiv,
-.ctlSubLeg { /* What: Controls Subhead Div And Legend. Why: Each group is named in quiet mono type. How: This sets it small, uppercase, and muted. */
+.conSubDiv,
+.conSubLeg { /* What: Controls Subhead Div And Legend. Why: Each group is named in quiet mono type. How: This sets it small, uppercase, and muted. */
 
 
 	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -110,29 +110,29 @@
 
 
 }
-.ctlGroDiv--basics .ctlSubDiv { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and extra small 1 vertical spacing below. */
+.conGroDiv--basics .conSubDiv { /* What: Picker Details Subhead. Why: The group's heading sits inset over its full-bleed rows. How: This pads it base horizontal spacing at the sides and extra small 1 vertical spacing below. */
 
 
 	padding : 0 var( --spa-hor-bas ) var( --spa-ver-m02 ); /* Spacing Horizontal Base ~= 14.572px, Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
-.ctlGroFie--picks .ctlSubLeg { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
+.conGroFie--picks .conSubLeg { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
 
 
 	padding : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.ctlGroDiv--sched .ctlSubDiv,
-.ctlGroDiv--items .ctlSubDiv { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
+.conGroDiv--sched .conSubDiv,
+.conGroDiv--items .conSubDiv { /* What: Schedule And Item Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
 
 
 	padding : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 
 
 }
-.ctlSubDiv + .schLinDiv { /* What: First Setting Row. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
+.conSubDiv + .schLinDiv { /* What: First Setting Row. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -140,7 +140,7 @@
 
 }
 
-/* #endregion ctlSubDiv */
+/* #endregion conSubDiv */
 
 
 
@@ -843,8 +843,8 @@
 
 
 }
-.ctlGroDiv--sched .schLinDiv:last-child,
-.ctlGroDiv--items:not( :has( .easConDiv ) ) .schLinDiv:last-child { /* What: Last Setting Row. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
+.conGroDiv--sched .schLinDiv:last-child,
+.conGroDiv--items:not( :has( .easConDiv ) ) .schLinDiv:last-child { /* What: Last Setting Row. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
@@ -1471,7 +1471,7 @@
 
 /* #endregion fooRowDiv */
 
-/* #endregion ctlGroDiv */
+/* #endregion conGroDiv */
 
 /* #endregion ediBodDiv */
 

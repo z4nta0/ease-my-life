@@ -880,11 +880,11 @@ function migStaFun( curStaObj ) {
 		for ( const curGroStr of seeGroArr ) { // What: Per-Group Order Reconcile Loop. Why: Every seen group needs its own pickerOrder entry reconciled: real picker ids plus any surviving synthetic day-off/charging ids, deduped, with newly-seen pickers appended. How: This rebuilds curStaObj.pickerOrder[curGroStr] for every group in seeGroArr.
 
 
-			const vldIdeSet = new Set( groIdeObj[ curGroStr ] ); // What: Valid Identifier Set. Why: The filter below needs fast membership checks against this group's own real picker ids. How: This wraps groIdeObj's own bucket for curGroStr in a Set.
+			const valIdeSet = new Set( groIdeObj[ curGroStr ] ); // What: Valid Identifier Set. Why: The filter below needs fast membership checks against this group's own real picker ids. How: This wraps groIdeObj's own bucket for curGroStr in a Set.
 			const seeIdeSet = new Set();                         // What: Seen Identifier Set And Guard. Why: The filter below must defensively dedupe, self-healing any older corrupted order. How: This starts empty and is filled as the filter below runs.
 
 			const exiOrdArr = ( Array.isArray( curStaObj.pickerOrder[ curGroStr ] ) ? curStaObj.pickerOrder[ curGroStr ] : [] ) // What: Existing Order Array. Why: A saved order must be kept when present, dropping anything no longer valid and any duplicate. How: This keeps ids that are either a real current picker or a surviving synthetic 'dayoff_' id, each only once.
-				.filter( ( curIdeStr ) => ( vldIdeSet.has( curIdeStr ) || String( curIdeStr ).startsWith( 'dayoff_' ) ) && !seeIdeSet.has( curIdeStr ) && seeIdeSet.add( curIdeStr ) ); // What: Valid Unique Filter. Why: A saved order may hold ids that no longer exist or repeat. How: This keeps valid ids (and day-off cards) the first time each one appears.
+				.filter( ( curIdeStr ) => ( valIdeSet.has( curIdeStr ) || String( curIdeStr ).startsWith( 'dayoff_' ) ) && !seeIdeSet.has( curIdeStr ) && seeIdeSet.add( curIdeStr ) ); // What: Valid Unique Filter. Why: A saved order may hold ids that no longer exist or repeat. How: This keeps valid ids (and day-off cards) the first time each one appears.
 
 
 			for ( const curIdeStr of groIdeObj[ curGroStr ] ) if ( !exiOrdArr.includes( curIdeStr ) ) exiOrdArr.push( curIdeStr ); // What: Newly-Seen Append. Why: A picker not yet present in the saved order (new since last save) must still be appended at the end. How: This pushes curIdeStr onto exiOrdArr only when it isn't already present.

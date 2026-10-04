@@ -540,13 +540,13 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		setRecMapObj( nexMapObj ); // What: Rect Map Commit. Why: The whole freshly-recomputed map must replace the previous one in one single state update. How: This writes nexMapObj into recMapObj via its own setter.
 
 
-		const togBtnEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .helTogBut currently on the page.
+		const togButEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .helTogBut currently on the page.
 
 
-		if ( togBtnEle ) { // What: Toggle Found Guard. Why: Only write a toggle rect when the button was actually found. How: This measures and stores togBtnEle's own bounding rect.
+		if ( togButEle ) { // What: Toggle Found Guard. Why: Only write a toggle rect when the button was actually found. How: This measures and stores togButEle's own bounding rect.
 
 
-			const butRecObj = togBtnEle.getBoundingClientRect(); // What: Button Rect Object. Why: The mask cutout below needs the toggle button's own real on-screen position and size. How: This reads togBtnEle's own bounding rect.
+			const butRecObj = togButEle.getBoundingClientRect(); // What: Button Rect Object. Why: The mask cutout below needs the toggle button's own real on-screen position and size. How: This reads togButEle's own bounding rect.
 
 
 			setTogRecObj( { height : butRecObj.height, left : butRecObj.left, top : butRecObj.top, width : butRecObj.width } ); // What: Toggle Rect Commit. Why: The rendered mask reads togRecObj directly for its own always-on-top cutout. How: This writes a plain { height, left, top, width } copy of butRecObj into togRecObj via its own setter.

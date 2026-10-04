@@ -1849,12 +1849,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								data-element-name-hook='catHeaHea'
 
-								onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: Clicking anywhere on the header outside a real button toggles the card. How: This toggles the section unless it's a draft, the tour is guarding the header, or the click landed on a button.
+								onClick={ ( cliEveObj ) => { // What: On Click Handler. Why: Clicking anywhere on the header outside a real button toggles the card. How: This toggles the section unless it's a draft, the tour is guarding the header, or the click landed on a button.
 
 
 									const notDraBoo = !isaDraBoo;                            // What: Not Draft Boolean. Why: A draft card is always expanded. How: This negates isaDraBoo.
 									const notDetBoo = !detPicBoo;                            // What: Not Disable-Edit-Tour Boolean. Why: The Edit Items tour guards the header during some steps. How: This negates detPicBoo.
-									const notButBoo = !clkEveObj.target.closest( 'button' ); // What: Not Button Boolean. Why: A click on a real button inside the header has its own action. How: This checks the click target isn't inside a button.
+									const notButBoo = !cliEveObj.target.closest( 'button' ); // What: Not Button Boolean. Why: A click on a real button inside the header has its own action. How: This checks the click target isn't inside a button.
 
 									const togSecBoo = notDraBoo && notDetBoo && notButBoo; // What: Toggle Section Boolean. Why: The header only toggles when all 3 checks pass. How: This ANDs them.
 
@@ -1952,10 +1952,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										aria-pressed={ !!allVacBoo }
 										title='Active toggle for all items in this picker'
 
-										onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: The vacation button sits inside the clickable header, so it must act alone. How: This stops propagation, then toggles the picker's vacation.
+										onClick={ ( cliEveObj ) => { // What: On Click Handler. Why: The vacation button sits inside the clickable header, so it must act alone. How: This stops propagation, then toggles the picker's vacation.
 
 
-											clkEveObj.stopPropagation(); // What: Propagation Stop Call. Why: The click must not also toggle the card header underneath. How: This stops clkEveObj from bubbling.
+											cliEveObj.stopPropagation(); // What: Propagation Stop Call. Why: The click must not also toggle the card header underneath. How: This stops cliEveObj from bubbling.
 
 											actStoObj.togVacFun( picCurObj.id, 'picker' ); // What: Toggle Vacation Call. Why: This is the actual vacation toggle for the whole picker. How: This calls togVacFun with the picker's id and kind.
 

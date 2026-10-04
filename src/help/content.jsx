@@ -718,13 +718,13 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PickerControls' own "How it picks" group, ConditionalEditor has its own separate .conModDiv inside .conConDiv, which doesn't live under .ctlGroFie--picks.
+	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PickerControls' own "How it picks" group, ConditionalEditor has its own separate .conModDiv inside .conConDiv, which doesn't live under .conGroFie--picks.
 
 
 		bodEle    : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
 		ideStr    : 'dataPickerType',
-		padYcoNum : 0, // padYcoNum:0, .ctlGroFie--picks (this group's own wrapper) touches "When it runs" below with zero gap.
-		selStr    : '[data-element-name-hook~="picCtlFie"] [data-element-name-hook~="modRadDiv"]',
+		padYcoNum : 0, // padYcoNum:0, .conGroFie--picks (this group's own wrapper) touches "When it runs" below with zero gap.
+		selStr    : '[data-element-name-hook~="picConFie"] [data-element-name-hook~="modRadDiv"]',
 		titStr    : 'Picker Type'
 
 
@@ -827,7 +827,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 		bodEle    : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
 		ideStr    : 'dataPickerAvoidDuplicates',
-		padYcoNum : 0, // padYcoNum:0, .ctlGroDiv--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
+		padYcoNum : 0, // padYcoNum:0, .conGroDiv--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
 		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label="Avoid duplicate items"])',
 		titStr    : 'Picker Duplicate Items Toggle'
 
