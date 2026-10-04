@@ -2725,17 +2725,19 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	}, [ genActBoo, genMapObj, staAppObj.today.entries, staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The placeholder slots only change while a generation is running or when the live entries/pickers change. How: genActBoo and genMapObj gate and supply the slots, while the entries and pickers decide which ones are already present.
 
 
-	const genOrdArr = React.useMemo( () => { // What: Generate Block Order Array. Why: While generating, a group with no entries yet but an incoming slot (per sloGroObj) still needs its own section mounted to hold that placeholder. How: This appends any such group's own name onto bloOrdArr, when it isn't already present.
+	const genOrdArr = React.useMemo( () => { // What: Generate Block Order Array. Why: While generating, a group with no entries yet but an incoming slot (per sloGroObj) still needs its own section mounted to hold that placeholder, and this order must match the rendered sections exactly, since group drops resolve by position. How: This appends any such group's own name onto bloOrdArr, then drops the Page Tours block while it isn't showing.
 
 
 		const extGroArr = Object.keys( sloGroObj ).filter( ( curNamStr ) => !bloOrdArr.includes( curNamStr ) ); // What: Extra Group Array. Why: This is the actual set of groups bloOrdArr is missing but sloGroObj needs. How: This filters sloGroObj's own keys down to ones bloOrdArr doesn't already include.
+		const padOrdArr = extGroArr.length ? [ ...bloOrdArr, ...extGroArr ] : bloOrdArr;                        // What: Padded Order Array. Why: The content column needs the padded order whenever a placeholder group exists. How: This appends extGroArr onto bloOrdArr, or reuses bloOrdArr unchanged when there is nothing to add.
+		const pagVisBoo = shoCheBoo || rptVisBoo;                                                               // What: Page Tours Visible Boolean. Why: A hidden Page Tours block renders nothing, so it must not hold a slot here, or every group drop past it would resolve to the wrong group. How: This is true while the checklist is up or a replay still has unresolved tours, the same condition as the content column's own Page Tours guard.
 
 
 
-		return extGroArr.length ? [ ...bloOrdArr, ...extGroArr ] : bloOrdArr; // What: Generate Block Order Return. Why: The content column below needs this padded order whenever a placeholder group exists. How: This appends extGroArr onto bloOrdArr, or just returns bloOrdArr unchanged when there is nothing to add.
+		return pagVisBoo ? padOrdArr : padOrdArr.filter( ( curIdeStr ) => curIdeStr !== '__pageTours' ); // What: Generate Block Order Return. Why: The content column and every group drop both need the blocks actually rendered, in order. How: This returns padOrdArr as is while Page Tours is showing, else without its own '__pageTours' sentinel.
 
 
-	}, [ bloOrdArr, sloGroObj ] ); // What: Memo Dependency Array. Why: The padded order only changes when the base order or the placeholder groups change. How: bloOrdArr is the base, and sloGroObj supplies the extra groups.
+	}, [ bloOrdArr, rptVisBoo, shoCheBoo, sloGroObj ] ); // What: Memo Dependency Array. Why: The rendered order changes when the base order, the placeholder groups, or the Page Tours block's own visibility changes. How: bloOrdArr is the base, sloGroObj supplies the extra groups, and shoCheBoo/rptVisBoo decide whether Page Tours keeps its slot.
 
 
 	shoOrdRef.current = genOrdArr; // What: Shown Order Set. Why: groDraFun's own onDroOrdFun needs to resolve a drop's own DOM-position indices against whatever order was ACTUALLY rendered, which is genOrdArr, not the unpadded bloOrdArr. How: This overwrites shoOrdRef on every render.
