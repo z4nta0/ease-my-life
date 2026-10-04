@@ -2908,6 +2908,10 @@ line, so only the rules that can't change what a tool reads apply.
   order); otherwise lines are alphabetized, e.g. the headers within one
   `_headers` block. A Content-Security-Policy's directives follow the
   convention: `default-src` first, then the rest alphabetized.
+- **`.gitignore` re-includes get their own block** (decided 2026-10-03):
+  every `!` line goes in a block of its own after all the other blocks,
+  alphabetized within it, since a re-include only works after the pattern
+  it overrides.
 - **Long values stay on one line**: Netlify can't continue a header value
   onto the next line, so a long one (the Content-Security-Policy) stays
   whole.
