@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './editor-footer.module.css'; // What: CSS Module Object. Why: The footer and delete confirm styles live in their own module. How: This maps each class name in editor-footer.module.css to its hashed module class.
-import React     from 'react';                      // What: React. Why: EdiFooCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useImperativeHandle, React.useRef, React.useState, React.forwardRef) instead of importing individual named hooks.
+import React     from 'react';                      // What: React. Why: EdiFooCom is built directly on React's own APIs. How: This is used directly (React.useState) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from './button.jsx';       // What: Button Base Component. Why: The footer's own Delete, Cancel, and Save actions need consistently-styled buttons. How: This is rendered throughout EdiFooCom.
@@ -43,92 +43,42 @@ import { useEscCanFun } from './escape-cancel.js'; // What: Use Escape Cancel Fu
  * The shared Cancel/Save/Delete footer for a reminder's editor, used by both
  * Today and Data so the two stay exact copies. Delete is confirm-gated inline,
  * morphing just this footer row while the schedule editor above stays intact.
- * The task is snapshotted on mount so Cancel can restore it, and a brand-new
- * reminder is discarded on any implicit close (unmounting without Save, Cancel
- * or Delete). A caller with its own close control calls the forwarded ref's
- * kepFun() first, so that close counts as a keep.
+ * Both editors edit a draft, so Cancel and Save simply hand off to the
+ * caller, which drops or commits that draft.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.isaNewBoo   - Is-A New Boolean: Whether the task is a
- *                            brand-new, not-yet-kept reminder, which an
- *                            implicit close discards and which shows no Delete
- *                            button.
- * @param props.onCanTasFun - On Cancel Task Function: Called with the
- *                            mount-time snapshot on Cancel, Escape, or an
- *                            implicit close of a new reminder.
+ *                            brand-new, not-yet-kept reminder, which shows no
+ *                            Delete button.
+ * @param props.onCanTasFun - On Cancel Task Function: Called on Cancel or
+ *                            Escape.
  * @param props.onDelTasFun - On Delete Task Function: Called after a confirmed
  *                            Delete.
  * @param props.onDonTasFun - On Done Task Function: Called on Save.
- * @param props.tasRcdObj   - Task Record Object: The task being edited,
- *                            snapshotted once on mount.
- * @param extRefObj         - External Reference Object: The forwarded ref,
- *                            given a kepFun method that marks the next close
- *                            as already handled.
  *
  * @returns The plain footer, or the delete confirm prompt while it is
  * open.
  *
  * @example
  * ```tsx
- * EdiFooCom({ isaNewBoo, onCanTasFun, ... }, extRefObj) // => <EdiFooCom />
+ * EdiFooCom({ isaNewBoo, onCanTasFun, ... }) // => <EdiFooCom />
  * ```
  *
 */
 
-const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun, tasRcdObj }, extRefObj ) { // What: Editor Foot Component. Why: Today and Data share one footer so the two stay exact copies. How: This forwards its ref so a caller's own close control can reach kepFun.
+function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } ) {
 
 
-	const oriTasRef = React.useRef( tasRcdObj ); // What: Original Task Reference. Why: Cancel needs to restore the task exactly as it was when this footer (and its sibling editor) mounted. How: This snapshots tasRcdObj once, on mount, never updated afterward.
-	const expDonRef = React.useRef( false );     // What: Explicit Done Reference. Why: The implicit-close effect below must not ALSO discard a brand-new reminder when Save/Cancel/Delete already handled it explicitly, or when an external close affordance already called kepFun. How: This is set true by every explicit action below, and read (never written) by the implicit-close effect.
-
-	const [ conOpeBoo, setConOpeBoo ] = React.useState( false ); // What: Confirm Open Boolean And Setter. Why: Delete is confirm-gated, morphing this footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt below.
+	const [ conOpeBoo, setConOpeBoo ] = React.useState( false ); // What: Confirm Open Boolean And Setter. Why: Delete is confirm-gated, morphing this footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt.
 
 
-	React.useImperativeHandle( extRefObj, () => ( { kepFun : () => { expDonRef.current = true; } } ) ); // What: Imperative Handle Publish. Why: A caller with its OWN close affordance outside this component (a row's own collapse chevron) needs to mark a save as already-handled before it closes, so that affordance reads as "done, keep this" rather than an implicit close. How: This exposes a single kepFun method that just flips expDonRef.
-
-
-	const canNowFun = () => { // What: Cancel Now Function. Why: An explicit Cancel click needs to both mark itself as handled and actually revert the task. How: This flips expDonRef, then calls onCanTasFun with the original snapshot.
-
-
-		expDonRef.current = true; // What: Explicit Done Mark. Why: The implicit-close effect must know this close was already handled. How: This flips expDonRef true.
-
-		onCanTasFun( oriTasRef.current ); // What: Cancel Callback Call. Why: Cancel reverts the task to how it was when the editor opened. How: This passes the mount-time snapshot to onCanTasFun.
-
-
-	};
-
-
-	const donNowFun = () => { // What: Done Now Function. Why: An explicit Save click needs to both mark itself as handled and keep the live edits. How: This flips expDonRef, then calls onDonTasFun.
-
-
-		expDonRef.current = true; // What: Explicit Done Mark. Why: The implicit-close effect must know this close was already handled. How: This flips expDonRef true.
-
-		onDonTasFun(); // What: Done Callback Call. Why: Save keeps the live edits as they are. How: This calls onDonTasFun.
-
-
-	};
-
-
-	const delNowFun = () => { // What: Delete Now Function. Why: A confirmed Delete needs to both mark itself as handled and actually remove the task. How: This flips expDonRef, then calls onDelTasFun.
-
-
-		expDonRef.current = true; // What: Explicit Done Mark. Why: The implicit-close effect must know this close was already handled. How: This flips expDonRef true.
-
-		onDelTasFun(); // What: Delete Callback Call. Why: A confirmed Delete removes the task. How: This calls onDelTasFun.
-
-
-	};
-
-
-	React.useEffect( () => () => { if ( isaNewBoo && !expDonRef.current ) onCanTasFun( oriTasRef.current ); }, [] ); // What: Implicit Close Effect. Why: A brand-new, not-yet-kept reminder should be discarded if its editor closes ANY other way, not just an explicit Cancel. How: This runs only on unmount, discarding the draft only when it was new and nothing explicit already handled the close.
-
-	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canNowFun.
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the edit, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canNowFun.
 
 
 		if ( conOpeBoo ) setConOpeBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conOpeBoo false.
 
-		else canNowFun(); // What: Cancel Edits Branch. Why: With no confirm prompt up, Escape should cancel the live edits like an explicit Cancel click. How: This calls canNowFun.
+		else onCanTasFun(); // What: Cancel Edits Branch. Why: With no confirm prompt up, Escape should cancel the edit like an explicit Cancel click. How: This calls onCanTasFun.
 
 
 	} );
@@ -169,8 +119,8 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 						kinValStr='danger'
 						sizValStr='sm'
 
-						onClick={ delNowFun }
-					>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls delNowFun, which marks itself handled and invokes onDelTasFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
+						onClick={ onDelTasFun }
+					>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls onDelTasFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				</div>
@@ -198,7 +148,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 		>{ /* What: Plain Foot Div Element. Why: This is the normal, non-confirming footer shown whenever conOpeBoo is false. How: This renders an optional Delete button (suppressed for a brand-new reminder) plus the Cancel/Save actions. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-			{ !isaNewBoo && ( // What: Delete Visibility Check. Why: A brand-new, not-yet-kept reminder has nothing to delete yet, only to discard via Cancel/implicit-close. How: This renders the Delete button only for an already-existing reminder.
+			{ !isaNewBoo && ( // What: Delete Visibility Check. Why: A brand-new, not-yet-kept reminder has nothing to delete yet, only to discard via Cancel. How: This renders the Delete button only for an already-existing reminder.
 
 
 				<ButBasCom
@@ -223,8 +173,8 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 					kinValStr='ghost'
 					sizValStr='sm'
 
-					onClick={ canNowFun }
-				>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canNowFun. */ }
+					onClick={ onCanTasFun }
+				>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the edit. How: This calls onCanTasFun, which drops the caller's draft. */ }
 
 
 
@@ -232,8 +182,8 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 					kinValStr='ghost'
 					sizValStr='sm'
 
-					onClick={ donNowFun }
-				>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls donNowFun. */ }
+					onClick={ onDonTasFun }
+				>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the edit. How: This calls onDonTasFun, which commits the caller's draft. */ }
 
 
 			</div>
@@ -245,7 +195,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { isaNewBoo, onCanTasFu
 	);
 
 
-} );
+}
 
 // #endregion EdiFooCom
 

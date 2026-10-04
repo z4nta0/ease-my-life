@@ -146,7 +146,7 @@ function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
  *
  * @example
  * ```ts
- * modDefFun( 'ease-up', 100 ) // => { easeMax, easeMin, value : 0, weight : 1 }
+ * modDefFun( 'ease-up', 100 ) // => { easeMax, easeMin, value, weight }
  * ```
  *
 */

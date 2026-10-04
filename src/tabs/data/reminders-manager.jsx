@@ -7,19 +7,21 @@ import cssModObj from './reminders-manager.module.css'; // What: CSS Module Obje
 import React     from 'react';                          // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
-import { ButBasCom   } from '../../ui/button.jsx';                 // What: Button Base Component. Why: The add form and each open reminder's own actions need consistently-styled buttons. How: This is rendered throughout RemManCom.
-import { ColDisCom   } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Each reminder row and the add form need to animate open and closed instead of snapping. How: This wraps each of those bodies in RemManCom, driven by its own open state.
-import { durMilFun   } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { EdiFooCom   } from '../../ui/editor-footer.jsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
-import { freEdiFun   } from './list-sorting.js';                   // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
-import { IcoSvgCom   } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: Every reminder row and button needs a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
-import { InfTipCom   } from '../../ui/info-tip.jsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemManCom.
-import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Adding a reminder must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun helper in RemManCom.
-import { redMotFun   } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before every staged animation in RemManCom.
-import { SchEdiCom   } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own name, repeat, and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
-import { sorEntFun   } from './list-sorting.js';                   // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
-import { SorSelCom   } from './sort-select.jsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
-import { TAS_NAM_OBJ } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Every reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
+import { ButBasCom    } from '../../ui/button.jsx';                 // What: Button Base Component. Why: The add form and each open reminder's own actions need consistently-styled buttons. How: This is rendered throughout RemManCom.
+import { ColDisCom    } from '../../ui/collapse.jsx';               // What: Collapse Disclosure Component. Why: Each reminder row and the add form need to animate open and closed instead of snapping. How: This wraps each of those bodies in RemManCom, driven by its own open state.
+import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { EdiFooCom    } from '../../ui/editor-footer.jsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
+import { freEdiFun    } from './list-sorting.js';                   // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
+import { IcoSvgCom    } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: Every reminder row and button needs a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
+import { InfTipCom    } from '../../ui/info-tip.jsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemManCom.
+import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Adding a reminder must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun helper in RemManCom.
+import { redMotFun    } from '../../utils/motion.js';               // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before every staged animation in RemManCom.
+import { SchEdiCom    } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own name, repeat, and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
+import { sorEntFun    } from './list-sorting.js';                   // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
+import { SorSelCom    } from './sort-select.jsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
+import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Every reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
+import { UnmWatCom    } from '../../ui/unmount-watcher.js';         // What: Unmount Watcher Component. Why: An open reminder row or the settings matrix that disappears without its own Save still keeps its edits. How: This is rendered inside each, reporting its unmount.
+import { useTasDraFun } from '../../ui/record-draft.js';            // What: Use Task Draft Function. Why: The open reminder row edits a local draft, committed when the row closes. How: This is called once inside RemManCom with the open reminder.
 
 // #endregion Imports
 
@@ -275,10 +277,11 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
  *
  * @summary
  * Data tab: the Reminders Controls body, the participation matrix.
- * Rendered only while the Controls disclosure is open, so it snapshots
- * the options on mount; Cancel reverts every toggle changed since
- * opening, Save keeps them. Mirrors the picker Controls' own
- * Cancel/Save (no Delete, since these are global settings).
+ * Rendered only while the Controls disclosure is open. Every toggle
+ * edits a local draft: Cancel drops it, while Save, or the body closing
+ * any other way, commits the changed toggles. Mirrors the picker
+ * Controls' own Cancel/Save (no Delete, since these are global
+ * settings).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -301,14 +304,70 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 
 
-	const snaOptRef = React.useRef( { once : { ...remOptObj.once }, recurring : { ...remOptObj.recurring } } ); // What: Snapshot Options Reference. Why: Cancel needs to restore every toggle exactly as it was when this component mounted. How: This shallow-copies both classes of remOptObj once, on mount, never updated afterward.
+	const [ draOptObj, setDraOptObj ] = React.useState( () => ( { once : { ...remOptObj.once }, recurring : { ...remOptObj.recurring } } ) ); // What: Draft Options Object And Setter. Why: Every toggle edits this local copy, so nothing reaches the settings until the matrix is saved or closed. How: This starts as a copy of both classes' options.
 
-	const canMatFun = () => { // What: Cancel Matrix Function. Why: An explicit Cancel needs to both restore the snapshot and collapse the body. How: This calls actStoObj.revOptFun with snaOptRef's own snapshot, then onCloConFun.
+	const hanCloRef = React.useRef( false ); // What: Handled Close Reference. Why: A matrix already saved or cancelled must not commit again when it unmounts. How: This flips true on either.
 
 
-		actStoObj.revOptFun( snaOptRef.current ); // What: Options Revert Call. Why: Cancel restores every toggle to its mount-time state. How: This passes the snapshot to revOptFun.
+	// #region comOptFun
+
+	/**
+	 * comOptFun = Commit Options Function
+	 *
+	 * @summary
+	 * Commits the matrix's draft, once: every toggle that differs from the live
+	 * settings is written through setOptFun. Does nothing for a matrix already
+	 * saved or cancelled.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * comOptFun() // => void
+	 * ```
+	 *
+	*/
+
+	const comOptFun = () => { // What: Commit Options Function. Why: Saving or closing the matrix keeps its toggles. How: This writes every changed toggle through setOptFun, once.
+
+
+		if ( hanCloRef.current ) return; // What: Handled Close Guard. Why: A saved or cancelled matrix has nothing left to commit. How: This bails out once hanCloRef is set.
+
+
+
+		hanCloRef.current = true; // What: Handled Close Mark. Why: Any later unmount must not commit twice. How: This flips hanCloRef.
+
+
+
+		[ 'once', 'recurring' ].forEach( ( tasClaStr ) => Object.keys( draOptObj[ tasClaStr ] ).forEach( ( optKeyStr ) => { if ( !!draOptObj[ tasClaStr ][ optKeyStr ] !== !!remOptObj[ tasClaStr ][ optKeyStr ] ) actStoObj.setOptFun( tasClaStr, optKeyStr, draOptObj[ tasClaStr ][ optKeyStr ] ); } ) ); // What: Changed Toggles Loop. Why: Only toggles the user actually changed are written. How: This calls setOptFun for every class/setting pair whose draft differs from the live setting.
+
+
+	};
+
+	// #endregion comOptFun
+
+
+	const canMatFun = () => { // What: Cancel Matrix Function. Why: Cancel drops the draft and closes the body. How: This marks the close handled, then collapses the body.
+
+
+		hanCloRef.current = true; // What: Handled Close Mark. Why: The unmount must not commit a draft Cancel dropped. How: This flips hanCloRef.
 
 		onCloConFun(); // What: Controls Close Call. Why: A cancelled matrix has nothing left to show. How: This collapses the Controls body.
+
+
+	};
+
+
+	const savMatFun = () => { // What: Save Matrix Function. Why: Save keeps the draft and closes the body. How: This commits the draft, then collapses the body.
+
+
+		comOptFun(); // What: Commit Options Call. Why: Save keeps every toggle. How: This calls comOptFun.
+
+		onCloConFun(); // What: Controls Close Call. Why: A saved matrix has nothing left to show. How: This collapses the Controls body.
 
 
 	};
@@ -353,10 +412,10 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 						{ optDefObj.labStr }{ /* What: Matrix Name Render. Why: This is the row's own plain, static setting name. How: This renders optDefObj's own labStr directly as text. */ }
 
 						<span
-							key={ ( remOptObj.once[ optDefObj.keyStr ] ? 1 : 0 ) + '' + ( remOptObj.recurring[ optDefObj.keyStr ] ? 1 : 0 ) } // What: Toggle State Key. Why: The explanation should re-fade only when either class's toggle for this row flips. How: This joins the two toggle states into one key.
+							key={ ( draOptObj.once[ optDefObj.keyStr ] ? 1 : 0 ) + '' + ( draOptObj.recurring[ optDefObj.keyStr ] ? 1 : 0 ) } // What: Toggle State Key. Why: The explanation should re-fade only when either class's toggle for this row flips. How: This joins the two toggle states into one key.
 
 							className={ cssModObj.matSubSpa }
-						>{ optDefObj.dynFun( !!remOptObj.once[ optDefObj.keyStr ], !!remOptObj.recurring[ optDefObj.keyStr ] ) }</span>{ /* What: Dynamic Sub Span Element. Why: Every row needs its own live, re-fading explanation. How: This re-keys on the combined once/recurring toggle state and calls optDefObj's own dynFun. */ }
+						>{ optDefObj.dynFun( !!draOptObj.once[ optDefObj.keyStr ], !!draOptObj.recurring[ optDefObj.keyStr ] ) }</span>{ /* What: Dynamic Sub Span Element. Why: Every row needs its own live, re-fading explanation. How: This re-keys on the combined once/recurring toggle state and calls optDefObj's own dynFun. */ }
 
 
 					</span>
@@ -364,7 +423,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 					{ [ 'once', 'recurring' ].map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each.
 
 
-						const swtEnaBoo = !!remOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads remOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
+						const swtEnaBoo = !!draOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads remOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
 
 
 
@@ -386,8 +445,8 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 									aria-label={ `${ tasClaStr === 'once' ? 'One-time' : 'Recurring' }: ${ optDefObj.labStr }` } // What: Switch Label Pick. Why: Each switch's accessible name must say which class and setting it controls. How: This joins the class name with the row's own label.
 									aria-pressed={ swtEnaBoo }
 
-									onClick={ () => actStoObj.setOptFun( tasClaStr, optDefObj.keyStr, !swtEnaBoo ) }
-								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setOptFun. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+									onClick={ () => setDraOptObj( ( preOptObj ) => ( { ...preOptObj, [ tasClaStr ] : { ...preOptObj[ tasClaStr ], [ optDefObj.keyStr ] : !swtEnaBoo } } ) ) } // What: On Click Handler. Why: A toggle changes the draft, not the live settings. How: This flips this class/setting pair in draOptObj.
+								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
@@ -426,7 +485,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 						sizValStr='sm'
 
 						onClick={ canMatFun }
-					>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This reverts every toggle changed since this component mounted. How: This calls canMatFun. */ }
+					>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This drops every toggle changed since this component mounted. How: This calls canMatFun. */ }
 
 
 
@@ -434,14 +493,18 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
 						kinValStr='ghost'
 						sizValStr='sm'
 
-						onClick={ onCloConFun }
-					>Save</ButBasCom>{ /* What: Button Base Component. Why: This just collapses the body, keeping every toggle as-is (they already committed live, on each individual click). How: This calls onCloConFun directly. */ }
+						onClick={ savMatFun }
+					>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps every toggle changed since this component mounted. How: This calls savMatFun. */ }
 
 
 				</div>
 
 
 			</div>
+
+
+
+			<UnmWatCom onUnmFun={ comOptFun } />{ /* What: Unmount Watcher Component. Why: A matrix closed without Save (collapsing Controls or the Reminders card, a tab switch) still keeps its toggles. How: This calls comOptFun when the matrix unmounts, which skips one already saved or cancelled. */ }
 
 
 		</div>
@@ -464,8 +527,9 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } ) {
  * @summary
  * The Data tab's full reminder management: a collapsible category holding the
  * participation Controls (OptMatCom) and the sortable Items list, where each
- * row expands into the same schedule editor and footer Today uses, committing
- * straight to the store. Rendered by tab-data.jsx.
+ * row expands into the same schedule editor and footer Today uses, editing a
+ * local draft that's kept when the row saves or closes and dropped on Cancel.
+ * Rendered by tab-data.jsx.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -492,16 +556,16 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: This tracks which reminder's own row is currently expanded into its editor. How: This is compared against each row's own id throughout the render below.
 	const [ insIdeStr, setInsIdeStr ] = React.useState( null ); // What: Insert Identifier String And Setter. Why: A just-inserted reminder row needs to play its own slide-in entrance exactly once. How: This is set right when a row is created or an editor closes, cleared on that row's own animation end.
+	const [ newTasObj, setNewTasObj ] = React.useState( null ); // What: New Task Object And Setter. Why: A brand-new reminder stays a local draft, out of the store and storage, until it's kept. How: This holds that reminder, built with TAS_NAM_OBJ.defTasFun's defaults, or null when none is being added.
 
-	const newAddRef = React.useRef( null ); // What: New Added Reference. Why: A reminder just created via "New reminder" hasn't been kept yet; Cancel on such an item discards the whole add (removes it) rather than reverting to an empty snapshot. How: This holds that reminder's own id until it's kept, cleared by kepCloFun.
-	const opeEdiRef = React.useRef( null ); // What: Open Editor Reference. Why: The currently-open reminder's own EdiFooCom instance needs to be reachable from outside itself, so the row's own collapse chevron can call its kepFun before closing. How: This is attached only to the currently-open row's own EdiFooCom, via its ref prop below.
+	const newAddRef = React.useRef( null ); // What: New Added Reference. Why: A reminder just created via "New reminder" hasn't been kept yet; Cancel on such an item discards the whole add rather than keeping it. How: This holds that reminder's own id until it's kept or discarded.
 	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs a place to remember whichever reminder's own render position is currently frozen. How: This is passed straight through to freEdiFun below.
 	const preOpeRef = React.useRef( null ); // What: Previous Open Reference. Why: The effect right below needs opeIdeStr's own PRIOR value to detect a genuine close, not just its current value. How: This is read and overwritten at the end of that same effect.
 	const opeRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new reminder's own "+ New reminder" click needs to scroll the resulting form into view, since it opens pinned below the sort control rather than guaranteed to already be on-screen. How: This is attached only to the currently-open row's own DOM node, via its ref prop below.
 	const focInpRef = React.useRef( null ); // What: Focus Input Reference. Why: The open row's own name input focuses itself via a ref callback below instead of plain autoFocus, suppressing the browser's own instant focus-scroll so it doesn't fight the deliberate smooth scroll above. How: This is attached via that input's own ref callback in the render below.
 
 
-	React.useEffect( () => { // What: Replay Insert Effect. Why: Whichever reminder's own editor just closed (Done, Cancel-revert, delete, or the row's own collapse chevron) should replay the insert entrance once it settles into its (possibly new, now-unfrozen) sorted position, instead of silently snapping there. How: This detects an opeIdeStr transition away from a real id, then stages that id as insIdeStr.
+	React.useEffect( () => { // What: Replay Insert Effect. Why: Whichever reminder's own editor just closed (Save, Cancel, delete, or the row's own collapse chevron) should replay the insert entrance once it settles into its (possibly new, now-unfrozen) sorted position, instead of silently snapping there. How: This detects an opeIdeStr transition away from a real id, then stages that id as insIdeStr.
 
 
 		const preOpeStr = preOpeRef.current; // What: Previous Open String. Why: This is compared against opeIdeStr below to detect the exact close transition. How: This reads preOpeRef's own remembered prior value.
@@ -541,14 +605,119 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 	}, [ opeIdeStr ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when opeIdeStr itself changes, since that's the exact condition its own guard checks. How: opeIdeStr is read directly inside the effect body above.
 
+
+
+	const opeTasObj = !opeIdeStr // What: Open Task Object. Why: The open row's draft is a copy of either the local new reminder or a stored one. How: This resolves the open id to whichever of the two it names, or null.
+		? null                                                                                   // What: Nothing Open Branch. Why: With no row open there's nothing to copy. How: This is null.
+		: newTasObj && newTasObj.id === opeIdeStr                                                // What: New Reminder Check. Why: The local new reminder isn't in the store yet. How: This tests whether it's the open one.
+		? newTasObj                                                                              // What: New Reminder Branch. Why: The new reminder's draft starts from the local reminder. How: This is newTasObj.
+		: ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === opeIdeStr ) || null; // What: Stored Reminder Branch. Why: Any other open row is a stored reminder. How: This looks the open id up in the store, or null.
+
+
+	const { comDraFun, draTasObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open row's name input and schedule editor both edit one local draft, committed when the row closes or saves. How: This calls useTasDraFun with the open reminder.
+
+	const hanDraRef = React.useRef( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeTasFun committed or Cancel dropped.
+
+
+	// #region keeTasFun
+
+	/**
+	 * keeTasFun = Keep Task Function
+	 *
+	 * @summary
+	 * Commits the open row's draft, once. A brand-new reminder is added to the
+	 * store as drafted (addTasFun de-duplicates its name, an emptied one falling
+	 * back to the default), while any other reminder commits only its changed
+	 * fields. Does nothing when no row is open or this exact draft was already
+	 * committed or cancelled.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * keeTasFun() // => void
+	 * ```
+	 *
+	*/
+
+	const keeTasFun = () => { // What: Keep Task Function. Why: Saving, collapsing, or otherwise closing a reminder row keeps its edits. How: This adds a new reminder as drafted, or commits a stored one's changed fields, skipping a draft already handled.
+
+
+		if ( !draTasObj || hanDraRef.current === draTasObj ) return; // What: Handled Draft Guard. Why: There's nothing to keep without a draft, or once this draft was already saved or cancelled. How: This bails out in either case.
+
+
+
+		hanDraRef.current = draTasObj; // What: Handled Draft Mark. Why: Any later close of this same draft must not commit it twice. How: This records the draft being committed.
+
+
+
+		if ( newTasObj && newTasObj.id === draTasObj.id ) { // What: New Reminder Guard. Why: A brand-new reminder joins the store as drafted. How: This adds the draft and clears the local new reminder.
+
+
+			actStoObj.addTasFun( { ...draTasObj, name : draTasObj.name.trim() || newTasObj.name } ); // What: Add Task Call. Why: This is the moment the new reminder actually joins the app. How: This adds the draft under its own id, keeping the default name when the drafted one is blank.
+
+			newAddRef.current = null; // What: New-Item Flag Clear. Why: A kept reminder is no longer new. How: This clears newAddRef.
+			setNewTasObj( null );     // What: New Task Object Clear. Why: The store now holds this reminder. How: This clears newTasObj.
+
+
+		}
+
+		else comDraFun(); // What: Commit Draft Branch. Why: A stored reminder's edits must reach it. How: This calls comDraFun.
+
+
+	};
+
+	// #endregion keeTasFun
+
+
+	// #region cloTasFun
+
+	/**
+	 * cloTasFun = Close Task Function
+	 *
+	 * @summary
+	 * Closes the open row the way its own collapse chevron does: its draft is
+	 * kept, then the row closes. Used by the open row's UnmWatCom, so a row
+	 * that disappears some other way (the Reminders card or its Items section
+	 * collapsing, a tab switch) also keeps its edits.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * cloTasFun() // => void
+	 * ```
+	 *
+	*/
+
+	const cloTasFun = () => { // What: Close Task Function. Why: A row that disappears keeps its edits the same way its own collapse chevron does. How: This keeps the open draft, then closes the row.
+
+
+		keeTasFun(); // What: Keep Task Call. Why: Closing keeps the draft. How: This calls keeTasFun.
+
+		setOpeIdeStr( null ); // What: Open Row Clear. Why: No row stays open. How: This resets opeIdeStr to null.
+
+
+	};
+
+	// #endregion cloTasFun
+
 	// #endregion Open Row Tracking
 
 
 
 	// #region Items List Order
 
-	const visTasArr = ( staAppObj.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden );                     // What: Visible Task Array. Why: A hidden (mini-tour-linked) task must never appear in this real management list. How: This filters staAppObj's own tasks by their own hidden flag.
-	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.reminders ) || 'name-asc'; // What: Item Sort String. Why: The Items list's own sort needs a persisted, defaulted value to drive both the sort control and the comparator below. How: This reads staAppObj's own ui.dataSort.reminders, falling back to 'name-asc'.
+	const visTasArr = [ ...( staAppObj.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden ), ...( newTasObj ? [ newTasObj ] : [] ) ]; // What: Visible Task Array. Why: A hidden (mini-tour-linked) task must never appear in the Data tab's own list, while a new reminder still being drafted must. How: This filters out hidden tasks, then adds the local new reminder when there is one.
+	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.reminders ) || 'name-asc';                           // What: Item Sort String. Why: The Items list's own sort needs a persisted, defaulted value to drive both the sort control and the comparator below. How: This reads staAppObj's own ui.dataSort.reminders, falling back to 'name-asc'.
 
 
 	const tasDatMap = new Map( visTasArr.map( ( curTasObj ) => { // What: Task Date Map. Why: TAS_NAM_OBJ.nexEliFun can walk up to ~3 years of days per call; computing every task's own next date once up front (rather than inside the comparator below, which runs it on every comparison) avoids doing that work redundantly. How: This maps each visible task to a [id, time] pair.
@@ -624,14 +793,10 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 	// #region Row Actions
 
-	const kepCloFun = ( tasIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This calls the open editor's own kepFun, clears the new-item flag, and closes only if this row is still the open one.
+	const kepCloFun = ( tasIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This keeps the open draft, then closes the row only while it's still this exact one.
 
 
-		opeEdiRef.current?.kepFun(); // What: Keep Call. Why: EdiFooCom's own committed-edit lifecycle (the "keep" side of the mount-time snapshot it takes) must run before this row is allowed to close. How: This optionally chains onto opeEdiRef's own current ref, since it may be unmounted already.
-
-		if ( newAddRef.current === tasIdeStr ) newAddRef.current = null; // What: New-Item Flag Clear Guard. Why: Once kept, a brand-new reminder is no longer "new" for isaNewBoo's own purposes. How: This clears newAddRef only while it still matches tasIdeStr.
-
-
+		keeTasFun(); // What: Keep Task Call. Why: The collapse chevron and Save both keep the row's edits. How: This commits the open draft, adding a brand-new reminder to the store first.
 
 		setOpeIdeStr( ( curOpeStr ) => curOpeStr === tasIdeStr ? null : curOpeStr ); // What: Open Row Close Call. Why: This is the actual collapse, closing the row only while it's still this exact one that was open. How: This clears opeIdeStr only while it still matches tasIdeStr.
 
@@ -639,22 +804,24 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 	};
 
 
-	const addEdiFun = () => { // What: Add Edit Function. Why: "New reminder" needs to create a real, minimal reminder AND immediately open its own editor, ensuring both the main section and the Items disclosure are expanded to actually show it. How: This mints a fresh id, adds the task, stages every relevant "just added"/open/insert flag, and expands whichever section is currently collapsed.
+	const addEdiFun = () => { // What: Add Edit Function. Why: "New reminder" needs to start a local draft reminder AND immediately open its own editor, ensuring the main section is open too. How: This keeps any open row, builds the draft, then opens its row.
 
 
 		if ( newAddRef.current ) return; // What: Guard: Ignore Rapid Double-Click. Why: A second "New reminder" click while the first add hasn't been kept yet would spawn a stray extra reminder. How: This bails out while newAddRef already holds an id.
 
 
 
-		const newIdeStr = 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The freshly-created reminder needs a real, unique id before actStoObj.addTasFun is ever called. How: This mints a random 'tk_'-prefixed id, the same scheme TAS_NAM_OBJ.defTasFun itself uses.
+		keeTasFun(); // What: Keep Task Call. Why: A row left open when a new reminder starts is closing, and closing keeps its edits. How: This calls keeTasFun, which does nothing when no row is open.
 
 
-		actStoObj.addTasFun( { id : newIdeStr, name : 'New reminder', repeat : 'once' } ); // What: Add Task Call. Why: This is the actual creation of the new, minimal reminder. How: This calls actStoObj.addTasFun with newIdeStr, a placeholder name, and a plain 'once' repeat.
 
-		newAddRef.current = newIdeStr; // What: New-Item Flag Set. Why: The freshly-created row needs to know it's "new" for its own isaNewBoo prop and for kepCloFun's own guard above. How: This sets newAddRef to newIdeStr.
+		const bltTasObj = TAS_NAM_OBJ.defTasFun( { name : 'New reminder', repeat : 'once' } ); // What: Built Task Object. Why: A new reminder starts as a local draft with the same defaults the store would give it. How: This builds a one-time reminder named 'New reminder' with a fresh id.
 
-		setInsIdeStr( newIdeStr ); // What: Insert Identifier Stage Call. Why: The new row needs to play its own entrance animation exactly once. How: This sets insIdeStr to newIdeStr.
-		setOpeIdeStr( newIdeStr ); // What: Open Row Stage Call. Why: The new reminder's own editor should open immediately so the user can fill it in. How: This sets opeIdeStr to newIdeStr.
+
+		newAddRef.current = bltTasObj.id; // What: New-Item Flag Set. Why: The freshly-created row needs to know it's "new" for its own isaNewBoo prop. How: This sets newAddRef to its id.
+		setNewTasObj( bltTasObj );        // What: New Task Set Call. Why: The row renders from this local reminder until it's kept. How: This stores bltTasObj in newTasObj.
+		setInsIdeStr( bltTasObj.id );     // What: Insert Identifier Stage Call. Why: The new row needs to play its own entrance animation exactly once. How: This sets insIdeStr to the new id.
+		setOpeIdeStr( bltTasObj.id );     // What: Open Row Stage Call. Why: The new reminder's own editor should open immediately so the user can fill it in. How: This sets opeIdeStr to the new id.
 
 		if ( !secOpeBoo ) actStoObj.togColFun( '__reminders_main', true ); // What: Main Section Expand Guard. Why: The newly-open editor must actually be visible, which requires the main section itself to be expanded. How: This expands the main section only while it was collapsed.
 
@@ -1009,23 +1176,13 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 																maxLength={ 60 }
 																placeholder='Reminder name'
 																type='text'
-																value={ curTasObj.name }
+																value={ draTasObj && draTasObj.id === curTasObj.id ? draTasObj.name : curTasObj.name } // What: Value. Why: The open row's name lives in its draft until the row is kept. How: This shows the draft's name when the draft belongs to this reminder, else the reminder's own.
 
 																aria-label='Reminder name'
 
-																onBlur={ ( bluEveObj ) => { // What: Name Blur Handler. Why: Leaving the input should commit the trimmed name, but never a blank one. How: This trims the value and commits it only when non-empty.
-
-
-																	const namTriStr = bluEveObj.target.value.trim(); // What: Name Trimmed String. Why: Surrounding spaces are never part of a name. How: This trims the input's own value.
-
-
-																	if ( namTriStr ) actStoObj.renTasFun( curTasObj.id, namTriStr ); // What: Non-Empty Name Guard. Why: A blank name must not replace the real one. How: This renames only when namTriStr has content.
-
-
-																} }
-																onChange={ ( chaEveObj ) => actStoObj.updTasFun( curTasObj.id, { name : chaEveObj.target.value } ) }
-																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish the name the same way leaving the field does. How: This blurs the input on Enter, which runs onBlur's own commit.
-															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This commits every keystroke, re-trims and re-commits (only if non-empty) on blur, and blurs itself on Enter; its own ref callback suppresses the browser's native focus-scroll so it doesn't fight opeRowRef's own smooth scroll. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+																onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
+																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until the row is kept.
+															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 														</span>
@@ -1067,8 +1224,16 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 														aria-expanded={ carOpeBoo }
 
-														onClick={ () => setOpeIdeStr( carOpeBoo ? null : curTasObj.id ) } // What: Row Toggle Click. Why: The same row button opens and closes its own editor. How: This clears opeIdeStr while open and sets it to this row otherwise.
-													>{ /* What: Row Toggle Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This toggles opeIdeStr to curTasObj's own id (or back to null). Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+														onClick={ () => { // What: Row Open Click. Why: Opening this row closes whichever row was open, and closing keeps its edits. How: This keeps the open draft, then opens this row.
+
+
+															keeTasFun(); // What: Keep Task Call. Why: The row giving way keeps its edits. How: This calls keeTasFun, which does nothing when no row is open.
+
+															setOpeIdeStr( curTasObj.id ); // What: Open Row Set Call. Why: This row's own editor opens. How: This sets opeIdeStr to this reminder's id.
+
+
+														} }
+													>{ /* What: Row Toggle Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 														<span
@@ -1138,75 +1303,68 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 
 															<SchEdiCom
-																actStoObj={ actStoObj }
 																aniExtBoo
 																layVarStr='rows' // What: Layout Variant String. Why: The Data tab lays each field out as its own full-bleed row, matching the picker item editor. How: SchEdiCom's own module applies its rows layout class.
 																staAppObj={ staAppObj }
-																tasRcdObj={ curTasObj }
-															/>{ /* What: Schedule Editor Component. Why: Unlike Today's own InlEdiCom, the Data tab commits every field change straight to the real store; there's no local draft to revert on Cancel here except via EdiFooCom's own snapshot. How: This is passed the real actStoObj bag directly as actStoObj. */ }
+																tasRcdObj={ draTasObj && draTasObj.id === curTasObj.id ? draTasObj : curTasObj } // What: Task Record Object. Why: The open row's editor shows its draft, while one still collapsing after a close shows the reminder itself. How: This picks the draft only when it belongs to this row's own reminder.
+
+																onPatTasFun={ patDraFun }
+															/>{ /* What: Schedule Editor Component. Why: This is the row's own schedule editor, editing its draft like Today's InlEdiCom does. How: This is passed the draft and patDraFun, so nothing reaches the store until the row is kept. */ }
 
 
 
 															<EdiFooCom
-																ref={ carOpeBoo ? opeEdiRef : undefined } // What: Open Footer Ref. Why: The row's own chevron needs the open footer's kepFun handle. How: This attaches opeEdiRef only while this row is open.
-
 																isaNewBoo={ newAddRef.current === curTasObj.id }
-																tasRcdObj={ curTasObj }
 
-																onCanTasFun={ ( snaTasObj ) => { // What: Cancel Handler. Why: Cancel behaves differently depending on whether this row is a brand-new, not-yet-kept reminder (discard outright) or an already-existing one (revert to its own mount-time snapshot). How: This branches on newAddRef, staging the same collapse-then-remove sequence Delete uses for the new-and-discarded case.
-
-
-																	if ( newAddRef.current === curTasObj.id ) { // What: New-And-Discarded Branch. Why: A brand-new reminder should be discarded outright on Cancel, but still play the collapse-close animation Save uses, rather than vanish instantly. How: This clears newAddRef, snapshots the id, closes this row, then defers the actual delTasFun call.
+																onCanTasFun={ () => { // What: Cancel Handler. Why: Cancelling drops the row's draft, and a brand-new reminder goes away entirely. How: This marks the draft handled and closes the row, then drops a new reminder once the row's collapse animation finishes.
 
 
-																		newAddRef.current = null; // What: New-Item Flag Clear. Why: Cancelling a brand-new reminder discards it outright, so nothing "new" is left pointing at a soon-to-be-removed id. How: This resets newAddRef back to null unconditionally, since this whole branch only runs when it already matched curTasObj's own id.
+																	hanDraRef.current = draTasObj; // What: Handled Draft Mark. Why: The row's unmount must not keep a draft its own Cancel dropped. How: This records the dropped draft.
+
+																	setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: Only close if this row is STILL the open one. How: This clears opeIdeStr only when it currently equals this reminder's id.
 
 
-																		const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred delTasFun call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
+
+																	if ( newAddRef.current === curTasObj.id ) { // What: Discard New Guard. Why: A brand-new reminder's Cancel removes it entirely, after the row plays the same collapse-close animation as Save. How: This clears the new-item flag, then drops the local reminder after that animation's duration.
 
 
-																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
+																		newAddRef.current = null; // What: New-Item Flag Clear. Why: Nothing "new" is left once its discard is underway. How: This resets newAddRef.
 
-																		setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits that animation's own p02 duration step, then removes tasIdeStr's own snapshot. // Duration Base Plus 2 ~= 277.0ms
-
-
-																	}
-
-																	else { // What: Existing-Reverted Branch. Why: An already-existing reminder should just revert to the snapshot EdiFooCom captured on mount, not be removed at all. How: This calls actStoObj.revTasFun with snaTasObj, then closes this row.
-
-
-																		actStoObj.revTasFun( curTasObj.id, snaTasObj );                                 // What: Replace Task Call. Why: An existing reminder's own Cancel reverts it to the snapshot EdiFooCom captured on mount, discarding any in-progress edits. How: This calls actStoObj.revTasFun with curTasObj's own id and snaTasObj.
-																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse once the revert is complete. How: This clears opeIdeStr only while it still matches curTasObj's own id.
+																		setTimeout( () => setNewTasObj( null ), durMilFun( 'p02' ) ); // What: Deferred Drop Call. Why: The local reminder must stay until the row's own collapse animation finishes. How: This clears newTasObj after that animation's duration. // Duration Base Plus 2 ~= 277.0ms
 
 
 																	}
 
 
 																} }
-																onDelTasFun={ () => { // What: Delete Handler. Why: Deleting this row needs to clear a stale "new" flag, close the row, and stage the same collapse-then-remove sequence the card-level Delete uses. How: This snapshots the id, closes opeIdeStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
+																onDelTasFun={ () => { // What: Delete Handler. Why: Deleting this row needs to drop its draft, close the row, and stage the same collapse-then-remove sequence the card-level Delete uses. How: This marks the draft handled, closes the row, then removes the reminder right away under reduced motion or after the collapse otherwise.
 
 
-																	if ( newAddRef.current === curTasObj.id ) newAddRef.current = null; // What: New-Item Flag Clear Guard. Why: Deleting a brand-new reminder must not leave a stale "new" flag pointing at an id that no longer exists. How: This clears newAddRef only while it still matches curTasObj's own id.
-
-
-
-																	const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred delTasFun call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
-
-
-																	setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
+																	hanDraRef.current = draTasObj; // What: Handled Draft Mark. Why: A deleted reminder's draft must not be kept by the row's unmount. How: This records the dropped draft.
 
 
 
-																	if ( redMotFun() ) { actStoObj.delTasFun( tasIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This calls actStoObj.delTasFun directly and returns early.
+																	const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred delTasFun call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This copies the id once.
+
+
+																	setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only when it currently equals this reminder's id.
 
 
 
-																	setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits the editor's own collapse-close p02 duration step before actually removing the task. // Duration Base Plus 2 ~= 277.0ms
+																	if ( redMotFun() ) { actStoObj.delTasFun( tasIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This removes the reminder directly and returns.
+
+
+
+																	setTimeout( () => actStoObj.delTasFun( tasIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The row's own collapse animation must finish before the reminder is removed. How: This calls delTasFun after that animation's duration. // Duration Base Plus 2 ~= 277.0ms
 
 
 																} }
 																onDonTasFun={ () => kepCloFun( curTasObj.id ) }
-															/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Delete and Cancel both defer their own delTasFun call by 280ms to let the collapse-close animation finish first (unless reduced motion); Save calls kepCloFun. */ }
+															/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer, same component InlEdiCom uses on Today. How: Cancel drops the draft (a new reminder after its collapse), Delete removes the reminder after its collapse, and Save keeps the draft through kepCloFun. */ }
+
+
+
+															<UnmWatCom onUnmFun={ () => { if ( opeIdeStr === curTasObj.id ) cloTasFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (the Reminders card or its Items section collapsing, a tab switch) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one. */ }
 
 
 														</div>

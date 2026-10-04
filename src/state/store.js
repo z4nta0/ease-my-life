@@ -1981,30 +1981,6 @@ function useAppStaFun( optArgObj ) {
 
 
 
-		revOptFun : ( optArgObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Revert Options Function. Why: This is the full-replace path used to revert the participation options on Controls Cancel. How: This overwrites reminderOpts entirely with a copy of optArgObj.
-
-
-			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
-
-			reminderOpts : { ...optArgObj } // What: Reminder Options. Why: Cancel must restore the full snapshot of every participation switch. How: This copies optArgObj so later edits to the snapshot can't leak in.
-
-
-		} ) ),
-
-
-
-		revTasFun : ( tarIdeStr, snaTasObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Revert Task Function. Why: This is the full-replace path used to revert a reminder to a snapshot on editor Cancel. How: This overwrites the one matching task entirely with snaTasObj.
-
-
-			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
-
-			tasks : curStaObj.tasks.map( ( curTasObj ) => curTasObj.id === tarIdeStr ? { ...snaTasObj } : curTasObj ) // What: Tasks. Why: Only the one matching task is restored. How: This replaces the task matching tarIdeStr with a copy of snaTasObj.
-
-
-		} ) ),
-
-
-
 		setOptFun : ( tasTypStr, optKeyStr, optValBoo ) => setAppStaObj( ( curStaObj ) => { // What: Set Option Function. Why: This flips one participation switch for a reminder type ('once' | 'recurring'), without callers re-specifying every other switch. How: This normalizes the current options, then merges one key onto the matching type's own sub-object.
 
 

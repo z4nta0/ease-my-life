@@ -26,7 +26,7 @@ import { SED_NAM_OBJ  } from '../../state/seed.js';               // What: Seed 
 import { togFadFun    } from '../../ui/edge-fade.js';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';           // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { useFliRaiFun } from '../../ui/flip-rail.js';             // What: Use Flip Rail Function. Why: The conditional rail's selected pill should glide to the front instead of snapping, matching the Data tab. How: This is called once with the rail ref and a trigger key.
-import { useIteDraFun } from '../../ui/item-draft.js';            // What: Use Item Draft Function. Why: An added pool item's editor edits a local draft, committed into the pool only on Save. How: This is called once with whichever pool item's editor is open.
+import { useIteDraFun } from '../../ui/record-draft.js';          // What: Use Item Draft Function. Why: An added pool item's editor edits a local draft, committed into the pool only on Save. How: This is called once with whichever pool item's editor is open.
 import { WeeChiCom    } from '../../ui/weekday-chips.jsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
 
 // #endregion Imports

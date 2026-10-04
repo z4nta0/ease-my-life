@@ -30,8 +30,8 @@ import { useEscCanFun } from './escape-cancel.js';   // What: Use Escape Cancel 
  * Data tabs so every tab edits an item through the same component. It mirrors
  * the Pickers tab's per-item controls (a weight stepper, the ease day range,
  * an Active/Inactive toggle and a confirm-gated delete) and edits the
- * caller's own draft copy of the item (see item-draft.js), so nothing reaches
- * the real item until the caller commits it.
+ * caller's own draft copy of the item (see record-draft.js), so nothing
+ * reaches the real item until the caller commits it.
  *
  * Sections:
  *  - Components

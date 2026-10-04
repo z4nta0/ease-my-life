@@ -25,6 +25,7 @@ import { RemLogCom    } from './day-log.jsx';                       // What: Rem
 import { SchEdiCom    } from '../../ui/schedule-editor.jsx';        // What: Schedule Editor Component. Why: A reminder's own name, repeat, and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
 import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tasks Namespace Object. Why: Every due-ness, visibility, and summary computation for Today's cards defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemCarCom and RemSecCom.
 import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use Escape Cancel Function. Why: The quick-add form needs Escape to discard in-progress edits the same way every other editor does. How: This is called once inside RemSecCom.
+import { useTasDraFun } from '../../ui/record-draft.js';            // What: Use Task Draft Function. Why: An open reminder's name input and schedule editor share one local draft, committed only on Save. How: This is called once inside RemSecCom with the open reminder.
 
 // #endregion Imports
 
@@ -70,6 +71,9 @@ import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use
  *                            own setCarFun is used, and only while isaTutBoo.
  * @param props.cheDatObj   - Check Date Object: The generator-anchored date to
  *                            check done-ness against.
+ * @param props.draNamStr   - Draft Name String: The open editor's draft name,
+ *                            shown in the name input instead of the real one,
+ *                            or undefined when this card isn't being edited.
  * @param props.extClaStr   - Extra Class String: Extra module class name(s)
  *                            driving the card's own insert/remove/purge
  *                            animations, defaulting to an empty string.
@@ -89,8 +93,8 @@ import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use
  *                            own inline editor.
  * @param props.onPlaTutFun - On Play Tutorial Function: Starts this sample's
  *                            own mini-tour.
- * @param props.onRenTasFun - On Rename Task Function: Commits a new name while
- *                            the inline name input is open.
+ * @param props.onRenTasFun - On Rename Task Function: Writes a typed name into
+ *                            the open editor's draft.
  * @param props.onSkiTasFun - On Skip Task Function: Opens/closes this card's
  *                            own skip confirm.
  * @param props.onTogTasFun - On Toggle Task Function: Toggles this card's own
@@ -114,7 +118,7 @@ import { useEscCanFun } from '../../ui/escape-cancel.js';           // What: Use
  *
 */
 
-function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBoo, isaTutBoo, jusCheStr, onAniEndFun, onEdiTasFun, onPlaTutFun, onRenTasFun, onSkiTasFun, onTogTasFun, onUncTutFun, tasRcdObj, tutDonBoo } ) {
+function RemCarCom ( { actStoObj, cheDatObj, draNamStr, extClaStr = '', isaOpeBoo, isaSkiBoo, isaTutBoo, jusCheStr, onAniEndFun, onEdiTasFun, onPlaTutFun, onRenTasFun, onSkiTasFun, onTogTasFun, onUncTutFun, tasRcdObj, tutDonBoo } ) {
 
 
 	if ( isaTutBoo ) { // What: Tutorial Branch. Why: A still-hidden sample reminder renders as a mini-tour launcher card instead of a real due-reminder row. How: This returns the launcher card's own markup outright, never falling through to the real row below.
@@ -431,24 +435,14 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
 						maxLength={ 60 }
 						placeholder='Reminder name'
 						type='text'
-						value={ tasRcdObj.name }
+						value={ draNamStr ?? tasRcdObj.name } // What: Value. Why: The name being typed lives in the editor's draft until Save. How: This shows the draft's name, falling back to the real one.
 
 						aria-label='Reminder name'
 
-						onBlur={ ( bluEveObj ) => { // What: Name Blur Handler. Why: Leaving the input should commit the trimmed name once. How: This trims the value and commits it only when it differs.
-
-
-							const namTriStr = bluEveObj.target.value.trim(); // What: Name Trimmed String. Why: Surrounding spaces are never part of a name. How: This trims the input's own value.
-
-
-							if ( namTriStr !== tasRcdObj.name ) onRenTasFun( namTriStr ); // What: Changed Name Guard. Why: An unchanged name needs no commit. How: This calls onRenTasFun only when the trimmed name differs.
-
-
-						} }
 						onChange={ ( chaEveObj ) => onRenTasFun( chaEveObj.target.value ) }
 						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }                                            // What: Row Click Isolation. Why: Clicking into the name input must not also toggle the row done. How: This stops the click from bubbling to the card.
-						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish the name the same way leaving the field does. How: This blurs the input on Enter, which runs onBlur's own commit.
-					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This commits on every change, re-trims and re-commits on blur, and blurs itself on Enter. Its data-element-name-hook is read by the reminder card's own row-click handler and help mode's Today catalog.
+						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until Save.
+					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This writes every change into the editor's draft through onRenTasFun, trimmed on Save, and blurs itself on Enter. Its data-element-name-hook is read by the reminder card's own row-click handler and help mode's Today catalog.
 
 
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaOpeBoo is false.
@@ -545,40 +539,36 @@ function RemCarCom ( { actStoObj, cheDatObj, extClaStr = '', isaOpeBoo, isaSkiBo
  * InlEdiCom = Inline Edit Component
  *
  * @summary
- * Today's inline editor for a SAVED reminder. Edits a LOCAL draft
- * (never the store directly) so changing the schedule, e.g. moving a
- * weekly reminder off today, doesn't immediately filter the row out of
- * the live list; the change only lands on Save.
+ * Today's inline editor for a SAVED reminder. Edits the section's own
+ * draft of the reminder (never the store directly), shared with the
+ * card's name input, so changing the schedule, e.g. moving a weekly
+ * reminder off today, doesn't immediately filter the row out of the live
+ * list; every change, the name included, only lands on Save.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param props.draTasObj   - Draft Task Object: The open reminder's draft.
  * @param props.onCloEdiFun - On Close Edit Function: Closes this inline editor
- *                            without saving.
- * @param props.onComTasFun - On Commit Task Function: Commits the local draft
- *                            back onto the real store.
+ *                            without saving, dropping the draft.
  * @param props.onDelTasFun - On Delete Task Function: Deletes the underlying
  *                            reminder outright.
+ * @param props.onPatTasFun - On Patch Task Function: Merges a changed field
+ *                            or two into the draft.
+ * @param props.onSavTasFun - On Save Task Function: Commits the draft onto the
+ *                            real reminder and closes this editor.
  * @param props.staAppObj   - State App Object: The shared app state, passed
  *                            through to {@link SchEdiCom}.
- * @param props.tasRcdObj   - Task Record Object: The saved reminder record
- *                            being edited.
  *
  * @returns The inline editor's own schedule editor plus its footer.
  *
  * @example
  * ```tsx
- * InlEdiCom({ onCloEdiFun, onComTasFun, ... }) // => <InlEdiCom />
+ * InlEdiCom({ draTasObj, onCloEdiFun, ... }) // => <InlEdiCom />
  * ```
  *
 */
 
-function InlEdiCom ( { onCloEdiFun, onComTasFun, onDelTasFun, staAppObj, tasRcdObj } ) {
-
-
-	const [ draTasObj, setDraTasObj ] = React.useState( () => ( { ...tasRcdObj } ) ); // What: Draft Task Object And Setter. Why: The schedule editor below must edit a local copy, not the store directly, so a change doesn't immediately filter the row out of the live list. How: This starts as a shallow copy of tasRcdObj and is patched by draActObj below.
-
-	const draActObj = { updTasFun : ( tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actions bag exposing updTasFun; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (SchEdiCom always passes tasRcdObj.id, already known here) and merges patValObj into draTasObj.
-
+function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTasFun, staAppObj } ) {
 
 
 	return (
@@ -592,30 +582,21 @@ function InlEdiCom ( { onCloEdiFun, onComTasFun, onDelTasFun, staAppObj, tasRcdO
 
 
 			<SchEdiCom
-				actStoObj={ draActObj }
 				aniExtBoo
 				layVarStr='stacked' // What: Layout Variant String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
 				staAppObj={ staAppObj }
 				tasRcdObj={ draTasObj }
-			/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the local draft. How: This is passed draActObj instead of the real store actions, so every edit stays local until Save. */ }
+
+				onPatTasFun={ onPatTasFun }
+			/>{ /* What: Schedule Editor Component. Why: This is the actual schedule editor, operating on the draft. How: This is passed the draft and its patch function, so every edit stays local until Save. */ }
 
 
 
 			<EdiFooCom
-				tasRcdObj={ draTasObj }
-
-				onCanTasFun={ () => onCloEdiFun() }
+				onCanTasFun={ onCloEdiFun }
 				onDelTasFun={ onDelTasFun }
-				onDonTasFun={ () => { // What: Save Handler. Why: Save commits the local draft and closes the editor. How: This commits draTasObj, then closes.
-
-
-					onComTasFun( draTasObj ); // What: Draft Commit Call. Why: The local draft only reaches the store on Save. How: This passes draTasObj to onComTasFun.
-
-					onCloEdiFun(); // What: Editor Close Call. Why: A saved editor has nothing left to show. How: This calls onCloEdiFun.
-
-
-				} }
-			/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer. How: Cancel just closes without committing; Save commits draTasObj onto the real store via onComTasFun, then closes. */ }
+				onDonTasFun={ onSavTasFun }
+			/>{ /* What: Editor Foot Component. Why: This is the shared Cancel/Save/Delete footer. How: Cancel just closes, dropping the draft; Save commits it through onSavTasFun. */ }
 
 
 		</div>
@@ -730,6 +711,10 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 	const opeTasStr = ( typeof actEdiStr === 'string' && actEdiStr.startsWith( 'reminder:' ) ) // What: Open Task String. Why: This is the id of whichever SAVED reminder's own inline editor is currently open, distinct from the quick-add form. How: This strips the 'reminder:' prefix off actEdiStr when it has one, otherwise null.
 		? actEdiStr.slice( 'reminder:'.length ) // What: Prefixed Id Branch. Why: A saved reminder's editor slot is 'reminder:' plus its id. How: This strips the prefix to leave the id.
 		: null;                                 // What: No Open Task Branch. Why: Any other slot value means no saved reminder's editor is open. How: This is null.
+
+	const opeTasObj = opeTasStr ? ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === opeTasStr ) || null : null; // What: Open Task Object. Why: The open editor's draft is a copy of this reminder. How: This looks the open id up among the tasks, or null when no saved reminder's editor is open.
+
+	const { comDraFun, draTasObj : opeDraObj, patDraFun } = useTasDraFun( actStoObj, opeTasObj ); // What: Task Draft Destructure. Why: The open card's name input and its schedule editor both edit one local draft, committed only on Save. How: This calls useTasDraFun with the open reminder.
 
 	// #endregion Editor Slots
 
@@ -871,7 +856,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 	}, [ addOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when addOpeBoo itself changes, since that's the exact transition it's watching for. How: addOpeBoo is compared against wasAddRef's own remembered prior value.
 
 
-	const draActObj = { updTasFun : ( tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actStoObj bag exposing updTasFun; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (already known here) and merges patValObj into draTasObj.
+	const patAddFun = ( patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ); // What: Patch Add Function. Why: The quick-add form's schedule editor changes a field or two of its draft task. How: This merges patValObj into draTasObj.
 
 
 	React.useEffect( () => { // What: Draft Repeat Publish Effect. Why: A reminder mini-tour's later steps need to show copy matching whichever schedule type is currently selected in this draft, without lifting this local state anywhere else. How: This republishes draTasObj's own repeat field onto the shared tour bus.
@@ -1304,12 +1289,13 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 							<SchEdiCom
-								actStoObj={ draActObj }
 								aniExtBoo
 								layVarStr='stacked' // What: Layout Variant String. Why: Today's editor keeps each label above its control, with dividers between fields. How: SchEdiCom's own module applies its stacked layout class.
 								staAppObj={ staAppObj }
 								tasRcdObj={ draTasObj }
-							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed draActObj instead of the real store actStoObj, so every field stays local until Add. */ }
+
+								onPatTasFun={ patAddFun }
+							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed the draft and patAddFun, so every edit stays local until the form is saved. */ }
 
 
 
@@ -1383,6 +1369,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 						<RemCarCom
 							actStoObj={ actStoObj }
 							cheDatObj={ ancDatObj }
+							draNamStr={ opeDraObj && opeDraObj.id === curTasObj.id ? opeDraObj.name : undefined } // What: Draft Name String. Why: While this card's editor is open, its name input edits the draft's name instead of the real one. How: This passes the draft's name only when the draft belongs to this reminder.
 							extClaStr={ insIdeStr === curTasObj.id // What: Card Class Pick. Why: A card plays at most one entrance or exit animation, picked by which transition it is currently in. How: This checks each transition in priority order below, falling back to no class.
 								? cssModObj.todCarArtInserting                        // What: Just Added Class. Why: A newly added card plays its entrance animation. How: This applies while insIdeStr matches this card.
 								: remIdeStr === curTasObj.id                     // What: Removing Check. Why: A card being deleted plays its exit animation next in priority. How: This compares remIdeStr against this card.
@@ -1430,7 +1417,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 							} }
-							onRenTasFun={ ( renNamStr ) => actStoObj.renTasFun( curTasObj.id, renNamStr ) }
+							onRenTasFun={ ( renNamStr ) => patDraFun( { name : renNamStr } ) }
 							onSkiTasFun={ () => { // What: Skip Handler. Why: The row's own Skip button needs to toggle its own confirm prompt open/closed and close any unrelated open editor at the same time. How: This flips skiIdeStr and clears a matching actEdiStr sentinel.
 
 
@@ -1448,11 +1435,10 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 							<InlEdiCom
+								draTasObj={ opeDraObj && opeDraObj.id === curTasObj.id ? opeDraObj : curTasObj } // What: Draft Task Object. Why: The open editor shows its draft, while one still collapsing after a close shows the reminder itself. How: This picks the draft only when it belongs to this card's own reminder.
 								staAppObj={ staAppObj }
-								tasRcdObj={ curTasObj }
 
 								onCloEdiFun={ () => setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ) } // What: Editor Close Handler. Why: Another editor may already hold the shared slot, which must not be cleared. How: This clears the slot only while it still holds this card's own sentinel.
-								onComTasFun={ ( draSnaObj ) => actStoObj.updTasFun( curTasObj.id, draSnaObj ) }
 								onDelTasFun={ () => { // What: Delete Handler. Why: Deleting this reminder needs to close its own inline editor and stage the same collapse-then-remove sequence the card-level Delete uses. How: This closes actEdiStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
 
 
@@ -1469,7 +1455,17 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 								} }
-							/>{ /* What: Inline Edit Component. Why: This is the actual schedule editor for this card, committing straight to the real store. How: This is passed curTasObj directly (not a local draft), closing back via onCloEdiFun. */ }
+								onPatTasFun={ patDraFun }
+								onSavTasFun={ () => { // What: Save Handler. Why: Save applies the draft, name included, to the real reminder before the editor closes. How: This commits the draft, then releases the editor slot when it still belongs to this card.
+
+
+									comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the reminder on Save. How: This calls comDraFun.
+
+									setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ); // What: Editor Close Call. Why: A saved editor has nothing left to show. How: This releases the shared slot only while it still belongs to this card.
+
+
+								} }
+							/>{ /* What: Inline Edit Component. Why: This is the actual schedule editor for this card, editing the section's draft of it. How: This is passed the draft (or the reminder while closing), committing on Save and closing back via onCloEdiFun. */ }
 
 
 						</ColDisCom>

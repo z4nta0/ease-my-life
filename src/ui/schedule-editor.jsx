@@ -382,47 +382,41 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } ) {
  * SchEdiCom = Schedule Editor Component
  *
  * @summary
- * Live-edits an existing (or in-progress draft) reminder's own
- * schedule. Repeat kind is a segmented control; the detail control
- * below it swaps to match the kind. Every field commits immediately
- * through props.actStoObj's own updTasFun, so this component holds no
- * schedule state of its own beyond the two inline-date-edit toggles.
+ * Edits a reminder's own schedule, always the caller's local draft
+ * of it. Repeat kind is a segmented control; the detail control below
+ * it swaps to match the kind. Every field change goes straight through
+ * props.onPatTasFun, so this component holds no schedule state of its
+ * own beyond the two inline-date-edit toggles.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj - Action Store Object: The actions bag this editor
- *                          commits through; a caller editing a local draft
- *                          passes a stand-in object exposing its own
- *                          updTasFun.
- * @param props.aniExtBoo - Animate Extra Boolean: Whether the extra-fields
- *                          subsection should animate open/closed via
- *                          ColDisCom, defaulting to false for a context that
- *                          doesn't need it.
- * @param props.layVarStr - Layout Variant String: Which layout the editor
- *                          renders in, 'stacked' (Today, label above
- *                          control) or 'rows' (the Data tab, one full-bleed
- *                          row per field).
- * @param props.staAppObj - State App Object: The shared app state, passed
- *                          through to VisNotCom for its own visibility
- *                          computation.
- * @param props.tasRcdObj - Task Record Object: The reminder/task record (real
- *                          or draft) being edited.
+ * @param props.aniExtBoo   - Animate Extra Boolean: Whether the extra-fields
+ *                            subsection should animate open/closed via
+ *                            ColDisCom, defaulting to false for a context that
+ *                            doesn't need it.
+ * @param props.layVarStr   - Layout Variant String: Which layout the editor
+ *                            renders in, 'stacked' (Today, label above
+ *                            control) or 'rows' (the Data tab, one full-bleed
+ *                            row per field).
+ * @param props.onPatTasFun - On Patch Task Function: Merges a changed field
+ *                            or two into the caller's draft reminder.
+ * @param props.staAppObj   - State App Object: The shared app state, passed
+ *                            through to VisNotCom for its own visibility
+ *                            computation.
+ * @param props.tasRcdObj   - Task Record Object: The caller's draft of the
+ *                            reminder being edited.
  *
  * @returns The full schedule editor: the Repeat row plus whichever
  * detail subsection matches the current (or last non-once) repeat kind.
  *
  * @example
  * ```tsx
- * SchEdiCom({ actStoObj, aniExtBoo, layVarStr, ... }) // => <SchEdiCom />
+ * SchEdiCom({ aniExtBoo, layVarStr, onPatTasFun, ... }) // => <SchEdiCom />
  * ```
  *
 */
 
-function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRcdObj } ) {
-
-
-	const updPatFun = ( patValObj ) => actStoObj.updTasFun( tasRcdObj.id, patValObj ); // What: Update Patch Function. Why: Every schedule field editor below commits through this single call. How: This calls actStoObj.updTasFun with tasRcdObj's own id and the given patch.
-
+function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tasRcdObj } ) {
 
 
 	// #region Last Kind Memory
@@ -533,7 +527,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 					value={ ancIsoStr }
 
 					onBlur={ () => setAncEdiBoo( false ) }
-					onChange={ ( chaEveObj ) => { if ( chaEveObj.target.value ) updPatFun( { anchor : chaEveObj.target.value } ); } } // What: Anchor Change Guard. Why: Clearing the native date input must not commit an empty anchor. How: This commits only a non-empty value.
+					onChange={ ( chaEveObj ) => { if ( chaEveObj.target.value ) onPatTasFun( { anchor : chaEveObj.target.value } ); } } // What: Anchor Change Guard. Why: Clearing the native date input must not commit an empty anchor. How: This commits only a non-empty value.
 					onKeyDown={ ( keyEveObj ) => { // What: Anchor Key Down Handler. Why: Enter/Escape both need to close the inline anchor input, matching onBlur's own behavior. How: This checks for either key and, when matched, prevents the default action and closes the input.
 
 
@@ -625,7 +619,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 						onChange={ ( chaEveObj ) => { // What: Once Date Change Handler. Why: `min` only disables the picker UI's own earlier dates; typing a date by hand bypasses it in every browser, so a past pick still has to be clamped here. How: This commits chaEveObj's own value, clamped up to today when it's earlier.
 
 
-							if ( chaEveObj.target.value ) updPatFun( { onceDate : chaEveObj.target.value < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : chaEveObj.target.value } ); // What: Clamped Commit Guard. Why: A typed-in date must still commit, but never earlier than today. How: This calls updPatFun only when a value exists, clamping it up to today when needed.
+							if ( chaEveObj.target.value ) onPatTasFun( { onceDate : chaEveObj.target.value < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : chaEveObj.target.value } ); // What: Clamped Commit Guard. Why: A typed-in date must still commit, but never earlier than today. How: This calls onPatTasFun only when a value exists, clamping it up to today when needed.
 
 
 						} }
@@ -750,7 +744,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 								aria-describedby={ schNotStr }
 								aria-label='Interval in weeks'
 
-								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
+								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-weeks control. How: This clamps its own committed value to a minimum of 1 whole week. */ }
 
 							<span>{ ( tasRcdObj.interval || 1 ) === 1 ? 'week on' : 'weeks on' }</span>{ /* What: Weeks Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'week on' and 'weeks on' based on tasRcdObj's own interval. */ }
@@ -765,8 +759,8 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 
 							desIdeStr={ schNotStr }
 
-							onChange={ ( weeSelArr ) => updPatFun( { daysOfWeek : weeSelArr } ) }
-						/>{ /* What: Weekday Chips Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through updPatFun. */ }
+							onChange={ ( weeSelArr ) => onPatTasFun( { daysOfWeek : weeSelArr } ) }
+						/>{ /* What: Weekday Chips Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through onPatTasFun. */ }
 
 
 
@@ -832,7 +826,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 								aria-describedby={ schNotStr }
 								aria-label='Interval in days'
 
-								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
+								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-days control. How: This clamps its own committed value to a minimum of 1 whole day. */ }
 
 							<span>days</span>{ /* What: Days Label Span Element. Why: This is the inline control's own trailing word. How: This renders the literal, always-plural text "days". */ }
@@ -900,7 +894,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 								aria-describedby={ schNotStr }
 								aria-label='Interval in months'
 
-								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
+								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-months control. How: This clamps its own committed value to a minimum of 1 whole month. */ }
 
 							<span>{ ( tasRcdObj.interval || 1 ) === 1 ? 'month' : 'months' }</span>{ /* What: Months Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'month' and 'months' based on tasRcdObj's own interval. */ }
@@ -960,7 +954,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 							ariLabStr='Day selection'
 							desIdeStr={ schNotStr }
 
-							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
+							onChange={ ( modKeyStr ) => onPatTasFun( { dateMode : modKeyStr } ) }
 						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRcdObj's new dateMode. */ }
 
 
@@ -981,7 +975,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Week of the month'
 
-									onChange={ ( chaEveObj ) => updPatFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Ordinal Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as tasRcdObj's new nthOrdinal. */ }
 
 
@@ -1008,7 +1002,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Weekday'
 
-									onChange={ ( chaEveObj ) => updPatFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRcdObj's new nthWeekday. */ }
 
 
@@ -1047,7 +1041,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Day of the month'
 
-									onChange={ ( chaEveObj ) => updPatFun( { dayOfMonth : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { dayOfMonth : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Day-Of-Month Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new dayOfMonth. */ }
 
 
@@ -1135,7 +1129,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 								aria-describedby={ schNotStr }
 								aria-label='Interval in years'
 
-								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
+								onChange={ ( chaEveObj ) => onPatTasFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) } // What: Interval Clamp Commit. Why: An empty or invalid number must never commit an interval below 1. How: This parses the typed value, falling back to 1 and clamping at 1.
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-years control. How: This clamps its own committed value to a minimum of 1 whole year. */ }
 
 							<span>{ ( tasRcdObj.interval || 1 ) === 1 ? 'year' : 'years' }</span>{ /* What: Years Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'year' and 'years' based on tasRcdObj's own interval. */ }
@@ -1195,7 +1189,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 							ariLabStr='Day selection'
 							desIdeStr={ schNotStr }
 
-							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
+							onChange={ ( modKeyStr ) => onPatTasFun( { dateMode : modKeyStr } ) }
 						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRcdObj's new dateMode. */ }
 
 
@@ -1214,7 +1208,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Week of the month'
 
-									onChange={ ( chaEveObj ) => updPatFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Ordinal Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as tasRcdObj's new nthOrdinal. */ }
 
 
@@ -1241,7 +1235,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Weekday'
 
-									onChange={ ( chaEveObj ) => updPatFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRcdObj's new nthWeekday. */ }
 
 
@@ -1270,7 +1264,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Month'
 
-									onChange={ ( chaEveObj ) => updPatFun( { month : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { month : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Month Select Element. Why: This is the target-month picker for the Nth-weekday mode. How: This commits the chosen option's own 1-indexed value as tasRcdObj's new month. */ }
 
 
@@ -1307,7 +1301,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Month'
 
-									onChange={ ( chaEveObj ) => updPatFun( { month : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { month : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Month Select Element. Why: This is the target-month picker for the default mode. How: This commits the chosen option's own 1-indexed value as tasRcdObj's new month. */ }
 
 
@@ -1334,7 +1328,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 									aria-describedby={ schNotStr }
 									aria-label='Day'
 
-									onChange={ ( chaEveObj ) => updPatFun( { day : parseInt( chaEveObj.target.value ) } ) }
+									onChange={ ( chaEveObj ) => onPatTasFun( { day : parseInt( chaEveObj.target.value ) } ) }
 								>{ /* What: Day Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRcdObj's new day. */ }
 
 
@@ -1438,7 +1432,7 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 					ariLabStr='Repeat'
 					desIdeStr={ repNotStr }
 
-					onChange={ ( modKeyStr ) => updPatFun({ // What: Repeat Change Handler. Why: interval is shared across interval/weekly/monthly/annual (each its own "every N ___"), so switching kind resets it to that kind's own sensible default instead of carrying over a number that meant something else a moment ago. How: This commits the new repeat kind plus a matching default interval.
+					onChange={ ( modKeyStr ) => onPatTasFun({ // What: Repeat Change Handler. Why: interval is shared across interval/weekly/monthly/annual (each its own "every N ___"), so switching kind resets it to that kind's own sensible default instead of carrying over a number that meant something else a moment ago. How: This commits the new repeat kind plus a matching default interval.
 
 
 						interval : modKeyStr === 'interval' ? 2 : 1, // What: Interval. Why: Every N days defaults to every 2, since every 1 day would just be daily. How: This picks 2 for the interval kind and 1 for every other kind.
