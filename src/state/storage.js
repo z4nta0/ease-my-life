@@ -183,6 +183,8 @@ function opeDatFun() {
 
 			if ( !upgDatObj.objectStoreNames.contains( STA_STO_STR ) ) upgDatObj.createObjectStore( STA_STO_STR ); // What: State Store Creation Check. Why: The state object store must exist before anything can be read from or written to it. How: This creates it only when it is not already present, so a later version bump never re-creates an existing store.
 
+
+
 			if ( !upgDatObj.objectStoreNames.contains( PIC_LOG_STR ) ) upgDatObj.createObjectStore( PIC_LOG_STR ); // What: Pick Log Store Creation Check. Why: The pick log object store must exist before anything can be read from or written to it. How: This creates it only when it is not already present, so a later version bump never re-creates an existing store.
 
 
@@ -734,6 +736,8 @@ async function iniStoFun() {
 
 	if ( cacStaObj && cacStaObj.pickLog ) lplRefArr = cacStaObj.pickLog; // What: Last-Pick-Log Reference Seed. Why: wriDatFun's own change-detection needs a starting reference so it does not treat the very first save after boot as a change. How: This seeds lplRefArr from whatever pickLog cacStaObj already has, if any.
 
+
+
 	logSusBoo = !!( cacStaObj && cacStaObj.__mirrorNoLog && !( cacStaObj.pickLog || [] ).length ); // What: Log Suspect Boolean Seed. Why: A state adopted from the warm mirror with an empty pickLog must be flagged before the very first save could otherwise let that empty array overwrite real IDB history. How: This is true only when cacStaObj carries the __mirrorNoLog marker and its own pickLog is empty.
 
 
@@ -750,6 +754,7 @@ async function iniStoFun() {
 
 
 			if ( booCouNum >= SNA_KEE_NUM ) localStorage.removeItem( MIG_SNA_STR ); // What: Snapshot Retirement Check. Why: The migration snapshot only exists to roll back a bad migration, not to live forever as a permanent plaintext copy. How: This removes it once booCouNum reaches SNA_KEE_NUM.
+
 
 
 			if ( booCouNum >= SNA_KEE_NUM ) { // What: Dead Generation Sweep Check. Why: Every pre-IDB localStorage generation is a full plaintext copy of user data that the current layer never reads again once IDB is proven. How: This sweeps them, gated on the same booCouNum threshold as the snapshot retirement above.
@@ -1168,6 +1173,7 @@ async function staRepFun() {
 
 
 		if ( navigator.storage && navigator.storage.persisted ) outStaObj.persisted = await navigator.storage.persisted(); // What: Output Persisted Assignment Check. Why: The Settings panel needs to know whether eviction-exempt persistence has already been granted. How: This awaits navigator.storage.persisted() only when that API exists, assigning its result onto outStaObj.
+
 
 
 		if ( navigator.storage && navigator.storage.estimate ) { // What: Storage Estimate Check. Why: The Settings panel's headroom display needs the browser's own approximate usage/quota figures. How: This gates the estimate call and its two assignments below on that API existing at all.

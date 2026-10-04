@@ -131,9 +131,11 @@ function invColFun( hexColStr ) {
 
 			return [ // What: Linear Rgb Triple Return. Why: The caller needs plain linear-light RGB, ready for the sRGB re-encoding step. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix to lmsLonNum/lmsMedNum/lmsShoNum.
 
+
 				4.0767416621 * lmsLonNum - 3.3077115913 * lmsMedNum + 0.2309699292 * lmsShoNum,  // What: Linear Red Channel. Why: The caller needs the red channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's red row to lmsLonNum/lmsMedNum/lmsShoNum.
 				-1.2684380046 * lmsLonNum + 2.6097574011 * lmsMedNum - 0.3413193965 * lmsShoNum, // What: Linear Green Channel. Why: The caller needs the green channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's green row to lmsLonNum/lmsMedNum/lmsShoNum.
 				-0.0041960863 * lmsLonNum - 0.7034186147 * lmsMedNum + 1.7076147010 * lmsShoNum, // What: Linear Blue Channel. Why: The caller needs the blue channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's blue row to lmsLonNum/lmsMedNum/lmsShoNum.
+
 
 			];
 

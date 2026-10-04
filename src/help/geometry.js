@@ -188,7 +188,6 @@ function finTarFun ( selStr ) {
 			} );
 
 
-
 		if ( tarEleArr.length ) return tarEleArr; // What: First Match Return. Why: An earlier alternative that actually matched something wins over a later one. How: This returns as soon as this alternative's own filtered array is non-empty.
 
 

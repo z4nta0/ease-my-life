@@ -248,7 +248,13 @@ function enpAplFun( curStaObj, curEntObj ) {
 
 
 			if ( 'value' in matUpdObj ) nexIteObj.value = matUpdObj.value;                // What: Value Patch. Why: An updates row only sometimes carries a new value. How: This applies matUpdObj's own value only when the key is present.
+
+
+
 			if ( 'weight' in matUpdObj ) nexIteObj.weight = matUpdObj.weight;             // What: Weight Patch. Why: An updates row only sometimes carries a new weight. How: This applies matUpdObj's own weight only when the key is present.
+
+
+
 			if ( 'chargeStep' in matUpdObj ) nexIteObj.chargeStep = matUpdObj.chargeStep; // What: Charge Step Patch. Why: An updates row only sometimes carries a new chargeStep. How: This applies matUpdObj's own chargeStep only when the key is present.
 
 

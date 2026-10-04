@@ -2738,6 +2738,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								{ [ // What: Type Pill Entry Array. Why: The Type row's own pills combine every real mode with the Conditionals/Reminders sentinels. How: This spreads all three sources into one array, sorted and rendered by the chain below. // Conditionals/Reminders sort in alphabetically alongside the real modes, rather than being pinned, so they're easy to find now that both this rail and the Show rail below sort that way. typFilStr doubles as their own scope value ('conditionals' / 'reminders', not a real picker mode) so the Show row below can narrow to just that one card instead of the full "All" list, visPicArr's own mode match naturally excludes every real picker under either value, same as any other empty mode.
 
+
 									...exiModArr.map( ( picModStr ) => ( { // What: Mode Entry Mapping. Why: Every real mode in use needs its own pill entry with a matching count/click handler before the combined list is sorted. How: This maps each exiModArr entry to a small { key, name, count, isOn, onClick } shape.
 
 
@@ -2876,6 +2877,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							) }
 
 							{ [ // What: Scope Tab Entry Array. Why: The Show row's own tabs combine the Conditionals/Reminders sentinels with every visible picker. How: This spreads all three sources into one array, sorted and rendered by the chain below. // Everything after "All", Conditionals, Reminders, and every visible picker, sorts together alphabetically by its own displayed name, rather than Conditionals/ Reminders being pinned right after All. typFilStr 'conditionals'/'reminders' (set by their own Type-rail pill) narrows this down to just that one card, same as any real group/type narrows to its own pickers.
+
 
 								...( ( typFilStr === 'all' || typFilStr === 'conditionals' ) && hasConBoo // What: Conditionals Tab Entry Array. Why: The Conditionals scope tab only belongs in the list while it's reachable from the current Type filter and at least one conditional exists. How: This is a one-entry array (or empty) spread into the combined list below.
 									? [ { cliFun : () => setScoValStr( 'conditionals' ), keyStr : 'conditionals', labStr : 'Gates', namStr : 'Conditionals', selBoo : isaConBoo } ] // What: Conditionals Tab Branch. Why: The sentinel tab is reachable here. How: This supplies a one-entry array for the Conditionals scope.

@@ -714,13 +714,23 @@ function migStaFun( curStaObj ) {
 
 			if ( !Array.isArray( nexPicObj.daysOfWeek ) ) nexPicObj.daysOfWeek = [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Days-Of-Week Backfill. Why: A picker with no schedule override at all still needs an explicit "every day" default. How: This backfills daysOfWeek to every weekday when it isn't already an array.
 
+
+
 			if ( CAD_NAM_OBJ ) nexPicObj.daysOfWeek = CAD_NAM_OBJ.enfWeeFun( nexPicObj ); // What: Weekly-Anchor Enforce. Why: For weekly cadence, the anchor day must always be one of the allowed days, backfilling state saved before this rule existed. How: This calls CAD_NAM_OBJ.enfWeeFun to fold nexPicObj's own anchor into its daysOfWeek.
+
+
 
 			if ( typeof nexPicObj.skipHolidays !== 'boolean' ) nexPicObj.skipHolidays = false; // What: Skip-Holidays Backfill. Why: Every picker needs an explicit holiday-skipping flag. How: This backfills skipHolidays to false when it isn't already a boolean.
 
+
+
 			if ( typeof nexPicObj.avoidDuplicates !== 'boolean' ) nexPicObj.avoidDuplicates = false; // What: Avoid-Duplicates Backfill. Why: The avoid-duplicate-item-names flag was added later. How: This backfills avoidDuplicates to false when it isn't already a boolean.
 
+
+
 			if ( !CAD_NAM_OBJ.isaCadFun( nexPicObj.cadence ) ) Object.assign( nexPicObj, CAD_NAM_OBJ.norCadFun( nexPicObj ) ); // What: Picker-Cadence Normalize. Why: Picker Cadence (surfacing anchor + display unit) was added later; old state defaults to 'daily' (the original behavior) with sensible anchors. How: This calls CAD_NAM_OBJ.norCadFun and merges its own result onto nexPicObj when nexPicObj's own cadence isn't already a real one.
+
+
 
 			if ( typeof nexPicObj.hidden !== 'boolean' ) nexPicObj.hidden = false; // What: Hidden-Flag Backfill. Why: Every picker needs an explicit hidden flag, same reasoning as the tasks backfill above. How: This backfills hidden to false when it isn't already a boolean.
 
@@ -737,6 +747,8 @@ function migStaFun( curStaObj ) {
 
 
 	if ( curStaObj && ( !curStaObj.ui || typeof curStaObj.ui !== 'object' ) ) curStaObj.ui = {}; // What: Ui Object Backfill. Why: Persisted UI prefs need a real object to build on. How: This backfills curStaObj.ui to {} when it's missing or not a plain object.
+
+
 
 	if ( curStaObj && ( !curStaObj.ui.controlsCollapsed || typeof curStaObj.ui.controlsCollapsed !== 'object' ) ) curStaObj.ui.controlsCollapsed = {}; // What: Controls-Collapsed Object Backfill. Why: controlsCollapsed maps a section id to whether its own Controls sub-panel is collapsed (absent/false means open) and was added later. How: This backfills curStaObj.ui.controlsCollapsed to {} when it's missing or not a plain object.
 
@@ -778,6 +790,7 @@ function migStaFun( curStaObj ) {
 
 					const norGroStr = norGroFun( curPicObj.group ); // What: Normalized Group String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls norGroFun on curPicObj's own group.
 
+
 					if ( norGroStr ) curPicObj.group = norGroStr; // What: Group Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own group. How: This writes norGroStr back onto curPicObj.group when it's truthy.
 
 
@@ -789,6 +802,7 @@ function migStaFun( curStaObj ) {
 
 
 					const norNamStr = norPicFun( curPicObj.name ); // What: Normalized Name String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls norPicFun on curPicObj's own name.
+
 
 					if ( norNamStr ) curPicObj.name = norNamStr; // What: Name Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own name. How: This writes norNamStr back onto curPicObj.name when it's truthy.
 

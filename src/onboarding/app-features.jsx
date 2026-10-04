@@ -512,6 +512,8 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 						if ( heaButArr[ 0 ] && heaButArr[ 0 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: Controls must start collapsed if it defaulted open. How: This toggles the picker's own ':controls' section only when it's currently expanded.
 
+
+
 						if ( heaButArr[ 1 ] && heaButArr[ 1 ].getAttribute( 'aria-expanded' ) === 'true' ) actStoObj.togColFun( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items must start collapsed if it defaulted open. How: This toggles the picker's own ':items' section only when it's currently expanded.
 
 
@@ -823,6 +825,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 		return [ // What: Protect Data Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the protect-data tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
+
 			...( alrProBoo ? [] : [ { // What: Protect Your Data Step Spread. Why: This step must not exist at all for a browser whose storage is already persisted, since its own target would never render. How: This spreads in a single-entry array only when alrProBoo is false, otherwise an empty array. // .set-protect-btn, new modifier class on the "Protect Data" ButBasCom in tab-settings.jsx (only rendered while !stor.persisted, same condition already gating the real button). Omitted entirely when alrProBoo (see FeaTouCom's own effect that computes it): a browser that already has persisted storage never renders this button at all, so this step's cirBoo target would never resolve; without this the tour would sit on a phantom "Step 2 of 3" until the generic not-found timeout gave up and cancelled the whole tutorial. Skipping the step outright instead makes this a clean "Step n of 2".
 
 
@@ -866,6 +869,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 
 
 };
+
 // #endregion buiTesFun
 
 // #endregion Helpers

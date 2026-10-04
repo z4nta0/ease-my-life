@@ -468,6 +468,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				if ( document.querySelector( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook~="groNamInp"]' ) ) forNamFun( actStoObj ); // What: Open Rename Guard. Why: The same blur-races-the-click risk as a real Done click applies here too, clicking Skip is ALSO a click on a different element than the input. How: This forces the real name back only when the rename input is actually still open.
 
 
+
 				const canButEle = document.querySelector( '[data-element-name-hook~="ediBanSpa"] [data-element-name-hook~="ediCanBut"]' ); // What: Cancel Button Element. Why: This reverts any group reordering, a harmless no-op if Edit Mode was never entered, since the banner/button won't exist. How: This looks it up fresh, since it only exists while Edit Mode is on.
 
 

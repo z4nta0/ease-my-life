@@ -1295,7 +1295,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				const eliIteArr = staAppObj.items.filter( isaEliFun ).sort( ordIteFun ); // What: Eligible Item Array. Why: This is the actual candidate pool re-roll cycles through; deterministic order (value desc, then oldest lastPicked, then id) is stable since done-gating freezes values between rolls. How: This filters with isaEliFun and sorts with ordIteFun.
 
 
-
 				if ( eliIteArr.length >= 2 ) { // What: Enough Candidates Guard. Why: Fewer than 2 eligible candidates means the UI already disabled the button, so this is a safe no-op rather than a real error case. How: This only proceeds once eliIteArr has at least 2 entries.
 
 
@@ -2391,6 +2390,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 		const nexEntArr = [ // What: Next Entry Array. Why: This is the exact new today.entries this generation produces. How: This concatenates every carried entry, day-off card, empty-ease card, and fresh pick (staged as pending) into one array.
 
+
 			...carEntArr, // What: Carried Entries Spread. Why: A still-open non-daily entry persists verbatim (the store unwraps each _carry record). How: This spreads carEntArr in first.
 			...daoCarArr, // What: Day-Off Cards Spread. Why: Every triggered conditional's own card becomes a real entry. How: This spreads daoCarArr in next.
 			...empEasArr, // What: Charging Cards Spread. Why: Every empty ease-up picker's own charging card becomes a real entry. How: This spreads empEasArr in next.
@@ -2417,7 +2417,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			} ) )
-
 
 
 		];

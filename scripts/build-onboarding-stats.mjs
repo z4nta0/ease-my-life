@@ -474,7 +474,6 @@ const forArrFun = ( rowArrAny, trlStr, cmtStr ) => { // What: Format Array Funct
 	const rowTexArr = celArrArr.map( ( curCelArr ) => curCelArr.join( ' ' ).trimEnd() ); // What: Row Text Array. Why: Each row's padded cells join into its inner text. How: This joins them with single spaces, trimming the last cell's padding.
 	const rowWidNum = Math.max( ...rowTexArr.map( ( curTexStr ) => curTexStr.length ) ); // What: Row Width Number. Why: Every closing brace lines up at one shared column. How: This is the longest row's inner text.
 
-
 	// #endregion Row Joining
 
 

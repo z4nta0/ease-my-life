@@ -506,6 +506,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 		const preOpeStr = preOpeRef.current; // What: Previous Open String. Why: This is compared against opeIdeStr below to detect the exact close transition. How: This reads preOpeRef's own remembered prior value.
 
+
 		if ( preOpeStr != null && preOpeStr !== opeIdeStr ) setInsIdeStr( preOpeStr ); // What: Close Transition Guard. Why: Only a genuine "was open, now isn't (or moved to a different row)" transition should replay the insert entrance. How: This stages preOpeStr as insIdeStr only when both conditions hold.
 
 
@@ -936,6 +937,7 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 										const carOpeBoo = opeIdeStr === curTasObj.id;  // What: Card Open Boolean. Why: This single check decides both this row's own toggle-button-vs-name-input branch and whether its editor ColDisCom is open. How: This compares opeIdeStr against curTasObj's own id.
 										const isaOncBoo = curTasObj.repeat === 'once'; // What: Is-A Once Boolean. Why: The row's own type icon depends on whether this is a one-time or recurring reminder. How: This checks curTasObj's own repeat.
+
 
 
 										return (

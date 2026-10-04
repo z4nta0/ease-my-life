@@ -462,7 +462,11 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 			if ( actIteObj && isaVacFun( actIteObj.id, dayIsoStr ) ) actIteObj = null; // What: Active Item Inactive Guard. Why: An in-progress item that just became inactive can no longer stay the active one. How: This clears actIteObj when isaVacFun reports it inactive on this simulated day.
 
+
+
 			if ( actIteObj && Math.random() < 0.05 ) actIteObj = null; // What: Random Abandon Guard. Why: A real user occasionally rerolls or manually abandons an in-progress Ease Down item before it fully depletes. How: This clears actIteObj on a 5% roll, simulating that abandonment.
+
+
 
 			if ( !actIteObj ) { // What: New Active Item Guard. Why: This is the guard gating the whole block below: with no item currently active, one must be drawn and started at full charge. How: This checks actIteObj for falsiness before running the 2 statements below.
 

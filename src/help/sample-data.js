@@ -59,6 +59,7 @@ import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.js'; // What: Onboard
 const CON_GAT_STR = 'cnd_hlp_restday'; // What: Conditional Gate String. Why: PIC_GAT_OBJ below needs a stable id to point its own conditionalId at. How: This is a literal, load-bearing string, never generated at runtime.
 
 
+
 const CON_GAT_OBJ = { // What: Conditional Gate Object. Why: This is the day-off gate example described above, holding an existing item of value; PIC_GAT_OBJ depends on it via conditionalId. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created conditional.
 
 
@@ -69,6 +70,7 @@ const CON_GAT_OBJ = { // What: Conditional Gate Object. Why: This is the day-off
 
 
 };
+
 
 
 const PIC_GAT_OBJ = { // What: Picker Gate Object. Why: This is the picker that depends on CON_GAT_OBJ in the day-off gate example described above. How: This is added by sedPicFun/removed by clePicFun exactly like any real, user-created picker.

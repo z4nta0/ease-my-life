@@ -204,6 +204,7 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
 
 	const banCurEle = document.querySelector( '[data-element-name-hook~="ediBanDiv"]' ); // What: Banner Current Element. Why: Edit Mode's own sticky banner is a third, independently-present piece of chrome. How: This looks up the banner element fresh on every call.
 
+
 	if ( banCurEle ) floBotNum = Math.max( floBotNum, banCurEle.getBoundingClientRect().bottom ); // What: Banner Bottom Fold. Why: The banner can sit lower than the header/rail alone would suggest whenever Edit Mode is on. How: This widens floBotNum to whichever is lower between the current value and the banner's own bottom edge.
 
 
@@ -354,7 +355,9 @@ const todTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why
 
 		const maiCurEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Main Current Element. Why: The app's own scrollable content lives inside this container, separate from the window itself. How: This looks it up fresh, since it may not exist on every layout.
 
+
 		if ( maiCurEle ) maiCurEle.scrollTop = 0; // What: Main Scroll Reset. Why: The app's own scroller needs resetting independently of the window. How: This zeroes maiCurEle's own scrollTop when it exists.
+
 
 
 		window.scrollTo( 0, 0 ); // What: Window Scroll Reset. Why: On layouts where the page itself (not .main) scrolls, that needs resetting too. How: This scrolls the window to the very top-left.
@@ -1075,6 +1078,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 		const livSteObj = curSteRef.current; // What: Live Step Object. Why: The freshest step object must be read off the ref, not a stale render closure. How: This reads curSteRef.current directly.
+
 
 
 		return !( livSteObj && finTarFun( livSteObj.cliSelStr || livSteObj.selStr ).some( ( curIteEle ) => curIteEle.contains( cliEveObj.target ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches.

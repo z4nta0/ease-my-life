@@ -2515,6 +2515,7 @@ function useAppStaFun( optArgObj ) {
 
 				const curLatObj = latStaRef.current; // What: Current Latest Object. Why: The check below needs the freshest state, not a possibly-stale closed-over one. How: This reads latStaRef's own current value.
 
+
 				if ( PWA_NAM_OBJ && curLatObj && ( curLatObj.pickers || [] ).length === 0 ) PWA_NAM_OBJ.askFirFun(); // What: First-Picker Call Guard. Why: Only an account with zero existing pickers is about to create its own first one. How: This calls PWA_NAM_OBJ.askFirFun only when PWA_NAM_OBJ/curLatObj exist and curLatObj.pickers is empty.
 
 

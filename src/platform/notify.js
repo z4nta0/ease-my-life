@@ -245,6 +245,7 @@ async function askOncFun() {
 	if ( perResStr !== 'default' ) stoSetFun( ASK_KEY_STR, '1' ); // What: Ask Flag Write Guard. Why: The one-time "asked" flag must only be burned once the user has actually answered the prompt; a dismissal leaves the permission at 'default' and should still be askable later. How: This writes the flag only when perResStr resolved to something other than 'default'.
 
 
+
 	broSubFun(); // What: Broadcast Subscriber Call. Why: Every subscriber (the Settings page's own permission-state display) needs to hear about this potential permission change. How: This calls broSubFun with no arguments, notifying every current subscriber.
 
 

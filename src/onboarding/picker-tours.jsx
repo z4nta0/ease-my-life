@@ -394,6 +394,7 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 
 		const scrConEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
 
+
 		if ( scrConEle ) scrConEle.scrollTop = 0; // What: Scroll Container Reset. Why: This must only run when the element actually exists. How: This zeroes scrConEle's own scrollTop.
 
 

@@ -181,6 +181,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 		if ( resObsObj && navCurEle ) resObsObj.observe( navCurEle ); // What: Resize Observer Start Guard. Why: This should only begin observing once both the observer and the nav element actually exist. How: This starts watching the nav element for size changes.
 
 
+
 		window.addEventListener( 'resize', meaPosFun ); // What: Window Resize Listener. Why: This catches viewport-level resizes that would not necessarily change the nav element's own size but could still shift the tab layout. How: This re-runs meaPosFun on every window resize event.
 
 
@@ -580,6 +581,7 @@ function AppRooCom () {
 		else if ( theKeyStr === 'customDark' && appCurObj.customDark ) palResObj = APP_NAM_OBJ.resCusFun( 'dark', appCurObj.customDark ); // What: Custom Dark Branch. Why: Same reasoning as the light branch, for a user-defined dark palette. How: This resolves the user's own saved custom-dark colors into a usable palette object.
 
 		else palResObj = APP_NAM_OBJ.PAL_SET_OBJ[theKeyStr] || APP_NAM_OBJ.PAL_SET_OBJ.ink; // What: Built-in Palette Branch. Why: Every other theme key maps to one of the app's own built-in palettes. How: This looks up the resolved key in PAL_SET_OBJ, falling back to the ink palette if the key is somehow unrecognized.
+
 
 
 		APP_NAM_OBJ.appPalFun( palResObj, theKeyStr ); // What: Apply Palette Call. Why: Resolving a palette does nothing on its own, since it still has to be written to the page. How: This applies the resolved palette's colors, and records the active key, onto the document.

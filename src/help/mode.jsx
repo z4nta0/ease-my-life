@@ -866,6 +866,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 						? [ curIteObj.ideStr ]                                                                                // What: Single Badge Identifier. Why: An ordinary item has exactly one badge. How: This wraps its own id in an array.
 						: [];                                                                                                 // What: No Badge Fallback. Why: An item with no rect this frame gets no badge. How: This returns an empty array.
 
+
+
 				return badIdeArr.map( ( curIdeStr ) => { // What: Badge Id Map. Why: Every id this item resolved to above needs its own rendered badge button. How: This maps badIdeArr, reading each one's own current rect back out of recMapObj.
 
 
