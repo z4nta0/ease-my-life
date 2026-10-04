@@ -4370,21 +4370,12 @@ Three tiers:
     one-line siblings: each one is a single-line exit guard, so "###
     Return and continue statements" gives it 3 blank lines before and
     after, even when every guard checks the same value (e.g.
-    `tasks.js`'s own `sumTasFun` `dowSetArr.length` checks). An earlier
-    version of this bullet allowed 1 here; `cadence.js`/
-    `conditionals.js` get corrected in the final file-by-file pass.
-    The moment EITHER side of a transition is a multi-line `if` block
-    (its own closing `}` on a line by itself), that specific gap is
-    Somewhat related (2) instead, the same "different kind of code
-    construct" reasoning as the declare-then-block case above, even
-    between two multi-line siblings back to back (a closing `}`
-    immediately followed by the next `if` is itself the shift, not
-    whether the two sides "match"). See `perStaFun`'s weekly-into-monthly
-    and monthly-into-yearly (multi-line into multi-line) transitions, and
-    `advValFun`'s
-    ease-up/dynamic/ease-down (all multi-line, each gap still 2) in
-    `src/core/cadence.js` and `src/core/conditionals.js` for the reference
-    examples.
+    `tasks.js`'s own `sumTasFun` `dowSetArr.length` checks). The same
+    holds when either sibling is a multi-line `if` block (decided
+    2026-10-03, replacing an earlier 2-blank allowance): the line after any
+    finished `if` construct always gets 3 blank lines, per "### if/else,
+    while, and for statements", and only the branches of one `if`/`else
+    if`/`else` chain sit 1 blank line apart.
 - **Unrelated (3 blank lines)**: no real shared data and no real shared
   purpose, including cases that only *look* structurally parallel. Two
   independent "declare + guard clause" pairs that happen to share the same
