@@ -7,9 +7,10 @@ import cssModObj from './legal-docs.module.css'; // What: CSS Module Object. Why
 import React     from 'react';                   // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { durMilFun } from '../../utils/rhythm.js'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom } from '../../ui/icon.jsx';     // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
-import { redMotFun } from '../../utils/motion.js'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
+import { createPortal } from 'react-dom';             // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.
+import { durMilFun    } from '../../utils/rhythm.js'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { IcoSvgCom    } from '../../ui/icon.jsx';     // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { redMotFun    } from '../../utils/motion.js'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
 
 // #endregion Imports
 
@@ -1014,10 +1015,22 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 
-		const onKeyEscFun = ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) modDisFun(); }; // What: On Key Escape Function. Why: Esc must dismiss the modal from anywhere on the page while it is open. How: This calls modDisFun only when the pressed key is Escape.
+		const onKeyEscFun = ( keyEveObj ) => { // What: On Key Escape Function. Why: Esc must dismiss the modal from anywhere on the page while it is open, and only the modal, not help mode underneath it. How: This dismisses the modal on Escape and marks the key handled.
 
 
-		document.addEventListener( 'keydown', onKeyEscFun ); // What: Escape Key Subscribe Call. Why: onKeyEscFun needs to be live for as long as the modal is open, not just checked once. How: This registers onKeyEscFun to run on every keydown while this effect is active.
+			if ( keyEveObj.key !== 'Escape' ) return; // What: Non Escape Guard. Why: Only Escape dismisses the modal. How: This ignores every other key.
+
+
+
+			keyEveObj.preventDefault(); // What: Handled Mark Call. Why: Help mode and the inline editors skip an Escape something else already handled, so closing the modal leaves them alone. How: This prevents the key's default action.
+
+			modDisFun(); // What: Dismiss Call. Why: This is the actual close. How: This calls modDisFun.
+
+
+		};
+
+
+		document.addEventListener( 'keydown', onKeyEscFun, true ); // What: Escape Key Subscribe Call. Why: onKeyEscFun must run for as long as the modal is open, ahead of help mode's own document listener. How: This registers onKeyEscFun in the capture phase, which runs before any listener added in the bubble phase.
 
 
 
@@ -1037,7 +1050,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 		return () => { // What: Effect Cleanup Function. Why: None of the Esc listener, the scroll lock, or the pending focus timeout may outlive this effect run. How: This removes the keydown listener, clears the focus timeout, and restores the scroller's own prior overflow and offset.
 
 
-			document.removeEventListener( 'keydown', onKeyEscFun ); // What: Escape Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onKeyEscFun reference that was registered.
+			document.removeEventListener( 'keydown', onKeyEscFun, true ); // What: Escape Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onKeyEscFun reference that was registered.
 
 
 			clearTimeout( focDelTim ); // What: Focus Timeout Teardown. Why: A pending focus call must not fire after this effect has already cleaned up. How: This cancels focDelTim, matching the setTimeout above.
@@ -1068,14 +1081,16 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 
-	return (
+	return createPortal( // What: Portal Return. Why: The modal must render into <body>, outside the Settings tab's own subtree, so no ancestor's transform or stacking context can shrink it or bury it under help mode's highlights. How: This portals the backdrop and its panel into document.body.
 
 
 		<div
 			className={` ${ cssModObj.legBacDiv }   ${ modCloBoo ? cssModObj.legBacDivClosing : '' } `}
 
+			data-element-name-hook='legBacDiv'
+
 			onMouseDown={ ( mouDowObj ) => { if ( mouDowObj.target === mouDowObj.currentTarget ) modDisFun(); } } // What: Backdrop Dismiss Handler. Why: Only a press on the scrim itself, not one inside the panel, should close the modal. How: This calls modDisFun only when the mousedown target is the backdrop element.
-		>{ /* What: Container Backdrop Div Element. Why: This is the modal's own full-viewport scrim, and a direct click on it (not on the panel inside it) should dismiss the modal. How: This wraps the panel below and calls modDisFun only when the mousedown target is the backdrop itself. */ }
+		>{ /* What: Container Backdrop Div Element. Why: This is the modal's own full-viewport scrim, and a direct click on it (not on the panel inside it) should dismiss the modal. How: This wraps the panel below and calls modDisFun only when the mousedown target is the backdrop itself. Its data-element-name-hook is read by help mode, which lets clicks inside the modal through. */ }
 
 
 			<div
@@ -1129,8 +1144,9 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 			</div>
 
 
-		</div>
+		</div>,
 
+		document.body // What: Document Body Target. Why: The modal must sit at the top level of the page, above help mode's own portaled overlay. How: This is createPortal's own container argument.
 
 	);
 

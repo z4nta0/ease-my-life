@@ -640,7 +640,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		const hitTarFun = ( cliEveObj ) => { // What: Hit Target Function. Why: A click is allowed through only when it lands on something help mode itself recognizes. How: This checks the app's own always-exempt chrome first, then falls back to checking every catalog item's own matched elements.
 
 
-			if ( cliEveObj.target.closest( '[data-element-name-hook~="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook~="helTogBut"], [data-element-name-hook~="appTabNav"], [data-element-name-hook~="touOveDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
+			if ( cliEveObj.target.closest( '[data-element-name-hook~="helBadBut"], [data-element-name-hook~="helTipDiv"], [data-element-name-hook~="helTogBut"], [data-element-name-hook~="appTabNav"], [data-element-name-hook~="touOveDiv"], [data-element-name-hook~="legBacDiv"]' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, a guided tour walking through this exact feature owns its own clicks already, and a legal document modal opened over help mode must still close and scroll. How: This allows the click through once it lands inside any of these 6 always-exempt regions.
 
 
 
@@ -682,7 +682,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 		const keyDowFun = ( keyDowObj ) => { // What: Key Down Function. Why: Escape closes one thing at a time, a tip first if one is open, then help mode itself on a second press. How: This checks the key, then which of the 2 close targets currently applies.
 
 
-			if ( keyDowObj.key !== 'Escape' ) return; // What: Non Escape Guard. Why: Only Escape is a meaningful key for this listener. How: This ignores every other key.
+			if ( keyDowObj.key !== 'Escape' || keyDowObj.defaultPrevented ) return; // What: Non Escape Guard. Why: Only an Escape nothing else already handled (such as one that just closed a legal document modal) is meaningful here. How: This ignores every other key and any already-handled Escape.
 
 
 
