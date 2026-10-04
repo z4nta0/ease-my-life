@@ -985,7 +985,6 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			tabCurEle.style.setProperty( '--tod-hea-hei', `${ heaHeiNum }px` );             // What: Header Height Property. Why: CSS elsewhere needs the header's own real height as a custom property. How: This writes heaHeiNum in pixels.
-			tabCurEle.style.setProperty( '--rail-h-h', `${ raiHeiNum }px` );                // What: Rail Height Property. Why: CSS elsewhere needs the rail's own real height (when horizontal) as a custom property. How: This writes raiHeiNum in pixels.
 			tabCurEle.style.setProperty( '--sti-top-hei', `${ heaHeiNum + raiHeiNum }px` ); // What: Sticky Top Height Property. Why: jumGroFun and the scroll-spy effect below both need this exact combined offset. How: This writes the sum of heaHeiNum and raiHeiNum in pixels.
 
 
