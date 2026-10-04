@@ -2369,6 +2369,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			}
 
 
+
+			await new Promise( ( resProFun ) => setTimeout( resProFun, durMilFun( 'p03' ) ) ); // What: Landing Wait. Why: The last slot's landing bounce must finish before the real cards replace the loaders, or its own bounce is cut short. How: This waits the same p03 duration step the bounce keyframes play over. // Duration Base Plus 3 ~= 366.9ms
+
+
 		}
 
 
