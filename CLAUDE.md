@@ -1854,16 +1854,10 @@ later, but don't invent one for anything else yet:
   in the same 3-space form (see "### CSS modules and JS hooks").
 
 ### Units: rem first
-Decided 2026-09-29, and not specific to this project. Every length uses
-`rem` unless something genuinely can't: that way everything scales when a
-person changes their browser's default font size, which a `px` value
-ignores. In this project 1rem is the 11px base font size (see the core
-design numbers exception under "### CSS modules and JS hooks"), so a `px`
-value converts at 11px per rem. Where a size has to scale with the
-viewport instead (e.g. a heading that grows with the screen), a viewport
-unit or another scaling unit is fine, but only when that scaling is
-actually needed. A value that really has to stay in `px` is raised when it
-comes up and recorded here, per "### Undefined cases: stop and ask".
+The general rule (every length in `rem`, viewport units only where scaling
+is needed) is in the user-level `~/.claude/CLAUDE.md`. In this project 1rem
+is the 11px base font size (see the core design numbers under "### CSS
+modules and JS hooks"), so a `px` value converts at 11px per rem.
 - **Text measure uses `em` or `ch`** (decided 2026-10-01): a paragraph's
   `max-width` follows its own font rather than the root, per "Text measure
   is font based" under "### CSS modules and JS hooks".
@@ -1875,71 +1869,24 @@ comes up and recorded here, per "### Undefined cases: stop and ask".
   `calc( var( --ver-rhy-p14 ) * 1rem )`, about 747px).
 
 ### Reduced motion
-Decided 2026-09-28. Everything that can have a reduced-motion variant gets
-one, whether the motion comes from CSS or from JS.
-- **CSS**: every `animation` or `transition`, color-only transitions
-  included, is paired with a `@media ( prefers-reduced-motion : reduce )`
-  variant (placed per the `@media` bullet under "### CSS modules and JS
-  hooks") that turns it off with `animation : none` or `transition :
-  none`. The exception is one that JS waits on (an
-  `onAnimationEnd`/`transitionend` handler that updates state): there
-  the variant shortens the duration to `.01ms` instead, since `none`
-  never fires the end event and would leave that state stuck.
-- **JS**: any motion JS drives itself (an `Element.animate` call, a
-  `requestAnimationFrame` tween, a smooth `scrollIntoView`/`scrollTo`, a
-  timed class or step sequence, a canvas or particle effect) checks
-  `utils/motion.js`'s own `redMotFun()` first and, when it returns
-  true, skips the motion and jumps straight to its end state (an
-  instant scroll, the final value, no particles), still running any
-  follow-up the motion's own completion would have triggered. The CSS
-  media query alone can't stop these, which is why the check lives in
-  JS.
-- **Exception, an explicitly requested preview**: an animation the user
-  starts on purpose just to see it (Settings' celebration and pick-animation
-  previews, played by pressing Play or Preview) keeps its motion under
-  reduced motion, since the press is consent to see it. Only the animation
-  being previewed is exempt; ordinary transitions inside the preview (a
-  hover fade, say) still get their reduced-motion variant. See `ui/
-  picker-strip.jsx`'s own `data-motion-force-active` and `tabs/settings/
-  previews.module.css`.
-- The modules migrated before this rule were brought in line in one
-  pass; everything else is checked as its file is next touched.
+The rule (a reduced-motion variant for every CSS and JS motion, and the
+preview exception) is in the user-level `~/.claude/CLAUDE.md`. In this
+project:
+- **CSS**: each variant is placed per the `@media` bullet under "### CSS
+  modules and JS hooks".
+- **JS**: the shared reduced-motion helper is `utils/motion.js`'s own
+  `redMotFun()`.
+- **Previews**: Settings' celebration and pick-animation previews, played
+  by pressing Play or Preview, are the explicitly requested previews. See
+  `ui/picker-strip.jsx`'s own `data-motion-force-active` and
+  `tabs/settings/previews.module.css`.
 
 ### Animation performance
-Decided 2026-10-03, and not specific to this project. Covers every
-animation and transition, CSS or JS-driven (an `Element.animate` call, a
-`requestAnimationFrame` loop writing styles).
-- **Animate compositor properties.** Motion uses `transform` (translate,
-  scale, rotate) and `opacity`, which the browser can run on the GPU
-  without redoing layout or paint, plus `filter` where a blur or glow is
-  the effect itself. Layout properties (`top`/`left`/`right`/`bottom`,
-  `width`/`height`, `max-height`, `margin`, `padding`, `inset`, ...) and
-  heavy paint properties (an animated `box-shadow` spread, a moving
-  `background-position`, ...) are animated only when no compositor
-  version can produce the effect, e.g. a collapse that has to push the
-  content below it, which a `transform` can't do. Such an exception gets
-  a comment on its line saying why the compositor version won't work. A
-  color change (a hover's `color`, `background-color`, or
-  `border-color`) has no compositor equivalent and is fine as is, since
-  it only repaints the one element.
-- **Decide on `will-change` deliberately.** For every animation, check
-  whether the hint helps, and add it when it does:
-  - **Use it** when JS moves an element frame by frame through
-    `transform` (no CSS animation is running to promote it), or when an
-    animation must start without a first-frame hitch on something that
-    isn't on its own layer yet. Set it for the motion's duration only (JS
-    adds it when the motion starts and clears it when it ends, the way
-    `tabs/today/reorder.js` does for a drag), or put it in CSS only on an
-    element that exists solely while it's moving (e.g. `ui/
-    picker-strip.module.css`'s reel track).
-  - **Leave it off** a plain CSS animation or transition, which the
-    browser already promotes for exactly as long as it runs, and never
-    leave it permanently on an element that only moves now and then:
-    each hint holds a layer in memory, and on text it can soften the
-    rendering.
-- Existing animations are checked against both bullets as each file comes
-  up in the CSS pass, and a property swap that changes how the motion
-  looks is raised with the user first.
+The rule (animate compositor properties, decide on `will-change`
+deliberately) is in the user-level `~/.claude/CLAUDE.md`. In this project,
+`tabs/today/reorder.js` sets `will-change` only for a drag's duration, and
+`ui/picker-strip.module.css`'s reel track carries it in CSS because the
+track exists only while it moves.
 
 ### CSS modules and JS hooks
 Decided 2026-09-27, for the CSS pass that follows the file-split pass. The
@@ -2392,42 +2339,20 @@ still passes.
       alphabetically, which would put `bas` first and `m02` after
       `m01`).
     - **Exception, the core design numbers** (decided 2026-09-29): the
-      user's own section of core design numbers always comes first inside
-      `:root`, ahead of the alphabetized token sections, and is never
-      alphabetized, neither its position nor the values inside it, which
-      stay in the order the user wrote them. They're the base values every
-      other custom property (and literal number) draws from, so other
-      tokens are fitted to them over time, carefully and one step at a
-      time, never all at once. Unlike the rest of this doc, these core
-      numbers aren't specific to this project: anything said here about
-      them applies to any project unless stated otherwise.
-    - **Height is ratio based** (decided 2026-09-29, also not specific to
-      this project): everything vertical (font size, line-height, height,
-      max-height, row gaps, top and bottom margins and padding, ...) is the
-      base font size times a power of the core design number, never a
-      free-standing number. The base font size is 11px, the smallest size
-      accessibility tools accept without flagging it, so the font size
-      scale starts there and only goes up. `html` sets the root font size
-      to 68.75% (11/16) of the browser's own default, so 1rem is that 11px
-      base at the usual 16px default and still follows any size a person
-      sets: `--fon-siz-bas` is `1rem`, and each step above it is `var(
-      --fon-siz-bas )` times the next `--cdn-pow-*` token.
-    - **Width is decided per project** (decided 2026-10-01, replacing an
-      earlier viewport-based rule): horizontal sizes are responsive, and
-      layouts vary too much between projects for one approach to fit all
-      of them. So whenever a project's horizontal sizes first need a
-      system, stop and discuss its horizontal layout design with the user
-      before converting anything, per "### Undefined cases: stop and
-      ask". The two options are the vertical rhythm (a `--ver-rhy-*` step
-      times `1rem`, the same steps heights use) or the plastic ratio
-      dividing the viewport width proportionally (a horizontal rhythm of
-      `100vw` over a power of the core design number, e.g. this project's
+      core design numbers section always comes first inside `:root` and is
+      never alphabetized, per "Core design numbers" in the user-level
+      `~/.claude/CLAUDE.md`, which also holds the general height, width,
+      text measure, and duration rules below.
+    - **Height is ratio based** (decided 2026-09-29): in this project
+      `--fon-siz-bas` is `1rem` (the 11px base), and each step above it is
+      `var( --fon-siz-bas )` times the next `--cdn-pow-*` token.
+    - **Width uses the vertical rhythm** (decided 2026-10-01): this
+      project's horizontal-layout choice. The viewport steps (the
       `--hor-rhy-*` tokens, whose comments quote each step at a 1920px
-      viewport). Record the project's choice here. In this project the
-      viewport steps were tried on the Today tab and didn't hold up below
-      about 1100px, so maximum widths use the vertical rhythm, e.g.
-      `max-width : calc( var( --ver-rhy-p11 ) * 1rem )`, with the steps
-      above `p09` added as these caps needed them.
+      viewport) were tried on the Today tab and didn't hold up below about
+      1100px, so maximum widths use the vertical rhythm, e.g. `max-width :
+      calc( var( --ver-rhy-p11 ) * 1rem )`, with the steps above `p09`
+      added as these caps needed them.
     - **Horizontal spacing is its own family** (decided 2026-10-01):
       left and right padding and margin use `--spa-hor-*` (spacing,
       horizontal), never `--spa-ver-*`, even where the two currently hold
@@ -2474,37 +2399,14 @@ still passes.
       rounded corner) stays literal. Numbers inside an SVG's own drawing
       space (path coordinates, `viewBox`, `strokeWidth`) are not CSS
       lengths, scale with the SVG, and are exempt.
-    - **Text measure is font based** (decided 2026-10-01, also not
-      specific to this project): a paragraph's `max-width` comes from the
-      project's main body font, not from either rhythm. Paragraph text
-      targets 66 characters per line and must land within 45 to 75; small
-      or secondary text (hints, captions, subtitles) targets 50 and must
-      land within 40 to 60. To pick a value, measure the main font's
-      average character width on real prose against both `1ch` (the width
-      of its "0") and `1em`, then use whichever unit and `--cdn-pow-*`
-      power lands closest to the target, written as `calc( var(
-      --cdn-pow-NNN ) * 1em )` or `* 1ch`. Both units follow the element's
-      own font size, so the measure holds at any text size. The token's
-      comment records the measured characters per unit and the line length
-      it gives, so the choice can be rechecked if the font changes. In
-      this project (Geist, about 2.22 characters per `em` and 1.49 per
-      `ch`), paragraphs use `--tex-wid-bas` (`pow-012 * 1em`, about 65
-      characters) and small text `--tex-wid-sma` (`pow-011 * 1em`, about
-      49).
-      - **Headings are exempt** (decided 2026-10-01): a heading is never a
-        long line of text, so it gets no text width cap; its container sets
-        its width.
-      - **A container that exists to hold reading text** (a modal, a card)
-        takes its `max-width` from its text's width plus its own horizontal
-        padding and borders (boxes are `border-box`), rather than a
-        free-standing number, e.g. `calc( var( --cdn-pow-012 ) * var(
-        --fon-siz-p01 ) + 56px + var( --bor-wid-sma ) * 2 )` for a panel
-        whose paragraphs are set at `--fon-siz-p01` with 28px of padding on
-        each side. The text's font size is written out, since an `em` on the
-        container would resolve against the container's own font size.
-      - **Every font follows the same caps**: text in a secondary font (e.g.
-        a mono caption) still uses the main font's `--tex-wid-*` tokens,
-        which land a little differently in that font but stay close.
+    - **Text measure is font based** (decided 2026-10-01): in this project
+      (Geist, about 2.22 characters per `em` and 1.49 per `ch`), paragraphs
+      use `--tex-wid-bas` (`pow-012 * 1em`, about 65 characters) and small
+      text `--tex-wid-sma` (`pow-011 * 1em`, about 49). A reading container
+      adds its padding and borders to the text width, e.g. `calc( var(
+      --cdn-pow-012 ) * var( --fon-siz-p01 ) + 56px + var( --bor-wid-sma )
+      * 2 )` for a panel whose paragraphs are set at `--fon-siz-p01` with
+      28px of padding on each side.
   - **A long explanatory comment** becomes a design-rationale block per
     "### Large / design-rationale comments": attached to a rule, its name
     line is `<selector> = <Expanded Name>` (e.g. `html, body = Page
@@ -2672,25 +2574,10 @@ are renamed to this as their files come up in the design-system pass.
   `0`, and `inherit`. JavaScript reads a radius the same way as any other
   step, through `rhyPxlFun`.
 - **Durations use a scale on the core design number** (decided
-  2026-10-01, and like the core numbers not specific to this project):
-  every step is a power of the core design number in milliseconds, the
-  same way every length is a power of it in rem. The base step is the 18th
-  power (`calc( var( --cdn-pow-018 ) * 1ms )`, about 157.8ms), chosen over
-  a free-standing 150ms because it keeps durations on the rhythm and fits
-  common interface timings closely (120ms lands on about 119ms). Steps
-  are named by base offset like the rhythm, from `m03` (about 68ms, the
-  shortest step that still reads as motion) up. Transitions use
-  `--dur-tra-*` and animations `--dur-ani-*`, the same steps in both. A
-  literal moves to a step by what the motion is for: **expressive** motion
-  (celebrations, confetti, check-mark pops, pulses, spins, sparkles)
-  rounds up to the next step, since extra length reads as more satisfying;
-  **interface** motion (hovers, toggles, collapses, modals, confirm rows,
-  cards and tabs entering and leaving) rounds to the nearest step, unless
-  that would make it more than 10% shorter, in which case it rounds up.
-  Durations aren't snapped to whole frames: the browser paints by elapsed
-  time, so any duration animates smoothly. Reduced-motion `.01ms` values,
-  `0ms`, and other near-zero durations that exist only so an end event
-  fires stay literal.
+  2026-10-01): the general rule is in the user-level `~/.claude/CLAUDE.md`.
+  In this project the base step is `calc( var( --cdn-pow-018 ) * 1ms )`,
+  steps run from `m03` up, transitions use `--dur-tra-*` and animations
+  `--dur-ani-*`, the same steps in both.
 - **Shadows use an elevation scale** (decided 2026-10-01): a drop shadow
   that lifts something off the page reads one of `--ele-sma-sha` (knobs and
   small raised controls), `--ele-med-sha` (small floating surfaces such as
@@ -5913,13 +5800,6 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   value) is fine either way.
 
 # Claude Code Rules
-
-## CRITICAL: Development Server Management
-- NEVER use global or pattern-based kill commands (e.g., `pkill`, `killall`, `fuser -k`) for `node`, `npm`, `vite`, `next`, or port numbers: these match by process name/command line across the *entire system*, so they can just as easily kill the user's own separately-running dev server as the one Claude started.
-- Shell state (including a PID captured via `$!`) does NOT persist between separate Bash tool calls in this environment: capturing a PID in one command and referencing it in a later command silently fails.
-- Start any dev/test server via the Bash tool's `run_in_background: true` option (not a manual `&` subshell); this returns a task ID that stays valid across turns.
-- To stop a server started that way, use the `TaskStop` tool with that task ID. Never `pkill`/`kill` by name, port, or a guessed PID.
-- Do not interfere with any pre-existing Node processes running in this environment, or any dev server the user started themselves.
 
 ## Reporting a commit
 After running `git commit`, always show the user the FULL commit message
