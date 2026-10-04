@@ -25,6 +25,7 @@ import { rhyPxlFun    } from '../../utils/rhythm.js';             // What: Rhyth
 import { SED_NAM_OBJ  } from '../../state/seed.js';               // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { togFadFun    } from '../../ui/edge-fade.js';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';           // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
+import { useFliRaiFun } from '../../ui/flip-rail.js';             // What: Use Flip Rail Function. Why: The conditional rail's selected pill should glide to the front instead of snapping, matching the Data tab. How: This is called once with the rail ref and a trigger key.
 import { WeeChiCom    } from '../../ui/weekday-chips.jsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
 
 
@@ -255,7 +256,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 	const raiCleRef = React.useRef( null ); // What: Rail Cleanup Reference. Why: The edge-fade cue on the conditional rail (matching the app's other horizontal rails) needs its own teardown function remembered across callback-ref re-invocations. How: This holds whatever cleanup function raiCalFun most recently registered, run and cleared at the top of every subsequent call.
-	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The scroll-to-start effect below needs to read back the same DOM node raiCalFun most recently attached to. How: This mirrors whatever element is currently mounted, or null while the rail itself isn't rendered.
+	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The scroll-to-start effect and the reorder animation below both need to read back the same DOM node raiCalFun most recently attached to. How: This mirrors whatever element is currently mounted, or null while the rail itself isn't rendered.
 
 
 	// #region raiCalFun
@@ -299,7 +300,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		raiNodRef.current = raiCurEle; // What: Node Mirror Write. Why: The scroll-to-start effect below needs to read back the current node outside of this callback's own closure. How: This mirrors raiCurEle into raiNodRef.current.
+		raiNodRef.current = raiCurEle; // What: Node Mirror Write. Why: The scroll-to-start effect and the reorder animation below need to read back the current node outside of this callback's own closure. How: This mirrors raiCurEle into raiNodRef.current.
 
 
 
@@ -333,6 +334,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	}, [] ); // What: Effect Dependency Array. Why: This callback ref never needs to change identity; the element it receives is a normal parameter, not a dependency. How: An empty array means React never has to detach and reattach it across renders.
 
 	// #endregion raiCalFun
+
+
+
+	useFliRaiFun( raiNodRef, `${ conSelStr }|${ conAttBoo }|${ conObjArr.length }` ); // What: Use Flip Rail Call. Why: Selecting a conditional pins its pill to the front of the rail, and this plays the shared glide instead of a silent snap, matching the Data tab. How: This passes the rail ref and a trigger key built from the selection, the attach toggle, and the conditional count.
 
 
 	React.useEffect( () => { // What: Scroll To Start Effect. Why: Selecting a conditional pins it to the front of the rail (see the sort in the render below), so the rail should scroll back to the start to bring it into view, same idea as the Data tab's own attached-conditional pin. How: This scrolls raiNodRef's own current element back to its start whenever conSelStr changes to a real, non-'new' selection.
@@ -1496,6 +1501,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 												className={ cssModObj.conPilBut }
 
+												data-flip-item-key={ curConObj.id }
 												data-pill-select-active={ conSelStr === curConObj.id || undefined } // What: Pill Select Active Attribute. Why: The conditional to attach should stand out. How: This sets the presence-only attribute while this pill is chosen.
 
 												type='button'

@@ -7,22 +7,23 @@ import cssModObj from './picker-controls.module.css'; // What: CSS Module Object
 import React     from 'react';                        // What: React. Why: PicConCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useLayoutEffect, React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
-import { ButBasCom   } from '../../ui/button.jsx';          // What: Button Base Component. Why: PicConCom's own footer and inline actions need consistently-styled buttons. How: This is rendered throughout PicConCom.
-import { CAD_NAM_OBJ } from '../../core/cadence.js';        // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
-import { CAD_OPT_ARR } from '../../ui/cadence-control.jsx'; // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
-import { ColDisCom   } from '../../ui/collapse.jsx';        // What: Collapse Disclosure Component. Why: PicConCom's own sub-sections open and close with the same collapse-height animation as every other disclosure. How: This wraps each of those bodies, driven by the matching open boolean.
-import { dimCouFun   } from '../../utils/date.js';          // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
-import { durMilFun   } from '../../utils/rhythm.js';        // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { FilButCom   } from '../../ui/fill-button.jsx';     // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
-import { IcoSvgCom   } from '../../ui/icon.jsx';            // What: Icon Svg Component. Why: PicConCom's own buttons and rows need recognizable glyphs. How: This is rendered throughout PicConCom.
-import { InfTipCom   } from '../../ui/info-tip.jsx';        // What: Info Tip Component. Why: A disabled control or a truncated label still needs to explain itself on demand. How: This wraps those controls throughout PicConCom.
-import { motEasFun   } from '../../utils/motion.js';        // What: Motion Easing Function. Why: Element.animate curves should match the stylesheet. How: This reads a --mot-*-eas token as a CSS easing string.
-import { norGroFun   } from '../../core/pickers.js';        // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
-import { ordSufFun   } from '../../utils/date.js';          // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
-import { redMotFun   } from '../../utils/motion.js';        // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see PicConCom's own scroll or collapse animations. How: This is checked before each of those animations.
-import { SED_NAM_OBJ } from '../../state/seed.js';          // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in PicConCom for the mode radio group.
-import { togFadFun   } from '../../ui/edge-fade.js';        // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
-import { WeeChiCom   } from '../../ui/weekday-chips.jsx';   // What: Weekday Chip Component. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
+import { ButBasCom    } from '../../ui/button.jsx';          // What: Button Base Component. Why: PicConCom's own footer and inline actions need consistently-styled buttons. How: This is rendered throughout PicConCom.
+import { CAD_NAM_OBJ  } from '../../core/cadence.js';        // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
+import { CAD_OPT_ARR  } from '../../ui/cadence-control.jsx'; // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
+import { ColDisCom    } from '../../ui/collapse.jsx';        // What: Collapse Disclosure Component. Why: PicConCom's own sub-sections open and close with the same collapse-height animation as every other disclosure. How: This wraps each of those bodies, driven by the matching open boolean.
+import { dimCouFun    } from '../../utils/date.js';          // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
+import { durMilFun    } from '../../utils/rhythm.js';        // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { FilButCom    } from '../../ui/fill-button.jsx';     // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
+import { IcoSvgCom    } from '../../ui/icon.jsx';            // What: Icon Svg Component. Why: PicConCom's own buttons and rows need recognizable glyphs. How: This is rendered throughout PicConCom.
+import { InfTipCom    } from '../../ui/info-tip.jsx';        // What: Info Tip Component. Why: A disabled control or a truncated label still needs to explain itself on demand. How: This wraps those controls throughout PicConCom.
+import { motEasFun    } from '../../utils/motion.js';        // What: Motion Easing Function. Why: Element.animate curves should match the stylesheet. How: This reads a --mot-*-eas token as a CSS easing string.
+import { norGroFun    } from '../../core/pickers.js';        // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
+import { ordSufFun    } from '../../utils/date.js';          // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
+import { redMotFun    } from '../../utils/motion.js';        // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see PicConCom's own scroll or collapse animations. How: This is checked before each of those animations.
+import { SED_NAM_OBJ  } from '../../state/seed.js';          // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in PicConCom for the mode radio group.
+import { togFadFun    } from '../../ui/edge-fade.js';        // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
+import { useFliRaiFun } from '../../ui/flip-rail.js';        // What: Use Flip Rail Function. Why: The conditional rail's pinned pill should glide to the front instead of snapping. How: This is called once with the rail ref and a trigger key.
+import { WeeChiCom    } from '../../ui/weekday-chips.jsx';   // What: Weekday Chip Component. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
 
 
 import '../../ui/edit-guard.js'; // What: Edit Guard Import. Why: This file arms and disarms window.__editGuard, which only exists once edit-guard.js has run. How: This is imported purely for that side effect.
@@ -262,64 +263,18 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 	const attConObj = conIteArr.find( ( conCurObj ) => conCurObj.id === picDatObj.conditionalId ) || null; // What: Attached Conditional Object. Why: The schedule summary below needs the actual conditional record this picker currently points at. How: This looks up picDatObj.conditionalId in conIteArr, or null when none matches.
 
 
-	const fliFirRef = React.useRef( new Map() ); // What: Flip First Reference. Why: The FLIP reorder animation below needs each pill's PREVIOUS x position to compute how far it moved. How: This starts as an empty map and is repopulated every time the layout effect runs.
+
+	useFliRaiFun( raiNodRef, `${ picDatObj.conditionalId }|${ conAttBoo }|${ conIteArr.length }` ); // What: Use Flip Rail Call. Why: When the attached conditional changes, the pinned pill jumps to the front, and this plays the shared glide instead of a silent snap. How: This passes the rail ref and a trigger key built from the attached conditional, the toggle, and the conditional count, the same values the scroll reset below re-runs on.
 
 
-	React.useLayoutEffect( () => { // What: Conditional Rail Flip Effect. Why: When the attached conditional changes, the pinned pill jumps to the front; this plays a FLIP tween instead of a silent snap. How: This captures each pill's old x, lets React reorder, then inverts and plays the transform so they glide into place.
+	React.useLayoutEffect( () => { // What: Conditional Rail Scroll Reset Effect. Why: When the attached conditional changes, the pinned pill moves to the rail's start, which should be scrolled into view. How: This glides the rail back to its left edge after every reorder, right after the shared reorder animation has run.
 
 
-		const raiCurEle = raiNodRef.current; // What: Rail Current Element. Why: There is nothing to animate before the rail itself has mounted. How: This reads the live node raiRefFun last wrote.
+		const raiCurEle = raiNodRef.current; // What: Rail Current Element. Why: There is nothing to scroll before the rail itself has mounted. How: This reads the live node raiRefFun last wrote.
 
 
-		if ( !raiCurEle ) return; // What: No Rail Guard. Why: The rail may not be mounted yet, such as while its own ColDisCom is still closed. How: This bails out of the effect early when there is no rail element to measure.
+		if ( !raiCurEle ) return; // What: No Rail Guard. Why: The rail may not be mounted yet, such as while its own ColDisCom is still closed. How: This bails out of the effect early when there is no rail element to scroll.
 
-
-
-		const firMapObj = fliFirRef.current;                                                            // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from fliFirRef.current and reused throughout this effect run.
-		const pilNodArr = [ ...raiCurEle.querySelectorAll( '[data-element-name-hook~="conPilBut"]' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill needs to be measured and possibly animated. How: This queries every conPilBut element inside the rail and spreads the NodeList into a real array.
-		const redMotBoo = redMotFun();                                                                  // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
-
-
-		pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual FLIP tween (or fade-in, if newly pinned), since each may have moved a different distance. How: This computes each pill's own delta from firMapObj and plays the matching animation.
-
-
-			const pilIdeStr = pilCurEle.dataset.cid;      // What: Pill Identifier String. Why: firMapObj is keyed by each pill's own conditional id, not the DOM node itself. How: This reads the pill's own data-cid attribute.
-			const preXcoNum = firMapObj.get( pilIdeStr ); // What: Previous X-Coordinate Number. Why: A FLIP tween needs to know where this exact pill sat before the reorder. How: This looks up pilIdeStr in firMapObj, undefined if this pill is brand new.
-			const newXcoNum = pilCurEle.offsetLeft;       // What: New X-Coordinate Number. Why: The tween's own end point is wherever the pill actually landed after the reorder. How: This reads the pill's own current offsetLeft.
-
-
-
-			if ( redMotBoo ) return; // What: Reduced Motion Guard. Why: This pill should snap silently instead of tweening. How: This skips straight to the next pill without animating.
-
-
-
-			if ( preXcoNum == null ) { // What: Newly Pinned Guard. Why: A pill with no recorded previous position was just pinned to the front for the first time. How: This plays a fade-and-rise-in animation instead of a horizontal FLIP tween.
-
-
-				pilCurEle.animate( [ { opacity : 0, transform : 'translateY(4px)' }, { opacity : 1, transform : 'none' } ], { duration : durMilFun( 'p02' ), easing : motEasFun( 'dec' ) } ); // What: Pin Animation Call. Why: A brand-new front position deserves its own entrance rather than a slide from nowhere. How: This fades and rises the pill into place over 260ms. // Duration Base Plus 2 ~= 277.0ms
-
-
-			}
-
-			else { // What: Already Pinned Branch. Why: A pill that was already in the row before this render just moved sideways. How: This plays a horizontal FLIP slide from its previous x back to its new one.
-
-
-				const difXcoNum = preXcoNum - newXcoNum; // What: Difference X-Coordinate Number. Why: The FLIP tween's own starting transform is the distance this pill needs to travel back from its new position. How: This subtracts the new x from the previous x.
-
-
-				if ( Math.abs( difXcoNum ) > 1 ) pilCurEle.animate( [ { transform : `translateX(${ difXcoNum }px)` }, { transform : 'none' } ], { duration : durMilFun( 'p03' ), easing : motEasFun( 'dec' ) } ); // What: Flip Animation Guard. Why: A pill that didn't actually move by more than a rounding pixel needs no tween at all. How: This plays the invert-then-play transform over 320ms only when difXcoNum is meaningfully non-zero. // Duration Base Plus 3 ~= 366.9ms
-
-
-			}
-
-
-		} );
-
-
-
-		firMapObj.clear(); // What: First Map Clear. Why: The map must not accumulate stale positions from a pill that no longer exists. How: This empties firMapObj before it's repopulated just below.
-
-		pilNodArr.forEach( ( pilCurEle ) => firMapObj.set( pilCurEle.dataset.cid, pilCurEle.offsetLeft ) ); // What: First Map Populate. Why: The NEXT reorder's own FLIP tween needs this run's final positions as its own "previous" baseline. How: This records every pill's own current offsetLeft, keyed by its own conditional id.
 
 
 		if ( raiCurEle.scrollLeft > 1 ) { // What: Rail Scroll Reset Guard. Why: A pin-to-front reorder means the top pill is now at the rail's own start, which should be visible. How: This glides the rail back to its own left edge whenever it wasn't already there.
@@ -328,8 +283,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 			raiCurEle.scrollTo({ // What: Rail Scroll Call. Why: This is the actual glide back to the rail's start. How: This scrolls raiCurEle to its left edge.
 
 
-				behavior : redMotBoo ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				left     : 0                              // What: Left. Why: The rail's start is its left edge. How: This scrolls to x 0.
+				behavior : redMotFun() ? 'auto' : 'smooth', // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
+				left     : 0                                // What: Left. Why: The rail's start is its left edge. How: This scrolls to x 0.
 
 
 			});
@@ -338,7 +293,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 		}
 
 
-	}, [ picDatObj.conditionalId, conAttBoo, conIteArr.length ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the attached conditional changes, the toggle flips, or the available conditionals themselves change count. How: picDatObj.conditionalId is the actual reorder trigger; conAttBoo covers the rail appearing/disappearing; conIteArr.length covers a conditional being added or removed elsewhere.
+	}, [ picDatObj.conditionalId, conAttBoo, conIteArr.length ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the attached conditional changes, the toggle flips, or the available conditionals themselves change count, the same values as the reorder animation's own trigger key. How: picDatObj.conditionalId is the actual reorder trigger; conAttBoo covers the rail appearing/disappearing; conIteArr.length covers a conditional being added or removed elsewhere.
 
 	// #endregion Conditional Rail
 
@@ -1176,8 +1131,8 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], daiIdeArr, hasNewBo
 
 										className={ cssModObj.conPilBut }
 
-										data-cid={ conCurObj.id }
 										data-element-name-hook='conPilBut'
+										data-flip-item-key={ conCurObj.id }
 										data-pill-select-active={ picDatObj.conditionalId === conCurObj.id || undefined } // What: Pill Select Active Attribute. Why: The attached conditional's pill should stand out. How: This sets the presence-only attribute while this conditional is the picker's own.
 
 										type='button'
