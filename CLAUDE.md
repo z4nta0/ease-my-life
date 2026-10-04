@@ -2781,11 +2781,17 @@ Decided 2026-10-03, for the HTML pass that follows the CSS pass.
   An inline `<style>` follows the CSS rules, and an inline `<script>` the
   JS rules; a JSON-LD script's contents stay valid JSON (double quotes, its
   own key order), indented with tabs.
+- **The doctype is its own section**: exactly 3 blank lines separate
+  `<!doctype html>` from the `<html>` tag after it.
 - **Comments are HTML comments in the same one-line template**: `<!-- What:
   ... Why: ... How: ... -->`. An HTML file gets no file-level summary. A
   raw-text element (`<script>`, `<style>`) can't hold an HTML comment, since
-  anything inside it is script or CSS, so its comment goes right after its
-  closing tag instead. A `style` attribute's declarations are spaced like CSS
+  anything inside it is script or CSS, so its comment still goes right after
+  its opening tag, written in its content's own syntax: `<style>/* What: ...
+  */`, or `<script src='...'>/* What: ... */</script>` for an external
+  script, whose only allowed content is JS comments. A JSON-LD script is the
+  one exception, since JSON has no comments: its comment follows its closing
+  `</script>`. A `style` attribute's declarations are spaced like CSS
   declarations (`style='--equ-tok-ind : 3'`).
 - **A section summary** is the section-intro design-rationale block in HTML
   form, a multi-line `<!-- ... -->` whose lines are indented one tab and
