@@ -424,9 +424,9 @@ const forKeyFun = ( keyOneStr, keyTwoStr ) => keyOneStr.toLowerCase().localeComp
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param rowArrAny - Row Array Any: The rows to write.
- * @param trlStr    - Trailing String: Text after the closing bracket, such as
- *                    a comma.
- * @param cmtStr    - Comment String: The array's own one-line comment.
+ * @param traTexStr - Trailing Text String: Text after the closing bracket,
+ *                    such as a comma.
+ * @param comTexStr - Comment Text String: The array's own one-line comment.
  *
  * @returns The array's source text, ready to splice into the template.
  *
@@ -437,10 +437,10 @@ const forKeyFun = ( keyOneStr, keyTwoStr ) => keyOneStr.toLowerCase().localeComp
  *
 */
 
-const forArrFun = ( rowArrAny, trlStr, cmtStr ) => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
+const forArrFun = ( rowArrAny, traTexStr, comTexStr ) => { // What: Format Array Function. Why: Each log is written as one aligned table. How: This orders, pads, and joins the rows.
 
 
-	if ( !rowArrAny.length ) return `[]${ trlStr } ${ cmtStr }`; // What: Empty Array Guard. Why: An empty array needs no padding. How: This returns the tight brackets, the trailing text, and the comment.
+	if ( !rowArrAny.length ) return `[]${ traTexStr } ${ comTexStr }`; // What: Empty Array Guard. Why: An empty array needs no padding. How: This returns the tight brackets, the trailing text, and the comment.
 
 
 
@@ -478,7 +478,7 @@ const forArrFun = ( rowArrAny, trlStr, cmtStr ) => { // What: Format Array Funct
 
 
 
-	return `[ ${ cmtStr }\n\n\n${ rowTexArr.map( ( curTexStr ) => `\t\t{ ${ curTexStr.padEnd( rowWidNum ) } }` ).join( ',\n' ) }\n\n\n\t]${ trlStr }`; // What: Array Text Return. Why: The caller splices the finished table into the template. How: This wraps every padded row in braces, joins them, and adds the 2-blank padding, the trailing text, and the comment.
+	return `[ ${ comTexStr }\n\n\n${ rowTexArr.map( ( curTexStr ) => `\t\t{ ${ curTexStr.padEnd( rowWidNum ) } }` ).join( ',\n' ) }\n\n\n\t]${ traTexStr }`; // What: Array Text Return. Why: The caller splices the finished table into the template. How: This wraps every padded row in braces, joins them, and adds the 2-blank padding, the trailing text, and the comment.
 
 
 };
