@@ -2,6 +2,9 @@
 
 
 <!doctype html><!-- What: Document Type Declaration. Why: Browsers render the page in standards mode only with a doctype. How: This declares HTML5. -->
+
+
+
 <html lang='en'><!-- What: Root Html Element. Why: Screen readers and translation tools need the page's language. How: This marks the document as English. -->
 
 
@@ -163,7 +166,7 @@
 
 
 
-		<style>
+		<style>/* What: Boot Splash Style Element. Why: The splash has to paint before the app's own stylesheet and scripts are ready. How: This inlines the splash's rules in the head, which the build minifies. */
 
 
 			/* #region booSplDiv */
@@ -203,6 +206,7 @@
 
 
 			}
+
 
 
 			/* #region splEquDiv */
@@ -393,14 +397,14 @@
 			/* #endregion booSplDiv */
 
 
-		</style><!-- What: Boot Splash Style Element. Why: The splash has to paint before the app's own stylesheet and scripts are ready. How: This inlines the splash's rules in the head, which the build minifies. -->
+		</style>
 
 		<!-- #endregion Boot Splash Styles -->
 
 
 		<!-- #region Noscript Styles -->
 
-		<style>
+		<style>/* What: Noscript Style Element. Why: The no-JavaScript fallback card needs its own styles, and the app's stylesheet still loads without JavaScript. How: This inlines the card's rules in the head, which the build minifies. */
 
 
 			/* #region nosCarDiv */
@@ -430,7 +434,7 @@
 			/* #endregion nosCarDiv */
 
 
-		</style><!-- What: Noscript Style Element. Why: The no-JavaScript fallback card needs its own styles, and the app's stylesheet still loads without JavaScript. How: This inlines the card's rules in the head, which the build minifies. -->
+		</style>
 
 		<!-- #endregion Noscript Styles -->
 
@@ -550,7 +554,7 @@
 
 
 
-		<script src='/boot-splash.js'></script><!-- What: Boot Splash Script Element. Why: The splash needs a script to fade it out once the app mounts. How: This loads public/boot-splash.js as its own file, before the app's module. --><!-- Kept out of the page as its own file, rather than inline, so the Content-Security-Policy's script-src stays locked to 'self' with no hash or 'unsafe-inline' needed (see public/_headers). -->
+		<script src='/boot-splash.js'>/* What: Boot Splash Script Element. Why: The splash needs a script to fade it out once the app mounts. How: This loads public/boot-splash.js as its own file, before the app's module. */ /* Kept out of the page as its own file, rather than inline, so the Content-Security-Policy's script-src stays locked to 'self' with no hash or 'unsafe-inline' needed (see public/_headers). */</script>
 
 
 
@@ -650,7 +654,7 @@
 		<script
 			src='/src/main.jsx'
 			type='module'
-		></script><!-- What: App Module Script Element. Why: This loads the app itself. How: Vite replaces it with the built, hashed bundle at build time. -->
+		>/* What: App Module Script Element. Why: This loads the app itself. How: Vite replaces it with the built, hashed bundle at build time. */</script>
 
 
 	</body>
