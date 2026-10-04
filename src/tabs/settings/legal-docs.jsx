@@ -207,8 +207,8 @@ function PriPolCom () {
 
 					<p><strong>Website</strong>{ /* What: Term Label Strong Element. Why: This bolds the defined term at the start of its own definition entry. How: This wraps the term text in a native strong tag for visual emphasis. */ } refers to Ease My Life, accessible from <a
 						href='https://www.easemylife.app'
-						target='_blank'
 						rel='external nofollow noopener'
+						target='_blank'
 					>https://www.easemylife.app</a>{ /* What: Inline Site Link Element. Why: This points the reader at the app's own live website. How: This opens the site in a new tab. */ }.</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
 
 
@@ -780,8 +780,8 @@ function TerSerCom () {
 
 					<p><strong>Website</strong>{ /* What: Term Label Strong Element. Why: This bolds the defined term at the start of its own definition entry. How: This wraps the term text in a native strong tag for visual emphasis. */ } refers to Ease My Life, accessible from <a
 						href='https://www.easemylife.app'
-						target='_blank'
 						rel='external nofollow noopener'
+						target='_blank'
 					>https://www.easemylife.app</a>{ /* What: Inline Site Link Element. Why: This points the reader at the app's own live website. How: This opens the site in a new tab. */ }</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
 
 

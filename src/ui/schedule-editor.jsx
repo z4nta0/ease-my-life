@@ -841,6 +841,9 @@ function SchEdiCom ( { actStoObj, aniExtBoo = false, layVarStr, staAppObj, tasRc
 						</div>
 
 						{ ancHinEle }{ /* What: Anchor Hint Render. Why: The every-N-days interval subsection reuses the same shared "counted from" hint every other interval-based subsection does. How: This renders ancHinEle, already fully built above, directly as a JSX child, unlike the weekly/monthly/annual subsections which additionally wrap it in a fade div. */ }
+
+
+
 						{ staAppObj && ( // What: Interval Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed.
 
 

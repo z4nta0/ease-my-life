@@ -686,6 +686,7 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
 
 		<div
 			className={` ${ cssModObj.floColDiv }   ${ sidKeyStr === 'left' ? cssModObj.floColDivLeft : '' }   ${ sidKeyStr === 'right' ? cssModObj.floColDivRight : '' } `}
+
 			aria-hidden='true'
 		>{ /* What: Flourish Column Div Element. Why: This is one gutter's own root wrapper, positioned by CSS per its own floColDiv side modifier class. How: This renders every item below as an absolutely-positioned child span. */ }
 
@@ -695,13 +696,15 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
 
 				<span
 					key={ floCurObj.ideStr }
+
 					className={ cssModObj.floGlySpa }
+
 					style={{
 						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`,
 
-						top       : `${ floCurObj.topNum }px`,
 						fontSize  : `var( --fon-siz-${ floCurObj.sizStr } )`,
 						opacity   : floCurObj.opaNum,
+						top       : `${ floCurObj.topNum }px`,
 						transform : `rotate(${ floCurObj.rotNum }deg)`
 					}}
 				>{ /* What: Flourish Item Span Element. Why: This is the actual decorative glyph, absolutely positioned within its own parent gutter. How: This renders floCurObj's own symbol, sized/rotated/positioned entirely via the inline style above. */ }

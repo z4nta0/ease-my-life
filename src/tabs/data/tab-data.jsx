@@ -1594,8 +1594,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									style={{ animationDelay : ( filIndNum + 1 ) * 40 + 'ms' }}
 
 									data-element-name-hook='scoTabBut'
-									data-tab-select-active={ filEntObj.selBoo || undefined } // What: Tab Select Active Attribute. Why: The showing scope's tab should stand out in the strip. How: This sets the presence-only attribute while filEntObj.selBoo is true.
 									data-picker-id={ filEntObj.ideStr }
+									data-tab-select-active={ filEntObj.selBoo || undefined } // What: Tab Select Active Attribute. Why: The showing scope's tab should stand out in the strip. How: This sets the presence-only attribute while filEntObj.selBoo is true.
 
 									disabled={ disShoBoo }
 									type='button'

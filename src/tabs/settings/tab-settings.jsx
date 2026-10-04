@@ -1444,6 +1444,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 							{ motNotFun( 'celebrations' ) }{ /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "celebrations", or nothing while redMotBoo is false. */ }
 
+
+
 							<CarSurCom
 								className={ cssModObj.styCarDiv }
 
@@ -1494,6 +1496,8 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							<p className={ cssModObj.secSubPar }>Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked inside of the Pickers page.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the picker-animation picker. */ }
 
 							{ motNotFun( 'this animation' ) }{ /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "this animation", or nothing while redMotBoo is false. */ }
+
+
 
 							<CarSurCom
 								className={ cssModObj.styCarDiv }
@@ -2598,9 +2602,9 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 								<span className={ cssModObj.aboVerSpa }>{ APP_VER_STR == null ? 'Version: 1.0' : `Version: ${ APP_VER_STR }` }</span>{ /* What: Set About Ver Span Element. Why: The real build version belongs in this identity block. How: This renders APP_VER_STR, falling back to "1.0" when the build-time define is missing. */ }
 
-								<span className={ cssModObj.aboCreSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.support/' target='_blank' rel='noopener noreferrer'>https://techgeek.support/</a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's own personal site. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboCreSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.support/' rel='noopener noreferrer' target='_blank'>https://techgeek.support/</a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's own personal site. How: This renders a fixed external link, opened in a new tab. */ }
 
-								<span className={ cssModObj.aboCreSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' target='_blank' rel='noopener noreferrer'>https://github.com/z4nta0/ease-my-life</a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboCreSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life</a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
 
 
 							</div>

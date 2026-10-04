@@ -4504,12 +4504,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									You can either change your pickers&rsquo; settings in the <button
-										type='button'
 										className={ cssModObj.subLinBut }
+
+										type='button'
+
 										onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }
 									>Data tab</button> to change this behavior or you can run them manually via the <button
-										type='button'
 										className={ cssModObj.subLinBut }
+
+										type='button'
+
 										onClick={ () => onNavTabFun && onNavTabFun( 'picker' ) }
 									>Pickers tab</button> and then push them here to the Today tab.
 

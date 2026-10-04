@@ -343,6 +343,7 @@ function iteSubFun ( picRcdObj, iteRcdObj, booValNum ) {
 
 
 				{ `weight ${ iteRcdObj.weight ?? 1 }` }{ /* What: Weight Text. Why: Every dynamic item still shows its own base weight first. How: This renders iteRcdObj's own weight, defaulting to 1 for an older item with none set. */ }
+
 				{ booRouNum == null ? null : ( // What: Boost Span Visibility Check. Why: A boost is only ever known at generation time, not for a manually-added item with no snapshot. How: This renders the "(+N)" boost span, muted via data-boost-zero-active when booRouNum is exactly 0.
 
 
@@ -1691,6 +1692,7 @@ function LogChiCom ( { onTogLogFun, open } ) {
 
 				icoKeyStr='logEle'
 			/>{ /* What: Icon Shape Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
+
 			{ ' Log' }{ /* What: Chip Label Text. Why: The chip needs a plain visible label alongside its own icon. How: This renders the literal text " Log". */ }
 
 

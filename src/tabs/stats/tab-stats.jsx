@@ -2914,8 +2914,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										style={{ animationDelay : ( entIndNum + 1 ) * 40 + 'ms' }}
 
 										data-element-name-hook='scoTabBut'
-										data-tab-select-active={ entCurObj.selBoo || undefined } // What: Tab Select Active Attribute. Why: The scope showing below should stand out in the strip. How: This is present only on the showing scope's tab.
 										data-picker-id={ entCurObj.picStr }
+										data-tab-select-active={ entCurObj.selBoo || undefined } // What: Tab Select Active Attribute. Why: The scope showing below should stand out in the strip. How: This is present only on the showing scope's tab.
 
 										type='button'
 
@@ -3973,6 +3973,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 											? ( remSorStr === 'desc' ? 'Newest → Oldest' : 'Oldest → Newest' ) // What: Date Label Branch. Why: Recent lists dated events. How: This phrases the direction as newest/oldest.
 											: ( remSorStr === 'desc' ? 'High → Low' : 'Low → High' )           // What: Count Label Branch. Why: Completions and Skipped list counts. How: This phrases the direction as high/low.
 										}
+
 										<IcoSvgCom
 											icoNamStr={ remSorStr === 'desc' ? 'ardEle' : 'aruEle' }
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px

@@ -564,7 +564,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				<p className={ cssModObj.pagSubPar }>Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items&rsquo; settings. Conditionals and reminders can be managed in the <button type='button' className={ cssModObj.subLinBut } onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Intro Paragraph Element. Why: A first-time user needs a plain-language orientation to the whole page before touching anything. How: This renders a fixed explanatory sentence with an inline link that switches to the Data tab. */ }
+				<p className={ cssModObj.pagSubPar }>Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items&rsquo; settings. Conditionals and reminders can be managed in the <button className={ cssModObj.subLinBut } type='button' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Intro Paragraph Element. Why: A first-time user needs a plain-language orientation to the whole page before touching anything. How: This renders a fixed explanatory sentence with an inline link that switches to the Data tab. */ }
 
 
 			</header>

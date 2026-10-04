@@ -1086,9 +1086,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					<button
 						className={ cssModObj.forSteBut }
 
+						data-element-name-hook='detSteBut'
 						data-step-current-active={ forSteNum === 1 || undefined } // What: Step Current Active Attribute. Why: The step being filled in reads as current. How: This sets the presence-only attribute while forSteNum is 1.
 						data-step-done-active={ forSteNum !== 1 || undefined } // What: Step Done Active Attribute. Why: Once past Details, its step reads as finished. How: This sets the presence-only attribute while forSteNum isn't 1.
-						data-element-name-hook='detSteBut'
 
 						type='button'
 
@@ -1347,9 +1347,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										className={ cssModObj.modOptLab }
 
-										data-option-select-active={ selModStr === modKeyStr || undefined } // What: Option Select Active Attribute. Why: The picker's mode should stand out. How: This sets the presence-only attribute while this option is the chosen mode.
 										data-element-name-hook='modOptLab'
 										data-mode={ modKeyStr }
+										data-option-select-active={ selModStr === modKeyStr || undefined } // What: Option Select Active Attribute. Why: The picker's mode should stand out. How: This sets the presence-only attribute while this option is the chosen mode.
 									>{ /* What: Mode Option Label Element. Why: The radio input and its own name/hint text must all be one clickable label. How: This wraps the radio input and its description block. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 

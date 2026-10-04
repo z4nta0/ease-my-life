@@ -372,6 +372,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo, merPenObj, on
 
 
 							{ groNamStr }
+
 							<IcoSvgCom
 								className={ cssModObj.penIcoSvg }
 
