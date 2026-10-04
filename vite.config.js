@@ -1,5 +1,6 @@
-import { readFileSync } from 'node:fs';
-import { defineConfig } from 'vite';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { defineConfig, minify } from 'vite';
+import { transform as transformCss } from 'lightningcss';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -7,6 +8,51 @@ import { VitePWA } from 'vite-plugin-pwa';
 // diagnostic field always report what `npm version` actually set. Without this
 // the UI carries its own hardcoded string and silently drifts.
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'));
+
+// Vite minifies the src/ bundle but ships index.html and everything in public/
+// exactly as written. Those files keep the repo's full comments and formatting
+// in source, so this build-only plugin compacts what actually ships: it strips
+// index.html's comments and indentation, minifies its inline <style> (with
+// lightningcss, which Vite already depends on) and its JSON-LD, and minifies
+// the copied public/boot-splash.js (with Vite's own minify). That script stays
+// its own file so the Content-Security-Policy's script-src can stay 'self', and
+// its step runs before the PWA plugin fingerprints the precache, so the
+// precached revision matches the minified file.
+const minifyShippedFiles = () => {
+  let outDir = 'dist';
+  return {
+    name: 'minify-shipped-files',
+    apply: 'build',
+    configResolved(config) { outDir = config.build.outDir; },
+    transformIndexHtml: {
+      order: 'post',
+      async handler(html) {
+        const styles = [];
+        for (const match of html.matchAll(/<style>([\s\S]*?)<\/style>/g)) {
+          styles.push(transformCss({ filename: 'inline.css', code: Buffer.from(match[1]), minify: true }).code.toString());
+        }
+        let styleIndex = 0;
+        return html
+          .replace(/<style>[\s\S]*?<\/style>/g, () => `<style>${styles[styleIndex++]}</style>`)
+          .replace(/(<script type=["']application\/ld\+json["']>)([\s\S]*?)(<\/script>)/g, (all, open, json, close) => open + JSON.stringify(JSON.parse(json)) + close)
+          .replace(/<!--[\s\S]*?-->/g, '')
+          .split('\n')
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .join('\n');
+      },
+    },
+    closeBundle: {
+      order: 'pre',
+      sequential: true,
+      async handler() {
+        const file = `${outDir}/boot-splash.js`;
+        const result = await minify(file, readFileSync(file, 'utf-8'));
+        writeFileSync(file, result.code);
+      },
+    },
+  };
+};
 
 export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
@@ -16,6 +62,7 @@ export default defineConfig({
   css: { modules: { localsConvention: 'camelCaseOnly' } },
   plugins: [
     react(),
+    minifyShippedFiles(),
     VitePWA({
       registerType: 'autoUpdate',
       // ONE manifest, not two. public/manifest.webmanifest is already written,
