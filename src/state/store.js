@@ -115,7 +115,7 @@ function fluStaFun( curStaObj ) {
 
 	}
 
-	catch ( errCauObj ) {} // What: Flush Failure Guard. Why: A write failure must never propagate up while the page is unloading. How: This swallows the error silently.
+	catch ( errCatObj ) {} // What: Flush Failure Guard. Why: A write failure must never propagate up while the page is unloading. How: This swallows the error silently.
 
 
 }
@@ -164,7 +164,7 @@ function loaStaFun() {
 
 	}
 
-	catch ( errCauObj ) { /* fall through */ } // What: Cached-State Failure Guard. Why: A broken STG_NAM_OBJ module must not prevent booting from the localStorage fallback below. How: This swallows the error and falls through.
+	catch ( errCatObj ) { /* fall through */ } // What: Cached-State Failure Guard. Why: A broken STG_NAM_OBJ module must not prevent booting from the localStorage fallback below. How: This swallows the error and falls through.
 
 
 
@@ -179,7 +179,7 @@ function loaStaFun() {
 
 	}
 
-	catch ( errCauObj ) { /* fall through */ } // What: Localstorage Failure Guard. Why: Malformed or inaccessible localStorage must not crash boot. How: This swallows the error and falls through to the clean-state return below.
+	catch ( errCatObj ) { /* fall through */ } // What: Localstorage Failure Guard. Why: Malformed or inaccessible localStorage must not crash boot. How: This swallows the error and falls through to the clean-state return below.
 
 
 
@@ -230,7 +230,7 @@ function wriStaFun( curStaObj ) {
 
 	}
 
-	catch ( errCauObj ) {} // What: Persist Failure Guard. Why: A write failure must never propagate up to the caller. How: This swallows the error silently.
+	catch ( errCatObj ) {} // What: Persist Failure Guard. Why: A write failure must never propagate up to the caller. How: This swallows the error silently.
 
 
 }
@@ -505,7 +505,7 @@ function useAppStaFun( optArgObj ) {
 
 			try { if ( STG_NAM_OBJ ) STG_NAM_OBJ.logAutFun(); } // What: Authoritative-Write Marker Try. Why: STG_NAM_OBJ must treat the very next save as authoritative, not incremental, so an intentionally-empty imported log actually overwrites the old one. How: This calls STG_NAM_OBJ.logAutFun() when STG_NAM_OBJ exists.
 
-			catch ( errCauObj ) {} // What: Authoritative-Write Marker Guard. Why: A throwing logAutFun call must not abort the state replace below. How: This silently ignores any error from the call above.
+			catch ( errCatObj ) {} // What: Authoritative-Write Marker Guard. Why: A throwing logAutFun call must not abort the state replace below. How: This silently ignores any error from the call above.
 
 
 
@@ -586,7 +586,7 @@ function useAppStaFun( optArgObj ) {
 
 			}
 
-			catch ( errCauObj ) {} // What: Wipe Failure Guard. Why: A wipe failure must never prevent the reload below from still happening. How: This swallows the error silently.
+			catch ( errCatObj ) {} // What: Wipe Failure Guard. Why: A wipe failure must never prevent the reload below from still happening. How: This swallows the error silently.
 
 
 
@@ -600,7 +600,7 @@ function useAppStaFun( optArgObj ) {
 
 			try { window.location.hash = ''; } // What: Hash Clear Try. Why: A stale #settings deep link must not survive the reload, per the design-rationale comment above. How: This clears location.hash before the reload below.
 
-			catch ( errCauObj ) {} // What: Hash Clear Guard. Why: A throwing location.hash write must not abort the reload below. How: This silently ignores any error from the clear above.
+			catch ( errCatObj ) {} // What: Hash Clear Guard. Why: A throwing location.hash write must not abort the reload below. How: This silently ignores any error from the clear above.
 
 
 
@@ -2433,7 +2433,7 @@ function useAppStaFun( optArgObj ) {
 
 			}
 
-			catch ( errCauObj ) {} // What: Persistence-Request Failure Guard. Why: A failed permission request must never block picker creation itself. How: This swallows the error silently.
+			catch ( errCatObj ) {} // What: Persistence-Request Failure Guard. Why: A failed permission request must never block picker creation itself. How: This swallows the error silently.
 
 
 

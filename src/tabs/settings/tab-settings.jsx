@@ -725,7 +725,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		}
 
-		catch ( errCauObj ) { return 'unknown'; } // What: Parse Failure Guard. Why: A malformed timestamp must not crash the storage row. How: This falls back to a plain 'unknown' label.
+		catch ( errCatObj ) { return 'unknown'; } // What: Parse Failure Guard. Why: A malformed timestamp must not crash the storage row. How: This falls back to a plain 'unknown' label.
 
 
 	};
@@ -871,7 +871,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		}
 
-		catch ( errCauObj ) {} // What: Persisted Read Failure Guard. Why: A failed read must never block the export. How: This silently swallows the error, falling back to in-memory state.
+		catch ( errCatObj ) {} // What: Persisted Read Failure Guard. Why: A failed read must never block the export. How: This silently swallows the error, falling back to in-memory state.
 
 
 
@@ -946,7 +946,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 			}
 
-			catch ( errCauObj ) { // What: Backup Parse Failure Handler. Why: A file that isn't a readable backup needs a clear failure, not a silent no-op. How: This clears any pending import, reports the failure on screen and aloud, and returns focus to the Import button.
+			catch ( errCatObj ) { // What: Backup Parse Failure Handler. Why: A file that isn't a readable backup needs a clear failure, not a silent no-op. How: This clears any pending import, reports the failure on screen and aloud, and returns focus to the Import button.
 
 
 				setPenImpObj( null ); // What: Pending Import Clear. Why: A failed parse must not leave a stale pending confirmation around. How: This clears penImpObj back to null.

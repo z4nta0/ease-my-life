@@ -167,7 +167,7 @@ function invColFun( hexColStr ) {
 
 	}
 
-	catch ( errCauObj ) { return hexColStr; } // What: Conversion Failure Guard. Why: A malformed hexColStr must fall back to itself rather than throw all the way up to the caller. How: This returns hexColStr unchanged whenever anything above throws.
+	catch ( errCatObj ) { return hexColStr; } // What: Conversion Failure Guard. Why: A malformed hexColStr must fall back to itself rather than throw all the way up to the caller. How: This returns hexColStr unchanged whenever anything above throws.
 
 
 }

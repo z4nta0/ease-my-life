@@ -564,7 +564,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 		try { recTarFun(); } // What: Recompute Try. Why: A thrown error from a single bad measurement must not escape this wrapper uncaught. How: This calls recTarFun inside the guarded block.
 
-		catch ( errValObj ) { console.error( '[help-mode] recompute failed', errValObj ); } // What: Recompute Catch. Why: Swallowing the error here, instead of letting it propagate, is what keeps the rAF loop alive for every later frame. How: This logs errValObj to the console and does nothing else.
+		catch ( errCatObj ) { console.error( '[help-mode] recompute failed', errCatObj ); } // What: Recompute Catch. Why: Swallowing the error here, instead of letting it propagate, is what keeps the rAF loop alive for every later frame. How: This logs errCatObj to the console and does nothing else.
 
 
 	}, [ recTarFun ] ); // What: Effect Dependency Array. Why: This callback's own identity only needs to change when recTarFun's own identity does. How: recTarFun is called directly inside the try block above.
