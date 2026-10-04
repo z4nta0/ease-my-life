@@ -23,12 +23,12 @@ import { useEmlTouFun } from '../state/tour-bus.js';             // What: Use Ea
  * @summary
  * Content for the two Reminders mini-tours ("Set up a one-time reminder" /"Set
  * up a recurring reminder"), launched by Play on their sample launcher cards
- * on Today (see reminders-section.jsx's own RemCarCom, whose tutorial card calls
- * onPlaTutFun). Both share the same intro-modal structure and first paragraph
- * (FIR_PAR_ELE below); only the icon, title, and second paragraph differ by
- * varKeyStr (VAR_COP_OBJ below), matching the two sample reminders seeded by
- * the Welcome Tour (onboarding-seed-data.js's ONB_TAS_ARR: tk_ob_meds is the
- * one-time sample, tk_ob_trash the recurring one).
+ * on Today (see reminders-section.jsx's own RemCarCom, whose tutorial card
+ * calls onPlaTutFun). Both share the same intro-modal structure and first
+ * paragraph (FIR_PAR_ELE below); only the icon, title, and second paragraph
+ * differ by varKeyStr (VAR_COP_OBJ below), matching the two sample reminders
+ * seeded by the Welcome Tour (onboarding-seed-data.js's ONB_TAS_ARR:
+ * tk_ob_meds is the one-time sample, tk_ob_trash the recurring one).
  *
  * Sections:
  *  - Constants
@@ -72,11 +72,11 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
  *
  * @summary
  * Step 4 highlights whichever schedule control Step 3's own pill choice
- * reveals below it, the same container ('.remExtDiv') regardless of which
- * one that is, since schedule-editor.jsx's own SchEdiCom only ever renders one
- * at a time. Only the copy needs to track the live selection, keyed by
- * schedule-editor.jsx's own REP_OPT_ARR keys (interval/weekly/monthly/annual, "Once"
- * never reaches this tour at all).
+ * reveals below it, the same container ('.remExtDiv') regardless of which one
+ * that is, since schedule-editor.jsx's own SchEdiCom only ever renders one at
+ * a time. Only the copy needs to track the live selection, keyed by
+ * schedule-editor.jsx's own REP_OPT_ARR keys (interval/weekly/monthly/annual,
+ * "Once" never reaches this tour at all).
  *
  * Every entry shares this exact shape, and none of the entries below repeat
  * these same fields' own boilerplate comments on their own lines (see the
@@ -243,9 +243,10 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
  * Requires the user to actually click the "+" button themselves (Next stays
  * disabled): the click is not just a gate, it is the thing being taught, and
  * it also opens the real add-reminder form. runFun publishes the sample's
- * prefill data onto the emlTouObj bus (read by reminders-section.jsx's own staAddFun)
- * in the click-guard's capture phase, ahead of staAddFun's own bubble-phase
- * handler, using the same ordering trick as the Picker tour's own Step 2.
+ * prefill data onto the emlTouObj bus (read by reminders-section.jsx's own
+ * staAddFun) in the click-guard's capture phase, ahead of staAddFun's own
+ * bubble-phase handler, using the same ordering trick as the Picker tour's own
+ * Step 2.
  *
  * This is deliberately NOT set any earlier (for example the intro modal's
  * onBegTouFun, where an earlier version of this tour published it), since
@@ -335,11 +336,11 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
  *
  * @summary
  * Builds the recurring tour's own Step 4, highlighting whichever schedule
- * control the draft's repeat kind reveals below the Repeat pills
- * (.remExtDiv, the same container for every kind). Its title and body
- * come from REP_COP_OBJ for that kind, falling back to the weekly copy for the
- * one frame before reminders-section.jsx's own draft has published a real repeat kind
- * onto the bus.
+ * control the draft's repeat kind reveals below the Repeat pills (.remExtDiv,
+ * the same container for every kind). Its title and body come from REP_COP_OBJ
+ * for that kind, falling back to the weekly copy for the one frame before
+ * reminders-section.jsx's own draft has published a real repeat kind onto the
+ * bus.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -443,9 +444,9 @@ const buiSubFun = ( varKeyStr ) => ({ // What: Build Submit Function. Why: This 
  * RemTouCom = Reminder Tour Component
  *
  * @summary
- * Renders whichever piece of one varKeyStr's own reminder mini-tour is currently
- * relevant: the intro modal, or the running GuiTouCom. Both variants ('once'
- * and 'recurring') share the exact same 2 opening steps (buiAddFun,
+ * Renders whichever piece of one varKeyStr's own reminder mini-tour is
+ * currently relevant: the intro modal, or the running GuiTouCom. Both variants
+ * ('once' and 'recurring') share the exact same 2 opening steps (buiAddFun,
  * NAM_STE_OBJ) and the exact same closing step (buiSubFun); only the recurring
  * varKeyStr adds 2 extra steps in between (REP_STE_OBJ, buiFreFun) for its own
  * Repeat schedule.

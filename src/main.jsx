@@ -25,10 +25,10 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  * IndexedDB open never blocks booting, then calls booAppFun either way
  * once whichever settles first.
  *
- * booAppFun creates the single React 18 root on the #appMouDiv DOM node, renders
- * AppRooCom into it, and dismisses index.html's own boot splash (a plain
- * CSS/inline-JS overlay, not React) once the first paint has had a chance to
- * settle.
+ * booAppFun creates the single React 18 root on the #appMouDiv DOM node,
+ * renders AppRooCom into it, and dismisses index.html's own boot splash (a
+ * plain CSS/inline-JS overlay, not React) once the first paint has had a
+ * chance to settle.
  *
  * Sections:
  *  - Helpers

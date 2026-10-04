@@ -15,8 +15,8 @@
  * The spotlight drops its dimming shadow while the user drags a group or item
  * so they can see where it lands, and pulses a white ring while a step waits
  * for a real click on its target. The coach card's arrow is positioned from
- * the --coa-arr-off custom property the placement code writes, since only that code
- * knows where the target sits relative to the card.
+ * the --coa-arr-off custom property the placement code writes, since only that
+ * code knows where the target sits relative to the card.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

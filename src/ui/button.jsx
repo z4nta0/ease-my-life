@@ -71,7 +71,7 @@ import { IcoSvgCom } from './icon.jsx'; // What: Icon Svg Component. Why: A butt
  *
  * @example
  * ```tsx
- * ButBasCom({ children, className, icoClaStr, icoNamStr, ... }) // => <ButBasCom />
+ * ButBasCom({ children, className, icoClaStr, ... }) // => <ButBasCom />
  * ```
  *
 */

@@ -51,7 +51,8 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  * "Repeated-shape object literals" comment exception in CLAUDE.md). Each
  * color token is written onto its own CSS custom property by appPalFun:
  *
- * - `accStr` (String): Accent String, the primary accent color (--acc-mai-col).
+ * - `accStr` (String): Accent String, the primary accent color
+ *   (--acc-mai-col).
  *
  * - `aceStr` (String): Accent Soft String, a softened accent background
  *   (--acc-tin-col).
@@ -71,7 +72,8 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  *
  * - `texStr` (String): Text String, body text (--tex-mai-col).
  *
- * - `warStr` (String): Warm String, the warm celebration accent (--acc-sec-col).
+ * - `warStr` (String): Warm String, the warm celebration accent
+ *   (--acc-sec-col).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

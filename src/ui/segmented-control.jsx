@@ -68,7 +68,7 @@ import React     from 'react';                            // What: React. Why: S
  *
  * @example
  * ```tsx
- * SegConCom({ ariLabStr, desIdeStr, layStr, onChange, ... }) // => <SegConCom />
+ * SegConCom({ ariLabStr, desIdeStr, layStr, ... }) // => <SegConCom />
  * ```
  *
 */

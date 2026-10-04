@@ -6,14 +6,15 @@
  *
  * @summary
  * Styles for CodConCom, the conditional editor shared by the picker form and
- * the Data tab's Conditionals section: the name and card-text fields, the
- * type radio with each mode's hint, and the setting rows under the selected
- * mode (odds, boost, charge, fill, and the Active switch). The picker form
- * shows it as spaced fields with the radio in a bordered card; the Data tab
- * passes isaInlBoo, which adds the conConDiv--inline modifier and lays every field out
- * as a full-bleed row with hairline dividers, matching the other Data editors.
- * The selected mode keys off data-option-select-active, the Active switch off
- * its own aria-checked, and an invalid name off its own aria-invalid.
+ * the Data tab's Conditionals section: the name and card-text fields, the type
+ * radio with each mode's hint, and the setting rows under the selected mode
+ * (odds, boost, charge, fill, and the Active switch). The picker form shows it
+ * as spaced fields with the radio in a bordered card; the Data tab passes
+ * isaInlBoo, which adds the conConDiv--inline modifier and lays every field
+ * out as a full-bleed row with hairline dividers, matching the other Data
+ * editors. The selected mode keys off data-option-select-active, the Active
+ * switch off its own aria-checked, and an invalid name off its own
+ * aria-invalid.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

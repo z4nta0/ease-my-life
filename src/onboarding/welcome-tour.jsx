@@ -192,7 +192,7 @@ const sedTasFun = ( staAppObj, actStoObj, hidTasBoo ) => { // What: Seed Tasks F
  *
  * @example
  * ```tsx
- * WelTouCom({ actIdeStr, actStoObj, selTabFun, staAppObj }) // => <WelTouCom />
+ * WelTouCom({ actIdeStr, actStoObj, ... }) // => <WelTouCom />
  * ```
  *
 */

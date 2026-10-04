@@ -871,11 +871,11 @@ const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Wh
  * buiSooFun = Build Soonest Function
  *
  * @summary
- * Highlights the Soonest/Shortest row, the first .ediRowDiv in the editor's own
- * isaEasBoo branch. Only meaningful for Ease Up/Ease Down samples (the row
+ * Highlights the Soonest/Shortest row, the first .ediRowDiv in the editor's
+ * own isaEasBoo branch. Only meaningful for Ease Up/Ease Down samples (the row
  * does not exist at all for Weighted/Dynamic/Random modes, where this same
- * .ediRowDiv position is a Weight stepper instead); PicTouCom only includes this
- * step when the sample's own mode is one of the ease modes (see its own
+ * .ediRowDiv position is a Weight stepper instead); PicTouCom only includes
+ * this step when the sample's own mode is one of the ease modes (see its own
  * isaEasBoo below). The whole body is per-picker (picCopObj.sooEle),
  * defaulting to the original Ease Up/"task item"/"week" wording; Daily Chores
  * is the only sample this has been manually verified against so far, and Ease

@@ -10,10 +10,10 @@
  * segmented control, and, for a non-daily cadence, the anchor field that
  * fades in below it with its inline selects and clamp hints.
  *
- * Its fields share their look with the reminder schedule editor and the
- * app's other forms, so their declarations are copied here, under the names
- * those editors share, until the design-system pass merges them. The segmented controls
- * inside it get their extra bottom space through --seg-bot-mar rather
+ * Its fields share their look with the reminder schedule editor and the app's
+ * other forms, so their declarations are copied here, under the names those
+ * editors share, until the design-system pass merges them. The segmented
+ * controls inside it get their extra bottom space through --seg-bot-mar rather
  * than being styled from here.
  *
  * @author z4nta0 <https://github.com/z4nta0>

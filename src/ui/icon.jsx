@@ -47,7 +47,7 @@
  *
  * @example
  * ```tsx
- * IcoSvgCom({ className, icoNamStr: 'plus', sizSteStr: 'p01' }) // => <IcoSvgCom />
+ * IcoSvgCom({ icoNamStr : 'plus', sizSteStr : 'p01' }) // => <IcoSvgCom />
  * ```
  *
 */

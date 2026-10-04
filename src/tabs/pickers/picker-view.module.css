@@ -11,13 +11,14 @@
  * their progress, weight, and Send, Edit, and Delete buttons, and the add-item
  * rows that reuse the item editor. The stage keeps one fixed height across
  * phases so the buttons under it never jump. A pool row keys its inactive and
- * ineligible looks off data-row-vacation-active and data-row-ineligible-active,
- * a tour-disabled action off data-tour-disabled-active, the already-sent Send
- * tip off data-action-disabled-active, and the blocked Delete tip off its own
+ * ineligible looks off data-row-vacation-active and
+ * data-row-ineligible-active, a tour-disabled action off
+ * data-tour-disabled-active, the already-sent Send tip off
+ * data-action-disabled-active, and the blocked Delete tip off its own
  * aria-disabled. The row and stage animations are this file's own module
- * classes, and the add-item rows set the --ent-* properties the item
- * editor reads. Pill spacing inside the header and pool rows goes through
- * PilTagCom's own --pil-* properties.
+ * classes, and the add-item rows set the --ent-* properties the item editor
+ * reads. Pill spacing inside the header and pool rows goes through PilTagCom's
+ * own --pil-* properties.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
