@@ -46,7 +46,7 @@ import { writeFileSync } from 'node:fs';                              // What: W
  * Sections:
  *  - Constants
  *  - Helpers
- *  - Module init
+ *  - Module Init
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -602,7 +602,7 @@ export { ONB_STA_OBJ }; // What: Named Exports. Why: The Welcome Tour, the Stats
 
 
 
-// #region Module init
+// #region Module Init
 
 const refModBoo = process.argv.includes( '--reformat' );                                                             // What: Reformat Mode Boolean. Why: A template change should be applied to the existing data without replacing its simulated history. How: This is true when the script runs with --reformat.
 const outDatObj = refModBoo ? ( await import( '../src/state/onboarding-stats-data.js' ) ).ONB_STA_OBJ : simDatFun(); // What: Output Data Object. Why: The written logs come from the existing file in reformat mode, or a fresh simulation otherwise. How: This imports the current ONB_STA_OBJ or calls simDatFun.
@@ -612,6 +612,6 @@ writeFileSync( OUT_PAT_STR, buiOutFun( outDatObj ) ); // What: Write File Call. 
 
 console.log( `Wrote ${ outDatObj.pickLog.length } pickLog rows, ${ outDatObj.reminderLog.length } reminderLog rows, ${ outDatObj.reminderSkipLog.length } reminderSkipLog rows to ${ OUT_PAT_STR }` ); // What: Write Report Log. Why: A manual run needs confirmation of what it did. How: This logs the three row counts and the output path.
 
-// #endregion Module init
+// #endregion Module Init
 
 

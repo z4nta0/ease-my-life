@@ -143,7 +143,33 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A dispos
 
 
 
+// #region neeCopFun
+
+/**
+ * neeCopFun = Needs Copies Function
+ *
+ * @summary
+ * Reports whether a page tour works on disposable sample copies. Only the
+ * Pickers and Data tours seed and clear picker copies, so PagTouCom asks this
+ * before seeding as a tour opens and before clearing as it closes.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param pagIdeStr - Page Identifier String: The page tour's own id, e.g.
+ *                    'explore_pickers'.
+ *
+ * @returns Whether the tour needs disposable picker copies.
+ *
+ * @example
+ * ```ts
+ * neeCopFun( 'explore_pickers' ) // => true
+ * ```
+ *
+*/
+
 const neeCopFun = ( pagIdeStr ) => pagIdeStr === 'explore_pickers' || pagIdeStr === 'explore_data'; // What: Needs Copies Function. Why: Only the Pickers/Data tours seed/clear disposable picker copies at all. How: This checks pagIdeStr against both of those page ids.
+
+// #endregion neeCopFun
 
 
 

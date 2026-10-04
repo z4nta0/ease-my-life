@@ -8,8 +8,7 @@ import { createRoot  } from 'react-dom/client';   // What: Create Root. Why: Thi
 import { STG_NAM_OBJ } from './state/storage.js'; // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.js's own loaStaFun() can stay synchronous. How: This is raced against a fixed timeout below so a slow or hung IndexedDB never blocks the app from booting at all.
 
 
-import './styles/fonts.css'; // What: Fonts Stylesheet Import. Why: The app's own stylesheets below assume the self-hosted font faces are already registered. How: This is imported first, purely for its side effect, so its @font-face rules register before styles.css is parsed.
-
+import './styles/fonts.css';  // What: Fonts Stylesheet Import. Why: The app's own stylesheets below assume the self-hosted font faces are already registered. How: This is imported first, purely for its side effect, so its @font-face rules register before styles.css is parsed.
 import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is the app's own global stylesheet, holding the tokens, base styles, shared keyframes, and body-level state every CSS module relies on. How: This is imported purely for its side effect of registering its rules against the document.
 
 // #endregion Imports
