@@ -93,11 +93,13 @@ const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N char
  * @summary
  * Tidies a user-typed container-style name: collapses any separator run
  * (dashes, underscores, extra spaces) down to a single space, trims the
- * ends, then Title Cases every word. Any run of non-alphanumeric
- * characters becomes a single space, so "wind_down", "WIND-DOWN!", and
- * "wind  down" all normalize to "Wind Down". Shared by the group, picker,
- * and conditional name normalizers below, since all three are short,
- * container-type names that want the exact same tidy-up.
+ * ends, then Title Cases every word. Any run of characters other than
+ * letters, digits, apostrophes, and ampersands becomes a single space, so
+ * "wind_down", "WIND-DOWN!", and "wind  down" all normalize to "Wind Down",
+ * while "mom's chores" and "food & drink" keep their apostrophe and
+ * ampersand as "Mom's Chores" and "Food & Drink". Shared by the group,
+ * picker, and conditional name normalizers below, since all three are
+ * short, container-type names that want the exact same tidy-up.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -117,7 +119,7 @@ const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N char
 function titCasFun( rawNamStr ) {
 
 
-	const cleNamStr = String( rawNamStr || '' ).replace( /[^a-z0-9]+/gi, ' ' ).trim().replace( /\s+/g, ' ' ); // What: Cleaned Name String. Why: A messy user-typed name needs every separator run collapsed to plain single spacing before it can be split into words. How: This coerces rawNamStr to a string, turns every run of non-alphanumeric characters into one space, trims the ends, then collapses any remaining space run to one.
+	const cleNamStr = String( rawNamStr || '' ).replace( /[^a-z0-9'’&]+/gi, ' ' ).trim().replace( /\s+/g, ' ' ); // What: Cleaned Name String. Why: A messy user-typed name needs every separator run collapsed to plain single spacing before it can be split into words. How: This coerces rawNamStr to a string, turns every run of characters other than letters, digits, apostrophes, and ampersands into one space, trims the ends, then collapses any remaining space run to one.
 
 
 	if ( !cleNamStr ) return ''; // What: No Cleaned Name Guard. Why: An input with no alphanumeric content at all has nothing left to Title Case. How: This returns an empty string early when cleNamStr came out empty.
