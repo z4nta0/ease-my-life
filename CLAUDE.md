@@ -244,8 +244,9 @@ outside the normal React import graph.
 - `vite-plugin-pwa` is configured with `manifest: false` — `public/manifest.webmanifest`
   is hand-written and linked from `index.html`; the plugin only precaches and
   injects the notification-click handler (`public/sw-notify.js`).
-- The boot splash in `index.html` is pure CSS/inline JS (no framework) and is
-  timed to the animation's own keyframe durations — see the comment block
+- The boot splash in `index.html` is pure CSS, faded out by
+  `public/boot-splash.js` (no framework), whose constants mirror the splash's
+  own loop, stagger, and fade timings: see the Boot Splash Styles summary
   there before changing the animation timing.
 
 ## Copy rules
@@ -2781,7 +2782,11 @@ Decided 2026-10-03, for the HTML pass that follows the CSS pass.
   JS rules; a JSON-LD script's contents stay valid JSON (double quotes, its
   own key order), indented with tabs.
 - **Comments are HTML comments in the same one-line template**: `<!-- What:
-  ... Why: ... How: ... -->`. An HTML file gets no file-level summary.
+  ... Why: ... How: ... -->`. An HTML file gets no file-level summary. A
+  raw-text element (`<script>`, `<style>`) can't hold an HTML comment, since
+  anything inside it is script or CSS, so its comment goes right after its
+  closing tag instead. A `style` attribute's declarations are spaced like CSS
+  declarations (`style='--equ-tok-ind : 3'`).
 - **A section summary** is the section-intro design-rationale block in HTML
   form, a multi-line `<!-- ... -->` whose lines are indented one tab and
   hard-wrapped at 79 characters: an `index.html = <Name> <Descriptor>` name
