@@ -335,17 +335,20 @@
 
 }
 
-.spoRowDiv { /* What: Spotlight Row Div. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, taking its alignment from --spo-row-tex, and fades as the highlight moves. */
+.spoRowDiv { /* What: Spotlight Row Div. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, centers its name both ways inside the row, and fades as the highlight moves. */
 
 
-	border-radius : var( --rad-bor-sma );                                                                        /* Radius Border Small ~= 8.304px */
-	color         : var( --tex-mut-col );                                                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-size     : var( --fon-siz-p01 );                                                                        /* Font Size Base Plus 1 ~= 14.572px */
-	height        : calc( var( --ver-rhy-p03 ) * 1rem );                                                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	padding       : 0 var( --spa-hor-bas );                                                                      /* Spacing Horizontal Base ~= 14.572px */
-	text-align    : var( --spo-row-tex, inherit );                                                               /* Spotlight Row Text, set by its parent, falling back to inherit */ /* What: Spotlight Row Alignment. Why: The Settings preview centers the rows in its stage. How: A parent sets --spo-row-tex, falling back to the inherited alignment. */
-	text-wrap     : pretty;
-	transition    : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
+	align-items     : center;
+	border-radius   : var( --rad-bor-sma );                                                                        /* Radius Border Small ~= 8.304px */
+	color           : var( --tex-mut-col );                                                                        /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	display         : flex;
+	font-size       : var( --fon-siz-p01 );                                                                        /* Font Size Base Plus 1 ~= 14.572px */
+	height          : calc( var( --ver-rhy-p03 ) * 1rem );                                                         /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	justify-content : center;
+	padding         : 0 var( --spa-hor-bas );                                                                      /* Spacing Horizontal Base ~= 14.572px */
+	text-align      : center;                                                                                      /* What: Wrapped Name Alignment. Why: A name long enough to wrap should stay centered line by line too. How: This centers the text inside the flex row. */
+	text-wrap       : pretty;
+	transition      : background var( --dur-tra-m01 ), color var( --dur-tra-m01 ), transform var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
 
 
 }
