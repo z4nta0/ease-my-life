@@ -282,7 +282,7 @@ of content, not N newline characters.
 This governs every rule in this section, permanently, not just while the
 rule set is still being defined, and it covers every language this section
 applies to, including CSS and HTML (CSS rules live under "### CSS modules
-and JS hooks"; HTML has none yet). If a piece of code needs a formatting, naming, or comment
+and JS hooks"; HTML rules live under "### HTML"). If a piece of code needs a formatting, naming, or comment
 decision that isn't already covered by an explicit rule here, stop before
 making any change and ask what to do, rather than guessing, extrapolating
 from a rule that seems "close enough," or inventing something in the
@@ -2766,6 +2766,62 @@ are renamed to this as their files come up in the design-system pass.
 - A property that doesn't fit the pattern is raised with the user when it
   comes up, per "### Undefined cases: stop and ask", and the decision is
   recorded here.
+
+### HTML
+Decided 2026-10-03, for the HTML pass that follows the CSS pass.
+- **Elements follow the JSX rules**: tab indentation, the 1/2/3 blank-line
+  sibling spacing by nesting depth, attribute tiers and alphabetical order,
+  2+ attributes going multi-line (body elements only, see the head rules
+  below), single-quoted attribute values, and a comment on every element in
+  the same places JSX puts them (glued after a container's opening `>`,
+  after a void element's own `/>`, after a one-line element's closing tag).
+  An inline `<style>` follows the CSS rules, and an inline `<script>` the
+  JS rules; a JSON-LD script's contents stay valid JSON (double quotes, its
+  own key order), indented with tabs.
+- **Comments are HTML comments in the same one-line template**: `<!-- What:
+  ... Why: ... How: ... -->`. An HTML file gets no file-level summary.
+- **A section summary** is the section-intro design-rationale block in HTML
+  form, a multi-line `<!-- ... -->` whose lines are indented one tab and
+  hard-wrapped at 79 characters: an `index.html = <Name> <Descriptor>` name
+  line, `@summary`, and `@author`. It sits inside its section's region, 1
+  blank line after the `<!-- #region <Name> -->` marker, with 3 blank lines
+  between its closing `-->` and the section's first tag, the same as a
+  section-intro block anywhere else.
+- **The head is grouped into sections**, each wrapped in a `<!-- #region
+  <Name> -->` / `<!-- #endregion <Name> -->` pair (VS Code folds these in
+  HTML), with 1 blank line between each marker and its tags and exactly 2
+  blank lines between one section's `#endregion` and the next section's
+  `#region`. Tags within a section sit on consecutive lines, no blank lines
+  between them. The sections, in this order, skipping any a page doesn't
+  need:
+  1. **Document**: `charset` (always the head's first tag), `viewport`, and
+     the `<title>`.
+  2. **Search**: the `description` meta and the `canonical` link.
+  3. **Web App**: the `manifest` link and the `theme-color` metas.
+  4. **Icons**: the browser favicon links.
+  5. **Home Screen**: the `apple-touch-icon` link and the
+     `apple-mobile-web-app-*` and `mobile-web-app-capable` metas.
+  6. **Open Graph**: the `og:*` metas.
+  7. **Twitter Card**: the `twitter:*` metas.
+  8. **Structured Data**: JSON-LD scripts.
+  9. Inline styles and scripts, each a section of its own named for what it
+     does (e.g. **Boot Splash Styles**).
+  A tag that fits none of these is raised with the user and its section
+  recorded here.
+- **Order within a section**: where order changes behavior it stays as
+  authored (`charset` first; favicon links from most to least preferred
+  format; a light `theme-color` before its dark one); otherwise tags are
+  alphabetized by their identifying attribute (`name`, `property`, `rel`).
+- **Head tags stay one per line**: unlike body elements, a head tag keeps
+  its attributes inline whatever their count, followed by its one-line
+  comment. A run of same-shape tags column-aligns its attributes by
+  position, the same as stacked one-line object rows under "### Arrays and
+  objects" (stopping before a long, prose-length value), and its comments
+  under the usual 100-character exception.
+- **Existing head comments**: a note about one tag becomes that tag's own
+  trailing comment (merged after its What/Why/How, per the merging rule
+  under "### Comments"); a note about a whole group becomes that section's
+  summary.
 
 ### Arrays and objects
 - **Once an array literal cannot stay on a single line, every one of its
