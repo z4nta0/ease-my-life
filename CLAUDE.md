@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Ease My Life — "pick what to do today, without deciding." A client-only PWA
+Ease My Life: "pick what to do today, without deciding." A client-only PWA
 (React 18 + Vite, no backend, no accounts). Users define "pickers" (weighted
-pools of items — chores, meals, etc.) that get chosen from on a schedule; the
+pools of items: chores, meals, etc.) that get chosen from on a schedule; the
 app builds a short daily list. All data lives on-device (IndexedDB, with a
-localStorage fallback/mirror) — there is no server component to this app at all.
+localStorage fallback/mirror); there is no server component to this app at all.
 
 ## Commands
 
@@ -82,7 +82,7 @@ soft-wrap it in a terminal; that's display only, not a real line break).
     (a handful of miscorrection renames, several dozen missing per-line
     comments filled in, a couple of return-shape restructurings, ...),
     not an exhaustive list of every individual identifier or line
-    touched — a reader wanting that level of detail reads the diff
+    touched; a reader wanting that level of detail reads the diff
     itself, the same reason the file list itself is left to git.
 - **Catch-all**: on the rare occasion a commit genuinely can't be split
   cleanly enough to produce one cohesive `What:`, don't force an
@@ -90,7 +90,7 @@ soft-wrap it in a terminal; that's display only, not a real line break).
   `What:` possible, and say plainly in the `Why:` or `How:` that the
   commit covers more ground than a single clean name can capture, and
   why splitting it further wasn't practical.
-- **Known risk — this format is not a common real-world convention**,
+- **Known risk: this format is not a common real-world convention**,
   unlike a plain imperative subject line, so it's just as vulnerable to
   silent drift as the naming/spacing/comment rules elsewhere in this doc,
   arguably more so: a violation here has no passive detection surface the
@@ -103,7 +103,7 @@ soft-wrap it in a terminal; that's display only, not a real line break).
   discipline as the JSX comment rule's own mandatory grep self-audit. If
   a spot check is ever needed later, this format's own literal labels
   make it cheap: `git log --format=%B -10 | grep -c '^What:'` should
-  equal the number of commits checked — a single grep, unlike
+  equal the number of commits checked: a single grep, unlike
   naming/spacing drift, which needed custom detection scripts to even
   find.
 
@@ -231,7 +231,7 @@ A handful of `__`-prefixed globals (`__escStack`, `__escBound`, `__editGuard`,
 cross-module registration channels (e.g. a component registers a callback on
 mount so `index.html`'s boot script or the onboarding tour can call it
 later), not accidental leaks. Leave them as globals rather than "fixing" them
-into imports — the components that set them are meant to be reachable before/
+into imports; the components that set them are meant to be reachable before/
 outside the normal React import graph.
 
 ### PWA / deploy details
@@ -241,7 +241,7 @@ outside the normal React import graph.
   `<form name="support">` purely so Netlify's build-time form parser detects
   it; keep its field names in sync with `ConSupCom`'s submit logic in
   `tabs/settings/contact-support.jsx`, or submissions will be rejected.
-- `vite-plugin-pwa` is configured with `manifest: false` — `public/manifest.webmanifest`
+- `vite-plugin-pwa` is configured with `manifest: false`; `public/manifest.webmanifest`
   is hand-written and linked from `index.html`; the plugin only precaches and
   injects the notification-click handler (`public/sw-notify.js`).
 - The boot splash in `index.html` is pure CSS, faded out by
@@ -336,23 +336,23 @@ itself gets its own mandatory self-check.
 
 ### Import statements
 - One imported binding per `import` statement, even when multiple bindings
-  come from the same source — never combine them into one `import { A, B }`
+  come from the same source; never combine them into one `import { A, B }`
   line. Splitting an existing combined import (without reordering it) is a
   real, mechanical source change, not whitespace, but produces an identical
-  build output — verify with a byte-for-byte-identical bundle hash before
+  build output; verify with a byte-for-byte-identical bundle hash before
   treating it as done. Reordering to alphabetize (below) is also a real
   change and generally safe for side-effect-free modules like these, but
-  don't expect an identical hash from that step — only from the splitting
+  don't expect an identical hash from that step, only from the splitting
   itself.
 - Group non-destructured (default) imports separately from destructured
   (named, `{ ... }`) imports: all default imports first, then 2 blank lines,
   then all named imports.
 - Within each of those two groups, alphabetize by the imported binding's own
-  name (case-insensitive), not by source path — regardless of which source
+  name (case-insensitive), not by source path, regardless of which source
   file each one came from.
 - Within the named-imports group, pad every specifier name (left-justify) so
   the closing `}`, the `from` keyword, and the start of every source string
-  all line up in their own columns — computed from the single longest
+  all line up in their own columns, computed from the single longest
   specifier name in that group. Default imports don't need this treatment
   unless there's more than one (rare, since only one default export per
   module makes multiple default imports from the same source impossible
@@ -392,21 +392,21 @@ itself gets its own mandatory self-check.
   `export { CodConCom, conDraFun };` for the reference example.
 
 ### Indentation
-- Use tabs for indentation, one tab per nesting level — not spaces.
+- Use tabs for indentation, one tab per nesting level, not spaces.
 - Exception: a continuation line that's deliberately visually aligned to a
   specific column on the line above it (e.g. a wrapped JSX attribute list
   where the second attribute lines up directly under the first one, right
   after the tag name) keeps that alignment as literal spaces, but ONLY for
   the portion beyond its own structural depth. Concretely, such a line's
   leading whitespace is: the SAME number of tabs as the element's own
-  opening line (not one level deeper — it's a continuation of the same
+  opening line (not one level deeper: it's a continuation of the same
   element, not a child of it), followed by literal spaces to reach the
   exact alignment column (i.e. matching the width of the tag name and
   whatever it's lining up under).
-- A continuation line that ISN'T deliberately aligned to a specific column —
-  it's just wrapped for length, with nothing on the line(s) above to line up
+- A continuation line that ISN'T deliberately aligned to a specific column
+  (it's just wrapped for length, with nothing on the line(s) above to line up
   with (e.g. `<path\n  d='...'\n  strokeWidth='8' />`, where `<path` alone
-  leaves nothing to align to) — uses one MORE tab than its own opening line,
+  leaves nothing to align to)) uses one MORE tab than its own opening line,
   same as any other nested content, with no space-padding at all.
 - When judging which case applies: does the continuation line's indentation
   match a specific character position on the line(s) above (typically right
@@ -415,9 +415,9 @@ itself gets its own mandatory self-check.
   the tag name and nothing else, or the "continuation" is really just
   deeper nesting, it's a plain structural indent (tabs only, one level
   deeper).
-- This rule only governs LEADING indentation. Mid-line spacing — e.g.
+- This rule only governs LEADING indentation. Mid-line spacing (e.g.
   padding array/object entries so their values line up in a column, like
-  `TAB_OBJ_ARR`'s `label :`/`icon :` fields — is untouched; it stays literal
+  `TAB_OBJ_ARR`'s `label :`/`icon :` fields) is untouched; it stays literal
   spaces regardless, since it isn't indentation at all.
 
 ### File boundaries
@@ -426,7 +426,7 @@ itself gets its own mandatory self-check.
   "### Sectioning / fold regions" below), that marker counts as the first
   real line for this purpose.
 - Every file ends with exactly 2 blank lines after its last real line, not
-  3 — deliberately asymmetric with the start-of-file rule above. VS Code
+  3, deliberately asymmetric with the start-of-file rule above. VS Code
   (and most, if not all, other editors) automatically ensures a file ends
   with a trailing newline, which silently adds one more empty row on top
   of whatever was actually written; a file whose own written content ends
@@ -680,21 +680,21 @@ src/
 ### Top-level (module scope)
 - Between any two distinct top-level declarations (a comment block, a
   `const`, a `function`, an `export` statement, ...) always use 3 blank
-  lines — regardless of how related they seem (e.g. a component and a
+  lines, regardless of how related they seem (e.g. a component and a
   constant it reads from still get 3, not fewer, purely because they're
   both top-level).
 - Import statements are the one exception within top-level scope: no blank
-  lines between individual `import` lines — they're one tight block. The
-  gap between that whole block and whatever follows it is still 3 —
+  lines between individual `import` lines: they're one tight block. The
+  gap between that whole block and whatever follows it is still 3,
   except when the block is wrapped in a `// #region Imports` marker (see
   "### Sectioning / fold regions" below), in which case that 3-blank gap
   moves to after the `// #endregion Imports` marker instead.
 
 ### Comments
 - A comment sits glued (0 blank lines) to the specific line/block it
-  describes — never insert a blank line between a comment and its target.
+  describes: never insert a blank line between a comment and its target.
 - If a comment's own target is genuinely ambiguous (unclear what it's
-  actually describing), don't guess a glue point — treat it as its own
+  actually describing), don't guess a glue point; treat it as its own
   freestanding unit, with whatever blank-line count applies on both sides
   given its surroundings (3 if it sits between top-level declarations).
 - **Every line of code gets a comment.** Rare exceptions: a closing
@@ -702,10 +702,10 @@ src/
   `]`, `)`, or a combination like `});`/`};`) never gets one. A bare
   `function foo(...) {}` declaration (a custom function that ISN'T stored
   in a `const`/`let`) gets its own, more involved JSDoc-style comment
-  instead — see "### Custom function declaration comments" below. This
+  instead. See "### Custom function declaration comments" below. This
   does NOT extend to inline/anonymous functions passed
   as arguments (a hook's callback like `useLayoutEffect(() => {...})`, a
-  `return () => {...}` cleanup, `.map((x) => ...)`, ...) — those get
+  `return () => {...}` cleanup, `.map((x) => ...)`, ...): those get
   commented normally, same as everything else. Other exceptions will turn
   up rarely; handle them case by case as they're found.
   - **Repeated-shape object literals**: when a file defines MANY object
@@ -731,7 +731,7 @@ src/
     shared fields gets NO trailing comment at all. This does NOT cover
     a leading comment already sitting above one specific instance that
     explains something genuinely unique to that instance (e.g., why
-    one particular item needs a specific pad-override amount) — that
+    one particular item needs a specific pad-override amount): that
     stays exactly where it is, since it was never the repeated
     boilerplate this exception targets. See `appearance.js`'s own
     `PAL_SET_OBJ` and `THE_PAI_OBJ` for the reference examples, and
@@ -768,8 +768,8 @@ src/
     nothing a What/Why/How comment doesn't already say.
   - **Exception to the closing-bracket exemption**: a React hook call's
     closing line that carries a dependency array (`}, [ a, b, c ] );`)
-    DOES get a comment, even though it's otherwise just a closing bracket
-    — specifically to explain why the effect/callback/memo needs to
+    DOES get a comment, even though it's otherwise just a closing bracket,
+    specifically to explain why the effect/callback/memo needs to
     re-run when each of those values changes, one clause per dependency
     if there's more than one:
     ```
@@ -833,7 +833,7 @@ src/
   implementation quirk** (e.g. "padXcoNum: 4 exists because...", "mulBoo
   is true because...", "titStr/bodEle are functions because...") moves
   out of the leading position entirely and becomes a normal trailing
-  comment on that property's own line instead, right after its value —
+  comment on that property's own line instead, right after its value,
   NOT column-aligned with sibling properties' own `:` (per the
   Repeated-shape-object-literals exception above, most of these objects
   have no per-property comments at all normally, so a real one here
@@ -846,11 +846,11 @@ src/
   reference example: `padXcoNum`'s own override reasoning sits after
   `padXcoNum`'s own value, and the "title/body are functions..."
   explanation is copied verbatim after both `titStr` and `bodEle`.
-  - **Exception — a property-specific topic that actually explains
+  - **Exception, a property-specific topic that actually explains
     SEVERAL SIBLING ITEMS at once**, not just the one item it happens
     to sit above (recognizable because one or more of those sibling
     items share the exact same property value with no comment of their
-    own — the giveaway that the explanation was always meant to cover
+    own: the giveaway that the explanation was always meant to cover
     the whole group): this stays in the leading position above the
     first item of the group, unmoved, exactly like an item-identity
     topic would. Moving it down to just the first item's own property
@@ -886,10 +886,10 @@ src/
     left as a standalone line above either.
 - **Placement**: a single-line statement's comment goes at the very end of
   the line, one space after the line's own trailing `;` (or just one space
-  after whatever the line ends with, if it doesn't need a `;` — e.g. a
+  after whatever the line ends with, if it doesn't need a `;`, e.g. a
   `,` on an array/object entry). A multi-line construct (an array, object,
   if/else block, function, call, ...) gets its comment right after its own
-  opening bracket, one space in — on that same line, not a new one:
+  opening bracket, one space in, on that same line, not a new one:
   `const TAB_OBJ_ARR = [ // What: ...`, `React.useLayoutEffect( () => { // What: ...`.
   - **Known blind spot**: a bare `return {`/`return [` that opens a
     multi-line object/array literal is easy to skip, since it reads as
@@ -919,10 +919,10 @@ src/
     array, not just top-level declarations and `return` statements.
 - **Column alignment**: when a run of lines has NO blank lines between
   them (e.g. entries in the same array/object literal), pad each line so
-  every comment's `//` starts at the same column — computed from the
+  every comment's `//` starts at the same column, computed from the
   longest line in that run, same mechanism used for colon/import
   alignment elsewhere in this doc.
-  - **Exception — length mismatch too wide to align**: skip this
+  - **Exception, length mismatch too wide to align**: skip this
     alignment for any line whose own code portion (everything before its
     own `//`) is more than 100 characters away from the rest of the run.
     Padding across a gap that wide produces a huge empty gulf on the
@@ -941,7 +941,7 @@ src/
     in `notify.js`, where forcing alignment would have padded
     `padZerFun`'s own comment out by 73 extra spaces to reach
     `locDayFun`'s own, much longer line.
-    - **Refinement — a single object literal's own properties reorder
+    - **Refinement: a single object literal's own properties reorder
       around the outlier instead of losing alignment entirely**: this
       case (as opposed to the function-declaration-run case above,
       which has no properties to reorder) has an extra option the
@@ -966,7 +966,7 @@ src/
       object; reordering `bodEle` to the end and aligning the rest
       recovers real, useful alignment across dozens of objects that
       would otherwise have none at all.
-      - **Exception — a GuidedTour step object's own `bodEle` always
+      - **Exception, a GuidedTour step object's own `bodEle` always
         joins the outlier group, even when its own comment is short
         enough that it wouldn't otherwise trip the 100-char threshold.**
         A GuidedTour step object (identified by its own `bodEle`+
@@ -1028,15 +1028,15 @@ src/
         form one tight, aligned short group, followed by `bodEle` (a
         long single-line value), followed by `runFun` (a genuinely
         multi-line construct) at the very end.
-- **Structure — every comment is exactly one line**, following this exact
+- **Structure: every comment is exactly one line**, following this exact
   template: `// What: <Name Expansion Or Short Descriptive Purpose, Title
   Cased>. Why: <a terse but complete sentence explaining why this exists>.
   How: <a terse but complete sentence explaining how it works and/or how
   it's used.>` The `What:` value is Title Case (capitalize every word,
-  e.g. `TAB_OBJ_ARR` → `Tab Object Array`) — it's a label, not a sentence.
+  e.g. `TAB_OBJ_ARR` → `Tab Object Array`): it's a label, not a sentence.
   When the name being expanded follows the 9-char/3-segment (or 6-char
   property) naming rule, expand each segment to its actual full word, in
-  the SAME ORDER the segments appear in the name — never reordered, and
+  the SAME ORDER the segments appear in the name, never reordered, and
   never replaced with a paraphrase of what the thing conceptually is. E.g.
   `butActEle` (But+Act+Ele) → `Button Active Element`, not `Active Button
   Element` (segments swapped) and not `Clicked Tab Node` (a paraphrase
@@ -1046,16 +1046,16 @@ src/
   A clarifying word beyond the strict segment expansion is fine, but only
   APPENDED after all the real segment words, never inserted between them
   (e.g. `Indicator Record Object And Setter` is fine; `Left Offset Number`
-  is not, since "Offset" sits between the two real segments — say that in
+  is not, since "Offset" sits between the two real segments; say that in
   the Why/How sentences instead). `Why:`/`How:` are real sentences
   (capitalized start, subject + verb,
-  often starting with "This" as the subject), not sentence fragments —
+  often starting with "This" as the subject), not sentence fragments:
   e.g. `Why: This defines the fixed set of tabs that TabBarCom renders.`,
   not `Why: defines the fixed set of tabs TabBarCom renders.` For an
   object literal with multiple properties packed onto ONE line, chain a
   separate What/Why/How group per property, one after another in the same
   comment: `// What: Prop1... Why: This... How: This... // What: Prop2...
-  Why: This... How: This...`. These comments get long — that's expected
+  Why: This... How: This...`. These comments get long: that's expected
   and accepted, not a sign something's wrong.
   - **Editor tip worth knowing**: Alt+Z (Windows/Linux) or Option+Z (Mac)
     toggles soft-wrap in most editors (VS Code included), which makes
@@ -1063,37 +1063,37 @@ src/
     changing the file's real line structure. Turn it on when working in
     this codebase.
 - **JSX elements get exactly the same comment treatment as everything
-  else** — every element, one comment each.
+  else**: every element, one comment each.
   - **The `What:` for a native HTML/SVG element**: pretend the element
-    has an `id`, even though it doesn't — invent a plausible 3-segment
+    has an `id`, even though it doesn't; invent a plausible 3-segment
     name for it the same way the `id`-naming rule would, then expand THAT
     (Title Case, same segment order) as the `What:` value. E.g. `<nav>` →
     imagine an id like `conNavEle` (Container + Nav + Element) → `What:
     Container Nav Element`. Structurally-identical sibling elements (e.g.
     8 decorative grid-line `<path>`s, or repeated single-letter spans) may
-    share the exact same What/Why/How text — they don't need distinct
+    share the exact same What/Why/How text; they don't need distinct
     invented names just to be different.
   - **The `What:` for a custom component**: if the component's OWN name
     already follows the naming rules (like `TabBarCom`), use its real
-    expanded name directly, same as any other named identifier — don't
+    expanded name directly, same as any other named identifier; don't
     invent a separate pretend-id name for it. If the component HASN'T had
     naming rules applied yet (e.g. `Icon`, still awaiting its own pass),
-    just use its literal current name as-is for now (e.g. `What: Icon.`)
-    — that comment is expected to be revisited once the component itself
+    just use its literal current name as-is for now (e.g. `What: Icon.`);
+    that comment is expected to be revisited once the component itself
     gets renamed.
-  - **Placement — NEVER a bare `//`/text comment as JSX children.**
+  - **Placement: NEVER a bare `//`/text comment as JSX children.**
     Anything that isn't wrapped in `{}` between an opening and closing tag
     is literal DOM text content, so a plain `// comment` placed after an
     element's closing tag (even a multi-line one) gets rendered as visible
-    text — a real bug, not just a style slip. Instead, every JSX element
+    text, a real bug, not just a style slip. Instead, every JSX element
     comment is a comment-only JSX expression, `{ /* What: ... Why: ...
-    How: ... */ }` — no `//`, and it compiles away to nothing at all (a
+    How: ... */ }`: no `//`, and it compiles away to nothing at all (a
     comment-only `{}` child produces zero arguments to `createElement`,
     verified identical output with or without it), so it's always safe.
   - **Container elements and self-closing elements** get their comment
-    glued directly onto their own closing bracket — the opening tag's own
+    glued directly onto their own closing bracket: the opening tag's own
     `>` for a container (right where the tag itself finishes, BEFORE any
-    of its children/content — this is what keeps a big element like `<nav>`
+    of its children/content; this is what keeps a big element like `<nav>`
     readable, since its comment sits right at its declaration instead of
     buried after everything it contains), or the `/>` for a self-closing
     element. Same line, no space, tight:
@@ -1112,26 +1112,26 @@ src/
 
     <path d='M 216 528 L 216 16' />{ /* What: Grid Line Element. Why: ... How: ... */ }
     ```
-    Self-closing elements stay self-closing — no need to convert them to
+    Self-closing elements stay self-closing; no need to convert them to
     an explicit open/close pair, since a comment-only `{}` sibling on the
     same line works exactly like any other sibling in a normal children
     list (an element can have any number of siblings; the special case
     below is the one exception to that).
-  - **A fully one-line element** — opening tag, real text/expression
+  - **A fully one-line element** (opening tag, real text/expression
     content, AND its own closing tag all on the same physical line (e.g.
     `<span className='bw-ease'>Ease</span>`, or `<span>{ tabConObj.labStr
-    }</span>`) — gets its comment AFTER that closing tag instead, same
+    }</span>`)) gets its comment AFTER that closing tag instead, same
     line, so the comment never sits between the tag and its own content:
     `<span className='bw-ease'>Ease</span>{ /* What: Ease Span Element. Why: ... How: ... */ }`.
     Several such elements chained on one physical line (e.g. three
     single-letter spans) each get their own comment immediately after
-    their own closing tag, chained along that same line — not one merged
+    their own closing tag, chained along that same line, not one merged
     trailing comment covering the whole line.
-  - **Exception — an element sitting directly inside a `{}` JS expression**
+  - **Exception, an element sitting directly inside a `{}` JS expression**
     (e.g. a self-closing element that's the sole value of a
     `{cond && ( <span ... /> )}` or `.map((x) => ( <span ... /> ))`
     expression, rather than a normal member of some element's DOM children
-    list) is still real JS at that point, not JSX children syntax — so an
+    list) is still real JS at that point, not JSX children syntax, so an
     ordinary `//` comment works there directly, at the same position the
     `{ /* */ }` rule would otherwise use (after the `>` for a multi-line
     tag, after the content and closing tag for a one-liner). This keeps
@@ -1166,7 +1166,7 @@ src/
       immediately followed by a bare `//`" case, e.g. a container's own
       `<div ...> // What: ...` instead of `<div ...>{ /* What: ... */
       }`) against the file. For every hit, trace back to that specific
-      element's own immediate parent — if the parent is a real JSX
+      element's own immediate parent: if the parent is a real JSX
       element/fragment's children list (not the direct `? (`/`: (`/`&&
       (`/`.map((x) => (`/`return (` boundary), the comment is a live bug
       and must be converted.
@@ -1254,7 +1254,7 @@ src/
       comment. A step built from a variable at runtime (`--fon-siz-${
       sizStr }`) has no fixed value to quote and is exempt.
   - A multi-line JS expression embedded in JSX that ISN'T itself an
-    element — a `{condition && (` wrapper, a `{arr.map((x) => (` call —
+    element (a `{condition && (` wrapper, a `{arr.map((x) => (` call)
     still gets a comment (it's still a line of code), but follows the
     general descriptive-purpose comment rule instead of the pretend-id
     one, placed after its own opening bracket like any other multi-line
@@ -1275,27 +1275,27 @@ src/
       `{.*(&&|\?)\s*\($`, `^\s*\)\s*:\s*\($`, and `{.*\.map\(.*=>\s*\($`
       lines with no trailing `//`, not just bare elements/statements.
 - **Import statements** get the same one-line What/Why/How comment as any
-  other single-line statement — treat the imported binding like a variable
+  other single-line statement; treat the imported binding like a variable
   declaration. Since import lines have no blank lines between them, pad
   every line so its `//` lines up in the same column as its neighbors,
-  computed from the longest line in that run — same column-alignment
+  computed from the longest line in that run, same column-alignment
   mechanism used elsewhere in this doc (named-import padding, object
   `:` alignment, ...). The two import groups (default vs. named, see
   "Import statements" above) are padded independently, each against its
-  own longest line — a single default import naturally has nothing to
+  own longest line; a single default import naturally has nothing to
   align against. The `What:` value expands the imported binding's OWN
   CURRENT name: split it into whatever camelCase/PascalCase word segments
-  it already has (NOT the strict 9-char/3-segment truncation — the name
+  it already has (NOT the strict 9-char/3-segment truncation: the name
   hasn't had its own naming pass yet, so it may have more or fewer than 3
   segments), Title Case each word, and expand a recognizable abbreviation
   to its real word the same way segment-type expansion works elsewhere
-  (`Obj`→`Object`, `Bg`→`Background`, `Eml`→`Ease My Life`, ...) — e.g.
+  (`Obj`→`Object`, `Bg`→`Background`, `Eml`→`Ease My Life`, ...), e.g.
   `AppFeatureTour` → `What: App Feature Tour.`, `applyPaletteObj` → `What:
   Apply Palette Object.` Since almost none of these imported names have
   been through their own defining file's naming pass yet, this expansion
   is provisional: once a source file gets its own naming/comment pass,
   revisit every import comment that pulls a binding from it so the
-  expansion matches whatever segment words that pass actually lands on —
+  expansion matches whatever segment words that pass actually lands on,
   same spirit as the "revisit once renamed" note already covering JSX
   custom components (`Icon`, `TabToday`, ...) above.
 
@@ -1524,7 +1524,7 @@ comments in `src/ui/bg-flourish.jsx` for the reference examples.
     it documents this way, on top of its own single mandatory file-level
     one. This case is ALWAYS wrapped in its own `// #region`/
     `// #endregion` pair together with everything it introduces (see
-    "### Sectioning / fold regions" below) — that region wrapper is what
+    "### Sectioning / fold regions" below); that region wrapper is what
     visually distinguishes it from the one genuine file-level header at
     a glance, since both otherwise share the same naming form.
     - **Descriptor suffix**: the section's own name always ends with one
@@ -1536,7 +1536,7 @@ comments in `src/ui/bg-flourish.jsx` for the reference examples.
       around one specific piece of persisted/managed data, `Mechanism`
       for a section implementing a specific behavioral pattern or
       invariant across several functions, or another word entirely when
-      neither fits) — this is a per-section judgment call, not a fixed
+      neither fits); this is a per-section judgment call, not a fixed
       vocabulary. E.g. `store.js = Pick Log Subsystem` (introduces
       state.pickLog's own data shape and its row-builder), `store.js =
       Done-Gated Pick Mutations Mechanism` (introduces the pending/
@@ -1688,7 +1688,7 @@ later, but don't invent one for anything else yet:
     JSX, in the function's own plain-JS scope.)
 - **A themed cluster of entries inside a top-level array literal** (a
   catalog/config array whose entries correspond to a real, user-facing
-  grouping — e.g. every help-catalog item belonging to one page section
+  grouping, e.g. every help-catalog item belonging to one page section
   or one step of a multi-step form) can also get its own named region,
   the same judgment-call process as sectioning by purpose above
   (propose a grouping and a name, confirm it, never a mechanical scan).
@@ -1827,9 +1827,9 @@ later, but don't invent one for anything else yet:
   double quotes only inside a single-quoted string or where they're
   genuinely required.
 - Use `'single quotes'` for every string literal, including JSX attribute
-  values — even though double quotes are the idiomatic default there (e.g.
+  values, even though double quotes are the idiomatic default there (e.g.
   `className="x"` becomes `className='x'`). If a string's own content
-  needs a literal `"` character, that's fine — it just sits inside the
+  needs a literal `"` character, that's fine: it just sits inside the
   single-quoted string as normal text, no escaping concern either way.
 - This only governs actual string-literal delimiters in code. Quotation
   marks used as ordinary English punctuation inside a `//`/`/* */` comment
@@ -1839,12 +1839,12 @@ later, but don't invent one for anything else yet:
   `className` value gets a space directly after its opening backtick and
   directly before its closing one, and each individual class-name token
   inside it (a plain word, or a `${...}` interpolation standing in for
-  one) is separated from its neighbors by exactly 3 spaces — not the
+  one) is separated from its neighbors by exactly 3 spaces, not the
   normal single space:
   ```
   className={ ` tabbar   tabbar--${ tabPlaStr }   ${ raiOpeBoo ? 'is-open' : '' }   ${ className } ` }
   ```
-  This only changes the SOURCE formatting, not the rendered class list —
+  This only changes the SOURCE formatting, not the rendered class list:
   the browser collapses any run of whitespace in an element's `class`
   attribute to a single separator when matching selectors, so the extra
   spacing is purely a readability convention with no visual/behavioral
@@ -2914,7 +2914,7 @@ line, so only the rules that can't change what a tool reads apply.
 
 ### Arrays and objects
 - **Once an array literal cannot stay on a single line, every one of its
-  entries gets its own line — never 2+ entries packed onto one shared
+  entries gets its own line, never 2+ entries packed onto one shared
   physical line.** This is the array-literal counterpart to the object-
   literal and JSX-attribute versions of the same rule elsewhere in this
   doc (`### Multi-line attributes`' own "2+ attributes always goes
@@ -2934,12 +2934,12 @@ line, so only the rules that can't change what a tool reads apply.
   with its own trailing comment per the usual "every line of code gets a
   comment" rule.
 - No blank lines between entries within the same array/object literal
-  (e.g. the rows of a plain config array) — but directly after the opening
+  (e.g. the rows of a plain config array); but directly after the opening
   `[`/`{` and directly before the closing `]`/`}`, use 2 blank lines, same
   as a function body (below). This only applies when the literal already
-  spans multiple lines — a single-line literal (e.g. one inline `{ id, label }`
+  spans multiple lines; a single-line literal (e.g. one inline `{ id, label }`
   passed as a prop) needs no padding.
-  - **Exception — a long, prose-length single-line array entry still gets
+  - **Exception, a long, prose-length single-line array entry still gets
     1 blank line before and after it**, the array-entry counterpart of the
     object-property long-outlier exception below, even though this specific
     exception is for ARRAY entries rather than object properties: a plain
@@ -2959,7 +2959,7 @@ line, so only the rules that can't change what a tool reads apply.
   blank lines apart instead, per that variant's own "Entry spacing"
   bullet; everything below still applies to every other object.
 - **A multi-line entry inside an array, or a multi-line property inside an
-  object, gets exactly 1 blank line before and after it** — UNLESS that
+  object, gets exactly 1 blank line before and after it**, UNLESS that
   side is also the container's own first/last position, in which case the
   container's own 2-blank-line open/close padding (the bullet above)
   applies instead of the 1-blank rule. The two sides (before/after) are
@@ -2967,7 +2967,7 @@ line, so only the rules that can't change what a tool reads apply.
   applies before it, but only 1 blank after it, assuming something follows)
   or "last" (2 blanks after, 1 before) or neither (1 blank both sides) or
   both at once if it's the container's only entry (2 blanks both sides).
-  This nests recursively at every depth — a deeply-nested multi-line
+  This nests recursively at every depth: a deeply-nested multi-line
   property follows the exact same before/after logic relative to ITS OWN
   immediate parent, independent of how outer levels are padded:
   ```
@@ -3034,7 +3034,7 @@ line, so only the rules that can't change what a tool reads apply.
   `STORAGE`/`PICKERS`/`CAD_NAM_OBJ`), since a plain object literal's own
   property order has no functional effect in JS. This does NOT apply to
   array literal entries (e.g. `TAB_OBJ_ARR`'s own rows, a help-catalog's
-  own items) — only to an object literal's own named properties; an
+  own items), only to an object literal's own named properties; an
   array's own entry order is frequently meaningful (a tour's own step
   sequence, a nav bar's own left-to-right order) and stays exactly as
   authored.
@@ -3111,7 +3111,7 @@ line, so only the rules that can't change what a tool reads apply.
       single variable name to sort by, they're alphabetized by the
       expression's own source text exactly as written inside the
       brackets, compared case-insensitively.
-  - **Exception — skip when the current order is actually relied on**:
+  - **Exception, skip when the current order is actually relied on**:
     before reordering a given object, check whether anything reads it
     via `Object.keys()`/`Object.entries()`/`Object.values()`/a
     `for...in` loop in a way that assumes its own current property
@@ -3145,7 +3145,7 @@ line, so only the rules that can't change what a tool reads apply.
     object and the explicit `bacBoo`/`cirBoo`/`priStr`/`tabStr`
     properties after it are alphabetized normally, with `bodEle` still
     pulled to the very end per its own separate exception.
-    - **Refinement — a spread with no real key overlap against the named
+    - **Refinement: a spread with no real key overlap against the named
       properties it would move past MAY be relocated to sit after all
       of them, treated as its own outlier, when doing so lets those
       named properties form one clean, tightly-grouped, aligned run
@@ -3174,7 +3174,7 @@ line, so only the rules that can't change what a tool reads apply.
       entry, in which case the container's normal 2-blank open-padding
       applies instead (per the general multi-line-entry padding rule
       above) rather than a redundant extra 1-blank rule on top of it.
-      - **Exception — a run of consecutive spreads with nothing named
+      - **Exception, a run of consecutive spreads with nothing named
         between them stays tightly grouped, 0 blank lines within the
         run itself**, the same "same kind of thing" tiering already
         used for a run of consecutive `const`/`let` declarations or a
@@ -3228,7 +3228,7 @@ line, so only the rules that can't change what a tool reads apply.
   - **Amends the "reorder the long outlier(s) to the end" refinement
     above**: once alphabetical order is established, the long/short
     split still happens exactly as described there, but the two
-    groups no longer sit flush together — leave exactly 1 blank line
+    groups no longer sit flush together: leave exactly 1 blank line
     between the last short property and the first long one, the same
     "somewhat related, different kind of thing" gap already used
     elsewhere for a comparable shift in what a block of lines is doing.
@@ -3236,17 +3236,17 @@ line, so only the rules that can't change what a tool reads apply.
     is, from the base rule above; when 2+ properties both qualify as
     "long," they're alphabetized against each other too, not left in
     whatever order they happened to fall in before the split).
-- Every multi-line object's properties get their `:` column-aligned —
+- Every multi-line object's properties get their `:` column-aligned:
   pad each property name (left-justify) to the width of the longest name
   in that specific object, same computation used for `style` objects and
-  named imports elsewhere in this doc. This applies per-object — a nested
+  named imports elsewhere in this doc. This applies per-object: a nested
   object's own alignment is computed independently from its parent's.
   - **This only applies within a tightly-grouped run of properties (0
     blank lines between them)**, the same "run" concept used for
     consecutive `const`/`let` declarations elsewhere in this doc.
     Properties separated by a blank line (the normal case for a
     multi-line property, per the 1-blank/2-blank padding rule above)
-    are NOT forced to align with each other across that gap — each such
+    are NOT forced to align with each other across that gap; each such
     property's own `:` just gets its ordinary single space, no padding,
     even when every property involved is plainly a field of the same
     record. E.g. `emlTouObj`'s own `get`/`set`/`subscribe` properties in
@@ -3271,30 +3271,30 @@ line, so only the rules that can't change what a tool reads apply.
       objects/entries, not just runs of short scalar properties, since
       the visual "these clearly form a table" instinct applies just as
       strongly (and just as wrongly) to those.
-- A one-line array literal — including a destructuring array binding like
-  `const [ indRecObj, setIndRecObj ] = React.useState( null );` — gets a
+- A one-line array literal (including a destructuring array binding like
+  `const [ indRecObj, setIndRecObj ] = React.useState( null );`) gets a
   space directly after `[` and directly before `]` when it has at least one
   element. An empty array (`[]`, e.g. an empty `useEffect`/`useCallback`
-  dependency list) stays tight — no space either side.
+  dependency list) stays tight, no space either side.
 - Every object literal gets a space between each property name and its
-  `:` (`id : 'today'`, not `id: 'today'`) — this applies universally to
+  `:` (`id : 'today'`, not `id: 'today'`); this applies universally to
   every object literal in the file, not just one array of config objects.
 - When several structurally-similar object literals (or JSX conditional
   branches) are stacked as adjacent lines, column-align their matching
-  parts too — e.g. every entry's closing `}` in a config array, or the
+  parts too, e.g. every entry's closing `}` in a config array, or the
   `&&`/tag-name padding across parallel `{x === 'a' && <TabA .../>}`
-  branches — computed from the longest entry's needed width.
+  branches, computed from the longest entry's needed width.
   - **A stack of adjacent one-line object literals** (each entry small
     enough to stay on its own single line rather than needing the
     "2+ properties" multi-line split below) gets this treatment applied
     property-by-property, left to right: pad each property's own
     `value,` (or `value` with no comma, for whichever property sits last
     in a given row) so the NEXT property starts at the same column
-    across every row, computed from the widest row at that position —
+    across every row, computed from the widest row at that position,
     the same mechanism as column-aligning a run of plain object
     properties elsewhere in this doc, just applied across sibling ROWS
     instead of down one object's own properties. This still applies even
-    when the rows don't all share the exact same property set — e.g. one
+    when the rows don't all share the exact same property set, e.g. one
     entry ends after 3 properties while its neighbors carry a 4th, each
     with a genuinely different name (`daysOfWeek` on one row, `interval`
     on the next). Align by POSITION in that case too, treating whatever
@@ -3328,7 +3328,7 @@ line, so only the rules that can't change what a tool reads apply.
       above the array instead, and leave that short identifier in its
       real position; it no longer widens the comment column. See
       `tab-stats.jsx`'s own `freSpeObj`/`metPilArr`.
-    - **Exception — stop aligning before a long/paragraph-length
+    - **Exception, stop aligning before a long/paragraph-length
       property.** Once a row's own value for a given property is
       genuinely prose-length (a sentence or more, varying wildly in
       length row to row, as opposed to a short string/number that just
@@ -3345,8 +3345,8 @@ line, so only the rules that can't change what a tool reads apply.
       `desStr` (a full sentence or more per row) and the closing `}`
       after it are left natural.
 - An object literal with 2+ properties gets split to one property per line
-  — even if it would otherwise still fit on one line character-count-wise
-  — whenever at least one property's value is a non-trivial expression
+  (even if it would otherwise still fit on one line character-count-wise)
+  whenever at least one property's value is a non-trivial expression
   (contains a binary operator like `+`/`-`/`*`/`/`, or is otherwise more
   than a bare literal/identifier/single property-access). A simple
   config-style object whose values are plain literals only (e.g.
@@ -3354,8 +3354,8 @@ line, so only the rules that can't change what a tool reads apply.
   since there's nothing to visually untangle. Even when it's really just
   one call argument wrapped for readability (as opposed to a genuine
   multi-entry container like `TAB_OBJ_ARR`), it STILL gets the usual
-  2-blank-line padding after `{`/before `}` — same as any other multi-line
-  object literal, no exception for the call-argument case — but its last
+  2-blank-line padding after `{`/before `}`, same as any other multi-line
+  object literal, no exception for the call-argument case; but its last
   property still does NOT get a trailing comma. Combined with the
   tight-`({`/`})` exception from the Parentheses spacing section below
   (a call whose sole argument is this kind of object skips the paren's own
@@ -3372,7 +3372,7 @@ line, so only the rules that can't change what a tool reads apply.
 
   });
   ```
-- **Exception to the exception — an exported namespace object always goes
+- **Exception to the exception: an exported namespace object always goes
   multi-line at 2+ properties, even though its own values are always bare
   identifiers** (the explicit `originalName : internalName` mapping this
   same doc's own Naming Conventions section requires) and would otherwise
@@ -3388,27 +3388,27 @@ line, so only the rules that can't change what a tool reads apply.
   property-name column (aligning the `:`) AND its own internal-name
   value column are padded to line up, the same two-column alignment
   `holidays.js`'s own `HOL_NAM_OBJ` already used (there coincidentally
-  invisible since every property name equals its own value verbatim) —
+  invisible since every property name equals its own value verbatim):
   pad the value column (plus its trailing comma, absent only on the
   last entry) to the width of the longest value in the object, the same
   computation used for the property-name column itself.
 
 ### Parentheses spacing (declarations, calls, control-flow)
 - A non-empty parenthesized list gets a space directly after `(` and
-  directly before `)` — this covers a function/arrow declaration's own
+  directly before `)`; this covers a function/arrow declaration's own
   parameter list, a function/method call's own arguments, AND an
   `if`/`else if`/`while` condition alike (`if ( !navCurEle ) return;`,
   `resObsObj.observe( navCurEle );`, `function TabBarCom ( { ... } ) {`).
-- An EMPTY parenthesized list stays tight instead — a zero-argument call
+- An EMPTY parenthesized list stays tight instead: a zero-argument call
   (`foo()`), a zero-parameter arrow (`() => ...`), an empty dependency
-  array's enclosing call — no space inserted either side.
+  array's enclosing call, no space inserted either side.
 - Ternary/grouping parens used purely for operator precedence (not a call,
   a declaration, or a control-flow condition) are NOT covered by this rule
   and stay exactly as written.
 - **Exception**: a call whose sole argument is a multi-line object literal
-  — where the `(` is followed immediately by `{` with nothing else on
+  (where the `(` is followed immediately by `{` with nothing else on
   that line, and (on the matching closing line) `}` is followed
-  immediately by `)` with nothing else before it — skips the space on
+  immediately by `)` with nothing else before it) skips the space on
   that side. The object literal's own opening/closing braces already mark
   the boundary clearly, so the paren adds no useful separation there:
   ```
@@ -3429,25 +3429,25 @@ line, so only the rules that can't change what a tool reads apply.
   follows the normal spacing rule above.
 
 ### Functions
-This means ANY function that isn't a one-line declaration — named
+This means ANY function that isn't a one-line declaration: named
 functions, arrow functions, and inline callbacks passed to hooks like
 `useEffect`/`useState`'s lazy initializer/`useCallback`/`useMemo`, no matter
 how short the body is.
-- Directly after the opening `{` — or the opening `(` for an implicit-return
-  arrow like `() => ( expr )`, which counts as a function body too — insert
+- Directly after the opening `{` (or the opening `(` for an implicit-return
+  arrow like `() => ( expr )`, which counts as a function body too) insert
   2 blank lines before the first line inside. Directly before the closing
   `}`/`)`, insert 2 blank lines after the last line inside.
 - A function that fits entirely on one line AND has only a single
   statement inside (e.g.
   `const onDarChaFun = ( chaEveObj ) => setSysDarBoo( chaEveObj.matches );`,
   or a one-line cleanup `return () => { resObsObj.disconnect(); };`) is
-  exempt — there's nothing to pad. See "Multi-statement one-line blocks"
+  exempt; there's nothing to pad. See "Multi-statement one-line blocks"
   below for what happens once there's more than one statement.
 
 ### Multi-statement one-line blocks
 - A one-line block that requires 2 or more semicolon-separated statements
   crammed together (e.g. a cleanup function running two unrelated
-  teardown calls) must be broken into a real multi-line block instead —
+  teardown calls) must be broken into a real multi-line block instead,
   even if it's a `return`ed arrow function and would otherwise qualify
   for the "Functions" one-liner exemption above. Space the resulting
   statements using the normal relatedness tiering (see "General
@@ -3463,14 +3463,14 @@ how short the body is.
   };
   ```
 - **Exception**: a guard-clause block whose second (and final) statement
-  is a bare `return;` stays exempt and compact on one line regardless —
+  is a bare `return;` stays exempt and compact on one line regardless,
   e.g. `if ( !butActEle ) { setIndRecObj( null ); return; }`. Any other
   combination of 2+ statements (including two calls with no `return` at
   all, like two sibling `clearTimeout(...)` calls) follows the rule above
   instead.
 
 ### if/else, while, and for statements
-- **This section covers `for` loops identically to `if`/`while`** — every
+- **This section covers `for` loops identically to `if`/`while`**: every
   rule below (multi-line body padding, and the gap before the statement
   itself, governed by "### General relatedness tiering" below the same
   way it governs the gap before an `if`/`while`) applies to a `for` loop
@@ -3481,8 +3481,8 @@ how short the body is.
   immediately followed by an `if` block would be, not the "Related" (1
   blank line) tier a plain declaration run gets from "### Variable
   declarations" above.
-- Same padding as functions — 2 blank lines after the opening `{` and 2
-  before the closing `}` — but only when the block actually spans multiple
+- Same padding as functions (2 blank lines after the opening `{` and 2
+  before the closing `}`), but only when the block actually spans multiple
   lines. A one-line body with a single statement (`if ( !navCurEle )
   return;`), or the guard-clause-ending-in-`return` exception from
   "Multi-statement one-line blocks" above (`if ( !butActEle ) {
@@ -3507,8 +3507,8 @@ how short the body is.
   away, simply because that gap IS the first guard's own mandatory
   3-blank-after, not a rule of its own.
 - A multi-line `if`/`else if`/`else` chain puts each `else if`/`else` on
-  its OWN line — never cuddled onto the previous block's closing `}` (no
-  `} else {`) — with exactly 1 blank line between that closing `}` and
+  its OWN line, never cuddled onto the previous block's closing `}` (no
+  `} else {`), with exactly 1 blank line between that closing `}` and
   the next `else if`/`else` keyword. This is the same "related" (1 blank
   line) tiering already used for mutually-exclusive branches elsewhere in
   this doc, just made explicit for statement-level if/else chains: each
@@ -3541,7 +3541,7 @@ how short the body is.
   }
   ```
 - **This applies just as strictly to a compact, brace-free single-statement
-  chain** — `if`/`else if`/`else` are NEVER allowed to share a physical
+  chain**: `if`/`else if`/`else` are NEVER allowed to share a physical
   line with each other, even when every branch is short enough to stay a
   single statement with no `{ }` block at all. A branch that's genuinely
   just one statement still doesn't need its own braces (per "###
@@ -3563,7 +3563,7 @@ how short the body is.
   than leaving one branch uncommented. This also forces open anything
   that was relying on the whole `if`/`else` being a single compact
   statement to qualify as a one-line function/loop body (see "###
-  Functions" and this section's own "declare + guard" bullet above) —
+  Functions" and this section's own "declare + guard" bullet above);
   once it's genuinely 2 lines, the enclosing block follows its own normal
   multi-line padding rules like any other multi-statement body.
 - **Multiple standalone `if` blocks are NOT the same thing as an `if`/
@@ -3573,10 +3573,10 @@ how short the body is.
   specific to a real chain, where the branches are literally one
   conditional construct and mutually exclusive by construction. A run of
   separate `if ( cond ) { ... }` statements with no `else` tying them
-  together — most commonly an early-return dispatch on different values
+  together (most commonly an early-return dispatch on different values
   of one variable, e.g. `if ( pagIdeStr === 'explore_pickers' ) { ...
   return [...]; }` followed later by its own separate `if ( pagIdeStr
-  === 'explore_stats' ) { ... return [...]; }` — are genuinely
+  === 'explore_stats' ) { ... return [...]; }`) are genuinely
   independent statements that only happen to look parallel, the exact
   "looks structurally parallel but isn't really related" case "###
   General relatedness tiering" below already warns about. These get 3
@@ -3587,8 +3587,8 @@ how short the body is.
   self-contained early return, not a shared conditional, so 3 blank
   lines separate each one from the next.
 - **A different, separate rule from the one above: once a complete `if`/
-  `else if`/`else` construct finishes — a single standalone `if` with no
-  `else` at all, or a full chain — the very next line of code always
+  `else if`/`else` construct finishes (a single standalone `if` with no
+  `else` at all, or a full chain) the very next line of code always
   gets 3 blank lines before it, unconditionally, no matter what that
   next line actually is** (another separate, unrelated `if`, a plain
   statement, a function call, ...) **and no matter whether the
@@ -3610,7 +3610,7 @@ how short the body is.
   `if ( neeCopFun( pagIdeStr ) ) ... else if ( pagIdeStr ===
   'explore_stats' ) ...` chain is followed by a separate, standalone
   `if ( pagIdeStr === 'explore_data' ) cleTasFun( actStoObj );`, which is
-  in turn followed by `actStoObj.setCarFun(...)` — despite every
+  in turn followed by `actStoObj.setCarFun(...)`, despite every
   line here being a single-line statement, not a braced block, both
   transitions (chain → standalone `if`, and standalone `if` → the
   `setCarFun` call after it) get 3 blank lines, not the 1 a quick
@@ -3660,11 +3660,11 @@ block's own body still gets the standard 2-blank-line padding from
   independent of the "own line" rule above: `catch` never shares a
   physical line with `try`'s own closing `}` (no `} catch (e) {}`)
   regardless of whether either block's own body is compact or
-  multi-line — a compact `try { ... }` is still followed by `catch` on
+  multi-line: a compact `try { ... }` is still followed by `catch` on
   its own fresh line below, per the reference examples throughout
   storage.js (e.g. `ownKeyFun`).
 - **One `try`/`catch` statement is always separated from the next `try`/
-  `catch` statement by 3 blank lines — the "unrelated" tier — regardless
+  `catch` statement by 3 blank lines (the "unrelated" tier), regardless
   of what the general relatedness tiering would otherwise assign.** Two
   separate try/catch statements are always genuinely distinct pieces of
   error-handling behavior, even when they sit right next to each other
@@ -3676,7 +3676,7 @@ block's own body still gets the standard 2-blank-line padding from
   calls might. This applies whether the try/catch pair involved is
   compact or fully multi-line, and stacks with (doesn't replace) the
   normal blank-line rule between a `try`'s own closing `}`/compact line
-  and its OWN `catch` (still 1 blank line, per the intro above) — the
+  and its OWN `catch` (still 1 blank line, per the intro above); the
   3-blank rule is specifically about the gap AFTER one statement's own
   `catch` and BEFORE the next statement's own `try`. See `genNotFun` in
   `notify.js` for the reference example: its service-worker attempt's
@@ -3735,7 +3735,7 @@ block's own body still gets the standard 2-blank-line padding from
   instead, padded like any other (2 blank lines after `{`, 2 before `}`).
   This is independent of the "own line" rule above: `while` never shares
   a physical line with `do`'s own closing `}`, even when the block's own
-  body stays compact — a compact `do { ... }` is still followed by
+  body stays compact: a compact `do { ... }` is still followed by
   `while ( cond );` on its own fresh line below, per `picLogFun`'s own
   toss-draw loop in `seed.js` (the reference example this rule was
   written from).
@@ -3756,9 +3756,9 @@ while ( condition );
   return/continue, 3 after a single-line exit guard, 2 before an
   immediately-following enclosing close) always win over any OTHER
   rule elsewhere in this doc that would otherwise prescribe a
-  different count for the same gap** — e.g. the "Long boolean
+  different count for the same gap** (e.g. the "Long boolean
   expressions" section's own fixed "2 blanks after the final combining
-  boolean" — since a return/continue is always a hard control-flow
+  boolean"), since a return/continue is always a hard control-flow
   boundary regardless of what else is going on around it. The ONLY
   thing that overrides this section's own count instead: a
   return/continue/guard sitting immediately next to its own enclosing
@@ -3781,12 +3781,12 @@ while ( condition );
   padding rule for its own content: 2 blank lines after the opening `(` and
   2 before the closing `)`.
 - **A `return` that returns JSX directly (`return ( <div>...</div> );`)
-  needs no comment of its own** — the JSDoc's own `@returns` already
+  needs no comment of its own**: the JSDoc's own `@returns` already
   documents what the function returns, and every element inside the JSX
   already gets its own comment, so a comment on the bare `return (` line
   itself would just repeat one or the other. This is NOT the same as a
   `return` that calls a real function, passing the JSX as one of its
-  arguments (`return createPortal( <div>...</div>, document.body );`) —
+  arguments (`return createPortal( <div>...</div>, document.body );`):
   that line is a genuine function call with its own behavior/arguments
   worth explaining (why THIS function, why these arguments), not merely
   "returning JSX", so it still gets a normal trailing/attached comment
@@ -3796,7 +3796,7 @@ while ( condition );
   fused one-liner form `if (cond) return;`) skips the standalone "3
   before" rule ONLY when it is the guard half of the "declare a value,
   then immediately guard-check that same value" pair documented under
-  "### if/else, while, and for statements" above — that pair's own guard
+  "### if/else, while, and for statements" above: that pair's own guard
   gets exactly 2 blank lines before it instead, per that pair's own
   dedicated rule, since its condition operates directly on the value the
   line right above it just declared.
@@ -3809,7 +3809,7 @@ while ( condition );
   the guard itself is checking) can never be "related" to it in the
   tiering sense, no matter how topically close it looks. This is most
   commonly seen on a standalone fallback guard sitting right after some
-  other, unrelated `if` block's own closing `}` — e.g. `buiTesFun`'s own
+  other, unrelated `if` block's own closing `}`, e.g. `buiTesFun`'s own
   per-branch fallback guards (`if ( pagIdeStr !== 'explore_today' )
   return [];` immediately below the Settings tour's own `if` block's
   closing `}`) get 3 blank lines on both sides, since the guard's own
@@ -3845,15 +3845,15 @@ while ( condition );
 
 ### JSX
 - No space after `<`/`</` or before `>`/`/>` on any element, including a
-  one-line element with exactly one attribute — `<span>`, `</span>`,
+  one-line element with exactly one attribute: `<span>`, `</span>`,
   `<span className='brand-name'>`, `<img src='x' />` all stay tight. (An
   earlier version of this doc required a space before a one-attribute
   element's closing `>` specifically; dropped as stale/superseded once
-  app.jsx's own actual practice — confirmed never applying it, including
-  at the exact element the old rule used as its own example — showed it
+  app.jsx's own actual practice (confirmed never applying it, including
+  at the exact element the old rule used as its own example) showed it
   wasn't really the intended convention.)
-- Every JSX expression container — an attribute value (`ref={navEleRef}`)
-  or a JSX child expression (`{actIdeStr === 'today' && ...}`) — gets a
+- Every JSX expression container (an attribute value (`ref={navEleRef}`)
+  or a JSX child expression (`{actIdeStr === 'today' && ...}`)) gets a
   space directly after its `{` and directly before its `}`:
   `ref={ navEleRef }`, `{ actIdeStr === 'today' && ... }`. This extends to
   `${...}` template-literal interpolations too: `` `tab--${tabPlaStr}` ``
@@ -3861,23 +3861,23 @@ while ( condition );
   - **Exception**: when the container's content is itself an object
     literal (the double-brace case, e.g. `style={{ stroke : '...' }}`),
     don't add a second, separate space on top of the object literal's own
-    spacing — `{{`/`}}` stays tight exactly as it already reads.
+    spacing: `{{`/`}}` stays tight exactly as it already reads.
   - **Exception**: when a JSX child expression's closing `}` is directly
     preceded by more than one other closing bracket from nested
     calls/arrows (e.g. `.map((x) => (<Foo />))`'s trailing `))}`), those
-    closing brackets stay tight against each other and against the `}` —
+    closing brackets stay tight against each other and against the `}`;
     don't force a space between each one just because they're stacked:
     `{ TAB_OBJ_ARR.map( ( tabConObj ) => (\n\t...\n))}`, not
     `( ... ) )}`.
 - Treat a JSX element that has actual children spanning multiple lines the
   same as a function/array/object: 2 blank lines directly after its opening
   tag and 2 directly before its closing tag. This includes a
-  `{ condition && (\n  <Foo />\n) }` multi-line conditional wrapper — the
+  `{ condition && (\n  <Foo />\n) }` multi-line conditional wrapper: the
   `(` and `)` count as an opening/closing pair too.
   - Exception: a self-closing element whose only multi-line aspect is its
     own wrapped attributes (no children at all, e.g.
     `<button\n\tclassName='x'\n\tonClick={...}\n>`) needs no padding
-    between its attribute lines — there's no "inside" to pad.
+    between its attribute lines; there's no "inside" to pad.
 - **JSX sibling spacing is set by nesting depth alone.** Rewritten
   2026-09-26 and applied during the final file-by-file pass; it replaces
   the earlier approach of borrowing the JS relatedness tiers for JSX
@@ -3935,12 +3935,12 @@ while ( condition );
 
 ### Attribute/prop ordering
 Every JSX element's attributes/props (native DOM/SVG elements AND custom
-components alike — a custom component's props follow the exact same
+components alike: a custom component's props follow the exact same
 8-tier scheme, mapped by role, not by whether they're a "real" HTML
 attribute) are ordered into these 8 tiers, top to bottom:
 1. **React-internal, not real DOM attributes**: `key`, `ref`,
    `dangerouslySetInnerHTML`. React strips these before the element ever
-   reaches the DOM, so they always come first regardless of element type —
+   reaches the DOM, so they always come first regardless of element type;
    this includes SVG elements (SVG's own attributes do NOT get ranked
    ahead of `key`/`ref`, see tier 6 below).
 2. **Identity**: `id` on a native element; on a custom component, whichever
@@ -3948,12 +3948,12 @@ attribute) are ordered into these 8 tiers, top to bottom:
    `pageId`). Decided 2026-09-27: a key that only labels which instance of
    a component is running, like GuiTouCom's own `touIdeStr` tour slot key,
    is core data in tier 6, not identity.
-3. **Class**: `className` (never bare `class` — that attribute name
+3. **Class**: `className` (never bare `class`: that attribute name
    doesn't exist in JSX at all).
 4. **Style**: `style={{ ... }}`.
 5. **State/custom identifiers**: `name`, `data-*`, `htmlFor` (never bare
-   `for` — reserved word in JS, so JSX renames it).
-6. **Core functional / primary data** — the tier that does the most work,
+   `for`, reserved word in JS, so JSX renames it).
+6. **Core functional / primary data**: the tier that does the most work,
    so it absorbs a few different things:
    - Native elements: `src`, `href`, `action`, `type`, `value`/
      `defaultValue`, `checked`/`defaultChecked`, `disabled`, `required`,
@@ -3964,16 +3964,16 @@ attribute) are ordered into these 8 tiers, top to bottom:
      (`viewBox`, `width`, `height`, `x`, `y`, `cx`, `cy`, `r`, `rx`, `ry`,
      `d`, `points`, `transform`, `fill`, `stroke`, `strokeWidth`,
      `strokeLinecap`, `strokeLinejoin`, `clipPath`, `clipPathUnits`, ...)
-     sits in THIS tier — alphabetized among themselves rather than
+     sits in THIS tier, alphabetized among themselves rather than
      individually ranked, since there are too many to rank one by one.
    - Custom components: whatever core data/behavior props actually drive
-     the component (e.g. `state`, `actions`, `animStyle`) — anything that
+     the component (e.g. `state`, `actions`, `animStyle`): anything that
      isn't identity/style/descriptive/an event callback lands here.
 7. **Descriptive / accessibility**: `alt`, `title`, `aria-*`, `role`,
    `tabIndex`.
 8. **Events/callbacks, always last**: native handlers (`onClick`,
    `onChange`, ...) AND custom-component callback props (`onHome`,
-   `onNavTab`, `onClose`, ...) — both are the same conceptual category, so
+   `onNavTab`, `onClose`, ...): both are the same conceptual category, so
    they're interleaved alphabetically, not native-first.
 
 Within each tier, attributes are alphabetized by name (case-insensitive),
@@ -4017,7 +4017,7 @@ reference example:
 
 ### Multi-line attributes
 - Any element (native or custom component) with 2 OR MORE attributes/props
-  always goes multi-line — never all on one line, no matter how short the
+  always goes multi-line, never all on one line, no matter how short the
   attributes are. This is exact, not "as long as it's reasonably long":
   even a 2-attribute element like `<span className='x' aria-hidden='true'>`
   must split.
@@ -4025,7 +4025,7 @@ reference example:
   shared line. The opening tag name gets its OWN line with nothing else on
   it (not even the first attribute). The closing `>`/`/>` ALSO gets its
   own line, at the same indentation depth as (i.e. column-aligned under)
-  the opening tag name's own `<` — it does NOT stay glued to the last
+  the opening tag name's own `<`; it does NOT stay glued to the last
   attribute's line:
   ```
   <span
@@ -4033,7 +4033,7 @@ reference example:
   	aria-hidden='true'
   >
   ```
-  Applies identically to self-closing elements — the `/>` sits alone on
+  Applies identically to self-closing elements: the `/>` sits alone on
   its own line too, aligned with the `<`:
   ```
   <Icon
@@ -4042,25 +4042,25 @@ reference example:
   />
   ```
   This supersedes the earlier "wrapped attributes column-aligned under the
-  first attribute" indentation case for element attribute lists specifically
-  — since the tag name never shares a line with an attribute anymore, there's
+  first attribute" indentation case for element attribute lists specifically,
+  since the tag name never shares a line with an attribute anymore, there's
   no longer a column to align under. Use plain structural indent (one tab
   deeper than the opening tag's own line) for every attribute line instead.
   (That said, the alignment mechanism itself, from the Indentation section
   above, still applies to OTHER kinds of deliberately-column-aligned
   continuation lines that aren't an element's own attribute list.)
 - A single-attribute element is unaffected as long as that attribute's own
-  value doesn't itself force multi-line (see the `style` rule right below)
-  — e.g. `<path d='...' />` stays exactly as compact as it already is.
+  value doesn't itself force multi-line (see the `style` rule right below):
+  e.g. `<path d='...' />` stays exactly as compact as it already is.
 - **`style={{ ... }}` objects follow this same "2+ means multi-line" rule,
-  one property per line** — regardless of whether the property values are
+  one property per line**, regardless of whether the property values are
   simple literals or complex expressions (this is stricter than the
   general object-literal rule elsewhere in this doc, which only splits an
   object when a value is non-trivial; `style` always splits at 2+
   properties). No trailing comma on the last property, and it stays tight
-  (no blank-line padding) — same convention as a wrapped call-argument
+  (no blank-line padding), same convention as a wrapped call-argument
   object. Additionally, the `:` of every property in the same `style`
-  object always lines up in one column — pad each property name
+  object always lines up in one column: pad each property name
   (left-justify) to the width of the longest name in that object, same
   computation as the column-alignment already used for named imports and
   stacked object literals elsewhere in this doc:
@@ -4071,7 +4071,7 @@ reference example:
   }}
   ```
   If `style` is an element's ONLY attribute and it has 2+ properties, the
-  element itself still goes multi-line as a consequence — the tag name
+  element itself still goes multi-line as a consequence: the tag name
   gets its own line, `style={{` follows, then each property, then the
   closing `}}`, then (per the closing-bracket rule above) the element's
   own `>`/`/>` on its own line after that:
@@ -4090,14 +4090,14 @@ reference example:
 - A run of visually-repetitive sibling conditionals that used to share a
   deliberately-aligned single line each (e.g. four
   `{actIdeStr === 'x' && <TabX .../>}` branches column-padded to line up)
-  loses that alignment once each one expands to multi-line — that's an
+  loses that alignment once each one expands to multi-line; that's an
   accepted tradeoff of this rule, not a bug to fix.
 
 ### Variable declarations
-- Every variable gets its own `const`/`let` on its own row — a single
+- Every variable gets its own `const`/`let` on its own row: a single
   `const a = foo(), b = bar();` combining multiple declarations must be
   split into separate statements, each on its own line (this is a real,
-  intentional code change, not just whitespace — verify nothing depends on
+  intentional code change, not just whitespace; verify nothing depends on
   the original combined-statement ordering/scoping before splitting).
 - **Consecutive plain `const`/`let` declarations get 0 blank lines between
   them, not the general "related" (1-blank) tier**, whenever they're
@@ -4115,7 +4115,7 @@ reference example:
     internally, using the mechanism below independently within itself),
     with the normal 1 blank line between the two sub-groups, even though
     the whole run still shares one overall purpose.
-  - **Same keyword still isn't enough on its own — a run also splits by
+  - **Same keyword still isn't enough on its own: a run also splits by
     declaration SHAPE.** A plain single-name binding (`const x = ...;`)
     and a destructured binding (`const [ a, b ] = ...;` or `const { a,
     b } = ...;`, most commonly a `React.useState()` pair) are a
@@ -4228,7 +4228,7 @@ reference example:
     of a same-operation statement run (see the bullet below), which gets
     its own fresh 0-blank grouping instead of reverting to 1-blank.
   - **This 0-blank rule is strictly for a fresh `const`/`let`
-    declaration — a plain reassignment of an already-declared variable
+    declaration: a plain reassignment of an already-declared variable
     (no `const`/`let` keyword at all, e.g. `iteFlaObj = { ... };`
     reassigning a `let` declared earlier) is NOT a declaration for this
     rule's own purposes, even when it sits directly next to a call that
@@ -4258,9 +4258,9 @@ reference example:
 
 ### Long boolean expressions
 A "long boolean expression" is an `&&`/`||` chain where MORE THAN 2 of
-its operands are real expressions — a comparison, a negation, a member/
+its operands are real expressions (a comparison, a negation, a member/
 array access, a function call, or anything else that isn't already just
-a bare variable reference — whether it's a `while`/`if` condition or a
+a bare variable reference), whether it's a `while`/`if` condition or a
 plain boolean assignment. A chain that already combines nothing but
 bare, already-named identifiers (e.g. `a && b && c && d`, every operand
 an existing variable) does NOT count, no matter how many operands it
@@ -4303,11 +4303,11 @@ identifiers) and also stays inline as one line, for the same reason.
   above); collapsing the gap to whatever reads it next would blur that
   specific pairing. Always exactly 2 blank lines after the final
   combining boolean, regardless of what the general tiering rules would
-  otherwise assign — e.g. `canBigBoo` (the combined result) sits flush
+  otherwise assign: e.g. `canBigBoo` (the combined result) sits flush
   with nothing, gets 2 blank lines before `isBigBoo` even though
   `isBigBoo` directly consumes it and would normally tight-group at
   0-blank.
-  - **Exception — a standalone `return` immediately consuming the
+  - **Exception, a standalone `return` immediately consuming the
     combining boolean still gets its own mandatory 3 blank lines
     before it, not this rule's own 2**, per "### Return and continue
     statements" below's own precedence modifier: that section's blank-
@@ -4321,7 +4321,7 @@ identifiers) and also stays inline as one line, for the same reason.
 Used for spacing between statements inside a function/block body (JSX
 siblings use their own nesting-depth rule under "### JSX" instead).
 Three tiers:
-- **Related (1 blank line)**: tightly, directly connected — a value used on
+- **Related (1 blank line)**: tightly, directly connected: a value used on
   the very next line; two lines that are literally the same *kind* of code
   working toward the same immediate step (e.g. two sibling `useState` calls
   backing the same visual feature; parallel/mutually-exclusive branches of
@@ -4331,11 +4331,11 @@ Three tiers:
 - **Somewhat related (2 blank lines)**: connected, but via a different
   specific mechanism or a different *kind* of code, even when the
   underlying data is identical. Two recurring shapes:
-  - Different mechanism, same overarching goal — e.g. a `ResizeObserver`
+  - Different mechanism, same overarching goal: e.g. a `ResizeObserver`
     call and a `window.addEventListener('resize', ...)` call right after
     it both exist to trigger the same re-measurement, but they're
     different specific tools, so 2, not 1.
-  - Same data, different *kind* of code construct — a plain variable/state
+  - Same data, different *kind* of code construct: a plain variable/state
     declaration (or a function's own definition) immediately followed by a
     function/effect/if-block/function-call that operates on that exact
     same data (or the function itself being invoked) is 2, not 1, purely
@@ -4372,7 +4372,7 @@ Three tiers:
     `src/core/cadence.js` and `src/core/conditionals.js` for the reference
     examples.
 - **Unrelated (3 blank lines)**: no real shared data and no real shared
-  purpose — including cases that only *look* structurally parallel. Two
+  purpose, including cases that only *look* structurally parallel. Two
   independent "declare + guard clause" pairs that happen to share the same
   shape but check entirely unrelated conditions (e.g. one checking that a
   DOM ref exists, the next checking that a *different* DOM ref exists) are
@@ -4380,12 +4380,12 @@ Three tiers:
   When judging this, check for real data/behavior overlap (e.g. "does the
   effect after this ref actually reference it in its own body or dependency
   array?") rather than assuming a topical-sounding comment means they're
-  related — several calls in this file were revised from 2 down to 3 after
+  related; several calls in this file were revised from 2 down to 3 after
   actually checking for shared data and finding none.
 
 ### Naming conventions
-Applies to every named thing — variables, function/component declarations,
-function parameters, destructured bindings — no matter how short-lived or
+Applies to every named thing (variables, function/component declarations,
+function parameters, destructured bindings), no matter how short-lived or
 narrowly scoped, subject to the specific exemptions below. Being rolled out
 gradually alongside the whitespace rules above (started with `src/app.jsx`).
 
@@ -4395,14 +4395,14 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   continuation of what it is (no hard rule for this one beyond "strictly
   3 letters"), segment 3 = the type of variable (e.g.
   `Str`/`Boo`/`Obj`/`Arr`/`Fun`/`Ref`/`Tmo`/`Lis`). Each segment is
-  strictly the first 3 letters of a chosen English word — even when a
+  strictly the first 3 letters of a chosen English word, even when a
   shorter conventional abbreviation exists (e.g. `but` for "button", not
   `btn`; `con` for "config", not `cfg`), e.g. `Lis` for "List" (a
   `NodeList`, such as `querySelectorAll`'s return value), not `Lst`.
   - Example: `TABS` → `TAB_OBJ_ARR` (Tab + Object + Array).
   - Example: `active` (the app's current tab id) → `actIdeStr` (Active +
     Identifier + String).
-- **Known miscorrections — check every segment against this list before
+- **Known miscorrections: check every segment against this list before
   finalizing a name.** In practice, segments built from a word with a
   strong, ubiquitous conventional abbreviation (the kind used constantly
   across real-world code) keep drifting toward that abbreviation instead
@@ -4425,60 +4425,60 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `tgt` → `tar` (Target)
   - `mgr` → `man` (Manager)
   - `ptr` → `poi` (Pointer)
-  - `std` → `sta` (Standard *or* Standalone — both truncate the same way)
+  - `std` → `sta` (Standard *or* Standalone: both truncate the same way)
   - `prv` → `pre` (Previous)
   - `tsk` → `tas` (Task)
   - `fmt` → `for` (Format)
-  - `frm` → `for` (Form — found in `onCloFrmFun`
+  - `frm` → `for` (Form: found in `onCloFrmFun`
     (`onboarding/reminder-tours.jsx`), fixed to `onCloForFun`; note this
     collides with `fmt` → `for` (Format) just above, and separately with
     `for`'s own already-correct existing use for Force (e.g. `forIdeStr`
     in `pickers.js`); context disambiguates which of the three "for"
     stands for)
   - `pkr` → `pic` (Picker)
-  - `ctl` → `con` (Control — note this collides with `cfg` → `con`
+  - `ctl` → `con` (Control: note this collides with `cfg` → `con`
     (Config) above; when both "Control" and "Config/Configuration" are
     real concepts in the same name, resolve the collision via the
     normal Naming-conflict resolution escalation rather than guessing)
   - `fld` → `fie` (Field)
   - `bak` → `bac` (Back)
-  - `pck` → `pic` (Pick — note this collides with `pkr` → `pic` (Picker)
+  - `pck` → `pic` (Pick: note this collides with `pkr` → `pic` (Picker)
     above, the same way `ctl`/`cfg` collide; a name's own surrounding
     context, e.g. `picLogArr` holding pick-log rows rather than a list of
     pickers, disambiguates which word "pic" stands for in practice)
   - `txt` → `tex` (Text)
-  - `src` → `sou` (Source — this is distinct from the bare `src` DOM/JSX
+  - `src` → `sou` (Source: this is distinct from the bare `src` DOM/JSX
     attribute name itself, e.g. `<img src=...>`/`<script src=...>`, which
     stays exactly as-is per the Naming conventions exemptions, since it
     is a real external HTML attribute, not our own invented segment)
   - `lbl` → `lab` (Label)
-  - `pct` → `per` (Percent — note this collides with `per` already
+  - `pct` → `per` (Percent: note this collides with `per` already
     meaning Period (`perStaFun`/`perDayNum`) and Permission (`perCheFun`)
     elsewhere, the same way `ctl`/`cfg` collide; a name's own surrounding
     context, e.g. `finPerNum` holding a clamped percentage rather than a
     period or a permission state, disambiguates which word "per" stands
     for in practice)
   - `flg` → `fla` (Flag)
-  - `chp` → `chi` (Chip — note this collides with `chi` already meaning
+  - `chp` → `chi` (Chip: note this collides with `chi` already meaning
     Child (`chiMouBoo`/`setChiMouBoo` in `ui.jsx`'s `Collapse`); a name's
     own surrounding context, e.g. `chiTupArr` holding chip tuples in a
     status-chip renderer rather than anything about mounted children,
     disambiguates which word "chi" stands for in practice)
-  - `rnd` → `rou` (Round/Rounded — note this collides with `rou` already
+  - `rnd` → `rou` (Round/Rounded: note this collides with `rou` already
     meaning Roulette (`rouRemNum` in `pickers.js`'s own weighted-pick
     algorithm); a name's own surrounding context, e.g. `booRouNum`
     holding a rounded boost value rather than anything about a roulette
     wheel, disambiguates which word "rou" stands for in practice)
-  - `unt` → `uni` (Unit — note `uni` already carries two other meanings
+  - `unt` → `uni` (Unit: note `uni` already carries two other meanings
     in this codebase, Union (`uniRecFun`) and Unique (`uniNamFun`);
     context disambiguates which of the three "uni" stands for)
   - `wrd` → `wor` (Word)
-  - `cls` → `cla` (Class — note `cla` already carries two other meanings
+  - `cls` → `cla` (Class: note `cla` already carries two other meanings
     in this codebase, Clamp (`claValFun`) and Clause (`tutClaStr`), and
     this collides with `cla`'s own already-correct existing use for
     Class too (`extClaStr`); context disambiguates which of the three
     "cla" stands for)
-  - `cls` → `clo` (Close/Closing — a second, distinct miscorrection
+  - `cls` → `clo` (Close/Closing: a second, distinct miscorrection
     sharing the same wrong `cls` spelling as the Class case above, found
     across `clsGroFun`/`clsIdeStr`/`savClsFun` (`tab-data.jsx`),
     `clsImpFun`/`clsResFun` (`tab-settings.jsx`), `clsWayRef`
@@ -4486,60 +4486,60 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     already the established, heavily-used code for Close elsewhere
     (`cloAddFun`, `cloTimRef`, `onCloConFun`, ...), so these were
     renamed to match rather than left as a fourth "cls" variant)
-  - `id` → `ide` (Identifier — this one drifts to a 2-letter segment
+  - `id` → `ide` (Identifier: this one drifts to a 2-letter segment
     instead of the usual wrong-3-letter case, since "id" is the common
     real-world abbreviation people reach for; found in `conIdArr`,
     `pilIdStr`, `skiIdSet`, and `visIdSet` across `day-log.jsx` and
     `tab-data.jsx`, all fixed to their own 3-letter `ide` segment)
-  - `grp` → `gro` (Group — found across 33 identifiers spanning 7 files;
+  - `grp` → `gro` (Group: found across 33 identifiers spanning 7 files;
     `gro` was already the established correct code for Group elsewhere
     in this codebase, e.g. `GroLogCom`, `GroHeaCom`, `curGroObj`)
-  - `grp` → `gri` (Grip — a second, distinct miscorrection sharing the
+  - `grp` → `gri` (Grip: a second, distinct miscorrection sharing the
     same wrong `grp` spelling as the Group case above, found in
     `grpCurEle` (`tab-today.jsx`), a drag-handle grip element; `gri` is
     already the established code for Grip in that same file
     (`onGriDowFun`), though note `gri` also separately means Grid in
     `bg-flourish.jsx` (`plaGriFun`), an unrelated multi-meaning segment
     in a different file with no collision risk between the two)
-  - `ovf` → `ove` (Overflow — found in `ownOveStr`/`ancOveStr`/`oveRigBoo`
+  - `ovf` → `ove` (Overflow: found in `ownOveStr`/`ancOveStr`/`oveRigBoo`
     in `help/mode.jsx`, `oveBelNum`/`oveStyStr` across
     `tab-settings.jsx` and `tab-picker.jsx`, and a third, distinct
     recurrence in `onboarding/tour-runner.jsx`'s own `ownOveStr`/
     `ancOveStr`/`ancOveYStr`, this last one caught during an automated
     Known-miscorrections sweep rather than a full manual review pass)
-  - `clp` → `cli` (Clip — found in `cliRecObj` across `help/mode.jsx` and
+  - `clp` → `cli` (Clip: found in `cliRecObj` across `help/mode.jsx` and
     `onboarding/tour-runner.jsx`; `cli` was already the established code
     for Clip elsewhere in this codebase, e.g. `cliHorFun`, `cliChrFun`)
-  - `clp` → `cla` (Clamp — a second, distinct miscorrection sharing the
+  - `clp` → `cla` (Clamp: a second, distinct miscorrection sharing the
     same wrong `clp` spelling as the Clip case above, found in
     `claValNum` (`tab-picker.jsx`), a clamped ease-drift value; `cla` is
     already the established code for Clamp elsewhere in this codebase
     (`claValFun`, `claPadFun`), though note `cla` also separately means
     Clause (`tutClaStr`) and Class (`extClaStr`); context disambiguates
     which of the three "cla" stands for)
-  - `ovl` → `ove` (Overlap — found in `horOveBoo`/`verOveBoo`
+  - `ovl` → `ove` (Overlap: found in `horOveBoo`/`verOveBoo`
     (`help/mode.jsx`); note this collides with `ove` already meaning
     Overflow just above, and separately with `ove` meaning Overlay in
     `HelOveCom` (`help/mode.jsx`, exported and used across every
     tab-*.jsx file); context (a `Com`-suffixed component vs. a
     `Str`/`Boo`-suffixed value) disambiguates which of the three "ove"
     stands for)
-  - `vp` → `vie` (Viewport — a 2-letter abbreviation rather than the
+  - `vp` → `vie` (Viewport: a 2-letter abbreviation rather than the
     usual wrong-3-letter case, since "vp" is the common real-world
     shorthand people reach for; found in `vpWidNum`/`vpHeiNum` across
     `help/mode.jsx`, `ui.jsx`, and `onboarding/tour-runner.jsx`,
     including `onboarding/tour-runner.jsx`'s own `coaLayFun` parameters)
-  - `abv` → `abo` (Above — found in `aboAncNum`/`gapAboNum` in
+  - `abv` → `abo` (Above: found in `aboAncNum`/`gapAboNum` in
     `help/mode.jsx` and `ftsAboBoo` in `onboarding/tour-runner.jsx`)
-  - `spc` → `spa` (Space — found in `spaAboNum`/`spaBelNum` across
+  - `spc` → `spa` (Space: found in `spaAboNum`/`spaBelNum` across
     `help/mode.jsx` and `onboarding/tour-runner.jsx`)
-  - `ctr` → `cen` (Center — found in `cenXNum` (`help/mode.jsx`); `cen`
+  - `ctr` → `cen` (Center: found in `cenXNum` (`help/mode.jsx`); `cen`
     was already the established code for Center elsewhere in this
     codebase, e.g. `cenBadBoo`)
-  - `arw` → `arr` (Arrow — found in `arrClaStr`/`arrXNum`/`arrClaVal`
+  - `arw` → `arr` (Arrow: found in `arrClaStr`/`arrXNum`/`arrClaVal`
     across `help/mode.jsx` and `arrXFun`/`arrClaStr`/`arrXNum` in
     `onboarding/tour-runner.jsx`)
-  - `nxt` → `nex` (Next — a very widely recurring miscorrection, found in
+  - `nxt` → `nex` (Next: a very widely recurring miscorrection, found in
     `nexRecObj` (`help/mode.jsx`), `nexDayArr` (`tab-picker.jsx`),
     `nexSetObj` (`tab-today.jsx`), and dozens of distinct `nexXxxArr`/
     `nexXxxObj`/`nexXxxStr`/`nexXxxBoo` names throughout `store.js`,
@@ -4548,7 +4548,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     established correct code elsewhere in this codebase, e.g.
     `nexMapObj` (`help/mode.jsx`, sitting right next to the wrong
     `nxtRecObj` in the same file))
-  - `cnd` → `con` (Conditional — another very widely recurring
+  - `cnd` → `con` (Conditional: another very widely recurring
     miscorrection, touching dozens of distinct `conXxxObj`/`conXxxArr`/
     `conXxxStr`/`conXxxBoo`/`conXxxFun` names plus 2 component aliases
     across `store.js`, `tab-data.jsx`, `tab-picker.jsx`, `tab-today.jsx`,
@@ -4582,21 +4582,21 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     giving `CodConCom`. `cod` is otherwise used sparingly elsewhere
     (`holidays.js`'s own `couCodStr`/`regCodStr`, meaning Code), with
     no collision risk against this file's own segments)
-  - `cpy` → `cop` (Copy — found in `cpyIdeStr` (`help/sample-data.js`)
+  - `cpy` → `cop` (Copy: found in `cpyIdeStr` (`help/sample-data.js`)
     and `cpyAdrFun`/`cpyDonFun` (`tab-settings.jsx`); `cop` was already
     the established, heavily-used code for Copy elsewhere in this
     codebase, e.g. `copIdeStr`/`neeCopFun`/`picCopFun`/`tasCopFun`
     (`onboarding/page-tours.jsx`), `datCopObj` (`seed.js`/`store.js`),
     and `PAG_COP_OBJ`/`PIC_COP_OBJ`/`REP_COP_OBJ`/`VAR_COP_OBJ`)
-  - `boot` → `boo` (Boot — a 4-letter word left untruncated instead of
+  - `boot` → `boo` (Boot: a 4-letter word left untruncated instead of
     taking its own literal first 3 letters, found in `bootAppFun`
     (`main.jsx`), fixed to `booAppFun`; note `boo` already carries 2
     other meanings in this codebase, Boolean (the universal type
     segment) and Boost (`booRouNum`, `BooResCom`), making this a third;
-    context — the type segment always being literally `Boo` for
-    Boolean, versus `boo` appearing as segment 1 or 2 for Boot/Boost —
+    context (the type segment always being literally `Boo` for
+    Boolean, versus `boo` appearing as segment 1 or 2 for Boot/Boost)
     disambiguates which of the three it stands for)
-  - `hdr` → `hea` (Header — found in `opeHdrEle`/`hdrButArr`
+  - `hdr` → `hea` (Header: found in `opeHdrEle`/`hdrButArr`
     (`onboarding/app-features.jsx`), `hdrEle` (`onboarding-tour-
     runner.jsx`), and `hdrEleRef`/`hdrCurEle`/`hdrHeiNum`
     (`tab-today.jsx`); `hea` was already the established, unambiguous
@@ -4609,7 +4609,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     common real-world abbreviation for "build" (build tooling, CI
     scripts, ...) that crept in over the word's own literal first 3
     letters the same way `btn`/`cfg` did elsewhere in this list)
-  - `frq` → `fre` (Frequency — found in `buiFrqFun`
+  - `frq` → `fre` (Frequency: found in `buiFrqFun`
     (`onboarding/reminder-tours.jsx`), fixed to `buiFreFun`; `fre` was
     already the established, correct code for this exact word elsewhere
     in this codebase, e.g. `freModStr`/`freGapMap`/`freKeyStr`/
@@ -4621,13 +4621,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     surrounding context disambiguates which of the three "fre" stands
     for in practice, the same reasoning already used for `con`/`sta`/
     `per` elsewhere in this list)
-  - `tsp` → `tim` (Timestamp — found in `rowTspObj`
+  - `tsp` → `tim` (Timestamp: found in `rowTspObj`
     (`onboarding-seed-data.js`, 3 separate declarations) and `pikTspObj`
     (`seed.js`, 2 separate declarations), fixed to `rowTimObj`/
     `pikTimObj`; `tim` was already the established, correct code for
     this exact word right next to one of the miscorrected instances,
     `comTimStr` in `onboarding-seed-data.js`'s own `hydStaFun`)
-  - `dwn` → `dow` (Down — a very widely recurring miscorrection, found in
+  - `dwn` → `dow` (Down: a very widely recurring miscorrection, found in
     `dwnGuaFun` (`onboarding/tour-runner.jsx`), `onPoiDwnFun`/
     `poiDwnObj`/`onKeyDwnFun`/`keyDwnObj` (`ui.jsx`), `dwnLnkEle`
     (`tab-settings.jsx`), `keyDwnFun`/`keyDwnObj` (`help/mode.jsx`), and
@@ -4643,7 +4643,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     unrelated file; a name's own surrounding context disambiguates which
     of the two "dow" stands for in practice, the same reasoning already
     used for `con`/`sta`/`per`/`fre` elsewhere in this list)
-  - `amt` → `amo` (Amount — found in `resAmtNum`/`scrAmtFun`
+  - `amt` → `amo` (Amount: found in `resAmtNum`/`scrAmtFun`
     (`onboarding/tour-runner.jsx`), `easAmtNum`/`newAmtNum`
     (`ui/conditional-controls.jsx`, 2 separate `easSooFun`/`easLatFun`
     parameters and 2 separate `newAmtNum` declarations), and `offAmtNum`
@@ -4652,7 +4652,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     of these comments already spelled "Amount" out in full, so none
     needed any text changes, only the identifiers themselves were
     wrong. No collision: `amo` was not already in use anywhere)
-  - `fnd` → `fou` (Found — found in `notFndNum`
+  - `fnd` → `fou` (Found: found in `notFndNum`
     (`onboarding/tour-runner.jsx`), `fndIteObj` (`tab-picker.jsx`, 2
     separate declarations), and `curFndIndNum` (`tab-today.jsx`), fixed
     to `notFouNum`/`fouIteObj`/`curFouIndNum` across all 3 files in one
@@ -4662,7 +4662,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     in full, so none needed any text changes, only the identifiers
     themselves were wrong. No collision: none of the fixed names were
     already in use anywhere)
-  - `plc` → `pla` (Place — found in `plcTarFun`
+  - `plc` → `pla` (Place: found in `plcTarFun`
     (`onboarding/tour-runner.jsx`), fixed to `plaTarFun`; `pla` was
     already the established, heavily-used code for Place elsewhere in
     this codebase, e.g. `plaTipFun` (`help/mode.jsx`/`ui.jsx`),
@@ -4673,7 +4673,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     Searched the rest of the codebase for other `plc` instances and
     found none, so this one was an isolated fix rather than a
     multi-file sweep)
-  - `stb` → `sta` (Stable — found in `stbFraNum`
+  - `stb` → `sta` (Stable: found in `stbFraNum`
     (`onboarding/tour-runner.jsx`), fixed to `staFraNum`; `sta` was
     already the established code for Stable/Standard/Standalone
     elsewhere in this codebase. Every comment referencing this
@@ -4685,7 +4685,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     initialism-compressed name, not an abbreviation of "Stable"), which
     is unrelated and correctly left untouched, a spelling coincidence
     rather than the same miscorrection)
-  - `pik` → `pic` (Pick — found across 6 files: `pickers.js` itself
+  - `pik` → `pic` (Pick: found across 6 files: `pickers.js` itself
     (`pikIteFun`/`pikRecObj`/`pikResObj`/`pikIdeStr`), `seed.js`
     (`pikTimObj`, `pikLogArr`, `todPikArr`), `onboarding-seed-data.js`
     (2 prose mentions of `pikIteFun`), `tab-settings.jsx` (`pikCouNum`,
@@ -4717,7 +4717,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     uses `curPicObj` = Picker dozens of times elsewhere and a lone
     differently-meaning `curPicObj` outlier would be a real readability
     trap on a file-wide search)
-  - `chg` → `chr` (Charge/Charging — found in `chgUpdFun`
+  - `chg` → `chr` (Charge/Charging: found in `chgUpdFun`
     (`pickers.js`'s own ease-up/ease-down charge-application helper)
     and `chgFreBoo` (`tab-today.jsx`, a charging-card's own "just
     finished charging" fresh-cue flag), fixed to `chrUpdFun`/
@@ -4733,7 +4733,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     further collision. Every comment referencing these identifiers
     already spelled "Charge"/"Charging" out in full, so none needed
     text changes, only the identifiers themselves were wrong)
-  - `chg` → `cha` (Change/Changed — a separate, much larger
+  - `chg` → `cha` (Change/Changed: a separate, much larger
     miscorrection surfaced while checking the `chg`→`chr` fix above for
     collisions: `chgEveObj` (~40 instances across `tab-settings.jsx`,
     `tab-picker.jsx`, `tab-data.jsx`, `tab-today.jsx`), `chgIteArr`/
@@ -4751,7 +4751,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     fixed there). Every comment referencing these identifiers already
     spelled "Change"/"Changed" out in full, so none needed text
     changes, only the identifiers themselves were wrong)
-  - `ovr` → `ove` (Over — found in `ovrShoArr`/`minOvrNum`
+  - `ovr` → `ove` (Over: found in `ovrShoArr`/`minOvrNum`
     (`pickers.js`'s own ease-up overshoot-compression block), fixed to
     `oveShoArr`/`minOveNum`; this is a distinct word from the `ovf`→
     `ove` (Overflow) and `ovl`→`ove` (Overlap) cases already documented
@@ -4762,7 +4762,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     referencing these identifiers already spelled "Overshoot" out in
     full, so none needed text changes, only the identifiers themselves
     were wrong)
-  - `chs` → `cho` (Chosen — found in `chsIteObj` (`pickers.js`'s own
+  - `chs` → `cho` (Chosen: found in `chsIteObj` (`pickers.js`'s own
     ease-down new-streak branch), fixed to `choIteObj`; `cho` was
     already the established, correct code for this word family
     elsewhere in this codebase, just for a different member of it
@@ -4773,7 +4773,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     collision: `choIteObj` was not already in use anywhere. The
     comment already spelled "Chosen" out in full, so it needed no text
     changes, only the identifier itself was wrong)
-  - `ok` → `oka` (Okay — a 2-letter abbreviation rather than the usual
+  - `ok` → `oka` (Okay: a 2-letter abbreviation rather than the usual
     wrong-3-letter case, since "ok" is the common real-world shorthand
     people reach for, the same reasoning as the `id`→`ide` case
     earlier in this list; found in `askOkBoo` (`pwa.js`) and `perOkBoo`
@@ -4787,7 +4787,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     substring search, but none of them mean "Okay" at all; they name
     the real OKLab color space, an unrelated technical term that
     happens to share the same 2 letters, left untouched)
-  - `shw` → `sho` (Show — found in `shwYeaBoo` (`reminders.jsx`),
+  - `shw` → `sho` (Show: found in `shwYeaBoo` (`reminders.jsx`),
     `shwAllBoo`/`shwConBoo`/`shwEntArr`/`shwPicArr`/`shwRemBoo`/
     `disShwBoo` (`tab-data.jsx`), `shwErrBoo`/`setShwErrBoo`
     (`tab-settings.jsx`), and `shwCheBoo`/`shwFeaBoo`/`shwFeaIntBoo`/
@@ -4809,7 +4809,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     only the identifiers themselves were wrong. No literal-name
     collision in any of the 4 files: none of the corrected names were
     already in use anywhere)
-  - `knd` → `kin` (Kind — found in `kndValStr`/`kndWorStr`
+  - `knd` → `kin` (Kind: found in `kndValStr`/`kndWorStr`
     (`reminders.jsx`) and `kndStr` (`tab-today.jsx`), fixed across both
     files in one sweep; `kin` was already the established, correct code
     for this exact word elsewhere in this codebase (`kinStr` in
@@ -4820,7 +4820,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     identifiers themselves were wrong. No collision: neither `kinValStr`/
     `kinWorStr` nor `kinStr` (in `tab-today.jsx`'s own scope) was already
     in use anywhere)
-  - `snp` → `sna` (Snapshot/Snap — found in `draSnpObj`/`snpOptRef`/
+  - `snp` → `sna` (Snapshot/Snap: found in `draSnpObj`/`snpOptRef`/
     `snpTasObj` (`reminders.jsx`), `curSnpObj`/`preSnpObj`/`snpIteObj`/
     `snpPicObj`/`snpTasObj` (`store.js`), `snpIteObj`/`snpRef`
     (`tab-data.jsx`), and `ordSnpRef` (`tab-today.jsx`), fixed across
@@ -4837,7 +4837,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     spelled "Snapshot" out in full, so none needed text changes, only
     the identifiers themselves were wrong. No collision: none of the
     corrected names were already in use anywhere)
-  - `cln` → `cle` (Cleanup/Clean — found in `clnDonBoo`/`clnDraFun`
+  - `cln` → `cle` (Cleanup/Clean: found in `clnDonBoo`/`clnDraFun`
     (`reorder.js`, the latter also in its own `#region`/`#endregion`
     markers) and `clnFunArr`/`clnCurFun`/`curClnFun` (`tab-data.jsx`,
     `tab-picker.jsx`), fixed across all 3 files in one sweep; `cle` was
@@ -4857,7 +4857,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (short for "dry cleaning"), not one of our own invented
     identifiers, so it was left untouched. No collision: none of the
     corrected identifier names were already in use anywhere)
-  - `lop` → `loo` (Loop — found in `edgLopFun`/`edgLopNum`
+  - `lop` → `loo` (Loop: found in `edgLopFun`/`edgLopNum`
     (`reorder.js`, the former also in its own `#region`/`#endregion`
     markers); `loo` was already the established, correct code for this
     exact word elsewhere in this codebase (`looRafFun`/`looCanBoo` in
@@ -4868,7 +4868,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     so none needed text changes, only the identifiers themselves were
     wrong. No collision: neither `edgLooFun` nor `edgLooNum` was
     already in use anywhere)
-  - `skp` → `ski` (Skip — found across 7 files: `seed.js`
+  - `skp` → `ski` (Skip: found across 7 files: `seed.js`
     (`skpRowArr`/`addSkpFun`/`skpDatObj`), `onboarding-seed-data.js`
     (`skpRowObj`), `tab-settings.jsx`/`tab-today.jsx` (`skpSpyRef`,
     shared by both), `tab-picker.jsx` (`skpHolBoo`/`setSkpHolBoo`/
@@ -4885,7 +4885,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     changes, only the identifiers themselves were wrong. No collision:
     grepped every `ski`-prefixed identifier already in the codebase
     first and confirmed all of them already meant Skip, nothing else)
-  - `wks`/`wek` → `wee` (Week — two distinct wrong spellings of the same
+  - `wks`/`wek` → `wee` (Week: two distinct wrong spellings of the same
     word, both found only in `seed.js`: `wksSinNum` (`buiConFun`, 4
     instances) and `wekAllArr`/`wekDayArr` (`buiPicFun`)/`wekIndNum`
     (`buiConFun`, sitting in the very same function as `wksSinNum`).
@@ -4899,7 +4899,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     spelled "Week"/"Weeks"/"Weekly" out in full, so none needed text
     changes, only the identifiers themselves were wrong. No collision:
     seed.js had no pre-existing `wee`-prefixed identifier of its own)
-  - `tmo` → `tim` (Timeout — a very widely recurring miscorrection,
+  - `tmo` → `tim` (Timeout: a very widely recurring miscorrection,
     found across 7 files: `idlTmoRef` (`store.js`), `picPreTmo`
     (`tab-settings.jsx`), `ripCleTmo`/`parCleTmo`
     (`tabs/settings/previews.jsx`), `pulEndTmo`/`freTmoNum`/`feaIntTmoNum`/
@@ -4927,7 +4927,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     a straight 1-for-1 substitution with no column-alignment
     recalculation needed anywhere. No collision: none of the corrected
     names were already in use in the same scope anywhere)
-  - `stp` → `sti` (Stripped — found in `stpNamStr` (`store.js`'s own
+  - `stp` → `sti` (Stripped: found in `stpNamStr` (`store.js`'s own
     `uniNamFun`), fixed to `stiNamStr`. This did NOT use the literal
     first-3-letters `str`: that code is the universal String
     type-segment used throughout this entire codebase, definitionally
@@ -4948,7 +4948,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     collision (Standard/Standalone) above. Every comment referencing
     `stpNamStr` already spelled "Stripped" out in full, so it needed no
     text changes, only the identifier itself was wrong)
-  - `cnl` → `can` (Cancel — swept the OPPOSITE direction from the usual
+  - `cnl` → `can` (Cancel: swept the OPPOSITE direction from the usual
     pattern in this list: found the MINORITY form, `cnl` (6 instances:
     `cnlRunBoo`/`cnlCnfFun` ×2/`cnlCreFun` in `tab-picker.jsx`,
     `cnlFrmFun`/`cnlImpFun` in `tab-settings.jsx`, plus the prop name
@@ -4971,7 +4971,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     new names were already in use anywhere. Every comment referencing
     these identifiers already spelled "Cancel" out in full, so none
     needed text changes, only the identifiers themselves were wrong)
-  - `done` → `don` (Done — the same "word wasn't truncated to its own
+  - `done` → `don` (Done: the same "word wasn't truncated to its own
     literal first 3 letters" class as `boot`→`boo` above, not a
     3-letter-vs-4-letter miscorrection; found in `nowDoneBoo` (`store.js`,
     18 instances across `cotAplFun`/`applyConditionalLog`/
@@ -5029,7 +5029,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `trn` (e.g. `ui.jsx`'s own `texTrnBoo`/`cheTrnFun`, and InfTipCom's
     `trnOnlBoo` prop). Scoped to ease-my-life ONLY, for the same reason
     as `rmn`/`rmv`.
-  - `cch` → `cac` (Cached/Cache — found in `cchStaObj` (`store.js`'s own
+  - `cch` → `cac` (Cached/Cache: found in `cchStaObj` (`store.js`'s own
     `loaStaFun`, 2 instances), fixed to `cacStaObj`; `cac` was already
     the established, heavily-used code for this exact word elsewhere in
     this codebase, e.g. `storage.js`'s own `cacStaObj`/`cacStaFun`
@@ -5041,7 +5041,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     full, so it needed no text changes, only the identifier itself was
     wrong. No collision: `cacStaObj` was not already in use in the same
     scope)
-  - `Jsn` → `Jso` (Json — found in `rawJsnStr` (`store.js`'s own
+  - `Jsn` → `Jso` (Json: found in `rawJsnStr` (`store.js`'s own
     `loaStaFun`, 2 instances; `tab-today.jsx`, 3 instances), fixed to
     `rawJsoStr` across both files; `Jso` was already the established,
     correct code for this exact word elsewhere in this codebase, e.g.
@@ -5051,7 +5051,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     identifiers already spelled "Json" out in full, so none needed text
     changes, only the identifiers themselves were wrong. No collision:
     `rawJsoStr` was not already in use in either file's own scope)
-  - `rsv` → `res` (Resolve/Resolved — found in `rsvPicIde`
+  - `rsv` → `res` (Resolve/Resolved: found in `rsvPicIde`
     (`store.js`'s own `migStaFun`, 2 instances; this instance ALSO had
     its own type-segment error, see the Two-word-single-segment
     compression section below for the full fix), fixed to `rspIdeStr`.
@@ -5064,7 +5064,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `ResizeObserver` instance); context disambiguates which of the two
     "res" stands for in practice, the same reasoning already used for
     `con`/`sta`/`per`/`fre`/`dow`/`sho` elsewhere in this list.)
-  - `wgt` → `wei` (Weight — found across 4 files: `store.js`'s own
+  - `wgt` → `wei` (Weight: found across 4 files: `store.js`'s own
     `wgtValNum` (8 instances spanning the conditional odds-migration and
     the ease-down fairness-weight calc), `tab-data.jsx`'s own
     `useWgtBoo` (4 instances), `tab-picker.jsx`'s own `wgtValNum`/
@@ -5083,7 +5083,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     text changes, only the identifiers themselves were wrong. No
     collision: none of the corrected names were already in use in the
     same scope anywhere)
-  - `nrm` → `nor` (Normalize/Normalized — found in `nrmGroStr`/
+  - `nrm` → `nor` (Normalize/Normalized: found in `nrmGroStr`/
     `nrmNamStr`/`nrmKeyStr`/`nrmOptObj` (`store.js`, 4 instances each in
     the picker-tidy/group-remap section and `setOptFun`), fixed to
     `norGroStr`/`norNamStr`/`norKeyStr`/`norOptObj`. `nor` was already
@@ -5097,7 +5097,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     spelled "Normalized" out in full, so none needed text changes, only
     the identifiers themselves were wrong. No collision: none of the
     corrected names were already in use in the same scope anywhere)
-  - `clm` → `cla` (Claimed — found in `preClmRef`/`clmNowBoo`
+  - `clm` → `cla` (Claimed: found in `preClmRef`/`clmNowBoo`
     (`tab-today.jsx`'s own streak-pulse effect) and `wasClmBoo`/
     `stkClmBoo` (`store.js`'s own `stkRecFun`), fixed to `preClaRef`/
     `claNowBoo`/`wasClaBoo`/`stkClaBoo`; `clm` drops the word's own
@@ -5112,7 +5112,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     identifiers already spelled "Claimed" out in full, so none needed
     text changes, only the identifiers themselves were wrong. No
     collision: none of the corrected names were already in use anywhere)
-  - `fls` → `flu` (Flush — found in `runFlsFun` (`store.js`'s own
+  - `fls` → `flu` (Flush: found in `runFlsFun` (`store.js`'s own
     persistence-flush effect inside `useAppStaFun`), fixed to
     `runFluFun`; `flu` was already the established, correct code for
     this exact word elsewhere in this codebase, e.g. `storage.js`'s own
@@ -5120,19 +5120,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     needed. The comment already spelled "Flush" out in full, so it
     needed no text changes, only the identifier itself was wrong. No
     collision: `runFluFun` was not already in use anywhere)
-  - `frs` → `fre` (Fresh — found in `frsEntArr` (`store.js`'s own
+  - `frs` → `fre` (Fresh: found in `frsEntArr` (`store.js`'s own
     `setEntFun` action), fixed to `freEntArr`; `fre` was
     already the established, heavily-used code for Fresh elsewhere in
     this codebase (`isaFreBoo`, `freIndNum`, `freBoo`, ...), so no
     escalation was needed. Found in the same action as a second,
-    separate miscorrection, `dsc` → `des` (Descriptor — `curDscObj`,
+    separate miscorrection, `dsc` → `des` (Descriptor: `curDscObj`,
     fixed to `curDesObj`), whose `des` already appears as Description
     elsewhere (`desStr`, `desIdeStr`); context disambiguates which of
     the two "des" stands for in practice. Every comment referencing
     these identifiers already spelled "Fresh"/"descriptor" out in full,
     so none needed text changes. No collision: neither corrected name
     was already in use anywhere)
-  - `nmd` → `nam` (Named — found in `nmdTasObj` (`store.js`'s own
+  - `nmd` → `nam` (Named: found in `nmdTasObj` (`store.js`'s own
     `addTasFun` action), fixed to `namTasObj`; `nam` was already the
     established, heavily-used code for Name elsewhere in this codebase
     (`sibNamArr`, `uniNamStr`, `uniNamFun`, `finNamStr`, ...), and
@@ -5140,13 +5140,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     comment already spelled "Named" out in full, so it needed no text
     changes, only the identifier itself was wrong. No collision:
     `namTasObj` was not already in use anywhere)
-  - `tdy` → `tid` (Tidied — found in `tdyNamStr` (`store.js`'s own
+  - `tdy` → `tid` (Tidied: found in `tdyNamStr` (`store.js`'s own
     `renPicFun` action), fixed to `tidNamStr`; `tdy` drops the word's
     own vowel the same way `cnl`/`cln`/`clm` did elsewhere in this list,
     rather than taking its literal first 3 letters. The comment already
     spelled "Tidied" out in full, so it needed no text changes. No
     collision: `tid` was not already in use anywhere)
-  - `cst` → `cus` (Custom — found in `curCstObj` (`store.js`'s own
+  - `cst` → `cus` (Custom: found in `curCstObj` (`store.js`'s own
     `delHolFun` action), fixed to `curCusObj`; `cus` was already
     the established code for Custom elsewhere in this codebase (`resCusFun`,
     `cusColObj`, `addCusFun`), and `cst` drops the word's own vowel the same
@@ -5233,26 +5233,26 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
 - **True module-level constants** use `ALL_CAPS_WITH_UNDERSCORES` instead
-  of camelCase, but still 9 letters across the 3 segments — underscores
+  of camelCase, but still 9 letters across the 3 segments; underscores
   don't count toward that total (`TAB_OBJ_ARR` is Tab+Obj+Arr = 9 letters
   plus 2 separating underscores).
 - **React components** get PascalCase (all 3 segments capitalized) but
-  otherwise follow the same 9-character/3-segment rule — e.g. `TabBar` →
+  otherwise follow the same 9-character/3-segment rule, e.g. `TabBar` →
   `TabBarCom` (Tab+Bar+Component), the root `App` export → `AppRooCom`
   (App+Root+Component).
   - Renaming an exported symbol (a component, in particular) ripples to
-    every file that imports it — e.g. renaming `App` also required
+    every file that imports it, e.g. renaming `App` also required
     updating `main.jsx`'s import and its `<App />` JSX usage. Check for
     other importers before committing to a rename like this.
-- **Exemptions** — standard React/DOM convention names are left as-is,
+- **Exemptions**: standard React/DOM convention names are left as-is,
   entirely exempt from the rule: `onChange`, `className`, `value` (a
   controlled component's own current value, always paired with
   `onChange` the same way a native `<input value=... onChange=...>`
-  is — confirmed already left bare consistently everywhere this pairing
+  is, confirmed already left bare consistently everywhere this pairing
   is used in this codebase, e.g. `Segmented`, `SortSelect`,
   `CadenceControl`), `open` (a disclosure/collapse component's own
   expanded state, the same native boolean attribute convention as
-  `<details open>`/`<dialog open>` — confirmed already left bare
+  `<details open>`/`<dialog open>`, confirmed already left bare
   consistently across all 39 call sites of `Collapse`'s own `open` prop
   plus `DayLogChip`'s own `open`), and React's own hooks (`useState`,
   `useRef`, `useLayoutEffect`, `useEffect`, `useCallback`, ...).
@@ -5272,11 +5272,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
 - **"on"-prefix pattern**: a custom callback prop/handler that isn't the
   exact standard `onChange` keeps the "on" prefix (since "on" itself is
   standard convention) and applies the normal 9-character/3-segment rule
-  to the rest of the name, for an 11-character total — e.g. `onToggleRail`
+  to the rest of the name, for an 11-character total, e.g. `onToggleRail`
   → `onTogRaiFun` (on + Toggle + Rail + Function).
 - **"set"-prefix pattern**: a `useState` setter function keeps the "set"
   prefix and reuses its paired state variable's own (already-renamed) name
-  verbatim after it, for a 12-character total — e.g. the state variable
+  verbatim after it, for a 12-character total, e.g. the state variable
   `railOpen` → `raiOpeBoo`, so its setter `setRailOpen` → `setRaiOpeBoo`.
 - **"use"-prefix pattern**: a local custom hook (one this codebase defines
   itself, as opposed to React's own exempted hooks) keeps the "use" prefix
@@ -5400,7 +5400,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   Example: `help/sample-data.js`'s own `seedHelpPickers`/`clearHelpPickers`/
   `seedHelpTasks`/`clearHelpTasks`/`unhideHelpStatsHistory`/
   `hideHelpStatsHistory` each had a verb, "Help", and a 1-2 word target
-  (Pickers/Tasks/Stats+History) — 3-4 real concepts, one segment too many.
+  (Pickers/Tasks/Stats+History): 3-4 real concepts, one segment too many.
   "Help" was dropped from every one of them (redundant with the file
   they're all defined in and imported from), and the History pair's own
   "Stats" was dropped too (redundant with "History" in context), giving
@@ -5412,27 +5412,27 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   letters, escalate the 3rd character" landed on `Sed` (seed's own 4th
   letter) instead.
 - **Under-length first-word padding**: the opposite problem from
-  initialism compression — some segment 1 words are naturally SHORTER
+  initialism compression: some segment 1 words are naturally SHORTER
   than 3 letters (e.g. "is", for a boolean naturally phrased "is
   <adjective> <noun>"). Pad the word with the fewest extra letters
   needed to reach exactly 3, chosen so the padded segment still reads
   as a short natural phrase rather than an arbitrary truncation. The
   reference case is "is": pad with an "a" to get `isa` (reading "is
-  a"/"is an" depending on what follows) — e.g. `isBigBoo` →
+  a"/"is an" depending on what follows), e.g. `isBigBoo` →
   `isaBigBoo`, `isOutBoo` → `isaOutBoo`. This is a case-by-case
   resolution, not a general algorithm; document each new instance here
   as it's encountered rather than inventing a fresh padding scheme each
   time.
   - **Comment expansion**: since the padded segment doesn't correspond
     to one truncated word, expand it the same way an initialism segment
-    is expanded above — spell out the full grammatical phrase it stands
+    is expanded above: spell out the full grammatical phrase it stands
     for, hyphenated, in place of the normal single-word expansion, then
     expand the remaining segments normally. For `isa`, choose "Is-A" or
     "Is-An" based on whether the word immediately after it in the
     comment starts with a vowel sound: `isaBigBoo` → `What: Is-A Big
     Boolean.`, `isaOutBoo` → `What: Is-An Outer Boolean.` ("Outer"
     starts with a vowel sound, so "An").
-- **Under-length segment 2 word — resolve by real behavior, not padding**:
+- **Under-length segment 2 word: resolve by real behavior, not padding**:
   the same under-length problem can hit segment 2 (the descriptor)
   instead of segment 1, and padding a 2-letter preposition like "on"
   with a filler letter (there is no natural "on" + 1-letter word the
@@ -5505,26 +5505,26 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
 - **Acronym-reference rule**: when a name describes or refers to another
   named thing (a component, function, etc.), its own first segment is
   built from the first letter of *that* thing's own three segments,
-  instead of inventing a fourth truncated word — e.g. a boolean describing
+  instead of inventing a fourth truncated word, e.g. a boolean describing
   whether `TabBarCom` itself (Tab+Bar+Com) is a ghost copy becomes
   `tbcGhoBoo` (tbc from Tab/Bar/Com + Ghost + Boolean).
-- **Naming-conflict resolution** (rare — only when the standard first-3-
+- **Naming-conflict resolution** (rare: only when the standard first-3-
   letters rule would produce a 9-character name that collides with an
   already-in-use name elsewhere). Segment 3 (the type segment) is never
-  touched by this — it's standard and always stays as the literal first 3
+  touched by this: it's standard and always stays as the literal first 3
   letters of the type word, to avoid confusion about what type a variable
   is. Only segments 1 and 2 are ever adjusted, trying segment 1's word
   first and then segment 2's, using this escalating two-phase search:
   - **Phase A**: keep the segment's first 2 letters, skip its normal 3rd
     letter, and escalate which LATER letter fills the segment's 3rd
-    character — try the word's 4th letter; if the name still collides, try
+    character: try the word's 4th letter; if the name still collides, try
     the 5th letter, then 6th, and so on, one letter further each time. If
     the word is too short to reach a next letter before the collision
     resolves, stop escalating this segment and restart Phase A on segment
     2's word instead (only if segment 1 was the one just tried).
   - **Phase B**: only reached if Phase A ran out on both segments 1 and 2
     without resolving the collision. Restart from segment 1 with a
-    different skip pattern — keep the word's 1st letter, skip its 2nd
+    different skip pattern: keep the word's 1st letter, skip its 2nd
     letter, and escalate the segment's 3rd character starting from the
     4th letter: try `[1st letter, 3rd letter, 4th letter]`; if it still
     collides, try `[1st letter, 3rd letter, 5th letter]`, then 6th, and so
@@ -5651,7 +5651,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     used anywhere in this file), giving `shoOrdRef`/`shoArr`.
 - **`id` attributes** follow the same 9-character/3-segment rule as any
   other name, but segment 3 (the "type" segment) describes what KIND OF
-  THING the id labels — the element/role it identifies — rather than the
+  THING the id labels (the element/role it identifies) rather than the
   JS data type of the string holding it. Example: the SVG `<clipPath>`
   that clips the nav brand-mark's glyph path to its rounded-square badge
   → `braMarCli` (Brand + Mark + Clippath). This names the id VALUE
@@ -5663,7 +5663,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - When a component can render more than one live instance of itself at
     once (e.g. `TabBarCom` mounts a second "ghost" copy of itself during
     the nav placement-switch animation, gated by its own `tbcGhoBoo`
-    prop), a static id shared by both instances is a real bug — ids must
+    prop), a static id shared by both instances is a real bug: ids must
     be document-unique, and a duplicate means `url(#id)` only ever
     resolves to whichever instance is first in the DOM. Compute the id
     once as a local variable and append a `--` + 3-letter modifier
@@ -5684,17 +5684,17 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `--set`, `--sta`, `--tod`). A literal id is fine when only one
     instance of that component can ever exist, no variable needed.
 - **Object property names** follow the same naming rule as everything
-  above, but are only 6 characters — they drop the middle "descriptor"
+  above, but are only 6 characters: they drop the middle "descriptor"
   segment and keep just segment 1 (what it is) + segment 3 (type), each
-  still strictly the first 3 letters of its word. Example — `TAB_OBJ_ARR`'s
+  still strictly the first 3 letters of its word. Example: `TAB_OBJ_ARR`'s
   own entries: `id` → `ideStr` (Identifier + String), `label` → `labStr`
   (Label + String), `icon` → `icoStr` (Icon + String). Every place that
   reads the property (e.g. `tabConObj.ideStr`) must be updated to match
-  when a property is renamed this way — same as any other rename.
+  when a property is renamed this way, same as any other rename.
   - **Naming-conflict resolution for properties**: with only 2 segments
     (6 characters) instead of 3, conflicts are more likely. The type
     segment (segment 2 here) is protected exactly like segment 3 is for
-    the general rule — never touched. Only segment 1's word is ever
+    the general rule, never touched. Only segment 1's word is ever
     escalated, using the same two-phase search as the general rule's
     Phase A/Phase B (Phase A: keep the first 2 letters, escalate the 3rd
     character through the word's 4th, 5th, 6th, ... letters; Phase B, only
@@ -5702,7 +5702,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     3rd character through the 4th, 5th, 6th, ... letters). Since there's
     no second segment to fall back to this time (there's nowhere else for
     the escalation to move to), if Phase A and Phase B both exhaust
-    without resolving the collision, stop and ask the user what to do —
+    without resolving the collision, stop and ask the user what to do;
     don't guess a different word unprompted the way the general rule's
     final fallback does.
   - **Axis qualifier**: some properties are inherently a base concept
@@ -5730,27 +5730,27 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `leftNum`/`rigNum` dropping "Pad", which would have collided in
     MEANING (not literal spelling) with the same object's own unrelated
     `top`/`left`/`right`/`bottom` rect-edge fields (kept bare under the
-    `style={{...}}` exemption below) — losing "Pad" would make it
+    `style={{...}}` exemption below); losing "Pad" would make it
     genuinely ambiguous which of the two a bare `topNum` referred to.
     This full-word variant conveniently often already matches whatever
     a reading local variable independently converged on naming itself
     (see the "Third exemption, an object whose properties get
-    destructured into local variables" bullet below) — worth checking for that kind of existing convergence before
+    destructured into local variables" bullet below), worth checking for that kind of existing convergence before
     picking a name, since matching it removes any rename at the read
     site entirely.
   - **Exemption**: this rule only applies to an object whose property
-    names are entirely OUR OWN invention — both the write site and every
+    names are entirely OUR OWN invention: both the write site and every
     read site are code we control, so renaming is free (e.g. the
     `{ heiNum, lefNum, topNum, widNum }` shape `setIndRecObj` builds and
     `indRecObj.lefNum`/etc. reads back, all private to `TabBarCom`). An
     object whose keys are constrained by an external contract is exempt
-    entirely — most commonly a `style={{ ... }}` object, whose keys must
+    entirely: most commonly a `style={{ ... }}` object, whose keys must
     stay as real camelCase CSS property names (`strokeWidth`, `transform`,
     ...) because React passes them straight through to the DOM; renaming
     those would silently break rendering, not just look different. The
     test is always "do I control every reader of this key," not merely
     "is this an object I wrote."
-  - **Second exemption — an exported namespace object's own properties**:
+  - **Second exemption, an exported namespace object's own properties**:
     this 6-character rule does not apply to the property names of an
     EXPORTED namespace object either (`STORAGE`, `PICKERS`, `TAS_NAM_OBJ`,
     `CAD_NAM_OBJ`, `ONB_CHE_OBJ`, ...). See "Exported namespace objects"
@@ -5763,7 +5763,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     6-char key would just be a second, different abbreviation of the same
     concept, adding a translation step for zero benefit. This is the
     standard, default practice for this category of object, not a rare
-    exception — apply it to every exported namespace object, not only the
+    exception; apply it to every exported namespace object, not only the
     ones already swept this way.
     This also covers an object that plays the same role without being
     exported directly, e.g. a hook's own returned actions object passed
@@ -5831,7 +5831,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   implementation gets renamed to the 9-char scheme. Writing the export
   as shorthand (e.g. `export const X = { perCheFun, askOncFun }`)
   silently renames the external API to match the internal names
-  instead, since shorthand's key IS the internal name — this has caused
+  instead, since shorthand's key IS the internal name; this has caused
   two separate live production outages (`holidays.js`'s `HOL_NAM_OBJ`
   and `notify.js`'s `NOT_NAM_OBJ`, both caught only after a real page
   went blank/threw in the browser). Before finishing any file that
@@ -5896,8 +5896,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
 
 ### Default parameter values
 - Only give a parameter a default where it's genuinely reachable/
-  meaningful — some real caller actually relies on the fallback, or it
-  documents real existing behavior — not a blanket "every parameter gets
+  meaningful (some real caller actually relies on the fallback, or it
+  documents real existing behavior), not a blanket "every parameter gets
   one" rule.
 - For a callback prop that's central to a component's core purpose, weigh
   a silent no-op default (`() => {}`) against letting a call fail loudly
@@ -5910,9 +5910,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
 # Claude Code Rules
 
 ## CRITICAL: Development Server Management
-- NEVER use global or pattern-based kill commands (e.g., `pkill`, `killall`, `fuser -k`) for `node`, `npm`, `vite`, `next`, or port numbers — these match by process name/command line across the *entire system*, so they can just as easily kill the user's own separately-running dev server as the one Claude started.
-- Shell state (including a PID captured via `$!`) does NOT persist between separate Bash tool calls in this environment — capturing a PID in one command and referencing it in a later command silently fails.
-- Start any dev/test server via the Bash tool's `run_in_background: true` option (not a manual `&` subshell) — this returns a task ID that stays valid across turns.
+- NEVER use global or pattern-based kill commands (e.g., `pkill`, `killall`, `fuser -k`) for `node`, `npm`, `vite`, `next`, or port numbers: these match by process name/command line across the *entire system*, so they can just as easily kill the user's own separately-running dev server as the one Claude started.
+- Shell state (including a PID captured via `$!`) does NOT persist between separate Bash tool calls in this environment: capturing a PID in one command and referencing it in a later command silently fails.
+- Start any dev/test server via the Bash tool's `run_in_background: true` option (not a manual `&` subshell); this returns a task ID that stays valid across turns.
 - To stop a server started that way, use the `TaskStop` tool with that task ID. Never `pkill`/`kill` by name, port, or a guessed PID.
 - Do not interfere with any pre-existing Node processes running in this environment, or any dev server the user started themselves.
 
