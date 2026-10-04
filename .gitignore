@@ -1,4 +1,4 @@
-# What: Editor Files Block. Why: Editor and operating system settings belong to each machine, not the project. How: This ignores their folders and files, then re-includes .vscode/extensions.json after .vscode/* so its recommendations stay shared.
+# What: Editor Files Block. Why: Editor and operating system settings belong to each machine, not the project. How: This ignores their folders and files.
 *.njsproj
 *.ntvs*
 *.sln
@@ -7,7 +7,6 @@
 .DS_Store
 .idea
 .vscode/*
-!.vscode/extensions.json
 
 
 
@@ -33,3 +32,8 @@ dev-dist/
 dist
 dist-ssr
 node_modules
+
+
+
+# What: Re-Include Block. Why: A shared file inside an ignored folder still belongs in the project, and a re-include only works after the pattern it overrides. How: This re-includes .vscode/extensions.json, so the editor's extension recommendations stay shared.
+!.vscode/extensions.json
