@@ -1,10 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- One page, so one entry. Update lastmod on meaningful content changes. -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://easemylife.app/</loc>
-    <lastmod>2026-07-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
+<?xml version='1.0' encoding='UTF-8'?><!-- What: Xml Declaration. Why: Crawlers expect a sitemap to state its XML version and encoding. How: This declares XML 1.0 in UTF-8 as the file's very first characters. -->
+
+
+
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><!-- What: Url Set Element. Why: A sitemap lists a site's pages inside one url set. How: This uses the sitemaps.org namespace crawlers recognize. --><!-- The app is one page, so the set holds one entry. -->
+
+
+	<url><!-- What: Home Url Element. Why: The app's only page is its root. How: This wraps the root's address and its crawl hints. -->
+
+
+		<loc>https://easemylife.app/</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the root's absolute URL. -->
+
+		<lastmod>2026-07-25</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the last meaningful content change, and is updated whenever one ships. -->
+
+		<changefreq>monthly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints at a monthly change. -->
+
+		<priority>1.0</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This marks the only page as the most important. -->
+
+
+	</url>
+
+
 </urlset>
