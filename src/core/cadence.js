@@ -343,6 +343,7 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
 	}
 
 
+
 	if ( curCadStr === 'monthly' ) { // What: Monthly Case Check. Why: A monthly period's own start depends on whether midDatObj has already reached this month's anchor day or still belongs to the previous month's, a multi-step resolution unlike daily's direct return. How: This branches into the current-month guard and previous-month fallback below whenever curCadStr is 'monthly'.
 
 
@@ -362,6 +363,7 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
 
 
 	}
+
 
 
 	if ( curCadStr === 'yearly' ) { // What: Yearly Case Check. Why: A yearly period's own start depends on whether midDatObj has already reached this year's anchor date or still belongs to the previous year's, a multi-step resolution unlike daily's direct return. How: This branches into the current-year guard and previous-year fallback below whenever curCadStr is 'yearly'.
@@ -560,6 +562,7 @@ function sumCadFun( picCadObj ) {
 
 
 	}
+
 
 
 	if ( curCadStr === 'yearly' ) { // What: Yearly Case Check. Why: A yearly cadence's own summary needs one of two entirely different string shapes depending on dateMode, unlike the other cadences' plain one-line returns. How: This branches into the nth-weekday-versus-plain-date summary below whenever curCadStr is 'yearly'.
