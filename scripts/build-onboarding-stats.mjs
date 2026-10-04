@@ -555,10 +555,10 @@ const buiOutFun = ( outDatObj ) => `
  * row's own daysAgo/h/m:
  *
  * - \`pickLog\` rows: \`daysAgo\` (Number), \`depletedEnd\` (Boolean,
- *   optional), \`done\` (Boolean), \`group\` (String), \`h\`/\`m\` (Number or
- *   null, the completion time), \`itemId\`/\`itemName\` (String),
- *   \`outcome\` (String, optional), \`pickerId\`/\`pickerName\` (String),
- *   \`source\` (String).
+ *   optional), \`done\` (Boolean), \`group\` (String), \`h\` (Number or null,
+ *   the completion hour), \`itemId\`/\`itemName\` (String), \`m\` (Number or
+ *   null, the completion minute), \`outcome\` (String, optional),
+ *   \`pickerId\`/\`pickerName\` (String), \`source\` (String).
  *
  * - \`reminderLog\`/\`reminderSkipLog\` rows: \`daysAgo\` (Number), \`h\`/\`m\`
  *   (Number, the time of day), \`name\` (String), \`taskId\` (String),
