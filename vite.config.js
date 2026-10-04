@@ -25,7 +25,7 @@ import { writeFileSync          } from 'node:fs';         // What: Write File Sy
  * __APP_VERSION__, reads CSS module classes as camelCase keys, compiles React,
  * generates the PWA's service worker around the hand-written manifest, and,
  * for production builds only, minifies the files Vite ships as written:
- * index.html and the copied public/boot-splash.js.
+ * index.html and the copied public/boot-splash.js and public/sw-notify.js.
  *
  * Sections:
  *  - Constants
@@ -39,6 +39,10 @@ import { writeFileSync          } from 'node:fs';         // What: Write File Sy
 
 
 // #region Constants
+
+const MIN_SCR_ARR = [ 'boot-splash.js', 'sw-notify.js' ]; // What: Minify Script Array. Why: Scripts in public/ ship exactly as written unless the build minifies them. How: This lists every public/ script minShiFun's closeBundle step minifies, by its name in the output folder.
+
+
 
 const pacJsoObj = JSON.parse( readFileSync( new URL( './package.json', import.meta.url ), 'utf-8' ) ); // What: Package Json Object. Why: The About section and the support form's diagnostic field should report the version npm version set, rather than a hardcoded string that drifts. How: This reads package.json at build time for its version field.
 
@@ -71,11 +75,12 @@ const minCssFun = ( styTexStr ) => traCssFun({ // What: Minify Css Function. Why
  * public/ keep the repo's full comments and formatting, so for production
  * builds only, this strips index.html's comments (its HTML ones, and the JS
  * ones inside an external script tag) and indentation, minifies its inline
- * styles with lightningcss and its JSON-LD, and minifies the copied
- * public/boot-splash.js with Vite's own minify. That script stays its own
- * file so the Content-Security-Policy's script-src can stay 'self', and its
- * step runs before the PWA plugin fingerprints the precache, so the
- * precached revision matches the minified file.
+ * styles with lightningcss and its JSON-LD, and minifies the copied public/
+ * scripts listed in MIN_SCR_ARR with Vite's own minify. The boot splash
+ * script stays its own file so the Content-Security-Policy's script-src can
+ * stay 'self', and the service worker loads sw-notify.js by its fixed path.
+ * The script step runs before the PWA plugin fingerprints the precache, so
+ * each precached revision matches its minified file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -93,7 +98,7 @@ const minCssFun = ( styTexStr ) => traCssFun({ // What: Minify Css Function. Why
 const minShiFun = () => { // What: Minify Shipped Function. Why: index.html and public/ files ship as written unless something minifies them. How: This returns a build-only Vite plugin that does.
 
 
-	let outDirStr = 'dist'; // What: Output Directory String. Why: The boot-splash step has to find the copied script in whatever folder the build writes to. How: configResolved replaces this default with the resolved build.outDir.
+	let outDirStr = 'dist'; // What: Output Directory String. Why: The script step has to find the copied scripts in whatever folder the build writes to. How: configResolved replaces this default with the resolved build.outDir.
 
 
 
@@ -104,20 +109,26 @@ const minShiFun = () => { // What: Minify Shipped Function. Why: index.html and 
 		configResolved : ( conResObj ) => { outDirStr = conResObj.build.outDir; }, // What: Config Resolved Hook. Why: The output folder can be configured. How: This stores the resolved build.outDir in outDirStr.
 		name           : 'minify-shipped-files',                                   // What: Name. Why: Vite reports a plugin's warnings and errors under its name. How: This names the plugin.
 
-		closeBundle : { // What: Close Bundle Hook. Why: public/boot-splash.js is only copied into the output folder once the bundle is written. How: This minifies the copy in place, ahead of the PWA plugin's precache step.
+		closeBundle : { // What: Close Bundle Hook. Why: The public/ scripts are only copied into the output folder once the bundle is written. How: This minifies each copy in place, ahead of the PWA plugin's precache step.
 
 
-			order      : 'pre', // What: Order. Why: The PWA plugin fingerprints the precache in its own closeBundle step. How: This runs ahead of it, so the precached revision matches the minified file.
+			order      : 'pre', // What: Order. Why: The PWA plugin fingerprints the precache in its own closeBundle step. How: This runs ahead of it, so each precached revision matches its minified file.
 			sequential : true,  // What: Sequential. Why: closeBundle hooks run in parallel by default, so ordering alone wouldn't hold the PWA plugin back. How: This makes Vite finish this hook before starting the next.
 
-			handler : async () => { // What: Handler. Why: This is the step's actual work. How: This reads the copied script, minifies it, and writes it back.
+			handler : async () => { // What: Handler. Why: This is the step's actual work. How: This reads each copied script, minifies it, and writes it back.
 
 
-				const filPatStr = `${ outDirStr }/boot-splash.js`;                               // What: File Path String. Why: The step works on the copy in the output folder, never the source in public/. How: This joins the output folder and the script's name.
-				const minResObj = await minify( filPatStr, readFileSync( filPatStr, 'utf-8' ) ); // What: Minify Result Object. Why: The script should ship without its comments and formatting. How: This runs Vite's minifier on the file's text.
+				for ( const scrNamStr of MIN_SCR_ARR ) { // What: Script Name Loop. Why: Every listed script gets the same treatment. How: This minifies each one in turn.
 
 
-				writeFileSync( filPatStr, minResObj.code ); // What: Minified Script Write. Why: The minified script replaces the copy Vite wrote. How: This writes the minified code over it.
+					const filPatStr = `${ outDirStr }/${ scrNamStr }`;                               // What: File Path String. Why: The step works on the copy in the output folder, never the source in public/. How: This joins the output folder and the script's name.
+					const minResObj = await minify( filPatStr, readFileSync( filPatStr, 'utf-8' ) ); // What: Minify Result Object. Why: The script should ship without its comments and formatting. How: This runs Vite's minifier on the file's text.
+
+
+					writeFileSync( filPatStr, minResObj.code ); // What: Minified Script Write. Why: The minified script replaces the copy Vite wrote. How: This writes the minified code over it.
+
+
+				}
 
 
 			}
