@@ -2883,7 +2883,7 @@ never churns when a tool rewrites the file.
 
 ### Plain-text config files
 Decided 2026-10-03. Files in a tool's own line-based format: Netlify's
-`_headers` and `_redirects`, and `robots.txt`. Their tools read them line by
+`_headers` and `_redirects`, `robots.txt`, and `.gitignore`. Their tools read them line by
 line, so only the rules that can't change what a tool reads apply.
 - **File boundaries**: exempt from the 3-blank-line start and 2-blank-line
   end rules, the same as JSON. A file starts on its first line and ends with
@@ -4092,6 +4092,16 @@ reference example:
   `{actIdeStr === 'x' && <TabX .../>}` branches column-padded to line up)
   loses that alignment once each one expands to multi-line; that's an
   accepted tradeoff of this rule, not a bug to fix.
+- **Exception, an element inside a run of text** (decided 2026-10-03): an
+  element sitting inline among text on the same line (an icon in help copy,
+  a link or a button in the middle of a sentence) may keep its attributes on
+  that one line, since splitting it would only scatter the sentence.
+- **Exception, a table of self-contained markup** (decided 2026-10-03): a
+  lookup table whose entries are each one self-contained piece of markup,
+  such as `ui/icon.jsx`'s icon table, keeps each entry's markup on its own
+  single line. The shapes inside an entry need no comments of their own and
+  no multi-line attributes, since the entry's own comment covers the whole
+  icon.
 
 ### Variable declarations
 - Every variable gets its own `const`/`let` on its own row: a single
