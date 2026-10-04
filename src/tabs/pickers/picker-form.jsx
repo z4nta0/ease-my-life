@@ -2429,7 +2429,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 													} }
-												/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the item's draft (or the pool item while closing), the picker, and its cancel, patch, and save handlers. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntEdiCom for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntEdiCom's own internal Cancel/Escape handling (revert via draActObj.revIteFun, then close) is correct as-is with no extra bookkeeping needed here. */ }
+												/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the item's draft (or the pool item while closing), the picker, and its cancel, patch, and save handlers. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntEdiCom for why a key on ediLivObj.id matters when switching directly between two items' editors. How: The key below gives each item's editor its own fresh instance. */ }
 
 
 											</div>

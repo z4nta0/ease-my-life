@@ -164,7 +164,7 @@ lookups without preserving that survivability property.
 
 ### Runtime globals on `window`
 
-A handful of `__`-prefixed globals (`__escStack`, `__escBound`, `__editGuard`,
+A handful of `__`-prefixed globals (`__escStack`, `__escBound`,
 `__emlGenerate`, `__emlPickerCreated`, `__dismissBootSplash`) are deliberate
 cross-module registration channels (e.g. a component registers a callback on
 mount so `index.html`'s boot script or the onboarding tour can call it

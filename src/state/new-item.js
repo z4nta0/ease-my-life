@@ -14,11 +14,13 @@ import { uniNamFun   } from '../utils/format.js'; // What: Unique Name Function.
  * new-item.js = New Item
  *
  * @summary
- * Builds a brand-new item with the defaults its picker's mode calls for,
- * without adding it anywhere. The store's own addIteFun adds what this
- * builds, and the Data tab uses the same build for a new item's local draft,
- * which only reaches the store once it's kept, so a draft and the item it
- * becomes always start from identical defaults.
+ * Item defaults by picker type. buiIteFun builds a brand-new item with the
+ * defaults its picker's type calls for, without adding it anywhere: the
+ * store's own addIteFun adds what it builds, and the Data tab uses the same
+ * build for a new item's local draft, so a draft and the item it becomes
+ * always start from identical defaults. modDefFun gives the fields every
+ * item resets to when its picker changes type, shared by the Pickers tab's
+ * edit save and the Data tab's draft picker.
  *
  * Sections:
  *  - Helpers
@@ -38,7 +40,7 @@ import { uniNamFun   } from '../utils/format.js'; // What: Unique Name Function.
  * buiIteFun = Build Item Function
  *
  * @summary
- * Builds one brand-new item for picIdeStr's own pool. Ease Down items start
+ * Builds one brand-new item for curPicObj's own pool. Ease Down items start
  * fully charged (value at threshold) and join the fairness rotation at the
  * AVERAGE weight of existing items (excluding the weight-0 active item, so a
  * fresh streak's own zero can't drag the newcomer down), rounded and floored
@@ -49,9 +51,9 @@ import { uniNamFun   } from '../utils/format.js'; // What: Unique Name Function.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The app state, read for the picker
- *                    and its existing items.
- * @param picIdeStr - Picker Identifier String: The picker gaining the item.
+ * @param curPicObj - Current Picker Object: The picker gaining the item,
+ *                    read for its id, mode, and threshold.
+ * @param sibIteArr - Sibling Item Array: The picker's existing items.
  * @param newNamStr - New Name String: The item's name.
  * @param optIdeStr - Optional Identifier String: An id to use instead of
  *                    minting a random one.
@@ -61,18 +63,14 @@ import { uniNamFun   } from '../utils/format.js'; // What: Unique Name Function.
  *
  * @example
  * ```ts
- * buiIteFun( staAppObj, picIdeStr, 'New item' ) // => newIteObj
+ * buiIteFun( curPicObj, sibIteArr, 'New item' ) // => newIteObj
  * ```
  *
 */
 
-function buiIteFun( staAppObj, picIdeStr, newNamStr, optIdeStr ) {
+function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
 
 
-
-
-	const sibIteArr = staAppObj.items.filter( ( curIteObj ) => curIteObj.pickerId === picIdeStr );     // What: Sibling Item Array. Why: Both the name de-duplication and the ease-down weight averaging below need this picker's own existing items. How: This filters staAppObj.items to those owned by pickerId.
-	const curPicObj = staAppObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr );           // What: Current Picker Object And Guard. Why: The mode checks below need this picker's own live mode. How: This looks up picIdeStr in staAppObj.pickers.
 	const isaDowBoo = curPicObj && curPicObj.mode === 'ease-down';                                     // What: Is-A Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
 	const isaEasBoo = curPicObj && ( curPicObj.mode === 'ease-up' || curPicObj.mode === 'ease-down' ); // What: Is-An Ease Boolean. Why: Both ease modes need their own drift-band fields stamped below. How: This is true when curPicObj's own mode is either ease-up or ease-down.
 
@@ -102,13 +100,13 @@ function buiIteFun( staAppObj, picIdeStr, newNamStr, optIdeStr ) {
 		id         : optIdeStr || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ),      // What: Id. Why: Every item needs a stable id. How: This uses optIdeStr when given, else mints a random 'it_' id.
 		lastPicked : null,                                                                     // What: Last Picked. Why: A brand-new item has never been picked. How: This is null.
 		name       : uniNamFun( newNamStr, sibIteArr.map( ( curIteObj ) => curIteObj.name ) ), // What: Name. Why: Two items in the same picker can't share a name. How: This de-duplicates newNamStr against every sibling item's own name via uniNamFun.
-		pickerId   : picIdeStr,                                                                // What: Picker Id. Why: Every item belongs to exactly one picker. How: This is picIdeStr.
+		pickerId   : curPicObj.id,                                                             // What: Picker Id. Why: Every item belongs to exactly one picker. How: This is curPicObj's own id.
 		picks      : 0,                                                                        // What: Picks. Why: A brand-new item has never been picked. How: This is 0.
 		vacation   : false,                                                                    // What: Vacation. Why: A brand-new item starts active. How: This is false.
 		value      : iniValNum,                                                                // What: Value. Why: Ease Down items start fully charged while every other mode starts empty. How: This is iniValNum, resolved above.
 		weight     : weiValNum,                                                                // What: Weight. Why: Ease Down items join at their peers' average weight while every other mode starts at 1. How: This is weiValNum, resolved above.
 
-		...( isaEasBoo ? PIC_NAM_OBJ.aveEasFun( sibIteArr, picIdeStr ) : {} ) // What: Drift Band Spread. Why: An ease-mode item needs its own drift band stamped at creation, matching this picker's current average. How: This spreads PIC_NAM_OBJ.aveEasFun's easeMin/easeMax only when isaEasBoo is true.
+		...( isaEasBoo ? PIC_NAM_OBJ.aveEasFun( sibIteArr, curPicObj.id ) : {} ) // What: Drift Band Spread. Why: An ease-mode item needs its own drift band stamped at creation, matching this picker's current average. How: This spreads PIC_NAM_OBJ.aveEasFun's easeMin/easeMax only when isaEasBoo is true.
 
 
 	};
@@ -122,13 +120,62 @@ function buiIteFun( staAppObj, picIdeStr, newNamStr, optIdeStr ) {
 
 // #endregion buiIteFun
 
+
+
+// #region modDefFun
+
+/**
+ * modDefFun = Mode Defaults Function
+ *
+ * @summary
+ * The fresh item fields a picker's items reset to when the picker switches to
+ * modStr. An item's weight, value, and drift band from the old type have no
+ * meaningful translation to a new one (a Weighted item's weight means nothing
+ * as an Ease Up drift band), so a type change resets them rather than trying
+ * to carry them over: Ease Down items start fully charged at the threshold,
+ * Ease Up items start uncharged, both with the default drift band, and every
+ * other type only resets weight and value.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param modStr    - Mode String: The type the picker is switching to.
+ * @param thrValNum - Threshold Value Number: The picker's threshold, an Ease
+ *                    Down item's starting charge.
+ *
+ * @returns The item fields to merge onto each of the picker's items.
+ *
+ * @example
+ * ```ts
+ * modDefFun( 'ease-up', 100 ) // => { easeMax, easeMin, value : 0, weight : 1 }
+ * ```
+ *
+*/
+
+function modDefFun( modStr, thrValNum ) {
+
+
+	if ( modStr === 'ease-down' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : thrValNum, weight : 1 }; // What: Ease Down Defaults Guard. Why: Ease Down items start fully charged. How: This returns the default drift band with value at the threshold.
+
+
+
+	if ( modStr === 'ease-up' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : 0, weight : 1 }; // What: Ease Up Defaults Guard. Why: Ease Up items start uncharged. How: This returns the default drift band with value 0.
+
+
+
+	return { value : 0, weight : 1 }; // What: Plain Defaults Return. Why: Every other type only uses weight and value. How: This resets both to their starting values.
+
+
+}
+
+// #endregion modDefFun
+
 // #endregion Helpers
 
 
 
 // #region Exports
 
-export { buiIteFun }; // What: Named Export. Why: The store's addIteFun and the Data tab's new-item draft build an item the same way. How: This exports buiIteFun by name.
+export { buiIteFun, modDefFun }; // What: Named Exports. Why: The store and the Data tab build new items, and reset items on a type change, the same way. How: This exports buiIteFun and modDefFun by name.
 
 // #endregion Exports
 

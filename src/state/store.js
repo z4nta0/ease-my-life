@@ -18,13 +18,13 @@ import { invColFun   } from '../utils/color.js';         // What: Invert Color F
 import { isoDayFun   } from '../utils/date.js';          // What: Iso Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { logRowFun   } from './pick-log.js';             // What: Log Row Function. Why: Every pick that lands on Today appends one pick-log row. How: This is called with the state and the pick's own fields.
 import { migStaFun   } from './migrate.js';              // What: Migrate State Function. Why: Every loaded or imported state must be brought up to the current shape. How: This is called on load and on import.
+import { modDefFun   } from './new-item.js';             // What: Mode Defaults Function. Why: savEdiFun resets a picker's items to its new type's defaults the same way the Data tab's draft picker does. How: This is called with the new mode and threshold.
 import { newEidFun   } from './ids.js';                  // What: New Entry-Id Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
 import { norConFun   } from '../core/pickers.js';        // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicFun and savEdiFun below.
 import { norGroFun   } from '../core/pickers.js';        // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from renGroFun/renTouFun and the picker-authoring actions below.
 import { norPicFun   } from '../core/pickers.js';        // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from addPicFun, savEdiFun, and renPicFun below.
 import { ONB_CHE_OBJ } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setCarFun below.
 import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
-import { PIC_NAM_OBJ } from '../core/pickers.js';        // What: Pickers Namespace Object. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (aveEasFun/DEF_EAS_OBJ) from addIteFun and savEdiFun below.
 import { PWA_NAM_OBJ } from '../platform/pwa.js';        // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
 import { SED_NAM_OBJ } from './seed.js';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
 import { spuDroFun   } from './pending-mutations.js';    // What: Stale Pending Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by the direct item-edit actions.
@@ -1511,7 +1511,18 @@ function useAppStaFun( optArgObj ) {
 		 *
 		*/
 
-		addIteFun : ( picIdeStr, newNamStr, optIdeStr ) => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, items : [ buiIteFun( curStaObj, picIdeStr, newNamStr, optIdeStr ), ...curStaObj.items ] } ) ), // What: Add Item Function. Why: A picker's own pool needs a way to gain a brand-new item with sensible mode-specific defaults. How: This builds the item with buiIteFun and puts it first in the global items array.
+		addIteFun : ( picIdeStr, newNamStr, optIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Add Item Function. Why: A picker's own pool needs a way to gain a brand-new item with sensible mode-specific defaults. How: This builds the item with buiIteFun from the picker and its existing items, then puts it first in the global items array.
+
+
+			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr ) || { id : picIdeStr }; // What: Current Picker Object. Why: The new item's defaults depend on its picker's type and threshold. How: This looks the picker up, falling back to a bare id so a missing one still yields a plain item.
+			const sibIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId === picIdeStr );                 // What: Sibling Item Array. Why: The name de-duplication and the ease-down weight averaging need the picker's existing items. How: This filters the items owned by picIdeStr.
+
+
+
+			return { ...curStaObj, items : [ buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ), ...curStaObj.items ] }; // What: Next State Return. Why: A newly-added item goes to the front of the global items array. How: This builds it with buiIteFun and puts it first.
+
+
+		} ),
 
 		// #endregion addIteFun
 
@@ -1652,18 +1663,6 @@ function useAppStaFun( optArgObj ) {
 		} ),
 
 		// #endregion renIteFun
-
-
-
-		revIteFun : ( tarIdeStr, snaIteObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Revert Item Function. Why: This is the full-replace path used to revert an item to a snapshot on editor Cancel. How: This overwrites the one matching item entirely with snaIteObj.
-
-
-			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
-
-			items : curStaObj.items.map( ( curIteObj ) => curIteObj.id === tarIdeStr ? { ...snaIteObj } : curIteObj ) // What: Items. Why: Only the one matching item is restored. How: This replaces the item matching tarIdeStr with a copy of snaIteObj.
-
-
-		} ) ),
 
 
 
@@ -2831,18 +2830,6 @@ function useAppStaFun( optArgObj ) {
 
 
 
-		revPicFun : ( picIdeStr, snaPicObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Revert Picker Function. Why: This is the full-replace path used to revert a picker to a snapshot on Controls Cancel. How: This overwrites the one matching picker entirely with snaPicObj.
-
-
-			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
-
-			pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === picIdeStr ? { ...snaPicObj } : curPicObj ) // What: Pickers. Why: Only the one matching picker is restored. How: This replaces the picker matching picIdeStr with a copy of snaPicObj.
-
-
-		} ) ),
-
-
-
 		// #region savEdiFun
 
 		/**
@@ -2957,13 +2944,9 @@ function useAppStaFun( optArgObj ) {
 
 			};
 
-			const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: The ease-down item-defaults branch below needs this picker's own threshold. How: This reads curPicObj's own threshold, defaulting to 100.
+			const thrValNum = curPicObj.threshold ?? 100;             // What: Threshold Value Number. Why: An Ease Down picker's items reset to fully charged at its threshold. How: This reads curPicObj's own threshold, defaulting to 100.
+			const modDefObj = modDefFun( picArgObj.mode, thrValNum ); // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This calls modDefFun with the new mode and this picker's threshold.
 
-			const modDefObj = picArgObj.mode === 'ease-down' // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This picks the ease-down, ease-up, or plain-weighted default shape depending on mode.
-				? { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : thrValNum, weight : 1 } // What: Ease Down Defaults Branch. Why: Ease Down items start fully charged. How: This sets value to the threshold with the default drift band and weight 1.
-				: picArgObj.mode === 'ease-up'                                                                                            // What: Ease Up Check. Why: Ease Up needs its own defaults. How: This tests for the ease-up mode next.
-				? { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : 0, weight : 1 }         // What: Ease Up Defaults Branch. Why: Ease Up items start uncharged. How: This sets value to 0 with the default drift band and weight 1.
-				: { value : 0, weight : 1 };                                                                                              // What: Plain Defaults Branch. Why: Every other mode only uses weight and value. How: This resets both to their neutral values.
 
 			const nexIteArr = modChaBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by picIdeStr, only when modChaBoo is true.
 				? curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === picIdeStr ? { ...curIteObj, ...modDefObj } : curIteObj ) // What: Reset Items Branch. Why: A mode change resets this picker's own items. How: This spreads modDefObj onto each of its items.
