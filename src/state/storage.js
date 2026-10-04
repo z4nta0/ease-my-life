@@ -343,6 +343,9 @@ async function wriDatFun( appStaObj ) {
 	const cloStaObj = JSON.parse( JSON.stringify( resStaObj ) ); // What: Clone State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
 
 
+	delete cloStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: The marker only describes one warm-mirror copy whose pickLog was left out, so IndexedDB must never keep it, not even when that copy is migrated in after a wipe. How: This deletes it from the clone before the write below.
+
+
 	await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).put( cloStaObj, 'main' ) ); // What: State Store Put Call. Why: This is the actual write of the non-pickLog portion of state into its own object store. How: This awaits reqProFun wrapping a put(cloStaObj, 'main') request against the state object store.
 
 
@@ -739,6 +742,9 @@ async function iniStoFun() {
 
 
 	logSusBoo = !!( cacStaObj && cacStaObj.__mirrorNoLog && !( cacStaObj.pickLog || [] ).length ); // What: Log Suspect Boolean Seed. Why: A state adopted from the warm mirror with an empty pickLog must be flagged before the very first save could otherwise let that empty array overwrite real IDB history. How: This is true only when cacStaObj carries the __mirrorNoLog marker and its own pickLog is empty.
+
+
+	if ( cacStaObj ) delete cacStaObj.__mirrorNoLog; // What: Mirror Marker Clear Guard. Why: Once read into logSusBoo, the marker has done its job and must not ride along into the app's own state. How: This deletes it from cacStaObj when there is one.
 
 
 
