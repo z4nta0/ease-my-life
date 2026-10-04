@@ -484,6 +484,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ conDelStr, setConDelStr ] = React.useState( null );  // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline. How: This holds the id currently showing its own delete-confirm row.
 	const [ conLeaStr, setConLeaStr ] = React.useState( null );  // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
+	const selAllFun = React.useCallback( ( inpCurEle ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
+
 
 	// #region canConFun
 
@@ -2540,6 +2542,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 												<input
+													ref={ selAllFun }
+
 													className={ cssModObj.rowNamInp }
 
 													data-element-name-hook='rowNamInp'

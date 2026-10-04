@@ -2256,6 +2256,11 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																				inpCurEle.focus( { preventScroll : true } ); // What: Focus Call. Why: The user can type the name right away. How: This focuses inpCurEle without scrolling the page.
 
+
+																				if ( newIteRef.current === iteCurObj.id ) inpCurEle.select(); // What: New Item Select Check. Why: A brand-new item opens with a default name that typing should replace outright, while an existing item's name is edited in place. How: This selects the text only when iteCurObj is the not-yet-kept new item.
+
+
+
 																				focInpRef.current = inpCurEle; // What: Focused Input Record. Why: A later re-render must not steal focus back. How: This stores inpCurEle in focInpRef.
 
 

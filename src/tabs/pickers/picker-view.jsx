@@ -193,6 +193,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	const [ conDelStr, setConDelStr ] = React.useState( null );                                                         // What: Confirm Delete String And Setter. Why: Deleting a pool item asks for confirmation inline, in place of that row's own normal content. How: This holds the id currently showing its own delete-confirm row.
 	const [ conLeaStr, setConLeaStr ] = React.useState( null );                                                         // What: Confirm Leaving String And Setter. Why: Cancelling a delete confirmation needs its own out-animation before the row reverts to normal. How: This holds the id currently playing that leaving animation, cleared once it finishes.
 
+	const selAllFun = React.useCallback( ( inpCurEle ) => { if ( inpCurEle ) inpCurEle.select(); }, [] ); // What: Select All Function. Why: A new item opens with a default name that typing should replace outright. How: This stable ref callback selects the name field's text once, as it mounts.
+
 	const penEdiRef = React.useRef( null ); // What: Pending Edit Reference. Why: Set by staEdiFun when it has to close an in-progress new-item draft OR another item's open editor out of the way first, this is picked back up once that draft's/editor's own closing animation ends, so the edit opens right after instead of being silently dropped. How: This holds the target item id to reopen, consumed by the relevant onAnimationEnd handler below.
 	const ediSnaRef = React.useRef( null ); // What: Editing Snapshot Reference. Why: A snapshot of whatever item opeEdiFun last opened, taken at that exact moment, used ONLY by staEdiFun to explicitly revert live edits when jumping straight from one item's editor to a different item's, bypassing EntEdiCom's own internal revert-on-unmount. How: That mechanism alone isn't enough here: it arms window.__editGuard's revert via a 0ms setTimeout on unmount, but the very next EntEdiCom's mount effect unconditionally disarms it (so a stale pending revert can't clobber an unrelated fresh edit session), and both the unmount and the next mount happen in the same synchronous effect-flush, well before that timeout would ever fire, so the disarm always wins unless this reverts directly instead.
 
@@ -1917,6 +1919,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 										<input
+											ref={ selAllFun }
+
 											className={ cssModObj.rowNamInp }
 
 											data-element-name-hook='rowNamInp'
