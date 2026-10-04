@@ -10,7 +10,7 @@
 
 		<loc>https://easemylife.app/</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the root's absolute URL. -->
 
-		<lastmod>2026-07-25</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the last meaningful content change, and is updated whenever one ships. -->
+		<lastmod>2026-10-03</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the last meaningful content change, and is updated whenever one ships. -->
 
 		<changefreq>monthly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints at a monthly change. -->
 
