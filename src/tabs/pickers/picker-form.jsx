@@ -212,7 +212,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ cadCurObj, setCadCurObj ] = React.useState( () => CAD_NAM_OBJ.norCadFun( iniForObj || {} ) );                   // What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CAD_NAM_OBJ.norCadFun's accepted shape matches the same fields addPicFun/savEdiFun read off iniForObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
 
 	const locDowNum = cadCurObj.cadence === 'weekly' ? cadCurObj.anchorDow : null;                      // What: Locked Dow Number. Why: Weekly cadence pins its anchor day ON in the Days control (and blocks the presets from dropping it), so the two controls can't contradict each other. How: This is the anchor day while weekly, otherwise null.
-	const witLocFun = ( dayInpArr ) => CAD_NAM_OBJ.enfWeeFun({ ...cadCurObj, daysOfWeek : dayInpArr }); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CAD_NAM_OBJ helper with the candidate days merged into the current cadence.
+	const witLocFun = ( dayInpArr ) => CAD_NAM_OBJ.enfWeeFun( { ...cadCurObj, daysOfWeek : dayInpArr } ); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CAD_NAM_OBJ helper with the candidate days merged into the current cadence.
 
 
 	React.useEffect( () => { // What: Enforce Weekly Day Effect. Why: A cadence change (e.g. switching into weekly, or changing which day is anchored) must also keep runDowArr consistent with the new anchor. How: This re-applies CAD_NAM_OBJ.enfWeeFun whenever the cadence or its anchor day changes.
@@ -221,14 +221,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		setRunDowArr( ( curDayArr ) => { // What: Days Reconcile Call. Why: Only a genuinely different result should trigger a re-render. How: This computes the enforced days and returns the previous array unchanged if nothing actually changed.
 
 
-			const nexDayArr = CAD_NAM_OBJ.enfWeeFun({ ...cadCurObj, daysOfWeek : curDayArr }); // What: Next Day Array. Why: This is the actual enforced result to compare against. How: This calls the shared CAD_NAM_OBJ helper with the current days.
+			const nexDayArr = CAD_NAM_OBJ.enfWeeFun( { ...cadCurObj, daysOfWeek : curDayArr } ); // What: Next Day Array. Why: This is the actual enforced result to compare against. How: This calls the shared CAD_NAM_OBJ helper with the current days.
 
 
 
 			return nexDayArr.length === curDayArr.length ? curDayArr : nexDayArr; // What: Unchanged Guard Return. Why: Returning the SAME array reference when nothing changed avoids a pointless extra render. How: This compares lengths as a cheap proxy for "did enforcement actually add the missing anchor day".
 
 
-		});
+		} );
 
 
 	}, [ cadCurObj.cadence, cadCurObj.anchorDow ] ); // What: Effect Dependency Array. Why: Only these two fields of cadCurObj can ever change which day must be locked on. How: cadCurObj.cadence decides whether locking applies at all, and cadCurObj.anchorDow decides which day.
@@ -443,7 +443,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			}
 
 
-		});
+		} );
 
 
 	};
@@ -691,7 +691,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			});
 
 
-		}) );
+		} ) );
 
 
 	};
@@ -762,7 +762,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			});
 
 
-		}) );
+		} ) );
 
 
 	};
@@ -1664,7 +1664,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										<CadConCom
 											value={ cadCurObj }
 
-											onChange={ ( patCadObj ) => setCadCurObj( ( preCadObj ) => CAD_NAM_OBJ.norCadFun({ ...preCadObj, ...patCadObj }) ) }
+											onChange={ ( patCadObj ) => setCadCurObj( ( preCadObj ) => CAD_NAM_OBJ.norCadFun( { ...preCadObj, ...patCadObj } ) ) }
 										/>{ /* What: Cadence Control Component. Why: The schedule's own cadence is edited through the shared cadence control. How: This normalizes every patch into cadCurObj. */ }
 
 

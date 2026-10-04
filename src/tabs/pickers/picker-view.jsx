@@ -476,7 +476,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 			});
 
 
-		}) );
+		} ) );
 
 
 	};
@@ -575,7 +575,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 			});
 
 
-		}) );
+		} ) );
 
 
 	};

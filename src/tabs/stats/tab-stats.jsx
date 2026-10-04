@@ -798,7 +798,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				totNum : 0                           // What: Total Number. Why: The evaluated-cycle count starts at zero. How: This is incremented per ranged row below.
 
 
-			});
+			} );
 
 
 		}
@@ -971,7 +971,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			return ( valTwoNum - valOneNum ) * sorDirNum; // What: Numeric Comparison Return. Why: Both values are real numbers at this point, so a normal subtraction comparison applies. How: This orders high-to-low by default, flipped to low-to-high by sorDirNum.
 
 
-		});
+		} );
 
 
 	}, [ conStaArr, conMetStr, conSorStr ] ); // What: Effect Dependency Array. Why: The sorted list only ever needs recomputing when the underlying stats, the active metric, or the sort direction changes. How: conStaArr supplies the rows, conMetStr picks the compared field, conSorStr picks the direction.
@@ -1181,7 +1181,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			};
 
 
-		});
+		} );
 
 
 
@@ -1874,7 +1874,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				eliNum : stkRunArr.reduce( ( sumRunNum, stkRunObj ) => sumRunNum + stkRunObj.runNum, 0 ) / stkRunArr.length  // What: Eligible Number. Why: The eligible-mode Spent value is the average run length. How: This averages every streak's own runNum.
 
 
-			});
+			} );
 
 
 		}
@@ -1953,7 +1953,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			{ __delBoo : true, id : iteIdeStr, name : iteNamStr, pickerId : scoValStr, vacation : false } // What: Ghost Item Object. Why: A ghost has to look like a real item so it flows through the same mapping below. How: This mirrors a live item's own id/name/pickerId/vacation fields, flagged __delBoo.
 
 
-		));
+		) );
 
 
 		const allIteArr = [ ...livIteArr, ...ghoIteArr ]; // What: All Item Array. Why: The mapping below builds one output row per item regardless of whether it's live or a ghost. How: This concatenates both arrays into one combined list.
@@ -2002,7 +2002,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 			};
 
 
-		});
+		} );
 
 
 	}, [ isaPicBoo, staAppObj.items, scoValStr, picLogArr, cutIsoStr, picCouMap, freGapMap, rejCouMap, skiCouMap, speGapMap, lasPicMap, actDatArr, vacCheObj, picRowArr, lasModStr, freModStr, speModStr, todIsoStr ] ); // What: Effect Dependency Array. Why: Every input this join reads from must be listed so a change to any one of them rebuilds the combined rows. How: Each dependency feeds one specific field or filter used inside the map above.
@@ -2749,7 +2749,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 										cliFun : () => setTypFilStr( picModStr ) // What: Click Function. Why: Choosing this pill narrows the Type filter. How: This sets typFilStr to the mode.
 
 
-									})),
+									}) ),
 
 									...( hasConBoo ? [ { // What: Conditionals Entry Array. Why: The Conditionals sentinel pill only belongs in the list at all once at least one conditional exists. How: This is a one-entry array (or empty) spread into the combined list below.
 

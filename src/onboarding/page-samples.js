@@ -200,7 +200,7 @@ const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. W
 		});
 
 
-	});
+	} );
 
 
 };
@@ -267,7 +267,7 @@ const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why
 		});
 
 
-	});
+	} );
 
 
 };

@@ -177,7 +177,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 			setCreOpeBoo( true ); // What: Open Form Call. Why: The create form must actually show for the staged prefill to matter at all. How: This flips creOpeBoo true.
 
-			emlTouObj.set({ staCreObj : null }); // What: Bus Clear Call. Why: This staged signal must only ever be consumed once. How: This writes staCreObj : null back onto the shared bus.
+			emlTouObj.set( { staCreObj : null } ); // What: Bus Clear Call. Why: This staged signal must only ever be consumed once. How: This writes staCreObj : null back onto the shared bus.
 
 
 		}
@@ -322,7 +322,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 			};
 
 
-		});
+		} );
 
 
 

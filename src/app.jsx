@@ -457,7 +457,7 @@ function AppRooCom () {
 		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'picker-' ) ) ? actTouObj.id.slice( 'picker-'.length ) : null; // What: Resumed Picker Id Return. Why: Only a "picker-" prefixed activeTour id belongs to this state. How: This strips the "picker-" prefix and returns the remaining id, or null if no matching tour was active.
 
 
-	});
+	} );
 
 
 	const [ actPagStr, setActPagStr ] = React.useState( () => { // What: Active Page String And Setter. Why: Tracks which "Explore the {page}" page tour is running, kept here for the same reason as actPicStr: some page tours navigate away from Today and would unmount it. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
