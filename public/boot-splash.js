@@ -1,7 +1,6 @@
 
 
 
-
 /**
  * boot-splash.js = Boot Splash Dismissal
  *

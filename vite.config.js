@@ -1,7 +1,6 @@
 
 
 
-
 // #region Imports
 
 import react from '@vitejs/plugin-react'; // What: React. Why: Vite needs the React plugin to compile JSX. How: This is called first in the plugins array.
