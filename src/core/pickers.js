@@ -580,6 +580,12 @@ function weiPicFun( itePooArr, weiGetFun ) {
  * See this file's own header comment for the full return-shape contract
  * and why the inner shape of each updArr entry stays unrenamed.
  *
+ * Duplicate avoidance only narrows which item can be chosen: an item
+ * skipped for its name still gets its own drift, charge, or fairness
+ * update like any other unchosen item, and an ease-down picker whose
+ * active item is skipped returns no pick at all, pausing its streak for
+ * the day.
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param picRcdObj - Picker Record Object: The picker record this pick runs
@@ -633,6 +639,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 	// #region Duplicate Avoidance
 
 	const excNamSet = optConObj && optConObj.excludeNames; // What: Exclude Name Set. Why: A picker opted into avoidDuplicates must not resurface an item another picker already placed on Today under the same name. How: This reads optConObj's own excludeNames Set, if any was given.
+	const updPooArr = itePooArr;                           // What: Update Pool Array. Why: Duplicate avoidance only limits which item can be chosen, so an item skipped for its name must still drift, charge, or gain fairness weight like any other unchosen item. How: This keeps the pool as it stood before the dedup swap below, for every mode's own updates to walk.
 
 	const avoDupBoo = !!picRcdObj.avoidDuplicates;             // What: Avoid Duplicates Boolean. Why: This behavior is opt-in per picker, so the dedup block below must never run for a picker that hasn't turned it on. How: This coerces picRcdObj's own avoidDuplicates flag to a real boolean.
 	const hasSizBoo = !!( excNamSet && excNamSet.size );       // What: Has Size Boolean. Why: A picker opted into avoidDuplicates still has nothing to dedup against until another picker has actually placed something on Today under some name. How: This is true only when excNamSet exists and holds at least one entry.
@@ -697,7 +704,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 			const updIteArr = [];                                 // What: Update Item Array. Why: Every eligible item's own drift value changes as a side effect of this one pick, whether picked or not. How: This starts empty and is pushed to once per item in the loop below.
 
 
-			for ( const curIteObj of itePooArr ) { // What: Drift Charge Loop. Why: Every eligible item's own drift value must be updated by this pick, not just the picked one. How: This walks itePooArr, resetting the picked item to 0 and incrementing every other item by a flat +1.
+			for ( const curIteObj of updPooArr ) { // What: Drift Charge Loop. Why: Every eligible item's own drift value must be updated by this pick, not just the picked one, including one skipped only for its name. How: This walks updPooArr, resetting the picked item to 0 and incrementing every other item by a flat +1.
 
 
 				if ( curIteObj.id === picResObj.id ) updIteArr.push( { id : curIteObj.id, value : 0 } ); // What: Picked Item Reset. Why: The item that was just picked should not keep accumulating drift toward its own next pick. How: This pushes a value:0 update for the picked item.
@@ -756,7 +763,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 			// #region Charge Plan Setup
 
 			const thrValNum = picRcdObj.threshold ?? 100;           // What: Threshold Value Number. Why: Every charge/eligibility calculation below is relative to this picker's own threshold. How: This reads picRcdObj's own threshold, defaulting to 100 for older pickers with none set.
-			const falEasObj = aveEasFun( itePooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
+			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
 
 			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-reset item needs a brand new fixed charge step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that lands the item exactly on thrValNum in that many cycles.
@@ -811,7 +818,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 			if ( !eliIteArr.length && !forIteObj ) { // What: No Eligible Item Guard. Why: With nothing eligible and no forced target, this cycle can only charge every waiting item, not actually pick one. How: This gates the early-return charge-only branch below.
 
 
-				const updIteArr = itePooArr.map( chrUpdFun ); // What: Update Item Array. Why: Every item still needs its own charge applied even when nothing becomes eligible this cycle. How: This maps chrUpdFun across the whole pool.
+				const updIteArr = updPooArr.map( chrUpdFun ); // What: Update Item Array. Why: Every item still needs its own charge applied even when nothing becomes eligible this cycle. How: This maps chrUpdFun across the whole pool, updPooArr, including any item skipped only for its name.
 
 
 
@@ -843,7 +850,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 
 
 
-			const updIteArr = itePooArr.map( ( curIteObj ) => curIteObj.id === picResObj.id ? { // What: Update Item Array. Why: The picked item must reset to 0 and roll a fresh plan, while every other item charges by its own existing plan. How: This maps itePooArr, branching per item on whether it matches picResObj's own id.
+			const updIteArr = updPooArr.map( ( curIteObj ) => curIteObj.id === picResObj.id ? { // What: Update Item Array. Why: The picked item must reset to 0 and roll a fresh plan, while every other item charges by its own existing plan, including one skipped only for its name. How: This maps updPooArr, branching per item on whether it matches picResObj's own id.
 
 
 				chargeStep : rolSteFun( curIteObj ), // What: Charge Step. Why: The picked item resets to a brand new plan, never reusing whatever step it charged under before. How: This rolls a fresh step via rolSteFun.
@@ -953,7 +960,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 			// #region Streak Setup
 
 			const thrValNum = picRcdObj.threshold ?? 100;           // What: Threshold Value Number. Why: Every charge/decay calculation below is relative to this picker's own threshold. How: This reads picRcdObj's own threshold, defaulting to 100 for older pickers with none set.
-			const falEasObj = aveEasFun( itePooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
+			const falEasObj = aveEasFun( updPooArr, picRcdObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
 
 			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-chosen item needs a brand new fixed decay step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that empties the item exactly in that many cycles.
@@ -988,10 +995,14 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 			if ( picRcdObj.activeItemId && !forNewBoo ) { // What: Active Item Lookup Check. Why: A streak can only continue when this picker actually has an active item AND this draw isn't forcing a new one. How: This gates the lookup below on both conditions holding.
 
 
-				actIteObj = itePooArr.find( ( curIteObj ) => curIteObj.id === picRcdObj.activeItemId && curIteObj.value > 0 ); // What: Active Item Object Assignment. Why: An active item that has already fully depleted (value at or below 0) doesn't count as still active. How: This searches itePooArr for the item matching picRcdObj's own activeItemId with a positive value remaining.
+				actIteObj = updPooArr.find( ( curIteObj ) => curIteObj.id === picRcdObj.activeItemId && curIteObj.value > 0 ); // What: Active Item Object Assignment. Why: An active item that has already fully depleted (value at or below 0) doesn't count as still active, while one skipped only for its name still is. How: This searches updPooArr for the item matching picRcdObj's own activeItemId with a positive value remaining.
 
 
 			}
+
+
+
+			if ( actIteObj && !itePooArr.includes( actIteObj ) ) return { cycArr : [], picObj : null, updArr : [] }; // What: Paused Streak Guard. Why: When another picker already placed the active item's own name on Today, the streak pauses for the day rather than duplicating it or abandoning a half-spent item. How: This returns the empty result, so no card appears and nothing changes until tomorrow's run continues the streak.
 
 
 
@@ -1066,7 +1077,7 @@ function picIteFun( picRcdObj, iteAllArr, optConObj ) {
 			const choIteObj = ( forIdeStr && itePooArr.find( ( curIteObj ) => curIteObj.id === forIdeStr ) ) || weiPicFun( canIteArr, ( curIteObj ) => Math.max( 0, curIteObj.weight ?? 1 ) ); // What: Chosen Item Object. Why: A forced target wins outright when given and actually found; otherwise the new streak draws weighted by fairness weight. How: This tries the forced lookup first, falling back to weiPicFun against canIteArr.
 
 
-			for ( const curIteObj of itePooArr ) { // What: Fairness Bookkeeping Loop. Why: Every OTHER item's own fairness weight must climb by 1, and this happens only here, on a new-streak draw. How: This walks itePooArr, skipping the chosen item and pushing a weight+1 update for every other one.
+			for ( const curIteObj of updPooArr ) { // What: Fairness Bookkeeping Loop. Why: Every OTHER item's own fairness weight must climb by 1, including one skipped only for its name, and this happens only here, on a new-streak draw. How: This walks updPooArr, skipping the chosen item and pushing a weight+1 update for every other one.
 
 
 				if ( curIteObj.id === choIteObj.id ) continue; // What: Chosen Item Skip. Why: The chosen item's own weight resets to 0 below instead, not +1 here. How: This skips straight to the next item when curIteObj is the one just chosen.
