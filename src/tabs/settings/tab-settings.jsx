@@ -13,6 +13,7 @@ import { ButBasCom    } from '../../ui/button.jsx';                 // What: But
 import { CarSurCom    } from '../../ui/card-surface.jsx';           // What: Card Surface Component. Why: Every section's own controls sit inside this shared bordered container. How: This wraps the contents of nearly every setSubDiv and setSecSec below.
 import { CelPreCom    } from './previews.jsx';                      // What: Celebration Preview Component. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
 import { ConSupCom    } from './contact-support.jsx';               // What: Contact Support Component. Why: The Account section's own support form lives in its own file. How: This is rendered once in TabSetCom's Account section.
+import { durMilFun    } from '../../utils/rhythm.js';               // What: Duration Millisecond Function. Why: Exit timers must end with the animation they wait on. How: This returns a duration step's length in milliseconds.
 import { HelButCom    } from '../../help/button.jsx';               // What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
 import { HelOveCom    } from '../../help/mode.jsx';                 // What: Help Overlay Component. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
 import { HolEdiCom    } from './holiday-editor.jsx';                // What: Holiday Editor Component. Why: The Holidays section's own editable list lives in its own file. How: This is rendered once in TabSetCom's Holidays section.
@@ -810,14 +811,14 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		setResLeaBoo( true ); // What: Reset Leaving Flag Set. Why: This is what actually triggers the leave animation's own CSS class. How: This flags resLeaBoo true.
 
-		setTimeout( () => { // What: Delayed Close Call. Why: The confirm pair must not actually unmount until its own leave animation has had time to play. How: This waits 150ms, then closes the confirm and clears the leaving flag together.
+		setTimeout( () => { // What: Delayed Close Call. Why: The confirm pair must not actually unmount until its own leave animation has had time to play. How: This waits out the exit's base duration step, then closes the confirm and clears the leaving flag together.
 
 
 			setConResBoo( false ); // What: Confirm Close. Why: The leave animation has finished, so the confirm pair can unmount. How: This flips conResBoo back to false.
 			setResLeaBoo( false ); // What: Reset Leaving Clear. Why: The confirm pair is gone, so nothing is leaving anymore. How: This flips resLeaBoo back to false.
 
 
-		}, 150 ); // What: Leave Animation Delay. Why: The confirm pair must finish leaving before it unmounts. How: This 150ms matches the leave animation's duration.
+		}, durMilFun( 'bas' ) ); // What: Leave Animation Delay. Why: The confirm pair must finish leaving before it unmounts. How: This waits the same base duration step its leaving keyframes play over. // Duration Base ~= 157.8ms
 
 
 	};
@@ -996,14 +997,14 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 		setImpLeaBoo( true ); // What: Import Leaving Flag Set. Why: This is what actually triggers the leave animation's own CSS class. How: This flags impLeaBoo true.
 
-		setTimeout( () => { // What: Delayed Close Call. Why: The confirm pair must not actually unmount until its own leave animation has had time to play. How: This waits 150ms, then clears the pending import and the leaving flag together.
+		setTimeout( () => { // What: Delayed Close Call. Why: The confirm pair must not actually unmount until its own leave animation has had time to play. How: This waits out the exit's base duration step, then clears the pending import and the leaving flag together.
 
 
 			setPenImpObj( null );  // What: Pending Import Clear. Why: The leave animation has finished, so the confirm pair can unmount. How: This clears penImpObj back to null.
 			setImpLeaBoo( false ); // What: Import Leaving Clear. Why: The confirm pair is gone, so nothing is leaving anymore. How: This flips impLeaBoo back to false.
 
 
-		}, 150 ); // What: Leave Animation Delay. Why: The confirm pair must finish leaving before it unmounts. How: This 150ms matches the leave animation's duration.
+		}, durMilFun( 'bas' ) ); // What: Leave Animation Delay. Why: The confirm pair must finish leaving before it unmounts. How: This waits the same base duration step its leaving keyframes play over. // Duration Base ~= 157.8ms
 
 
 	};

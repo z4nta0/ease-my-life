@@ -205,7 +205,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	 * @summary
 	 * Backs out of a pending item delete. Under reduced motion it clears the
 	 * confirm state at once; otherwise it flags the confirm row as leaving so it
-	 * plays its exit animation, then clears both 150ms later.
+	 * plays its exit animation, then clears both once its exit's base duration
+	 * step has passed.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -229,14 +230,14 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 		setConLeaStr( conDelStr ); // What: Leaving Stage Call. Why: The confirm row needs to actually play its own out-animation now. How: This copies the current conDelStr into conLeaStr, which the render below applies as a className modifier.
 
-		setTimeout( () => { // What: Delayed Clear Call. Why: The confirm row must not fully disappear until its own out-animation has had time to actually play. How: This clears both conLeaStr and conDelStr 150ms later.
+		setTimeout( () => { // What: Delayed Clear Call. Why: The confirm row must not fully disappear until its own out-animation has had time to actually play. How: This clears both conLeaStr and conDelStr once the exit's base duration step has passed.
 
 
 			setConLeaStr( null ); // What: Leaving Clear Call. Why: The confirm row has finished its exit animation. How: This resets conLeaStr to null.
 			setConDelStr( null ); // What: Confirm Clear Call. Why: No row stays in its delete-confirm state. How: This resets conDelStr to null.
 
 
-		}, 150 ); // What: Leaving Animation Delay. Why: The confirm row must finish leaving before it clears. How: This 150ms matches the leaving animation's duration.
+		}, durMilFun( 'bas' ) ); // What: Leaving Animation Delay. Why: The confirm row must finish leaving before it clears. How: This waits the same base duration step its leaving keyframes play over. // Duration Base ~= 157.8ms
 
 
 	};

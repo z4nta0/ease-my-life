@@ -512,8 +512,8 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 	 * @summary
 	 * Cancels a brand-new conditional so its row visibly collapses before the
 	 * draft is dropped: it closes the row at once, then clears the draft and
-	 * pending state 300ms later, once the collapse animation has finished. Under
-	 * reduced motion it clears everything immediately.
+	 * pending state once the collapse animation has finished. Under reduced
+	 * motion it clears everything immediately.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -549,14 +549,14 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 		setOpeIdeStr( null ); // What: Row Collapse Call. Why: The editor itself must stay mounted (still holding conDraObj/penConObj) so its own ColDisCom can actually animate shut. How: This only closes the row's own open flag, not the draft/pending state yet.
 
-		setTimeout( () => { // What: Deferred Drop Call. Why: The draft/pending state must survive until the collapse animation actually finishes. How: This clears both 300ms later, matching the collapse animation's own duration.
+		setTimeout( () => { // What: Deferred Drop Call. Why: The draft/pending state must survive until the collapse animation actually finishes. How: This clears both once the collapse's own p02 duration step has passed.
 
 
 			setConDraObj( null ); // What: Draft Clear Call. Why: The draft only goes away once the collapse has finished. How: This resets conDraObj to null.
 			setPenConObj( null ); // What: Pending Clear Call. Why: The pending new conditional goes away at the same moment. How: This resets penConObj to null.
 
 
-		}, 300 ); // What: Collapse Animation Delay. Why: The draft must outlive the row's own collapse. How: This 300ms matches the collapse animation's duration.
+		}, durMilFun( 'p02' ) ); // What: Collapse Animation Delay. Why: The draft must outlive the row's own collapse. How: This waits the same p02 duration step ColDisCom collapses over. // Duration Base Plus 2 ~= 277.0ms
 
 
 	};
@@ -573,7 +573,8 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 	 * Deletes an existing conditional after its row collapses: it marks the row
 	 * as closing so the editor stays mounted through its own collapse, then
 	 * removes the conditional from the store and clears every piece of open-row
-	 * state 300ms later. Under reduced motion it removes it immediately.
+	 * state once the collapse has finished. Under reduced motion it removes it
+	 * immediately.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -631,8 +632,8 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 	 * Commits a brand-new conditional after its row collapses, so the row stays
 	 * in place with the same id and name rather than visibly jumping: it closes
 	 * the row at once, then adds the conditional to the store under its tidied
-	 * final name and clears the draft and pending state 300ms later. Under
-	 * reduced motion it commits immediately.
+	 * final name and clears the draft and pending state once the collapse has
+	 * finished. Under reduced motion it commits immediately.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

@@ -11,6 +11,7 @@ import { APP_VER_STR } from '../../constants.js';        // What: App Version St
 import { ButBasCom   } from '../../ui/button.jsx';       // What: Button Base Component. Why: The form's own open, send, and copy-address actions need consistently-styled buttons. How: This is rendered throughout ConSupCom.
 import { CarSurCom   } from '../../ui/card-surface.jsx'; // What: Card Surface Component. Why: The support form sits inside the shared bordered container. How: This wraps the form's own fields inside ConSupCom.
 import { ColDisCom   } from '../../ui/collapse.jsx';     // What: Collapse Disclosure Component. Why: The contact-support form needs to expand/collapse in place. How: This wraps the contact-support form's own CarSurCom, gated on forOpeBoo.
+import { durMilFun   } from '../../utils/rhythm.js';     // What: Duration Millisecond Function. Why: The scroll timer must wait out the form's expand. How: This returns a duration step's length in milliseconds.
 import { redMotFun   } from '../../utils/motion.js';     // What: Reduce Motion Function. Why: Scrolling the opened form into view must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior in opeForFun.
 import { rhyPxlFun   } from '../../utils/rhythm.js';     // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 
@@ -278,7 +279,7 @@ function ConSupCom () {
 			}
 
 
-		}, 360 ); // What: Expand Animation Delay. Why: The scroll must measure the form's final height. How: This 360ms waits out ColDisCom's expand animation.
+		}, durMilFun( 'p02' ) ); // What: Expand Animation Delay. Why: The scroll must measure the form's final height. How: This waits the same p02 duration step ColDisCom expands over. // Duration Base Plus 2 ~= 277.0ms
 
 
 	};

@@ -854,7 +854,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 					setVisForBoo( false ); // What: Form Hide Call. Why: The close animation has finished, so the form can unmount. How: This flips visForBoo false.
 
 
-				}, 180 );
+				}, durMilFun( 'p01' ) ); // What: Close Animation Delay. Why: The form must finish its close fade before it unmounts. How: This waits the same p01 duration step its closing keyframes play over. // Duration Base Plus 1 ~= 209.1ms
 
 
 			}
@@ -940,7 +940,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 			setAddCloBoo( false ); // What: Add Closing Flag Reset. Why: The next open must not start mid-close. How: This clears addCloBoo.
 
 
-		}, 180 );
+		}, durMilFun( 'p01' ) ); // What: Close Animation Delay. Why: The cancelled form must finish its close fade before it unmounts. How: This waits the same p01 duration step its closing keyframes play over. // Duration Base Plus 1 ~= 209.1ms
 
 
 	};
@@ -991,7 +991,7 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 		setAddCloBoo( true ); // What: Add Closing Flag Set. Why: The form needs to stay mounted but visually collapsing while the transition plays before the real commit lands. How: This flips addCloBoo true.
 
-		cloTimRef.current = setTimeout( finAddFun, 180 ); // What: Deferred Commit Call. Why: The actual commit must wait for the .18s close animation to finish first. How: This schedules finAddFun, then stores the timeout id for possible cancellation.
+		cloTimRef.current = setTimeout( finAddFun, durMilFun( 'p01' ) ); // What: Deferred Commit Call. Why: The actual commit must wait for the form's close animation to finish first. How: This schedules finAddFun, then stores the timeout id for possible cancellation. // Duration Base Plus 1 ~= 209.1ms
 
 
 	};

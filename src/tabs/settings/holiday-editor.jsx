@@ -8,6 +8,7 @@ import React     from 'react';                       // What: React. Why: HolEdi
 
 
 import { ButBasCom   } from '../../ui/button.jsx';    // What: Button Base Component. Why: Adding a custom holiday needs a consistently-styled button. How: This is rendered in HolEdiCom's own add form.
+import { durMilFun   } from '../../utils/rhythm.js';  // What: Duration Millisecond Function. Why: The row's exit timer must end with its exit animation. How: This returns a duration step's length in milliseconds.
 import { HOL_NAM_OBJ } from '../../core/holidays.js'; // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
 import { IcoSvgCom   } from '../../ui/icon.jsx';      // What: Icon Svg Component. Why: The custom-holiday delete button needs a small trash glyph. How: This is rendered with a specific name/size prop.
 
@@ -114,7 +115,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 
 		setExiIdeStr( cusIdeStr ); // What: Exiting Identifier Set. Why: This is what actually triggers the row's own exit class below. How: This writes the removed row's own id into exiIdeStr.
 
-		setTimeout( () => { // What: Delayed Removal Timeout. Why: The store must not drop the row until the fade-up-and-out animation has actually had time to play. How: This waits 300ms, then removes the holiday from the store and clears exiIdeStr.
+		setTimeout( () => { // What: Delayed Removal Timeout. Why: The store must not drop the row until the fade-up-and-out animation has actually had time to play. How: This waits out the exit's p02 duration step, then removes the holiday from the store and clears exiIdeStr.
 
 
 			actStoObj.delHolFun( cusIdeStr ); // What: Custom Holiday Delete Call. Why: This is the actual store mutation that removes the recurring day off. How: This calls actStoObj.delHolFun with the removed row's own id.
@@ -122,7 +123,7 @@ function HolEdiCom ( { actStoObj, staAppObj } ) {
 			setExiIdeStr( null ); // What: Exiting Identifier Clear. Why: The row is gone, so nothing is mid-exit anymore. How: This resets exiIdeStr back to null.
 
 
-		}, 300 ); // What: Exit Animation Delay. Why: The row must finish fading out before the store drops it. How: This 300ms matches the exit animation's duration.
+		}, durMilFun( 'p02' ) ); // What: Exit Animation Delay. Why: The row must finish fading out before the store drops it. How: This waits the same p02 duration step its exit keyframes play over. // Duration Base Plus 2 ~= 277.0ms
 
 
 	};
