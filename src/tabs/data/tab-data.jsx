@@ -7,6 +7,7 @@ import cssModObj from './tab-data.module.css'; // What: CSS Module Object. Why: 
 import React     from 'react';                 // What: React. Why: TabDatCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
+import { buiIteFun    } from '../../state/new-item.js';             // What: Build Item Function. Why: A new item's local draft starts from the same defaults the store would give it. How: This is called when a row adds a new item.
 import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cadence. Why: Each picker card's own header needs the shared cadence summary helpers. How: This is called in TabDatCom's picker cards.
 import { clePicFun    } from '../../help/sample-data.js';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabDatCom's own unmount cleanup.
 import { cleTasFun    } from '../../help/sample-data.js';           // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabDatCom's own unmount cleanup.
@@ -31,7 +32,9 @@ import { sedTasFun    } from '../../help/sample-data.js';           // What: See
 import { sorEntFun    } from './list-sorting.js';                   // What: Sort Entries Function. Why: Sections and picker items share the app's own sort-key vocabulary. How: This is called once per comparison inside each list's own sort.
 import { SorSelCom    } from './sort-select.jsx';                   // What: Sort Select Component. Why: Every sortable list in this tab needs the same sort control. How: This is rendered for sections and each picker's own item list.
 import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
+import { UnmWatCom    } from '../../ui/unmount-watcher.js';         // What: Unmount Watcher Component. Why: An open row that disappears some other way than its own chevron or Save still keeps its edits. How: This is rendered inside the open row's editor.
 import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
+import { useIteDraFun } from '../../ui/item-draft.js';              // What: Use Item Draft Function. Why: The open item row edits a local draft, committed when the row closes. How: This is called once with whichever item's row is open.
 
 // #endregion Imports
 
@@ -330,16 +333,16 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 	const [ opeIteStr, setOpeIteStr ] = React.useState( null ); // What: Open Item String And Setter. Why: Only one picker item across the whole page can be expanded for editing at a time, mirroring the Reminders list. How: This holds whichever item's own id is currently open, or null.
 	const [ insIteStr, setInsIteStr ] = React.useState( null ); // What: Insert Item String And Setter. Why: A just-inserted row needs to play its own slide-in entrance exactly once. How: This holds whichever item's own id should currently play that entrance.
+	const [ newIteObj, setNewIteObj ] = React.useState( null ); // What: New Item Object And Setter. Why: A brand-new item stays a local draft, out of the store and storage, until it's kept. How: This holds that item, built with buiIteFun's defaults, or null when none is being added.
 
-	const newIteRef = React.useRef( null ); // What: New Item Reference. Why: A brand-new, not-yet-kept item needs to be tracked so Cancel can discard the whole add instead of reverting to an empty snapshot. How: This holds whichever item's own id was just created, cleared once it's kept.
-	const opeEdiRef = React.useRef( null ); // What: Open Editor Reference. Why: The open item's own row header (outside IteEdiCom) needs to call its own .keeSavFun() before closing, so an explicit close never gets treated as an implicit revert. How: This holds whichever IteEdiCom instance is currently open.
+	const newIteRef = React.useRef( null ); // What: New Item Reference. Why: A brand-new, not-yet-kept item needs to be tracked so Cancel can discard the whole add instead of keeping it. How: This holds whichever new item's own id was just created, cleared once it's kept or discarded.
 	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freEdiFun below.
 
 
 	const preOpeRef = React.useRef( null ); // What: Previous Open Reference. Why: The insert-entrance replay effect below needs to compare against whichever item was open on the PREVIOUS render. How: This starts null and is updated by the effect below on every change.
 
 
-	React.useEffect( () => { // What: Insert Replay Effect. Why: Whenever an item's editor closes (Done, Cancel-revert, delete, or the row's own collapse chevron), it should replay the same insert-entrance treatment a freshly-created row gets, instead of silently snapping into its new sorted position. How: This detects the transition and flags the previously-open item's own id for insIteStr.
+	React.useEffect( () => { // What: Insert Replay Effect. Why: Whenever an item's editor closes (Save, Cancel, delete, or the row's own collapse chevron), it should replay the same insert-entrance treatment a freshly-created row gets, instead of silently snapping into its new sorted position. How: This detects the transition and flags the previously-open item's own id for insIteStr.
 
 
 		const preIteStr = preOpeRef.current; // What: Previous Item String. Why: Detecting an actual close requires comparing against what was open before this render. How: This reads preOpeRef.current once.
@@ -393,6 +396,113 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 	const focInpRef = React.useRef( null ); // What: Focused Input Reference. Why: The name input focuses itself via a ref callback (inline, below) instead of the plain autoFocus attribute, so it can pass preventScroll and avoid fighting the deliberate smooth scroll above. How: This is guarded by node identity so a later re-render of the SAME input doesn't refocus it repeatedly.
+
+
+
+	const opeIteObj = !opeIteStr // What: Open Item Object. Why: The open row's draft is a copy of either the local new item or a stored one. How: This resolves the open id to whichever of the two it names, or null.
+		? null                                                                         // What: Nothing Open Branch. Why: With no row open there's nothing to copy. How: This is null.
+		: newIteObj && newIteObj.id === opeIteStr                                      // What: New Item Check. Why: The local new item isn't in the store yet. How: This tests whether it's the open one.
+		? newIteObj                                                                    // What: New Item Branch. Why: The new item's draft starts from the local item. How: This is newIteObj.
+		: staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === opeIteStr ) || null; // What: Stored Item Branch. Why: Any other open row is a stored item. How: This looks the open id up in the store, or null.
+
+
+	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, opeIteObj ); // What: Item Draft Destructure. Why: The open row's name input and editor both edit one local draft, committed when the row closes or saves. How: This calls useIteDraFun with the open item.
+
+	const hanDraRef = React.useRef( null ); // What: Handled Draft Reference. Why: A draft that was already saved or cancelled must not be committed again when its row unmounts afterward. How: This holds the last draft object keeIteFun committed or Cancel dropped.
+
+
+	// #region keeIteFun
+
+	/**
+	 * keeIteFun = Keep Item Function
+	 *
+	 * @summary
+	 * Commits the open row's draft, once. A brand-new item is first added to the
+	 * store with the same id and defaults its draft started from, so the draft's
+	 * changes then apply to it like any other item's. Does nothing when no row
+	 * is open or this exact draft was already committed or cancelled.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * keeIteFun() // => void
+	 * ```
+	 *
+	*/
+
+	const keeIteFun = () => { // What: Keep Item Function. Why: Saving, collapsing, or otherwise closing a Data tab row keeps its edits. How: This adds a new item to the store first, then commits the draft, skipping a draft already handled.
+
+
+		if ( !draIteObj || hanDraRef.current === draIteObj ) return; // What: Handled Draft Guard. Why: There's nothing to keep without a draft, or once this draft was already saved or cancelled. How: This bails out in either case.
+
+
+
+		hanDraRef.current = draIteObj; // What: Handled Draft Mark. Why: Any later close of this same draft must not commit it twice. How: This records the draft being committed.
+
+
+
+		if ( newIteObj && newIteObj.id === draIteObj.id ) { // What: New Item Guard. Why: A brand-new item has to exist in the store before its edits can apply. How: This adds it under its own id and clears the local new item.
+
+
+			actStoObj.addIteFun( newIteObj.pickerId, newIteObj.name, newIteObj.id ); // What: Add Item Call. Why: This is the moment the new item actually joins its picker. How: This adds it with the name and id its draft started from.
+
+			newIteRef.current = null; // What: New Item Clear. Why: A kept item is no longer brand new. How: This clears newIteRef.
+			setNewIteObj( null );     // What: New Item Object Clear. Why: The store now holds this item. How: This clears newIteObj.
+
+
+		}
+
+
+
+		comDraFun(); // What: Commit Draft Call. Why: The draft's edits must reach the item. How: This calls comDraFun.
+
+
+	};
+
+	// #endregion keeIteFun
+
+
+	// #region cloIteFun
+
+	/**
+	 * cloIteFun = Close Item Function
+	 *
+	 * @summary
+	 * Closes the open row the way its own collapse chevron does: its draft is
+	 * kept, then the row closes. Used when another row opens in its place and
+	 * by the open row's UnmWatCom, so a row that disappears some other way
+	 * (its card or section collapsing, a filter hiding it, a tab switch) also
+	 * keeps its edits.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * cloIteFun() // => void
+	 * ```
+	 *
+	*/
+
+	const cloIteFun = () => { // What: Close Item Function. Why: A row that disappears, or gives way to another row, keeps its edits the same way its own collapse chevron does. How: This keeps the open draft, then closes the row.
+
+
+		keeIteFun(); // What: Keep Item Call. Why: Closing keeps the draft. How: This calls keeIteFun.
+
+		setOpeIteStr( null ); // What: Open Item Clear. Why: No row stays open. How: This resets opeIteStr to null.
+
+
+	};
+
+	// #endregion cloIteFun
 
 	// #endregion Item Editor State
 
@@ -486,14 +596,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-		const nexIdeStr = 'it_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: Next Identifier String. Why: The brand-new item needs its own id immediately. How: This generates a short random id with an 'it_' prefix.
+		const bltIteObj = buiIteFun( staAppObj, newDraStr, 'New item' ); // What: Built Item Object. Why: The draft's first item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for newDraStr.
 
 
-		actStoObj.addIteFun( newDraStr, 'New item', nexIdeStr ); // What: Add Item Call. Why: This is the actual creation of the draft's own first item. How: This adds an item named 'New item' under newDraStr, with the freshly-generated id.
-
-		newIteRef.current = nexIdeStr; // What: New Item Mark. Why: Cancel must discard this exact item, not revert it to a snapshot. How: This flags nexIdeStr as the brand-new, not-yet-kept item.
-		setInsIteStr( nexIdeStr );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to nexIdeStr.
-		setOpeIteStr( nexIdeStr );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to nexIdeStr.
+		newIteRef.current = bltIteObj.id; // What: New Item Mark. Why: Cancel must discard this exact item rather than keep it. How: This flags its id as the brand-new, not-yet-kept item.
+		setNewIteObj( bltIteObj );        // What: New Item Set Call. Why: The row renders from this local item until it's kept. How: This stores bltIteObj in newIteObj.
+		setInsIteStr( bltIteObj.id );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to the new id.
+		setOpeIteStr( bltIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
 
 
 	}, [ penAutBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to run when the one-shot flag itself is set. How: penAutBoo is the single value this effect's own guard is built around.
@@ -579,6 +688,19 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	const canNewFun = () => { // What: Cancel New Function. Why: Cancel discards the whole draft; delPicFun already cascades to its own items and daily-generator membership, so there's nothing else to clean up. How: This removes the draft picker (if one exists) and clears both draft-tracking states.
 
 
+		if ( opeIteObj && opeIteObj.pickerId === newDraStr ) { // What: Draft Row Discard Guard. Why: An item row still open inside the cancelled draft must be dropped, not kept when its row unmounts. How: This marks its draft handled, drops a local new item, and closes the row.
+
+
+			hanDraRef.current = draIteObj; // What: Handled Draft Mark. Why: The row's unmount must not keep this draft. How: This records it as handled.
+			newIteRef.current = null;      // What: New Item Clear. Why: No new item is being added once the draft is gone. How: This clears newIteRef.
+			setNewIteObj( null );          // What: New Item Object Clear. Why: The local new item goes away with its draft picker. How: This clears newIteObj.
+			setOpeIteStr( null );          // What: Open Item Clear. Why: No row stays open. How: This resets opeIteStr to null.
+
+
+		}
+
+
+
 		if ( newDraStr ) actStoObj.delPicFun( newDraStr ); // What: Remove Draft Guard. Why: Only an actual draft picker needs removing. How: This only calls delPicFun when newDraStr is set.
 
 
@@ -616,6 +738,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 	*/
 
 	const savNewFun = () => { // What: Save New Function. Why: Save reveals the picker everywhere else by clearing its own hidden flag; every other field was already committed live via the same actStoObj.updPicFun calls a real picker's own Controls uses. How: This clears hidden on the draft picker and clears both draft-tracking states.
+
+
+		keeIteFun(); // What: Keep Item Call. Why: An item row still open in the draft is kept along with the picker. How: This calls keeIteFun, which does nothing when no row is open.
+
 
 
 		if ( newDraStr ) actStoObj.updPicFun( newDraStr, { hidden : false } ); // What: Reveal Draft Guard. Why: Only an actual draft picker needs revealing. How: This only calls updPicFun when newDraStr is set.
@@ -1718,17 +1844,18 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-					const picCurObj = entCurObj.picObj;                                                               // What: Picker Current Object. Why: Every remaining branch below is a real picker card and needs its own record. How: This reads entCurObj.pk.
-					const isaDraBoo = !!entCurObj.draBoo;                                                             // What: Is-A Draft Boolean. Why: The draft's own card renders slightly differently (always expanded, no collapse toggle, Items starts closed). How: This checks entCurObj.isDraft.
-					const picIteArr = staAppObj.items.filter( ( iteCurObj ) => iteCurObj.pickerId === picCurObj.id ); // What: Picker Item Array. Why: This card's own header count and Items section both need this picker's own items. How: This filters the whole app's items down to just this picker's own.
-					const eliCouNum = picIteArr.filter( ( iteCurObj ) => !iteCurObj.vacation ).length;                // What: Eligible Count Number. Why: The header's own count reads as "N of M", N being how many are actually eligible. How: This counts every item that isn't on vacation.
-					const allVacBoo = picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => iteCurObj.vacation ); // What: All Vacation Boolean. Why: A card whose every item is on vacation gets its own visual "inactive" treatment. How: This is true only when there's at least one item and every one of them is on vacation.
-					const secOpeBoo = isaDraBoo || colMapObj[ picCurObj.id ] === false;                               // What: Section Open Boolean. Why: A draft is always expanded (no toggle at all, see the header button's disabled prop below); an existing picker reads its own persisted state. How: This is true for a draft, or when the persisted entry is explicitly false.
-					const isaEasBoo = picCurObj.mode === 'ease-up' || picCurObj.mode === 'ease-down';                 // What: Is-A Ease Boolean. Why: The item sort options and the meta text per item both depend on this. How: This is true whenever picCurObj.mode is 'ease-up' or 'ease-down'.
-					const useWeiBoo = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                  // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
-					const incDaiBoo = staAppObj.daily.pickerIds.includes( picCurObj.id );                             // What: Included Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This checks staAppObj.daily.pickerIds for picCurObj.id.
-					const conColBoo = !!colMapObj[ picCurObj.id + ':controls' ];                                      // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
-					const iteColBoo = isaDraBoo ? !draIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                // What: Items Collapsed Boolean. Why: A draft's own Items section tracks draIteBoo instead of the normal persisted map. How: This reads draIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
+					const picCurObj = entCurObj.picObj;                                                                           // What: Picker Current Object. Why: Every remaining branch below is a real picker card and needs its own record. How: This reads entCurObj.pk.
+					const isaDraBoo = !!entCurObj.draBoo;                                                                         // What: Is-A Draft Boolean. Why: The draft's own card renders slightly differently (always expanded, no collapse toggle, Items starts closed). How: This checks entCurObj.isDraft.
+					const stoIteArr = staAppObj.items.filter( ( iteCurObj ) => iteCurObj.pickerId === picCurObj.id );             // What: Stored Item Array. Why: This picker's own items already in the store are the base of its list. How: This filters the whole app's items down to this picker's own.
+					const picIteArr = newIteObj && newIteObj.pickerId === picCurObj.id ? [ ...stoIteArr, newIteObj ] : stoIteArr; // What: Picker Item Array. Why: This card's own header count and Items section both need this picker's own items, including a new item still being drafted. How: This adds the local new item to stoIteArr when it belongs to this picker.
+					const eliCouNum = picIteArr.filter( ( iteCurObj ) => !iteCurObj.vacation ).length;                            // What: Eligible Count Number. Why: The header's own count reads as "N of M", N being how many are actually eligible. How: This counts every item that isn't on vacation.
+					const allVacBoo = picIteArr.length > 0 && picIteArr.every( ( iteCurObj ) => iteCurObj.vacation );             // What: All Vacation Boolean. Why: A card whose every item is on vacation gets its own visual "inactive" treatment. How: This is true only when there's at least one item and every one of them is on vacation.
+					const secOpeBoo = isaDraBoo || colMapObj[ picCurObj.id ] === false;                                           // What: Section Open Boolean. Why: A draft is always expanded (no toggle at all, see the header button's disabled prop below); an existing picker reads its own persisted state. How: This is true for a draft, or when the persisted entry is explicitly false.
+					const isaEasBoo = picCurObj.mode === 'ease-up' || picCurObj.mode === 'ease-down';                             // What: Is-A Ease Boolean. Why: The item sort options and the meta text per item both depend on this. How: This is true whenever picCurObj.mode is 'ease-up' or 'ease-down'.
+					const useWeiBoo = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                              // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
+					const incDaiBoo = staAppObj.daily.pickerIds.includes( picCurObj.id );                                         // What: Included Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This checks staAppObj.daily.pickerIds for picCurObj.id.
+					const conColBoo = !!colMapObj[ picCurObj.id + ':controls' ];                                                  // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
+					const iteColBoo = isaDraBoo ? !draIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                            // What: Items Collapsed Boolean. Why: A draft's own Items section tracks draIteBoo instead of the normal persisted map. How: This reads draIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
 
 
 					const opeSetBoo = opeIteStr != null;                                             // What: Open Set Boolean. Why: Some item has to be open for a new one to be in progress. How: This checks opeIteStr isn't null.
@@ -1779,27 +1906,26 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
-						const nexIdeStr = 'it_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: Next Identifier String. Why: The brand-new item needs its own id immediately. How: This generates a short random id with an 'it_' prefix.
+						keeIteFun(); // What: Keep Item Call. Why: An existing row left open when a new item starts is closing, and closing keeps its edits. How: This calls keeIteFun, which does nothing when no row is open.
 
 
-						actStoObj.addIteFun( picCurObj.id, 'New item', nexIdeStr ); // What: Add Item Call. Why: This is the actual creation of the item. How: This adds an item named 'New item' under picCurObj.id, with the freshly-generated id.
 
-						newIteRef.current = nexIdeStr; // What: New Item Mark. Why: Cancel must discard this exact item, not revert it to a snapshot. How: This flags nexIdeStr as the brand-new, not-yet-kept item.
-						setInsIteStr( nexIdeStr );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to nexIdeStr.
-						setOpeIteStr( nexIdeStr );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to nexIdeStr.
+						const bltIteObj = buiIteFun( staAppObj, picCurObj.id, 'New item' ); // What: Built Item Object. Why: A new item starts as a local draft with the same defaults the store would give it. How: This builds an item named 'New item' for picCurObj.id.
+
+
+						newIteRef.current = bltIteObj.id; // What: New Item Mark. Why: Cancel must discard this exact item rather than keep it. How: This flags its id as the brand-new, not-yet-kept item.
+						setNewIteObj( bltIteObj );        // What: New Item Set Call. Why: The row renders from this local item until it's kept. How: This stores bltIteObj in newIteObj.
+						setInsIteStr( bltIteObj.id );     // What: Insert Item Set Call. Why: The freshly-created row should play the slide-in entrance. How: This sets insIteStr to the new id.
+						setOpeIteStr( bltIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
 
 
 					};
 
 
-					const keeCloFun = ( iteIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron and IteEdiCom's own Save both mean "keep this, I'm done", so both need the exact same cleanup, kept in one place so neither can drift out of sync with the other. How: This calls the open editor's own keep(), clears the new-item flag, and closes only if this item is still the open one.
+					const keeCloFun = ( iteIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron and IteEdiCom's own Save both mean "keep this, I'm done", so both need the exact same cleanup, kept in one place so neither can drift out of sync with the other. How: This keeps the open draft, then closes the row only if this item is still the open one.
 
 
-						opeEdiRef.current?.keeSavFun(); // What: Keep Call Guard. Why: The currently-open IteEdiCom instance needs to mark itself already-handled before this closes it, so its own implicit-close guard doesn't ALSO try to revert/discard it. How: This calls .keep() on whatever opeEdiRef currently points at, if anything.
-
-						if ( newIteRef.current === iteIdeStr ) newIteRef.current = null; // What: New Item Clear Guard. Why: A kept item is no longer "brand new and undiscarded". How: This clears newIteRef only when it currently points at this exact item.
-
-
+						keeIteFun(); // What: Keep Item Call. Why: The collapse chevron and Save both keep the row's edits. How: This commits the open draft, adding a brand-new item to the store first.
 
 						setOpeIteStr( ( opeCurStr ) => opeCurStr === iteIdeStr ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one (it might already have changed). How: This nulls opeIteStr only when it currently equals iteIdeStr.
 
@@ -2276,23 +2402,13 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 																		maxLength={ 60 }
 																		placeholder='Item name'
 																		type='text'
-																		value={ iteCurObj.name }
+																		value={ draIteObj && draIteObj.id === iteCurObj.id ? draIteObj.name : iteCurObj.name } // What: Value. Why: The open row's name lives in its draft until the row is kept. How: This shows the draft's name when the draft belongs to this item, else the item's own.
 
 																		aria-label='Item name'
 
-																		onBlur={ ( bluEveObj ) => { // What: On Blur Handler. Why: Leaving the name field should commit a tidied final name. How: This trims the typed value and renames the item only when the result is non-empty.
-
-
-																			const namTriStr = bluEveObj.target.value.trim(); // What: Name Trimmed String. Why: A blur commit should tidy the name, not commit stray whitespace. How: This trims bluEveObj's own current value.
-
-
-																			if ( namTriStr ) actStoObj.renIteFun( iteCurObj.id, namTriStr ); // What: Rename Item Guard. Why: Blurring on an emptied field should not commit a blank name. How: This only calls renIteFun when namTriStr is non-empty.
-
-
-																		} }
-																		onChange={ ( chaEveObj ) => actStoObj.updIteFun( iteCurObj.id, { name : chaEveObj.target.value } ) }
+																		onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
 																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-																	/>{ /* What: Name Input Element. Why: An item's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+																	/>{ /* What: Name Input Element. Why: An item's own name is edited right in the row header. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 																</span>
@@ -2334,8 +2450,16 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 																aria-expanded={ iteOpeBoo }
 
-																onClick={ () => setOpeIteStr( iteOpeBoo ? null : iteCurObj.id ) }
-															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles opeIteStr between null and iteCurObj.id. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
+																onClick={ () => { // What: On Click Handler. Why: Opening this row closes whichever row was open, and closing keeps its edits. How: This keeps the open draft, then opens this row.
+
+
+																	keeIteFun(); // What: Keep Item Call. Why: The row giving way keeps its edits. How: This calls keeIteFun, which does nothing when no row is open.
+
+																	setOpeIteStr( iteCurObj.id ); // What: Open Item Set Call. Why: This row's own editor opens. How: This sets opeIteStr to this item's id.
+
+
+																} }
+															>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens its own editor. How: This keeps any other open row's edits, then opens this one. Its data-element-name-hook is read by the App Features tours and help mode's Data catalog. */ }
 
 
 																<span className={ cssModObj.rowMaiSpa }>{ /* What: Row Main Span Element. Why: The name and its own meta line belong together. How: This wraps the name and sched spans below. */ }
@@ -2382,70 +2506,60 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 																<IteEdiCom
-																	ref={ iteOpeBoo ? opeEdiRef : undefined }
-
-																	actStoObj={ actStoObj }
 																	isaNewBoo={ newIteRef.current === iteCurObj.id }
 																	iteCouNum={ picIteArr.length }
-																	iteDatObj={ iteCurObj }
+																	iteDatObj={ draIteObj && draIteObj.id === iteCurObj.id ? draIteObj : iteCurObj } // What: Item Data Object. Why: The open row's editor shows its draft, while one still collapsing after a close shows the item itself. How: This picks the draft only when it belongs to this row's own item.
 																	picDatObj={ picCurObj }
 																	picIteArr={ picIteArr }
 
-																	onCanEdiFun={ ( snaIteObj ) => { // What: On Cancel Handler. Why: Cancelling a brand-new item discards it, while cancelling an existing one reverts it. How: This removes a new item after its collapse animation, otherwise restores the pre-edit snapshot, closing the row either way.
+																	onCanEdiFun={ () => { // What: On Cancel Handler. Why: Cancelling drops the row's draft, and a brand-new item goes away entirely. How: This marks the draft handled and closes the row, then drops a new item once the row's collapse animation finishes.
 
 
-																		if ( newIteRef.current === iteCurObj.id ) { // What: Discard New Guard. Why: A brand-new, unsaved item's own Cancel must remove it entirely, not revert it to a snapshot; the row still gets to play the same collapse-close animation as Save first. How: This clears newIteRef, closes the row, then defers the actual removal.
+																		hanDraRef.current = draIteObj; // What: Handled Draft Mark. Why: The row's unmount must not keep a draft its own Cancel dropped. How: This records the dropped draft.
+
+																		setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
+
+
+
+																		if ( newIteRef.current === iteCurObj.id ) { // What: Discard New Guard. Why: A brand-new, unsaved item's own Cancel removes it entirely, after the row plays the same collapse-close animation as Save. How: This clears the new-item mark, then drops the local item after that animation's duration.
 
 
 																			newIteRef.current = null; // What: New Item Clear. Why: This item is no longer "brand new and undiscarded" once its own discard is underway. How: This clears newIteRef.
 
-
-																			const rmvIdeStr = iteCurObj.id; // What: Remove Identifier String. Why: The deferred removal below needs a stable copy of this item's own id. How: This reads iteCurObj.id once, before the closure captures anything else.
-
-
-																			setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
-
-																			setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
-
-
-																		}
-
-																		else { // What: Revert Existing Branch. Why: An existing item's Cancel keeps the item but drops the edits. How: This restores the pre-edit snapshot and closes the row.
-
-
-																			actStoObj.revIteFun( iteCurObj.id, snaIteObj ); // What: Replace Item Call. Why: An existing item's own Cancel must revert every field back to its pre-edit snapshot. How: This overwrites the live item with snaIteObj.
-
-																			setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
+																			setTimeout( () => setNewIteObj( null ), durMilFun( 'p02' ) ); // What: Deferred Drop Call. Why: The local item must stay until the row's own collapse animation finishes. How: This clears newIteObj after that animation's duration. // Duration Base Plus 2 ~= 277.0ms
 
 
 																		}
 
 
 																	} }
-																	onCloEdiFun={ () => keeCloFun( iteCurObj.id ) }
-																	onDelIteFun={ () => { // What: On Delete Handler. Why: Deleting an item should let its row collapse before the store drops it. How: This closes the row, then removes the item right away under reduced motion or after the 280ms collapse otherwise.
+																	onDelIteFun={ () => { // What: On Delete Handler. Why: Deleting an item should let its row collapse before the store drops it. How: This marks the draft handled and closes the row, then removes the item right away under reduced motion or after the collapse otherwise.
 
 
-																		if ( newIteRef.current === iteCurObj.id ) newIteRef.current = null; // What: New Item Clear Guard. Why: A deleted brand-new item is no longer "undiscarded" either. How: This clears newIteRef only when it currently points at this exact item.
+																		hanDraRef.current = draIteObj; // What: Handled Draft Mark. Why: A deleted item's draft must not be kept by the row's unmount. How: This records the dropped draft.
+
+																		setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
 
 
 
 																		const rmvIdeStr = iteCurObj.id; // What: Remove Identifier String. Why: The (possibly deferred) removal below needs a stable copy of this item's own id. How: This reads iteCurObj.id once.
 
 
-																		setOpeIteStr( ( opeCurStr ) => opeCurStr === iteCurObj.id ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opeIteStr only when it currently equals iteCurObj.id.
+																		if ( redMotFun() ) { actStoObj.delIteFun( rmvIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This removes the item directly and returns.
 
 
 
-																		if ( redMotFun() ) { actStoObj.delIteFun( rmvIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This removes the item directly and returns early.
-
-
-
-																		setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's own p02 duration step. // Duration Base Plus 2 ~= 277.0ms
+																		setTimeout( () => actStoObj.delIteFun( rmvIdeStr ), durMilFun( 'p02' ) ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls delIteFun after that animation's duration. // Duration Base Plus 2 ~= 277.0ms
 
 
 																	} }
-																/>{ /* What: Item Editor Component. Why: This is the shared picker-item editor, reused so Today and Data stay exact copies. How: This is passed the live item/picker/items plus every handler this row's own lifecycle needs. */ }
+																	onPatIteFun={ patDraFun }
+																	onSavEdiFun={ () => keeCloFun( iteCurObj.id ) }
+																/>{ /* What: Item Editor Component. Why: This is the shared picker-item editor, reused so Today and Data stay exact copies. How: This is passed the row's draft (or its item while closing), its picker and items, and every handler this row's own lifecycle needs. */ }
+
+
+
+																<UnmWatCom onUnmFun={ () => { if ( opeIteStr === iteCurObj.id ) cloIteFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (its card or Items section collapsing, a filter hiding it, a tab switch) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one, so a row finishing its close animation after another opened leaves that one alone. */ }
 
 
 															</div>

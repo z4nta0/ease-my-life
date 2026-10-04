@@ -57,6 +57,9 @@ import { PIC_NAM_OBJ } from '../../core/pickers.js';               // What: Pick
  * @param props.cheExiBoo   - Checklist Exiting Boolean: Whether the
  *                            checklist's own closing exit animation is
  *                            currently playing (tutorial rows only).
+ * @param props.draNamStr   - Draft Name String: The open editor's draft name,
+ *                            shown in the name input instead of the real one,
+ *                            or undefined when this row isn't being edited.
  * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
  *                            on.
  * @param props.entRecObj   - Entry Record Object: The entry (or synthetic
@@ -73,8 +76,8 @@ import { PIC_NAM_OBJ } from '../../core/pickers.js';               // What: Pick
  *                            from this row's own grip handle.
  * @param props.onPlaTutFun - On Play Tutorial Function: Starts this row's own
  *                            mini-tour (tutorial rows only).
- * @param props.onRenIteFun - On Rename Item Function: Renames this row's own
- *                            item.
+ * @param props.onRenIteFun - On Rename Item Function: Writes a typed name
+ *                            into the open editor's draft.
  * @param props.onRerEntFun - On Reroll Entry Function: Re-rolls this row to a
  *                            different item.
  * @param props.onSkiEntFun - On Skip Entry Function: Skips (removes) this row
@@ -96,12 +99,12 @@ import { PIC_NAM_OBJ } from '../../core/pickers.js';               // What: Pick
  *
  * @example
  * ```tsx
- * EntCarCom({ actStoObj, cheExiBoo, ediModBoo, ... }) // => <EntCarCom />
+ * EntCarCom({ actStoObj, cheExiBoo, draNamStr, ... }) // => <EntCarCom />
  * ```
  *
 */
 
-function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRecObj, staAppObj } ) {
+function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRecObj, isaEdiBoo, isaRmvBoo, isaRolBoo, jusCheStr, onGriDowFun, onPlaTutFun, onRenIteFun, onRerEntFun, onSkiEntFun, onTogDonFun, onTogEdiFun, onUncTutFun, picRecObj, staAppObj } ) {
 
 
 	// #region Tutorial Branch
@@ -976,14 +979,14 @@ function EntCarCom ( { actStoObj, cheExiBoo, ediModBoo, entRecObj, isaEdiBoo, is
 						maxLength={ 60 }
 						placeholder='Item name'
 						type='text'
-						value={ curIteObj.name }
+						value={ draNamStr ?? curIteObj.name } // What: Value. Why: The name being typed lives in the editor's draft until Save. How: This shows the draft's name, falling back to the real one.
 
 						aria-label='Item name'
 
 						onChange={ ( chaEveObj ) => onRenIteFun( chaEveObj.target.value ) }
 						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-					/> // What: Entry Card Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This is wired to onRenIteFun on every change, committed by blurring on Enter. Its data-element-name-hook is read by the entry card's own row-click handler and help mode's Today catalog.
+					/> // What: Entry Card Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This writes every change into the editor's draft through onRenIteFun, and blurs on Enter. Its data-element-name-hook is read by the entry card's own row-click handler and help mode's Today catalog.
 
 
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaEdiBoo is false.

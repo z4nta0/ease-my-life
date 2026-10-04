@@ -6,6 +6,7 @@
 import React from 'react'; // What: React. Why: This is the UI library the whole store hook is built on. How: This is used directly (React.useState, React.useMemo, React.useEffect, React.useRef, React.useCallback) instead of importing individual named hooks.
 
 
+import { buiIteFun   } from './new-item.js';             // What: Build Item Function. Why: addIteFun builds its new item with the same defaults the Data tab's new-item draft uses. How: This is called once per added item.
 import { CAD_NAM_OBJ } from '../core/cadence.js';        // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun) from the picker-authoring actions below.
 import { cdlAplFun   } from './pending-mutations.js';    // What: Conditional Log Apply Function. Why: A day-off card's completion is recorded in the conditional log. How: This is called by togDonFun for a day-off entry.
 import { CON_NAM_OBJ } from '../core/conditionals.js';   // What: Conditionals. Why: Day-off gate resolution logic lives here, not in this file. How: This is called (resDayFun) from resConFun below.
@@ -1488,17 +1489,11 @@ function useAppStaFun( optArgObj ) {
 		 * addIteFun = Add Item Function
 		 *
 		 * @summary
-		 * Adds one brand-new item to pickerId's own pool. Ease Down items
-		 * start fully charged (value at threshold) and join the fairness
-		 * rotation at the AVERAGE weight of existing items (excluding the
-		 * weight-0 active item, so a fresh streak's own zero can't drag the
-		 * newcomer down), rounded and floored at 1 so it's never a second
-		 * weight-0; with no peers yet, weight defaults to 1. An ease-mode
-		 * item is also stamped immediately with this picker's own current
-		 * average drift band (see PIC_NAM_OBJ.aveEasFun), the only place that
-		 * still matters now that pick()/the Data tab/the item editor all
-		 * compute this same average live instead of reading a picker-level
-		 * default.
+		 * Adds one brand-new item to picIdeStr's own pool, built with the
+		 * mode-specific defaults described in new-item.js's buiIteFun (a
+		 * charged, peer-average-weighted Ease Down item, an ease band stamped
+		 * from the picker's current average, a de-duplicated name), and puts
+		 * it first in the global items array.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1516,65 +1511,7 @@ function useAppStaFun( optArgObj ) {
 		 *
 		*/
 
-		addIteFun : ( picIdeStr, newNamStr, optIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Add Item Function. Why: A picker's own pool needs a way to gain a brand-new item with sensible mode-specific defaults. How: This builds a de-duplicated item for picIdeStr (Ease Down items fully charged at the peers' average weight, ease-mode items stamped with the current average drift band) and appends it.
-
-
-			const sibIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId === picIdeStr );     // What: Sibling Item Array. Why: Both the name de-duplication and the ease-down weight averaging below need this picker's own existing items. How: This filters curStaObj.items to those owned by pickerId.
-			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr );           // What: Current Picker Object And Guard. Why: The mode checks below need this picker's own live mode. How: This looks up picIdeStr in curStaObj.pickers.
-			const isaDowBoo = curPicObj && curPicObj.mode === 'ease-down';                                     // What: Is-A Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
-			const isaEasBoo = curPicObj && ( curPicObj.mode === 'ease-up' || curPicObj.mode === 'ease-down' ); // What: Is-An Ease Boolean. Why: Both ease modes need their own drift-band fields stamped below. How: This is true when curPicObj's own mode is either ease-up or ease-down.
-
-			let weiValNum = 1; // What: Weight Value Number. Why: Every non-ease-down item just uses the plain default weight; only ease-down overrides it below. How: This starts at 1.
-			let iniValNum = 0; // What: Initial Value Number. Why: Every non-ease-down item just uses the plain default value; only ease-down overrides it below. How: This starts at 0.
-
-
-			if ( isaDowBoo ) { // What: Ease-Down Defaults Guard. Why: Only ease-down needs its own charged value and fairness-averaged weight computed. How: This overwrites iniValNum/weiValNum with the ease-down-specific computation below.
-
-
-				iniValNum = curPicObj.threshold ?? 100; // What: Charged Value Set. Why: A new ease-down item starts fully charged, same as every other item in that mode. How: This reads curPicObj's own threshold, defaulting to 100.
-
-				const perWeiArr = sibIteArr.map( ( curIteObj ) => curIteObj.weight ?? 1 ).filter( ( curWeiNum ) => curWeiNum > 0 ); // What: Peer Weight Array. Why: The average below must exclude the weight-0 active item, so a fresh streak's own zero can't drag the newcomer down. How: This maps sibIteArr to its own weights (defaulting 1), then drops any that are 0 or below.
-
-				weiValNum = perWeiArr.length // What: Fairness Weight Average. Why: A brand-new item should join the rotation at roughly its peers' own average standing, not always at 1. How: This averages perWeiArr, rounds, and floors at 1, else falls back to 1 when there are no peers yet.
-					? Math.max( 1, Math.round( perWeiArr.reduce( ( sumValNum, curValNum ) => sumValNum + curValNum, 0 ) / perWeiArr.length ) ) // What: Peer Average Branch. Why: Existing peers give a fair starting weight. How: This averages the peers' weights, rounded and floored at 1.
-					: 1; // What: No Peers Branch. Why: A first item has no peers to average. How: This starts it at weight 1.
-
-
-			}
-
-
-
-			const newIteObj = { // What: New Item Object. Why: This is the actual item being added, in state.items' own shape. How: This bundles a fresh id, the de-duplicated name, pickerId, the resolved weight/value, and (for ease modes) a fresh drift band.
-
-
-				id         : optIdeStr || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ),      // What: Id. Why: Every item needs a stable id. How: This uses optIdeStr when given, else mints a random 'it_' id.
-				lastPicked : null,                                                                     // What: Last Picked. Why: A brand-new item has never been picked. How: This is null.
-				name       : uniNamFun( newNamStr, sibIteArr.map( ( curIteObj ) => curIteObj.name ) ), // What: Name. Why: Two items in the same picker can't share a name. How: This de-duplicates newNamStr against every sibling item's own name via uniNamFun.
-				pickerId   : picIdeStr,                                                                // What: Picker Id. Why: Every item belongs to exactly one picker. How: This is picIdeStr.
-				picks      : 0,                                                                        // What: Picks. Why: A brand-new item has never been picked. How: This is 0.
-				vacation   : false,                                                                    // What: Vacation. Why: A brand-new item starts active. How: This is false.
-				value      : iniValNum,                                                                // What: Value. Why: Ease Down items start fully charged while every other mode starts empty. How: This is iniValNum, resolved above.
-				weight     : weiValNum,                                                                // What: Weight. Why: Ease Down items join at their peers' average weight while every other mode starts at 1. How: This is weiValNum, resolved above.
-
-				...( isaEasBoo ? PIC_NAM_OBJ.aveEasFun( sibIteArr, picIdeStr ) : {} ) // What: Drift Band Spread. Why: An ease-mode item needs its own drift band stamped at creation, matching this picker's current average. How: This spreads PIC_NAM_OBJ.aveEasFun's easeMin/easeMax only when isaEasBoo is true.
-
-
-			};
-
-
-
-			return { // What: Next State Return. Why: A newly-added item is prepended to the global items array. How: This spreads curStaObj with items rebuilt as newIteObj first, then everything else.
-
-
-				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the items override below.
-
-				items : [ newIteObj, ...curStaObj.items ] // What: Items. Why: A newly-added item goes to the front of the global items array. How: This puts newIteObj first, then every existing item.
-
-
-			};
-
-
-		} ),
+		addIteFun : ( picIdeStr, newNamStr, optIdeStr ) => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, items : [ buiIteFun( curStaObj, picIdeStr, newNamStr, optIdeStr ), ...curStaObj.items ] } ) ), // What: Add Item Function. Why: A picker's own pool needs a way to gain a brand-new item with sensible mode-specific defaults. How: This builds the item with buiIteFun and puts it first in the global items array.
 
 		// #endregion addIteFun
 

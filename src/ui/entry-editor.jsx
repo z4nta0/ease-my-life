@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './entry-editor.module.css'; // What: CSS Module Object. Why: The item editor's rows and footers are styled from their own module. How: This maps each class name in entry-editor.module.css to its hashed module class.
-import React     from 'react';                     // What: React. Why: This is the UI library EntEdiCom is built on. How: This is used directly (React.forwardRef, React.useState, React.useRef, React.useEffect, React.useImperativeHandle, ...) instead of importing individual named hooks.
+import React     from 'react';                     // What: React. Why: This is the UI library EntEdiCom is built on. How: This is used directly (React.Fragment, React.useState) instead of importing individual named hooks.
 
 
 import { BooResCom    } from './boost-reset.jsx';    // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntEdiCom's own Boost row.
@@ -18,9 +18,6 @@ import { PIC_NAM_OBJ  } from '../core/pickers.js';   // What: Pickers Namespace 
 import { THR_VAL_NUM  } from '../constants.js';      // What: Threshold Value Number. Why: The ease day-range math divides by the shared full-charge ceiling. How: This is divided by an item's own easeMin/easeMax to get its Soonest/Latest day counts.
 import { useEscCanFun } from './escape-cancel.js';   // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
 
-
-import './edit-guard.js'; // What: Edit Guard Import. Why: This file arms and disarms window.__editGuard, which only exists once edit-guard.js has run. How: This is imported purely for that side effect.
-
 // #endregion Imports
 
 
@@ -32,9 +29,9 @@ import './edit-guard.js'; // What: Edit Guard Import. Why: This file arms and di
  * The shared inline editor for one picker item, used by the Today, Pickers and
  * Data tabs so every tab edits an item through the same component. It mirrors
  * the Pickers tab's per-item controls (a weight stepper, the ease day range,
- * an Active/Inactive toggle and a confirm-gated delete), stages each edit
- * straight onto the real item, and snapshots the item on open so Cancel or an
- * implicit close can revert it.
+ * an Active/Inactive toggle and a confirm-gated delete) and edits the
+ * caller's own draft copy of the item (see item-draft.js), so nothing reaches
+ * the real item until the caller commits it.
  *
  * Sections:
  *  - Components
@@ -58,45 +55,43 @@ import './edit-guard.js'; // What: Edit Guard Import. Why: This file arms and di
  * and Data tabs so every one of them edits an item identically: a weight
  * stepper for weighted/dynamic pickers, a cadence range for ease-up/
  * ease-down, a Boost row for dynamic, an Active/Inactive toggle, and a
- * confirm-gated Delete. Every edit is applied to the real item as it
- * happens; the item is snapshotted on mount so Cancel, Escape, or an
- * implicit close (a tab switch or reload) can put it back exactly as it
- * was, while Save or the exposed keeSavFun handle keeps the edits.
+ * confirm-gated Delete. It only ever shows the caller's own draft copy of
+ * the item and reports each change through onPatIteFun, so Cancel, Escape,
+ * a tab switch, or a reload simply drop the draft, while Save hands it to
+ * the caller to commit.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}, or a
- *                            caller's own actions-shaped stand-in for a
- *                            draft item.
  * @param props.isaNewBoo   - Is-A New Boolean: Whether the item is a
  *                            brand-new, unsaved draft, which hides the
  *                            Delete button.
  * @param props.iteCouNum   - Item Count Number: The picker's own current item
  *                            total, used to refuse a delete below 2 items.
- * @param props.iteDatObj   - Item Data Object: The item being edited.
- * @param props.onCanEdiFun - On Cancel Edit Function: An optional revert
- *                            handler for a caller that owns the item itself.
- * @param props.onCloEdiFun - On Close Edit Function: Closes the editor.
- * @param props.onDelIteFun - On Delete Item Function: An optional delete
- *                            handler, otherwise actStoObj.delIteFun is used.
+ * @param props.iteDatObj   - Item Data Object: The draft item being edited.
+ * @param props.onCanEdiFun - On Cancel Edit Function: Drops the draft and
+ *                            closes the editor (Cancel and Escape).
+ * @param props.onDelIteFun - On Delete Item Function: Deletes the real item
+ *                            once the delete is confirmed.
+ * @param props.onPatIteFun - On Patch Item Function: Merges a changed field
+ *                            or two into the draft.
+ * @param props.onSavEdiFun - On Save Edit Function: Commits the draft and
+ *                            closes the editor.
  * @param props.picDatObj   - Picker Data Object: The item's own picker, read
  *                            for its mode, cadence, and threshold.
  * @param props.picIteArr   - Picker Item Array: Every item, used to average
  *                            a fallback ease band for an unstamped item.
- * @param forRefObj         - Forward Reference Object: The caller's own ref,
- *                            which receives the keeSavFun handle.
  *
  * @returns The editor's rows and footer, or the delete confirm prompt
  * while one is showing.
  *
  * @example
  * ```tsx
- * EntEdiCom({ actStoObj, isaNewBoo, iteCouNum, ... }) // => <EntEdiCom />
+ * EntEdiCom({ isaNewBoo, iteCouNum, iteDatObj, ... }) // => <EntEdiCom />
  * ```
  *
 */
 
-const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onCloEdiFun, onDelIteFun, picDatObj, picIteArr }, forRefObj ) { // What: Entry Editor Component. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: mirrors the Pickers-tab per-item controls (a weight stepper for weighted/dynamic, cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete). How: This snapshots item on mount so Cancel/an implicit close can revert it, stages every live edit directly onto the real item via actStoObj.updIteFun, and exposes a keeSavFun() imperative handle so an external close affordance can mark a save as already-handled.
+function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun, onPatIteFun, onSavEdiFun, picDatObj, picIteArr } ) { // What: Entry Editor Component. Why: This is the shared inline editor for a picker item, reused by the Today/Pickers/Data tabs so every one of them edits an item identically: a weight stepper for weighted/dynamic, a cadence range for ease-up/ease-down, an Active/Inactive toggle, and a confirm-gated delete. How: This renders the caller's own draft item and reports every change through onPatIteFun, leaving Save, Cancel and Delete to the caller.
 
 
 	// #region Delete Confirm
@@ -109,141 +104,15 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 
 
-	// #region Close And Revert Handling
-
-	const oriIteRef = React.useRef( iteDatObj ); // What: Original Item Reference. Why: Cancel (or an implicit close) needs to restore the item exactly as it was when this editor opened. How: This snapshots item once, on mount, never updated afterward.
-	const cloWayRef = React.useRef( null );      // What: Close Way Reference. Why: A caller with its OWN close affordance outside this component (e.g. the Data tab row's own collapse chevron) can call the exposed keeSavFun() first so that affordance reads as "done, keep this" rather than an implicit close; this distinguishes 'saved'/'cancel' (closed explicitly) from null (still open, so an implicit close such as a tab switch or reload should discard the unsaved live edits). How: This is written by every explicit action below and read by the pagehide/unmount effect further down.
-
-
-	React.useImperativeHandle( forRefObj, () => ( { keeSavFun : () => { cloWayRef.current = 'saved'; } } ) ); // What: Imperative Handle Publish. Why: An external close affordance needs a way to mark this editor's own edits as already-handled before it closes. How: This exposes a single keeSavFun (Keep Saved Function) method that just flips cloWayRef to 'saved'.
-
-
-	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCanEdiFun with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actStoObj.revIteFun.
-
-
-		if ( onCanEdiFun ) onCanEdiFun( oriIteRef.current ); // What: Caller Revert Branch. Why: A caller that owns the item (a draft not yet in the store) must restore it itself. How: This hands oriIteRef's own snapshot to onCanEdiFun.
-
-		else actStoObj.revIteFun( oriIteRef.current.id, oriIteRef.current ); // What: Store Revert Branch. Why: A real, stored item is restored through the store itself. How: This writes oriIteRef's own snapshot back via actStoObj.revIteFun.
-
-
-	};
-
-
-	const canEdiFun = () => { // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCanEdiFun) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onCloEdiFun.
-
-
-		cloWayRef.current = 'cancel'; // What: Close Way Cancel. Why: The unmount guard below must not treat this close as an implicit one. How: This marks cloWayRef as 'cancel'.
-		revStaFun();                  // What: Revert State Call. Why: Cancel must restore the item to its pre-edit snapshot. How: This calls revStaFun.
-
-
-
-		if ( !onCanEdiFun ) onCloEdiFun(); // What: Close Editor Check. Why: A caller that owns its own close affordance (onCanEdiFun) closes the editor itself. How: This calls onCloEdiFun only when no onCanEdiFun was supplied.
-
-
-	};
-
-
-	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the edit, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls onCanEdiFun.
 
 
 		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
 
-		else canEdiFun(); // What: Cancel Edits Branch. Why: With no confirm prompt up, Escape should cancel the live edits like an explicit Cancel click. How: This calls canEdiFun.
+		else onCanEdiFun(); // What: Cancel Edit Branch. Why: With no confirm prompt up, Escape should cancel the edit like an explicit Cancel click. How: This calls onCanEdiFun.
 
 
 	} );
-
-
-	const savCloFun = () => { // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips cloWayRef, then calls onCloEdiFun.
-
-
-		cloWayRef.current = 'saved'; // What: Close Way Saved. Why: The unmount guard below must keep these live edits rather than revert them. How: This marks cloWayRef as 'saved'.
-		onCloEdiFun();               // What: Close Editor Call. Why: Save also closes the editor. How: This calls onCloEdiFun.
-
-
-	};
-
-
-
-	// #region resStoFun
-
-	/**
-	 * resStoFun = Restore Storage Function
-	 *
-	 * @summary
-	 * A same-tick localStorage warm mirror (see storage.js) can otherwise
-	 * go stale for the exact instant between a live edit and the next
-	 * debounced save, so an implicit close restores it directly: either
-	 * dropping a brand-new item entirely, or writing the pre-edit
-	 * snapshot back over whatever live edits already landed.
-	 *
-	 * @author z4nta0 <https://github.com/z4nta0>
-	 *
-	*/
-
-	const resStoFun = () => { // What: Restore Storage Function. Why: See the doc comment just above. How: This reads the warm-mirror key directly, patches its own items array, and writes it straight back, swallowing any error since a failed restore must never break the close itself.
-
-
-		try { // What: Mirror Restore Attempt. Why: Reading or writing the localStorage mirror can throw (malformed JSON, disabled or full storage). How: This wraps the whole restore so the catch below can swallow any failure.
-
-
-			const rawJsoStr = localStorage.getItem( 'easemylife.v2' ); // What: Raw Json String. Why: The warm mirror's own persisted blob needs to be read before it can be patched. How: This reads the fixed 'easemylife.v2' storage key.
-
-
-			if ( !rawJsoStr ) return; // What: No Mirror Guard. Why: A brand-new install (or a cleared mirror) has nothing to patch. How: This bails out early when rawJsoStr is empty.
-
-
-
-			const rawStaObj = JSON.parse( rawJsoStr ); // What: Raw State Object. Why: The mirror's own items array needs to be reachable as real data before it can be patched. How: This parses rawJsoStr.
-
-
-			if ( !Array.isArray( rawStaObj.items ) ) return; // What: No Items Array Guard. Why: A malformed or very old mirror shape has nothing safe to patch. How: This bails out unless rawStaObj.items is a real array.
-
-
-
-			rawStaObj.items = onCanEdiFun // What: Items Patch. Why: A brand-new item (onCanEdiFun supplied) never belonged in the mirror at all, while an existing one just needs its pre-edit snapshot restored. How: This filters the new item out entirely, or maps the existing one back to oriIteRef's own snapshot.
-				? rawStaObj.items.filter( ( curIteObj ) => curIteObj.id !== oriIteRef.current.id )                               // What: New Item Drop Branch. Why: A brand-new item was never saved, so it must vanish from the mirror entirely. How: This keeps every item except the one being edited.
-				: rawStaObj.items.map( ( curIteObj ) => curIteObj.id === oriIteRef.current.id ? oriIteRef.current : curIteObj ); // What: Snapshot Restore Branch. Why: An existing item must go back to exactly how it was before this edit. How: This swaps the edited item for oriIteRef's own snapshot.
-
-			localStorage.setItem( 'easemylife.v2', JSON.stringify( rawStaObj ) ); // What: Mirror Write Back. Why: The patched snapshot needs to actually replace the stale mirror. How: This writes rawStaObj back under the same fixed key.
-
-
-		}
-
-		catch { } // What: Restore Failure Swallow. Why: A failed restore (a full/blocked storage quota, a private window, ...) must never break the close itself. How: This intentionally does nothing.
-
-
-	};
-
-	// #endregion resStoFun
-
-
-	React.useEffect( () => { // What: Discard Guard Effect. Why: An editor left open through a tab switch or reload should discard its own unsaved live edits, matching the "nothing changes until you actually save" expectation every other inline editor in the app follows. How: This disarms window.__editGuard on mount, restores the warm mirror directly on pagehide, and arms __editGuard to revert on an ordinary unmount, in both cases only when cloWayRef is still null (nothing explicit already handled the close).
-
-
-		window.__editGuard.disFun(); // What: Edit Guard Disarm. Why: A stale armed guard from a PREVIOUS editor instance must not fire against this fresh one. How: This clears whatever revert thunk __editGuard was last armed with.
-
-		const onPagHidFun = () => { if ( !cloWayRef.current ) resStoFun(); }; // What: On Page Hide Function. Why: A pagehide (the tab closing or backgrounding) needs its own direct storage restore, since a React unmount effect may not get to run in time. How: This calls resStoFun only when cloWayRef is still null.
-
-
-		window.addEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Subscribe Call. Why: The discard needs to happen the moment the page is actually hidden, not on some later tick. How: This registers onPagHidFun to run on that event.
-
-
-
-		return () => { // What: Effect Cleanup Function. Why: An ordinary unmount (navigating within the app, e.g. switching tabs) needs its own revert path, distinct from the pagehide case above. How: This removes the pagehide listener and arms __editGuard with revStaFun when nothing explicit already handled the close.
-
-
-			window.removeEventListener( 'pagehide', onPagHidFun ); // What: Pagehide Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPagHidFun reference that was added above.
-
-			if ( !cloWayRef.current ) window.__editGuard.armFun( revStaFun ); // What: Edit Guard Arm. Why: The NEXT editor instance's own disarm (above) is what actually cancels this, so arming here is what makes an ordinary unmount revert at all. How: This arms __editGuard with revStaFun only when cloWayRef is still null.
-
-
-		};
-
-
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to run once, on mount, since cloWayRef/oriIteRef/revStaFun are all stable for this editor instance's whole lifetime. How: An empty array means this never re-subscribes.
-
-	// #endregion Close And Revert Handling
 
 
 
@@ -294,20 +163,20 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 	 *
 	*/
 
-	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
+	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
 
 
 		const newMaxNum = dayDriFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Maximum Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDriFun.
 
 
-		actStoObj.updIteFun( iteDatObj.id, { // What: Update Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax, clamping easeMin down to match if it would otherwise exceed the new easeMax.
+		onPatIteFun({ // What: Patch Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax into the draft, clamping easeMin down to match if it would otherwise exceed the new easeMax.
 
 
 			easeMax : newMaxNum,                       // What: Ease Max. Why: This is the new upper drift bound the user just typed. How: This writes newMaxNum.
 			easeMin : Math.min( easMinNum, newMaxNum ) // What: Ease Min. Why: The band must never invert. How: This keeps the current easeMin unless it now exceeds newMaxNum.
 
 
-		} );
+		});
 
 
 	};
@@ -338,20 +207,20 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 	 *
 	*/
 
-	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actStoObj.updIteFun.
+	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSetValFun needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it into the draft via onPatIteFun.
 
 
 		const newMinNum = dayDriFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Minimum Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDriFun.
 
 
-		actStoObj.updIteFun( iteDatObj.id, { // What: Update Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin, clamping easeMax up to match if it would otherwise fall under the new easeMin.
+		onPatIteFun({ // What: Patch Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin into the draft, clamping easeMax up to match if it would otherwise fall under the new easeMin.
 
 
 			easeMax : Math.max( easMaxNum, newMinNum ), // What: Ease Max. Why: The band must never invert. How: This keeps the current easeMax unless it now falls under newMinNum.
 			easeMin : newMinNum                         // What: Ease Min. Why: This is the new lower drift bound the user just typed. How: This writes newMinNum.
 
 
-		} );
+		});
 
 
 	};
@@ -589,7 +458,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
 									labTexStr='Fill'
 
-									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -630,7 +499,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 									isaDisBoo={ ( iteDatObj.value ?? 0 ) >= ( picDatObj.threshold ?? 100 ) }
 									labTexStr='Refill'
 
-									onFilActFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
+									onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj.threshold ?? 100 ) } ) }
 								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
@@ -683,8 +552,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 								aria-label='Less weight'
 
-								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.max( 1, iteDatObj.weight - 1 ) ) }
-							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps item.weight down to a minimum of 1 via actStoObj.setWeiFun. */ }
+								onClick={ () => onPatIteFun( { weight : Math.max( 1, iteDatObj.weight - 1 ) } ) }
+							>&minus;</button>{ /* What: Less Weight Button Element. Why: This is the actual decrement control. How: This clamps the draft's weight down to a minimum of 1 via onPatIteFun. */ }
 
 							<span className={ cssModObj.weiValSpa }>w{ iteDatObj.weight }</span>{ /* What: Weight Value Span Element. Why: The current weight needs a plain numeric display between the two buttons. How: This renders the literal "w" prefix plus item.weight. */ }
 
@@ -695,8 +564,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 
 								aria-label='More weight'
 
-								onClick={ () => actStoObj.setWeiFun( iteDatObj.id, Math.min( 9, iteDatObj.weight + 1 ) ) }
-							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps item.weight up to a maximum of 9 via actStoObj.setWeiFun. */ }
+								onClick={ () => onPatIteFun( { weight : Math.min( 9, iteDatObj.weight + 1 ) } ) }
+							>+</button>{ /* What: More Weight Button Element. Why: This is the actual increment control. How: This clamps the draft's weight up to a maximum of 9 via onPatIteFun. */ }
 
 
 						</div>
@@ -765,8 +634,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 							<BooResCom
 								booValNum={ iteDatObj.value || 0 }
 
-								onResBooFun={ () => actStoObj.updIteFun( iteDatObj.id, { value : 0 } ) }
-							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actStoObj.updIteFun on reset. */ }
+								onResBooFun={ () => onPatIteFun( { value : 0 } ) }
+							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 into the draft via onPatIteFun on reset. */ }
 
 
 						</div>
@@ -811,8 +680,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 						aria-label={ iteDatObj.vacation ? 'Activate' : 'Deactivate' }
 						aria-pressed={ !iteDatObj.vacation }
 
-						onClick={ () => actStoObj.togVacFun( iteDatObj.id, 'item' ) }
-					>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This calls actStoObj.togVacFun, scoped to 'item'. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						onClick={ () => onPatIteFun( { vacation : !iteDatObj.vacation } ) }
+					>{ /* What: Active Switch Button Element. Why: This is the actual Active/Inactive toggle control. How: This flips the draft's vacation flag via onPatIteFun. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 						<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed. */ }
@@ -860,8 +729,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 							kinValStr='danger'
 							sizValStr='sm'
 
-							onClick={ () => ( onDelIteFun ? onDelIteFun() : actStoObj.delIteFun( iteDatObj.id ) ) }
-						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun when supplied, otherwise removes the item directly via actStoObj.delIteFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
+							onClick={ onDelIteFun }
+						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelIteFun. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					</div>
@@ -932,8 +801,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 							kinValStr='ghost'
 							sizValStr='sm'
 
-							onClick={ canEdiFun }
-						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. Its data-element-name-hook is read by the picker mini-tours. */ }
+							onClick={ onCanEdiFun }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the draft's edits. How: This calls the caller's own onCanEdiFun. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 
@@ -943,8 +812,8 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 							kinValStr='ghost'
 							sizValStr='sm'
 
-							onClick={ savCloFun }
-						>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls savCloFun. Its data-element-name-hook is read by the picker mini-tours. */ }
+							onClick={ onSavEdiFun }
+						>Save</ButBasCom>{ /* What: Button Base Component. Why: This commits the draft's edits. How: This calls the caller's own onSavEdiFun. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 					</div>
@@ -962,7 +831,7 @@ const EntEdiCom = React.forwardRef( function EntEdiCom ( { actStoObj, isaNewBoo,
 	);
 
 
-} );
+}
 
 // #endregion EntEdiCom
 

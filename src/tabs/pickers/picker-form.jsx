@@ -26,10 +26,8 @@ import { SED_NAM_OBJ  } from '../../state/seed.js';               // What: Seed 
 import { togFadFun    } from '../../ui/edge-fade.js';             // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';           // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { useFliRaiFun } from '../../ui/flip-rail.js';             // What: Use Flip Rail Function. Why: The conditional rail's selected pill should glide to the front instead of snapping, matching the Data tab. How: This is called once with the rail ref and a trigger key.
+import { useIteDraFun } from '../../ui/item-draft.js';            // What: Use Item Draft Function. Why: An added pool item's editor edits a local draft, committed into the pool only on Save. How: This is called once with whichever pool item's editor is open.
 import { WeeChiCom    } from '../../ui/weekday-chips.jsx';        // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
-
-
-import '../../ui/edit-guard.js'; // What: Edit Guard Import. Why: This file arms and disarms window.__editGuard, which only exists once edit-guard.js has run. How: This is imported purely for that side effect.
 
 // #endregion Imports
 
@@ -543,17 +541,15 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
 
 	const penEdiRef = React.useRef( null );                                                   // What: Pending Edit Reference. Why: Switching straight from the new-item form (or a different item's editor) into this one must not silently drop the request. How: This holds the target id to reopen once whatever's currently closing finishes.
-	const ediSnaRef = React.useRef( null );                                                   // What: Editing Snapshot Reference. Why: Switching directly between two draft items' editors needs an explicit revert, for the exact same reason PicVieCom's own ediSnaRef does (EntEdiCom's own unmount-triggered revert would be disarmed by the very next EntEdiCom's mount effect before it ever fires). How: This holds a snapshot of whichever draft item opeDraFun last opened.
 	const comCouNum = pooIteArr.filter( ( iteCurObj ) => iteCurObj.id !== actNewStr ).length; // What: Committed Count Number. Why: The count and the Create button must not react early to a row still being edited, so its own Save hasn't landed yet. How: This is deliberately computed AFTER actNewStr's own declaration above; referencing it earlier in the body would (since this project targets Vite, not a var-hoisting build) read as undefined and this filter would exclude nothing.
 	const enoIteBoo = comCouNum >= 2;                                                         // What: Enough Item Boolean. Why: A picker must have at least 2 real, committed items before it can be created. How: This is true once comCouNum reaches 2.
 
 
-	const draActObj = { // What: Draft Actions Object. Why: EntEdiCom expects a real actions-shaped object to call as the user edits a draft pool item, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
+	const draActObj = { // What: Draft Actions Object. Why: The pool rows and useIteDraFun's commit both need store-shaped actions, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
 
 
 		delIteFun : ( tarIdeStr ) => setPooIteArr( ( preIteArr ) => preIteArr.filter( ( iteCurObj ) => iteCurObj.id !== tarIdeStr ) ),                                                            // What: Delete Item Function. Why: EntEdiCom's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
 		renIteFun : ( tarIdeStr, newNamStr ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, name : newNamStr } : iteCurObj ) ),   // What: Rename Item Function. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
-		revIteFun : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? snaIteObj : iteCurObj ) ),                            // What: Revert Item Function. Why: EntEdiCom's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
 		setWeiFun : ( tarIdeStr, weiValNum ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, weight : weiValNum } : iteCurObj ) ), // What: Set Weight Function. Why: EntEdiCom's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
 		updIteFun : ( tarIdeStr, patIteObj ) => setPooIteArr( ( preIteArr ) => preIteArr.map( ( iteCurObj ) => iteCurObj.id === tarIdeStr ? { ...iteCurObj, ...patIteObj } : iteCurObj ) ),       // What: Update Item Function. Why: EntEdiCom calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
 
@@ -569,6 +565,11 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 	};
+
+
+	const ediOpeObj = ediIteStr && !ediCloBoo ? pooIteArr.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ) || null : null; // What: Editing Open Object. Why: Only an editor that's open, not one playing its closing animation, has a draft. How: This looks up the edited pool item while its editor is open and not closing, else null.
+
+	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( draActObj, ediOpeObj ); // What: Item Draft Destructure. Why: An already-added pool item's editor edits its own local draft, committed into the pool only on Save, the same as every other item editor. How: This calls useIteDraFun with the open pool item and the pool's own actions.
 
 
 	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : easThrNum }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntEdiCom's own PIC_NAM_OBJ.aveEasFun(items, picDatObj.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntEdiCom no longer reads those off the picker directly.
@@ -721,10 +722,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 * opeDraFun = Open Draft Function
 	 *
 	 * @summary
-	 * Opens the editor for an item already added to the create form. It snapshots
-	 * the item first, so staDraFun can revert it when the user switches straight
-	 * to another editor, and scrolls the editor into view. It does nothing if the
-	 * item is gone.
+	 * Opens the editor for an item already added to the create form, which edits
+	 * a draft copy of the item (see useIteDraFun), and scrolls the editor into
+	 * view. It does nothing if the item is gone.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -740,7 +740,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const opeDraFun = ( tarIdeStr ) => { // What: Open Draft Function. Why: Opening an already-committed draft item's editor needs to snapshot it first (for staDraFun's own revert-on-switch below) and scroll it into view. How: This looks up the item, bails out if it's already gone, then opens the editor and scrolls it into view.
+	const opeDraFun = ( tarIdeStr ) => { // What: Open Draft Function. Why: Opening an already-committed draft item's editor must check the item still exists before showing it. How: This looks up the item, bails out if it's gone, opens its editor, then scrolls the editor into view.
 
 
 		const fouIteObj = pooIteArr.find( ( iteCurObj ) => iteCurObj.id === tarIdeStr ); // What: Found Item Object. Why: The editor needs the real, current draft item record to open against. How: This looks up tarIdeStr in pooIteArr.
@@ -749,8 +749,6 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		if ( !fouIteObj ) return; // What: Missing Item Guard. Why: A stale id (already deleted) must not open an editor with nothing to show. How: This bails out before touching any state.
 
 
-
-		ediSnaRef.current = { ...fouIteObj }; // What: Snapshot Write. Why: staDraFun needs a snapshot of this exact item, taken right now, in case it later has to revert this edit to switch to a different one. How: This shallow-copies fouIteObj into ediSnaRef.
 
 		setEdiIteStr( tarIdeStr ); // What: Open Editor Call. Why: This is the actual state change that shows the editor. How: This writes tarIdeStr into ediIteStr.
 
@@ -793,8 +791,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	 * @summary
 	 * Starts editing a create-form item from any state. When another item's
-	 * editor or the new-item form is open, it closes that one first (reverting an
-	 * edited item to its snapshot) and stages tarIdeStr so the requested editor
+	 * editor or the new-item form is open, it closes that one first (dropping its
+	 * unsaved draft) and stages tarIdeStr so the requested editor
 	 * opens once the closing animation finishes; otherwise it opens the editor
 	 * directly.
 	 *
@@ -812,18 +810,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const staDraFun = ( tarIdeStr ) => { // What: Start Draft Function. Why: Switching straight from one open editor to another (or from the new-item form) needs to close whatever's currently open first, reverting it, before this edit can actually open. How: This closes an existing editor (with an explicit revert) or the new-item form, staging tarIdeStr to reopen once that closing animation finishes; otherwise it opens directly.
+	const staDraFun = ( tarIdeStr ) => { // What: Start Draft Function. Why: Switching straight from one open editor to another (or from the new-item form) needs to close whatever's currently open first, dropping its unsaved draft, before this edit can actually open. How: This closes an existing editor (with an explicit revert) or the new-item form, staging tarIdeStr to reopen once that closing animation finishes; otherwise it opens directly.
 
 
 		if ( ediIteStr === tarIdeStr ) return; // What: Already Open Guard. Why: Re-clicking Edit on the exact same row that's already open should do nothing. How: This bails out when tarIdeStr matches the currently-open editor.
 
 
 
-		if ( ediIteStr ) { // What: Other Editor Open Branch. Why: Another item's editor is already open and must be closed (with its own explicit revert) before this one can open. How: This reverts the currently-open item, stages tarIdeStr, and starts that editor's own closing animation.
-
-
-			if ( ediSnaRef.current ) draActObj.revIteFun( ediIteStr, ediSnaRef.current ); // What: Revert Call Guard. Why: Only a genuine snapshot can be reverted to. How: This restores the currently-open item back to its pre-edit snapshot.
-
+		if ( ediIteStr ) { // What: Other Editor Open Branch. Why: Another item's editor is already open and must be closed, dropping its unsaved draft, before this one can open. How: This stages tarIdeStr and starts that editor's own closing animation.
 
 
 			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's own onAnimationEnd handler to pick up.
@@ -898,10 +892,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 * bacSteFun = Back Step Function
 	 *
 	 * @summary
-	 * Returns the create form from its items step to its details step. It first
-	 * disarms EntEdiCom's deferred revert, which would otherwise close whatever
-	 * gets added next, and discards any in-progress item so + Add Item still
-	 * works afterward.
+	 * Returns the create form from its items step to its details step. It
+	 * discards any in-progress item first, so + Add Item still works afterward.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -916,10 +908,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const bacSteFun = () => { // What: Back Step Function. Why: Returning to Step 1 must not leave Step 2 stuck with a stale actNewStr (which would make + Add Item a no-op), so any in-progress item is discarded first. How: This disarms EntEdiCom's own deferred revert (else it would fire on the next macrotask and re-set actCloStr='cancel', auto-closing whatever gets added next), removes an in-progress item if there is one, then steps back.
+	const bacSteFun = () => { // What: Back Step Function. Why: Returning to Step 1 must not leave Step 2 stuck with a stale actNewStr (which would make + Add Item a no-op), so any in-progress item is discarded first. How: This removes the in-progress item, clears the closing flag, and steps back.
 
-
-		window.__editGuard.disFun(); // What: Edit Guard Disarm Call. Why: A deferred revert firing after this navigation would corrupt whatever item gets added next. How: This calls the shared global editor guard's own disarm method.
 
 		if ( actNewStr ) { // What: Discard In-Progress Guard. Why: An unsaved in-progress item must not linger once the user navigates away from it. How: This removes it from pooIteArr and clears actNewStr, only if one was actually open.
 
@@ -2404,23 +2394,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 														maxLength={ 60 }
 														placeholder='Item name'
 														type='text'
-														value={ ediLivObj.name }
+														value={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj.name : ediLivObj.name } // What: Value. Why: The open editor's name lives in its draft until Save, while a closing editor shows the real name. How: This shows the draft's name when the draft belongs to this item, else the item's own.
 
 														aria-label='Item name'
 
-														onBlur={ ( bluEveObj ) => { // What: On Blur Handler. Why: Leaving the name field commits a tidied name. How: This trims the value and renames the draft item when it's non-empty.
-
-
-															const newNamStr = bluEveObj.target.value.trim(); // What: New Name String. Why: A blur commit should tidy the name, not keep stray whitespace. How: This trims the input's current value.
-
-
-															if ( newNamStr ) draActObj.renIteFun( ediLivObj.id, newNamStr ); // What: Rename Item Guard. Why: A blank name must never be committed. How: This renames the draft item only when newNamStr is non-empty.
-
-
-														} }
-														onChange={ ( chaEveObj ) => draActObj.updIteFun( ediLivObj.id, { name : chaEveObj.target.value } ) }
+														onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
 														onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-													/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes into draActObj on every change, and commits the rename on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+													/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes every change into the editor's draft through patDraFun, committed on Save. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 												</span>
@@ -2428,19 +2408,28 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											</div>
 
-											<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
+											<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row, wired to the draft instead of the real store. How: This wraps a single EntEdiCom instance. */ }
 
 
 												<EntEdiCom
 													key={ ediLivObj.id }
 
-													actStoObj={ draActObj }
-													iteDatObj={ ediLivObj }
+													iteDatObj={ draIteObj && draIteObj.id === ediLivObj.id ? draIteObj : ediLivObj } // What: Item Data Object. Why: The open editor shows its draft, while a closing one shows the pool item itself. How: This picks the draft only when it belongs to this item.
 													picDatObj={ draPicObj }
 													picIteArr={ pooIteArr }
 
-													onCloEdiFun={ () => setEdiCloBoo( true ) }
-												/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the live item, the picker, and the actions it edits through. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntEdiCom for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntEdiCom's own internal Cancel/Escape handling (revert via draActObj.revIteFun, then close) is correct as-is with no extra bookkeeping needed here. */ }
+													onCanEdiFun={ () => setEdiCloBoo( true ) } // What: On Cancel Edit Function. Why: Cancel only has to close the editor, since closing drops its draft. How: This starts the editor's closing animation.
+													onPatIteFun={ patDraFun }
+													onSavEdiFun={ () => { // What: On Save Edit Function. Why: Save must apply the draft to the pool item before the editor closes. How: This commits the draft, then starts the editor's closing animation.
+
+
+														comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the pool item on Save. How: This calls comDraFun.
+
+														setEdiCloBoo( true ); // What: Start Closing Call. Why: A saved editor has nothing left to show. How: This flips ediCloBoo, which plays the closing animation.
+
+
+													} }
+												/>{ /* What: Entry Editor Component. Why: Editing a pool item reuses the exact item editor Today and Data use. How: This is passed the item's draft (or the pool item while closing), the picker, and its cancel, patch, and save handlers. */ }{ /* What: Editor Key Design Note. Why: See PicVieCom's own EntEdiCom for why a key on ediLivObj.id matters when switching directly between two items' editors. How: No onCancel is passed below, matching the live tab too: this item already exists (within the draft), so EntEdiCom's own internal Cancel/Escape handling (revert via draActObj.revIteFun, then close) is correct as-is with no extra bookkeeping needed here. */ }
 
 
 											</div>
@@ -2576,18 +2565,18 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										</div>
 
-										<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance bound to draActObj. */ }
+										<div className={ cssModObj.iteEdiDiv }>{ /* What: Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance. */ }
 
 
 											<EntEdiCom
-												actStoObj={ draActObj }
 												iteDatObj={ newIteObj }
 												picDatObj={ draPicObj }
 												picIteArr={ pooIteArr }
 
 												onCanEdiFun={ () => setActCloStr( 'cancel' ) }
-												onCloEdiFun={ () => setActCloStr( 'save' ) }
-											/>{ /* What: Entry Editor Component. Why: The new-item draft reuses the exact item editor Today and Data use. How: This is passed the draft item, the picker, and the draft actions. */ }
+												onPatIteFun={ ( patIteObj ) => draActObj.updIteFun( newIteObj.id, patIteObj ) } // What: On Patch Item Function. Why: A brand-new pool item is still unsaved, since Cancel removes it from the pool, so its edits can go straight onto it. How: This merges each change into the new item through the pool's own updIteFun.
+												onSavEdiFun={ () => setActCloStr( 'save' ) }
+											/>{ /* What: Entry Editor Component. Why: The new-item draft reuses the exact item editor Today and Data use. How: This is passed the new pool item, the picker, and its cancel, patch, and save handlers. */ }
 
 
 										</div>

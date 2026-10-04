@@ -51,6 +51,7 @@ import { TAS_NAM_OBJ  } from '../../core/tasks.js';                 // What: Tas
 import { TOD_HEL_ARR  } from '../../help/content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { togFadFun    } from '../../ui/edge-fade.js';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.js';             // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
+import { useIteDraFun } from '../../ui/item-draft.js';              // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
 // #endregion Imports
 
@@ -623,6 +624,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	// #region Editor And Log State
 
 	const [ actEdiStr, setActEdiStr ] = React.useState( null ); // What: Active Editor String And Setter. Why: Only one inline editor on this tab should be open at a time. How: This is read/written by every inline editor this tab renders, directly or via RemSecCom. // actEdiStr/setActEdiStr: a picker item's inline editor (`item:<eid>`), a reminder's inline editor, or its quick-add form (owned by RemSecCom, passed down below) all read/write this same lifted slot, so opening any one of them collapses whichever of the others was open (each already discards its own unsaved edits on collapse/unmount, see EntEdiCom's own discard-guard effect and RemSecCom's own plain local draft state).
+
+	const ediEntObj = actEdiStr ? staAppObj.today.entries.find( ( curEntObj ) => `item:${ curEntObj.eid }` === actEdiStr ) : null; // What: Editing Entry Object. Why: The open item editor's draft needs to know which entry it belongs to. How: This finds the entry whose own editor key matches actEdiStr, or null when no item editor is open.
+	const ediIteObj = ediEntObj ? staAppObj.items.find( ( curIteObj ) => curIteObj.id === ediEntObj.itemId ) || null : null;       // What: Editing Item Object. Why: The draft is a copy of this entry's own item. How: This looks the item up by the entry's itemId, or null when there's none.
+
+	const { comDraFun, draIteObj, patDraFun } = useIteDraFun( actStoObj, ediIteObj ); // What: Item Draft Destructure. Why: The open card's name input and its editor both edit one local draft, committed only on Save. How: This calls useIteDraFun with the open item.
 
 	const [ opeLogStr, setOpeLogStr ] = React.useState( null ); // What: Open Log String And Setter. Why: Only one group's (or the Reminders block's) Day Log panel may be open at a time. How: This holds whichever single key is currently open, or null.
 
@@ -4239,6 +4245,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 														<EntCarCom
 															actStoObj={ actStoObj }
 															cheExiBoo={ cheExiBoo }
+															draNamStr={ draIteObj && draIteObj.id === entRecObj.itemId ? draIteObj.name : undefined } // What: Draft Name String. Why: While this card's editor is open, its name input edits the draft's name instead of the real one. How: This passes the draft's name only when the draft belongs to this card's own item.
 															ediModBoo={ ediModBoo }
 															entRecObj={ entRecObj }
 															isaEdiBoo={ actEdiStr === `item:${ entRecObj.eid }` }
@@ -4250,7 +4257,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 															onGriDowFun={ ( poiEveObj ) => iteDraFun( poiEveObj, curGroObj ) }
 															onPlaTutFun={ staTouFun }
-															onRenIteFun={ ( curNamStr ) => actStoObj.renIteFun( entRecObj.itemId, curNamStr ) }
+															onRenIteFun={ ( curNamStr ) => patDraFun( { name : curNamStr } ) }
 															onRerEntFun={ hanRerFun }
 															onSkiEntFun={ hanSkiFun }
 															onTogDonFun={ hanCheFun }
@@ -4270,15 +4277,24 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 																	<EntEdiCom
-																		actStoObj={ actStoObj }
 																		iteCouNum={ staAppObj.items.filter( ( pooIteObj ) => pooIteObj.pickerId === picRecObj.id ).length }
-																		iteDatObj={ curIteObj }
+																		iteDatObj={ draIteObj && draIteObj.id === curIteObj.id ? draIteObj : curIteObj } // What: Item Data Object. Why: The open editor shows its draft, while one still collapsing after a close shows the real item, its edits discarded. How: This picks the draft only when it belongs to this row's own item.
 																		picDatObj={ picRecObj }
 																		picIteArr={ staAppObj.items }
 
-																		onCloEdiFun={ () => setActEdiStr( ( curValStr ) => curValStr === `item:${ entRecObj.eid }` ? null : curValStr ) }
+																		onCanEdiFun={ () => setActEdiStr( ( curValStr ) => curValStr === `item:${ entRecObj.eid }` ? null : curValStr ) } // What: On Cancel Edit Function. Why: Cancel only has to close the editor, since closing drops its draft. How: This clears actEdiStr when it still points at this row.
 																		onDelIteFun={ () => hanDelFun( entRecObj.eid, curIteObj.id ) }
-																	/>{ /* What: Entry Editor Component. Why: This is the actual shared item editor. How: This is passed curIteObj/picRecObj, this picker's own live item count, and a close/delete handler pair. */ }
+																		onPatIteFun={ patDraFun }
+																		onSavEdiFun={ () => { // What: On Save Edit Function. Why: Save must apply the draft to the real item before the editor closes. How: This commits the draft, then clears actEdiStr when it still points at this row.
+
+
+																			comDraFun(); // What: Commit Draft Call. Why: The draft's edits only reach the item on Save. How: This calls comDraFun.
+
+																			setActEdiStr( ( curValStr ) => curValStr === `item:${ entRecObj.eid }` ? null : curValStr ); // What: Editor Close Call. Why: A saved editor has nothing left to show. How: This clears actEdiStr when it still points at this row.
+
+
+																		} }
+																	/>{ /* What: Entry Editor Component. Why: This is the actual shared item editor. How: This is passed this row's draft (or its item while closing), its picker, this picker's own live item count, and its cancel/delete/patch/save handlers. */ }
 
 
 																</div>
