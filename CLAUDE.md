@@ -2573,7 +2573,9 @@ are renamed to this as their files come up in the design-system pass.
     matching the `--rad-bor-*` tokens, since `bor` already means a whole
     border, e.g. `--ent-edi-rad`, the rounding a row strips from the item
     editor). `wid` (a width, decided 2026-10-03, the counterpart of `hei`,
-    e.g. `--pil-tag-wid`, the fixed column a pool row hands its pill). A keyword value a parent hands a child
+    e.g. `--pil-tag-wid`, the fixed column a pool row hands its pill). `ind` (an
+    index, decided 2026-10-03, a position number the CSS multiplies out, e.g.
+    `--equ-tok-ind`, each boot splash token's place in its stagger). A keyword value a parent hands a child
     (decided 2026-10-03) takes the first 3 letters of the CSS property it
     feeds as its kind: `dis` (a `display`), `fle` (a `flex`), `whi` (a
     `white-space`), and `fig` (a `font-variant-numeric`, since it sets
