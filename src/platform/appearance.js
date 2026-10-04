@@ -480,7 +480,7 @@ function covHexFun( cssColStr ) {
 
 	}
 
-	catch ( e ) { return null; } // What: Parse Error Guard. Why: Some environments could throw rather than silently no-op on an invalid assignment. How: This catches any such error and returns null, same as an ordinary parse failure.
+	catch ( errCatObj ) { return null; } // What: Parse Error Guard. Why: Some environments could throw rather than silently no-op on an invalid assignment. How: This catches any such error and returns null, same as an ordinary parse failure.
 
 
 }

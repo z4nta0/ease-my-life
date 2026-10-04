@@ -63,7 +63,7 @@ const broSubFun = () => { // What: Broadcast Subscriber Function. Why: Every sub
 
 		try { lisCurFun(); } // What: Subscriber Call Try. Why: This is the actual notification each subscriber exists to receive. How: This invokes lisCurFun with no arguments.
 
-		catch ( e ) {} // What: Subscriber Call Guard. Why: One bad listener throwing must not stop the rest of subLisSet from being notified. How: This silently swallows any error lisCurFun itself threw.
+		catch ( errCatObj ) {} // What: Subscriber Call Guard. Why: One bad listener throwing must not stop the rest of subLisSet from being notified. How: This silently swallows any error lisCurFun itself threw.
 
 
 	}
@@ -124,7 +124,7 @@ const stoGetFun = ( stoKeyStr ) => { // What: Storage Get Function. Why: localSt
 
 	try { return localStorage.getItem( stoKeyStr ); } // What: Storage Get Try. Why: This is the actual read this function exists to perform. How: This returns whatever getItem resolves to for stoKeyStr, including null when the key isn't set.
 
-	catch ( e ) { return null; } // What: Storage Get Guard. Why: A private-mode or full-quota localStorage can throw on read. How: This returns null instead of letting the error propagate.
+	catch ( errCatObj ) { return null; } // What: Storage Get Guard. Why: A private-mode or full-quota localStorage can throw on read. How: This returns null instead of letting the error propagate.
 
 
 };
@@ -136,7 +136,7 @@ const stoSetFun = ( stoKeyStr, stoValStr ) => { // What: Storage Set Function. W
 
 	try { localStorage.setItem( stoKeyStr, stoValStr ); } // What: Storage Set Try. Why: This is the actual write this function exists to perform. How: This calls setItem with stoKeyStr and stoValStr.
 
-	catch ( e ) {} // What: Storage Set Guard. Why: A private-mode or full-quota localStorage can throw on write. How: This silently does nothing instead of letting the error propagate.
+	catch ( errCatObj ) {} // What: Storage Set Guard. Why: A private-mode or full-quota localStorage can throw on write. How: This silently does nothing instead of letting the error propagate.
 
 
 };
@@ -238,7 +238,7 @@ async function askOncFun() {
 
 	try { perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This awaits the modern Promise-returning form and falls back to leaving perResStr at its default value on any error.
 
-	catch ( e ) { /* older API */ } // What: Request Permission Guard. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This leaves perResStr at its default value instead of letting the error propagate.
+	catch ( errCatObj ) { /* older API */ } // What: Request Permission Guard. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This leaves perResStr at its default value instead of letting the error propagate.
 
 
 
@@ -304,7 +304,7 @@ async function reqPerFun() {
 
 	try { if ( perResStr === 'default' ) perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: A prompt should only actually be shown when the permission is still 'default'; a browser that has already denied it will just ignore this call anyway. How: This awaits the modern Promise-returning form only when needed, leaving perResStr unchanged on any error.
 
-	catch ( e ) {} // What: Request Permission Guard. Why: The modern Promise-returning form could still throw in some edge case. How: This leaves perResStr unchanged instead of letting the error propagate.
+	catch ( errCatObj ) {} // What: Request Permission Guard. Why: The modern Promise-returning form could still throw in some edge case. How: This leaves perResStr unchanged instead of letting the error propagate.
 
 
 
@@ -426,7 +426,7 @@ async function genNotFun() {
 
 	}
 
-	catch ( e ) { /* fall through to the page-level constructor */ } // What: Service Worker Attempt Catch. Why: Any failure in the service-worker path should fall through to the page-level constructor instead of failing the whole function. How: This swallows the error and lets execution continue past the try block.
+	catch ( errCatObj ) { /* fall through to the page-level constructor */ } // What: Service Worker Attempt Catch. Why: Any failure in the service-worker path should fall through to the page-level constructor instead of failing the whole function. How: This swallows the error and lets execution continue past the try block.
 
 
 
@@ -441,13 +441,13 @@ async function genNotFun() {
 
 			try { window.focus(); } // What: Window Focus Attempt. Why: Focusing the existing tab is the actual point of clicking the notification. How: This calls window.focus() and swallows any error some browsers may throw here.
 
-			catch ( e ) {} // What: Window Focus Guard. Why: Some browsers may throw when focusing a window in certain contexts. How: This silently swallows any error window.focus() itself threw.
+			catch ( errCatObj ) {} // What: Window Focus Guard. Why: Some browsers may throw when focusing a window in certain contexts. How: This silently swallows any error window.focus() itself threw.
 
 
 
 			try { pagNotObj.close(); } // What: Notification Close Attempt. Why: The notification should dismiss itself once clicked. How: This calls pagNotObj's own close() and swallows any error the same way.
 
-			catch ( e ) {} // What: Notification Close Guard. Why: Some browsers may throw when closing an already-dismissed notification. How: This silently swallows any error pagNotObj.close() itself threw.
+			catch ( errCatObj ) {} // What: Notification Close Guard. Why: Some browsers may throw when closing an already-dismissed notification. How: This silently swallows any error pagNotObj.close() itself threw.
 
 
 		};
@@ -459,7 +459,7 @@ async function genNotFun() {
 
 	}
 
-	catch ( e ) { // What: Page Notification Catch. Why: Both notification paths having failed means the day claimed earlier must be released so a later attempt can still try. How: This releases the claimed day and reports failure.
+	catch ( errCatObj ) { // What: Page Notification Catch. Why: Both notification paths having failed means the day claimed earlier must be released so a later attempt can still try. How: This releases the claimed day and reports failure.
 
 
 		if ( stoGetFun( DAY_KEY_STR ) === curDayStr ) stoSetFun( DAY_KEY_STR, '' ); // What: Day Release Guard. Why: Both notification paths having failed means a later attempt should still be allowed to notify for this same day. How: This clears the claimed day back out, but only if nothing else has already claimed a different one since.

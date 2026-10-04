@@ -171,7 +171,7 @@ function opeDatFun() {
 
 		try { opeReqObj = indexedDB.open( DAT_NAM_STR, DAT_VER_NUM ); } // What: Database Open Try. Why: This is the actual call that opens (or creates) the database, keyed by DAT_NAM_STR and DAT_VER_NUM. How: This assigns the resulting IDBOpenDBRequest to opeReqObj for the handlers below.
 
-		catch ( e ) { return rejErrFun( e ); } // What: Database Open Guard. Why: A thrown open() call has nothing further to attach handlers to. How: This rejects immediately with whatever error indexedDB.open itself threw.
+		catch ( errCatObj ) { return rejErrFun( errCatObj ); } // What: Database Open Guard. Why: A thrown open() call has nothing further to attach handlers to. How: This rejects immediately with whatever error indexedDB.open itself threw.
 
 
 
@@ -408,7 +408,7 @@ function ownKeyFun() {
 
 	try { return Object.keys( localStorage ).filter( ( curKeyStr ) => OWN_KEY_REG.test( curKeyStr ) ); } // What: Owned Key Filter Try. Why: Every current localStorage key must be checked against OWN_KEY_REG to find the ones this app has ever written. How: This filters every key currently in localStorage down to the ones OWN_KEY_REG matches.
 
-	catch ( e ) { return []; } // What: Owned Key Read Guard. Why: A private-mode or otherwise inaccessible localStorage must not crash whichever caller invoked this. How: This returns an empty array instead of letting the read throw.
+	catch ( errCatObj ) { return []; } // What: Owned Key Read Guard. Why: A private-mode or otherwise inaccessible localStorage must not crash whichever caller invoked this. How: This returns an empty array instead of letting the read throw.
 
 
 }
@@ -468,7 +468,7 @@ function reaLocFun() {
 
 	}
 
-	catch ( e ) { return null; } // What: Local Read Guard. Why: A blocked origin or corrupted stored value must not crash whichever caller invoked this. How: This returns null instead of letting the read or parse throw.
+	catch ( errCatObj ) { return null; } // What: Local Read Guard. Why: A blocked origin or corrupted stored value must not crash whichever caller invoked this. How: This returns null instead of letting the read or parse throw.
 
 
 }
@@ -538,7 +538,7 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 
 		try { localStorage.setItem( MIR_TIM_STR, new Date().toISOString() ); } // What: Mirror Time Set Try. Why: The Settings storage panel reports backup freshness on a cold load, before any tab-hide has happened this session, so this timestamp must be persisted rather than kept only in memory. How: This writes the current time under MIR_TIM_STR.
 
-		catch ( e ) {} // What: Mirror Time Set Guard. Why: A failure to record the freshness timestamp is a cosmetic loss, not a reason to fail the whole mirror write. How: This silently ignores any error from the inner setItem call above.
+		catch ( errCatObj ) {} // What: Mirror Time Set Guard. Why: A failure to record the freshness timestamp is a cosmetic loss, not a reason to fail the whole mirror write. How: This silently ignores any error from the inner setItem call above.
 
 
 
@@ -547,7 +547,7 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 
 	}
 
-	catch ( e ) { // What: Local Write Guard. Why: A quota failure is non-fatal (IDB is the real store of record when it is available), but the resulting stale mirror is a liability if IDB later fails, so it must be surfaced rather than silently swallowed. How: This flips mirWriBoo false and returns false instead of letting the quota error propagate.
+	catch ( errCatObj ) { // What: Local Write Guard. Why: A quota failure is non-fatal (IDB is the real store of record when it is available), but the resulting stale mirror is a liability if IDB later fails, so it must be surfaced rather than silently swallowed. How: This flips mirWriBoo false and returns false instead of letting the quota error propagate.
 
 
 		mirWriBoo = false; // What: Mirror Write Boolean Failure Update. Why: staRepFun's own status report must reflect that the last mirror write did not actually succeed. How: This sets mirWriBoo false.
@@ -692,7 +692,7 @@ async function iniStoFun() {
 
 				try { if ( !localStorage.getItem( MIG_SNA_STR ) ) localStorage.setItem( MIG_SNA_STR, localStorage.getItem( MIR_KEY_STR ) ); } // What: Snapshot Set Try. Why: A rollback copy must be taken before the migration below touches anything, in case the new IDB store turns out not to read back correctly. How: This writes the current MIR_KEY_STR contents under MIG_SNA_STR, but only if no snapshot already exists there.
 
-				catch ( e ) {} // What: Snapshot Set Guard. Why: The snapshot is a nicety, not a requirement, so a failure to write it must not abort the migration itself. How: This silently ignores any error from the inner setItem call above.
+				catch ( errCatObj ) {} // What: Snapshot Set Guard. Why: The snapshot is a nicety, not a requirement, so a failure to write it must not abort the migration itself. How: This silently ignores any error from the inner setItem call above.
 
 
 
@@ -722,7 +722,7 @@ async function iniStoFun() {
 
 	}
 
-	catch ( e ) { // What: Storage Boot Guard. Why: Private mode, an opaque origin, or a blocked/hanging open must still leave the app able to boot. How: This falls all the way back to the localStorage engine and whatever reaLocFun can read.
+	catch ( errCatObj ) { // What: Storage Boot Guard. Why: Private mode, an opaque origin, or a blocked/hanging open must still leave the app able to boot. How: This falls all the way back to the localStorage engine and whatever reaLocFun can read.
 
 
 		datConObj = null;           // What: Database Connection Object Clear. Why: Whatever partial connection state the failed boot sequence above may have left behind must not be reused. How: This clears datConObj back to null.
@@ -774,7 +774,7 @@ async function iniStoFun() {
 
 		}
 
-		catch ( e ) {} // What: Boot Count Guard. Why: Nothing critical depends on the boot counter or the sweep succeeding on any given boot. How: This silently ignores any error from the whole try block above.
+		catch ( errCatObj ) {} // What: Boot Count Guard. Why: Nothing critical depends on the boot counter or the sweep succeeding on any given boot. How: This silently ignores any error from the whole try block above.
 
 
 	}
@@ -916,7 +916,7 @@ async function wipDatFun() {
 
 	try { for ( const curKeyStr of ownKeyFun() ) localStorage.removeItem( curKeyStr ); } // What: Owned Key Removal Try. Why: Older generations of this app wrote keys like 'easemylife.v1' and 'ease-my-life-v1', which are complete state blobs a fixed list would silently leave behind. How: This removes every key ownKeyFun finds, a prefix sweep rather than a hardcoded list.
 
-	catch ( e ) {} // What: Owned Key Removal Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this teardown. How: This silently ignores any error from the removal loop above.
+	catch ( errCatObj ) {} // What: Owned Key Removal Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this teardown. How: This silently ignores any error from the removal loop above.
 
 
 
@@ -932,7 +932,7 @@ async function wipDatFun() {
 
 		}
 
-		catch ( e ) {} // What: Idb Clear Guard. Why: The clean state written by the very next save overwrites whatever is left either way, so a failed clear here is not fatal. How: This silently ignores any error from the two clear calls above.
+		catch ( errCatObj ) {} // What: Idb Clear Guard. Why: The clean state written by the very next save overwrites whatever is left either way, so a failed clear here is not fatal. How: This silently ignores any error from the two clear calls above.
 
 
 	}
@@ -985,7 +985,7 @@ async function reaPerFun() {
 
 		try { return await reaDatFun(); } // What: Database Read Try. Why: The actual IDB read must be attempted before any fallback can be considered. How: This awaits reaDatFun and returns its own resolved value directly.
 
-		catch ( e ) { return null; } // What: Database Read Guard. Why: A read failure here must resolve to null rather than reject whichever caller (typically an export) invoked this. How: This returns null instead of letting the error propagate.
+		catch ( errCatObj ) { return null; } // What: Database Read Guard. Why: A read failure here must resolve to null rather than reject whichever caller (typically an export) invoked this. How: This returns null instead of letting the error propagate.
 
 
 	}
@@ -1064,7 +1064,7 @@ async function datBytFun() {
 
 	}
 
-	catch ( e ) { return null; } // What: Data Bytes Guard. Why: A measurement failure must not surface as an error to whichever caller (typically staRepFun) invoked this. How: This returns null instead of letting the error propagate.
+	catch ( errCatObj ) { return null; } // What: Data Bytes Guard. Why: A measurement failure must not surface as an error to whichever caller (typically staRepFun) invoked this. How: This returns null instead of letting the error propagate.
 
 
 }
@@ -1116,7 +1116,7 @@ async function reqPerFun() {
 
 	}
 
-	catch ( e ) { return false; } // What: Request Persist Guard. Why: A throwing storage API must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
+	catch ( errCatObj ) { return false; } // What: Request Persist Guard. Why: A throwing storage API must not crash whichever caller invoked this. How: This returns false instead of letting the error propagate.
 
 
 }
@@ -1159,7 +1159,7 @@ async function staRepFun() {
 
 	try { mirTimStr = localStorage.getItem( MIR_TIM_STR ); } // What: Mirror Time Read Try. Why: The mirror freshness timestamp must actually be read from localStorage before it can be reported. How: This assigns mirTimStr from whatever is currently stored under MIR_TIM_STR.
 
-	catch ( e ) {} // What: Mirror Time Read Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this status report. How: This silently leaves mirTimStr at its own null default instead of letting the read throw.
+	catch ( errCatObj ) {} // What: Mirror Time Read Guard. Why: A blocked or inaccessible localStorage must not abort the rest of this status report. How: This silently leaves mirTimStr at its own null default instead of letting the read throw.
 
 
 
@@ -1190,7 +1190,7 @@ async function staRepFun() {
 
 	}
 
-	catch ( e ) {} // What: Storage Estimate Guard. Why: An unsupported or throwing storage API must not abort the rest of this status report. How: This silently ignores any error from the two optional calls above.
+	catch ( errCatObj ) {} // What: Storage Estimate Guard. Why: An unsupported or throwing storage API must not abort the rest of this status report. How: This silently ignores any error from the two optional calls above.
 
 
 

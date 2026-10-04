@@ -3649,20 +3649,20 @@ const sooSubStr = isaDowBoo // What: ...
 ### try/catch statements
 Treated the same as an `if`/`else` chain in every respect: `catch` (and
 `finally`, by the same logic) goes on its OWN line, never cuddled onto
-the `try` block's own closing `}` (no `} catch (e) {`), with exactly 1
+the `try` block's own closing `}` (no `} catch (errCatObj) {`), with exactly 1
 blank line between that closing `}` and the `catch` keyword. Each
 block's own body still gets the standard 2-blank-line padding from
 "if/else and while statements" above when it spans multiple lines.
 - **One-line vs. multi-line body follows "### Multi-statement one-line
   blocks" above, exactly like an `if`/`while` body does**: a `try` or
   `catch` block whose body is a single statement may stay compact on one
-  line (e.g. `catch ( e ) { return null; }`); the moment its body needs 2
+  line (e.g. `catch ( errCatObj ) { return null; }`); the moment its body needs 2
   or more statements, it must become a real multi-line block instead,
   padded like any other (2 blank lines after `{`, 2 before `}`), with
   the same guard-clause-ending-in-`return` exception staying compact
-  regardless (e.g. `catch ( e ) { setErrBoo( true ); return; }`). This is
+  regardless (e.g. `catch ( errCatObj ) { setErrBoo( true ); return; }`). This is
   independent of the "own line" rule above: `catch` never shares a
-  physical line with `try`'s own closing `}` (no `} catch (e) {}`)
+  physical line with `try`'s own closing `}` (no `} catch (errCatObj) {}`)
   regardless of whether either block's own body is compact or
   multi-line: a compact `try { ... }` is still followed by `catch` on
   its own fresh line below, per the reference examples throughout
@@ -3714,7 +3714,7 @@ try {
 
 }
 
-catch ( e ) {
+catch ( errCatObj ) {
 
 
 	example code;

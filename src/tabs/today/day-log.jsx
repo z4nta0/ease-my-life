@@ -263,7 +263,7 @@ const forTimFun = ( isoTimStr ) => { // What: Format Time Function. Why: Both Gr
 
 	try { return new Date( isoTimStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoTimStr should render as a plain local time. How: This builds a Date from isoTimStr and formats it with no seconds.
 
-	catch ( e ) { return ''; } // What: Format Error Guard. Why: A missing/invalid isoTimStr must not crash whichever caller invoked this. How: This returns an empty string instead of letting the error propagate.
+	catch ( errCatObj ) { return ''; } // What: Format Error Guard. Why: A missing/invalid isoTimStr must not crash whichever caller invoked this. How: This returns an empty string instead of letting the error propagate.
 
 
 };
