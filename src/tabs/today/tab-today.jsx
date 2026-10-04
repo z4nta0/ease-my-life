@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-today.module.css'; // What: CSS Module Object. Why: The Today tab's own styles live in its module. How: Each className and animation trigger reads its hashed class from here.
-import React     from 'react';                 // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, React.useCallback, React.forwardRef, React.useImperativeHandle, React.Fragment) throughout, instead of importing individual named hooks.
+import React     from 'react';                  // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, React.useCallback, React.forwardRef, React.useImperativeHandle, React.Fragment) throughout, instead of importing individual named hooks.
 
 
 import { APP_FEA_ARR  } from '../../onboarding/app-features.jsx';   // What: App Feature Array. Why: This is the fixed catalog of App Features tutorial cards rendered once the checklist concludes. How: This is mapped over to render one AppFeaCom per entry and to compute the section's own done/total counts.
@@ -554,15 +554,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 	const pagCarNum = shoCheBoo // What: Page Card Number. Why: Same replay-continuation treatment as the picker/task counts above: still counted while rptVisBoo cards are on screen, but (matching the render map's own resolved-cards-vanish behavior) only the still-unresolved ones. How: This is every tour during the first-time phase, only the unresolved ones during a replay, otherwise 0.
-		? ONB_EPT_ARR.length                                                                              // What: Checklist Branch. Why: The first-time phase shows every tour card. How: This counts all of ONB_EPT_ARR.
-		: rptVisBoo                                                                                       // What: Replay Check. Why: A replay only shows the still-unresolved tours. How: This tests rptVisBoo next.
+		? ONB_EPT_ARR.length                                                                                  // What: Checklist Branch. Why: The first-time phase shows every tour card. How: This counts all of ONB_EPT_ARR.
+		: rptVisBoo                                                                                           // What: Replay Check. Why: A replay only shows the still-unresolved tours. How: This tests rptVisBoo next.
 		? ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ).length // What: Replay Branch. Why: Only unresolved tours are on screen. How: This counts the tours with no checklist entry.
-		: 0;                                                                                              // What: Hidden Branch. Why: No Page Tours cards are showing. How: This returns 0.
+		: 0;                                                                                                  // What: Hidden Branch. Why: No Page Tours cards are showing. How: This returns 0.
 
 
 	const pagDonNum = shoCheBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ).length : 0; // What: Page Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved ONB_EPT_ARR entries, 0 outside shoCheBoo.
-	const genCarNum = shoCheBoo ? 1 : 0;                                                                                              // What: Generate Card Count Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shoCheBoo, otherwise 0.
-	const genDonNum = ( shoCheBoo && ONB_CHE_OBJ.entLooFun( staAppObj, ONB_GII_STR ) ) ? 1 : 0;                                       // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarNum. How: This is 1 only while shoCheBoo AND the Generate item already has a checklist entry.
+	const genCarNum = shoCheBoo ? 1 : 0;                                                                                                  // What: Generate Card Count Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shoCheBoo, otherwise 0.
+	const genDonNum = ( shoCheBoo && ONB_CHE_OBJ.entLooFun( staAppObj, ONB_GII_STR ) ) ? 1 : 0;                                           // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarNum. How: This is 1 only while shoCheBoo AND the Generate item already has a checklist entry.
 
 	// #endregion Replay-Continuation Counts
 
@@ -724,8 +724,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			rinCurEle.classList.remove( cssModObj.proRinDivPulsing, cssModObj.proRinDivCelebrating ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes both classes unconditionally before the reflow forcing line below.
-			void rinCurEle.offsetWidth;                                                 // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between, or the browser coalesces the two and never replays the animation. How: Reading offsetWidth forces a synchronous layout pass.
-			setCelNonNum( ( curNonNum ) => curNonNum + 1 );                             // What: Completion Nonce Bump. Why: The celebratory title needs to re-mount and replay its per-word reveal. How: This increments celNonNum by 1.
+			void rinCurEle.offsetWidth;                                                               // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between, or the browser coalesces the two and never replays the animation. How: Reading offsetWidth forces a synchronous layout pass.
+			setCelNonNum( ( curNonNum ) => curNonNum + 1 );                                           // What: Completion Nonce Bump. Why: The celebratory title needs to re-mount and replay its per-word reveal. How: This increments celNonNum by 1.
 
 			if ( celStyStr === 'confetti' || celStyStr === 'sparkle' ) { // What: Rect Measurement Branch. Why: Only the confetti/sparkle styles need a measured overlay rect at all. How: This measures the cards column and its scroller, falling back to the full viewport if either is missing.
 
@@ -815,7 +815,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			const carEleLis = ( celStyStr === 'ripple' && maiScrRef.current ) // What: Card Element List. Why: Only the Ripple style needs the per-card exhale cascade at all. How: This queries every rendered card only under that style, otherwise an empty array.
 				? maiScrRef.current.querySelectorAll( '[data-element-name-hook~="todCarArt"]' ) // What: Ripple Branch. Why: The ripple cascades across every rendered card. How: This queries them all from the scroll root.
-				: [];                                                                          // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
+				: [];                                                                           // What: No Ripple Branch. Why: Every other style has no per-card cascade. How: This returns an empty array, so the loop below does nothing.
 
 
 			carEleLis.forEach( ( curCarEle, curIndNum ) => { // What: Card Exhale Stagger Loop. Why: Each card's own exhale needs a slightly later delay than the one before it, so the cascade reads as a wave. How: This sets a CSS variable and sets the data-card-exhale-active attribute on each card in turn.
@@ -875,7 +875,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			rinCurEle.classList.remove( cssModObj.proRinDivPulsing ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes the class unconditionally before the reflow forcing line below.
-			void rinCurEle.offsetWidth;                        // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
+			void rinCurEle.offsetWidth;                               // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
 			rinCurEle.classList.add( cssModObj.proRinDivPulsing );    // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the proRinDiv--pulsing modifier to rinCurEle.
 
 			const pulEndTim = setTimeout( () => rinCurEle.classList.remove( cssModObj.proRinDivPulsing ), durMilFun( 'p06' ) ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes proRinDiv--pulsing after the glow pulse's own p06 duration step, the longest of the pulse's animations. // Duration Base Plus 6 ~= 853.0ms
@@ -914,7 +914,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			stkCurEle.classList.remove( cssModObj.todStrDivBumped ); // What: Stale Class Clear. Why: A CSS animation class must be removed before being re-added, or the browser won't replay it. How: This removes todStrDiv--bumped unconditionally before the reflow forcing line below.
-			void stkCurEle.offsetWidth;                       // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
+			void stkCurEle.offsetWidth;                              // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
 			stkCurEle.classList.add( cssModObj.todStrDivBumped );    // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the todStrDiv--bumped modifier to stkCurEle.
 
 			const bumEndTim = setTimeout( () => stkCurEle.classList.remove( cssModObj.todStrDivBumped ), durMilFun( 'p06' ) ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes todStrDiv--bumped after the bump's own p06 duration step. // Duration Base Plus 6 ~= 853.0ms
@@ -984,8 +984,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const raiHeiNum = raiHorBoo ? raiCurEle.offsetHeight : 0;                             // What: Rail Height Number. Why: Only a horizontally-stacked rail contributes its own height to the sticky offset. How: This reads raiCurEle.offsetHeight only while raiHorBoo, otherwise 0.
 
 
-			tabCurEle.style.setProperty( '--tod-hea-hei', `${ heaHeiNum }px` );                // What: Header Height Property. Why: CSS elsewhere needs the header's own real height as a custom property. How: This writes heaHeiNum in pixels.
-			tabCurEle.style.setProperty( '--rail-h-h', `${ raiHeiNum }px` );                 // What: Rail Height Property. Why: CSS elsewhere needs the rail's own real height (when horizontal) as a custom property. How: This writes raiHeiNum in pixels.
+			tabCurEle.style.setProperty( '--tod-hea-hei', `${ heaHeiNum }px` );             // What: Header Height Property. Why: CSS elsewhere needs the header's own real height as a custom property. How: This writes heaHeiNum in pixels.
+			tabCurEle.style.setProperty( '--rail-h-h', `${ raiHeiNum }px` );                // What: Rail Height Property. Why: CSS elsewhere needs the rail's own real height (when horizontal) as a custom property. How: This writes raiHeiNum in pixels.
 			tabCurEle.style.setProperty( '--sti-top-hei', `${ heaHeiNum + raiHeiNum }px` ); // What: Sticky Top Height Property. Why: jumGroFun and the scroll-spy effect below both need this exact combined offset. How: This writes the sum of heaHeiNum and raiHeiNum in pixels.
 
 
@@ -1467,10 +1467,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                                                     // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
+			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' );                                                                    // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest .tab--today ancestor.
 			const stiHeiNum = tabCurEle ? ( parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ) ) : rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
 			const biaLinNum = stiHeiNum + 20; // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
-			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' );                                                                     // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
+			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' );                                                                    // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest .main ancestor.
 
 
 			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should always spy the LAST section, even if its own header can never reach the spy line. How: This checks either the scroller's own metrics or, without one, the window's.
@@ -1569,11 +1569,11 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		setActGroStr( groIdeStr ); // What: Active Group Set. Why: The clicked rail button should highlight immediately, without waiting for the scroll-spy effect to catch up. How: This publishes groIdeStr into actGroStr directly.
 		skiSpyRef.current = true;  // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
 
-		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                         // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
-		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                                         // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
+		const maiScrEle = tarSecEle.closest( '[data-element-name-hook~="appConMai"]' );                                        // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarSecEle to its nearest .main ancestor.
+		const tabCurEle = tarSecEle.closest( '[data-element-name-hook~="todTabDiv"]' );                                        // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarSecEle to its nearest .tab--today ancestor.
 		const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail, not at the section's own raw offset. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
-		const extPadNum = rhyPxlFun( 'bas' );                                                                                   // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
-		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                      // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
+		const extPadNum = rhyPxlFun( 'bas' );                                                                                  // What: Extra Padding Number. Why: A small extra gap beyond the sticky offset reads as more natural than a section's header touching the sticky edge exactly. How: This is a base rhythm step added to the scroll target below. // Vertical Rhythm Base ~= 14.572px
+		const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                     // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 
 		if ( maiScrEle ) { // What: Scroller Branch. Why: A real scroll container needs its own scrollTo call, distinct from the window fallback. How: This computes the target, checks whether it can even be reached, pins if not, then scrolls maiScrEle.
@@ -3102,8 +3102,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 					const stiHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sti-top-hei' ) ) || rhyPxlFun( 'p09' ); // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step. // Vertical Rhythm Base Plus 9 ~= 183.074px
-					const tarOffNum = genCurEle.offsetTop - stiHeiNum - rhyPxlFun( 'bas' );                                                 // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small base-step pad. How: This subtracts stiHeiNum and a base rhythm step from genCurEle's own offsetTop. // Vertical Rhythm Base ~= 14.572px
-					const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                      // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
+					const tarOffNum = genCurEle.offsetTop - stiHeiNum - rhyPxlFun( 'bas' );                                                // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small base-step pad. How: This subtracts stiHeiNum and a base rhythm step from genCurEle's own offsetTop. // Vertical Rhythm Base ~= 14.572px
+					const scrBehStr = redMotFun() ? 'auto' : 'smooth';                                                                     // What: Scroll Behavior String. Why: Reduced-motion users should jump instead of watching a smooth scroll. How: This is 'auto' under reduced motion, otherwise 'smooth'.
 
 
 					maiScrEle.scrollTo( { behavior : scrBehStr, top : tarOffNum } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls maiScrEle to tarOffNum, smoothly unless reduced motion is preferred.
@@ -4056,7 +4056,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 									const visTouArr = shoCheBoo // What: Visible Tour Array. Why: Post-cheDonBoo (replay continuation, see rptVisBoo's own comment), only the still-unresolved tours keep showing; the ORIGINAL first-time checklist still shows every one of them, done or not, unchanged. How: This is every tour during shoCheBoo, only the unresolved ones during rptVisBoo.
-										? ONB_EPT_ARR                                                                               // What: Checklist Branch. Why: The first-time checklist shows every tour. How: This returns the whole ONB_EPT_ARR.
+										? ONB_EPT_ARR                                                                                   // What: Checklist Branch. Why: The first-time checklist shows every tour. How: This returns the whole ONB_EPT_ARR.
 										: ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( staAppObj, curTouObj.ideStr ) ); // What: Replay Branch. Why: A replay only keeps the still-unresolved tours. How: This drops every tour with a checklist entry.
 
 

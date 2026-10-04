@@ -55,8 +55,8 @@
 const togFadFun = ( scrCurEle, attCurEle = scrCurEle ) => { // What: Toggle Fade Function. Why: Every scrolling rail hides each edge fade once that edge is reached. How: This measures scrCurEle and toggles both attributes on attCurEle.
 
 
-	const canScrBoo = scrCurEle.scrollWidth - scrCurEle.clientWidth > 1;                                      // What: Can Scroll Boolean. Why: A rail that doesn't overflow has no edge to fade at all. How: This checks for more than 1px of overflow.
-	const reaStaBoo = !canScrBoo || scrCurEle.scrollLeft <= 1;                                                // What: Reached Start Boolean. Why: The left fade should hide once the rail is scrolled all the way left. How: This is true when the rail can't scroll or sits within 1px of its start.
+	const canScrBoo = scrCurEle.scrollWidth - scrCurEle.clientWidth > 1;                                       // What: Can Scroll Boolean. Why: A rail that doesn't overflow has no edge to fade at all. How: This checks for more than 1px of overflow.
+	const reaStaBoo = !canScrBoo || scrCurEle.scrollLeft <= 1;                                                 // What: Reached Start Boolean. Why: The left fade should hide once the rail is scrolled all the way left. How: This is true when the rail can't scroll or sits within 1px of its start.
 	const reaEndBoo = !canScrBoo || scrCurEle.scrollLeft + scrCurEle.clientWidth >= scrCurEle.scrollWidth - 1; // What: Reached End Boolean. Why: The right fade should hide once the rail is scrolled all the way right. How: This is true when the rail can't scroll or sits within 1px of its end.
 
 

@@ -334,11 +334,11 @@ const sedPicFun = ( staAppObj, actStoObj ) => { // What: Seed Pickers Function. 
 		actStoObj.addPicFun({ // What: Onboarding Sample Copy Add Call. Why: The copy must be a real, editable picker, not a reference to the onboarding sample itself. How: This adds a fresh picker under copIdeStr, carrying curPicObj's own name/group/mode plus its items stripped of their own onboarding-only id field.
 
 
-			group : curPicObj.group,                                              // What: Group Field. Why: The copy should sit in the same group as the onboarding sample it mirrors. How: This carries curPicObj's own group through unchanged.
-			id    : copIdeStr,                                                    // What: Id Field. Why: The added picker must live under its own help-namespaced id, not the onboarding sample's real id. How: This assigns copIdeStr, computed above via helIdeFun.
+			group : curPicObj.group,                                                          // What: Group Field. Why: The copy should sit in the same group as the onboarding sample it mirrors. How: This carries curPicObj's own group through unchanged.
+			id    : copIdeStr,                                                                // What: Id Field. Why: The added picker must live under its own help-namespaced id, not the onboarding sample's real id. How: This assigns copIdeStr, computed above via helIdeFun.
 			items : curPicObj.items.map( ( { id : oldIdeStr, ...iteRstObj } ) => iteRstObj ), // What: Items Field. Why: Each item needs to drop its own onboarding-only id so the copy doesn't collide with the sample it mirrors. How: This maps every curPicObj item down to iteRstObj, its own fields minus id.
-			mode  : curPicObj.mode,                                               // What: Mode Field. Why: The copy must use the same picker-engine algorithm as the onboarding sample it mirrors. How: This carries curPicObj's own mode through unchanged.
-			name  : curPicObj.name                                                // What: Name Field. Why: The copy should display exactly like the onboarding sample it mirrors. How: This carries curPicObj's own name through unchanged.
+			mode  : curPicObj.mode,                                                           // What: Mode Field. Why: The copy must use the same picker-engine algorithm as the onboarding sample it mirrors. How: This carries curPicObj's own mode through unchanged.
+			name  : curPicObj.name                                                            // What: Name Field. Why: The copy should display exactly like the onboarding sample it mirrors. How: This carries curPicObj's own name through unchanged.
 
 
 		});

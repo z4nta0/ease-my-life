@@ -1724,8 +1724,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			const isaDocBoo = curScrEle === document.scrollingElement || curScrEle === document.documentElement;      // What: Is-A Document Boolean. Why: Several branches below need to know whether the resolved scroller is the document itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
-			const tarRecObj = uniRecFun( curEleArr );                                                                 // What: Target Rect Object. Why: Every branch below needs the target's own current union rect. How: This unions every matched element via uniRecFun.
+			const isaDocBoo = curScrEle === document.scrollingElement || curScrEle === document.documentElement;        // What: Is-A Document Boolean. Why: Several branches below need to know whether the resolved scroller is the document itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
+			const tarRecObj = uniRecFun( curEleArr );                                                                   // What: Target Rect Object. Why: Every branch below needs the target's own current union rect. How: This unions every matched element via uniRecFun.
 			const scrRecObj = isaDocBoo ? { bottom : window.innerHeight, top : 0 } : curScrEle.getBoundingClientRect(); // What: Scroller Rect Object. Why: The pad math below needs the scroller's own visible bounds. How: This uses the viewport bounds for the document scroller, otherwise curScrEle's own bounding rect.
 
 
@@ -1926,9 +1926,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				const coaLayObj = coaLayFun( tarRecObj, coaHeiRef.current, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
 				const coaStyObj = reaCoaRef.current.style;                                                    // What: Coach Style Object. Why: The layout above must actually be written onto the real DOM element. How: This reads reaCoaRef.current's own live CSSStyleDeclaration.
 
-				coaStyObj.left = coaLayObj.left + 'px';                                                             // What: Coach Left Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline left directly.
-				coaStyObj.top  = coaLayObj.top + 'px';                                                              // What: Coach Top Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline top directly.
-				coaStyObj.setProperty( '--coa-arr-off', arrHorFun( tarRecObj, coaLayObj.left, coaWidNum ) + 'px' );       // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --coa-arr-off to the freshly computed arrow offset.
+				coaStyObj.left = coaLayObj.left + 'px';                                                                // What: Coach Left Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline left directly.
+				coaStyObj.top  = coaLayObj.top + 'px';                                                                 // What: Coach Top Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes the inline top directly.
+				coaStyObj.setProperty( '--coa-arr-off', arrHorFun( tarRecObj, coaLayObj.left, coaWidNum ) + 'px' );    // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --coa-arr-off to the freshly computed arrow offset.
 				reaCoaRef.current.classList.toggle( cssModObj.coaCarDivUp, coaLayObj.arrStr === 'coaCarDiv--up' );     // What: Arrow Up Class Toggle. Why: The coach's own arrow direction must match whichever side coaLayFun picked. How: This toggles the module's upward-arrow class based on coaLayObj.arrStr.
 				reaCoaRef.current.classList.toggle( cssModObj.coaCarDivDown, coaLayObj.arrStr === 'coaCarDiv--down' ); // What: Arrow Down Class Toggle. Why: Same reasoning as the up-class toggle, for the opposite direction. How: This toggles the module's downward-arrow class based on coaLayObj.arrStr.
 

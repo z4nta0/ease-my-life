@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './app.module.css'; // What: CSS Module Object. Why: The app shell, main area, and tab bar are styled from their own module. How: This maps each class name in app.module.css to its hashed module class.
-import React     from 'react';           // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, ...) throughout, instead of importing individual named hooks.
+import React     from 'react';            // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, ...) throughout, instead of importing individual named hooks.
 
 
 import { APP_NAM_OBJ  } from './platform/appearance.js';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through this file's theme functions. How: This is read as APP_NAM_OBJ.resTheFun, resCusFun, PAL_SET_OBJ and appPalFun in the palette effect.
@@ -417,7 +417,7 @@ function AppRooCom () {
 
 	// #region App State Setup
 
-	const onbDemBoo                = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1;     // What: Onboard Demo Boolean. Why: This lets #onboard-demo/#onboard run the app against a fresh clean state without touching the user's real saved data. How: This checks the URL hash for the "onboard" substring.
+	const onbDemBoo                = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1;                   // What: Onboard Demo Boolean. Why: This lets #onboard-demo/#onboard run the app against a fresh clean state without touching the user's real saved data. How: This checks the URL hash for the "onboard" substring.
 	const [ staAppObj, actStoObj ] = useAppStaFun( onbDemBoo ? { initial : SED_NAM_OBJ.buiCleFun(), persist : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useAppStaFun, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
 
 	// #endregion App State Setup

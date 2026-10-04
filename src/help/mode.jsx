@@ -296,9 +296,9 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				return { // What: Chrome Item Return. Why: cliChrFun reads every one of these fields per chrome item. How: This carries the element, rect and selector through, resolving the side.
 
 
-					chrDomEle,                                                           // What: Chrome Document-Object-Model Element. Why: cliChrFun checks whether a target sits inside this element. How: This passes the matched element through unchanged.
-					chrRecObj,                                                           // What: Chrome Rect Object. Why: cliChrFun clips targets against this rect. How: This passes the rect measured above.
-					chrSelStr,                                                           // What: Chrome Selector String. Why: cliChrFun looks this selector up in CHR_PRI_OBJ. How: This passes the selector through unchanged.
+					chrDomEle,                                                            // What: Chrome Document-Object-Model Element. Why: cliChrFun checks whether a target sits inside this element. How: This passes the matched element through unchanged.
+					chrRecObj,                                                            // What: Chrome Rect Object. Why: cliChrFun clips targets against this rect. How: This passes the rect measured above.
+					chrSelStr,                                                            // What: Chrome Selector String. Why: cliChrFun looks this selector up in CHR_PRI_OBJ. How: This passes the selector through unchanged.
 					chrSidStr : chrSidStr === 'auto' ? detEdgFun( chrRecObj ) : chrSidStr // What: Chrome Side String. Why: Only the tab bar's own side varies at runtime. How: This resolves 'auto' via detEdgFun, otherwise keeps the fixed side.
 
 
@@ -353,7 +353,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 					const curLabStr = curIteObj.labStr // What: Current Label String. Why: A mulBoo conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curTarEle only, when curIteObj.labStr is set.
 						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector( curIteObj.labStr )?.value ) // What: Live Label Read. Why: A row's own name is its text, or an input's value while it is being edited. How: This queries labStr inside curTarEle and reads either.
-						: undefined;                                                                                                         // What: No Label Fallback. Why: An item without labStr has no per-row name. How: This leaves the label undefined.
+						: undefined; // What: No Label Fallback. Why: An item without labStr has no per-row name. How: This leaves the label undefined.
 
 					const padSurObj = claPadFun( tarRecObj, curIteObj.padXcoNum ?? rhyPxlFun( 'm02' ), curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ), chrIteArr, [ curTarEle ] ); // What: Pad Surviving Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXcoNum/padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
@@ -419,8 +419,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 			const padVerNum = curIteObj.padYcoNum ?? rhyPxlFun( 'm02' ); // What: Pad Vertical Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYcoNum override, or the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 			const shaRadObj = typeof curIteObj.shaStr === 'function'                                                                               // What: Shape Radius Object. Why: A multi-element union like the nav bar has no single source element's own border-radius to read, so its own shape function (passed the box's own padded dimensions) computes a radius directly instead. How: This calls curIteObj.shaStr when it is a function; otherwise a single-element union still reads a real border-radius via shaRadFun, and anything wider falls back to no shape at all.
-				? curIteObj.shaStr( tarRecObj.width + padHorNum * 2, tarRecObj.height + padVerNum * 2 )                                               // What: Shape Function Call. Why: A multi-element union computes its own radius from the padded box size. How: This calls curIteObj.shaStr with the padded width and height.
-				: tarEleArr.length === 1 // What: Single Element Check. Why: Only a single element has one real border-radius to read. How: This checks tarEleArr's own length.
+				? curIteObj.shaStr( tarRecObj.width + padHorNum * 2, tarRecObj.height + padVerNum * 2 ) // What: Shape Function Call. Why: A multi-element union computes its own radius from the padded box size. How: This calls curIteObj.shaStr with the padded width and height.
+				: tarEleArr.length === 1                                                                // What: Single Element Check. Why: Only a single element has one real border-radius to read. How: This checks tarEleArr's own length.
 					? shaRadFun( tarEleArr[ 0 ], tarRecObj.width + rhyPxlFun( 'm02' ) * 2, tarRecObj.height + rhyPxlFun( 'm02' ) * 2, curIteObj.shaStr ) // What: Element Radius Read. Why: A single element's own rounding should carry over to its highlight. How: This calls shaRadFun with the padded box size. // Vertical Rhythm Base Minus 2 ~= 8.304px
 					: null; // What: No Shape Fallback. Why: A wider union has no one radius to reuse. How: This leaves the shape null so the default radius applies.
 
@@ -430,8 +430,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				? matWidEle.getBoundingClientRect().width // What: Navbar Width Read. Why: On 'bottom' placement the tip matches the navbar's own width. How: This reads matWidEle's own current width.
 				: undefined;                              // What: No Width Fallback. Why: Other placements keep the usual fixed tip width. How: This leaves the width undefined.
 
-			const alwBelBoo = curIteObj.absStr ? !!document.querySelector( curIteObj.absStr ) : false;                                   // What: Always Below Boolean. Why: Only a page/placement where absStr's own target actually exists (e.g. the nav on side placement) should skip the normal above/below choice. How: This checks whether absStr currently matches anything at all.
-			const padSurObj = claPadFun( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr );                                        // What: Pad Surviving Object. Why: This item's own surviving per-side padding must be computed the same way as the mulBoo branch above. How: This calls claPadFun with the same padHorNum/padVerNum already resolved above.
+			const alwBelBoo = curIteObj.absStr ? !!document.querySelector( curIteObj.absStr ) : false; // What: Always Below Boolean. Why: Only a page/placement where absStr's own target actually exists (e.g. the nav on side placement) should skip the normal above/below choice. How: This checks whether absStr currently matches anything at all.
+			const padSurObj = claPadFun( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr );      // What: Pad Surviving Object. Why: This item's own surviving per-side padding must be computed the same way as the mulBoo branch above. How: This calls claPadFun with the same padHorNum/padVerNum already resolved above.
 
 
 			nexMapObj[ curIteObj.ideStr ] = { // What: Item Map Write. Why: The rendered overlay reads this exact merged shape back for its own mask cutout, highlight spot, badge, and (once opened) its own tip. How: This writes the finalized rect plus every derived field into nexMapObj.
@@ -831,7 +831,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				const spoStyObj = { // What: Spot Style Object. Why: The rendered highlight spot needs its own absolute position/size plus a border-radius matching radXcoNum/radYcoNum exactly. How: This is applied directly as this div's own inline style below.
 
 
-					borderRadius : `${ radXcoNum }px / ${ radYcoNum }px`,                  // What: Spot Border Radius. Why: The rendered spot's own rounding must exactly match the mask cutout's own radXcoNum/radYcoNum, or the two would visibly mismatch. How: This builds the 2-value CSS border-radius shorthand from radXcoNum/radYcoNum.
+					borderRadius : `${ radXcoNum }px / ${ radYcoNum }px`,    // What: Spot Border Radius. Why: The rendered spot's own rounding must exactly match the mask cutout's own radXcoNum/radYcoNum, or the two would visibly mismatch. How: This builds the 2-value CSS border-radius shorthand from radXcoNum/radYcoNum.
 					height       : curRecObj.height + padTopNum + padBotNum, // What: Spot Height. Why: The rendered spot must span the padded target's own full height, matching the mask cutout above. How: This adds padTopNum and padBotNum onto curRecObj's own height.
 					left         : curRecObj.left - padLefNum,               // What: Left Position. Why: The rendered spot must sit at the padded target's own left edge, matching the mask cutout above. How: This subtracts padLefNum from curRecObj's own left.
 					top          : curRecObj.top - padTopNum,                // What: Top Position. Why: The rendered spot must sit at the padded target's own top edge, matching the mask cutout above. How: This subtracts padTopNum from curRecObj's own top.
@@ -863,8 +863,8 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				const badIdeArr = curIteObj.mulBoo // What: Badge Identifier Array. Why: mulBoo items have no single recMapObj[id]; one badge per synthesized sub-id instead. How: This filters recMapObj's own keys down to this item's own sub-ids, or falls back to its own single id when it has a rect at all.
 					? Object.keys( recMapObj ).filter( ( curKeyStr ) => curKeyStr.startsWith( `${ curIteObj.ideStr }::` ) ) // What: Sub Identifier Filter. Why: A mulBoo item gets one badge per synthesized sub-id. How: This keeps every recMapObj key prefixed with this item's own id.
 					: recMapObj[ curIteObj.ideStr ]                                                                         // What: Rect Found Check. Why: An ordinary item only gets a badge once it has a rect this frame. How: This looks its own id up in recMapObj.
-						? [ curIteObj.ideStr ]                                                                                // What: Single Badge Identifier. Why: An ordinary item has exactly one badge. How: This wraps its own id in an array.
-						: [];                                                                                                 // What: No Badge Fallback. Why: An item with no rect this frame gets no badge. How: This returns an empty array.
+						? [ curIteObj.ideStr ] // What: Single Badge Identifier. Why: An ordinary item has exactly one badge. How: This wraps its own id in an array.
+						: [];                  // What: No Badge Fallback. Why: An item with no rect this frame gets no badge. How: This returns an empty array.
 
 
 

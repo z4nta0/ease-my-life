@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './segmented-control.module.css'; // What: CSS Module Object. Why: The control's track, thumb, and buttons are styled from their own module. How: This maps each class name in segmented-control.module.css to its hashed module class.
-import React     from 'react';                            // What: React. Why: SegConCom is built directly on React's own APIs. How: This is used directly (React.useRef, React.useCallback, React.useLayoutEffect) instead of importing individual named hooks.
+import React     from 'react';                          // What: React. Why: SegConCom is built directly on React's own APIs. How: This is used directly (React.useRef, React.useCallback, React.useLayoutEffect) instead of importing individual named hooks.
 
 // #endregion Imports
 

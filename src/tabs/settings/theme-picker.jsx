@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './theme-picker.module.css'; // What: CSS Module Object. Why: The theme subsections and rows are styled from their own module. How: This maps each class name in theme-picker.module.css to its hashed module class.
-import React     from 'react';                       // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                     // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
 import { APP_NAM_OBJ } from '../../platform/appearance.js'; // What: Appearance Namespace Object. Why: The Theme section needs to look up each built-in theme's own preview colors. How: This is read as APP_NAM_OBJ.PAL_SET_OBJ[key] when rendering each preset theme row.

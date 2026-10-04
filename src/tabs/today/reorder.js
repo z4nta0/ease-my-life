@@ -217,7 +217,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 			iteCurEle.setAttribute( 'data-item-drag-active', '' ); // What: Drag Active Attribute Set. Why: This is the hook the dragged element's own stylesheet uses to visually lift it, whichever module it belongs to. How: This adds the presence-only attribute to the dragged element only.
 			iteCurEle.style.transition = 'none';                   // What: Transition Disable. Why: The dragged element is translated directly by the pointer every frame and must never animate that, unlike its siblings. How: This clears any transition on the dragged element specifically.
 			iteCurEle.style.zIndex = '50';                         // What: Z Index Raise. Why: The dragged element must render above every sibling it passes over while floating. How: This raises its stacking order via an inline z-index.
-			iteCurEle.style.position = 'relative';    // What: Position Relative. Why: The z-index raise above only takes effect on a positioned element. How: This gives the dragged element a relative position context.
+			iteCurEle.style.position = 'relative';                 // What: Position Relative. Why: The z-index raise above only takes effect on a positioned element. How: This gives the dragged element a relative position context.
 
 
 		}

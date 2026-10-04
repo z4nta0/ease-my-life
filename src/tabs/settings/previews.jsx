@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './previews.module.css'; // What: CSS Module Object. Why: Both preview stages are styled from their own module. How: This maps each class name in previews.module.css to its hashed module class.
-import React     from 'react';                   // What: React. Why: This is the UI library both of this file's components are built on. How: This is used directly (React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
+import React     from 'react';                 // What: React. Why: This is the UI library both of this file's components are built on. How: This is used directly (React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
 import { durMilFun } from '../../utils/rhythm.js';     // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.

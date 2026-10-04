@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './app-feature-card.module.css'; // What: CSS Module Object. Why: The App Feature card is styled from its own module. How: This maps each class name in app-feature-card.module.css to its hashed module class.
-import React     from 'react';                           // What: React. Why: AppFeaCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                         // What: React. Why: AppFeaCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
 import { bloReaFun   } from '../../onboarding/app-features.jsx'; // What: Blocked Reason Function. Why: An app-feature tour can require an earlier one first, and its card must explain why it can't start yet. How: This is called with the card's feature id.

@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './contact-support.module.css'; // What: CSS Module Object. Why: The trigger row and the support form are styled from their own module. How: This maps each class name in contact-support.module.css to its hashed module class.
-import React     from 'react';                          // What: React. Why: ConSupCom is built directly on React's own APIs. How: This is used directly (React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                        // What: React. Why: ConSupCom is built directly on React's own APIs. How: This is used directly (React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { APP_VER_STR } from '../../constants.js';        // What: App Version String. Why: A bug report should arrive with the real build version attached. How: This fills the form's own read-only version field and is posted with the message.

@@ -1181,8 +1181,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 								{ picDatObj.mode === 'ease-up' // What: Ease Up Check. Why: An ease-up picker empties because nothing has drifted to eligibility yet. How: This picks the ease-up sentence when the mode matches.
-									? 'Nothing eligible yet. Run again to drift items closer.'          // What: Ease Up Message. Why: Nothing in an ease-up pool has drifted to eligibility yet. How: This tells the user to run again.
-									: picDatObj.mode === 'ease-down'                                    // What: Ease Down Check. Why: An ease-down picker empties because everything is depleted. How: This picks the ease-down sentence when the mode matches.
+									? 'Nothing eligible yet. Run again to drift items closer.' // What: Ease Up Message. Why: Nothing in an ease-up pool has drifted to eligibility yet. How: This tells the user to run again.
+									: picDatObj.mode === 'ease-down'                           // What: Ease Down Check. Why: An ease-down picker empties because everything is depleted. How: This picks the ease-down sentence when the mode matches.
 										? 'Everything is depleted. Refill the picker to bring items back.' // What: Ease Down Message. Why: Every item in an ease-down pool is depleted. How: This points the user at Refill.
 										: 'No items in this picker.'                                       // What: Empty Pool Branch. Why: Every other mode only empties when it has no items at all. How: This renders a fixed sentence.
 								}

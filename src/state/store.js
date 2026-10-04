@@ -2210,7 +2210,7 @@ function useAppStaFun( optArgObj ) {
 
 
 			const curAncObj = TAS_NAM_OBJ.ancDatFun( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Every day-comparison below must be pinned to the last generation's own day, not live "now". How: This calls TAS_NAM_OBJ.ancDatFun with today's own generatedAt.
-			const curDayStr = isoDayFun( curAncObj );                                      // What: Current Day String. Why: Both the lastDone stamp and the completion-log row below need this exact ISO day. How: This calls isoDayFun with curAncObj.
+			const curDayStr = isoDayFun( curAncObj );                                                  // What: Current Day String. Why: Both the lastDone stamp and the completion-log row below need this exact ISO day. How: This calls isoDayFun with curAncObj.
 			const wasDonBoo = TAS_NAM_OBJ.isaDonFun( curTasObj, curAncObj );                           // What: Was Done Boolean. Why: Every branch below depends on which direction this toggle is heading. How: This calls TAS_NAM_OBJ.isaDonFun with curTasObj and curAncObj.
 
 			const nexTasArr = curStaObj.tasks.map( ( tasMapObj ) => // What: Next Task Array. Why: Only the toggled task's own lastDone actually changes. How: This maps curStaObj.tasks, setting lastDone to null (un-checking) or curDayStr (completing) on the one matching task.

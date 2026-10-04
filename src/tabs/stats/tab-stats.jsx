@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-stats.module.css'; // What: CSS Module Object. Why: TabStaCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                   // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, React.useMemo, React.useCallback, ...) throughout instead of importing individual named hooks.
+import React     from 'react';                  // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, React.useMemo, React.useCallback, ...) throughout instead of importing individual named hooks.
 
 
 import { CAD_NAM_OBJ  } from '../../core/cadence.js';         // What: Cadence Namespace Object. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.
@@ -2890,12 +2890,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 								...visPicArr.map( ( picCurObj ) => ( { // What: Picker Tab Entry Mapping. Why: Every currently-visible picker needs its own scope tab entry before the combined list is sorted. How: This maps each visPicArr entry to a small { cliFun, keyStr, labStr, namStr, picStr, selBoo } shape.
 
 
-									cliFun : () => setScoValStr( picCurObj.id ),               // What: Click Function. Why: Choosing this tab switches the page to this picker. How: This sets scoValStr to the picker's own id.
+									cliFun : () => setScoValStr( picCurObj.id ), // What: Click Function. Why: Choosing this tab switches the page to this picker. How: This sets scoValStr to the picker's own id.
 									keyStr : picCurObj.id,                                     // What: Key String. Why: Each tab needs a stable React key. How: This uses the picker's own id.
 									labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The tab's subline names the picker's mode. How: This reads the mode's own display label.
-									namStr : picCurObj.name,                                   // What: Name String. Why: The tab shows the picker's own name. How: This copies it.
-									picStr : picCurObj.id,                                     // What: Picker String. Why: The tab carries a data-picker-id hook for the tours. How: This copies the picker's own id.
-									selBoo : scoValStr === picCurObj.id                        // What: Selected Boolean. Why: The active tab is highlighted. How: This compares scoValStr against the picker's own id.
+									namStr : picCurObj.name,                     // What: Name String. Why: The tab shows the picker's own name. How: This copies it.
+									picStr : picCurObj.id,                       // What: Picker String. Why: The tab carries a data-picker-id hook for the tours. How: This copies the picker's own id.
+									selBoo : scoValStr === picCurObj.id          // What: Selected Boolean. Why: The active tab is highlighted. How: This compares scoValStr against the picker's own id.
 
 
 								} ) )

@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-data.module.css'; // What: CSS Module Object. Why: The Data tab's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                // What: React. Why: TabDatCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                 // What: React. Why: TabDatCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { CAD_NAM_OBJ  } from '../../core/cadence.js';               // What: Cadence. Why: Each picker card's own header needs the shared cadence summary helpers. How: This is called in TabDatCom's picker cards.
@@ -1570,12 +1570,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							...visPicArr.map( ( picCurObj ) => ( { // What: Picker Boxes Spread. Why: Every visible picker gets its own box. How: This maps visPicArr to one entry each.
 
 
-								cliFun : () => selScoFun( picCurObj.id ),                  // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
-								ideStr : picCurObj.id,                                     // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-id. How: This is the picker's id.
+								cliFun : () => selScoFun( picCurObj.id ), // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
+								ideStr : picCurObj.id,                    // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-id. How: This is the picker's id.
 								keyStr : picCurObj.id,                                     // What: Key String. Why: React needs a stable key per box. How: This is the picker's id.
 								labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The box's second line names the picker's mode. How: This reads the mode's label.
-								namStr : picCurObj.name,                                   // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
-								selBoo : curScoStr === picCurObj.id                        // What: Selected Boolean. Why: The active box is highlighted. How: This checks curScoStr against the picker's id.
+								namStr : picCurObj.name,                  // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
+								selBoo : curScoStr === picCurObj.id       // What: Selected Boolean. Why: The active box is highlighted. How: This checks curScoStr against the picker's id.
 
 
 							} ) )

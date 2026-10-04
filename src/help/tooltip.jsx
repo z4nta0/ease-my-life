@@ -94,7 +94,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 
 
 		topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The always-below branch places the tip a fixed base step under the target regardless of available room. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
-		tipClaStr = 'helTipDiv--up';                        // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
+		tipClaStr = 'helTipDiv--up';                       // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
 		maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
 
 
@@ -114,7 +114,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 
 
 			topTipNum = tarRecObj.bottom + rhyPxlFun( 'bas' ); // What: Below Top Set. Why: The ordinary case's own below branch places the tip a base step under the target once it genuinely has the room. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
-			tipClaStr = 'helTipDiv--up';                        // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
+			tipClaStr = 'helTipDiv--up';                       // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
 			maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
 
 
@@ -124,7 +124,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 
 
 			topTipNum = Math.max( edgMarNum, aboAncNum - gapAboNum - tipHeiNum ); // What: Above Top Set. Why: The flip-above branch places the tip so its own bottom edge clears aboAncNum by gapAboNum, capped to never rise above the edge margin. How: This sets topTipNum via Math.max against edgMarNum.
-			tipClaStr = 'helTipDiv--down';                                         // What: Down Arrow Set. Why: A tip above the target points its arrow down at it. How: This sets tipClaStr to the down-pointing arrow class.
+			tipClaStr = 'helTipDiv--down';                                        // What: Down Arrow Set. Why: A tip above the target points its arrow down at it. How: This sets tipClaStr to the down-pointing arrow class.
 			maxHeiNum = spaAboNum;                                                // What: Above Max Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spaAboNum instead.
 
 
@@ -193,10 +193,10 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum ) {
 function HelTipCom ( { tarRecObj, tipIteObj } ) {
 
 
-	const tipEleRef                   = React.useRef( null );             // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
-	const [ tipStyObj, setTipStyObj ] = React.useState( null );           // What: Tip Style Object And Setter. Why: The tip's own absolute position is not known until after its first mount/measure. How: This starts null (rendered off-screen) and is written by the layout effect below.
+	const tipEleRef                   = React.useRef( null );              // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
+	const [ tipStyObj, setTipStyObj ] = React.useState( null );            // What: Tip Style Object And Setter. Why: The tip's own absolute position is not known until after its first mount/measure. How: This starts null (rendered off-screen) and is written by the layout effect below.
 	const [ arrClaStr, setArrClaStr ] = React.useState( 'helTipDiv--up' ); // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
-	const [ scrMaxNum, setScrMaxNum ] = React.useState( null );           // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
+	const [ scrMaxNum, setScrMaxNum ] = React.useState( null );            // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
 
 	const widStyObj = tipIteObj.mtwBoo && tarRecObj.tipWidNum != null ? { width : tarRecObj.tipWidNum } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidth, should override the usual fixed 280px. How: This reads tarRecObj.tipWidNum only under that combined condition, otherwise falls through to no override at all.
 

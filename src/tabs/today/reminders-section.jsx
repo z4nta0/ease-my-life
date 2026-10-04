@@ -1483,8 +1483,8 @@ function RemSecCom ( { actEdiStr, actStoObj, arvTasSet, cheExiBoo, ediModBoo, le
 
 
 								const nexEliObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date the Skip action would defer curTasObj to. How: This calls TAS_NAM_OBJ.nexEliFun against curTasObj.
-								const tomIsoStr = isoDayFun( new Date( Date.now() + 86400000 ) );                     // What: Tomorrow Iso String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
-								const nexIsoStr = nexEliObj ? isoDayFun( nexEliObj ) : null;                          // What: Next Iso String. Why: This is compared against tomIsoStr to decide the label below. How: This calls isoDayFun against nexEliObj, or null when there's no eligible day at all.
+								const tomIsoStr = isoDayFun( new Date( Date.now() + 86400000 ) );                                 // What: Tomorrow Iso String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
+								const nexIsoStr = nexEliObj ? isoDayFun( nexEliObj ) : null;                                      // What: Next Iso String. Why: This is compared against tomIsoStr to decide the label below. How: This calls isoDayFun against nexEliObj, or null when there's no eligible day at all.
 
 								const skiLabStr = !nexEliObj // What: Skip Label String. Why: This is the actual day named in the confirm prompt below, or null when there's nothing to skip to. How: This picks 'tomorrow' when nexIsoStr matches tomIsoStr, otherwise a full locale-formatted date, or null when nexEliObj itself is null.
 									? null                                                                                             // What: No Day Branch. Why: With no next eligible day there is nothing to name. How: This is null.

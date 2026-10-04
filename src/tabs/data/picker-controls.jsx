@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './picker-controls.module.css'; // What: CSS Module Object. Why: PicConCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                       // What: React. Why: PicConCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useLayoutEffect, React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                        // What: React. Why: PicConCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useLayoutEffect, React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { ButBasCom   } from '../../ui/button.jsx';          // What: Button Base Component. Why: PicConCom's own footer and inline actions need consistently-styled buttons. How: This is rendered throughout PicConCom.

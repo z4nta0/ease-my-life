@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-settings.module.css'; // What: CSS Module Object. Why: TabSetCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                      // What: React. Why: TabSetCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                     // What: React. Why: TabSetCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { annStaFun    } from './announce.js';                       // What: Announce Status Function. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.

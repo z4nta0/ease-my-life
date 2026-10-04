@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './page-tour-card.module.css'; // What: CSS Module Object. Why: The page tour card is styled from its own module. How: This maps each class name in page-tour-card.module.css to its hashed module class.
-import React     from 'react';                         // What: React. Why: PagTouCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                       // What: React. Why: PagTouCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
 import { IcoSvgCom   } from '../../ui/icon.jsx';                   // What: Icon Svg Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.

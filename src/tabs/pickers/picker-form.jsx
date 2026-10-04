@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './picker-form.module.css'; // What: CSS Module Object. Why: PicForCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                   // What: React. Why: PicForCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                    // What: React. Why: PicForCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.jsx';               // What: Button Base Component. Why: The form's step, add, save and cancel actions need consistently-styled controls. How: This is rendered for each of those actions.
@@ -211,7 +211,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const [ avoDupBoo, setAvoDupBoo ] = React.useState( ( iniForObj && iniForObj.avoidDuplicates ) || false );              // What: Avoid Duplicates Boolean And Setter. Why: Excludes an item from this picker's own pool for the day if its name (case-insensitive) is already present elsewhere on today's list, for pickers that intentionally share items with another picker and don't want the same one to surface twice. How: This defaults off, since most pickers don't share a pool with anything else, so this should stay opt-in.
 	const [ cadCurObj, setCadCurObj ] = React.useState( () => CAD_NAM_OBJ.norCadFun( iniForObj || {} ) );                   // What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CAD_NAM_OBJ.norCadFun's accepted shape matches the same fields addPicFun/savEdiFun read off iniForObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
 
-	const locDowNum = cadCurObj.cadence === 'weekly' ? cadCurObj.anchorDow : null;                      // What: Locked Dow Number. Why: Weekly cadence pins its anchor day ON in the Days control (and blocks the presets from dropping it), so the two controls can't contradict each other. How: This is the anchor day while weekly, otherwise null.
+	const locDowNum = cadCurObj.cadence === 'weekly' ? cadCurObj.anchorDow : null;                        // What: Locked Dow Number. Why: Weekly cadence pins its anchor day ON in the Days control (and blocks the presets from dropping it), so the two controls can't contradict each other. How: This is the anchor day while weekly, otherwise null.
 	const witLocFun = ( dayInpArr ) => CAD_NAM_OBJ.enfWeeFun( { ...cadCurObj, daysOfWeek : dayInpArr } ); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CAD_NAM_OBJ helper with the candidate days merged into the current cadence.
 
 
