@@ -8,6 +8,7 @@ import React     from 'react';                    // What: React. Why: PicVieCom
 
 
 import { ButBasCom    } from '../../ui/button.jsx';       // What: Button Base Component. Why: Pick One, Re-roll, Done and the pool actions need consistently-styled controls. How: This is rendered for each of those actions.
+import { durMilFun    } from '../../utils/rhythm.js';     // What: Duration Millisecond Function. Why: Exit timers must end with the animation they wait on. How: This returns a duration step's length in milliseconds.
 import { EntEdiCom    } from '../../ui/entry-editor.jsx'; // What: Entry Editor Component. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { IcoSvgCom    } from '../../ui/icon.jsx';         // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.jsx';     // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
@@ -106,6 +107,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 	const [ busPicBoo, setBusPicBoo ] = React.useState( false );  // What: Busy Picking Boolean And Setter. Why: The Pick One button must disable itself and show a busy label while the cycle animation is actually running. How: This is set true by runPicFun and cleared once onAniDonFun fires.
 	const [ picResObj, setPicResObj ] = React.useState( null );   // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PIC_NAM_OBJ.picIteFun() outcome to render from. How: This is written by runPicFun/rerActFun and read throughout the render below.
+	const [ runCouNum, setRunCouNum ] = React.useState( 0 );      // What: Run Count Number And Setter. Why: Every pick run needs a fresh cycle animation, even a Re-Roll that starts straight from a settled pick without passing through idle. How: runPicFun increments it, and the strip is keyed by it so each run remounts it.
 	const [ runPhaStr, setRunPhaStr ] = React.useState( 'idle' ); // What: Run Phase String And Setter. Why: Every part of this view's stage and action row renders differently depending on where the current run actually is. How: This starts on 'idle' and is advanced by runPicFun, onAniDonFun, senTodFun, and the tour-driven effect below. // What: Run Phase Values Note. Why: The phase drives every stage render, so its possible values are worth listing. How: It is one of 'idle', 'running', 'done', 'sent' or 'empty'.
 
 
@@ -139,7 +141,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	 * The shared follow-through for Re-roll and Done. It runs runActFun straight
 	 * away under reduced motion; otherwise it flags the result buttons as leaving
 	 * so they play their exit animation, then clears that flag and runs runActFun
-	 * 180ms later.
+	 * once the exit's own p01 duration step has passed. The buttons leave
+	 * together, since the entrance stagger only applies on the way in.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -164,14 +167,14 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 		setButLeaBoo( true ); // What: Leaving Stage Call. Why: The buttons need to actually play their own out-animation now. How: This flips butLeaBoo, which the render below applies as a className modifier.
 
-		setTimeout( () => { // What: Delayed Action Call. Why: The real action must not run until the out-animation has had time to actually play. How: This clears butLeaBoo and runs the caller's action 180ms later.
+		setTimeout( () => { // What: Delayed Action Call. Why: The real action must not run until the out-animation has had time to actually play. How: This clears butLeaBoo and runs the caller's action once the exit's own duration step has passed.
 
 
 			setButLeaBoo( false ); // What: Leaving Clear Call. Why: The buttons stop playing their exit once the delay is up. How: This resets butLeaBoo to false.
 			runActFun();           // What: Run Action Call. Why: The deferred action runs only after the exit animation. How: This calls the runActFun the caller passed in.
 
 
-		}, 180 ); // What: Exit Animation Delay. Why: runActFun must wait for the button's exit animation. How: This 180ms matches that animation's duration.
+		}, durMilFun( 'p01' ) ); // What: Exit Animation Delay. Why: runActFun must wait for the buttons' exit animation. How: This waits the same p01 duration step the exit keyframes play over. // Duration Base Plus 1 ~= 209.1ms
 
 
 	};
@@ -796,6 +799,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 		setPicResObj( runResObj ); // What: Result Store Call. Why: The stage and Send/Re-roll buttons both need this exact outcome once the cycle settles. How: This writes runResObj into picResObj.
 
+		setRunCouNum( ( preCouNum ) => preCouNum + 1 ); // What: Run Count Increment Call. Why: The strip remounts for every run, so a Re-Roll from a settled pick starts a fresh cycle. How: This adds 1 to runCouNum.
+
 		setBusPicBoo( true ); // What: Busy Start Call. Why: The button must disable itself and show a busy label while the cycle plays. How: This flips busPicBoo true.
 
 		setRunPhaStr( 'running' ); // What: Running Phase Call. Why: The stage must switch to rendering PicStrCom's own cycle animation. How: This writes 'running' into runPhaStr.
@@ -889,17 +894,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 	}, [ touBusObj.redNonNum ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact bus value should re-run this synthesis. How: touBusObj.redNonNum is the sole trigger; deliberately excluded from a broader deps list since picker/staAppObj.items/todIdeSet are read fresh from the closure each time it fires.
 
 
-	const rerActFun = () => { // What: Reroll Action Function. Why: Re-roll needs to reset back to idle and then immediately kick off a fresh pick. How: This clears the phase and result, then schedules runPicFun on the next tick.
-
-
-		setRunPhaStr( 'idle' ); // What: Idle Reset Call. Why: The stage must briefly show its idle state before the next pick starts. How: This writes 'idle' into runPhaStr.
-
-		setPicResObj( null ); // What: Result Clear Call. Why: The previous outcome must not linger while a new pick is about to run. How: This clears picResObj.
-
-		setTimeout( runPicFun, 50 ); // What: Delayed Repick Call. Why: A brief pause reads more naturally than an instant re-spin. How: This calls runPicFun again 50ms later.
-
-
-	};
+	const rerActFun = () => runPicFun(); // What: Reroll Action Function. Why: Re-roll needs a fresh pick straight from the settled one, keeping the stage on screen instead of flashing its idle view. How: This calls runPicFun, whose new run count remounts the strip into a fresh cycle.;
 
 
 	// #region senTodFun
@@ -1129,6 +1124,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 
 
 						<PicStrCom
+							key={ runCouNum } // What: Key. Why: A Re-Roll starts straight from a settled pick, so the strip would otherwise stay mounted and never replay its cycle. How: Each run bumps runCouNum, which remounts the strip into a fresh cycle.
+
 							canIteArr={ picResObj.cycArr }
 							picIteObj={ picResObj.picObj }
 							styKeyStr={ aniStyStr }
@@ -1261,7 +1258,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 							<ButBasCom
 								className={` ${ cssModObj.picActBut }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.picActButLeaving : '' } `}
 
-								style={{ animationDelay : '60ms' }}
+								style={{ animationDelay : ( butLeaBoo || runPhaStr === 'sent' ) ? '0ms' : '60ms' }} // What: Animation Delay. Why: The buttons rise in staggered but leave together, so the action never cuts a later button's exit short. How: This keeps the entrance delay, dropping it to 0ms while the buttons leave.
 
 								data-element-name-hook='picRerBut'
 								data-tour-disabled-active={ intSenBoo || undefined } // What: Tour Disabled Active Attribute. Why: While the tour asks for Send to Today, this action must look and act unavailable, since a disabled button alone looks no different. How: This sets the presence-only attribute, which ButBasCom passes to its button, while intSenBoo is true.
@@ -1278,7 +1275,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } ) {
 							<ButBasCom
 								className={` ${ cssModObj.picActBut }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.picActButLeaving : '' } `}
 
-								style={{ animationDelay : '120ms' }}
+								style={{ animationDelay : ( butLeaBoo || runPhaStr === 'sent' ) ? '0ms' : '120ms' }} // What: Animation Delay. Why: The buttons rise in staggered but leave together, so the action never cuts a later button's exit short. How: This keeps the entrance delay, dropping it to 0ms while the buttons leave.
 
 								data-tour-disabled-active={ disDonBoo || undefined } // What: Tour Disabled Active Attribute. Why: While the tour asks for Send to Today, this action must look and act unavailable, since a disabled button alone looks no different. How: This sets the presence-only attribute, which ButBasCom passes to its button, while disDonBoo is true.
 
