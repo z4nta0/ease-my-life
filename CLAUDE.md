@@ -2835,6 +2835,14 @@ Decided 2026-10-03, for the HTML pass that follows the CSS pass.
   trailing comment (merged after its What/Why/How, per the merging rule
   under "### Comments"); a note about a whole group becomes that section's
   summary.
+- **XML files follow these rules too** (decided 2026-10-03, so far only
+  `public/sitemap.xml`): tabs, the JSX sibling spacing, single-quoted
+  attribute values (XML allows them), and a `<!-- What: ... -->` comment on
+  every element, with no file-level summary. One exception: the file starts
+  with its `<?xml ... ?>` declaration on its very first line, since anything
+  before it makes the file invalid, and ends with exactly one newline, the
+  same boundaries as JSON. An exported image (`public/assets/icon.svg`) is
+  artwork rather than hand-edited code, and stays exactly as exported.
 
 ### JSON
 Decided 2026-10-03. JSON can't hold comments and its syntax is fixed, so
@@ -2872,6 +2880,37 @@ never churns when a tool rewrites the file.
   process.exit( s === JSON.stringify( JSON.parse( s ), null, '\t' ) + '\n'
   ? 0 : 1 )" <file>
   ```
+
+### Plain-text config files
+Decided 2026-10-03. Files in a tool's own line-based format: Netlify's
+`_headers` and `_redirects`, and `robots.txt`. Their tools read them line by
+line, so only the rules that can't change what a tool reads apply.
+- **File boundaries**: exempt from the 3-blank-line start and 2-blank-line
+  end rules, the same as JSON. A file starts on its first line and ends with
+  exactly one newline, since older `robots.txt` parsers read a blank line as
+  the end of a group.
+- **Comments are `#` lines of their own**, never trailing, since these
+  formats read anything after a value as part of that value. Every rule or
+  block gets the one-line `# What: ... Why: ... How: ...` directly above it,
+  glued with no blank line. A long explanation becomes a summary block above
+  that line, the `#` form of a design-rationale block: `#` lines hard-wrapped
+  at 79 characters, a `<filename> = <Name> <Descriptor>` name line,
+  `@summary`, and `@author`, with a bare `#` for each blank line inside it
+  and 1 blank line between the block and the comment it sits above. There's
+  no file-level summary, the same as HTML.
+- **Spacing**: 3 blank lines between one block (its summary, comment, and
+  lines) and the next, the same as top-level JS declarations. A block's own
+  lines sit together with no blank lines.
+- **Indentation**: tabs, which Netlify accepts for a `_headers` block's
+  header lines.
+- **Order**: where order changes behavior it stays as authored (`_redirects`
+  rules match top to bottom, and a `robots.txt` group's rules are read in
+  order); otherwise lines are alphabetized, e.g. the headers within one
+  `_headers` block. A Content-Security-Policy's directives follow the
+  convention: `default-src` first, then the rest alphabetized.
+- **Long values stay on one line**: Netlify can't continue a header value
+  onto the next line, so a long one (the Content-Security-Policy) stays
+  whole.
 
 ### Arrays and objects
 - **Once an array literal cannot stay on a single line, every one of its
