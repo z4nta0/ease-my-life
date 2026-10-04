@@ -780,7 +780,7 @@ const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-E
 		return [ // What: Highlights Tour Steps Return. Why: The caller needs this feature's own full 2-step array, replacing Step 1 entirely rather than following it. How: This returns the highlights tour's own steps, each carrying its own selector/copy/navigation fields. // Unlike every other feature, this one does NOT use the shared buiTs1Fun nav-click (see FeaTouCom's own steps prop below, which skips prepending it for this feaIdeStr specifically): the whole point is the help-highlight toggle itself (.helTogBut, help/mode.jsx), which already sits in the CURRENT page's own header, there's nothing to navigate to first. Both steps target the exact same element (it never moves), so the highlight/coach position stays pinned across the transition between them, only the body copy changes.
 
 
-            { // What: Highlights Feature Step. Why: This is the highlights tour's own 1st step, the real help-highlight toggle. How: This teaches turning the feature on.
+			{ // What: Highlights Feature Step. Why: This is the highlights tour's own 1st step, the real help-highlight toggle. How: This teaches turning the feature on.
 
 
 				bacBoo : false,                                   // What: Back Boolean. Why: This is this tour's very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.

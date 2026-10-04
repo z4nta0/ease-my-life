@@ -289,7 +289,15 @@ async function reaDatFun() {
 
 
 
-	return { ...resStaObj, pickLog: picLogArr || [] }; // What: Rest State Return. Why: The caller needs the two separately-stored pieces merged back into one full state object. How: This spreads resStaObj and reattaches picLogArr (or an empty array, for a state store written before this split ever existed) as its own pickLog field.
+	return { // What: Rest State Return. Why: The caller needs the two separately-stored pieces merged back into one full state object. How: This spreads resStaObj and reattaches picLogArr as its own pickLog field.
+
+
+		...resStaObj, // What: Rest State Spread. Why: Every field but the pick log comes from the main store. How: This spreads resStaObj in first.
+
+		pickLog : picLogArr || [] // What: Pick Log. Why: The pick log lives in its own store and has to rejoin the state. How: This reattaches picLogArr, or an empty array for a state store written before this split ever existed.
+
+
+	};
 
 
 }
@@ -328,7 +336,7 @@ async function reaDatFun() {
 async function wriDatFun( appStaObj ) {
 
 
-	const { pickLog: picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr, leaving every other field in resStaObj.
+	const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr, leaving every other field in resStaObj.
 
 	const cloStaObj = JSON.parse( JSON.stringify( resStaObj ) ); // What: Clone State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
 
@@ -511,9 +519,9 @@ function wriLocFun( appStaObj, fulWriBoo ) {
 		if ( !fulWriBoo ) { // What: Not Full Write Check. Why: A warm-mirror write (as opposed to a fallback-engine write) must exclude pickLog entirely. How: This rebuilds payDatObj without pickLog, flagged with __mirrorNoLog, whenever fulWriBoo is false.
 
 
-			const { pickLog: picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: pickLog must be pulled out before the remaining fields become the actual mirror payload. How: This pulls pickLog out as picLogArr (discarded below) and keeps every other field in resStaObj.
+			const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Rest State Object Destructure. Why: pickLog must be pulled out before the remaining fields become the actual mirror payload. How: This pulls pickLog out as picLogArr (discarded below) and keeps every other field in resStaObj.
 
-			payDatObj = { ...resStaObj, __mirrorNoLog: true }; // What: Payload Data Object Rebuild. Why: A later reader (reaLocFun/iniStoFun) needs to know this specific copy's own pickLog is a stand-in, not real history. How: This spreads resStaObj and adds the __mirrorNoLog marker field.
+			payDatObj = { ...resStaObj, __mirrorNoLog : true }; // What: Payload Data Object Rebuild. Why: A later reader (reaLocFun/iniStoFun) needs to know this specific copy's own pickLog is a stand-in, not real history. How: This spreads resStaObj and adds the __mirrorNoLog marker field.
 
 
 		}

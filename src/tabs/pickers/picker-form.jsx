@@ -652,18 +652,26 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			: defEasObj;                                                       // What: Default Band Branch. Why: Every other add uses the generic defaults. How: This returns defEasObj.
 
 
-		setPooIteArr( ( preIteArr ) => [ ...preIteArr, { // What: Seed Item Call. Why: The freshly-opened editor needs a complete, sensible item already sitting in pooIteArr to edit. How: This appends the new item with every field resolved above.
+		setPooIteArr( ( preIteArr ) => [ // What: Seed Item Call. Why: The freshly-opened editor needs a complete, sensible item already sitting in pooIteArr to edit. How: This appends the new item with every field resolved above.
 
 
-			id     : newIdeStr,                 // What: Id. Why: The pool item needs its own id. How: This uses newIdeStr.
-			name   : newNamStr,                 // What: Name. Why: The item starts with its de-duplicated name. How: This uses newNamStr.
-			value  : fulChaBoo ? easThrNum : 0, // What: Value. Why: An item that should start full begins at the threshold, otherwise at 0. How: This uses easThrNum when fulChaBoo, otherwise 0.
-			weight : 1,                         // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
+			...preIteArr, // What: Previous Items Spread. Why: Every item already in the pool stays where it is. How: This spreads preIteArr ahead of the new item.
 
-			...easBanObj // What: Ease Band Spread. Why: The item carries the tour's or the default drift band. How: This spreads in easeMin and easeMax.
+			{ // What: New Item Object. Why: The new item needs every field resolved above. How: This builds the item the editor opens on.
 
 
-		} ] );
+				id     : newIdeStr,                 // What: Id. Why: The pool item needs its own id. How: This uses newIdeStr.
+				name   : newNamStr,                 // What: Name. Why: The item starts with its de-duplicated name. How: This uses newNamStr.
+				value  : fulChaBoo ? easThrNum : 0, // What: Value. Why: An item that should start full begins at the threshold, otherwise at 0. How: This uses easThrNum when fulChaBoo, otherwise 0.
+				weight : 1,                         // What: Weight. Why: Every item starts at the baseline weight. How: This is 1.
+
+				...easBanObj // What: Ease Band Spread. Why: The item carries the tour's or the default drift band. How: This spreads in easeMin and easeMax.
+
+
+			}
+
+
+		] );
 
 		setActNewStr( newIdeStr ); // What: Open Editor Call. Why: This is the actual state change that shows the new-item editor. How: This writes newIdeStr into actNewStr.
 

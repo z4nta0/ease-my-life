@@ -94,18 +94,22 @@ function invColFun( hexColStr ) {
 		const linOklFun = ( [ linRedNum, linGrnNum, linBluNum ] ) => { // What: Linear Rgb To Oklab Function. Why: Lightness must be inverted in OKLab space, not raw RGB, for a perceptually sane result. How: This applies Ottosson's own linear-RGB-to-OKLab matrix multiplication and cube roots.
 
 
-			const lmsLonNum = 0.4122214708 * linRedNum + 0.5363325363 * linGrnNum + 0.0514459929 * linBluNum;                 // What: Long-Medium-Short Long Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Long-cone row of Ottosson's linear-RGB-to-LMS matrix.
-			const lmsMedNum = 0.2119034982 * linRedNum + 0.6806995451 * linGrnNum + 0.1073969566 * linBluNum;                 // What: Long-Medium-Short Medium Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Medium-cone row of Ottosson's linear-RGB-to-LMS matrix.
-			const lmsShoNum = 0.0883024619 * linRedNum + 0.2817188376 * linGrnNum + 0.6299787005 * linBluNum;                 // What: Long-Medium-Short Short Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Short-cone row of Ottosson's linear-RGB-to-LMS matrix.
-			const cbrLonNum = Math.cbrt( lmsLonNum ), cbrMedNum = Math.cbrt( lmsMedNum ), cbrShoNum = Math.cbrt( lmsShoNum ); // What: Cube-Rooted Long-Medium-Short Numbers. Why: OKLab's own nonlinearity is a cube root of the LMS response, applied before the final matrix. How: This cube-roots each of lmsLonNum/lmsMedNum/lmsShoNum.
+			const lmsLonNum = 0.4122214708 * linRedNum + 0.5363325363 * linGrnNum + 0.0514459929 * linBluNum; // What: Long-Medium-Short Long Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Long-cone row of Ottosson's linear-RGB-to-LMS matrix.
+			const lmsMedNum = 0.2119034982 * linRedNum + 0.6806995451 * linGrnNum + 0.1073969566 * linBluNum; // What: Long-Medium-Short Medium Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Medium-cone row of Ottosson's linear-RGB-to-LMS matrix.
+			const lmsShoNum = 0.0883024619 * linRedNum + 0.2817188376 * linGrnNum + 0.6299787005 * linBluNum; // What: Long-Medium-Short Short Number. Why: OKLab's own Long/Medium/Short cone response must be computed before the cube root below. How: This is the Short-cone row of Ottosson's linear-RGB-to-LMS matrix.
+			const cbrLonNum = Math.cbrt( lmsLonNum );                                                         // What: Cube Root Long Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsLonNum.
+			const cbrMedNum = Math.cbrt( lmsMedNum );                                                         // What: Cube Root Medium Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsMedNum.
+			const cbrShoNum = Math.cbrt( lmsShoNum );                                                         // What: Cube Root Short Number. Why: OKLab's own nonlinearity is a cube root of each cone response, applied before the final matrix. How: This cube-roots lmsShoNum.
 
 
 
 			return [ // What: Oklab Triple Return. Why: The caller needs the L/a/b triple OKLab itself defines. How: This applies Ottosson's own LMS-to-OKLab matrix to the cube-rooted values above.
 
+
 				0.2104542553 * cbrLonNum + 0.7936177850 * cbrMedNum - 0.0040720468 * cbrShoNum, // What: Oklab Lightness Component. Why: This is OKLab's own L channel, the value the rest of this function actually inverts. How: This applies Ottosson's own LMS-to-OKLab matrix's L row to the cube-rooted Long/Medium/Short values.
 				1.9779984951 * cbrLonNum - 2.4285922050 * cbrMedNum + 0.4505937099 * cbrShoNum, // What: Oklab A Component. Why: This is OKLab's own a channel, the green-red chroma axis. How: This applies Ottosson's own LMS-to-OKLab matrix's a row to the cube-rooted Long/Medium/Short values.
 				0.0259040371 * cbrLonNum + 0.7827717662 * cbrMedNum - 0.8086757660 * cbrShoNum, // What: Oklab B Component. Why: This is OKLab's own b channel, the blue-yellow chroma axis. How: This applies Ottosson's own LMS-to-OKLab matrix's b row to the cube-rooted Long/Medium/Short values.
+
 
 			];
 
