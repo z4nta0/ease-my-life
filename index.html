@@ -206,6 +206,19 @@
 
 
 			}
+			@media ( scripting : none ) { /* What: No Script Boot Splash Div. Why: Without JavaScript the splash's dismiss script never runs, so it would cover the page and its no-JavaScript explanation forever. How: This applies only when scripting is unavailable. */
+
+
+				.booSplDiv { /* What: Hidden Boot Splash Div. Why: The noscript card should show instead. How: This takes the splash out of the page. */
+
+
+					display : none;
+
+
+				}
+
+
+			}
 
 
 			/* #region splEquDiv */
