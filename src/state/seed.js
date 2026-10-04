@@ -316,19 +316,20 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 		picRowArr.push({ // What: Pick Row Push. Why: This is one simulated row, in the exact shape state.pickLog itself expects. How: This builds the row from every argument above, spreading in outcome/depletedEnd only when actually given.
 
 
-			id          : 'pls_' + ( seqCouNum++ ).toString( 36 ),                                    // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one from a running counter, prefixed 'pls_'.
-			eid         : null,                                                                       // What: Entry Id. Why: A simulated historical row was never a live Today entry, so it has no entry to reference. How: This is always null for a row built by this simulation.
+			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? picTimObj.toISOString() : null, // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses picTimObj's own ISO string only when both conditions hold, otherwise null.
 			date        : isoDayFun( datValObj ),                                                     // What: Date. Why: Stats groups and filters rows by their own calendar day. How: This converts datValObj via isoDayFun.
-			pickerId    : curPicObj.id,                                                               // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPicObj's own id.
+			done        : outValStr === 'rejected' ? false : donValBoo,                               // What: Done. Why: A rejected toss was never actually completed, regardless of what donValBoo says. How: This forces false for a rejected row, otherwise uses donValBoo as given.
+			eid         : null,                                                                       // What: Entry Id. Why: A simulated historical row was never a live Today entry, so it has no entry to reference. How: This is always null for a row built by this simulation.
+			group       : curPicObj.group,                                                            // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
+			id          : 'pls_' + ( seqCouNum++ ).toString( 36 ),                                    // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one from a running counter, prefixed 'pls_'.
 			itemId      : curIteObj.id,                                                               // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curIteObj's own id.
 			itemName    : curIteObj.name,                                                             // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curIteObj's own name.
+			pickerId    : curPicObj.id,                                                               // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPicObj's own id.
 			pickerName  : curPicObj.name,                                                             // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
-			group       : curPicObj.group,                                                            // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
-			done        : outValStr === 'rejected' ? false : donValBoo,                               // What: Done. Why: A rejected toss was never actually completed, regardless of what donValBoo says. How: This forces false for a rejected row, otherwise uses donValBoo as given.
-			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? picTimObj.toISOString() : null, // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses picTimObj's own ISO string only when both conditions hold, otherwise null.
 			source      : souValStr,                                                                  // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from souValStr.
-			...( outValStr ? { outcome : outValStr } : {} ),                                          // What: Outcome Spread. Why: Most rows have no special outcome at all, so the field should be entirely absent rather than present-but-null. How: This spreads in an outcome field only when outValStr was actually given.
-			...( depEndBoo ? { depletedEnd : true } : {} )                                            // What: Depleted End Spread. Why: Only the row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd : true only when depEndBoo is truthy.
+
+			...( outValStr ? { outcome : outValStr } : {} ), // What: Outcome Spread. Why: Most rows have no special outcome at all, so the field should be entirely absent rather than present-but-null. How: This spreads in an outcome field only when outValStr was actually given.
+			...( depEndBoo ? { depletedEnd : true } : {} )   // What: Depleted End Spread. Why: Only the row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd : true only when depEndBoo is truthy.
 
 
 		});
@@ -547,10 +548,10 @@ function buiCleFun() {
 
 		conditionalLog  : [],                                                                            // What: Conditional Log. Why: A brand-new user has no conditional trigger history at all. How: This is an empty array.
 		conditionals    : [],                                                                            // What: Conditionals. Why: A brand-new user has no conditionals at all. How: This is an empty array.
-		daily           : { pickerIds : [], runTime : '04:00', mode : 'auto' },                          // What: Daily. Why: The Daily generator needs a valid, empty configuration to start from. How: This is an empty pickerIds list paired with the app's own default runTime/mode.
+		daily           : { mode : 'auto', pickerIds : [], runTime : '04:00' },                          // What: Daily. Why: The Daily generator needs a valid, empty configuration to start from. How: This is an empty pickerIds list paired with the app's own default runTime/mode.
 		holidays        : HOL_NAM_OBJ.defStaFun(),                                                       // What: Holidays. Why: A brand-new user still needs a real, canonical holidays-state shape. How: This calls HOL_NAM_OBJ's own defStaFun.
 		items           : [],                                                                            // What: Items. Why: A brand-new user has no items at all. How: This is an empty array.
-		onboarding      : { welcomed : false, dismissed : false },                                       // What: Onboarding. Why: A brand-new user must actually see onboarding (the welcome modal, tour, and checklist). How: This marks onboarding as neither welcomed nor dismissed.
+		onboarding      : { dismissed : false, welcomed : false },                                       // What: Onboarding. Why: A brand-new user must actually see onboarding (the welcome modal, tour, and checklist). How: This marks onboarding as neither welcomed nor dismissed.
 		pickers         : [],                                                                            // What: Pickers. Why: A brand-new user has no pickers at all. How: This is an empty array.
 		pickLog         : [],                                                                            // What: Pick Log. Why: A brand-new user has no pick history at all. How: This is an empty array.
 		reminderLog     : [],                                                                            // What: Reminder Log. Why: A brand-new user has no reminder completion history at all. How: This is an empty array.
@@ -558,10 +559,10 @@ function buiCleFun() {
 		reminderSkipLog : [],                                                                            // What: Reminder Skip Log. Why: A brand-new user has no reminder skip history at all. How: This is an empty array.
 		streak          : 0,                                                                             // What: Streak. Why: A brand-new user has no streak yet. How: This is a fixed literal 0.
 		tasks           : [],                                                                            // What: Tasks Namespace Object. Why: A brand-new user has no reminders at all. How: This is an empty array.
-		today           : { date : todIsoStr, generatedAt : null, streakClaimed : false, entries : [] }, // What: Today. Why: A brand-new user still needs a valid Today, just an entirely empty one. How: This is today's own real date paired with no generation yet and no entries.
+		today           : { date : todIsoStr, entries : [], generatedAt : null, streakClaimed : false }, // What: Today. Why: A brand-new user still needs a valid Today, just an entirely empty one. How: This is today's own real date paired with no generation yet and no entries.
 		vacationLog     : [],                                                                            // What: Vacation Log. Why: A brand-new user has no inactive-state history at all. How: This is an empty array.
 
-		appearance : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' } // What: Appearance. Why: A brand-new user still needs a full, valid appearance settings object. How: This is the app's own default theme/animation/placement settings.
+		appearance : { autoSystem : false, completionStyle : 'confetti', customDark : null, customLight : null, pickAnim : 'reel', tabPlacement : 'bottom', theme : 'ink' } // What: Appearance. Why: A brand-new user still needs a full, valid appearance settings object. How: This is the app's own default theme/animation/placement settings.
 
 
 	};

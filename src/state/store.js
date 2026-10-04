@@ -2661,6 +2661,8 @@ function useAppStaFun( optArgObj ) {
 				 * "already have one" tutorial card would keep offering
 				 * itself.
 				 *
+				 * @author z4nta0 <https://github.com/z4nta0>
+				 *
 				*/
 
 				const finNamStr = ONB_SPI_ARR.includes( picArgObj.id ) ? ( norPicFun( picArgObj.name ) || picArgObj.name ) : uniNamFun( // What: Final Name String. Why: Onboarding sample pickers keep their exact names; every other picker needs a unique name. How: This tidies the name for a sample picker, else de-duplicates it against the other visible pickers.

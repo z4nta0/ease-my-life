@@ -1163,7 +1163,7 @@ async function staRepFun() {
 
 
 
-	const outStaObj = { engine : curEngStr, persisted : false, dataBytes : null, usage : null, quota : null, mirrorOk : mirWriBoo, mirrorAt : mirTimStr }; // What: Output Status Object. Why: This is the full report shape the Settings storage panel expects, seeded with everything already known synchronously. How: This is built once here and then filled in further by the awaited calls below.
+	const outStaObj = { dataBytes : null, engine : curEngStr, mirrorAt : mirTimStr, mirrorOk : mirWriBoo, persisted : false, quota : null, usage : null }; // What: Output Status Object. Why: This is the full report shape the Settings storage panel expects, seeded with everything already known synchronously. How: This is built once here and then filled in further by the awaited calls below.
 
 	outStaObj.dataBytes = await datBytFun(); // What: Output Data Bytes Assignment. Why: The exact persisted byte size can only be known after an async measurement. How: This awaits datBytFun and assigns its result onto outStaObj.
 

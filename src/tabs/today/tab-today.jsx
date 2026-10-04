@@ -2208,6 +2208,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					ordSloArr.push({ // What: Ordered Slot Push. Why: The day-off card still needs its own animation slot, in encounter order alongside every pick. How: This pushes a { pickerId, info } pair keyed by picIdeStr.
 
 
+						picStr : picIdeStr, // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
+
 						infObj : { // What: Info Object. Why: This is the record LoaCarCom reads for this slot. How: This bundles the slot's own kind, candidates, and card text.
 
 
@@ -2217,9 +2219,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							texStr : carTexStr     // What: Text String. Why: A settled day-off slot shows the card's own text. How: This passes carTexStr.
 
 
-						},
-
-						picStr : picIdeStr // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
+						}
 
 
 					});
@@ -2261,6 +2261,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				ordSloArr.push({ // What: Ordered Slot Push. Why: This pick still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by picIdeStr.
 
 
+					picStr : picIdeStr, // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
+
 					infObj : { // What: Info Object. Why: This is the record LoaCarCom reads for this slot. How: This bundles the slot's own kind, candidates, and picked id.
 
 
@@ -2269,9 +2271,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						kinStr : 'pick'                  // What: Kind String. Why: LoaCarCom renders each kind differently. How: This is the fixed 'pick' kind.
 
 
-					},
-
-					picStr : picIdeStr // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
+					}
 
 
 				});
@@ -2298,6 +2298,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				ordSloArr.push({ // What: Ordered Slot Push. Why: This charging card still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by picIdeStr.
 
 
+					picStr : picIdeStr, // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
+
 					infObj : { // What: Info Object. Why: This is the record LoaCarCom reads for this slot. How: This bundles the slot's own kind, candidates, and nothing else.
 
 
@@ -2305,9 +2307,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						kinStr : 'charging' // What: Kind String. Why: LoaCarCom renders each kind differently. How: This is the fixed 'charging' kind.
 
 
-					},
-
-					picStr : picIdeStr // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
+					}
 
 
 				});

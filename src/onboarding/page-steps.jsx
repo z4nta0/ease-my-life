@@ -963,9 +963,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...STA_TAR_OBJ.hemObj, // What: Heatmap Target Spread. Why: This step reuses the Stats catalog's own hemObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.hemObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .datLisDiv step and this tour's own pbvObj step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,    // What: Coach-At-Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .datLisDiv step and this tour's own pbvObj step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'stats', // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 				runFun : () => { // What: Run Function. Why: The pbvObj step's own target only renders once a specific picker is the active scope, so this selects the real sample picker (unhidden for this whole tour, see unhHisFun) before that step ever mounts. How: This clicks the real scope tab matching PRE_PIC_STR.
 
@@ -976,9 +977,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 					if ( picTabEle ) picTabEle.click(); // What: Picker Tab Click. Why: This must only fire when the control actually exists. How: This clicks picTabEle.
 
 
-				},
-
-				tabStr : 'stats' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+				}
 
 
 			},

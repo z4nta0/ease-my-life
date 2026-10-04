@@ -2742,12 +2742,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 									...exiModArr.map( ( picModStr ) => ( { // What: Mode Entry Mapping. Why: Every real mode in use needs its own pill entry with a matching count/click handler before the combined list is sorted. How: This maps each exiModArr entry to a small { key, name, count, isOn, onClick } shape.
 
 
+										cliFun : () => setTypFilStr( picModStr ),                                                               // What: Click Function. Why: Choosing this pill narrows the Type filter. How: This sets typFilStr to the mode.
 										couNum : picLisArr.filter( ( picCurObj ) => picCurObj.mode === picModStr && !picCurObj.hidden ).length, // What: Count Number. Why: The pill shows how many visible pickers use this mode. How: This counts non-hidden pickers with a matching mode.
 										keyStr : picModStr,                                                                                     // What: Key String. Why: Each pill needs a stable React key. How: This uses the mode key itself.
 										namStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picModStr ].labStr,                                                   // What: Name String. Why: The pill shows the mode's own display label. How: This reads it from SED_NAM_OBJ.MOD_DEF_OBJ.
-										selBoo : typFilStr === picModStr,                                                                       // What: Selected Boolean. Why: The active Type pill is highlighted. How: This compares typFilStr against the mode.
-
-										cliFun : () => setTypFilStr( picModStr ) // What: Click Function. Why: Choosing this pill narrows the Type filter. How: This sets typFilStr to the mode.
+										selBoo : typFilStr === picModStr                                                                        // What: Selected Boolean. Why: The active Type pill is highlighted. How: This compares typFilStr against the mode.
 
 
 									}) ),

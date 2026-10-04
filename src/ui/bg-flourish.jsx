@@ -398,11 +398,13 @@ function bloAroFun( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
  * @param colCouNum - Column Count Number: How many columns the grid has.
  * @param rowCouNum - Row Count Number: How many rows the grid has.
  *
- * @returns An array of { row, col, big } placements, one per glyph.
+ * @returns An array of { colIndNum, isaBigBoo, rowIndNum } placements, one
+ * per glyph.
+ * @see {@link plaIteArr}
  *
  * @example
  * ```ts
- * plaGriFun(colCouNum, rowCouNum) // => array of { row, col, big }
+ * plaGriFun( colCouNum, rowCouNum ) // => array of placements
  * ```
  *
 */
@@ -440,7 +442,7 @@ function plaGriFun( colCouNum, rowCouNum ) {
 			const isaBigBoo = canBigBoo && Math.random() < BIG_CHA_NUM; // What: Is-A Big Boolean. Why: Even when a big glyph COULD fit here, it should only actually happen sometimes. How: This rolls against BIG_CHA_NUM, only when canBigBoo already allows it.
 
 
-			plaIteArr.push( { row : rowIndNum, col : colIndNum, big : isaBigBoo } ); // What: Placement Push. Why: This is the actual glyph placement this iteration produces. How: This records the chosen cell and whether it claimed a big footprint.
+			plaIteArr.push( { colIndNum, isaBigBoo, rowIndNum } ); // What: Placement Push. Why: This is the actual glyph placement this iteration produces. How: This records the chosen cell and whether it claimed a big footprint.
 
 			bloAroFun( bloGriArr, rowIndNum, colIndNum, isaBigBoo ? 2 : 1, isaBigBoo ? 2 : 1 ); // What: Block Around Call. Why: Nothing else may land adjacent to the glyph just placed. How: This excludes the placed glyph's own full neighborhood, sized to match whether it was big.
 
@@ -521,7 +523,7 @@ function genSidFun( gutWidNum, conHeiNum ) {
 
 
 
-	return plaGriFun( colCouNum, rowCouNum ).map( ( { row : rowIndNum, col : colIndNum, big : isaBigBoo }, iteIndNum ) => { // What: Placement Map Callback. Why: Every raw grid placement above still needs to become one fully-styled, renderable glyph item. How: This maps each { row, col, big } placement onto a { id, big, top, inset, symbol, size, opacity, rotate } item.
+	return plaGriFun( colCouNum, rowCouNum ).map( ( { colIndNum, isaBigBoo, rowIndNum }, iteIndNum ) => { // What: Placement Map Callback. Why: Every raw grid placement above still needs to become one fully-styled, renderable glyph item. How: This maps each { row, col, big } placement onto a { id, big, top, inset, symbol, size, opacity, rotate } item.
 
 
 		const isaOutBoo = colIndNum === colCouNum - 1;                                // What: Is-An Outer Boolean. Why: The bleed column needs a different band width than every full column. How: This checks whether the placement's own column is the last (bleed) one.

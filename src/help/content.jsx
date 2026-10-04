@@ -1313,18 +1313,18 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 	{ // What: Picker Items Help Item. Why: This is the on-demand help tip for the Picker Items element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
+		ideStr    : 'pickerItems',
+		padYcoNum : 4, // padYcoNum: 4, picPooDiv (the shared flex-column parent) only has an 11px gap to the Add Picker Item button below; the default 8px pad on each side would overlap by 5px otherwise.
+		selStr    : '[data-element-name-hook~="pooIteDiv"]',
+		titStr    : 'Picker Items',
+
 		bodEle : (
 
 
 			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className={ cssModObj.inlIcoSpa }><IcoSvgCom icoNamStr='calEle' sizSteStr='bas' /></span> Send to Today button will send the item to your todo list on the Today page, the <span className={ cssModObj.inlIcoSpa }><IcoSvgCom icoNamStr='ediEle' sizSteStr='bas' /></span> Edit button will allow you to edit the item's properties and the <span className={ cssModObj.inlIcoSpa }><IcoSvgCom icoNamStr='traEle' sizSteStr='bas' /></span> Delete button will delete the item after asking for confirmation.</> // What: Body Fragment. Why: This tip's own body mixes text with inline icons. How: This wraps the whole run as one element. // Vertical Rhythm Base ~= 14.572px
 
 
-		),
-
-		ideStr    : 'pickerItems',
-		padYcoNum : 4, // padYcoNum: 4, picPooDiv (the shared flex-column parent) only has an 11px gap to the Add Picker Item button below; the default 8px pad on each side would overlap by 5px otherwise.
-		selStr    : '[data-element-name-hook~="pooIteDiv"]',
-		titStr    : 'Picker Items'
+		)
 
 
 	},

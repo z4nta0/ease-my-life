@@ -79,6 +79,8 @@ const PIC_GAT_OBJ = { // What: Picker Gate Object. Why: This is the picker that 
 	conditionalId : CON_GAT_STR,        // What: Conditional Identifier String. Why: This is what actually gates this picker off on the conditional's own down days. How: This is CON_GAT_STR, matching CON_GAT_OBJ's own id.
 	group         : 'Chores',           // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
 	id            : 'hlp_pkr_yardwork', // What: Id String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
+	mode          : 'ease-up',          // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+	name          : 'Yard Work',        // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 	items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -88,10 +90,7 @@ const PIC_GAT_OBJ = { // What: Picker Gate Object. Why: This is the picker that 
 		{ easeMax : 8,  easeMin : 5,  name : 'Rake the leaves', value : 100, weight : 1 }  // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving help mode something real to point at. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, eased via its own easeMin/easeMax/value fields.
 
 
-	],
-
-	mode : 'ease-up',  // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
-	name : 'Yard Work' // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
+	]
 
 
 };
@@ -122,8 +121,10 @@ const EXT_PIC_ARR = [ // What: Extra Picker Array. Why: This is the extra sample
 	{ // What: Extra Picker Object. Why: This is one of the extra picker-mode examples described in the comment above this array, rounding out all 5 picker modes. How: This is read by the picker engine exactly like any real, user-created picker.
 
 
-		group : 'Entertainment',      // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		id    : 'hlp_pkr_icebreaker', // What: Id String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
+		group : 'Entertainment',         // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
+		id    : 'hlp_pkr_icebreaker',    // What: Id String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
+		mode  : 'random',                // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		name  : 'Ice Breaker Questions', // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 		items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -134,10 +135,7 @@ const EXT_PIC_ARR = [ // What: Extra Picker Array. Why: This is the extra sample
 			{ name : 'Dream vacation spot',       weight : 1 }  // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving help mode something real to point at. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, weighted via its own weight field.
 
 
-		],
-
-		mode : 'random',               // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
-		name : 'Ice Breaker Questions' // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
+		]
 
 
 	},
@@ -147,6 +145,8 @@ const EXT_PIC_ARR = [ // What: Extra Picker Array. Why: This is the extra sample
 
 		group : 'Entertainment',      // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
 		id    : 'hlp_pkr_movienight', // What: Id String. Why: This is this sample picker's own stable identifier, already living in help mode's own hlp_-prefixed namespace. How: This is a literal, load-bearing string, never generated at runtime.
+		mode  : 'weighted',           // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		name  : 'Movie Night Pick',   // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 		items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -158,10 +158,7 @@ const EXT_PIC_ARR = [ // What: Extra Picker Array. Why: This is the extra sample
 			{ name : 'Sci-Fi',      weight : 2 }  // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving help mode something real to point at. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, weighted via its own weight field.
 
 
-		],
-
-		mode : 'weighted',        // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
-		name : 'Movie Night Pick' // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
+		]
 
 
 	}
