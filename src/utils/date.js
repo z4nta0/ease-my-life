@@ -194,7 +194,7 @@ const forTimFun = ( isoDatStr ) => { // What: Format Time Function. Why: A few s
  *
 */
 
-const isoDayFun = ( datInpObj = new Date() ) => { // What: Iso Day Function. Why: Every dated state field (today.date, pick-log dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
+const isoDayFun = ( datInpObj = new Date() ) => { // What: Iso Day Function. Why: Every dated state field (pick-log dates, reminder dates) needs one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
 
 
 	const datCopObj = new Date( datInpObj ); // What: Date Copy Object. Why: datInpObj itself must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datInpObj.
