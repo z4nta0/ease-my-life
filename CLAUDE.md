@@ -194,6 +194,16 @@ user-level `~/.claude/CLAUDE.md`, which applies to all projects. This repo
 is where those rules were developed, so its files are the examples cited
 there. This section holds only what applies to this project.
 
+### New persisted fields
+
+Decided 2026-10-04. A field newly added to persisted user data (state,
+items, pickers, Today entries, revert snapshots, ...) uses the same plain
+camelCase as the existing persisted fields (`periodKey`, `activeItemId`)
+rather than the 6-character property rule, so the whole persisted schema
+can be renamed together in the planned migration-layer pass. E.g. a
+picker's own `lastRunPeriod`, the period start of its last completed
+non-daily run.
+
 ### Project-scoped naming overrides
 
 Each of these resolves a naming collision that only exists in this
