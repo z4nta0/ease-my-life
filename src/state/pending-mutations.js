@@ -14,14 +14,13 @@ import { isoDayFun   } from '../utils/date.js';        // What: Iso Day Function
  * pending-mutations.js = Pending Mutations
  *
  * @summary
- * A pick's own VALUE consequences (item value/weight changes, an
- * activeItemId patch, picks/lastPicked bumps, depletedEnd on the log)
- * are not applied when an entry is generated, re-rolled, or sent to
- * Today; only when the entry is marked DONE. Until then nothing about
- * item state changes, so an untouched item keeps its own charge and
- * keeps resurfacing. The staged mutation rides on the entry as
- * entry.pending; applying it records an entry.revert snapshot so
- * unchecking restores exactly:
+ * A pick's own VALUE consequences (item value/weight changes, an activeItemId
+ * patch, a non-daily run's lastRunPeriod, picks/lastPicked bumps, depletedEnd
+ * on the log) are not applied when an entry is generated, re-rolled, or sent
+ * to Today; only when the entry is marked DONE. Until then nothing about item
+ * state changes, so an untouched item keeps its own charge and keeps
+ * resurfacing. The staged mutation rides on the entry as entry.pending;
+ * applying it records an entry.revert snapshot so unchecking restores exactly:
  *   pending = { updates:[{id,value?,weight?}], pickerPatch?,
  *               depletedEnd?, pickedId?, bumpPick? }
  *
@@ -181,7 +180,11 @@ function spuDroFun( todEntArr, iteIdeArr ) {
  * @summary
  * Applies one Today entry's own staged entry.pending mutation (see the
  * design-rationale comment above) to items/pickers/pickLog, and returns
- * a revert snapshot so the exact reverse can be replayed later.
+ * a revert snapshot so the exact reverse can be replayed later. A
+ * completed non-daily pick or charging card also records its periodKey
+ * on its picker as lastRunPeriod, since a charging card writes no
+ * pick-log row for cadence.js's comPerFun to find; a day-off card never
+ * counts as the picker's run.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -279,15 +282,23 @@ function enpAplFun( curStaObj, curEntObj ) {
 	} );
 
 
-	const hasPipBoo = !!curPenObj.pickerPatch; // What: Has Picker-Patch Boolean. Why: Both the previous-active lookup and the pickers map below share this same condition. How: This coerces curPenObj's own pickerPatch to a real boolean.
+	const hasPipBoo = !!curPenObj.pickerPatch;                                                              // What: Has Picker-Patch Boolean. Why: Both the previous-active lookup and the pickers map below share this same condition. How: This coerces curPenObj's own pickerPatch to a real boolean.
+	const perRunStr = ( curEntObj.kind !== 'dayoff' && curEntObj.periodKey ) || null;                       // What: Period Run String. Why: Completing a non-daily pick or charging card is this picker's run for the period, which the cadence check must see even when no pick-log row exists. How: This is the entry's own periodKey, or null for a daily entry or a day-off card, whose completion never counts as a run.
+	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ) || {}; // What: Current Picker Object. Why: Both revert snapshots below need the entry's own picker as it stands BEFORE this apply. How: This finds the picker by the entry's own pickerId, else an empty object.
+
 
 	const preActIde = hasPipBoo // What: Previous Active Identifier. Why: The revert snapshot needs the picker's own activeItemId as it stood BEFORE this apply, but only when a pickerPatch is actually being applied. How: This looks up curEntObj's own picker and reads its current activeItemId, else stays undefined.
-		? ( curStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ) || {} ).activeItemId // What: Picker Active Item Branch. Why: A pickerPatch is about to overwrite activeItemId, so its old value must be kept. How: This reads the entry's own picker's current activeItemId.
-		: undefined;                                                                                            // What: No Patch Branch. Why: Without a pickerPatch nothing about the picker changes. How: This leaves the value undefined, which enpRevFun reads as nothing to restore.
+		? curPicObj.activeItemId // What: Picker Active Item Branch. Why: A pickerPatch is about to overwrite activeItemId, so its old value must be kept. How: This reads the entry's own picker's current activeItemId.
+		: undefined;             // What: No Patch Branch. Why: Without a pickerPatch nothing about the picker changes. How: This leaves the value undefined, which enpRevFun reads as nothing to restore.
 
-	const nexPicArr = hasPipBoo // What: Next Picker Array. Why: Only a pending payload carrying pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches curEntObj's own picker with pickerPatch's own fields, else passes pickers through unchanged.
-		? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ? { ...curPicObj, ...curPenObj.pickerPatch } : curPicObj ) // What: Patched Pickers Branch. Why: The entry's own picker takes the staged patch. How: This spreads pickerPatch onto the matching picker only.
-		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: Without a pickerPatch nothing about the pickers changes. How: This passes the pickers through.
+
+	const nexPatObj = { ...curPenObj.pickerPatch, ...( perRunStr ? { lastRunPeriod : perRunStr } : {} ) }; // What: Next Patch Object. Why: The staged pickerPatch and the recorded run period land on the picker together. How: This spreads pickerPatch (if any), then adds lastRunPeriod when perRunStr is set.
+
+
+	const nexPicArr = Object.keys( nexPatObj ).length // What: Next Picker Array. Why: Only a pending payload carrying pickerPatch (e.g. Ease Down's activeItemId) or a run period needs any picker actually rewritten. How: This patches curEntObj's own picker with nexPatObj's own fields, else passes pickers through unchanged.
+		? curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === curEntObj.pickerId ? { ...picMapObj, ...nexPatObj } : picMapObj ) // What: Patched Pickers Branch. Why: The entry's own picker takes the staged patch. How: This spreads nexPatObj onto the matching picker only.
+		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: Without a patch nothing about the pickers changes. How: This passes the pickers through.
+
 
 	const nexLogArr = curPenObj.depletedEnd // What: Next Pick-Log Array. Why: depletedEnd is a value consequence, so it's only recorded on the live log row once the pending payload is actually applied. How: This flags the live (no outcome) row sharing curEntObj's own eid, else passes pickLog through unchanged.
 		? ( curStaObj.pickLog || [] ).map( ( curRowObj ) => ( curRowObj.eid === curEntObj.eid && !curRowObj.outcome ) ? { ...curRowObj, depletedEnd : true } : curRowObj ) // What: Depleted Flag Branch. Why: The live log row records that this pick ended a depletion streak. How: This flags only the entry's own live row.
@@ -295,13 +306,24 @@ function enpAplFun( curStaObj, curEntObj ) {
 
 
 
-	return { // What: Applied Pending Result Return. Why: The caller (togDonFun) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nexIteArr/nexPicArr/nexLogArr with a revert object capturing revIteArr/preActIde/the entry's own pickerId.
+	return { // What: Applied Pending Result Return. Why: The caller (togDonFun) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nexIteArr/nexPicArr/nexLogArr with a revert object capturing revIteArr/preActIde/the entry's own pickerId, plus the picker's previous lastRunPeriod when one was recorded.
 
 
-		items   : nexIteArr,                                                                     // What: Items. Why: The caller writes the patched items back to state. How: This is nexIteArr.
-		pickers : nexPicArr,                                                                     // What: Pickers. Why: The caller writes the patched pickers back to state. How: This is nexPicArr.
-		pickLog : nexLogArr,                                                                     // What: Pick Log. Why: The caller writes the updated pick log back to state. How: This is nexLogArr.
-		revert  : { activeItemId : preActIde, items : revIteArr, pickerId : curEntObj.pickerId } // What: Revert. Why: The entry must be able to undo this apply exactly. How: This snapshots the touched items and the picker's previous activeItemId.
+		items   : nexIteArr, // What: Items. Why: The caller writes the patched items back to state. How: This is nexIteArr.
+		pickers : nexPicArr, // What: Pickers. Why: The caller writes the patched pickers back to state. How: This is nexPicArr.
+		pickLog : nexLogArr, // What: Pick Log. Why: The caller writes the updated pick log back to state. How: This is nexLogArr.
+
+		revert : { // What: Revert. Why: The entry must be able to undo this apply exactly. How: This snapshots the touched items, the picker's previous activeItemId, and its previous lastRunPeriod when a run period was recorded.
+
+
+			activeItemId : preActIde,          // What: Active Item Id. Why: An applied pickerPatch may have moved the picker's active item. How: This is preActIde, undefined when there was no pickerPatch.
+			items        : revIteArr,          // What: Items. Why: Every touched item needs its own pre-apply fields back. How: This is revIteArr.
+			pickerId     : curEntObj.pickerId, // What: Picker Id. Why: The revert must know which picker to restore. How: This is the entry's own pickerId.
+
+			...( perRunStr ? { lastRunPeriod : curPicObj.lastRunPeriod || null } : {} ) // What: Last Run Period Spread. Why: Unchecking a non-daily run must restore the period the picker last ran in. How: This snapshots the previous lastRunPeriod, null when it never ran, only when this apply recorded one.
+
+
+		}
 
 
 	};
@@ -322,7 +344,8 @@ function enpAplFun( curStaObj, curEntObj ) {
  * Exactly undoes enpAplFun's own effect using the entry.revert
  * snapshot it recorded, restoring each touched item's own pre-apply
  * value/weight/picks/lastPicked/chargeStep and, when a pickerPatch was
- * applied, the picker's own prior activeItemId.
+ * applied, the picker's own prior activeItemId, plus its prior
+ * lastRunPeriod when the apply recorded one.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -376,9 +399,21 @@ function enpRevFun( curStaObj, curEntObj ) {
 
 	} );
 
-	const nexPicArr = ( curRevObj.activeItemId !== undefined ) // What: Next Picker Array. Why: Only a snapshot that actually recorded a previous activeItemId needs any picker rewritten back. How: This restores curRevObj's own pickerId's activeItemId, else passes pickers through unchanged.
-		? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === curRevObj.pickerId ? { ...curPicObj, activeItemId : curRevObj.activeItemId } : curPicObj ) // What: Restored Pickers Branch. Why: The entry's own picker gets its previous activeItemId back. How: This rewrites activeItemId on the matching picker only.
-		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: With no recorded activeItemId there is nothing to restore. How: This passes the pickers through.
+
+	const resPatObj = { // What: Restore Patch Object. Why: Each picker field the apply snapshotted must come back, and only those. How: This collects activeItemId when it was recorded and lastRunPeriod when the snapshot carries one, so a snapshot saved before lastRunPeriod existed restores exactly as it did.
+
+
+		...( curRevObj.activeItemId !== undefined ? { activeItemId : curRevObj.activeItemId } : {} ), // What: Active Item Spread. Why: A recorded previous activeItemId must be restored. How: This adds activeItemId only when the snapshot recorded one.
+		...( 'lastRunPeriod' in curRevObj ? { lastRunPeriod : curRevObj.lastRunPeriod } : {} )        // What: Last Run Period Spread. Why: A recorded previous run period must be restored, including null for a picker that had never run. How: This adds lastRunPeriod only when the snapshot carries the key.
+
+
+	};
+
+
+	const nexPicArr = Object.keys( resPatObj ).length // What: Next Picker Array. Why: Only a snapshot that actually recorded a picker field needs any picker rewritten back. How: This restores resPatObj onto curRevObj's own pickerId, else passes pickers through unchanged.
+		? curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === curRevObj.pickerId ? { ...picMapObj, ...resPatObj } : picMapObj ) // What: Restored Pickers Branch. Why: The entry's own picker gets its previous fields back. How: This spreads resPatObj onto the matching picker only.
+		: curStaObj.pickers; // What: Unchanged Pickers Branch. Why: With nothing recorded there is nothing to restore. How: This passes the pickers through.
+
 
 	const nexLogArr = ( curStaObj.pickLog || [] ).map( ( curRowObj ) => // What: Next Pick-Log Array. Why: A reverted day no longer counts as ending an Ease Down depletion streak. How: This strips depletedEnd back to false on the live (no outcome) row sharing curEntObj's own eid.
 		( curRowObj.eid === curEntObj.eid && !curRowObj.outcome ) ? { ...curRowObj, depletedEnd : false } : curRowObj ); // What: Depleted Flag Clear. Why: Only the entry's own live row carried the flag. How: This sets depletedEnd back to false on that row and passes every other row through.

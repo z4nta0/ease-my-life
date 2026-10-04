@@ -438,7 +438,10 @@ function perKeyFun( picCadObj, cheDatObj = new Date() ) { return isoDayFun( perS
  * @summary
  * Has an item from picCadObj been COMPLETED within the current period?
  * picLogArr rows carry { pickerId, date (ISO), done }. Skips/rejects
- * don't count.
+ * don't count. A completed charging card counts too: it writes no
+ * pick-log row, since there is no item, so completing any non-daily
+ * entry records its period on the picker itself as lastRunPeriod
+ * (pending-mutations.js), and a match there also satisfies the period.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -448,9 +451,10 @@ function perKeyFun( picCadObj, cheDatObj = new Date() ) { return isoDayFun( perS
  * @param cheDatObj - Check Date Object: The date to resolve the current
  *                    period against, defaulting to right now.
  *
- * @returns Whether a done pick-log row for picCadObj exists dated on or
- * after the current period's own start. Always false for a daily
- * cadence, handled by a separate legacy path instead.
+ * @returns Whether picCadObj's own lastRunPeriod is the current period, or
+ * a done pick-log row for it exists dated on or after the current
+ * period's own start. Always false for a daily cadence, handled by a
+ * separate legacy path instead.
  *
  * @example
  * ```ts
@@ -466,7 +470,10 @@ function comPerFun( picCadObj, picLogArr, cheDatObj = new Date() ) {
 
 
 
-	const staIsoStr = perKeyFun( picCadObj, cheDatObj ); // What: Start Iso String. Why: A pick-log row's own date must be compared against the current period's start as a plain string. How: This calls perKeyFun once and reuses the result below.
+	const staIsoStr = perKeyFun( picCadObj, cheDatObj ); // What: Start Iso String. Why: Both the picker's own recorded period and every pick-log row's own date are compared against the current period's start as a plain string. How: This calls perKeyFun once and reuses the result below.
+
+
+	if ( picCadObj.lastRunPeriod === staIsoStr ) return true; // What: Recorded Period Guard. Why: A completed charging card has no pick-log row, so the picker's own recorded period is the only trace of it. How: This returns true when lastRunPeriod matches this period's own start.
 
 
 
