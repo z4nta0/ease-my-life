@@ -1161,6 +1161,10 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 
 																		inpCurEle.focus( { preventScroll : true } ); // What: Quiet Focus Call. Why: The row's own smooth scroll handles bringing it into view. How: This focuses without scrolling.
 
+
+																		if ( newAddRef.current === curTasObj.id ) inpCurEle.select(); // What: New Reminder Select Check. Why: A brand-new reminder opens with a default name that typing should replace outright, while an existing one's name is edited in place. How: This selects the whole name only for the new reminder.
+
+
 																		focInpRef.current = inpCurEle; // What: Focused Input Mark. Why: The guard above must skip this node next time. How: This stores it in focInpRef.
 
 
