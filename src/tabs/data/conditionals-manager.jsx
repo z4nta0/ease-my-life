@@ -421,7 +421,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 	// #region Row Values And Sorting
 
-	const useCouFun = ( conIdeStr ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Use Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches conIdeStr.
+	const picCouFun = ( conIdeStr ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Picker Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches conIdeStr.
 
 
 	const colMapObj = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: The section's own collapse state is persisted the same way every picker card's own Controls/Items disclosures are. How: This reads staAppObj.ui.controlsCollapsed, falling back to an empty object.
@@ -949,7 +949,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 						const isaPenBoo = !!penConObj && conCurObj.id === penConObj.id; // What: Is-A Pending Boolean. Why: The pending row needs slightly different editor treatment (isaNewBoo) than an existing one. How: This is true only for the one row matching penConObj's own id.
 						const isaOpeBoo = opeIdeStr === conCurObj.id;                   // What: Is-An Open Boolean. Why: Every row needs to know whether IT SPECIFICALLY is the currently-open one. How: This compares conCurObj.id against opeIdeStr.
-						const useCouNum = useCouFun( conCurObj.id );                    // What: Use Count Number. Why: Every row's own closed-state summary shows how many pickers currently use it. How: This calls useCouFun for conCurObj.id.
+						const picCouNum = picCouFun( conCurObj.id );                    // What: Picker Count Number. Why: Every row's own closed-state summary shows how many pickers currently use it. How: This calls picCouFun for conCurObj.id.
 
 
 
@@ -1093,7 +1093,7 @@ function ConManCom ( { actStoObj, staAppObj } ) {
 
 												{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).labStr || conCurObj.mode }{ /* What: Mode Label Expression. Why: The summary leads with the conditional's mode. How: This renders the mode's label, falling back to its raw id. */ }
 
-												{ ' · ' }{ useCouNum } { useCouNum === 1 ? 'picker' : 'pickers' }{ /* What: Usage Count Expression. Why: The summary says how many pickers use this conditional. How: This renders useCouNum with a singular or plural noun. */ }
+												{ ' · ' }{ picCouNum } { picCouNum === 1 ? 'picker' : 'pickers' }{ /* What: Usage Count Expression. Why: The summary says how many pickers use this conditional. How: This renders picCouNum with a singular or plural noun. */ }
 
 												{ conCurObj.active === false ? ' · inactive' : '' }{ /* What: Inactive Flag Expression. Why: An inactive conditional says so in its summary. How: This appends ' · inactive' only when active is false. */ }
 
