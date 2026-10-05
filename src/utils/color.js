@@ -108,7 +108,7 @@ function invColFun ( hexColStr ) {
 
 				0.2104542553 * cbrLonNum + 0.7936177850 * cbrMedNum - 0.0040720468 * cbrShoNum, // What: Oklab Lightness Component. Why: This is OKLab's own L channel, the value the rest of this function actually inverts. How: This applies Ottosson's own LMS-to-OKLab matrix's L row to the cube-rooted Long/Medium/Short values.
 				1.9779984951 * cbrLonNum - 2.4285922050 * cbrMedNum + 0.4505937099 * cbrShoNum, // What: Oklab A Component. Why: This is OKLab's own a channel, the green-red chroma axis. How: This applies Ottosson's own LMS-to-OKLab matrix's a row to the cube-rooted Long/Medium/Short values.
-				0.0259040371 * cbrLonNum + 0.7827717662 * cbrMedNum - 0.8086757660 * cbrShoNum, // What: Oklab B Component. Why: This is OKLab's own b channel, the blue-yellow chroma axis. How: This applies Ottosson's own LMS-to-OKLab matrix's b row to the cube-rooted Long/Medium/Short values.
+				0.0259040371 * cbrLonNum + 0.7827717662 * cbrMedNum - 0.8086757660 * cbrShoNum  // What: Oklab B Component. Why: This is OKLab's own b channel, the blue-yellow chroma axis. How: This applies Ottosson's own LMS-to-OKLab matrix's b row to the cube-rooted Long/Medium/Short values.
 
 
 			];
@@ -134,7 +134,7 @@ function invColFun ( hexColStr ) {
 
 				4.0767416621 * lmsLonNum - 3.3077115913 * lmsMedNum + 0.2309699292 * lmsShoNum,  // What: Linear Red Channel. Why: The caller needs the red channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's red row to lmsLonNum/lmsMedNum/lmsShoNum.
 				-1.2684380046 * lmsLonNum + 2.6097574011 * lmsMedNum - 0.3413193965 * lmsShoNum, // What: Linear Green Channel. Why: The caller needs the green channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's green row to lmsLonNum/lmsMedNum/lmsShoNum.
-				-0.0041960863 * lmsLonNum - 0.7034186147 * lmsMedNum + 1.7076147010 * lmsShoNum, // What: Linear Blue Channel. Why: The caller needs the blue channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's blue row to lmsLonNum/lmsMedNum/lmsShoNum.
+				-0.0041960863 * lmsLonNum - 0.7034186147 * lmsMedNum + 1.7076147010 * lmsShoNum  // What: Linear Blue Channel. Why: The caller needs the blue channel of the inverted color, still in linear light. How: This applies Ottosson's own inverse LMS-to-linear-RGB matrix's blue row to lmsLonNum/lmsMedNum/lmsShoNum.
 
 
 			];

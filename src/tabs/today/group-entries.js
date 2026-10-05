@@ -203,7 +203,7 @@ function groEntFun ( staAppObj ) {
 
 
 				done : isaDonBoo,             // What: Done. Why: A finished mini-tour shows its launcher as resolved. How: This passes isaDonBoo.
-				eid  : 'tut_' + curPicObj.id, // What: Entry Id. Why: The stand-in needs a stable key that can't collide with a real entry's. How: This prefixes the picker's own id with tut_.
+				eid  : 'tut_' + curPicObj.id, // What: Entry Identifier. Why: The stand-in needs a stable key that can't collide with a real entry's. How: This prefixes the picker's own id with tut_.
 				kind : 'tutorial'             // What: Kind. Why: The card must render through its tutorial branch. How: This is the fixed tutorial kind.
 
 

@@ -1031,7 +1031,7 @@ function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
 				return { // What: Continue Streak Return. Why: The active item stays picked while it decays, releasing back into the pool (activeItemId cleared) only once fully depleted. How: This returns actIteObj as the pick, updIteArr, itself as the sole cycle candidate, and a patObj clearing activeItemId only when depEndBoo.
 
 
-					cycArr : [ actIteObj ],                                      // What: Cycle Candidates Array. Why: A continuing streak has no real draw to cycle through, only the one item already active. How: This is a single-element array holding just actIteObj.
+					cycArr : [ actIteObj ],                                      // What: Cycle Array. Why: A continuing streak has no real draw to cycle through, only the one item already active. How: This is a single-element array holding just actIteObj.
 					depBoo : depEndBoo,                                          // What: Depleted Boolean. Why: The caller needs to know whether this decay step just fully emptied the streak. How: This carries depEndBoo through unchanged.
 					patObj : { activeItemId : depEndBoo ? null : actIteObj.id }, // What: Patch Object. Why: The picker's own activeItemId must clear once depleted, or otherwise keep pointing at the still-decaying item. How: This is null when depEndBoo, else actIteObj's own id.
 					picObj : actIteObj,                                          // What: Picked Object. Why: The still-decaying active item is what the caller renders as this cycle's own pick. How: This carries actIteObj through unchanged.
@@ -1121,7 +1121,7 @@ function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
 			return { // What: New Streak Return. Why: The chosen item becomes the new active one while it decays, tracked via patObj's own activeItemId. How: This returns choIteObj as the pick, updIteArr, canIteArr as the cycle candidates, and a patObj setting activeItemId only when not already depEndBoo.
 
 
-				cycArr : canIteArr,                                          // What: Cycle Candidates Array. Why: A new streak's own draw needs the real weighted candidate pool it actually drew from, not just the winner. How: This carries canIteArr through unchanged.
+				cycArr : canIteArr,                                          // What: Cycle Array. Why: A new streak's own draw needs the real weighted candidate pool it actually drew from, not just the winner. How: This carries canIteArr through unchanged.
 				depBoo : depEndBoo,                                          // What: Depleted Boolean. Why: The caller needs to know whether this brand-new streak's own first decay step already emptied it. How: This carries depEndBoo through unchanged.
 				patObj : { activeItemId : depEndBoo ? null : choIteObj.id }, // What: Patch Object. Why: The picker's own activeItemId must point at the newly-chosen item, unless its first decay step already depleted it. How: This is null when depEndBoo, else choIteObj's own id.
 				picObj : choIteObj,                                          // What: Picked Object. Why: The freshly-chosen item is what the caller renders as this cycle's own pick. How: This carries choIteObj through unchanged.

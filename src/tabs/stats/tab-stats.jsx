@@ -2025,7 +2025,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 				autNum : couEntObj.autNum,                   // What: Auto Number. Why: The Auto metric reads this count. How: This passes the auto-sourced pick count.
 				couNum : couEntObj.couNum,                   // What: Count Number. Why: The Count metric reads this total. How: This passes the item's own pick count.
 				delBoo : !!iteCurObj.__delBoo,               // What: Deleted Boolean. Why: A ghost row gets its own "deleted" tag. How: This reads the ghost's own __delBoo marker.
-				denNum : eliDenNum,                          // What: Denominator Value Number. Why: The eligible-mode Count percentage divides by this. How: This passes eliDenNum.
+				denNum : eliDenNum,                          // What: Denominator Number. Why: The eligible-mode Count percentage divides by this. How: This passes eliDenNum.
 				freNum : freEntObj.couNum,                   // What: Frequency Number. Why: A never-gapped item still sorts by how often it was picked. How: This passes freEntObj's own distinct-day count.
 				gapNum : aveGapNum,                          // What: Gap Number. Why: The Frequency metric reads this average gap. How: This passes aveGapNum.
 				ideStr : iteCurObj.id,                       // What: Identifier String. Why: Each row needs a stable React key and raw-item lookup. How: This copies the item's own id.

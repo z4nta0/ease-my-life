@@ -3304,7 +3304,7 @@ function useAppStaFun ( optArgObj ) {
 
 
 				done     : false,                      // What: Done. Why: A freshly generated entry always starts not-done. How: This is false.
-				eid      : newEidFun(),                // What: Entry Id. Why: Every fresh entry needs its own brand-new id. How: This mints one via newEidFun.
+				eid      : newEidFun(),                // What: Entry Identifier. Why: Every fresh entry needs its own brand-new id. How: This mints one via newEidFun.
 				itemId   : curDesObj.itemId || null,   // What: Item Id. Why: This is the item the generator picked for this entry, if any. How: This reads curDesObj.itemId, defaulting to null.
 				pending  : curDesObj.pending || null,  // What: Pending. Why: The pick's own value consequences stay staged until the entry is completed. How: This reads curDesObj.pending, defaulting to null.
 				pickerId : curDesObj.pickerId || null, // What: Picker Id. Why: Every entry records which picker produced it. How: This reads curDesObj.pickerId, defaulting to null.

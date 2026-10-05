@@ -132,7 +132,7 @@ function logRowFun ( curStaObj, { date : datValStr, depletedEnd : depEndBoo = fa
 		completedAt : null,                                     // What: Completed At. Why: A freshly-logged pick has no completion timestamp yet. How: This is always null for a brand-new row.
 		date        : datValStr || isoDayFun(),                 // What: Date. Why: Stats groups/filters rows by their own calendar day. How: This uses the given datValStr, defaulting to isoDayFun() when omitted.
 		done        : false,                                    // What: Done. Why: A freshly-logged pick was never yet completed. How: This is always false for a brand-new row.
-		eid         : entIdeStr,                                // What: Entry Id. Why: This links the row back to its live today.entries row, until the day rolls. How: This is copied straight from the entIdeStr parameter.
+		eid         : entIdeStr,                                // What: Entry Identifier. Why: This links the row back to its live today.entries row, until the day rolls. How: This is copied straight from the entIdeStr parameter.
 		group       : curPicObj ? curPicObj.group : '',         // What: Group. Why: Stats groups rows by their own picker's group. How: This reads curPicObj's own group, else empty when the picker is gone.
 		id          : newLogFun(),                              // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one via newLogFun.
 		itemId      : iteIdeStr,                                // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from the iteIdeStr parameter.

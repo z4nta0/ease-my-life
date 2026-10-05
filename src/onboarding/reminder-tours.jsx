@@ -423,7 +423,7 @@ const buiSubFun = ( varKeyStr ) => ({ // What: Build Submit Function. Why: This 
 	tabStr : 'today',                                                                       // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 	titStr : 'Add your new Reminder',                                                       // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 
-	bodEle : varKeyStr === 'recurring' // What: Body Ternary. Why: The recurring varKeyStr needs an extra sentence about the recurrence date the one-time varKeyStr does not. How: This ternary picks between 2 JSX bodies based on varKeyStr.
+	bodEle : varKeyStr === 'recurring' // What: Body Element. Why: The recurring varKeyStr needs an extra sentence about the recurrence date the one-time varKeyStr does not. How: This ternary picks between 2 JSX bodies based on varKeyStr.
 		? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</> // What: Recurring Body Branch. Why: A recurring reminder dated later than today will not show up until it is due. How: This adds a note saying so after the shared instruction.
 		: <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</> // What: One-Time Body Branch. Why: A one-time reminder needs only the shared instruction. How: This renders the instruction alone.
 

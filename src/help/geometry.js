@@ -479,7 +479,7 @@ function claPadFun ( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr ) {
 		bottom : tarRecObj.bottom + padVerNum, // What: Padded Bottom. Why: The box grows downward by the vertical pad. How: This adds padVerNum to tarRecObj's own bottom.
 		left   : tarRecObj.left - padHorNum,   // What: Padded Left. Why: The box grows leftward by the horizontal pad. How: This subtracts padHorNum from tarRecObj's own left.
 		right  : tarRecObj.right + padHorNum,  // What: Padded Right. Why: The box grows rightward by the horizontal pad. How: This adds padHorNum to tarRecObj's own right.
-		top    : tarRecObj.top - padVerNum     // What: Padded Top. Why: The box grows upward by the vertical pad. How: This subtracts padVerNum from tarRecObj's own top.
+		top    : tarRecObj.top - padVerNum     // What: Top. Why: The box grows upward by the vertical pad. How: This subtracts padVerNum from tarRecObj's own top.
 
 
 	};
@@ -641,7 +641,7 @@ function badRecFun ( tarRecObj, cenBadBoo ) {
 			bottom : topBadNum + rhyPxlFun( 'p01' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 1 ~= 19.304px
 			height : rhyPxlFun( 'p01' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
 			left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
-			top    : topBadNum,                      // What: Badge Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
+			top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
 			width  : rhyPxlFun( 'p01' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
 
 
@@ -666,7 +666,7 @@ function badRecFun ( tarRecObj, cenBadBoo ) {
 		bottom : topBadNum + rhyPxlFun( 'p01' ), // What: Badge Bottom. Why: plaTipFun and hit tests read the badge's own bottom edge. How: This adds the badge size to topBadNum. // Vertical Rhythm Base Plus 1 ~= 19.304px
 		height : rhyPxlFun( 'p01' ),             // What: Badge Height. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
 		left   : lefBadNum,                      // What: Badge Left. Why: This is where the badge is drawn horizontally. How: This is the left position computed above.
-		top    : topBadNum,                      // What: Badge Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
+		top    : topBadNum,                      // What: Top. Why: This is where the badge is drawn vertically. How: This is the top position computed above.
 		width  : rhyPxlFun( 'p01' )              // What: Badge Width. Why: The badge is a fixed-size circle. How: This is the flat badge size. // Vertical Rhythm Base Plus 1 ~= 19.304px
 
 

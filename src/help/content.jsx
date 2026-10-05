@@ -1155,7 +1155,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 		)
 
 
-	},
+	}
 
 	// #endregion Editing A Picker Item
 
@@ -1848,7 +1848,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		)
 
 
-	},
+	}
 
 	// #endregion Create A Picker Form Step 2
 
@@ -2236,7 +2236,7 @@ const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand h
 		titStr    : 'Terms of Service'
 
 
-	},
+	}
 
 	// #endregion Legal
 
@@ -2694,7 +2694,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 		titStr : 'Picker Breakdown'
 
 
-	},
+	}
 
 	// #endregion Single-Picker Scope Only
 
@@ -3581,7 +3581,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 		titStr : 'Status Column'
 
 
-	},
+	}
 
 	// #endregion Picker/Conditional Log Panel
 
