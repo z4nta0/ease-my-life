@@ -158,6 +158,7 @@ const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditiona
  * @param picModStr - Picker Mode String: The picker's own current mode key.
  *
  * @returns An array of { keyStr, labStr } sort options for that mode.
+ * @see {@link sorOptArr}
  *
  * @example
  * ```ts

@@ -317,7 +317,7 @@ const hasValFun = ( picModStr ) => { // What: Has Value Function. Why: PicBloCom
  * small React.Fragment.
  *
  * @example
- * ```tsx
+ * ```ts
  * iteSubFun(picRcdObj, iteRcdObj, booValNum) // => subline content
  * ```
  *

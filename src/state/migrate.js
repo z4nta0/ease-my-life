@@ -82,6 +82,7 @@ const SCH_VER_NUM = 1; // What: Schema Version Number. Why: migStaFun() stamps t
  *
  * @returns curStaObj itself, mutated in place with every missing field
  * backfilled and state.v stamped.
+ * @see {@link curStaObj}
  *
  * @example
  * ```ts

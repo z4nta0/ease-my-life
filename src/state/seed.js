@@ -274,7 +274,6 @@ function picWeiFun ( itePooArr ) {
  *
  * @returns The generated rows plus each Ease Down picker's own final
  * in-progress state.
- * @see {@link picRowArr}
  *
  * @example
  * ```ts

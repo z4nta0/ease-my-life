@@ -542,7 +542,6 @@ function claPadFun ( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr ) {
  *
  * @returns Whichever of 'top', 'bottom', 'left' or 'right' chrRecObj sits
  * closest to.
- * @see {@link edgGapObj}
  *
  * @example
  * ```ts

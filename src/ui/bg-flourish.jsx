@@ -140,6 +140,7 @@ const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated s
  *
  * @returns A new array holding the same elements as souEleArr, in random
  * order.
+ * @see {@link copSouArr}
  *
  * @example
  * ```ts
@@ -590,9 +591,10 @@ function genSidFun ( gutWidNum, conHeiNum ) {
  *
  * @returns The tab's own { left, right } generated flourish items, or
  * null before the first measurement has completed.
+ * @see {@link floIteObj}
  *
  * @example
- * ```tsx
+ * ```ts
  * useFloIteFun(tabIdeStr, meaEleRef) // => { left, right } or null
  * ```
  *

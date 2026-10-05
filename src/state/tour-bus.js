@@ -96,6 +96,7 @@ const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the bus's ow
  *
  * @returns The bus's own current state, kept in sync via subscription
  * for as long as the calling component stays mounted.
+ * @see {@link busSnaObj}
  *
  * @example
  * ```ts

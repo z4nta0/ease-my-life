@@ -329,6 +329,7 @@ function groEntFun ( staAppObj ) {
  *
  * @returns A single merged ordering array combining both inputs, per the
  * rule described above.
+ * @see {@link resKeyArr}
  *
  * @example
  * ```ts
