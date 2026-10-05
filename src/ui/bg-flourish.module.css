@@ -25,7 +25,7 @@
 	position       : absolute;
 	top            : 0;
 	width          : 0;
-	z-index        : 0;
+	z-index        : 0; /* What: Column Stack Level. Why: The glyphs have to stay behind the page content. How: This keeps the column on the base level, where later content paints over it. */
 
 
 }

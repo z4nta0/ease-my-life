@@ -49,7 +49,7 @@
 	padding       : var( --spa-ver-p02 ) var( --spa-hor-p01 ) var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 	position      : sticky;
 	top           : 0;
-	z-index       : 20;
+	z-index       : 20;                                                             /* What: Header Stack Level. Why: The sticky header has to stay over the list and over the sticky pill row at 18 that tucks under it. How: 20 sits just above that row. */
 
 
 }
@@ -953,7 +953,7 @@
 	opacity        : 0;
 	pointer-events : none;
 	position       : absolute;
-	z-index        : -1;
+	z-index        : -1;                                                                  /* What: Glow Stack Level. Why: The glow has to bloom behind the ring it lights. How: This puts it one level below the ring. */
 
 
 }
@@ -1166,7 +1166,7 @@
 	padding         : var( --spa-ver-m01 ) var( --spa-hor-bas );                                                      /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base ~= 14.572px */
 	position        : sticky;
 	top             : calc( var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) + var( --spa-ver-m02 ) );       /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base Minus 2 ~= 8.304px */
-	z-index         : 60;
+	z-index         : 60;                                                                                             /* What: Banner Stack Level. Why: The sticky banner has to stay over a card being dragged, which reorder.js raises to 50. How: 60 sits above that card. */
 
 
 }
@@ -1360,20 +1360,20 @@
 
 		-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 140% );                                                                      /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 		-webkit-mask-image      : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 28.0PX, Fade Right Offset ~= 28.0PX */
-		backdrop-filter         : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 140% );                                                                      /* Vertical Rhythm Base Plus 1 ~= 19.304px */
-		background              : oklch( from var( --bac-pag-col ) l c h / 0.92 );                                                                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
-		border-bottom           : var( --bor-wid-sma ) solid var( --bor-mai-col );                                                                                   /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+		backdrop-filter         : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 140% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+		background              : oklch( from var( --bac-pag-col ) l c h / 0.92 );              /* Background Page Color = oklch( 0.985 0.003 240 ) */
+		border-bottom           : var( --bor-wid-sma ) solid var( --bor-mai-col );              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 		flex-direction          : row;
-		gap                     : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );                                                                                               /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+		gap                     : var( --spa-hor-m03 );                                         /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );                          /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 		mask-image              : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 28.0PX, Fade Right Offset ~= 28.0PX */
 		max-height              : none;
 		overflow-x              : auto;
 		overflow-y              : hidden;
-		padding                 : var( --spa-ver-bas ) var( --spa-hor-p01 );                                                                                         /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+		padding                 : var( --spa-ver-bas ) var( --spa-hor-p01 );                    /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 		position                : sticky;
-		top                     : var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) );                                                                         /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px */
-		z-index                 : 18;
+		top                     : var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) );    /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px */
+		z-index                 : 18;                                                           /* What: Pill Row Stack Level. Why: The sticky row has to stay over the cards but slide under the sticky header at 20. How: 18 sits between them. */
 
 
 	}
@@ -1684,7 +1684,7 @@
 	overflow       : hidden;
 	pointer-events : none;
 	position       : fixed;
-	z-index        : 5;
+	z-index        : 5; /* What: Overlay Stack Level. Why: The particles have to fall over the cards but under the sticky header at 20. How: 5 sits between them. */
 
 
 }

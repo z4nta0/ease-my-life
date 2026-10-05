@@ -71,7 +71,7 @@
 
 
 	pointer-events : none;
-	z-index        : 150;
+	z-index        : 150; /* What: Exiting Bar Stack Level. Why: The ghost of the old tab bar plays its exit over the new bar at 100. How: 150 keeps it above that bar and below the drawer scrim at 190. */
 
 
 }
@@ -152,7 +152,7 @@
 	right           : auto;
 	transform       : translateX( -50% );
 	width           : max-content;
-	z-index         : 100;
+	z-index         : 100;                                             /* What: Bottom Bar Stack Level. Why: The floating pill must stay over every page layer, including the Edit Mode banner at 60. How: 100 keeps it above all page content. */
 
 
 }
@@ -215,7 +215,7 @@
 		transform      : translateX( -100% );
 		transition     : transform var( --dur-tra-p02 ) var( --mot-sta-eas );                                                    /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
 		width          : calc( var( --ver-rhy-p10 ) * 1rem );                                                                    /* Vertical Rhythm Base Plus 10 ~= 242.522px */
-		z-index        : 200;
+		z-index        : 200;                                                                                                    /* What: Drawer Stack Level. Why: The open drawer must sit above the scrim that dims everything else, at 190. How: 200 makes it the app shell's highest layer. */
 
 
 	}
@@ -239,7 +239,7 @@
 	padding             : var( --spa-ver-m01 ) max( var( --spa-hor-p01 ), calc( ( 100% - var( --ver-rhy-p15 ) * 1rem ) / 2 ) ); /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Plus 1 ~= 19.304px, Vertical Rhythm Base Plus 15 ~= 989.390px */ /* What: Centered Column Padding. Why: The bar's content should line up with the Today tab's column, capped at the p15 rhythm step. How: The side padding grows to center that width, never below the p01 horizontal spacing step; the other tabs' column would use the same formula with the p14 step. */
 	position            : sticky;
 	top                 : 0;
-	z-index             : 100;
+	z-index             : 100;                                                                                                  /* What: Top Bar Stack Level. Why: The sticky bar must stay over every page layer, including the Edit Mode banner at 60. How: 100 keeps it above all page content. */
 
 
 }
@@ -396,7 +396,7 @@
 	position       : absolute;
 	top            : 0;
 	transition     : transform var( --dur-tra-p03 ) var( --mot-dec-eas ), width var( --dur-tra-p03 ) var( --mot-dec-eas ), height var( --dur-tra-p03 ) var( --mot-dec-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Indicator Size Transition. Why: A scale transform would stretch the pill's rounded corners as it resizes between tabs of different widths. How: This animates its real width and height alongside the transform. */
-	z-index        : 0;
+	z-index        : 0;                    /* What: Indicator Stack Level. Why: The pill has to sit behind the tab buttons at 1. How: This keeps it on the bar's base level. */
 
 
 }
@@ -619,7 +619,7 @@
 	display     : flex;
 	position    : relative;
 	transition  : color var( --dur-tra-m01 ), background var( --dur-tra-m01 ); /* Duration Transition Base Minus 1 ~= 119.2ms */
-	z-index     : 1;
+	z-index     : 1;                                                           /* What: Tab Button Stack Level. Why: Each button has to sit above the sliding indicator at 0. How: This raises it one level. */
 
 
 }
@@ -864,7 +864,7 @@
 	display    : none;
 	inset      : 0;
 	position   : fixed;
-	z-index    : 190;
+	z-index    : 190;                                                                 /* What: Scrim Stack Level. Why: The scrim has to dim the tab bars at 100 and their exiting ghost at 150, but not the drawer at 200. How: 190 sits between them. */
 
 
 }
