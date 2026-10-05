@@ -1125,25 +1125,10 @@ function todVisFun ( tasRcdObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 	const optNorObj = optForFun( tasRcdObj, remOptObj );                    // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tasRcdObj's own governing class. How: This calls optForFun once and reuses the result.
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6; // What: Is-A Weekend Boolean. Why: The weekend-exclusion check further below needs to know whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
-
-
-	const holInfObj = HOL_NAM_OBJ && HOL_NAM_OBJ.holInfFun // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name; an older HOL_NAM_OBJ shape only ever exposed holDatFun (name only), so the richer holInfFun is preferred when present. This whole expression is deliberately left as one guarded chain rather than split into separate always-evaluated consts, since HOL_NAM_OBJ.holDatFun must never be called before HOL_NAM_OBJ itself is confirmed to exist. How: This calls holInfFun directly when it exists, otherwise rebuilds a name-only record from holDatFun when that finds a match, or lands on null when neither one does.
-		? HOL_NAM_OBJ.holInfFun( holStaObj, cheDatObj )                  // What: Full Record Branch. Why: The richer holInfFun already returns the whole record. How: This calls it directly.
-		: ( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) // What: Name-Only Check. Why: An older HOL_NAM_OBJ shape can still name a matching holiday. How: This tests for a holDatFun match next, still guarded on HOL_NAM_OBJ itself.
-			? {                                                          // What: Name-Only Record Branch. Why: The caller still needs the same record shape holInfFun would have returned. How: This rebuilds a name-only record below.
-
-
-				custom : false,                                        // What: Custom. Why: This name-only fallback path can only ever be reached for a computed built-in holiday, never a custom one. How: This is always false on this branch.
-				name   : HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) // What: Name. Why: The caller needs the matched holiday's own display name. How: This calls HOL_NAM_OBJ.holDatFun again for its own return value (already confirmed truthy by the guard above).
-
-
-			}
-			: null ); // What: No Holiday Branch. Why: Neither lookup found a holiday on cheDatObj. How: This lands on null.
-
-
-	const isaHolBoo = !!holInfObj;            // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
-	const cheIsoStr = isoDayFun( cheDatObj ); // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
-	const cauValArr = [];                     // What: Cause Value Array. Why: More than one exclusion can apply on the same day (e.g. both an excluded weekend and an excluded holiday), and naming only the first would leave the user turning off one setting while the task still doesn't appear. How: This starts empty and is pushed to below, one entry per applicable cause.
+	const holInfObj = HOL_NAM_OBJ.holInfFun( holStaObj, cheDatObj );        // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name. How: This calls holInfFun, which returns the matched holiday's record, or null when cheDatObj isn't a holiday.
+	const isaHolBoo = !!holInfObj;                                          // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
+	const cheIsoStr = isoDayFun( cheDatObj );                               // What: Check Iso String. Why: The manual-skip check further below compares tasRcdObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
+	const cauValArr = [];                                                   // What: Cause Value Array. Why: More than one exclusion can apply on the same day (e.g. both an excluded weekend and an excluded holiday), and naming only the first would leave the user turning off one setting while the task still doesn't appear. How: This starts empty and is pushed to below, one entry per applicable cause.
 
 
 	if ( !isaDueFun( tasRcdObj, cheDatObj ) ) cauValArr.push( 'schedule' ); // What: Schedule Cause Push. Why: A task that isn't even due today has nothing else worth checking; every exclusion below only makes sense for an already-due task. How: This pushes 'schedule' and skips the else branch entirely via isaDueFun's own result.
@@ -1176,7 +1161,7 @@ function todVisFun ( tasRcdObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 		cause         : priCauStr,                                                                        // What: Cause. Why: The caller needs the single primary reason, for routing an advisory note to the right control. How: This is priCauStr, computed above.
 		causes        : cauValArr,                                                                        // What: Causes. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.
 		holidayCustom : holInfObj ? !!holInfObj.custom : false,                                           // What: Holiday Custom. Why: A caller needs to distinguish "the Christmas Day holiday" from "your Family Day custom holiday" in its own wording. How: This coerces holInfObj's own custom flag when holInfObj exists, false otherwise.
-		holidayName   : holInfObj ? holInfObj.name : null,                                                // What: Holiday Name. Why: A caller wording itself around a specific holiday needs its own display name. How: This reads holInfObj's own name when holInfObj exists, null otherwise.
+		holidayName   : holInfObj ? holInfObj.namStr : null,                                              // What: Holiday Name. Why: A caller wording itself around a specific holiday needs its own display name. How: This reads holInfObj's own name when holInfObj exists, null otherwise.
 		next          : priCauStr ? nexEliFun( tasRcdObj, remOptObj, holStaObj, cheDatObj, true ) : null, // What: Next. Why: A caller offering "it'll show again on ..." only needs to compute that (a real search) when tasRcdObj isn't visible at all. How: This calls nexEliFun only when priCauStr is set, null otherwise.
 		visible       : !priCauStr                                                                        // What: Visible. Why: The caller's simplest possible question is whether tasRcdObj shows at all. How: This is true only when priCauStr is null.
 
