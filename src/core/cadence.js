@@ -477,7 +477,21 @@ function comPerFun ( picCadObj, picLogArr, cheDatObj = new Date() ) {
 
 
 
-	return ( picLogArr || [] ).some( ( curRowObj ) => curRowObj.pickerId === picCadObj.id && curRowObj.done && curRowObj.date >= staIsoStr ); // What: Completed Period Return. Why: The caller needs to know whether ANY matching row satisfies all 3 conditions at once. How: This searches picLogArr (or an empty array when missing) for a row matching picCadObj's own id, marked done, dated on or after staIsoStr.
+	return ( picLogArr || [] ).some( ( curRowObj ) => { // What: Completed Period Return. Why: The caller needs to know whether ANY matching row satisfies all 3 conditions at once. How: This searches picLogArr (or an empty array when missing) for a row matching picCadObj's own id, marked done, dated on or after staIsoStr.
+
+
+		const picMatBoo = curRowObj.pickerId === picCadObj.id; // What: Picker Match Boolean. Why: Only a row logged for this picker counts toward its own period. How: This is true when curRowObj's own pickerId equals picCadObj's own id.
+		const rowDonBoo = curRowObj.done;                      // What: Row Done Boolean. Why: A logged pick that was never completed doesn't count as this period's run. How: This reads curRowObj's own done flag.
+		const datWitBoo = curRowObj.date >= staIsoStr;         // What: Date Within Boolean. Why: Only a row from the current period counts, not one from an earlier period. How: This is true when curRowObj's own date is on or after staIsoStr.
+
+		const rowMatBoo = picMatBoo && rowDonBoo && datWitBoo; // What: Row Match Boolean. Why: A row only proves this period ran when all 3 checks above hold at once. How: This combines picMatBoo, rowDonBoo and datWitBoo.
+
+
+
+		return rowMatBoo; // What: Row Match Return. Why: The some() call needs each row's own verdict back. How: This returns rowMatBoo.
+
+
+	} );
 
 
 }

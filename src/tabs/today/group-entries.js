@@ -232,7 +232,14 @@ function groEntFun ( staAppObj ) {
 	for ( const curPicObj of staAppObj.pickers ) { // What: First-Occurrence Order Pass. Why: A group not yet in the saved order still needs a stable position, taken from wherever it first appears among the user's own pickers. How: This appends any not-yet-collected group the first time a picker names it.
 
 
-		if ( curPicObj.group && groBucMap.has( curPicObj.group ) && !disOrdArr.includes( curPicObj.group ) ) disOrdArr.push( curPicObj.group ); // What: First-Occurrence Append. Why: This is the actual append this pass performs. How: This pushes curPicObj's own group once, the first time it is encountered.
+		const hasGroBoo = !!curPicObj.group;                      // What: Has Group Boolean. Why: A picker with no group has nothing to append. How: This coerces the picker's own group name to a boolean.
+		const bucHasBoo = groBucMap.has( curPicObj.group );       // What: Bucket Has Boolean. Why: Only a group that actually has rows today belongs in the display order. How: This checks groBucMap for the picker's own group.
+		const notOrdBoo = !disOrdArr.includes( curPicObj.group ); // What: Not Ordered Boolean. Why: A group already placed by an earlier pass or picker keeps that first position. How: This checks disOrdArr for the picker's own group.
+
+		const newGroBoo = hasGroBoo && bucHasBoo && notOrdBoo; // What: New Group Boolean. Why: The append below runs only for a real, present group not yet in the order. How: This combines the three checks above.
+
+
+		if ( newGroBoo ) disOrdArr.push( curPicObj.group ); // What: First-Occurrence Append. Why: This is the actual append this pass performs. How: This pushes curPicObj's own group once, the first time it is encountered.
 
 
 	}
@@ -268,7 +275,15 @@ function groEntFun ( staAppObj ) {
 
 
 
-			return ( curRowObj.entRecObj.kind === 'dayoff' || curRowObj.entRecObj.kind === 'charging' || curRowObj.entRecObj.kind === 'tutorial' ) ? -1 : 1e6; // What: Default Position Branch. Why: An unpositioned special card defaults near the top; an unpositioned regular pick defaults to the end. How: This returns -1 for the three special kinds, otherwise a very large fallback number.
+			const kinDaoBoo = curRowObj.entRecObj.kind === 'dayoff';   // What: Kind Day-Off Boolean. Why: A day-off card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'dayoff'.
+			const kinChrBoo = curRowObj.entRecObj.kind === 'charging'; // What: Kind Charging Boolean. Why: A charging card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'charging'.
+			const kinTutBoo = curRowObj.entRecObj.kind === 'tutorial'; // What: Kind Tutorial Boolean. Why: A tutorial card is one of the special cards that default near the top. How: This compares the row's own entry kind against 'tutorial'.
+
+			const kinSpeBoo = kinDaoBoo || kinChrBoo || kinTutBoo; // What: Kind Special Boolean. Why: Every special card shares one default position. How: This is true when the row is any of the three special kinds above.
+
+
+
+			return kinSpeBoo ? -1 : 1e6; // What: Default Position Branch. Why: An unpositioned special card defaults near the top; an unpositioned regular pick defaults to the end. How: This returns -1 for the three special kinds, otherwise a very large fallback number.
 
 
 		};

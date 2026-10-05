@@ -616,6 +616,7 @@ const isaReuFun = ( tasRcdObj ) => tasRcdObj.repeat !== 'once'; // What: Is-A Re
  *
  * @returns Whether tasRcdObj is a 'once' task completed on some day
  * other than cheDatObj.
+ * @see {@link isaStaBoo}
  *
  * @example
  * ```ts
@@ -624,7 +625,21 @@ const isaReuFun = ( tasRcdObj ) => tasRcdObj.repeat !== 'once'; // What: Is-A Re
  *
 */
 
-function isaStaFun ( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repeat === 'once' && tasRcdObj.lastDone && tasRcdObj.lastDone !== isoDayFun( cheDatObj ); } // What: Is-A Stale Body. Why: migrate.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRcdObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
+function isaStaFun ( tasRcdObj, cheDatObj = new Date() ) {
+
+
+	const isaOncBoo = tasRcdObj.repeat === 'once';                   // What: Is-A Once Boolean. Why: Only a one-time task can go stale; a recurring one keeps coming back. How: This is true when tasRcdObj's own repeat is 'once'.
+	const lasDonBoo = tasRcdObj.lastDone;                            // What: Last Done Boolean. Why: A one-time task that was never completed hasn't served its purpose yet. How: This reads tasRcdObj's own lastDone date, truthy once the task has been completed.
+	const othDayBoo = tasRcdObj.lastDone !== isoDayFun( cheDatObj ); // What: Other Day Boolean. Why: A task completed today must stay visible for the rest of the day. How: This is true when tasRcdObj's own lastDone differs from cheDatObj's own date key.
+
+	const isaStaBoo = isaOncBoo && lasDonBoo && othDayBoo; // What: Is-A Stale Boolean. Why: migrate.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This combines the three checks above, true only for a 'once' task completed on some other day.
+
+
+
+	return isaStaBoo; // What: Is-A Stale Return. Why: The caller needs the stale verdict back. How: This returns isaStaBoo.
+
+
+}
 
 // #endregion isaStaFun
 

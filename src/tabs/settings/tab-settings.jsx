@@ -1090,6 +1090,14 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 
 
 
+	const insUnsBoo = insStaStr === 'unsupported'; // What: Install Unsupported Boolean. Why: A browser with no install prompt still deserves guidance. How: This checks insStaStr is 'unsupported'.
+	const notIosBoo = !iosInsBoo;                  // What: Not iOS Boolean. Why: iOS/iPadOS already get their own install note instead. How: This negates iosInsBoo.
+	const notMacBoo = !macInsBoo;                  // What: Not Mac Boolean. Why: macOS Safari already gets its own install note instead. How: This negates macInsBoo.
+
+	const shoUnsBoo = insUnsBoo && notIosBoo && notMacBoo; // What: Show Unsupported Boolean. Why: The Unsupported note renders only when no install prompt or platform-specific instructions apply. How: This ANDs the 3 checks above.
+
+
+
 	return (
 
 
@@ -2101,7 +2109,7 @@ function TabSetCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } ) {
 							) }
 
 
-							{ insStaStr === 'unsupported' && !iosInsBoo && !macInsBoo && ( // What: Unsupported Note Check. Why: A browser with no install prompt and no iOS/macOS-specific instructions still deserves guidance. How: This renders the note only while all 3 conditions hold.
+							{ shoUnsBoo && ( // What: Unsupported Note Check. Why: A browser with no install prompt and no iOS/macOS-specific instructions still deserves guidance. How: This renders the note only while all 3 conditions hold.
 
 
 								<div

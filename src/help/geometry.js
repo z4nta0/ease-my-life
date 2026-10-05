@@ -88,8 +88,15 @@ function cliHorFun ( tarRecObj, tarDomEle ) {
 
 	const ownOveStr = getComputedStyle( tarDomEle ).overflowX; // What: Own Overflow String. Why: A target that is itself a horizontally-scrollable box must be clipped to its own visible client width, not its full scrollable content width. How: This reads tarDomEle's own computed overflow-x style.
 
+	const ownAutBoo = ownOveStr === 'auto';                                  // What: Own Auto Boolean. Why: An overflow-x of auto clips the target's own content. How: This compares ownOveStr against 'auto'.
+	const ownScrBoo = ownOveStr === 'scroll';                                // What: Own Scroll Boolean. Why: An overflow-x of scroll clips the target's own content. How: This compares ownOveStr against 'scroll'.
+	const ownHidBoo = ownOveStr === 'hidden';                                // What: Own Hidden Boolean. Why: An overflow-x of hidden clips the target's own content. How: This compares ownOveStr against 'hidden'.
+	const ownNarBoo = tarDomEle.clientWidth < ( rigCurNum - lefCurNum ) - 2; // What: Own Narrow Boolean. Why: Only a visible width meaningfully narrower than the reported rect needs the clamp. How: This compares tarDomEle's own clientWidth against the rect's width, with a 2px tolerance against float rounding.
 
-	if ( ( ownOveStr === 'auto' || ownOveStr === 'scroll' || ownOveStr === 'hidden' ) && tarDomEle.clientWidth < ( rigCurNum - lefCurNum ) - 2 ) { // What: Self Overflow Guard. Why: Only a genuinely scrollable box whose visible width is meaningfully narrower than its reported rect needs this clamp at all. How: This checks ownOveStr against the 3 CSS values that actually clip content, plus a 2px tolerance against float rounding.
+	const ownCliBoo = ( ownAutBoo || ownScrBoo || ownHidBoo ) && ownNarBoo; // What: Own Clip Boolean. Why: The target needs its own clamp only when it clips its content and is narrower than its rect. How: This ANDs any of the 3 clipping overflow values with ownNarBoo.
+
+
+	if ( ownCliBoo ) { // What: Self Overflow Guard. Why: Only a genuinely scrollable box whose visible width is meaningfully narrower than its reported rect needs this clamp at all. How: This reads ownCliBoo, which pairs the 3 CSS values that actually clip content with a 2px-tolerant width check.
 
 
 		rigCurNum = lefCurNum + tarDomEle.clientWidth; // What: Right Clamp. Why: The right edge must stop at what is actually visible, not the full scrollable content width. How: This rebuilds rigCurNum from lefCurNum plus tarDomEle's own clientWidth.
@@ -107,8 +114,14 @@ function cliHorFun ( tarRecObj, tarDomEle ) {
 
 		const ancOveStr = getComputedStyle( curAncEle ).overflowX; // What: Ancestor Overflow String. Why: Only a genuinely scrollable ancestor should clip anything. How: This reads curAncEle's own computed overflow-x style.
 
+		const ancAutBoo = ancOveStr === 'auto';   // What: Ancestor Auto Boolean. Why: An overflow-x of auto clips the ancestor's content. How: This compares ancOveStr against 'auto'.
+		const ancScrBoo = ancOveStr === 'scroll'; // What: Ancestor Scroll Boolean. Why: An overflow-x of scroll clips the ancestor's content. How: This compares ancOveStr against 'scroll'.
+		const ancHidBoo = ancOveStr === 'hidden'; // What: Ancestor Hidden Boolean. Why: An overflow-x of hidden clips the ancestor's content. How: This compares ancOveStr against 'hidden'.
 
-		if ( ancOveStr === 'auto' || ancOveStr === 'scroll' || ancOveStr === 'hidden' ) { // What: Ancestor Overflow Guard. Why: A non-scrolling ancestor (the common case) has nothing to clip against. How: This checks ancOveStr against the 3 CSS values that actually clip content.
+		const ancCliBoo = ancAutBoo || ancScrBoo || ancHidBoo; // What: Ancestor Clip Boolean. Why: Only an ancestor that clips its content can narrow the working rect. How: This ORs the 3 clipping overflow values above.
+
+
+		if ( ancCliBoo ) { // What: Ancestor Overflow Guard. Why: A non-scrolling ancestor (the common case) has nothing to clip against. How: This reads ancCliBoo, which ORs the 3 CSS values that actually clip content.
 
 
 			const ancRecObj = curAncEle.getBoundingClientRect(); // What: Ancestor Rect Object. Why: The clamp below needs the ancestor's own real on-screen bounds. How: This reads curAncEle's own bounding rect.

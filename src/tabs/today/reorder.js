@@ -347,12 +347,26 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 
 
+			const draDowBoo = tarIndNum > oriIndNum;  // What: Drag Down Boolean. Why: Siblings only shift up while the target sits below the origin. How: This compares tarIndNum against oriIndNum.
+			const iteAftBoo = iteIndNum > oriIndNum;  // What: Item After Boolean. Why: Only a sibling below the origin can close the gap a downward drag leaves. How: This compares iteIndNum against oriIndNum.
+			const iteUntBoo = iteIndNum <= tarIndNum; // What: Item Until Boolean. Why: A sibling past the target stays put during a downward drag. How: This checks iteIndNum sits at or above tarIndNum.
+
+			const shiUpwBoo = draDowBoo && iteAftBoo && iteUntBoo; // What: Shift Upward Boolean. Why: A sibling strictly between the origin and a lower target must shift up. How: This combines the three downward-drag checks above.
+
+
+			const draUpwBoo = tarIndNum < oriIndNum;  // What: Drag Upward Boolean. Why: Siblings only shift down while the target sits above the origin. How: This compares tarIndNum against oriIndNum.
+			const iteBefBoo = iteIndNum < oriIndNum;  // What: Item Before Boolean. Why: Only a sibling above the origin can move down into the hole an upward drag opens. How: This compares iteIndNum against oriIndNum.
+			const iteFroBoo = iteIndNum >= tarIndNum; // What: Item From Boolean. Why: A sibling before the target stays put during an upward drag. How: This checks iteIndNum sits at or below tarIndNum.
+
+			const shiDowBoo = draUpwBoo && iteBefBoo && iteFroBoo; // What: Shift Down Boolean. Why: A sibling strictly between a higher target and the origin must shift down. How: This combines the three upward-drag checks above.
+
+
 			let eleOffNum = 0; // What: Element Offset Number. Why: This is the specific sibling's own shift amount, defaulting to no shift at all. How: This starts at 0 and is set by whichever branch below actually applies to this sibling.
 
 
-			if ( tarIndNum > oriIndNum && iteIndNum > oriIndNum && iteIndNum <= tarIndNum ) eleOffNum = -shiDisNum; // What: Downward Range Check. Why: A sibling strictly between the origin and a lower target must shift up to close the gap the dragged element left behind. How: This applies -shiDisNum when all three range conditions hold.
+			if ( shiUpwBoo ) eleOffNum = -shiDisNum; // What: Downward Range Check. Why: A sibling strictly between the origin and a lower target must shift up to close the gap the dragged element left behind. How: This applies -shiDisNum when all three range conditions hold.
 
-			else if ( tarIndNum < oriIndNum && iteIndNum < oriIndNum && iteIndNum >= tarIndNum ) eleOffNum = shiDisNum; // What: Upward Range Check. Why: A sibling strictly between a higher target and the origin must shift down to open a hole at the target. How: This applies shiDisNum when all three range conditions hold.
+			else if ( shiDowBoo ) eleOffNum = shiDisNum; // What: Upward Range Check. Why: A sibling strictly between a higher target and the origin must shift down to open a hole at the target. How: This applies shiDisNum when all three range conditions hold.
 
 
 

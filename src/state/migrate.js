@@ -298,8 +298,21 @@ function migStaFun ( curStaObj ) {
 	if ( curStaObj && !curStaObj._taskIntervalReset && Array.isArray( curStaObj.tasks ) ) { // What: Task Interval One-Shot Reset Guard. Why: The stale, unused interval:2 default must only ever be reset once, per the design-rationale comment above. How: This gates the reset block below on the guard flag not yet being set, and tasks actually being a real array.
 
 
-		curStaObj.tasks = curStaObj.tasks.map( ( curTasObj ) => // What: Interval Reset Map. Why: Only a weekly/monthly/annual task actually inherited the stale, unused interval:2. How: This resets interval to 1 for those 3 repeat kinds, leaving every other task untouched.
-			( curTasObj.repeat === 'weekly' || curTasObj.repeat === 'monthly' || curTasObj.repeat === 'annual' ) ? { ...curTasObj, interval : 1 } : curTasObj ); // What: Interval Reset Test. Why: Only the three kinds that inherited the stale interval need resetting. How: This resets interval to 1 for weekly, monthly and annual tasks and passes every other task through.
+		curStaObj.tasks = curStaObj.tasks.map( ( curTasObj ) => { // What: Interval Reset Map. Why: Only a weekly/monthly/annual task actually inherited the stale, unused interval:2. How: This resets interval to 1 for those 3 repeat kinds, leaving every other task untouched.
+
+
+			const isaWeeBoo = curTasObj.repeat === 'weekly';  // What: Is-A Weekly Boolean. Why: A weekly task is one of the three kinds that inherited the stale interval:2. How: This is true when curTasObj's own repeat is 'weekly'.
+			const isaMonBoo = curTasObj.repeat === 'monthly'; // What: Is-A Monthly Boolean. Why: A monthly task is one of the three kinds that inherited the stale interval:2. How: This is true when curTasObj's own repeat is 'monthly'.
+			const isaAnnBoo = curTasObj.repeat === 'annual';  // What: Is-An Annual Boolean. Why: An annual task is one of the three kinds that inherited the stale interval:2. How: This is true when curTasObj's own repeat is 'annual'.
+
+			const intResBoo = isaWeeBoo || isaMonBoo || isaAnnBoo; // What: Interval Reset Boolean. Why: Only the three kinds that inherited the stale interval need resetting. How: This is true when curTasObj is weekly, monthly or annual.
+
+
+
+			return intResBoo ? { ...curTasObj, interval : 1 } : curTasObj; // What: Interval Reset Return. Why: The map needs each task back, reset or untouched. How: This resets interval to 1 when intResBoo holds and passes every other task through unchanged.
+
+
+		} );
 
 		curStaObj._taskIntervalReset = true; // What: Reset-Guard Set. Why: This one-shot reset must never re-fire and clobber a user's own later interval choice. How: This flips the guard flag permanently true.
 

@@ -269,9 +269,25 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } ) {
 
 
 
-		const setCauArr = visResObj.causes.filter( ( curCauStr ) => curCauStr === 'weekends' || curCauStr === 'holidays' || curCauStr === 'skipUntil' ); // What: Settings Cause Array. Why: This decides which placement (settings vs schedule) the current cause set belongs to. How: This keeps only the 3 settings-based cause values out of visResObj's own causes.
-		const froSetBoo = !nevShoBoo && setCauArr.length > 0;                                                                                            // What: From Settings Boolean. Why: A dead (never-showing) configuration always routes to the schedule subsection instead, regardless of which causes are present. How: This is true only when not nevShoBoo and at least one settings-based cause applies.
-		const notPlaStr = froSetBoo ? 'settings' : 'schedule';                                                                                           // What: Note Placement String. Why: This is compared against this instance's own kinValStr to decide whether IT is the one that should render the note. How: This picks 'settings' or 'schedule' based on froSetBoo.
+		const setCauArr = visResObj.causes.filter( ( curCauStr ) => { // What: Settings Cause Array. Why: This decides which placement (settings vs schedule) the current cause set belongs to. How: This keeps only the 3 settings-based cause values out of visResObj's own causes.
+
+
+			const wkdCauBoo = curCauStr === 'weekends';  // What: Weekend Cause Boolean. Why: The weekends setting is one of the 3 settings-based causes. How: This compares curCauStr against 'weekends'.
+			const holCauBoo = curCauStr === 'holidays';  // What: Holiday Cause Boolean. Why: The holidays setting is one of the 3 settings-based causes. How: This compares curCauStr against 'holidays'.
+			const skiCauBoo = curCauStr === 'skipUntil'; // What: Skip Cause Boolean. Why: A skip-until date is one of the 3 settings-based causes. How: This compares curCauStr against 'skipUntil'.
+
+			const setCauBoo = wkdCauBoo || holCauBoo || skiCauBoo; // What: Settings Cause Boolean. Why: The filter keeps a cause only when it comes from a setting. How: This ORs the 3 checks above.
+
+
+
+			return setCauBoo; // What: Settings Cause Return. Why: The filter needs a yes or no for each cause. How: This returns setCauBoo.
+
+
+		} );
+
+
+		const froSetBoo = !nevShoBoo && setCauArr.length > 0;  // What: From Settings Boolean. Why: A dead (never-showing) configuration always routes to the schedule subsection instead, regardless of which causes are present. How: This is true only when not nevShoBoo and at least one settings-based cause applies.
+		const notPlaStr = froSetBoo ? 'settings' : 'schedule'; // What: Note Placement String. Why: This is compared against this instance's own kinValStr to decide whether IT is the one that should render the note. How: This picks 'settings' or 'schedule' based on froSetBoo.
 
 
 		if ( kinValStr !== notPlaStr ) return null; // What: Wrong Placement Guard. Why: Only one of the several mounted instances per task should ever render the note. How: This returns null for every instance whose own kinValStr doesn't match notPlaStr.

@@ -834,8 +834,15 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		const ownOveStr = getComputedStyle( curTarEle ).overflowX; // What: Own Overflow String. Why: A step whose selector matches the scrollable row ITSELF as one element (e.g. the Stats tour's Range row) rather than several children inside it needs its own overflow-x checked too, since only inspecting ancestors below would miss that case. How: This reads curTarEle's own computed overflow-x style.
 
+		const ownAutBoo = ownOveStr === 'auto';                                  // What: Own Auto Boolean. Why: An overflow-x of auto clips the target's own content. How: This compares ownOveStr against 'auto'.
+		const ownScrBoo = ownOveStr === 'scroll';                                // What: Own Scroll Boolean. Why: An overflow-x of scroll clips the target's own content. How: This compares ownOveStr against 'scroll'.
+		const ownHidBoo = ownOveStr === 'hidden';                                // What: Own Hidden Boolean. Why: An overflow-x of hidden clips the target's own content. How: This compares ownOveStr against 'hidden'.
+		const ownNarBoo = curTarEle.clientWidth < ( cliRigNum - cliLefNum ) - 2; // What: Own Narrow Boolean. Why: Only a visible width meaningfully narrower than the reported rect needs the clamp. How: This compares curTarEle's own clientWidth against the rect's width, with a 2px tolerance against float rounding.
 
-		if ( ( ownOveStr === 'auto' || ownOveStr === 'scroll' || ownOveStr === 'hidden' ) && curTarEle.clientWidth < ( cliRigNum - cliLefNum ) - 2 ) { // What: Self Overflow Guard. Why: clientWidth reflects what is actually rendered/visible regardless of a too-wide getBoundingClientRect() (seen on some engine/layout combinations even with min-width:0 set); only clamps if it is meaningfully narrower than the raw rect, so a normal thin border does not shave a couple pixels off every ordinary highlight. How: This checks ownOveStr against the 3 CSS values that actually clip content, plus a 2px tolerance against float rounding.
+		const ownCliBoo = ( ownAutBoo || ownScrBoo || ownHidBoo ) && ownNarBoo; // What: Own Clip Boolean. Why: The target needs its own clamp only when it clips its content and is narrower than its rect. How: This ANDs any of the 3 clipping overflow values with ownNarBoo.
+
+
+		if ( ownCliBoo ) { // What: Self Overflow Guard. Why: clientWidth reflects what is actually rendered/visible regardless of a too-wide getBoundingClientRect() (seen on some engine/layout combinations even with min-width:0 set); only clamps if it is meaningfully narrower than the raw rect, so a normal thin border does not shave a couple pixels off every ordinary highlight. How: This reads ownCliBoo, which pairs the 3 CSS values that actually clip content with a 2px-tolerant width check.
 
 
 			cliRigNum = cliLefNum + curTarEle.clientWidth; // What: Right Clamp. Why: The right edge must stop at what is actually visible, not the full scrollable content width. How: This rebuilds cliRigNum from cliLefNum plus curTarEle's own clientWidth.
@@ -853,8 +860,14 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			const ancOveStr = getComputedStyle( ancCurEle ).overflowX; // What: Ancestor Overflow String. Why: Only a genuinely scrollable ancestor should clip anything. How: This reads ancCurEle's own computed overflow-x style.
 
+			const ancAutBoo = ancOveStr === 'auto';   // What: Ancestor Auto Boolean. Why: An overflow-x of auto clips the ancestor's content. How: This compares ancOveStr against 'auto'.
+			const ancScrBoo = ancOveStr === 'scroll'; // What: Ancestor Scroll Boolean. Why: An overflow-x of scroll clips the ancestor's content. How: This compares ancOveStr against 'scroll'.
+			const ancHidBoo = ancOveStr === 'hidden'; // What: Ancestor Hidden Boolean. Why: An overflow-x of hidden clips the ancestor's content. How: This compares ancOveStr against 'hidden'.
 
-			if ( ancOveStr === 'auto' || ancOveStr === 'scroll' || ancOveStr === 'hidden' ) { // What: Ancestor Overflow Guard. Why: A non-scrolling ancestor (the common case) has nothing to clip against. How: This checks ancOveStr against the 3 CSS values that actually clip content.
+			const ancCliBoo = ancAutBoo || ancScrBoo || ancHidBoo; // What: Ancestor Clip Boolean. Why: Only an ancestor that clips its content can narrow the working rect. How: This ORs the 3 clipping overflow values above.
+
+
+			if ( ancCliBoo ) { // What: Ancestor Overflow Guard. Why: A non-scrolling ancestor (the common case) has nothing to clip against. How: This reads ancCliBoo, which ORs the 3 CSS values that actually clip content.
 
 
 				const ancRecObj = ancCurEle.getBoundingClientRect(); // What: Ancestor Rect Object. Why: The clamp below needs the ancestor's own real on-screen bounds. How: This reads ancCurEle's own bounding rect.
@@ -1758,7 +1771,14 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( !curSteObj.catBoo && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank. How: This reserves extra room below the target when the coach would fit neither below nor above its predicted landing position.
+			const notCatBoo = !curSteObj.catBoo; // What: Not Coach-At-Top Boolean. Why: A coach-at-top step never reserves space. How: This negates curSteObj's own catBoo flag.
+			const notDecBoo = !resDecBoo;        // What: Not Decided Boolean. Why: The reserve decision must only ever happen once per step. How: This negates resDecBoo.
+			const hasPreBoo = preTopNum != null; // What: Has Predicted Boolean. Why: Only a target that is about to be scrolled has a predicted landing position to check. How: This checks preTopNum is not null.
+
+			const resPreBoo = notCatBoo && notDecBoo && hasPreBoo; // What: Reserve Predict Boolean. Why: The reserve prediction below only applies when all 3 checks above hold. How: This ANDs the 3 checks above.
+
+
+			if ( resPreBoo ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank. How: This reserves extra room below the target when the coach would fit neither below nor above its predicted landing position.
 
 
 				const vieHeiNum = window.innerHeight;                                                                                   // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
@@ -2042,8 +2062,14 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			const tarRecObj = uniRecFun( curEleArr ); // What: Target Rect Object. Why: The stability check below needs the target's own current union rect. How: This unions curEleArr via uniRecFun.
 
+			const hasLasBoo = lasHeiNum != null;                            // What: Has Last Boolean. Why: The very first frame has no previous geometry to compare against. How: This checks lasHeiNum is not null.
+			const heiStaBoo = Math.abs( tarRecObj.height - lasHeiNum ) < 1; // What: Height Stable Boolean. Why: The target's own height must be unchanged from the previous frame. How: This checks the height delta is under 1px.
+			const topStaBoo = Math.abs( tarRecObj.top - lasTopNum ) < 1;    // What: Top Stable Boolean. Why: The target's own top must be unchanged from the previous frame. How: This checks the top delta is under 1px.
 
-			if ( lasHeiNum != null && Math.abs( tarRecObj.height - lasHeiNum ) < 1 && Math.abs( tarRecObj.top - lasTopNum ) < 1 ) staFraNum++; // What: Stable Frame Increment. Why: Both the target's own top and height must be unchanged from the previous frame for it to count as settled. How: This increments staFraNum only when both deltas are under 1px.
+			const tarStaBoo = hasLasBoo && heiStaBoo && topStaBoo; // What: Target Stable Boolean. Why: A frame only counts as settled when there is a previous frame and both deltas are under 1px. How: This ANDs the 3 checks above.
+
+
+			if ( tarStaBoo ) staFraNum++; // What: Stable Frame Increment. Why: Both the target's own top and height must be unchanged from the previous frame for it to count as settled. How: This increments staFraNum only when both deltas are under 1px.
 
 			else staFraNum = 0; // What: Stable Frame Reset. Why: Any real movement restarts the settle count from scratch. How: This resets staFraNum to 0 whenever the stability check above failed.
 

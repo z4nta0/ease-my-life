@@ -2466,10 +2466,16 @@ function useAppStaFun ( optArgObj ) {
 
 
 
-			const picIdeStr = picArgObj.replaceId || picArgObj.id || ( 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ) ); // What: Picker Identifier String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers picArgObj.replaceId, then id, else mints a fresh 'pkr_' id.
-			const iniValNum = picArgObj.mode === 'ease-down' ? 100 : 0;                                                       // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is 100 for ease-down (starts "charged"), else 0.
-			const isaEasBoo = picArgObj.mode === 'ease-up' || picArgObj.mode === 'ease-down';                                 // What: Is-An Ease Boolean. Why: Only an ease-mode item carries its own per-item drift band. How: This is true when mode is either ease-up or ease-down.
-			const isaDowBoo = picArgObj.mode === 'ease-down';                                                                 // What: Is-A Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
+			const exiIdeStr = picArgObj.replaceId;                                 // What: Existing Identifier String. Why: A replace must keep the existing picker's own id alive. How: This reads picArgObj.replaceId, undefined on an ordinary add.
+			const givIdeStr = picArgObj.id;                                        // What: Given Identifier String. Why: Onboarding's own sample pickers pass an explicit id so it matches the one baked into precomputed Stats history. How: This reads picArgObj.id, undefined for every other caller.
+			const newIdeStr = 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: Every other caller needs a fresh random id. How: This mints a 'pkr_' id from 6 random base-36 characters.
+
+			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
+
+
+			const iniValNum = picArgObj.mode === 'ease-down' ? 100 : 0;                       // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is 100 for ease-down (starts "charged"), else 0.
+			const isaEasBoo = picArgObj.mode === 'ease-up' || picArgObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: Only an ease-mode item carries its own per-item drift band. How: This is true when mode is either ease-up or ease-down.
+			const isaDowBoo = picArgObj.mode === 'ease-down';                                 // What: Is-A Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
 
 			const newConObj = picArgObj.newConditional; // What: New Conditional Object. Why: The inline-conditional build below reads many of this one field's own properties. How: This reads picArgObj.newConditional, which is null/undefined when no inline conditional was authored.
 

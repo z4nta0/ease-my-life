@@ -769,7 +769,14 @@ async function iniStoFun () {
 				for ( const curKeyStr of ownKeyFun() ) { // What: Owned Key Sweep Loop. Why: Every owned key must be checked individually, since some (the live mirror, the boot counter, the mirror timestamp) must survive this sweep. How: This iterates every key ownKeyFun finds.
 
 
-					if ( curKeyStr !== MIR_KEY_STR && curKeyStr !== BOO_KEY_STR && curKeyStr !== MIR_TIM_STR ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never the three keys this layer still actively reads and writes. How: This removes curKeyStr unless it matches one of those three survivors.
+					const notMirBoo = curKeyStr !== MIR_KEY_STR; // What: Not Mirror Boolean. Why: The live warm mirror must survive this sweep. How: This is true when curKeyStr isn't MIR_KEY_STR.
+					const notBooBoo = curKeyStr !== BOO_KEY_STR; // What: Not Boot Boolean. Why: The boot counter must survive this sweep, since it gates the sweep itself. How: This is true when curKeyStr isn't BOO_KEY_STR.
+					const notTimBoo = curKeyStr !== MIR_TIM_STR; // What: Not Timestamp Boolean. Why: The mirror timestamp must survive this sweep alongside the mirror it dates. How: This is true when curKeyStr isn't MIR_TIM_STR.
+
+					const isaDeaBoo = notMirBoo && notBooBoo && notTimBoo; // What: Is-A Dead Boolean. Why: Only a key that is none of the three survivors is a genuinely dead pre-IDB generation. How: This combines notMirBoo, notBooBoo and notTimBoo.
+
+
+					if ( isaDeaBoo ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never the three keys this layer still actively reads and writes. How: This removes curKeyStr unless it matches one of those three survivors.
 
 
 				}

@@ -608,7 +608,14 @@ function RemManCom ( { actStoObj, staAppObj } ) {
 	React.useEffect( () => { // What: Scroll Into View Effect. Why: Only a BRAND-NEW reminder's own editor opening should auto-scroll; reopening an existing reminder's editor should not yank the viewport. How: This guards on newAddRef still matching opeIdeStr, then scrolls opeRowRef's own current node into view, waiting for the ColDisCom open animation to finish first (unless reduced motion).
 
 
-		if ( !opeIdeStr || newAddRef.current !== opeIdeStr || !opeRowRef.current ) return; // What: Not-A-New-Open Guard. Why: Every other case (no row open, a re-opened existing row, or the ref not yet attached) should do nothing at all. How: This bails out unless all 3 conditions hold.
+		const notOpeBoo = !opeIdeStr;                      // What: Not Open Boolean. Why: No row is open, so there is nothing to scroll to. How: This negates opeIdeStr.
+		const notNewBoo = newAddRef.current !== opeIdeStr; // What: Not New Boolean. Why: Reopening an existing reminder must not scroll. How: This checks newAddRef's own current id doesn't match opeIdeStr.
+		const notRowBoo = !opeRowRef.current;              // What: Not Row Boolean. Why: The row's node must be mounted before it can scroll. How: This negates opeRowRef.current.
+
+		const skiScrBoo = notOpeBoo || notNewBoo || notRowBoo; // What: Skip Scroll Boolean. Why: Any one missing piece means this effect has nothing to do. How: This ORs the 3 checks above.
+
+
+		if ( skiScrBoo ) return; // What: Not-A-New-Open Guard. Why: Every other case (no row open, a re-opened existing row, or the ref not yet attached) should do nothing at all. How: This bails out unless all 3 conditions hold.
 
 
 

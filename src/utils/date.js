@@ -346,12 +346,17 @@ function nwmDayFun ( yeaValNum, monOneNum, nthValNum, weeValNum ) {
 function ordSufFun ( ordValNum ) {
 
 
-	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
-	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
+	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ];           // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
+	const lasTwoNum = ordValNum % 100;                      // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
+	const oneSufStr = sufTexArr[ ( lasTwoNum - 20 ) % 10 ]; // What: Ones Suffix String. Why: Past 20, the suffix follows the last digit alone (21st, 22nd, 23rd, 31st, ...). How: This reads sufTexArr at lasTwoNum minus 20, modulo 10, which is undefined below 21 and for any last digit past 3.
+	const lowSufStr = sufTexArr[ lasTwoNum ];               // What: Low Suffix String. Why: Below 20, only 1, 2 and 3 take their own suffix, so 11th, 12th and 13th fall through to 'th'. How: This reads sufTexArr at lasTwoNum directly, which is undefined from 4 upward.
+	const defSufStr = sufTexArr[ 0 ];                       // What: Default Suffix String. Why: Every number neither lookup above matched takes 'th'. How: This reads sufTexArr's own first entry.
+
+	const finSufStr = oneSufStr || lowSufStr || defSufStr; // What: Final Suffix String. Why: The ones suffix, the low suffix and the default must be tried in that order. How: This takes the first of the three that is defined.
 
 
 
-	return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTexArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
+	return ordValNum + finSufStr; // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This appends finSufStr to ordValNum.
 
 
 }

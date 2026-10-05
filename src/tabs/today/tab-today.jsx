@@ -874,7 +874,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		if ( donCouNum > preDonRef.current && !fulNowBoo && rinEleRef.current ) { // What: Plain Pulse Branch. Why: An ordinary done-count rise that doesn't complete the whole day still deserves a small per-tick pulse. How: This checks donCouNum against preDonRef's own prior value.
+		const donRisBoo = donCouNum > preDonRef.current; // What: Done Rise Boolean. Why: A pulse only plays when the done count actually went up. How: This compares donCouNum against preDonRef's own prior value.
+		const notFulBoo = !fulNowBoo;                    // What: Not Full Boolean. Why: A rise that completes the whole day already got the full celebration above. How: This negates fulNowBoo.
+		const rinMouBoo = !!rinEleRef.current;           // What: Ring Mounted Boolean. Why: The pulse needs the progress ring's own node to animate. How: This coerces rinEleRef.current to a boolean.
+
+		const ticPulBoo = donRisBoo && notFulBoo && rinMouBoo; // What: Tick Pulse Boolean. Why: The plain pulse branch below runs only when all three hold. How: This combines the three checks above.
+
+
+		if ( ticPulBoo ) { // What: Plain Pulse Branch. Why: An ordinary done-count rise that doesn't complete the whole day still deserves a small per-tick pulse. How: This runs while ticPulBoo holds.
 
 
 			const rinCurEle = rinEleRef.current; // What: Ring Current Element. Why: Every DOM manipulation below targets this same node. How: This reads rinEleRef.current once and reuses it throughout this branch.
@@ -1294,7 +1301,21 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				};
 
 
-				const ordIteFun = ( iteOneObj, iteTwoObj ) => ( iteTwoObj.value - iteOneObj.value ) || ( lasTimFun( iteOneObj ) - lasTimFun( iteTwoObj ) ) || ( iteOneObj.id < iteTwoObj.id ? -1 : 1 ); // What: Order Item Function. Why: The cycle below needs a stable, deterministic order. How: This sorts by value descending, then oldest lastPicked, then id.
+				const ordIteFun = ( iteOneObj, iteTwoObj ) => { // What: Order Item Function. Why: The cycle below needs a stable, deterministic order. How: This sorts by value descending, then oldest lastPicked, then id.
+
+
+					const valDifNum = iteTwoObj.value - iteOneObj.value;               // What: Value Difference Number. Why: Higher-value items come first. How: This subtracts the first item's own value from the second's, so a larger value sorts earlier.
+					const lasDifNum = lasTimFun( iteOneObj ) - lasTimFun( iteTwoObj ); // What: Last Difference Number. Why: Among equal values, the item picked longest ago comes first. How: This subtracts the second item's own lastPicked timestamp from the first's.
+					const ideOrdNum = iteOneObj.id < iteTwoObj.id ? -1 : 1;            // What: Identifier Order Number. Why: A final tiebreak keeps the order fully deterministic. How: This compares the two ids.
+
+					const ordValNum = valDifNum || lasDifNum || ideOrdNum; // What: Order Value Number. Why: The sort needs the first tiebreak that actually separates the two items. How: This falls through each difference above while it's 0.
+
+
+
+					return ordValNum; // What: Order Value Return. Why: The sort reads this number to place the two items. How: This returns ordValNum.
+
+
+				};
 
 
 				const eliIteArr = staAppObj.items.filter( isaEliFun ).sort( ordIteFun ); // What: Eligible Item Array. Why: This is the actual candidate pool re-roll cycles through; deterministic order (value desc, then oldest lastPicked, then id) is stable since done-gating freezes values between rolls. How: This filters with isaEliFun and sorts with ordIteFun.
@@ -1841,9 +1862,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const wraCurEle = groDndRef.current;                                            // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
 		const griCurEle = poiEveObj.currentTarget;                                      // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
 		const secCurEle = griCurEle.closest( '[data-element-name-hook~="todGroSec"]' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest todGroSec ancestor.
+		const misWraBoo = !wraCurEle;                                                   // What: Missing Wrapper Boolean. Why: A drag needs the groups' shared wrapper as its container. How: This negates wraCurEle.
+		const misSecBoo = !secCurEle;                                                   // What: Missing Section Boolean. Why: A drag needs the whole group section it moves, not just its grip. How: This negates secCurEle.
+		const misReoBoo = !REO_NAM_OBJ;                                                 // What: Missing Reorder Boolean. Why: A drag needs the shared reorder module to run it. How: This negates REO_NAM_OBJ.
+
+		const misPreBoo = misWraBoo || misSecBoo || misReoBoo; // What: Missing Prerequisite Boolean. Why: A drag cannot start without all 3 of these. How: This is true when any one of them is missing.
 
 
-		if ( !wraCurEle || !secCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
+		if ( misPreBoo ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
 
 
 
@@ -1911,9 +1937,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const griCurEle = poiEveObj.currentTarget;                                      // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads poiEveObj.currentTarget.
 		const lisCurEle = griCurEle.closest( '[data-element-name-hook~="todLisDiv"]' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest todLisDiv ancestor.
 		const carCurEle = griCurEle.closest( '[data-element-name-hook~="todCarArt"]' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest todCarArt ancestor.
+		const misLisBoo = !lisCurEle;                                                   // What: Missing List Boolean. Why: A drag needs the group's own list as its container. How: This negates lisCurEle.
+		const misCarBoo = !carCurEle;                                                   // What: Missing Card Boolean. Why: A drag needs the whole card it moves, not just its grip. How: This negates carCurEle.
+		const misReoBoo = !REO_NAM_OBJ;                                                 // What: Missing Reorder Boolean. Why: A drag needs the shared reorder module to run it. How: This negates REO_NAM_OBJ.
+
+		const misPreBoo = misLisBoo || misCarBoo || misReoBoo; // What: Missing Prerequisite Boolean. Why: A drag cannot start without all 3 of these. How: This is true when any one of them is missing.
 
 
-		if ( !lisCurEle || !carCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
+		if ( misPreBoo ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
 
 
 
