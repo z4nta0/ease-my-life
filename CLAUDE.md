@@ -29,7 +29,8 @@ by area once the code is typed, and stays a tracked to-do until it is.
 mid-migration. `public/boot-splash.js` and `public/sw-notify.js` stay
 JavaScript, since the browser and service worker load them by fixed URL
 outside the build. There is no test suite. ESLint is installed and configured
-(`eslint.config.ts`, loaded through `jiti`, with `eslint-plugin-react-hooks`'
+(`eslint.config.ts`, loaded through `jiti`, reading every file through
+`typescript-eslint`'s parser, with `eslint-plugin-react-hooks`'
 recommended rules for `.tsx` files, minus its four React Compiler readiness
 rules, plus `no-undef` and `react/jsx-no-undef` with browser globals for
 everything under `src/`, which catch a reference a rename missed; its
@@ -179,7 +180,10 @@ cross-module registration channels (e.g. a component registers a callback on
 mount so `index.html`'s boot script or the onboarding tour can call it
 later), not accidental leaks. Leave them as globals rather than "fixing" them
 into imports; the components that set them are meant to be reachable before/
-outside the normal React import graph.
+outside the normal React import graph. Their types live in `src/globals.d.ts`
+(along with `__APP_VERSION__`); a new global gets declared there too.
+`__emlPickerCreated` is left out on purpose: nothing ever assigns it, so the
+Pickers tab's two calls to it never run, and it's under investigation.
 
 ### PWA / deploy details
 
