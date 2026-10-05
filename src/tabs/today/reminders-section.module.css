@@ -409,7 +409,8 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Quick-Add Form. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.remAddDiv { /* What: Still Quick-Add Form. Why: The form should appear and close at once, while still ending the animation its handler waits on. How: This shortens its fades to .01ms instead of turning them off. */
+	.remAddDiv,
+	.remAddDiv.remAddDiv--closing { /* What: Still Quick-Add Form. Why: The form should appear and close at once, while still ending the animation its handler waits on. How: This shortens its fades to .01ms instead of turning them off. */
 
 
 		animation-duration : .01ms;
