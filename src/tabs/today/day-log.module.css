@@ -1261,6 +1261,24 @@
 
 
 }
+@container app ( max-width : 500px ) { /* What: Very Narrow Untriggered Status Pill. Why: At 500px and below "Not Triggered" on one line is wider than the status column and spills over the After value. How: This applies only when the app is 500px wide or less. */
+
+
+	.staPilSpa--untriggered { /* What: Wrapped Untriggered Status Pill. Why: The whole status should stay readable inside its column. How: This wraps the text onto two centered lines and lets the pill grow to fit, never shorter than its one-line height. */
+
+
+		height          : auto;
+		justify-content : center;
+		line-height     : var( --ver-rhy-bas );                /* Vertical Rhythm Base ~= 1.325 */
+		min-height      : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+		text-align      : center;
+		white-space     : normal;
+
+
+	}
+
+
+}
 .staPilSpa--done { /* What: Done Status Pill Span. Why: A done reminder reads green. How: This tints the pill green. */
 
 
