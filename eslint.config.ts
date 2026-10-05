@@ -6,6 +6,7 @@
 import globals    from 'globals';                   // What: Globals. Why: The browser's own globals have to be declared, or no-undef flags every window and document. How: Its browser set is spread into the src/ config's globals.
 import react      from 'eslint-plugin-react';       // What: React. Why: no-undef can't see JSX element names, so an undefined component needs React's own rule. How: This registers the plugin behind react/jsx-no-undef.
 import reactHooks from 'eslint-plugin-react-hooks'; // What: React Hooks. Why: Hook calls follow rules plain JS linting can't check. How: Its recommended rules are spread into the .tsx config.
+import tseslint   from 'typescript-eslint';         // What: TypeScript ESLint. Why: ESLint's default parser can't read TypeScript's type annotations. How: Its parser is set on both configs below; its own rules aren't turned on yet.
 
 // #endregion Imports
 
@@ -15,14 +16,15 @@ import reactHooks from 'eslint-plugin-react-hooks'; // What: React Hooks. Why: H
  * eslint.config.ts = ESLint Config
  *
  * @summary
- * The lint config. Every .ts and .tsx file under src/ is checked by no-undef
- * and react/jsx-no-undef, with the browser's globals and __APP_VERSION__
- * declared, which catches a reference a rename missed. Every .tsx file also
- * gets the React Hooks plugin's recommended rules, minus the four React
- * Compiler readiness rules, which only matter to an app built with the React
- * Compiler, which this one isn't. Generated output (dist/, dev-dist/) is
- * ignored. No npm script runs it; it runs only through npx eslint or an
- * editor integration.
+ * The lint config, reading every file through typescript-eslint's parser so
+ * type annotations parse. Every .ts and .tsx file under src/ is checked by
+ * no-undef and react/jsx-no-undef, with the browser's globals and
+ * __APP_VERSION__ declared, which catches a reference a rename missed. Every
+ * .tsx file also gets the React Hooks plugin's recommended rules, minus the
+ * four React Compiler readiness rules, which only matter to an app built with
+ * the React Compiler, which this one isn't. Generated output (dist/,
+ * dev-dist/) is ignored. No npm script runs it; it runs only through npx
+ * eslint or an editor integration.
  *
  * Sections:
  *  - Constants
@@ -48,11 +50,12 @@ const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat c
 		plugins : { react },                                                // What: Plugins. Why: react/jsx-no-undef comes from the React plugin. How: This registers it.
 		rules   : { 'no-undef' : 'error', 'react/jsx-no-undef' : 'error' }, // What: Rules. Why: An undefined name, in JS or in a JSX tag, is always a bug. How: This makes both rules errors.
 
-		languageOptions : { // What: Language Options. Why: The parser has to know the syntax and globals the source uses. How: This sets modern module syntax with JSX and declares the globals.
+		languageOptions : { // What: Language Options. Why: The parser has to know the syntax and globals the source uses. How: This sets the TypeScript parser and modern module syntax with JSX, and declares the globals.
 
 
 			ecmaVersion   : 'latest',                                             // What: Ecma Version. Why: The source uses current JavaScript syntax. How: This parses the latest version.
 			globals       : { ...globals.browser, __APP_VERSION__ : 'readonly' }, // What: Globals. Why: Browser globals and the build-injected version would otherwise read as undefined. How: This declares the browser set plus __APP_VERSION__, which vite.config.ts defines.
+			parser        : tseslint.parser,                                      // What: Parser. Why: The source is TypeScript, which ESLint's default parser can't read. How: This sets typescript-eslint's parser.
 			parserOptions : { ecmaFeatures : { jsx : true } },                    // What: Parser Options. Why: The .tsx files contain JSX. How: This turns on JSX parsing.
 			sourceType    : 'module'                                              // What: Source Type. Why: Every source file is an ES module. How: This parses import and export.
 
@@ -65,9 +68,17 @@ const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat c
 	{ // What: Jsx Config Object. Why: Hook calls in components follow rules of their own. How: This adds the React Hooks recommended rules for every .tsx file.
 
 
-		files           : [ '**/*.tsx' ],                                        // What: Files. Why: Hooks only appear in .tsx files. How: This matches every one of them.
-		languageOptions : { parserOptions : { ecmaFeatures : { jsx : true } } }, // What: Language Options. Why: These files contain JSX. How: This turns on JSX parsing.
-		plugins         : { react, 'react-hooks' : reactHooks },                 // What: Plugins. Why: The hooks rules come from the React Hooks plugin. How: This registers it beside the React plugin.
+		files   : [ '**/*.tsx' ],                        // What: Files. Why: Hooks only appear in .tsx files. How: This matches every one of them.
+		plugins : { react, 'react-hooks' : reactHooks }, // What: Plugins. Why: The hooks rules come from the React Hooks plugin. How: This registers it beside the React plugin.
+
+		languageOptions : { // What: Language Options. Why: These files are TypeScript with JSX. How: This sets the TypeScript parser and turns on JSX parsing.
+
+
+			parser        : tseslint.parser,                   // What: Parser. Why: ESLint's default parser can't read TypeScript. How: This sets typescript-eslint's parser.
+			parserOptions : { ecmaFeatures : { jsx : true } }, // What: Parser Options. Why: These files contain JSX. How: This turns on JSX parsing.
+
+
+		},
 
 		rules : { // What: Rules. Why: The plugin's recommended set is the standard hooks checks, but four of its rules only judge whether a component suits the React Compiler, which this app doesn't use. How: This spreads the recommended set in, then turns those four off.
 
