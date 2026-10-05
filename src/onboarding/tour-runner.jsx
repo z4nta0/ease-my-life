@@ -2090,10 +2090,12 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		const nftValNum = 4000; // What: Not-Found-Timeout Value Number. Why: A step whose target never resolves (normally just the tab-sync effect's own selTabFun() still settling) would otherwise sit as a permanent dim with nothing to click, most likely on a resume, where a stale activeTour survived some app change that moved or removed the target. How: This is generous enough not to fire during ordinary mounting.
 
+		let broScrNum = null;  // What: Brought Scroll Number. Why: The content-grew check below compares against the scroll height the target was last brought at, not just the previous frame's, so an expand animation growing a little each frame still adds up to one re-bring. How: This is set to the scroll height on the first bring and again after every content-grew re-bring.
 		let hasBroBoo = false; // What: Has Brought Boolean. Why: briTarFun above should only run once as soon as the target actually exists, not on every frame; the loop below flips this once that first call has happened. How: This starts false and is set true the first time the target is found inside the loop.
 		let notFouNum = null;  // What: Not Found Number. Why: The watchdog below needs to track how long the target has been missing, not just whether it currently is. How: This starts null (never yet missing) and is set to a timestamp the first time the loop below finds nothing.
 		let preScrNum = null;  // What: Previous Scroll Number. Why: This tracks the scrollable content's total height so a step whose target stays put (no tab/step change) but whose SURROUNDING content grows or shrinks, e.g. the user does the step's own action themselves without ever clicking the coach's Next, can still get nudged back into view. How: Ordinary scrolling never changes this value, so it does not fight the user scrolling around on purpose; only an actual content-size change re-triggers briTarFun; measured with resAmoNum subtracted out, otherwise decResFun's own CSS padding (added specifically to make room for the coach above a highlight too tall to fit either way) reads as "content grew", re-triggers briTarFun, and briTarFun scrolls the target right back up to its usual pad-from-top position, undoing the reserve and putting the coach right back on top of it.
 		let pulPriBoo = true;  // What: Pulse Primary Boolean. Why: This tracks pulSelStr's own on/off transition (see its own doc comment in GuiTouCom's own JSDoc above) so falling back to the wider, no-longer-pulsing highlight also brings it into view, since the wider box can extend well past what the tight button-only highlight needed. How: This starts true so a step that never had a pulSelStr primary target at all (pulSelStr unset) never spuriously fires this on its first frame.
+		let scrStaNum = 0;     // What: Scroll Stable Number. Why: Re-bringing mid-animation measured a half-grown layout every frame and queued one smooth scroll per frame, and the last one could overshoot the target right off screen. How: This counts consecutive frames whose scroll height held still, and the content-grew re-bring waits for 2 of them.
 
 
 
@@ -2104,12 +2106,12 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @summary
 		 * The per-frame heartbeat of the position-tracking effect. While the target
-		 * exists it brings it into view the first time, re-brings it when the page
-		 * content changes size or a pulSelStr target stops matching, settles the
-		 * reserve decision, places the spotlight and coach, and commits the rect to
-		 * React state. While the target is missing it clears the rect and, after
-		 * nftValNum milliseconds, skips the tour. It reschedules itself every frame
-		 * until the effect is cancelled.
+		 * exists it brings it into view the first time, re-brings it once the page
+		 * content settles at a new size or a pulSelStr target stops matching,
+		 * settles the reserve decision, places the spotlight and coach, and commits
+		 * the rect to React state. While the target is missing it clears the rect
+		 * and, after nftValNum milliseconds, skips the tour. It reschedules itself
+		 * every frame until the effect is cancelled.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2143,20 +2145,35 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				const curScrEle = getScrFun( curEleArr[ 0 ] );                                                       // What: Current Scroll Element. Why: The content-grew check below needs to know which element actually scrolls. How: This resolves the first matched element's own scroller.
 				const isaDocBoo = curScrEle === document.scrollingElement || curScrEle === document.documentElement; // What: Is-A Document Boolean. Why: The document's own scroller reports its height through documentElement rather than itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
 				const rawHeiNum = isaDocBoo ? document.documentElement.scrollHeight : curScrEle.scrollHeight;        // What: Raw Height Number. Why: The content-grew check needs the scrollable content's own total height. How: This reads documentElement's own scrollHeight for the document scroller, otherwise the scroller's own.
-				const scrHeiNum = rawHeiNum - resAmoNum;                                                             // What: Scroll Height Number. Why: The content-grew check compares this against preScrNum. How: This subtracts resAmoNum from rawHeiNum (see preScrNum's own doc comment above for why).
+				const scrHeiNum = rawHeiNum - resAmoNum;                                                             // What: Scroll Height Number. Why: The content-grew check compares this against broScrNum. How: This subtracts resAmoNum from rawHeiNum (see preScrNum's own doc comment above for why).
+
+
+				if ( preScrNum != null && Math.abs( scrHeiNum - preScrNum ) < 1 ) scrStaNum++; // What: Scroll Stable Increment. Why: The content-grew re-bring must wait until the page has stopped changing size. How: This adds a stable frame whenever the scroll height matches the previous frame's.
+
+				else scrStaNum = 0; // What: Scroll Stable Reset. Why: Any size change restarts the settle count. How: This resets scrStaNum to 0 whenever the scroll height moved.
+
 
 
 				if ( !hasBroBoo ) { // What: First Bring Check. Why: The target must be brought into view exactly once, the first time it actually exists. How: This only enters on that first frame.
 
 
-					hasBroBoo = true; // What: Has Brought Commit. Why: Every later frame must skip this branch. How: This flips hasBroBoo to true.
+					hasBroBoo = true;      // What: Has Brought Commit. Why: Every later frame must skip this branch. How: This flips hasBroBoo to true.
+					broScrNum = scrHeiNum; // What: Brought Scroll Commit. Why: The content-grew check measures growth from the height the target was brought at. How: This records the current scroll height.
 
 					briTarFun(); // What: First Bring Call. Why: The target has just been found for the first time. How: This calls briTarFun.
 
 
 				}
 
-				else if ( preScrNum != null && Math.abs( scrHeiNum - preScrNum ) > 40 ) briTarFun(); // What: Content Grew Re-Bring. Why: See preScrNum's own doc comment above, the surrounding content changing size mid-step should re-trigger the bring. How: This re-calls briTarFun once the scroll height has moved by more than a 40px tolerance.
+				else if ( scrStaNum >= 2 && Math.abs( scrHeiNum - broScrNum ) > 40 ) { // What: Content Grew Re-Bring. Why: See preScrNum's own doc comment above, the surrounding content changing size mid-step should re-trigger the bring. How: This re-calls briTarFun once the scroll height has settled more than a 40px tolerance away from where it was last brought.
+
+
+					broScrNum = scrHeiNum; // What: Brought Scroll Commit. Why: The next re-bring must measure growth from this settled height. How: This records the current scroll height.
+
+					briTarFun(); // What: Content Grew Bring Call. Why: The settled layout may have pushed the target out of view. How: This calls briTarFun.
+
+
+				}
 
 				else if ( curSteObj.pulSelStr ) { // What: Pulse Transition Check. Why: A pulSelStr step's own primary target can stop matching mid-step (e.g. a button widening to its whole surrounding window once clicked), and the wider fallback highlight needs bringing into view too. How: This brings the target back into view on the frame the primary pulse target stops matching, then records whether it matches.
 
@@ -2175,7 +2192,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-				preScrNum = scrHeiNum; // What: Last Scroll Height Commit. Why: The next frame's own content-grew check needs this frame's own scroll height to compare against. How: This overwrites preScrNum with scrHeiNum.
+				preScrNum = scrHeiNum; // What: Last Scroll Height Commit. Why: The next frame's own scroll stable check needs this frame's own scroll height to compare against. How: This overwrites preScrNum with scrHeiNum.
 
 				decResFun( curEleArr ); // What: Reserve Decision Call. Why: Every frame gets a chance to settle the once-per-step reserve decision. How: This calls decResFun with the currently-resolved elements.
 
