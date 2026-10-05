@@ -225,7 +225,7 @@ const perCheFun = () => ( notSupFun() ? Notification.permission : 'unsupported' 
  *
 */
 
-async function askOncFun() {
+async function askOncFun () {
 
 
 	if ( !notSupFun() || Notification.permission !== 'default' || askCheFun() ) return perCheFun(); // What: Ask Guard Clause. Why: There is nothing to prompt for when notifications aren't supported at all, the permission has already moved past 'default', or this module has already asked once before. How: This checks all 3 conditions with ||, short-circuiting on the first true one, and returns the current permission instead of prompting.
@@ -287,7 +287,7 @@ async function askOncFun() {
  *
 */
 
-async function reqPerFun() {
+async function reqPerFun () {
 
 
 	if ( !notSupFun() ) return 'unsupported'; // What: Support Guard Clause. Why: There is nothing to request when the browser has no Notification API at all. How: This returns the literal string 'unsupported' early instead of touching Notification.permission below.
@@ -358,7 +358,7 @@ async function reqPerFun() {
  *
 */
 
-async function genNotFun() {
+async function genNotFun () {
 
 
 	if ( !notSupFun() || Notification.permission !== 'granted' ) return false; // What: Permission Granted Guard Clause. Why: There is nothing to show when notifications aren't supported at all or the user hasn't already granted permission. How: This checks both conditions with ||, short-circuiting on the first true one.

@@ -68,7 +68,7 @@ import { uniNamFun   } from '../utils/format.js'; // What: Unique Name Function.
  *
 */
 
-function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
+function buiIteFun ( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
 
 
 	const isaDowBoo = curPicObj && curPicObj.mode === 'ease-down';                                     // What: Is-A Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
@@ -152,7 +152,7 @@ function buiIteFun( curPicObj, sibIteArr, newNamStr, optIdeStr ) {
  *
 */
 
-function modDefFun( newModStr, thrValNum ) {
+function modDefFun ( newModStr, thrValNum ) {
 
 
 	if ( newModStr === 'ease-down' ) return { easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, value : thrValNum, weight : 1 }; // What: Ease Down Defaults Guard. Why: Ease Down items start fully charged. How: This returns the default drift band with value at the threshold.

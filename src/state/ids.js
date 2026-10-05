@@ -54,7 +54,7 @@ let __eidSeqNum = 0; // What: Entry-Id Sequence Number. Why: newEidFun below nee
  *
 */
 
-function newEidFun() {
+function newEidFun () {
 
 
 	return 'e_' + Date.now().toString( 36 ) + ( __eidSeqNum++ ).toString( 36 ); // What: Entry Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.

@@ -116,7 +116,7 @@ const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N char
  *
 */
 
-function titCasFun( rawNamStr ) {
+function titCasFun ( rawNamStr ) {
 
 
 	const cleNamStr = String( rawNamStr || '' ).replace( /[^a-z0-9'’&]+/gi, ' ' ).trim().replace( /\s+/g, ' ' ); // What: Cleaned Name String. Why: A messy user-typed name needs every separator run collapsed to plain single spacing before it can be split into words. How: This coerces rawNamStr to a string, turns every run of characters other than letters, digits, apostrophes, and ampersands into one space, trims the ends, then collapses any remaining space run to one.
@@ -162,7 +162,7 @@ function titCasFun( rawNamStr ) {
  *
 */
 
-function norConFun( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
+function norConFun ( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norConFun
 
@@ -200,7 +200,7 @@ function norConFun( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidi
  *
 */
 
-function norGroFun( rawNamStr, exiGroArr ) {
+function norGroFun ( rawNamStr, exiGroArr ) {
 
 
 	const titNamStr = titCasFun( rawNamStr ); // What: Titled Name String. Why: Every further step below needs the already Title Cased version of rawNamStr to compare and possibly return. How: This calls titCasFun once and reuses the result throughout.
@@ -259,7 +259,7 @@ function norGroFun( rawNamStr, exiGroArr ) {
  *
 */
 
-function norPicFun( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
+function norPicFun ( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
 
 // #endregion norPicFun
 
@@ -301,7 +301,7 @@ function norPicFun( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidi
  *
 */
 
-function aveEasFun( iteAllArr, picIdeStr ) {
+function aveEasFun ( iteAllArr, picIdeStr ) {
 
 
 	const sibIteArr = ( iteAllArr || [] ).filter( ( curIteObj ) => curIteObj.pickerId === picIdeStr ); // What: Sibling Item Array. Why: Only this picker's own items should factor into its own averaged band. How: This filters iteAllArr down to items whose own pickerId matches picIdeStr.
@@ -389,7 +389,7 @@ const easEliFun = ( iteRcdObj, thrValNum ) => ( iteRcdObj.value ?? 0 ) >= ( ( th
  *
 */
 
-function eliPooFun( iteSouArr ) { return iteSouArr.filter( ( curIteObj ) => !curIteObj.vacation ); } // What: Eligible Pool Body. Why: The caller needs only the items actually available to pick from right now. How: This keeps every item in iteSouArr whose own vacation field is falsy.
+function eliPooFun ( iteSouArr ) { return iteSouArr.filter( ( curIteObj ) => !curIteObj.vacation ); } // What: Eligible Pool Body. Why: The caller needs only the items actually available to pick from right now. How: This keeps every item in iteSouArr whose own vacation field is falsy.
 
 // #endregion eliPooFun
 
@@ -474,7 +474,7 @@ const modEliFun = ( iteRcdObj, picRcdObj ) => { // What: Mode Eligible Function.
  *
 */
 
-function reaValFun( iteRcdObj, modKeyStr, thrValNum = 100 ) {
+function reaValFun ( iteRcdObj, modKeyStr, thrValNum = 100 ) {
 
 
 	if ( modKeyStr === 'ease-up' ) return Math.min( 1, iteRcdObj.value / thrValNum ); // What: Ease Up Readiness Check. Why: Ease Up's own readiness is how close the item's value has charged toward thrValNum. How: This divides iteRcdObj's own value by thrValNum, capped at 1.
@@ -532,7 +532,7 @@ function reaValFun( iteRcdObj, modKeyStr, thrValNum = 100 ) {
  *
 */
 
-function weiPicFun( itePooArr, weiGetFun ) {
+function weiPicFun ( itePooArr, weiGetFun ) {
 
 
 	const weiValArr = itePooArr.map( weiGetFun );                                               // What: Weight Value Array. Why: The roulette-wheel draw below needs every item's own weight resolved up front, not recomputed on each loop iteration. How: This calls weiGetFun once per item in itePooArr.
@@ -616,7 +616,7 @@ function weiPicFun( itePooArr, weiGetFun ) {
  *
 */
 
-function picIteFun( picRcdObj, iteAllArr, optConObj ) {
+function picIteFun ( picRcdObj, iteAllArr, optConObj ) {
 
 
 	// #region Today Exclusion

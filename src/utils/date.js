@@ -301,7 +301,7 @@ function nexDatFun ( nexDatObj, alwYeaBoo ) {
  *
 */
 
-function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
+function nwmDayFun ( yeaValNum, monOneNum, nthValNum, weeValNum ) {
 
 
 	const firWeeNum = new Date( yeaValNum, monOneNum - 1, 1 ).getDay();                // What: First Weekday Number. Why: Finding the Nth occurrence of weeValNum needs to know which weekday the month itself starts on. How: This reads the weekday of that month's own 1st day.
@@ -343,7 +343,7 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
 */
 
-function ordSufFun( ordValNum ) {
+function ordSufFun ( ordValNum ) {
 
 
 	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.

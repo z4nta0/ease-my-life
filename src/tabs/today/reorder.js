@@ -276,7 +276,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	*/
 
-	function cmpTarFun() {
+	function cmpTarFun () {
 
 
 		const proCenNum = cenPosArr[ oriIndNum ] + delCliNum; // What: Projected Center Number. Why: This is where the dragged element's own center currently sits, used to compare against every other sibling's own center below. How: This adds the running delta to the dragged element's original center.
@@ -335,7 +335,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	*/
 
-	function appShiFun() {
+	function appShiFun () {
 
 
 		tarIndNum = cmpTarFun(); // What: Target Index Recompute. Why: Every call to appShiFun reflects the gesture's own latest position, so the target must be recomputed first. How: This calls cmpTarFun and overwrites the outer tarIndNum with its result.
@@ -401,7 +401,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	*/
 
-	function edgLooFun() {
+	function edgLooFun () {
 
 
 		if ( edgDirNum !== 0 && scrConEle ) { // What: Auto-Scroll Active Check. Why: Nudging scrollTop is only meaningful when a direction is set and an actual scroll container was given. How: This gates the whole scroll-and-compensate block below on both conditions holding.
@@ -472,7 +472,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	*/
 
-	function onMovPoiFun( movEveObj ) {
+	function onMovPoiFun ( movEveObj ) {
 
 
 		delCliNum = ( movEveObj.clientY - staCliNum ) + scrComNum; // What: Delta Client Y Recompute. Why: This is the gesture's own core measurement, combining the raw pointer movement with however much auto-scroll has already been compensated for. How: This subtracts the gesture's own start position from the pointer's current one, then adds scrComNum.
@@ -528,7 +528,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	*/
 
-	function cleDraFun() {
+	function cleDraFun () {
 
 
 		if ( cleDonBoo ) return; // What: Already Done Guard. Why: cleDraFun can be reached from more than one path (a real drop and a cancel) and must never tear down twice. How: This bails out immediately on any call after the first.
@@ -612,7 +612,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	*/
 
-	function onRelPoiFun() {
+	function onRelPoiFun () {
 
 
 		const finTarNum = tarIndNum; // What: Final Target Number. Why: cleDraFun below doesn't touch tarIndNum, but capturing it first keeps this function's own intent explicit regardless. How: This reads the outer tarIndNum before any teardown runs.

@@ -148,7 +148,7 @@ const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated s
  *
 */
 
-function shuArrFun( souEleArr ) {
+function shuArrFun ( souEleArr ) {
 
 
 	const copSouArr = souEleArr.slice(); // What: Copy Source Array. Why: The caller's own array must not be mutated by the shuffle below. How: This makes a shallow copy that the loop below shuffles in place instead.
@@ -198,7 +198,7 @@ function shuArrFun( souEleArr ) {
  *
 */
 
-function ranArrFun( lenValNum ) { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
+function ranArrFun ( lenValNum ) { return Array.from( Array( lenValNum ).keys() ); } // What: Range Array Body. Why: A plain sequential-integer array is needed repeatedly throughout this file to drive shuffled row/column walks. How: This spreads the keys() iterator of an empty array of that length, whose keys are exactly those indices.
 
 // #endregion ranArrFun
 
@@ -231,7 +231,7 @@ function ranArrFun( lenValNum ) { return Array.from( Array( lenValNum ).keys() )
  *
 */
 
-function makCycFun( pooFacFun ) {
+function makCycFun ( pooFacFun ) {
 
 
 	let curPooArr = []; // What: Current Pool Array. Why: This is the shuffled pool values are currently being handed out from. How: This starts empty so the very first call below immediately triggers a fresh pool.
@@ -293,7 +293,7 @@ function makCycFun( pooFacFun ) {
  *
 */
 
-function eveSpaFun( minValNum, maxValNum, couValNum ) {
+function eveSpaFun ( minValNum, maxValNum, couValNum ) {
 
 
 	if ( couValNum <= 1 ) return [ minValNum ]; // What: Single Value Guard. Why: A step can't be computed with fewer than 2 points, and a single point should just be the minimum. How: This returns a one-element array early when couValNum doesn't call for a real spread.
@@ -344,7 +344,7 @@ function eveSpaFun( minValNum, maxValNum, couValNum ) {
  *
 */
 
-function bloAroFun( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
+function bloAroFun ( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
 
 
 	const rowCouNum = bloGriArr.length;      // What: Row Count Number. Why: The neighborhood walk below must not read or write past the grid's own real bounds. How: This is read once from the grid's own outer length and reused in the guard below.
@@ -409,7 +409,7 @@ function bloAroFun( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
  *
 */
 
-function plaGriFun( colCouNum, rowCouNum ) {
+function plaGriFun ( colCouNum, rowCouNum ) {
 
 
 	const bloGriArr = ranArrFun( rowCouNum ).map( () => new Array( colCouNum ).fill( false ) ); // What: Blocked Grid Array. Why: This is the excluded-cells grid every placement below both reads from and writes into. How: This builds a rowCouNum by colCouNum grid, starting with every cell unexcluded.
@@ -502,7 +502,7 @@ function plaGriFun( colCouNum, rowCouNum ) {
  *
 */
 
-function genSidFun( gutWidNum, conHeiNum ) {
+function genSidFun ( gutWidNum, conHeiNum ) {
 
 
 	const fulColNum = Math.max( 0, Math.floor( gutWidNum / COL_WID_NUM - 0.3 ) ); // What: Full Column Number. Why: This is how many complete, fixed-width columns actually fit in the measured gutter. How: This divides the gutter width by the fixed column width, nudged down slightly so a column that just barely fits isn't counted.
@@ -598,7 +598,7 @@ function genSidFun( gutWidNum, conHeiNum ) {
  *
 */
 
-function useFloIteFun( tabIdeStr, meaEleRef ) {
+function useFloIteFun ( tabIdeStr, meaEleRef ) {
 
 
 	const [ floIteObj, setFloIteObj ] = React.useState( () => floCacMap.get( tabIdeStr ) || null ); // What: Flourish Item Object And Setter. Why: A tab already generated earlier in this session should render immediately, without waiting on the effect below. How: This seeds itself from floCacMap if this tab's own entry already exists, null otherwise.
@@ -676,7 +676,7 @@ function useFloIteFun( tabIdeStr, meaEleRef ) {
  *
 */
 
-function FloColCom( { floIteArr, sidKeyStr } ) {
+function FloColCom ( { floIteArr, sidKeyStr } ) {
 
 
 	if ( !floIteArr.length ) return null; // What: No Items Guard. Why: An empty side has nothing decorative to render at all. How: This returns null early rather than rendering an empty wrapper div.
@@ -762,7 +762,7 @@ function FloColCom( { floIteArr, sidKeyStr } ) {
  *
 */
 
-function BacFloCom( { meaEleRef, tabIdeStr } ) {
+function BacFloCom ( { meaEleRef, tabIdeStr } ) {
 
 
 	const floIteObj = useFloIteFun( tabIdeStr, meaEleRef ); // What: Flourish Item Object. Why: Both gutters below need this tab's own already-generated (or not-yet-generated) items. How: This calls the hook above, which returns null until the first measurement completes.

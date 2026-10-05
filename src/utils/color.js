@@ -53,7 +53,7 @@
  *
 */
 
-function invColFun( hexColStr ) {
+function invColFun ( hexColStr ) {
 
 
 	try { // What: Color Conversion Try. Why: Any malformed input must fall back to the original color instead of throwing. How: The catch below returns hexColStr unchanged.

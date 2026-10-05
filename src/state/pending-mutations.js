@@ -82,7 +82,7 @@ let __cdlSeqNum = 0; // What: Conditional-Log Sequence Number. Why: nclIdeFun be
  *
 */
 
-function nclIdeFun() {
+function nclIdeFun () {
 
 
 	return 'cl_' + Date.now().toString( 36 ) + ( __cdlSeqNum++ ).toString( 36 ); // What: Conditional-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
@@ -121,7 +121,7 @@ function nclIdeFun() {
  *
 */
 
-function spuDroFun( todEntArr, iteIdeArr ) {
+function spuDroFun ( todEntArr, iteIdeArr ) {
 
 
 	const iteIdeSet = new Set( iteIdeArr ); // What: Item Identifier Set. Why: The scan below needs fast membership checks against the touched ids. How: This wraps iteIdeArr in a Set.
@@ -204,7 +204,7 @@ function spuDroFun( todEntArr, iteIdeArr ) {
  *
 */
 
-function enpAplFun( curStaObj, curEntObj ) {
+function enpAplFun ( curStaObj, curEntObj ) {
 
 
 	const curPenObj = curEntObj.pending; // What: Current Pending Object And Guard. Why: Every mutation below is driven entirely by this entry's own staged pending payload. How: This reads curEntObj's own pending field.
@@ -372,7 +372,7 @@ function enpAplFun( curStaObj, curEntObj ) {
  *
 */
 
-function enpRevFun( curStaObj, curEntObj ) {
+function enpRevFun ( curStaObj, curEntObj ) {
 
 
 	const curRevObj = curEntObj.revert; // What: Current Revert Object And Guard. Why: Every restoration below is driven entirely by this entry's own recorded snapshot. How: This reads curEntObj's own revert field.
@@ -473,7 +473,7 @@ function enpRevFun( curStaObj, curEntObj ) {
  *
 */
 
-function cotAplFun( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
+function cotAplFun ( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
 
 
 	const curConArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: Every branch below reads/maps over the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
@@ -649,7 +649,7 @@ function cotAplFun( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
  *
 */
 
-function cdlAplFun( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
+function cdlAplFun ( curStaObj, nexEntArr, togEntObj, nowDonBoo ) {
 
 
 	const curLogArr = curStaObj.conditionalLog || []; // What: Current Log Array. Why: Every branch below either returns this untouched or derives a new array from it. How: This reads curStaObj's own conditionalLog, defaulting to empty.

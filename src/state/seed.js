@@ -214,7 +214,7 @@ const MOD_DEF_OBJ = { // What: Mode Definition Object. Why: Every consumer needi
  *
 */
 
-function picWeiFun( itePooArr ) {
+function picWeiFun ( itePooArr ) {
 
 
 	const totWeiNum = itePooArr.reduce( ( sumWeiNum, curIteObj ) => sumWeiNum + ( curIteObj.weight || 1 ), 0 ); // What: Total Weight Number. Why: The random draw below needs the combined weight of the whole pool to scale against. How: This sums every item's own weight, defaulting a missing weight to 1.
@@ -284,7 +284,7 @@ function picWeiFun( itePooArr ) {
  *
 */
 
-function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
+function picLogFun ( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
 
 
 	const picRowArr = [];         // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
@@ -536,7 +536,7 @@ function picLogFun( allIteArr, allPicArr, isaVacFun, totDayNum = 365 ) {
  *
 */
 
-function buiCleFun() {
+function buiCleFun () {
 
 
 	return { // What: Clean State Return. Why: This is the full canonical empty app state, in state's own top-level shape. How: This builds every top-level field to its own genuinely empty/default value.

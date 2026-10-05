@@ -125,7 +125,7 @@ const midDatFun = ( inpDatObj ) => new Date( inpDatObj.getFullYear(), inpDatObj.
  *
 */
 
-function enfWeeFun( picCadObj ) {
+function enfWeeFun ( picCadObj ) {
 
 
 	const dowSetArr = Array.isArray( picCadObj && picCadObj.daysOfWeek ) ? picCadObj.daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Day-Of-Week Set Array. Why: A missing or malformed daysOfWeek must still fall back to every day allowed. How: This keeps picCadObj's own daysOfWeek only when it's a real array, defaulting to all 7 days otherwise.
@@ -209,7 +209,7 @@ const isaCadFun   = ( cadValStr ) => CAD_STR_ARR.includes( cadValStr ); // What:
  *
 */
 
-function norCadFun( picLikObj = {} ) {
+function norCadFun ( picLikObj = {} ) {
 
 
 	const curDatObj = new Date();                                                   // What: Current Date Object. Why: Every default below (anchorDow, anchorDom, anchorMonth, anchorDay, nthWeekday) falls back to today's own value when picLikObj has nothing set. How: This is read once and reused across the whole return object below.
@@ -281,7 +281,7 @@ function norCadFun( picLikObj = {} ) {
  *
 */
 
-function tdmResFun( picCadObj, yeaValNum, monOneNum, domFieStr ) { return picCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, picCadObj.nthOrdinal ?? 1, picCadObj.nthWeekday ?? 0 ) : Math.min( picCadObj[ domFieStr ] ?? 1, dimCouFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: perStaFun needs this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or picCadObj's own plain field (clamped to the real month length) otherwise.
+function tdmResFun ( picCadObj, yeaValNum, monOneNum, domFieStr ) { return picCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, picCadObj.nthOrdinal ?? 1, picCadObj.nthWeekday ?? 0 ) : Math.min( picCadObj[ domFieStr ] ?? 1, dimCouFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: perStaFun needs this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or picCadObj's own plain field (clamped to the real month length) otherwise.
 
 // #endregion tdmResFun
 
@@ -314,7 +314,7 @@ function tdmResFun( picCadObj, yeaValNum, monOneNum, domFieStr ) { return picCad
  *
 */
 
-function perStaFun( picCadObj, cheDatObj = new Date() ) {
+function perStaFun ( picCadObj, cheDatObj = new Date() ) {
 
 
 	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
@@ -424,7 +424,7 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
  *
 */
 
-function perKeyFun( picCadObj, cheDatObj = new Date() ) { return isoDayFun( perStaFun( picCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via isoDayFun.
+function perKeyFun ( picCadObj, cheDatObj = new Date() ) { return isoDayFun( perStaFun( picCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via isoDayFun.
 
 // #endregion perKeyFun
 
@@ -463,7 +463,7 @@ function perKeyFun( picCadObj, cheDatObj = new Date() ) { return isoDayFun( perS
  *
 */
 
-function comPerFun( picCadObj, picLogArr, cheDatObj = new Date() ) {
+function comPerFun ( picCadObj, picLogArr, cheDatObj = new Date() ) {
 
 
 	if ( ( picCadObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Cadence Guard. Why: Daily pickers are handled entirely by a separate legacy path, not this period-based check. How: This returns false early whenever picCadObj's own (defaulted) cadence is 'daily'.
@@ -546,7 +546,7 @@ const locTipFun = ( dowValNum, souLabStr = 'How often?' ) => `Because you select
  *
 */
 
-function sumCadFun( picCadObj ) {
+function sumCadFun ( picCadObj ) {
 
 
 	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
@@ -673,7 +673,7 @@ const tipMesFun = ( cadValStr, dayLabStr = 'Days' ) => { // What: Tip Message Fu
  *
 */
 
-function uniWorFun( cadValStr, couValNum ) {
+function uniWorFun ( cadValStr, couValNum ) {
 
 
 	switch ( cadValStr ) { // What: Cadence Switch. Why: Each cadence has its own unit word, singular or plural per couValNum. How: This branches on cadValStr, falling back to the daily day/days pair for anything else.

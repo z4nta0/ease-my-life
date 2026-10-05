@@ -282,7 +282,7 @@ let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color s
  *
 */
 
-function resCusFun( modKeyStr, usrColObj ) {
+function resCusFun ( modKeyStr, usrColObj ) {
 
 
 	const bacColStr = usrColObj.bg;     // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
@@ -352,7 +352,7 @@ function resCusFun( modKeyStr, usrColObj ) {
  *
 */
 
-function resTheFun( appSetObj, sysDarBoo ) {
+function resTheFun ( appSetObj, sysDarBoo ) {
 
 
 	const theKeyStr = appSetObj.theme || 'ink'; // What: Theme Key String. Why: Very old/incomplete persisted states might not have a theme field at all. How: This falls back to 'ink' when appSetObj.theme is missing.
@@ -425,7 +425,7 @@ function resTheFun( appSetObj, sysDarBoo ) {
  *
 */
 
-function covHexFun( cssColStr ) {
+function covHexFun ( cssColStr ) {
 
 
 	try { // What: Fill Style Probe Try. Why: Assigning an unsupported color to a canvas context's fillStyle could throw in some environments rather than silently no-op. How: This wraps the whole probe-and-resolve sequence below so any such error is caught and treated as an ordinary parse failure.
@@ -519,7 +519,7 @@ function covHexFun( cssColStr ) {
  *
 */
 
-function synTinFun( bacColStr ) {
+function synTinFun ( bacColStr ) {
 
 
 	const hexResStr = covHexFun( bacColStr ); // What: Hex Result String. Why: A <meta name="theme-color"> tag's content must be a color the UA will definitely parse. How: This resolves the given background color down to a plain hex string.
@@ -604,7 +604,7 @@ function synTinFun( bacColStr ) {
  *
 */
 
-function appPalFun( palResObj, theKeyStr ) {
+function appPalFun ( palResObj, theKeyStr ) {
 
 
 	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.texStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.

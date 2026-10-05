@@ -136,7 +136,7 @@ const modValFun = ( modKeyStr ) => [ 'dynamic', 'ease-down', 'ease-up' ].include
  *
 */
 
-function supGatFun( conCurObj ) { return !!( conCurObj && conCurObj.active !== false && conCurObj.triggered ); } // What: Suppress Gate Body. Why: The caller needs one single boolean covering both the enabled check and the triggered check at once. How: This combines both conditions with &&, wrapped in !! so a nullish conCurObj resolves to a real false rather than undefined.
+function supGatFun ( conCurObj ) { return !!( conCurObj && conCurObj.active !== false && conCurObj.triggered ); } // What: Suppress Gate Body. Why: The caller needs one single boolean covering both the enabled check and the triggered check at once. How: This combines both conditions with &&, wrapped in !! so a nullish conCurObj resolves to a real false rather than undefined.
 
 // #endregion supGatFun
 
@@ -168,7 +168,7 @@ function supGatFun( conCurObj ) { return !!( conCurObj && conCurObj.active !== f
  *
 */
 
-function truOddFun( conCurObj ) {
+function truOddFun ( conCurObj ) {
 
 
 	if ( conCurObj.mode === 'random' ) return 0.5; // What: Random Mode Guard. Why: A random-mode conditional always resolves at a fixed fifty percent, with no oddsPct or value involved at all. How: This returns 0.5 immediately when conCurObj's own mode is 'random'.
@@ -222,7 +222,7 @@ function truOddFun( conCurObj ) {
  *
 */
 
-function resDayFun( conAllArr ) {
+function resDayFun ( conAllArr ) {
 
 
 	const patIdeObj = {}; // What: Patch Identifier Object. Why: This collects every conditional's own resolved-for-today patch, to apply before this generate's own picker gating runs. How: This starts empty and is written to once per conditional in the loop below.
@@ -308,7 +308,7 @@ function resDayFun( conAllArr ) {
  *
 */
 
-function rolSteFun( conCurObj, thrValNum ) {
+function rolSteFun ( conCurObj, thrValNum ) {
 
 
 	const sooCycNum = Math.max( 1, Math.round( thrValNum / ( conCurObj.easeMax ?? 14 ) ) );        // What: Soonest Cycle Number. Why: The target cycle count must be rolled no sooner than the fastest possible cycle length, derived from easeMax the same way threshold/easeMax already bounds the fastest duration. How: This divides thrValNum by conCurObj's own easeMax (defaulted to 14), rounded and floored at 1 cycle via Math.max.
@@ -360,7 +360,7 @@ const steResFun = ( conCurObj, thrValNum ) => ( conCurObj.chargeStep && conCurOb
  *
 */
 
-function advValFun( conCurObj ) {
+function advValFun ( conCurObj ) {
 
 
 	const misConBoo = !conCurObj;                    // What: Missing Conditional Boolean. Why: There is nothing to advance for a conditional that doesn't exist. How: This is true when conCurObj is nullish.
@@ -474,7 +474,7 @@ function advValFun( conCurObj ) {
  *
 */
 
-function carComFun( conCurObj ) {
+function carComFun ( conCurObj ) {
 
 
 	if ( !conCurObj ) return null; // What: No Conditional Guard. Why: There is nothing to reset or discharge for a conditional that does not exist. How: This returns null immediately when conCurObj is nullish.

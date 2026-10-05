@@ -90,7 +90,7 @@ const SCH_VER_NUM = 1; // What: Schema Version Number. Why: migStaFun() stamps t
  *
 */
 
-function migStaFun( curStaObj ) {
+function migStaFun ( curStaObj ) {
 
 
 	if ( curStaObj && curStaObj.today && !curStaObj.today.generatedAt ) { // What: Generated-At Backfill Guard. Why: Old state predates today.generatedAt entirely, and the footer needs SOME timestamp to read sensibly until the next regen. How: This backfills to "this morning" (7:12am) when today exists but generatedAt is missing.

@@ -242,7 +242,7 @@ const canInsFun = () => !!insCapObj; // What: Can Install Function. Why: tab-set
  *
 */
 
-function isaStaFun() {
+function isaStaFun () {
 
 
 	try { // What: Is-A Standalone Try. Why: window.matchMedia is not guaranteed to exist in every environment this code might run in. How: This wraps the three checks and their combination below, falling back to false in its own catch.
@@ -313,7 +313,7 @@ function isaStaFun() {
  *
 */
 
-function insStaFun() {
+function insStaFun () {
 
 
 	if ( isaStaFun() ) return 'standalone'; // What: Standalone Guard. Why: An already-installed, already-running app has nothing left to offer installing. How: This returns 'standalone' as soon as isaStaFun reports true.
@@ -374,7 +374,7 @@ function insStaFun() {
  *
 */
 
-function proRelFun() {
+function proRelFun () {
 
 
 	try { // What: Probe Related Try. Why: navigator.getInstalledRelatedApps itself may not exist, and calling a missing method would throw. How: This wraps the whole check-and-query sequence below, silently giving up in its own catch.
@@ -441,7 +441,7 @@ function proRelFun() {
  *
 */
 
-function proSupFun() {
+function proSupFun () {
 
 
 	const staGraNum = 2500; // What: Start Grace Number. Why: This is the fixed number of milliseconds to wait, once the service worker is ready, before concluding the install prompt is never coming. How: This is passed as the delay to the setTimeout call inside finProFun below.
@@ -525,7 +525,7 @@ function proSupFun() {
  *
 */
 
-async function askInsFun() {
+async function askInsFun () {
 
 
 	if ( !insCapObj ) return 'unavailable'; // What: No Install Event Guard. Why: There is nothing to prompt with when beforeinstallprompt was never captured, or was already consumed by an earlier call. How: This returns 'unavailable' immediately whenever insCapObj is falsy.
@@ -590,7 +590,7 @@ async function askInsFun() {
  *
 */
 
-async function askPerFun( forAskBoo ) {
+async function askPerFun ( forAskBoo ) {
 
 
 	try { // What: Ask Persist Try. Why: localStorage.getItem/setItem can both throw in private mode, and either failure should still let the actual persistence request below proceed. How: This wraps the ask-once bookkeeping below, silently giving up in its own catch.

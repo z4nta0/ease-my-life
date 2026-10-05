@@ -49,7 +49,7 @@
  *
 */
 
-function uniNamFun( namRawStr, sibNamArr ) {
+function uniNamFun ( namRawStr, sibNamArr ) {
 
 
 	const takNamSet = new Set( sibNamArr.map( ( curNamStr ) => ( curNamStr || '' ).trim().toLowerCase() ) ); // What: Taken Name Set. Why: The collision check below needs every sibling name normalized the same way as the candidate. How: This trims and lowercases every entry of sibNamArr into a Set.

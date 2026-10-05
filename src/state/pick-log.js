@@ -71,7 +71,7 @@ let __pclSeqNum = 0; // What: Pick-Log Sequence Number. Why: newLogFun below nee
  *
 */
 
-function newLogFun() {
+function newLogFun () {
 
 
 	return 'pl_' + Date.now().toString( 36 ) + ( __pclSeqNum++ ).toString( 36 ); // What: Pick-Log Id Return. Why: The caller needs a short, sortable, collision-resistant id. How: This concatenates a fixed prefix, the current time base-36, and the incrementing counter base-36.
@@ -118,7 +118,7 @@ function newLogFun() {
  *
 */
 
-function logRowFun( curStaObj, { date : datValStr, depletedEnd : depEndBoo = false, eid : entIdeStr = null, itemId : iteIdeStr, pickerId : picIdeStr, source : souValStr } ) {
+function logRowFun ( curStaObj, { date : datValStr, depletedEnd : depEndBoo = false, eid : entIdeStr = null, itemId : iteIdeStr, pickerId : picIdeStr, source : souValStr } ) {
 
 
 	const curIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === iteIdeStr );   // What: Current Item Object And Guard. Why: The row below needs the item's own live name, or a removed-item fallback. How: This looks up iteIdeStr in curStaObj.items, undefined once removed.

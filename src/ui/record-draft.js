@@ -64,7 +64,7 @@ import React from 'react'; // What: React. Why: The draft is held in React state
  *
 */
 
-function useRcdDraFun( rcdDatObj ) {
+function useRcdDraFun ( rcdDatObj ) {
 
 
 	const [ draStaObj, setDraStaObj ] = React.useState( { draRcdObj : null, oriRcdObj : null } ); // What: Draft State Object And Setter. Why: The draft and the record it started from must change together, in one update. How: This holds both, starting empty.
@@ -131,7 +131,7 @@ function useRcdDraFun( rcdDatObj ) {
  *
 */
 
-function useIteDraFun( tarActObj, iteDatObj ) {
+function useIteDraFun ( tarActObj, iteDatObj ) {
 
 
 	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( iteDatObj ); // What: Record Draft Destructure. Why: The item draft is a record draft with an item-specific commit. How: This calls useRcdDraFun with the open item.
@@ -238,7 +238,7 @@ function useIteDraFun( tarActObj, iteDatObj ) {
  *
 */
 
-function useTasDraFun( tarActObj, tasDatObj ) {
+function useTasDraFun ( tarActObj, tasDatObj ) {
 
 
 	const { draRcdObj, oriRcdObj, patDraFun } = useRcdDraFun( tasDatObj ); // What: Record Draft Destructure. Why: The reminder draft is a record draft with a reminder-specific commit. How: This calls useRcdDraFun with the open reminder.

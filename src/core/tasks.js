@@ -269,7 +269,7 @@ const difYeaFun = ( ancIsoStr, cheDatObj ) => cheDatObj.getFullYear() - parIsoFu
  *
 */
 
-function defTasFun( tasInpObj = {} ) {
+function defTasFun ( tasInpObj = {} ) {
 
 
 	const curDatObj = new Date(); // What: Current Date Object. Why: Every date-based default below (daysOfWeek, dayOfMonth, nthWeekday, month, day, plus the onceDate/anchor/createdAt calls to curIsoFun) falls back to today's own value when tasInpObj has nothing set. How: This is read once and reused across the whole return object below.
@@ -333,7 +333,7 @@ function defTasFun( tasInpObj = {} ) {
  *
 */
 
-function isaComFun( tasRcdObj ) { return tasRcdObj.repeat === 'once' && !!tasRcdObj.lastDone; } // What: Is-A Completed Body. Why: store.js's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRcdObj is a 'once' task with any lastDone value at all.
+function isaComFun ( tasRcdObj ) { return tasRcdObj.repeat === 'once' && !!tasRcdObj.lastDone; } // What: Is-A Completed Body. Why: store.js's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRcdObj is a 'once' task with any lastDone value at all.
 
 // #endregion isaComFun
 
@@ -363,7 +363,7 @@ function isaComFun( tasRcdObj ) { return tasRcdObj.repeat === 'once' && !!tasRcd
  *
 */
 
-function isaDonFun( tasRcdObj, cheDatObj = new Date() ) { return !!tasRcdObj.lastDone && tasRcdObj.lastDone === isoDayFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tasRcdObj's own lastDone against cheDatObj's own iso string.
+function isaDonFun ( tasRcdObj, cheDatObj = new Date() ) { return !!tasRcdObj.lastDone && tasRcdObj.lastDone === isoDayFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tasRcdObj's own lastDone against cheDatObj's own iso string.
 
 // #endregion isaDonFun
 
@@ -396,7 +396,7 @@ function isaDonFun( tasRcdObj, cheDatObj = new Date() ) { return !!tasRcdObj.las
  *
 */
 
-function isaDueFun( tasRcdObj, cheDatObj = new Date() ) {
+function isaDueFun ( tasRcdObj, cheDatObj = new Date() ) {
 
 
 	const todIsoStr = isoDayFun( cheDatObj ); // What: Today Iso String. Why: The 'once' case below compares tasRcdObj's own onceDate/lastDone against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
@@ -540,7 +540,7 @@ function isaDueFun( tasRcdObj, cheDatObj = new Date() ) {
  *
 */
 
-function dueTodFun( tasLisArr, cheDatObj = new Date() ) {
+function dueTodFun ( tasLisArr, cheDatObj = new Date() ) {
 
 
 	return ( tasLisArr || [] ) // What: Due Today Return. Why: The caller needs the due, non-hidden subset in a stable, predictable order. How: This filters out hidden and not-due entries, then sorts one-time first, newest-added first within each group.
@@ -624,7 +624,7 @@ const isaReuFun = ( tasRcdObj ) => tasRcdObj.repeat !== 'once'; // What: Is-A Re
  *
 */
 
-function isaStaFun( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repeat === 'once' && tasRcdObj.lastDone && tasRcdObj.lastDone !== isoDayFun( cheDatObj ); } // What: Is-A Stale Body. Why: migrate.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRcdObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
+function isaStaFun ( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repeat === 'once' && tasRcdObj.lastDone && tasRcdObj.lastDone !== isoDayFun( cheDatObj ); } // What: Is-A Stale Body. Why: migrate.js's own migStaFun() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRcdObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
 
 // #endregion isaStaFun
 
@@ -655,7 +655,7 @@ function isaStaFun( tasRcdObj, cheDatObj = new Date() ) { return tasRcdObj.repea
  *
 */
 
-function sumTasFun( tasRcdObj ) {
+function sumTasFun ( tasRcdObj ) {
 
 
 	switch ( tasRcdObj.repeat ) { // What: Repeat Switch. Why: Each of the 5 schedule kinds has its own completely different summary shape. How: This branches on tasRcdObj's own repeat field, falling back to an empty string for anything unrecognized.
@@ -843,7 +843,7 @@ function sumTasFun( tasRcdObj ) {
  *
 */
 
-function defOptFun() {
+function defOptFun () {
 
 
 	const basOptObj = { excludeHolidays : false, excludeWeekends : false, ring : true, stats : true, streak : true }; // What: Base Options Object. Why: This is the one shared default shape both the once and recurring classes start from. How: This is spread into each of the 2 return properties below.
@@ -884,7 +884,7 @@ function defOptFun() {
  *
 */
 
-function norOptFun( remOptObj ) {
+function norOptFun ( remOptObj ) {
 
 
 	const defOptObj = defOptFun(); // What: Default Options Object. Why: Every field below falls back to this canonical shape when remOptObj has nothing of its own. How: This calls defOptFun once and reuses the result.
@@ -936,7 +936,7 @@ function norOptFun( remOptObj ) {
  *
 */
 
-function optForFun( tasRcdObj, remOptObj ) {
+function optForFun ( tasRcdObj, remOptObj ) {
 
 
 	const optNorObj = norOptFun( remOptObj ); // What: Options Normalized Object. Why: tasRcdObj's own class must be read from the fully-shaped, defaulted options, not a possibly-partial raw remOptObj. How: This calls norOptFun once and reuses the result.
@@ -992,7 +992,7 @@ function optForFun( tasRcdObj, remOptObj ) {
  *
 */
 
-function nexEliFun( tasRcdObj, remOptObj, holStaObj, froDatObj = new Date(), resSkiBoo = false ) {
+function nexEliFun ( tasRcdObj, remOptObj, holStaObj, froDatObj = new Date(), resSkiBoo = false ) {
 
 
 	const optNorObj = optForFun( tasRcdObj, remOptObj );                                              // What: Options Normalized Object. Why: The weekend/holiday exclusion guards inside the loop below both read from tasRcdObj's own governing class. How: This calls optForFun once and reuses the result.
@@ -1098,7 +1098,7 @@ function nexEliFun( tasRcdObj, remOptObj, holStaObj, froDatObj = new Date(), res
  *
 */
 
-function todVisFun( tasRcdObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
+function todVisFun ( tasRcdObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 
 	const optNorObj = optForFun( tasRcdObj, remOptObj );                    // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tasRcdObj's own governing class. How: This calls optForFun once and reuses the result.
@@ -1199,7 +1199,7 @@ function todVisFun( tasRcdObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
  *
 */
 
-function visTodFun( tasLisArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
+function visTodFun ( tasLisArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6;               // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).

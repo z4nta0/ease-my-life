@@ -104,7 +104,7 @@ const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the bus's ow
  *
 */
 
-function useEmlTouFun() {
+function useEmlTouFun () {
 
 
 	const [ busSnaObj, setBusSnaObj ] = React.useState( emlTouObj.get() ); // What: Bus Snapshot Object And Setter. Why: The calling component needs its own React state that re-renders it whenever the shared bus changes. How: This seeds itself from emlTouObj's own current value on this first render.

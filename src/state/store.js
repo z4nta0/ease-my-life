@@ -100,7 +100,7 @@ const STO_KEY_STR = 'easemylife.v2'; // What: Storage Key String. Why: The local
  *
 */
 
-function fluStaFun( curStaObj ) {
+function fluStaFun ( curStaObj ) {
 
 
 	try { // What: Flush Attempt. Why: A storage failure during teardown must never throw while the page is going away. How: This delegates to STG_NAM_OBJ.fluSynFun when available, else falls back to a raw localStorage write.
@@ -150,7 +150,7 @@ function fluStaFun( curStaObj ) {
  *
 */
 
-function loaStaFun() {
+function loaStaFun () {
 
 
 	try { // What: Cached-State Attempt. Why: STG_NAM_OBJ's own warm cache is the fastest, most authoritative source when it's available. How: This returns migStaFun() of STG_NAM_OBJ's own cached state, when there is one.
@@ -215,7 +215,7 @@ function loaStaFun() {
  *
 */
 
-function wriStaFun( curStaObj ) {
+function wriStaFun ( curStaObj ) {
 
 
 	try { // What: Persist Attempt. Why: A storage failure (quota, disabled storage, ...) must never crash the caller. How: This delegates to STG_NAM_OBJ.savStaFun when available, else falls back to a raw localStorage write.
@@ -276,7 +276,7 @@ function wriStaFun( curStaObj ) {
  *
 */
 
-function stkSynFun( curStaObj, entArgArr, tasArgArr ) {
+function stkSynFun ( curStaObj, entArgArr, tasArgArr ) {
 
 
 	const hidPicSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
@@ -371,7 +371,7 @@ function stkSynFun( curStaObj, entArgArr, tasArgArr ) {
  *
 */
 
-function useAppStaFun( optArgObj ) {
+function useAppStaFun ( optArgObj ) {
 
 
 	const [ appStaObj, setAppStaObj ] = React.useState( () => ( optArgObj && optArgObj.initial ? migStaFun( optArgObj.initial ) : loaStaFun() ) ); // What: App State Object And Setter. Why: This one useState is the entire app's own persisted state. How: This lazily seeds from optArgObj.initial when given, else from loaStaFun()'s own migrated result.

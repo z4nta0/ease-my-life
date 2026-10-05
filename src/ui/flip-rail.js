@@ -73,7 +73,7 @@ import { redMotFun } from '../utils/motion.js'; // What: Reduce Motion Function.
  *
 */
 
-function useFliRaiFun( raiNodRef, trgKeyStr ) {
+function useFliRaiFun ( raiNodRef, trgKeyStr ) {
 
 
 	const fliFirRef = React.useRef( new Map() ); // What: Flip First Reference. Why: Each pill's PREVIOUS x position is needed to compute how far it moved. How: This starts as an empty map and is repopulated at the end of every effect run.

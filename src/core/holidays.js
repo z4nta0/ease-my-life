@@ -128,7 +128,7 @@ const REG_DEF_OBJ = { US : { defArr : HOL_DEF_ARR } }; // What: Region Definitio
  *
 */
 
-function lasDayFun( yeaValNum, monOneNum, dayIndNum ) {
+function lasDayFun ( yeaValNum, monOneNum, dayIndNum ) {
 
 
 	const lasDatObj = new Date( yeaValNum, monOneNum, 0 );        // What: Last Date Object. Why: Day 0 of the NEXT month is JavaScript's own idiom for the last day of THIS month, which every offset below is computed from. How: This constructs a Date one month ahead with a day value of 0, which Date normalizes back to the prior month's final day.
@@ -173,7 +173,7 @@ function lasDayFun( yeaValNum, monOneNum, dayIndNum ) {
  *
 */
 
-function nthDayFun( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
+function nthDayFun ( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
 
 
 	const firDatObj = new Date( yeaValNum, monOneNum - 1, 1 );    // What: First Date Object. Why: The month's own first day is the anchor every weekday-offset calculation below is computed from. How: This constructs a Date for day 1 of the given month/year.
@@ -217,7 +217,7 @@ function nthDayFun( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
  *
 */
 
-function obsDatFun( actDatObj ) {
+function obsDatFun ( actDatObj ) {
 
 
 	const curDayNum = actDatObj.getDay(); // What: Current Day Number. Why: The federal observed-date shift depends on which weekday the actual holiday falls on. How: This reads actDatObj's own weekday via Date.getDay().
@@ -271,7 +271,7 @@ function obsDatFun( actDatObj ) {
  *
 */
 
-function datDefFun( holDefObj, yeaValNum ) {
+function datDefFun ( holDefObj, yeaValNum ) {
 
 
 	if ( holDefObj.fixArr ) return new Date( yeaValNum, holDefObj.fixArr[ 0 ] - 1, holDefObj.fixArr[ 1 ] ); // What: Fixed Rule Branch. Why: A fixed-date holiday's actual calendar date never depends on any weekday math at all. How: This builds the date directly from the definition's own [month, day] pair.
@@ -324,7 +324,7 @@ function datDefFun( holDefObj, yeaValNum ) {
  *
 */
 
-function comYeaFun( yeaValNum, couCodStr = 'US' ) {
+function comYeaFun ( yeaValNum, couCodStr = 'US' ) {
 
 
 	const curRegObj = REG_DEF_OBJ[ couCodStr ] || REG_DEF_OBJ.US; // What: Current Region Object. Why: Every holiday needs resolving against its own region's own rule table, falling back to the US table when the given code is unrecognized. How: This looks up couCodStr in REG_DEF_OBJ, defaulting to the US entry.
@@ -384,7 +384,7 @@ function comYeaFun( yeaValNum, couCodStr = 'US' ) {
  *
 */
 
-function defStaFun() { return { country : 'US', custom : [], disabled : [] }; } // What: Default State Body. Why: Every caller needs a safe, well-shaped holidays-state object to fall back to when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
+function defStaFun () { return { country : 'US', custom : [], disabled : [] }; } // What: Default State Body. Why: Every caller needs a safe, well-shaped holidays-state object to fall back to when state.holidays is missing entirely. How: This returns the canonical empty shape with no holidays disabled and no custom days off.
 
 // #endregion defStaFun
 
@@ -417,7 +417,7 @@ function defStaFun() { return { country : 'US', custom : [], disabled : [] }; } 
  *
 */
 
-function actYeaFun( holStaObj, yeaValNum ) {
+function actYeaFun ( holStaObj, yeaValNum ) {
 
 
 	const resHolObj = holStaObj || defStaFun(); // What: Resolved Holidays Object. Why: A caller might pass a missing/undefined holidays state, which still needs a safe fallback to read from below. How: This falls back to defStaFun's canonical empty shape when holStaObj is falsy.
@@ -491,7 +491,7 @@ function actYeaFun( holStaObj, yeaValNum ) {
  *
 */
 
-function holDatFun( holStaObj, cheDatObj ) {
+function holDatFun ( holStaObj, cheDatObj ) {
 
 
 	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
@@ -546,7 +546,7 @@ function holDatFun( holStaObj, cheDatObj ) {
  *
 */
 
-function holInfFun( holStaObj, cheDatObj ) {
+function holInfFun ( holStaObj, cheDatObj ) {
 
 
 	const tarIsoStr = isoDayFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDayFun once, reused across every loop iteration below.
